@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="300" viewBox="0 0 680 300" role="img">
+<title>오프라인 — 합성 코퍼스 제작에서 증류 학습까지</title>
+<desc>페르소나 설계로 정답 속성을 확정하고, LLM으로 합성 글을 생성한 뒤, 교사 LLM이 스팬과 위험도를 자동 라벨하고, 그 결과를 KoBERT에 증류해 로컬 탐지기를 만든다.</desc>
+<style>
+  .t{font:14px system-ui,-apple-system,'Malgun Gothic',sans-serif}
+  .th{font:500 14px system-ui,-apple-system,'Malgun Gothic',sans-serif}
+  .ts{font:12px system-ui,-apple-system,'Malgun Gothic',sans-serif}
+  .arr{stroke:#898781;stroke-width:1.5;fill:none}
+  .gb{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:.5}
+  .pb{fill:#EEEDFE;stroke:#534AB7;stroke-width:.5}
+  .tb{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.5}
+  .gt{fill:#2C2C2A}.gs{fill:#5F5E5A}
+  .pt{fill:#3C3489}.ps{fill:#534AB7}
+  .tt{fill:#085041}.tsg{fill:#0F6E56}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="300" fill="#ffffff"/>
+
+<rect x="40" y="60" width="120" height="64" rx="4" class="gb"/>
+<text x="100" y="84" class="th gt" text-anchor="middle" dominant-baseline="central">페르소나 설계</text>
+<text x="100" y="106" class="ts gs" text-anchor="middle" dominant-baseline="central">GT 7속성</text>
+
+<line x1="170" y1="92" x2="190" y2="92" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="200" y="60" width="120" height="64" rx="4" class="pb"/>
+<text x="260" y="84" class="th pt" text-anchor="middle" dominant-baseline="central">합성 글 생성</text>
+<text x="260" y="106" class="ts ps" text-anchor="middle" dominant-baseline="central">15~30편/인</text>
+
+<line x1="330" y1="92" x2="350" y2="92" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="360" y="60" width="120" height="64" rx="4" class="pb"/>
+<text x="420" y="84" class="th pt" text-anchor="middle" dominant-baseline="central">교사 라벨링</text>
+<text x="420" y="106" class="ts ps" text-anchor="middle" dominant-baseline="central">스팬 · 위험도</text>
+
+<line x1="490" y1="92" x2="510" y2="92" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="520" y="60" width="120" height="64" rx="4" class="tb"/>
+<text x="580" y="84" class="th tt" text-anchor="middle" dominant-baseline="central">KoBERT 증류</text>
+<text x="580" y="106" class="ts tsg" text-anchor="middle" dominant-baseline="central">로컬 탐지기</text>
+
+<rect x="200" y="170" width="120" height="60" rx="4" class="gb"/>
+<text x="260" y="192" class="th gt" text-anchor="middle" dominant-baseline="central">제작 기준</text>
+<text x="260" y="214" class="ts gs" text-anchor="middle" dominant-baseline="central">REALISM_GUIDE</text>
+
+<line x1="260" y1="170" x2="260" y2="134" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="360" y="170" width="120" height="60" rx="4" class="gb"/>
+<text x="420" y="192" class="th gt" text-anchor="middle" dominant-baseline="central">골드셋 검수</text>
+<text x="420" y="214" class="ts gs" text-anchor="middle" dominant-baseline="central">일부 blind</text>
+
+<path d="M 490 200 L 580 200 L 580 134" class="arr" marker-end="url(#arrow)"/>
+
+<rect x="210" y="260" width="12" height="12" rx="2" class="gb"/>
+<text x="228" y="266" class="ts gs" dominant-baseline="central">데이터·사람</text>
+<rect x="330" y="260" width="12" height="12" rx="2" class="pb"/>
+<text x="348" y="266" class="ts ps" dominant-baseline="central">LLM</text>
+<rect x="396" y="260" width="12" height="12" rx="2" class="tb"/>
+<text x="414" y="266" class="ts tsg" dominant-baseline="central">우리 모델</text>
+</svg>

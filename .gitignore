@@ -1,0 +1,37 @@
+# 실데이터 (절대 커밋 금지)
+/data/raw/
+/data/consented/
+*.raw.json
+*.blog.txt
+
+# 모델 가중치 — 속성 추론기(공격)는 비공개 원칙
+*.safetensors
+*.bin
+*.gguf
+/checkpoints/
+/models/
+
+# 자격증명
+.env
+.env.*
+secrets*.json
+
+# 파이썬
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 빌드·배포 산출물
+*.zip
+
+# 한글 문서 초안(바이너리 — 로컬 전용)
+*.hwp
+*.hwpx
+
+# OS/에디터/도구
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
