@@ -1,0 +1,58 @@
+name: 멘토 피드백
+description: 멘토링에서 나온 지적·제안을 등록한다. 반영 PR에서 Closes # 로 닫으면 close 자체가 반영 증빙이 된다.
+title: "[MF-000] "
+labels: ["mentor/feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Discord는 스크롤이 밀려 증빙이 못 된다. 여기에 등록하고,
+        반영 PR 본문에 `Closes #NN` 을 쓰면 시각·커밋 링크까지 남는다.
+        등록 후 `docs/mentor-log.md` 원장에도 같은 ID로 추가할 것.
+  - type: input
+    id: mf_id
+    attributes:
+      label: MF 번호
+      description: docs/mentor-log.md 의 다음 순번
+      placeholder: MF-002
+    validations: { required: true }
+  - type: input
+    id: session
+    attributes:
+      label: 멘토링 회차·일시
+      placeholder: W2 멘토링 2회차 / 2026-08-28
+    validations: { required: true }
+  - type: textarea
+    id: content
+    attributes:
+      label: 멘토 의견
+      description: 들은 그대로. 우리 해석은 아래 칸에 따로 쓴다.
+    validations: { required: true }
+  - type: textarea
+    id: our_view
+    attributes:
+      label: 팀 검토 의견
+      description: 왜 수용하는지 / 왜 보류하는지. 근거를 숫자로 쓸 수 있으면 쓴다.
+  - type: dropdown
+    id: status
+    attributes:
+      label: 수용 여부
+      options: [수용, 부분수용, 보류, 미수용]
+    validations: { required: true }
+  - type: textarea
+    id: where
+    attributes:
+      label: 반영 위치
+      placeholder: docs/plan.md §4 · README 「어떻게 쓰게 되나」 · W2 수행계획서
+    validations: { required: true }
+  - type: input
+    id: owner
+    attributes:
+      label: 담당 · 기한
+      placeholder: E(구현) · PM(문서) / 2026-08-29
+    validations: { required: true }
+  - type: textarea
+    id: reason
+    attributes:
+      label: 보류·미수용이라면 사유와 재검토 예정일
+      description: 이 칸을 비워두면 미반영 항목이 조용히 사라진다.

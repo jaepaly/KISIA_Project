@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# =============================================================
+#  commit-msg — 커밋 메시지 형식 검사
+#
+#  형식:  <type>(<scope>): 주간보고에 그대로 실릴 문장
+#  예:    exp(c1): KoELECTRA-base 파인튜닝 1차 — 스팬 F1 명시 .84 [MF-012]
+#
+#  왜 강제하나: 이 프로젝트의 산출물은 코드보다 실험 결과다.
+#  type을 지키면 git log --grep='^exp' 한 줄이 8주차
+#  「학습·테스트 진행 내용」이 된다.
+# =============================================================
+set -u
+MSG_FILE="$1"
+FIRST=$(head -n1 "$MSG_FILE")
+
+# merge·revert·fixup 은 통과
+case "$FIRST" in
+  Merge*|Revert*|fixup!*|squash!*) exit 0 ;;
+esac
+
+TYPES='feat|fix|data|exp|docs|chore|refactor|test|submit'
+
+if ! printf '%s' "$FIRST" | grep -qE "^($TYPES)(\([a-z0-9._-]+\))?: .+"; then
+  cat >&2 <<'HELP'
+
+── 커밋 메시지 형식이 맞지 않는다 ────────────────────
+
+  형식:  <type>(<scope>): 설명
+
+  type
+    feat      기능 추가
+    fix       버그 수정
+    data      코퍼스·라벨·사전 변경
+    exp       실험 실행·결과      ← 8주차 보고서의 원자료
+    docs      문서
+    chore     설정·빌드
+    refactor  리팩터링
+    test      테스트
+    submit    KISIA 제출물
+
+  scope (선택)  c1~c7 컴포넌트 또는 자유
+  예            exp(c1): KoELECTRA 1차 — 스팬 F1 명시 .84 [MF-012]
+                data(c5): 골드셋 282 → 610 스팬
+                submit: W01 주제선정서
+
+  본문에는 "무엇이 달라졌는지"를 숫자와 함께 쓴다.
+  페어로 작업했다면 Co-authored-by: 를 반드시 넣는다.
+
+──────────────────────────────────────────────────────
+
+HELP
+  exit 1
+fi
+exit 0

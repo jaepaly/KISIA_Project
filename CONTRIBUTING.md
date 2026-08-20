@@ -1,0 +1,183 @@
+# 협업 규칙
+
+> 처음이면 먼저: `bash scripts/bootstrap.sh` → [docs/RULES-DO-NOT.md](docs/RULES-DO-NOT.md) → [docs/roles/](docs/roles/) 내 자리 매뉴얼
+
+---
+
+## 0. 왜 규칙이 있나
+
+이 프로젝트는 **매주 활동보고서를 제출하고, 8주차에 진행률을, 10주차에 달성도를 숫자로 써야 한다.** 그 원자료가 전부 git에서 나온다.
+
+> **외울 한 문장: 그 주에 머지된 PR이 없으면 주간활동보고서의 증빙이 빈다.**
+
+규칙을 늘리는 대신 이 문장 하나를 지킨다.
+
+---
+
+## 1. 시작하기
+
+```bash
+git clone https://github.com/jaepaly/KISIA_Project.git
+cd KISIA_Project
+bash scripts/bootstrap.sh
+```
+
+`bootstrap.sh` 가 하는 일: 훅 활성화 · 커밋 신원 확인 · `.env` 생성.
+
+**커밋 이름·메일을 설정했으면 PM에게 알린다.** `.mailmap` 에 등록해야 기여 집계가 한 사람으로 잡힌다. 등록 안 하면 GitHub 웹 편집·로컬·학교 계정이 뒤섞여 **한 사람이 3~4명으로 갈라진다.**
+
+---
+
+## 2. 브랜치
+
+```
+<역할>/<컴포넌트>/<슬러그>
+
+A/c5/persona-gen-v1
+B/c1/koelectra-finetune
+E/c7/sns-scaffold
+PM/submit/w02-plan
+```
+
+- `main` 단일 브랜치, **직접 push 금지**
+- 브랜치 수명 **5일 이내**. 길어지면 쪼갠다
+
+---
+
+## 3. 커밋
+
+```
+<type>(<scope>): 주간보고에 그대로 실릴 문장
+
+본문에 "무엇이 달라졌는지"를 숫자와 함께
+```
+
+| type | 쓰임 |
+|---|---|
+| `feat` | 기능 추가 |
+| `fix` | 버그 수정 |
+| `data` | 코퍼스·라벨·사전 변경 |
+| **`exp`** | **실험 실행·결과** — 이 프로젝트의 산출물은 코드보다 실험 결과다 |
+| `docs` | 문서 |
+| `chore` | 설정·빌드 |
+| `refactor` | 리팩터링 |
+| `test` | 테스트 |
+| `submit` | KISIA 제출물 |
+
+`scope` 는 `c1`~`c7` 컴포넌트 또는 자유.
+
+```
+exp(c1): KoELECTRA-base 파인튜닝 1차 — 스팬 F1 명시 .84 / 암묵 .58 [MF-012]
+data(c5): 골드셋 282 → 610 스팬, blind 200 포함
+submit: W01 주제선정서
+```
+
+**`exp` 를 따로 두는 이유**: `git log --grep='^exp'` 한 줄이 8주차 「학습·테스트 진행 내용」이 된다.
+
+**`Co-authored-by:` 는 필수다.** 페어 작업이 한 사람으로만 잡히면 「팀원별 구분」이 실제와 어긋난다.
+
+```
+Co-authored-by: 이름 <메일>
+```
+
+**커밋 분포도 증빙이다.** 제출 전날 40커밋은 증빙이 아니라 반증이다. **주 3회 이상 분산 푸시.**
+
+---
+
+## 4. 리뷰
+
+| 경로 | 승인 | 왜 |
+|---|---|---|
+| `docs/contracts/`, `data/dict/` | **2명** | 여러 역할이 함께 쓰는 계약. 혼자 못 바꾼다 |
+| `submissions/` | **PM 단독** | 제출물 편집권 독점 (OT 체크 5번을 구조로 강제) |
+| `src/kopl/c*/` 자기 컴포넌트 | 1명 | |
+| `docs/`, `experiments/` | 셀프머지 허용 | |
+
+- **24시간 무응답 시 PM 승인 머지** — 리뷰 대기로 일정이 밀리지 않게
+- **Squash merge 기본**
+
+---
+
+## 5. 이슈와 라벨
+
+라벨: `role/A~E` `comp/c1~c7` `week/W01~W12` `type/exp` `type/data` `type/deliverable` `mentor/feedback` `blocked` `contract`
+
+생성: `bash scripts/setup_labels.sh` (gh CLI 필요)
+
+> ⭐ **`mentor/feedback` 이 핵심이다.** 멘토 발언을 이슈로 등록하고 반영 PR에서 `Closes #NN` 으로 닫으면 **close 자체가 반영 증빙**이 되고 시각·커밋 링크까지 남는다. Discord는 스크롤이 밀려 증빙이 못 된다.
+>
+> 등록 후 [docs/mentor-log.md](docs/mentor-log.md) 원장에도 같은 `[MF-NNN]` 으로 추가한다.
+
+---
+
+## 6. 매주 반복
+
+| 요일 | 누가 | 무엇 |
+|---|---|---|
+| **월 10:00** | 전원 | 킥오프 30분 — ①지난주 멘토 피드백 미완료 항목 ②이번주 목표 배정 |
+| 수 | 전원 | 비동기 블로커 체크. **진척 보고 금지, 막힌 것만** |
+| **목 23:59** | 팀원 5인 | 개별 보고 5줄 제출 (아래) |
+| 금 오전 | PM | 취합·편집 |
+| 금 오후 | 전원+멘토 | 멘토링. **기록자 1명 지정** (PM 아님 — PM은 진행) |
+| 금 마감 전 | PM | 서명 → 제출 → **제출 화면 캡처 보관** |
+| 금 마감 후 | PM | `bash scripts/weekly_report.sh` · `bash scripts/tag_week.sh wNN` |
+
+**산출물 주차(W1·W2·W4·W8·W10·W11·W12)는 개별 보고 마감을 목 → 수로 당긴다.** 업무량이 2배다.
+
+### 개별 보고 — 이 5줄 고정 (자유서술 금지)
+
+```
+1. 이번주 내 목표(월요일에 배정된 것):
+2. 실제로 한 일:
+3. 달라진 것 (before → after, 숫자 포함):
+4. 증빙 링크 (커밋/PR/이슈/캡처 파일명):
+5. 막힌 것 + 필요한 지원 (없으면 "없음"):
+```
+
+**부실한 원고는 PM이 대필하지 않고 반려한다.**
+
+---
+
+## 7. 증빙 3종 (매주 고정)
+
+1. `docs/evidence/W-NN/git-summary.md` — `scripts/weekly_report.sh` 가 생성
+2. Contributors 그래프 캡처 — **기간 지정, 날짜가 보이게**
+3. Projects 「이번주」 뷰 캡처 — Group by Role
+
+파일명: `W03_B_학습로그_20260904.png`
+
+**주차 태그가 가장 강한 증빙이다.** 제출 직후 `bash scripts/tag_week.sh w03` 을 돌리면 compare URL이 나온다. 심사자가 클릭 한 번으로 그 주에 바뀐 전부와 커밋한 사람을 본다 — 캡처보다 강하고 3초 걸린다.
+
+---
+
+## 8. 실험 기록
+
+```
+experiments/<exp-id>/
+├─ README.md          무엇을 왜 재는가
+├─ config.yaml        재현에 필요한 설정
+└─ results/
+   └─ metrics.json    ← 이것만 커밋. 원본 로그·플롯은 제외
+```
+
+**모든 성능 수치에 측정일 · 데이터 버전 · 모델 버전을 붙인다.** 없으면 10주 뒤에 그 숫자가 무엇이었는지 복원할 수 없다.
+
+---
+
+## 9. 커밋하면 안 되는 것
+
+[docs/RULES-DO-NOT.md](docs/RULES-DO-NOT.md) 를 읽는다. 요약하면:
+
+- 실데이터 (`data/raw/`, `data/consented/`)
+- 키·토큰 (`.env`, `*.pem`, `*.key`)
+- 모델 가중치 (`models/registry.md` 에 포인터만)
+- **서명·날인된 제출물** — 팀원 실명과 자필 서명이 히스토리에 영구히 남는다
+- 5MB 초과 파일
+
+훅과 CI가 막지만, **막히면 우회하지 말고 왜 막혔는지 본다.** `--no-verify` 를 쓸 일이 있으면 PM에게 먼저 묻는다.
+
+---
+
+## 10. 용어
+
+표기가 문서마다 흔들리면 17~18개 문서에 반복 기입될 때 전부 어긋난다. [docs/glossary.md](docs/glossary.md) 를 따른다.

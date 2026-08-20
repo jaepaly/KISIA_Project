@@ -1,0 +1,25 @@
+# =============================================================
+#  .mailmap — 기여자 신원 정규화
+#
+#  왜 필요한가: 학생 팀은 GitHub 웹 편집(@users.noreply), 로컬 git
+#  설정, 학교 계정이 뒤섞여 한 사람이 3~4명으로 갈라진다. 그러면
+#  Contributors 그래프와 git shortlog가 주간보고 증빙으로 못 쓰인다.
+#
+#  정규화 이름에 역할 문자를 붙여두면, 집계 결과가 그대로
+#  「팀원별 역할」 표가 된다.
+#
+#  형식:  올바른이름 <올바른메일> <잘못된메일>
+#  집계:  git shortlog -sn --no-merges --use-mailmap --since=... --until=...
+# =============================================================
+
+jaepaly (PM) <jaepaly8216@gmail.com>
+jaepaly (PM) <jaepaly8216@gmail.com> <jaepaly@users.noreply.github.com>
+
+# --- 아래는 역할 확정 후 채운다 --------------------------------
+# 각자에게 받을 것: ① GitHub 아이디 ② 커밋에 찍히는 이름·메일
+#   확인 방법: git config user.name / git config user.email
+#
+# 예시 (실제 값으로 교체):
+# 홍길동 (A) <hong@example.com>
+# 홍길동 (A) <hong@example.com> <hong@users.noreply.github.com>
+# 홍길동 (A) <hong@example.com> <hong.school@univ.ac.kr>

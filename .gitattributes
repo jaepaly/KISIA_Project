@@ -1,0 +1,33 @@
+# 기본: 저장소 안에서는 LF로 통일한다.
+# 팀원이 Windows·macOS를 섞어 쓰면 줄바꿈만 바뀐 diff가 쏟아져
+# "그 주에 무엇이 바뀌었는지"를 읽을 수 없게 된다.
+* text=auto eol=lf
+
+# 셸 스크립트·훅은 반드시 LF (CRLF면 Git Bash에서 실행이 깨진다)
+*.sh        text eol=lf
+.githooks/* text eol=lf
+
+# Windows 전용 스크립트는 CRLF
+*.bat       text eol=crlf
+*.ps1       text eol=crlf
+
+# 바이너리 — diff·머지 시도 금지
+*.hwp       binary
+*.hwpx      binary
+*.pptx      binary
+*.xlsx      binary
+*.pdf       binary
+*.png       binary
+*.jpg       binary
+*.gif       binary
+*.mp4       binary
+*.safetensors binary
+*.bin       binary
+*.gguf      binary
+
+# 데이터 — 줄 단위 diff는 의미 있지만 리뷰에서는 접어둔다
+*.jsonl     text eol=lf linguist-generated=true
+*.csv       text eol=lf
+
+# 다이어그램은 텍스트지만 리뷰에서 접는다
+*.svg       text eol=lf linguist-generated=true

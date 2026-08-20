@@ -1,0 +1,90 @@
+name: guard
+
+# =============================================================
+#  비밀정보 4중 방어의 3단
+#  1단 .gitignore → 2단 .githooks/pre-commit → [3단 이 워크플로]
+#  → 4단 GitHub Push Protection
+#
+#  훅은 --no-verify 로 우회되고 로컬 설정을 안 한 사람에겐 아예
+#  안 걸린다. 이 워크플로는 우회할 수 없다.
+#  Settings → Branches 에서 required check 로 지정할 것.
+# =============================================================
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 금지 경로 — 실데이터
+        run: |
+          set -euo pipefail
+          echo "── 실데이터 경로 검사 ──"
+          if git ls-files | grep -E '^data/(raw|consented)/' ; then
+            echo "::error::실데이터가 커밋되어 있다. 개발·학습은 전량 합성이다(plan.md §6)."
+            exit 1
+          fi
+          echo "  ✓ 없음"
+
+      - name: 대용량 파일 (5MB 초과)
+        run: |
+          set -euo pipefail
+          echo "── 대용량 파일 검사 ──"
+          BIG=$(git ls-files -z \
+            | xargs -0 -I{} sh -c 'test -f "{}" && test $(wc -c < "{}") -gt 5242880 && echo "{}"' \
+            || true)
+          if [ -n "$BIG" ]; then
+            echo "$BIG"
+            echo "::error::5MB 초과 파일이 있다. 체크포인트는 HF Hub에 두고 models/registry.md에 포인터만 남긴다."
+            exit 1
+          fi
+          echo "  ✓ 없음"
+
+      - name: 시크릿 패턴
+        run: |
+          set -euo pipefail
+          echo "── 시크릿 패턴 검사 ──"
+          # 훅(.githooks/pre-commit)과 이 파일 자신은 패턴 문자열을 포함하므로 제외
+          HITS=$(git grep -nE 'sk-ant-[A-Za-z0-9_-]{16}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{30}' \
+            -- ':!.githooks/pre-commit' ':!.github/workflows/guard.yml' || true)
+          if [ -n "$HITS" ]; then
+            echo "$HITS"
+            echo "::error::시크릿으로 보이는 문자열이 있다. 순서는 ①즉시 revoke·재발급 ②PM 보고 ③히스토리 정리."
+            exit 1
+          fi
+          echo "  ✓ 없음"
+
+      - name: 자격증명 파일
+        run: |
+          set -euo pipefail
+          echo "── 자격증명 파일 검사 ──"
+          FOUND=$(git ls-files | grep -E '(^|/)(\.env$|\.env\..*|secrets.*\.json|.*\.pem|.*\.key)$' \
+            | grep -v '^\.env\.example$' || true)
+          if [ -n "$FOUND" ]; then
+            echo "$FOUND"
+            echo "::error::자격증명 파일이 커밋되어 있다."
+            exit 1
+          fi
+          echo "  ✓ 없음"
+
+      - name: 서명본 — 팀원 실명·자필 서명 보호
+        run: |
+          set -euo pipefail
+          echo "── 서명본 검사 ──"
+          FOUND=$(git ls-files | grep -E '_(signed|서명|날인)\.' || true)
+          if [ -n "$FOUND" ]; then
+            echo "$FOUND"
+            echo "::error::submissions/ 에는 서명 전 원본만 커밋한다. 팀원 자필 서명·실명이 히스토리에 영구히 남는다."
+            exit 1
+          fi
+          echo "  ✓ 없음"

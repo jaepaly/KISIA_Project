@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# =============================================================
+#  pre-commit — 비밀정보 4중 방어의 2단
+#  1단 .gitignore → [2단 이 훅] → 3단 CI guard.yml → 4단 Push Protection
+#
+#  활성화:  git config core.hooksPath .githooks
+#           (scripts/bootstrap.sh 가 대신 해준다)
+#  우회:    git commit --no-verify   ← 쓰지 말 것. 쓸 일이 있으면 PM에게 먼저.
+# =============================================================
+set -u
+FAIL=0
+MAX_BYTES=$((5 * 1024 * 1024))
+
+say() { printf '%s\n' "$*" >&2; }
+fail() { say "  ✗ $*"; FAIL=1; }
+
+FILES=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$FILES" ] && exit 0
+
+say ""
+say "── pre-commit 검사 ──────────────────────────────────"
+
+# 1) 금지 경로 — 실데이터
+while IFS= read -r f; do
+  case "$f" in
+    data/raw/*|data/consented/*)
+      fail "실데이터 경로: $f"
+      say "     개발·학습은 전량 합성이다(plan.md §6). 이 경로는 커밋하지 않는다." ;;
+  esac
+done <<< "$FILES"
+
+# 2) 대용량 파일
+while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  SZ=$(wc -c < "$f" 2>/dev/null | tr -d ' ')
+  if [ -n "$SZ" ] && [ "$SZ" -gt "$MAX_BYTES" ]; then
+    fail "5MB 초과 ($(( SZ / 1024 / 1024 ))MB): $f"
+    say "     체크포인트는 HF Hub에 두고 models/registry.md에 포인터만 남긴다."
+  fi
+done <<< "$FILES"
+
+# 3) 자격증명 파일
+while IFS= read -r f; do
+  case "$f" in
+    .env|.env.*|secrets*.json|*.pem|*.key)
+      [ "$f" = ".env.example" ] && continue
+      fail "자격증명 파일: $f" ;;
+  esac
+done <<< "$FILES"
+
+# 4) 시크릿 패턴
+PATTERNS='sk-ant-[A-Za-z0-9_-]{16}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|ghp_[A-Za-z0-9]{30}'
+while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  [ "$f" = ".githooks/pre-commit" ] && continue
+  [ "$f" = ".github/workflows/guard.yml" ] && continue
+  if git show ":$f" 2>/dev/null | grep -nEq "$PATTERNS"; then
+    fail "시크릿 패턴 발견: $f"
+    say "     유출 시 순서는 ①즉시 revoke·재발급 ②PM 보고 ③히스토리 정리."
+    say "     커밋을 지우는 것만으로는 해결되지 않는다."
+  fi
+done <<< "$FILES"
+
+# 5) 서명본 — 팀원 자필 서명·실명이 히스토리에 영구히 남는다
+while IFS= read -r f; do
+  case "$f" in
+    *_signed.*|*_서명.*|*_날인.*)
+      fail "서명본으로 보이는 파일: $f"
+      say "     submissions/ 에는 서명 전 원본만 커밋한다 (DEC 기준)." ;;
+  esac
+done <<< "$FILES"
+
+if [ "$FAIL" -ne 0 ]; then
+  say ""
+  say "  커밋을 중단했다. 위 항목을 정리한 뒤 다시 시도할 것."
+  say "─────────────────────────────────────────────────────"
+  say ""
+  exit 1
+fi
+
+say "  ✓ 통과"
+say "─────────────────────────────────────────────────────"
+exit 0
