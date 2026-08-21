@@ -123,9 +123,9 @@ git push -u origin <역할>/docs/notes-<이름영문>
 ```json
 {
   "persona_id": "S01",
-  "gt": {
-    "age": 34, "gender": "F", "residence": "서울 성동구 성수동",
-    "job": "카페 매니저", "family": "배우자, 자녀 없음",
+  "ground_truth": {
+    "age": 34, "sex": "F", "location": "서울 성동구 성수동",
+    "occupation": "카페 매니저", "family": "배우자, 자녀 없음",
     "commute": "지하철 2호선", "income": "중간"
   },
   "voice": {
@@ -133,11 +133,13 @@ git push -u origin <역할>/docs/notes-<이름영문>
     "글 길이": "짧음(300자 내외)", "말버릇": "'뭐랄까' 자주 씀"
   },
   "clue_plan": [
-    {"post": "b03", "clue": "성수동 팝업 다녀옴", "attr": "residence", "level": "inferential"},
+    {"post": "b03", "clue": "성수동 팝업 다녀옴", "attr": "location", "level": "inferential"},
     {"post": "b07", "clue": "2호선 사람 많아서", "attr": "commute", "level": "implicit"}
   ]
 }
 ```
+
+> **7속성 키 이름은 `age` `sex` `location` `occupation` `family` `commute` `income` 하나로 쓴다.** [persona-design.md §4-1](docs/persona-design.md)의 `ground_truth`, C의 특정성 축 이름, 계약 4종이 전부 이 표기다. 화면에 뜨는 말("거주지")은 E가 따로 매핑한다 — **코드 값과 화면 문구를 섞지 않는다.**
 
 > ⚠️ **학력 · 학교 · 전공 · 정치성향 · 건강 · 지적 수준은 단서로 심지 않는다.** 방어 도구가 민감 속성 추론을 학습하면 그 자체가 무기가 된다.
 
@@ -223,7 +225,7 @@ git push -u origin <역할>/docs/notes-<이름영문>
 | 스팬 유형 목록 | `LOC_FACILITY` `AGE` `JOB` `FAMILY` `COMMUTE` … |
 | 단서 등급 | `explicit` / `implicit` / `inferential` |
 | 위치 표기 | **문자 offset** (start, end) — 바이트나 토큰 인덱스 아님 |
-| 겹치는 스팬 | 허용? 최장 우선? |
+| 겹치는 스팬 | **금지 · 최장 우선** — BIO가 겹침을 표현하지 못한다([B-detector.md §2.2](docs/roles/B-detector.md)) |
 | 관계어 처리 | "집 근처" "퇴근하고"를 별도 유형으로 둘지 |
 
 **TAB(Text Anonymization Benchmark) 주석 가이드라인을 기준으로 삼되 한국어·게시글에 맞게 손질한다.** 백지에서 설계하지 않는다.
@@ -349,13 +351,17 @@ A 항목의 표를 함께 채운다. **학습할 사람이 스키마를 안 보�
 
 ```json
 {
+  "schema_version": "1.0",
   "post_id": "S01_b07",
+  "model_version": "koelectra-base-v3-ft-20260921",
   "spans": [
     {"start": 12, "end": 17, "text": "신갈저수지",
      "type": "LOC_FACILITY", "level": "inferential", "score": 0.91}
   ]
 }
 ```
+
+> **겹치는 스팬은 금지 · 최장 우선**으로 제안한다. BIO 태깅은 한 토큰에 라벨을 하나만 붙일 수 있어 겹침을 표현하지 못한다 — 계약이 겹침을 허용하면 코퍼스를 다시 라벨해야 한다([B-detector.md §2.2](docs/roles/B-detector.md)).
 
 ### 만들 것
 
@@ -422,7 +428,7 @@ src/kopl/c1_span/                       패키지 골격
 ### 목~금 — 가장 단순한 프로토타입
 
 ```python
-specificity("성수1가1동")   # → {"k": 12345, "level": "통상 허용"}
+specificity("성수1가1동")   # → {"k": 12345, "level": "ACCEPTABLE"}   # 한글 문구는 화면에서 매핑
 ```
 
 이거 하나만 되면 된다. 조건 조합(나이·성별 곱하기)은 다음 주.
