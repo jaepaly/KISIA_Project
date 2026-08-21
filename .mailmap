@@ -12,14 +12,25 @@
 #  집계:  git shortlog -sn --no-merges --use-mailmap --since=... --until=...
 # =============================================================
 
-jaepaly (PM) <jaepaly8216@gmail.com>
-jaepaly (PM) <jaepaly8216@gmail.com> <jaepaly@users.noreply.github.com>
+박재현 (PM·D) <jaepaly8216@gmail.com>
+박재현 (PM·D) <jaepaly8216@gmail.com> <jaepaly@users.noreply.github.com>
 
-# --- 아래는 역할 확정 후 채운다 --------------------------------
-# 각자에게 받을 것: ① GitHub 아이디 ② 커밋에 찍히는 이름·메일
+# --- 역할 확정 완료. 각자 GitHub 아이디·커밋 메일을 받아 채운다 -------
+# 받을 것: ① GitHub 아이디 ② 커밋에 찍히는 이름·메일
 #   확인 방법: git config user.name / git config user.email
 #
-# 예시 (실제 값으로 교체):
-# 홍길동 (A) <hong@example.com>
-# 홍길동 (A) <hong@example.com> <hong@users.noreply.github.com>
-# 홍길동 (A) <hong@example.com> <hong.school@univ.ac.kr>
+# 아래 <메일> 자리를 실제 값으로 바꾸고 주석을 해제한다.
+# 정규화 이름에 역할 문자를 붙여두면 git shortlog 결과가 그대로
+# 「팀원별 역할」 표가 된다.
+
+# 이은선 (A) <메일>
+# 이은선 (A) <메일> <users.noreply 메일>
+
+# 최진필 (B) <메일>
+# 최진필 (B) <메일> <users.noreply 메일>
+
+# 신정현 (C) <메일>
+# 신정현 (C) <메일> <users.noreply 메일>
+
+# 이지희 (E) <메일>
+# 이지희 (E) <메일> <users.noreply 메일>
