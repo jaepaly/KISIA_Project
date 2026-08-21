@@ -155,8 +155,10 @@ git push -u origin <역할>/docs/notes-<이름영문>
 
 | 파일 | 내용 |
 |---|---|
-| [`data/realism/REALISM_GUIDE.md`](data/realism/REALISM_GUIDE.md) | 문체 특성 · 구조 · 단서를 흘리는 방식 (88줄) |
-| [`data/realism/cards/`](data/realism/cards/) | 비식별 분석 카드 **10장** — 화자 유형별 톤 참조 |
+| **[`data/realism/HOW-TO.md`](data/realism/HOW-TO.md)** | **카드 만드는 법** — 절차 · 해설된 예시 · 체크리스트 |
+| [`data/realism/REALISM_GUIDE.md`](data/realism/REALISM_GUIDE.md) | 문체 특성 · 구조 · 단서를 흘리는 방식 |
+| [`data/realism/cards/`](data/realism/cards/) | 비식별 분석 카드 **10장** — 만들어진 실례 |
+| [`data/realism/cards/_TEMPLATE.md`](data/realism/cards/_TEMPLATE.md) | 복사해서 쓰는 빈 양식 |
 
 **월요일에 할 것: 가이드 1회 정독 + 카드 10장 훑기 (1시간).**
 그다음 **카드의 특징을 프롬프트에 그대로 넣는다.** 예를 들어 S1 카드는 이렇게 되어 있다.
@@ -202,27 +204,9 @@ git push -u origin <역할>/docs/notes-<이름영문>
 
 카드 1장은 **20~30분**이면 만든다. W2에 3~4장이면 2시간 안쪽이다.
 
-<details>
-<summary>카드 만드는 법 (펼치기)</summary>
-
-공개된 한국어 블로그·SNS 글을 **읽고 표층 특징만** 카드로 적는다. 기존 카드(`data/realism/cards/S1_college_finals_diary.md`)의 절 구성을 그대로 따른다 — 화자 유형 / 톤·문체 / 구조 / 단서가 새어나온 방식 / 역추론되는 신상 / 이 샘플에서 배울 것.
-
-```markdown
-## 카드 03 — 30대 직장인 일상글
-
-- 평균 문장 길이: 약 25자, 편차 큼 (4자 ~ 70자)
-- 종결: "~함" "~했다" 혼용, 존댓말 아님
-- 오타: 2건 (띄어쓰기 1, 자모 1)
-- 이모지: 없음. 대신 "ㅋㅋ" 3회
-- 단락: 1~2문장씩 짧게
-- 특이: 중간에 점심 메뉴로 샜다가 안 돌아옴
-- 제목: 5자 이내 명사형
-```
-
-> ⚠️ **원문을 저장하지 않는다. 인용하지 않는다.** 읽고 특징만 서술한다.
-> 이건 [RULES-DO-NOT.md](docs/RULES-DO-NOT.md) #1(무동의 수집 금지)에 걸리지 않는다 — 수집이 아니라 관찰이고, 남는 것은 원문이 아니라 통계적 서술이다. 계획서가 말한 *"원문은 저장하지 않았고"* 가 정확히 이 방식이다.
-
-</details>
+**만드는 법은 [`data/realism/HOW-TO.md`](data/realism/HOW-TO.md)에 있다.**
+절차(글 고르기 → 6가지 관찰 → 카드 작성 → 확인), [S1 카드를 뜯어본 해설 예시](data/realism/cards/S1_college_finals_diary.md), 흔한 실수 4가지, 체크리스트.
+양식은 [`cards/_TEMPLATE.md`](data/realism/cards/_TEMPLATE.md)를 복사한다.
 
 이 카드가 프롬프트의 스타일 지시가 되고, W3 분포 검증의 비교 기준이 된다.
 상세는 [A-data.md §3](docs/roles/A-data.md).
