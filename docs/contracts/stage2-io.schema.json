@@ -1,0 +1,382 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jaepaly/KISIA_Project/docs/contracts/stage2-io.schema.json",
+  "title": "2단 추론·조치 입출력 계약 (컴포넌트 ④)",
+  "description": "주는 쪽 D(박재현) · 받는 쪽 E(이지희). 초안 v0.1.0 — 2026-08-24.\n\n[설계 제약 — 스키마로 강제하는 것]\n1. 실제 신상을 산출하지 않는다. findings는 '무엇이 특정 가능한가'까지이며, 실제 지명·이름·나이 값을 담는 필드가 존재하지 않는다. evidence는 span_id와 가명 라벨만 참조한다 (plan.md §4 원칙 3).\n2. 민감 속성은 추론 대상이 아니다. attr enum에 학력·지적수준·정치성향·건강이 없다 (plan.md §4 원칙 5).\n3. 기권은 정상 동작이다. verdict의 abstain — 네거티브 컨트롤 N1에서 7속성 중 6개 기권이 확인된 설계 동작이다.\n4. 삭제 권고는 기본 추천에 올리지 않는다. recommendation.actions와 recommendation.exceptional을 구조로 분리했다 (plan.md §2 조치 메뉴 ④).\n5. 원문은 분석 계층으로 넘어가지 않는다. 입력은 pseudonymized_text이며 원문 필드가 없다 (plan.md §4 계층 분리).\n6. 모든 수치에 측정일·데이터 버전·모델 버전이 붙는다 (RULES-DO-NOT #9).\n\n[좌표 기준] 문자 offset, 0-based, [start, end) 반열림. UTF-16 코드유닛이 아니라 유니코드 코드포인트 기준.\n\n[한글 문구] enum은 코드값이며 화면 표기는 E가 매핑한다. specificity.schema.json의 level 관례와 동일하다.\n\n[구현 메모] $defs/Stage2Output은 $defs와 함께 떼어내 Ollama의 format 파라미터에 그대로 넣을 수 있다. 출력 길이 제어가 triage 절감률의 전제다 — 실측에서 무제약 2,982~3,809 토큰이 스키마 강제 시 477 토큰으로 줄었다 (qwen3:4b / RTX 3060 8GB / think=false / 2026-08-24).\n\n[⚠️ 생성 단계에서 강제되지 않는 것] Ollama·llama.cpp의 structured output은 문법(GBNF)으로 변환되므로 구조만 강제한다 — 타입, enum, required, additionalProperties까지다. minimum·maximum·pattern·minItems·if/then 같은 값 제약은 강제되지 않으며 실제로 위반이 통과했다(reduction_pct에 범위 밖 값 생성, 2026-08-24). 따라서 E는 수신 직후 이 스키마로 사후 검증을 한 번 더 돌려야 한다. 구조 검증은 생성기가, 값 검증은 수신자가 맡는 분담이다.",
+
+  "type": "object",
+  "required": ["input", "output"],
+  "additionalProperties": false,
+  "properties": {
+    "input": { "$ref": "#/$defs/Stage2Input" },
+    "output": { "$ref": "#/$defs/Stage2Output" }
+  },
+
+  "$defs": {
+
+    "Stage2Input": {
+      "type": "object",
+      "description": "1단(B) 스팬 + 특정성·기여도(C) + D 자체 가명화 결과를 받는다.",
+      "required": ["schema_version", "user_ref", "posts", "risk", "provenance"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "const": "0.1.0" },
+        "user_ref": {
+          "type": "string",
+          "description": "사용자 단위 누적을 묶는 가명 키. 실명·계정ID가 아니다.",
+          "pattern": "^u_[0-9a-f]{8,}$"
+        },
+        "posts": {
+          "type": "array",
+          "description": "triage를 통과해 2단까지 올라온 글만 담긴다. 전량이 아니다.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/InputPost" }
+        },
+        "risk": {
+          "type": "object",
+          "description": "C가 계산한 현재 위험도와 사용자가 설정한 목표치.",
+          "required": ["current", "target"],
+          "additionalProperties": false,
+          "properties": {
+            "current": { "type": "number", "minimum": 0, "maximum": 100 },
+            "target": {
+              "type": "number", "minimum": 0, "maximum": 100,
+              "description": "추천 엔진이 도달해야 할 목표 위험도. 미설정 시 E가 기본값을 넣는다."
+            }
+          }
+        },
+        "provenance": { "$ref": "#/$defs/Provenance" }
+      }
+    },
+
+    "InputPost": {
+      "type": "object",
+      "required": ["post_id", "pseudonymized_text", "spans", "pseudonym_map"],
+      "additionalProperties": false,
+      "properties": {
+        "post_id": { "type": "string" },
+        "pseudonymized_text": {
+          "type": "string",
+          "description": "가명화된 본문. 원문은 이 계약을 통해 전달되지 않는다."
+        },
+        "spans": {
+          "type": "array",
+          "description": "B의 span.schema.json 산출물. offset은 원문 기준이다.",
+          "items": { "$ref": "#/$defs/Span" }
+        },
+        "pseudonym_map": {
+          "type": "array",
+          "description": "복원 규약. 문자열 치환만으로는 반드시 깨지므로 원문/가명 양쪽 offset을 함께 보관한다 (D-stage2.md §9).",
+          "items": { "$ref": "#/$defs/PseudonymEntry" }
+        },
+        "specificity": {
+          "type": ["object", "null"],
+          "description": "C의 specificity.schema.json 요약. k값과 등급.",
+          "required": ["k", "level"],
+          "additionalProperties": true,
+          "properties": {
+            "k": { "type": ["integer", "null"], "minimum": 1 },
+            "level": { "type": "string", "enum": ["SAFE", "ACCEPTABLE", "RISKY", "CRITICAL"] }
+          }
+        },
+        "contribution": {
+          "type": ["number", "null"],
+          "description": "C의 contribution.schema.json이 준 글별 한계 기여도(delta). 이 글을 제거했을 때의 위험도 변화이며 음수다.",
+          "maximum": 0
+        },
+        "activity_meta": {
+          "$ref": "#/$defs/ActivityMeta",
+          "description": "조치 ②(활동 메타 관리)의 대상. 선행 PoC에서 위험도 감소 폭 1위였다."
+        },
+        "triage_reason": {
+          "type": ["string", "null"],
+          "enum": ["high_contribution", "span_density", "cross_post_link", "user_requested", "sampled_control", null],
+          "description": "왜 이 글이 2단까지 올라왔는지. W8 triage 절감률·놓침 비율 실측의 원자료다."
+        }
+      }
+    },
+
+    "Span": {
+      "type": "object",
+      "description": "B 소유 규격의 최소 부분집합. 확정본은 span.schema.json을 따른다.",
+      "required": ["span_id", "start", "end", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "span_id": { "type": "string" },
+        "start": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 0-based, 포함" },
+        "end": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 미포함" },
+        "type": {
+          "type": "string",
+          "description": "준식별자 유형. 확정 목록은 B·A의 label-schema.md가 소유한다.",
+          "enum": ["GEO", "FACILITY", "AGE", "GENDER", "OCCUPATION", "AFFILIATION", "FAMILY", "COMMUTE", "INCOME", "TEMPORAL", "STYLE", "MEME", "OTHER"]
+        }
+      }
+    },
+
+    "PseudonymEntry": {
+      "type": "object",
+      "description": "치환 1건. original 구간을 label로 바꾸고 pseudo 구간에 놓았다는 기록.",
+      "required": ["span_id", "label", "original", "pseudo"],
+      "additionalProperties": false,
+      "properties": {
+        "span_id": { "type": "string" },
+        "label": {
+          "type": "string",
+          "description": "가명 라벨. 예 [시설A·저수지], [40대 후반]. 실제 값이 아니다.",
+          "pattern": "^\\[.+\\]$"
+        },
+        "original": { "$ref": "#/$defs/Offset", "description": "원문 기준 구간" },
+        "pseudo": { "$ref": "#/$defs/Offset", "description": "pseudonymized_text 기준 구간" },
+        "geo_key": {
+          "type": ["string", "null"],
+          "description": "지명인 경우 geo-dictionary.md의 키. C의 특정성 엔진과 같은 사전을 쓴다 — 가명화기는 특정성 엔진의 역함수다. 키 형식은 신정현·박재현 공동 합의 사항이며 W2 확정 예정."
+        }
+      }
+    },
+
+    "Offset": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "ActivityMeta": {
+      "type": "object",
+      "description": "가상 SNS 플랫폼(⑦)이 주는 활동 흔적. plan.md §4 입력 스키마와 정렬한다.",
+      "additionalProperties": false,
+      "properties": {
+        "nickname": { "type": ["string", "null"] },
+        "geo_tag": { "type": ["string", "null"] },
+        "post_time": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+
+    "Stage2Output": {
+      "type": "object",
+      "description": "2단 종합 판정 + 조치 추천 + 리라이트. 이 정의는 단독으로 떼어 LLM structured output 스키마로 쓸 수 있다.",
+      "required": ["schema_version", "findings", "recommendation", "provenance"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "const": "0.1.0" },
+
+        "findings": {
+          "type": "object",
+          "description": "7속성을 키로 갖는 객체다. 배열이 아닌 이유는 측정에서 나왔다 — 배열로 두면 같은 속성이 중복 생성되고 다른 속성이 누락된다(qwen3:4b 실측: gender 3회, residence·workplace 누락, 2026-08-24). 객체 키로 두면 구조가 유일성과 전수 포함을 보장하고, GBNF가 required를 강제하므로 생성 단계에서 걸린다.\n\n단서가 없어도 키를 빼지 말고 abstain으로 명시한다 — 누락과 기권은 다르다. 기권율 자체가 지표이므로(N1 대조군 6/7 기권) 키가 빠지면 셀 수 없다.",
+          "required": ["age", "gender", "residence", "workplace", "family", "commute", "income"],
+          "additionalProperties": false,
+          "properties": {
+            "age": { "$ref": "#/$defs/Finding" },
+            "gender": { "$ref": "#/$defs/Finding" },
+            "residence": { "$ref": "#/$defs/Finding" },
+            "workplace": { "$ref": "#/$defs/Finding" },
+            "family": { "$ref": "#/$defs/Finding" },
+            "commute": { "$ref": "#/$defs/Finding" },
+            "income": { "$ref": "#/$defs/Finding" }
+          }
+        },
+
+        "recommendation": {
+          "type": "object",
+          "description": "기본 추천. 부담이 낮은 순으로 정렬해 제시한다 — 선택지를 늘리면 선택 자체가 부담이 된다 (plan.md §2).",
+          "required": ["actions", "projected"],
+          "additionalProperties": false,
+          "properties": {
+            "actions": {
+              "type": "array",
+              "description": "burden 오름차순 정렬. 삭제 권고는 여기 들어가지 않는다.",
+              "items": { "$ref": "#/$defs/Action" }
+            },
+            "projected": {
+              "type": "object",
+              "description": "이 조합을 전부 적용했을 때의 예상 결과. 예 79.7 → 41.",
+              "required": ["current_risk", "projected_risk"],
+              "additionalProperties": false,
+              "properties": {
+                "current_risk": { "type": "number", "minimum": 0, "maximum": 100 },
+                "projected_risk": { "type": "number", "minimum": 0, "maximum": 100 },
+                "reduction_pct": {
+                  "type": ["number", "null"], "minimum": 0, "maximum": 100,
+                  "description": "감소 폭을 양수 크기로 담는다. 예 79.7 → 35.5 이면 55.5. 문서의 «−54~61%» 표기는 하락 방향을 나타낸 것이고 여기서는 크기만 담는다. current_risk·projected_risk에서 유도되므로 모델이 채우지 않아도 되며, 비우면 E가 계산한다."
+                },
+                "target_met": { "type": "boolean" }
+              }
+            },
+            "optimality_gap_pct": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "description": "전수 탐색 최적해 대비 격차. 목표 ≤ 15%. 최적해일 필요는 없다."
+            }
+          }
+        },
+
+        "exceptional": {
+          "type": "array",
+          "description": "삭제 권고 전용 경로. 리라이트로도 신상이 남는 글에만 채우며, 기본 추천에는 올리지 않는다 (되돌릴 수 없다).",
+          "items": {
+            "type": "object",
+            "required": ["action_type", "post_ids", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "action_type": { "type": "string", "const": "delete_advice" },
+              "post_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+              "reason": { "type": "string", "maxLength": 300 }
+            }
+          }
+        },
+
+        "rewrites": {
+          "type": "array",
+          "description": "리라이트 제안. 문장 전체가 아니라 단서 구간만 교체한다 — 전체를 다시 쓰면 의미가 깨진다 (D-stage2.md §9).",
+          "items": { "$ref": "#/$defs/Rewrite" }
+        },
+
+        "provenance": { "$ref": "#/$defs/Provenance" }
+      }
+    },
+
+    "Finding": {
+      "type": "object",
+      "description": "판정 1건. 어느 속성인지는 findings의 키가 결정하므로 attr 필드를 두지 않는다 — 키와 필드가 어긋날 여지를 없앤다.",
+      "required": ["verdict", "evidence", "confidence"],
+      "additionalProperties": false,
+      "if": { "properties": { "verdict": { "const": "abstain" } }, "required": ["verdict"] },
+      "then": {
+        "description": "기권했으면 근거가 비어 있고 신뢰도가 낮아야 한다. 생성 단계에서는 강제되지 않으므로 E의 사후 검증이 잡는다.",
+        "properties": {
+          "confidence": { "maximum": 0.25 },
+          "granularity": { "const": null },
+          "evidence": { "maxItems": 0 }
+        }
+      },
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "description": "무엇이 특정 가능한지까지만 판정한다. 실제 값은 산출하지 않는다. 화면 문구는 E가 매핑한다.",
+          "enum": ["specified", "narrowed", "weak_signal", "abstain"]
+        },
+        "granularity": {
+          "type": ["string", "null"],
+          "description": "어느 수준까지 좁혀졌는지. verdict가 abstain이면 null.",
+          "enum": ["nation", "sido", "sigungu", "eupmyeondong", "facility_radius", "decade", "half_decade", "exact_year", "category", null]
+        },
+        "evidence": {
+          "type": "array",
+          "description": "근거. span_id와 가명 라벨만 담는다 — 실제 지명·이름을 여기 넣으면 방어 도구가 아니라 추론기가 된다.",
+          "items": {
+            "type": "object",
+            "required": ["post_id", "span_id"],
+            "additionalProperties": false,
+            "properties": {
+              "post_id": { "type": "string" },
+              "span_id": { "type": "string" },
+              "label": { "type": ["string", "null"], "pattern": "^\\[.+\\]$" },
+              "relation": {
+                "type": ["string", "null"],
+                "description": "이 단서가 어떤 관계를 지시하는지. 조각을 엮는 지점이다.",
+                "enum": ["residence_proximity", "commute_link", "same_living_area", "temporal_pattern", "affiliation_link", "family_structure", null]
+              }
+            }
+          }
+        },
+        "confidence": {
+          "type": "number", "minimum": 0, "maximum": 1,
+          "description": "0~1. abstain은 통상 0.25 이하다 — N1 대조군 실측 신뢰도 3~25(백분율 환산)."
+        },
+        "cross_post": {
+          "type": "boolean",
+          "description": "여러 글의 단서가 결합해 나온 판정인지. 이 프로젝트의 핵심 주장이라 별도 플래그로 센다."
+        }
+      }
+    },
+
+    "Action": {
+      "type": "object",
+      "required": ["action_type", "burden", "certainty", "targets", "projected_delta"],
+      "additionalProperties": false,
+      "properties": {
+        "action_type": {
+          "type": "string",
+          "description": "plan.md §2 조치 메뉴 ①~③. ④ 삭제 권고는 exceptional로 분리했다.",
+          "enum": ["unpublish", "activity_meta", "rewrite"]
+        },
+        "burden": {
+          "type": "string",
+          "description": "사용자 부담. 정렬 키다.",
+          "enum": ["low", "medium", "high"]
+        },
+        "certainty": {
+          "type": "string",
+          "enum": ["highest", "high", "medium"]
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "description": "unpublish·rewrite는 post_id, activity_meta는 메타 필드명을 담는다.",
+          "items": {
+            "type": "object",
+            "required": ["kind", "ref"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": { "type": "string", "enum": ["post", "meta_field"] },
+              "ref": { "type": "string", "description": "post_id 또는 nickname/geo_tag/post_time" }
+            }
+          }
+        },
+        "projected_delta": {
+          "type": "number", "maximum": 0,
+          "description": "이 조치 단독의 위험도 변화. 음수."
+        },
+        "rationale": { "type": ["string", "null"], "maxLength": 300 }
+      }
+    },
+
+    "Rewrite": {
+      "type": "object",
+      "required": ["post_id", "span_id", "suggestion"],
+      "additionalProperties": false,
+      "properties": {
+        "post_id": { "type": "string" },
+        "span_id": { "type": "string" },
+        "suggestion": {
+          "type": "string",
+          "description": "교체 문구. 예 신갈저수지 → 동네 저수지. 단서 구간만 대체한다.",
+          "maxLength": 200
+        },
+        "semantic_similarity": {
+          "type": ["number", "null"], "minimum": 0, "maximum": 1,
+          "description": "리라이트 전후 임베딩 유사도. 의미 보존 지표 (D-stage2.md §7)."
+        },
+        "residual_risk": {
+          "type": ["string", "null"],
+          "enum": ["none", "partial", "high", null],
+          "description": "리라이트 후 잔존 단서. high면 exceptional 경로를 검토한다."
+        }
+      }
+    },
+
+    "Provenance": {
+      "type": "object",
+      "description": "RULES-DO-NOT #9 — 모든 수치에 측정일·데이터 버전·모델 버전을 붙인다. 8주차·10주차 보고서가 이 필드로 복원된다.",
+      "required": ["measured_at", "model_version", "dict_version"],
+      "additionalProperties": false,
+      "properties": {
+        "measured_at": { "type": "string", "format": "date-time" },
+        "model_version": {
+          "type": "string",
+          "description": "예 qwen3-4b-qlora-v1 또는 qwen3-4b-prompt-only. 어댑터 가중치는 repo에 없으며 models/registry.md의 포인터로 식별한다 (2단은 비공개 유지)."
+        },
+        "dict_version": { "type": "string", "description": "geo-dictionary 버전. C와 공유하는 사전이라 어긋나면 복원이 깨진다." },
+        "data_version": { "type": ["string", "null"], "description": "코퍼스·골드셋 버전" },
+        "external_llm_used": {
+          "type": "boolean",
+          "default": false,
+          "description": "기본 경로는 항상 false. true는 명시적 동의 AND 가명화 후 전송인 경우뿐이다 (plan.md §4 원칙 2). .env의 ALLOW_EXTERNAL_LLM 기본값을 바꾸지 않는다."
+        }
+      }
+    }
+  }
+}
