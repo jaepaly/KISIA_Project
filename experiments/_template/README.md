@@ -11,7 +11,8 @@
 | 측정일 | |
 | 데이터 버전 | |
 | 모델 버전 | |
-| 하드웨어 | |
+| 하드웨어 | GPU 모델 · VRAM |
+| **환경** | Python · torch(+cuda) · transformers · peft · bitsandbytes — [setup-python.md](../../docs/setup-python.md) §6 |
 | 시드 | |
 
 ## 실행
