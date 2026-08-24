@@ -20,7 +20,7 @@ body:
     id: session
     attributes:
       label: 멘토링 회차·일시
-      placeholder: W2 멘토링 2회차 / 2026-08-28
+      placeholder: W2 멘토링 2회차 / 2026-08-27(목) 20:00
     validations: { required: true }
   - type: textarea
     id: content
