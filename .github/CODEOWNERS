@@ -19,6 +19,11 @@
 # 모듈 인터페이스 계약 — C·D·E 합의 없이는 못 바꾼다
 /docs/contracts/            @jaepaly @jhyun114 @philotti @zihhhhh
 
+# 라벨 스키마만 예외 — contracts/README.md 가 A·B 공동 소유로 정했다.
+# 위 디렉터리 규칙에 A 가 없어서 자기 문서의 소유자가 아니게 된다.
+# CODEOWNERS 는 «더 구체적인 규칙이 이긴다» 이므로 이 줄이 위를 덮는다.
+/docs/contracts/label-schema.md   @nuewsun @philotti
+
 # 지명 사전 — C와 D 공동 소유 (가명화기 = 특정성 엔진의 역함수)
 /data/dict/                 @jhyun114 @jaepaly
 
