@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/jaepaly/KISIA_Project/docs/contracts/stage2-io.schema.json",
   "title": "2단 추론·조치 입출력 계약 (컴포넌트 ④)",
-  "description": "주는 쪽 D(박재현) · 받는 쪽 E(이지희). 초안 v0.1.0 — 2026-08-24.\n\n[설계 제약 — 스키마로 강제하는 것]\n1. 실제 신상을 산출하지 않는다. findings는 '무엇이 특정 가능한가'까지이며, 실제 지명·이름·나이 값을 담는 필드가 존재하지 않는다. evidence는 span_id와 가명 라벨만 참조한다 (plan.md §4 원칙 3).\n2. 민감 속성은 추론 대상이 아니다. attr enum에 학력·지적수준·정치성향·건강이 없다 (plan.md §4 원칙 5).\n3. 기권은 정상 동작이다. verdict의 abstain — 네거티브 컨트롤 N1에서 7속성 중 6개 기권이 확인된 설계 동작이다.\n4. 삭제 권고는 기본 추천에 올리지 않는다. recommendation.actions와 recommendation.exceptional을 구조로 분리했다 (plan.md §2 조치 메뉴 ④).\n5. 원문은 분석 계층으로 넘어가지 않는다. 입력은 pseudonymized_text이며 원문 필드가 없다 (plan.md §4 계층 분리).\n6. 모든 수치에 측정일·데이터 버전·모델 버전이 붙는다 (RULES-DO-NOT #9).\n\n[좌표 기준] 문자 offset, 0-based, [start, end) 반열림. UTF-16 코드유닛이 아니라 유니코드 코드포인트 기준.\n\n[한글 문구] enum은 코드값이며 화면 표기는 E가 매핑한다. specificity.schema.json의 level 관례와 동일하다.\n\n[구현 메모] $defs/Stage2Output은 $defs와 함께 떼어내 Ollama의 format 파라미터에 그대로 넣을 수 있다. 출력 길이 제어가 triage 절감률의 전제다 — 실측에서 무제약 2,982~3,809 토큰이 스키마 강제 시 477 토큰으로 줄었다 (qwen3:4b / RTX 3060 8GB / think=false / 2026-08-24).\n\n[⚠️ 생성 단계에서 강제되지 않는 것] Ollama·llama.cpp의 structured output은 문법(GBNF)으로 변환되므로 구조만 강제한다 — 타입, enum, required, additionalProperties까지다. minimum·maximum·pattern·minItems·if/then 같은 값 제약은 강제되지 않으며 실제로 위반이 통과했다(reduction_pct에 범위 밖 값 생성, 2026-08-24). 따라서 E는 수신 직후 이 스키마로 사후 검증을 한 번 더 돌려야 한다. 구조 검증은 생성기가, 값 검증은 수신자가 맡는 분담이다.",
+  "description": "주는 쪽 D(박재현) · 받는 쪽 E(이지희). 초안 v0.1.0 — 2026-08-24.\n\n[설계 제약 — 스키마로 강제하는 것]\n1. 실제 신상을 산출하지 않는다. findings는 '무엇이 특정 가능한가'까지이며, 실제 지명·이름·나이 값을 담는 필드가 존재하지 않는다. evidence는 span_id와 가명 라벨만 참조한다 (plan.md §4 원칙 3).\n2. 민감 속성은 추론 대상이 아니다. findings 키에 학력·지적수준·정치성향·건강이 없다 (plan.md §4 원칙 5).\n7. 타인 정보를 본인 속성으로 판정하지 않는다. Span.subject가 other인 스팬은 evidence에 넣지 않는다 (label-schema.md §4-2).\n3. 기권은 정상 동작이다. verdict의 abstain — 네거티브 컨트롤 N1에서 7속성 중 6개 기권이 확인된 설계 동작이다.\n4. 삭제 권고는 기본 추천에 올리지 않는다. recommendation.actions와 recommendation.exceptional을 구조로 분리했다 (plan.md §2 조치 메뉴 ④).\n5. 원문은 분석 계층으로 넘어가지 않는다. 입력은 pseudonymized_text이며 원문 필드가 없다 (plan.md §4 계층 분리).\n6. 모든 수치에 측정일·데이터 버전·모델 버전이 붙는다 (RULES-DO-NOT #9).\n\n[좌표 기준] 문자 offset, 0-based, [start, end) 반열림. UTF-16 코드유닛이 아니라 유니코드 코드포인트 기준.\n\n[한글 문구] enum은 코드값이며 화면 표기는 E가 매핑한다. specificity.schema.json의 level 관례와 동일하다.\n\n[구현 메모] $defs/Stage2Output은 $defs와 함께 떼어내 Ollama의 format 파라미터에 그대로 넣을 수 있다. 출력 길이 제어가 triage 절감률의 전제다 — 실측에서 무제약 2,982~3,809 토큰이 스키마 강제 시 477 토큰으로 줄었다 (qwen3:4b / RTX 3060 8GB / think=false / 2026-08-24).\n\n[⚠️ 생성 단계에서 강제되지 않는 것] Ollama·llama.cpp의 structured output은 문법(GBNF)으로 변환되므로 구조만 강제한다 — 타입, enum, required, additionalProperties까지다. minimum·maximum·pattern·minItems·if/then 같은 값 제약은 강제되지 않으며 실제로 위반이 통과했다(reduction_pct에 범위 밖 값 생성, 2026-08-24). 따라서 E는 수신 직후 이 스키마로 사후 검증을 한 번 더 돌려야 한다. 구조 검증은 생성기가, 값 검증은 수신자가 맡는 분담이다.",
 
   "type": "object",
   "required": ["input", "output"],
@@ -88,6 +88,10 @@
           "$ref": "#/$defs/ActivityMeta",
           "description": "조치 ②(활동 메타 관리)의 대상. 선행 PoC에서 위험도 감소 폭 1위였다."
         },
+        "doc_flags": {
+          "$ref": "#/$defs/DocFlags",
+          "description": "BIO 밖 별도 레이어 2종 (label-schema.md §7). 밈 사전 매칭과 세대 신호."
+        },
         "triage_reason": {
           "type": ["string", "null"],
           "enum": ["high_contribution", "span_density", "cross_post_link", "user_requested", "sampled_control", null],
@@ -98,17 +102,44 @@
 
     "Span": {
       "type": "object",
-      "description": "B 소유 규격의 최소 부분집합. 확정본은 span.schema.json을 따른다.",
-      "required": ["span_id", "start", "end", "type"],
+      "description": "A·B 소유 규격(label-schema.md v0.2)의 부분집합. 그 문서가 정본이며 여기서는 2단이 실제로 읽는 필드만 담는다.",
+      "required": ["span_id", "start", "end", "type", "level", "subject"],
       "additionalProperties": true,
       "properties": {
         "span_id": { "type": "string" },
         "start": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 0-based, 포함" },
-        "end": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 미포함" },
+        "end": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 미포함. label-schema.md §5-1의 «text == body[start:end] 가 항상 참» 규약과 같다." },
         "type": {
           "type": "string",
-          "description": "준식별자 유형. 확정 목록은 B·A의 label-schema.md가 소유한다.",
-          "enum": ["GEO", "FACILITY", "AGE", "GENDER", "OCCUPATION", "AFFILIATION", "FAMILY", "COMMUTE", "INCOME", "TEMPORAL", "STYLE", "MEME", "OTHER"]
+          "description": "준식별자 유형 10종. label-schema.md §3-2가 소유한다.\n\n밈·유행어와 세대 신호는 여기 없다 — BIO 밖 별도 레이어이며 doc_flags로 온다(§7).",
+          "enum": ["AGE", "SEX", "LOC_ADMIN", "LOC_FACILITY", "REL_HOME", "REL_WORK", "JOB", "FAM", "COMMUTE", "INCOME"]
+        },
+        "level": {
+          "type": "string",
+          "description": "그 스팬이 «단독으로» 속성을 얼마나 확정하는가 (label-schema.md §4-1). 조합 효과는 여기 없다 — 그건 C가 계산한다.\n\n2단이 이 값을 쓰는 곳: inferential 스팬만으로 내린 판정은 confidence를 낮춘다. 그리고 암묵-only ablation이 이 필드 위에서 재현된다.",
+          "enum": ["explicit", "implicit", "inferential"]
+        },
+        "subject": {
+          "type": "string",
+          "description": "누구의 정보인가 (label-schema.md §4-2). ⚠️ 2단이 반드시 봐야 하는 필드다 — «동탄 사는 친구랑 밤낚시»의 동탄을 본인 거주지로 판정하면 오답이고, 기존 도구와 갈리는 지점이 정확히 여기다.\n\nother 스팬은 사용자 본인 속성의 근거로 쓰지 않는다. evidence에 넣지 않는다.",
+          "enum": ["self", "other", "unknown"]
+        }
+      }
+    },
+
+    "DocFlags": {
+      "type": "object",
+      "description": "BIO 밖 별도 레이어 2종의 글 단위 플래그 (label-schema.md §7). 스팬으로 잡지 않지만 2단의 판정 근거로는 살아 있다 — 선행 PoC에서 세대 신호가 나이 추론 근거로 잡힌 것도 2단에서였다.",
+      "additionalProperties": false,
+      "properties": {
+        "meme_hits": {
+          "type": "array",
+          "description": "밈·유행어 사전 매칭 결과. 사전은 B 소유(data/dict/signatures/meme.json)이며 파일 교체로 갱신된다 — 모델이 밈을 외우지 않게 하는 것이 설계 의도다(plan.md §4 원칙 4).",
+          "items": { "type": "string" }
+        },
+        "generation_signal": {
+          "type": ["boolean", "null"],
+          "description": "세대 신호 존재 여부. 예 «무릎이 예전 같지 않네요». 라벨러가 가장 많이 갈리는 표현이라 스팬 경계를 정하지 않고 글 단위 플래그로만 둔다."
         }
       }
     },
@@ -186,14 +217,14 @@
 
         "findings": {
           "type": "object",
-          "description": "7속성을 키로 갖는 객체다. 배열이 아닌 이유는 측정에서 나왔다 — 배열로 두면 같은 속성이 중복 생성되고 다른 속성이 누락된다(qwen3:4b 실측: gender 3회, residence·workplace 누락, 2026-08-24). 객체 키로 두면 구조가 유일성과 전수 포함을 보장하고, GBNF가 required를 강제하므로 생성 단계에서 걸린다.\n\n단서가 없어도 키를 빼지 말고 abstain으로 명시한다 — 누락과 기권은 다르다. 기권율 자체가 지표이므로(N1 대조군 6/7 기권) 키가 빠지면 셀 수 없다.",
-          "required": ["age", "gender", "residence", "workplace", "family", "commute", "income"],
+          "description": "7속성을 키로 갖는 객체다. 키 이름은 label-schema.md §3-2가 쓰는 것과 같다 (age·sex·location·occupation·family·commute·income) — 그쪽이 스팬 유형을 이 속성들에서 유도했으므로 이름이 갈리면 매핑이 깨진다.\n\n배열이 아닌 이유는 측정에서 나왔다 — 배열로 두면 같은 속성이 중복 생성되고 다른 속성이 누락된다(qwen3:4b 실측: 한 속성 3회 중복, 두 속성 누락, 2026-08-24). 객체 키로 두면 구조가 유일성과 전수 포함을 보장하고, GBNF가 required를 강제하므로 생성 단계에서 걸린다.\n\n단서가 없어도 키를 빼지 말고 abstain으로 명시한다 — 누락과 기권은 다르다. 기권율 자체가 지표이므로(N1 대조군 6/7 기권) 키가 빠지면 셀 수 없다.",
+          "required": ["age", "sex", "location", "occupation", "family", "commute", "income"],
           "additionalProperties": false,
           "properties": {
             "age": { "$ref": "#/$defs/Finding" },
-            "gender": { "$ref": "#/$defs/Finding" },
-            "residence": { "$ref": "#/$defs/Finding" },
-            "workplace": { "$ref": "#/$defs/Finding" },
+            "sex": { "$ref": "#/$defs/Finding" },
+            "location": { "$ref": "#/$defs/Finding" },
+            "occupation": { "$ref": "#/$defs/Finding" },
             "family": { "$ref": "#/$defs/Finding" },
             "commute": { "$ref": "#/$defs/Finding" },
             "income": { "$ref": "#/$defs/Finding" }
