@@ -15,11 +15,9 @@
 # 제출물 — PM 단독 편집권 (OT 체크 5번을 구조로 강제)
 /submissions/               @jaepaly
 
-# --- 활성 (Collaborator 확인 완료 2026-08-24) -----------------
+# --- 활성 (팀원 5인 전원 Collaborator 확인 2026-08-24) ---------
 # 모듈 인터페이스 계약 — C·D·E 합의 없이는 못 바꾼다
-# ⚠️ @zihhhhh (E 이지희) 가 빠져 있다. 초대 수락 대기 중이라 지금 적으면
-#    GitHub 가 이 줄을 무효 처리한다. 수락 즉시 뒤에 덧붙일 것.
-/docs/contracts/            @jaepaly @jhyun114 @philotti
+/docs/contracts/            @jaepaly @jhyun114 @philotti @zihhhhh
 
 # 지명 사전 — C와 D 공동 소유 (가명화기 = 특정성 엔진의 역함수)
 /data/dict/                 @jhyun114 @jaepaly
@@ -30,11 +28,8 @@
 /src/kopl/c3_contribution/  @jhyun114
 /src/kopl/c4_stage2/        @jaepaly
 /src/kopl/c5_corpus/        @nuewsun
-
-# --- 초대 수락 후 활성화 (E 이지희 · @zihhhhh) ----------------
-# 아래 2줄과 위 /docs/contracts/ 의 @zihhhhh 추가를 함께 처리한다.
-# /src/kopl/c6_system/      @zihhhhh
-# /apps/                    @zihhhhh
+/src/kopl/c6_system/        @zihhhhh
+/apps/                      @zihhhhh
 
 # =============================================================
 #  ⚠️ 이 파일만으로는 아무것도 막지 못한다
