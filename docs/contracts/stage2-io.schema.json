@@ -116,20 +116,41 @@
     "PseudonymEntry": {
       "type": "object",
       "description": "치환 1건. original 구간을 label로 바꾸고 pseudo 구간에 놓았다는 기록.",
-      "required": ["span_id", "label", "original", "pseudo"],
+      "required": ["span_id", "label", "original", "pseudo", "restore_key"],
       "additionalProperties": false,
       "properties": {
         "span_id": { "type": "string" },
         "label": {
           "type": "string",
-          "description": "가명 라벨. 예 [시설A·저수지], [40대 후반]. 실제 값이 아니다.",
-          "pattern": "^\\[.+\\]$"
+          "description": "가명 라벨. 예 [시설A·저수지], [40대 후반]. 실제 값이 아니다. 대괄호는 라벨 경계 전용이라 본문에 중첩될 수 없다 — 원문에 대괄호가 있으면 가명화 전에 전각으로 치환하고 복원 시 되돌린다 (geo-dictionary.md §2).",
+          "pattern": "^\\[[^\\[\\]]+\\]$"
         },
         "original": { "$ref": "#/$defs/Offset", "description": "원문 기준 구간" },
         "pseudo": { "$ref": "#/$defs/Offset", "description": "pseudonymized_text 기준 구간" },
-        "geo_key": {
-          "type": ["string", "null"],
-          "description": "지명인 경우 geo-dictionary.md의 키. C의 특정성 엔진과 같은 사전을 쓴다 — 가명화기는 특정성 엔진의 역함수다. 키 형식은 신정현·박재현 공동 합의 사항이며 W2 확정 예정."
+        "restore_key": {
+          "type": "object",
+          "description": "복원 키. geo-dictionary.md §2의 형식을 따른다 — C의 특정성 엔진과 같은 사전을 쓴다. 가명화기는 특정성 엔진의 역함수이므로 어긋나면 복원이 깨진다. 축에 따라 채워지는 필드가 다르다: location은 code(시설이면 slot도), age·family는 value.",
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "type": ["string", "null"],
+              "pattern": "^[0-9]{10}$",
+              "description": "행정코드 10자리 문자열. 숫자로 파싱하면 앞자리 0이 소실되므로 문자열로 고정한다. 계층은 읍면동까지이며 리는 쓰지 않는다."
+            },
+            "slot": {
+              "type": ["string", "null"],
+              "pattern": "^[A-Z]$",
+              "description": "시설 슬롯. user_ref 단위로 결정론적 배정한다 — 같은 실제 대상이 항상 같은 슬롯이어야 2단이 '시설A와 시설B가 같은 생활권'을 판정할 수 있고, 조치 전후 위험도 비교가 성립한다."
+            },
+            "value": {
+              "description": "age·family 등 비지명 축의 원값. 예 48 또는 [\"고1\",\"중2\"]."
+            },
+            "ambiguous": {
+              "type": "boolean",
+              "default": false,
+              "description": "동명 지명 후보를 좁히지 못해 권역 없이 처리했다 (geo-dictionary.md §1 우선순위 4단계). C의 k 계산은 이 경우 보수적으로 k를 크게 잡는다 — 근거 없이 좁히면 위험을 과소평가한다."
+            }
+          }
         }
       }
     },
@@ -273,7 +294,7 @@
             "properties": {
               "post_id": { "type": "string" },
               "span_id": { "type": "string" },
-              "label": { "type": ["string", "null"], "pattern": "^\\[.+\\]$" },
+              "label": { "type": ["string", "null"], "pattern": "^\\[[^\\[\\]]+\\]$" },
               "relation": {
                 "type": ["string", "null"],
                 "description": "이 단서가 어떤 관계를 지시하는지. 조각을 엮는 지점이다.",
@@ -371,6 +392,12 @@
         },
         "dict_version": { "type": "string", "description": "geo-dictionary 버전. C와 공유하는 사전이라 어긋나면 복원이 깨진다." },
         "data_version": { "type": ["string", "null"], "description": "코퍼스·골드셋 버전" },
+        "label_level": {
+          "type": "string",
+          "enum": ["L1", "L2"],
+          "default": "L1",
+          "description": "가명 라벨 렌더링 수준 (geo-dictionary.md §4). L1은 권역을 포함하며 로컬 2단에서 쓴다. L2는 권역을 제거하며 외부 LLM 전송 시에만 쓴다 — 권역 라벨은 가명이지만 5,100만을 수백만으로 좁히므로, 가명화가 면책이 아니라 최소화 조치라는 원칙(plan.md §4 원칙 2)이 여기서 적용된다. external_llm_used가 true인데 label_level이 L1이면 계약 위반이다."
+        },
         "external_llm_used": {
           "type": "boolean",
           "default": false,
