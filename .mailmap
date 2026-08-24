@@ -37,5 +37,7 @@
 #   GitHub: jhyun114 · noreply 주소 확인 (2026-08-24)
 #   user.name 표기 흔들림은 이 줄이 흡수한다 — mailmap은 메일로 매칭한다
 
-# 이지희 (E) <메일>
-# 이지희 (E) <메일> <users.noreply 메일>
+이지희 (E) <128776761+zihhhhh@users.noreply.github.com>
+#   GitHub: zihhhhh · noreply 주소 확인 (2026-08-24)
+#   로컬 user.name 이 LeeJiHee 라 shortlog 에 라틴 표기로 찍힌다.
+#   mailmap 은 메일로 매칭하므로 이 줄이 「이지희 (E)」로 정규화한다.
