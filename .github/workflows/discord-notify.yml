@@ -11,6 +11,10 @@ name: discord-notify
 #  모르니 개인 멘션을 못 한다. 그래서 매핑을 두고 직접 보낸다.
 #
 #  매핑   .github/discord-map.json   (Discord 사용자 ID. 공개돼도 무해)
+#
+#  ⚠️ 전송은 curl 로 한다. Python urllib 로 보내면 Cloudflare 가
+#     UA 를 보고 막는다 (HTTP 403, error code 1010). 실측 2026-08-25.
+#     «파이썬으로 바꾸면 깔끔하겠다» 는 생각이 들면 이 줄을 볼 것.
 #  URL    시크릿 DISCORD_WEBHOOK_URL (자격증명. 저장소는 public 이다)
 # =============================================================
 
