@@ -21,7 +21,14 @@ from pathlib import Path
 # 7속성 키 이름은 persona-design.md §4-1 · C의 특정성 축 · 계약 4종과 동일해야 한다.
 ATTRS = ("age", "sex", "location", "occupation", "family", "commute", "income")
 LEVELS = ("explicit", "implicit", "inferential")
-SUBJECTS = ("self", "other")
+# label-schema.md §4-2 / stage2-io.schema.json 과 동일해야 한다.
+#   self    기본
+#   other   명시적으로 타인에게 귀속
+#   unknown 문장만으로 판단 불가
+# 다만 clue_plan.subject 는 "설계자가 의도한 귀속"이라 구조적으로 unknown 이 나오지 않는다
+# (설계자는 항상 소유자를 안다). 스팬 라벨 쪽에서 판독 결과로 나오는 값이다.
+# 값 집합은 계약과 맞추되, clue_plan 에 unknown 이 오면 경고한다.
+SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
 # RULES-DO-NOT: 방어 도구가 민감 속성 추론을 학습하면 그 자체가 무기가 된다.
@@ -125,11 +132,27 @@ def validate(persona: dict) -> list[Issue]:
         if c.get("level") not in LEVELS:
             err(p, f"level={c.get('level')!r} — {'/'.join(LEVELS)} 중 하나")
         if "subject" in c and c["subject"] not in SUBJECTS:
-            err(p, f"subject={c['subject']!r} — self 또는 other")
+            err(p, f"subject={c['subject']!r} — {'/'.join(SUBJECTS)} 중 하나")
+        if c.get("subject") == "unknown":
+            warn(
+                p,
+                "clue_plan.subject 는 설계 의도라 unknown 이 나올 자리가 아니다. "
+                "문장만으로 판단 불가한 표본을 노렸다면 subject 는 self/other 로 두고 "
+                "ambiguous: true 를 쓸 것",
+            )
+        if "ambiguous" in c and not isinstance(c["ambiguous"], bool):
+            err(p, f"ambiguous={c['ambiguous']!r} — true/false 여야 한다")
 
         hit = _scan_forbidden(str(c.get("clue", "")) + str(c.get("note", "")))
         if hit:
             err(p, f"금지 속성 단서: {', '.join(hit)} — RULES-DO-NOT 위반")
+
+    # ambiguous 표본 — 기대 라벨이 unknown 인 글. IAA subject 일치도 측정용
+    amb = [c for c in clue_plan if c.get("ambiguous")]
+    if amb and total:
+        out.append(Issue("INFO", "clue_plan",
+                         f"ambiguous 표본 {len(amb)}건 ({len(amb) / total:.0%}) "
+                         f"— 기대 라벨 unknown"))
 
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []
@@ -200,7 +223,7 @@ def main(argv: list[str]) -> int:
         print("검증할 파일이 없다")
         return 2
     bad = 0
-    tot_posts = tot_clue = 0
+    tot_posts = tot_clue = tot_amb = 0
     for f in files:
         ok, issues = validate_file(f)
         mark = "OK  " if ok else "FAIL"
@@ -213,6 +236,7 @@ def main(argv: list[str]) -> int:
         d = json.loads(f.read_text(encoding="utf-8-sig"))
         tot_posts += d.get("post_plan", {}).get("total", 0)
         tot_clue += len(d.get("clue_plan", []))
+        tot_amb += sum(1 for c in d.get("clue_plan", []) if c.get("ambiguous"))
 
     print(f"\n{len(files) - bad}/{len(files)} 통과")
 
@@ -228,6 +252,12 @@ def main(argv: list[str]) -> int:
         )
         if not ok and len(files) > 1:
             bad += 1
+
+    if tot_clue:
+        print(
+            f"ambiguous 표본 {tot_amb}/{tot_clue}건 ({tot_amb / tot_clue:.0%}) "
+            f"— subject=unknown 기대. W3 IAA 측정 표본"
+        )
     return 1 if bad else 0
 
 
