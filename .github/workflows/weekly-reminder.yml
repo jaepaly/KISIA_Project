@@ -3,8 +3,16 @@ name: weekly-reminder
 # =============================================================
 #  주간 마감 리마인더 → Discord #공지
 #
-#  CONTRIBUTING 주간 리듬의 마감 셋이 매주 반복된다. PM 이 매주
-#  카톡으로 챙기던 것을 자동화한다.
+#  매주 반복되는 일정 넷을 알린다. PM 이 매주 카톡으로 챙기던 것이다.
+#
+#    월 14:00  주간 보고회    → 13:00 알림
+#    화 20:00  팀 회의        → 19:00 알림
+#    수 23:59  개별 보고 마감  → 18:00 알림 (PR·이슈 목록 첨부)
+#    목 20:00  정기 멘토링    → 19:00 알림
+#
+#  모임 알림은 «누가·언제» 만 남긴다. 안건을 넣으면 길어지고,
+#  길면 안 읽는다. 안건은 docs/mentoring/ 에 있다.
+#  제출 마감(금)은 PM 단독 작업이라 알림을 두지 않는다.
 #
 #  ⚠️ #github 채널과 웹훅을 나눈 이유 — 성격이 다르다.
 #     #github  개인 멘션. 처리하면 끝. 흘러가도 된다
@@ -19,13 +27,14 @@ name: weekly-reminder
 
 on:
   schedule:
-    - cron: "0 9 * * 3"    # 수 18:00 KST — 개별 보고 마감 6시간 전
-    - cron: "0 10 * * 4"   # 목 19:00 KST — 멘토링 1시간 전
-    - cron: "0 5 * * 5"    # 금 14:00 KST — 제출 마감
+    - cron: "0 4 * * 1"    # 월 13:00 KST — 주간 보고회(14:00) 1시간 전
+    - cron: "0 10 * * 2"   # 화 19:00 KST — 팀 회의(20:00) 1시간 전
+    - cron: "0 9 * * 3"    # 수 18:00 KST — 개별 보고 마감(23:59) 6시간 전
+    - cron: "0 10 * * 4"   # 목 19:00 KST — 정기 멘토링(20:00) 1시간 전
   workflow_dispatch:
     inputs:
       kind:
-        description: "어느 리마인더인가 (wed / thu / fri)"
+        description: "어느 리마인더인가 (mon / tue / wed / thu)"
         required: true
         default: "wed"
 
@@ -54,9 +63,10 @@ jobs:
 
           # 어느 리마인더인가
           case "${CRON:-}" in
+            "0 4 * * 1")  KIND=mon ;;
+            "0 10 * * 2") KIND=tue ;;
             "0 9 * * 3")  KIND=wed ;;
             "0 10 * * 4") KIND=thu ;;
-            "0 5 * * 5")  KIND=fri ;;
             *)            KIND="${KIND_IN:-wed}" ;;
           esac
           echo "kind=$KIND"
@@ -72,7 +82,6 @@ jobs:
           }
           TEAM=$(mention nuewsun philotti jhyun114 zihhhhh)
           ALL=$(mention nuewsun philotti jhyun114 zihhhhh jaepaly)
-          PM=$(mention jaepaly)
 
           # ── 지금 열린 PR 을 실시간으로 긁는다 ──────────────────
           prs=$(gh pr list --state open --limit 20 \
@@ -89,17 +98,18 @@ jobs:
 
           # ── 본문 ──────────────────────────────────────────────
           case "$KIND" in
+            mon)
+              body=$(printf '%s\n\n🗓️ **주간 보고회 — 오늘 14:00**' "$ALL")
+              ;;
+            tue)
+              body=$(printf '%s\n\n🗓️ **팀 회의 — 오늘 20:00**' "$ALL")
+              ;;
             wed)
               body=$(printf '%s\n\n📋 **개별 보고 5줄 — 오늘 23:59 마감**\n\nCONTRIBUTING 의 5줄 형식 그대로 보내주세요.\n**4번 「증빙 링크」에 커밋·PR 링크**를 꼭 넣어주세요 — 그게 있어야 주간보고에 그대로 옮깁니다.\n\n**지금 열린 PR**\n```\n%s\n```\n**열린 이슈**\n```\n%s\n```' \
                      "$TEAM" "$prs" "$issues")
               ;;
             thu)
-              body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00 온라인**\n\n· **기록자 1명 지정** (PM 아님 — PM 은 진행)\n· 안건: `docs/mentoring/` 의 이번 주 보고 포인트\n· 멘토링은 Q&A 가 아니라 **보고 → 반응** 입니다. 방향이 필요한 논점은 보고 안에 넣어야 반응이 옵니다\n\n**아직 열린 PR**\n```\n%s\n```' \
-                     "$ALL" "$prs")
-              ;;
-            fri)
-              body=$(printf '%s\n\n📤 **제출 마감일**\n\n**3단 게이트** → 서명 5인 → 멘토 확인 → 제출 → **제출 화면 캡처**\n\n마감 후\n```\nbash scripts/weekly_report.sh <시작일> <종료일> W<주차>\nbash scripts/tag_week.sh w<주차>\n```\n\n**아직 열린 PR** — 이번 주 증빙에 들어갈 것들입니다\n```\n%s\n```' \
-                     "$PM" "$prs")
+              body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00**' "$ALL")
               ;;
           esac
 
