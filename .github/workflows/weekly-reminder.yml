@@ -1,0 +1,110 @@
+name: weekly-reminder
+
+# =============================================================
+#  주간 마감 리마인더 → Discord #공지
+#
+#  CONTRIBUTING 주간 리듬의 마감 셋이 매주 반복된다. PM 이 매주
+#  카톡으로 챙기던 것을 자동화한다.
+#
+#  ⚠️ #github 채널과 웹훅을 나눈 이유 — 성격이 다르다.
+#     #github  개인 멘션. 처리하면 끝. 흘러가도 된다
+#     #공지    공지. 남아 있어야 한다. 주 3회뿐이라 안 밀린다
+#     섞으면 알림 설정(@멘션만 / 모든 메시지)을 나눌 수 없다.
+#
+#  ⚠️ 전송은 curl 로 한다. Python urllib 는 Cloudflare 가 UA 를 보고
+#     막는다 (HTTP 403 / error 1010). 실측 2026-08-25.
+#
+#  cron 은 UTC 다. KST = UTC+9.
+# =============================================================
+
+on:
+  schedule:
+    - cron: "0 9 * * 3"    # 수 18:00 KST — 개별 보고 마감 6시간 전
+    - cron: "0 10 * * 4"   # 목 19:00 KST — 멘토링 1시간 전
+    - cron: "0 5 * * 5"    # 금 14:00 KST — 제출 마감
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "어느 리마인더인가 (wed / thu / fri)"
+        required: true
+        default: "wed"
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 리마인더 조립·전송
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_ANNOUNCE_WEBHOOK_URL }}
+          GH_TOKEN: ${{ github.token }}
+          CRON: ${{ github.event.schedule }}
+          KIND_IN: ${{ inputs.kind }}
+        run: |
+          set -uo pipefail
+          [ -n "${WEBHOOK:-}" ] || { echo "DISCORD_ANNOUNCE_WEBHOOK_URL 미설정 — 건너뛴다"; exit 0; }
+
+          MAP=.github/discord-map.json
+
+          # 어느 리마인더인가
+          case "${CRON:-}" in
+            "0 9 * * 3")  KIND=wed ;;
+            "0 10 * * 4") KIND=thu ;;
+            "0 5 * * 5")  KIND=fri ;;
+            *)            KIND="${KIND_IN:-wed}" ;;
+          esac
+          echo "kind=$KIND"
+
+          # ── 멘션 만들기. ID 미등록자는 이름만 ─────────────────
+          mention() {
+            out=""
+            for u in "$@"; do
+              id=$(jq -r --arg k "$u" '.[$k] // ""' "$MAP")
+              if [ -n "$id" ]; then out="$out <@$id>"; else out="$out @$u"; fi
+            done
+            printf '%s' "$(echo "$out" | sed 's/^ //')"
+          }
+          TEAM=$(mention nuewsun philotti jhyun114 zihhhhh)
+          ALL=$(mention nuewsun philotti jhyun114 zihhhhh jaepaly)
+          PM=$(mention jaepaly)
+
+          # ── 지금 열린 PR 을 실시간으로 긁는다 ──────────────────
+          prs=$(gh pr list --state open --limit 20 \
+                  --json number,title,author,reviewRequests \
+                  --jq '.[] | "· #\(.number) \(.title[:38]) — \(.author.login)\(if (.reviewRequests|length)>0 then " (리뷰 대기: " + ([.reviewRequests[].login]|join(", ")) + ")" else "" end)"' \
+                2>/dev/null || echo "")
+          [ -n "$prs" ] || prs="· 없음"
+
+          issues=$(gh issue list --state open --limit 10 \
+                     --json number,title,assignees \
+                     --jq '.[] | "· #\(.number) \(.title[:38])\(if (.assignees|length)>0 then " — " + ([.assignees[].login]|join(", ")) else "" end)"' \
+                   2>/dev/null || echo "")
+          [ -n "$issues" ] || issues="· 없음"
+
+          # ── 본문 ──────────────────────────────────────────────
+          case "$KIND" in
+            wed)
+              body=$(printf '%s\n\n📋 **개별 보고 5줄 — 오늘 23:59 마감**\n\nCONTRIBUTING 의 5줄 형식 그대로 보내주세요.\n**4번 「증빙 링크」에 커밋·PR 링크**를 꼭 넣어주세요 — 그게 있어야 주간보고에 그대로 옮깁니다.\n\n**지금 열린 PR**\n```\n%s\n```\n**열린 이슈**\n```\n%s\n```' \
+                     "$TEAM" "$prs" "$issues")
+              ;;
+            thu)
+              body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00 온라인**\n\n· **기록자 1명 지정** (PM 아님 — PM 은 진행)\n· 안건: `docs/mentoring/` 의 이번 주 보고 포인트\n· 멘토링은 Q&A 가 아니라 **보고 → 반응** 입니다. 방향이 필요한 논점은 보고 안에 넣어야 반응이 옵니다\n\n**아직 열린 PR**\n```\n%s\n```' \
+                     "$ALL" "$prs")
+              ;;
+            fri)
+              body=$(printf '%s\n\n📤 **제출 마감일**\n\n**3단 게이트** → 서명 5인 → 멘토 확인 → 제출 → **제출 화면 캡처**\n\n마감 후\n```\nbash scripts/weekly_report.sh <시작일> <종료일> W<주차>\nbash scripts/tag_week.sh w<주차>\n```\n\n**아직 열린 PR** — 이번 주 증빙에 들어갈 것들입니다\n```\n%s\n```' \
+                     "$PM" "$prs")
+              ;;
+          esac
+
+          payload=$(jq -nc --arg c "$body" '{content:$c, allowed_mentions:{parse:["users"]}}')
+          code=$(curl -sS -o /tmp/r -w '%{http_code}' -H 'Content-Type: application/json' \
+                   -X POST -d "$payload" "$WEBHOOK")
+          if [ "$code" -ge 300 ]; then echo "전송 실패 HTTP $code"; cat /tmp/r; exit 1; fi
+          echo "전송 완료 — $KIND"
