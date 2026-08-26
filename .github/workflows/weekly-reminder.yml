@@ -103,6 +103,11 @@ jobs:
           #
           #    승인 판정은 latestReviews 로 한다. reviewDecision 은
           #    필수 승인 수가 0이면 null 로 와서 못 쓴다 (실측).
+          #
+          #    ⚠️ --state open 을 절대 빼지 마라. GitHub 은 머지·닫힌 PR 에도
+          #    reviewRequests 를 그대로 남긴다 (실측 2026-08-26: #2·#42·#47 이
+          #    머지된 뒤에도 요청이 남아 있었다). 빼면 이미 끝난 PR 이 전부
+          #    「당신 승인 대기」로 다시 뜬다.
           waiting=$(gh pr list --state open --limit 30 \
                       --json number,reviewRequests,latestReviews \
                       --jq '[ .[]
@@ -139,7 +144,12 @@ jobs:
             fi
 
             # 멘션은 코드블록 밖에 둔다. 안에 넣으면 <@id> 가 글자로 나온다
-            review_block=$(printf '\n🔍 **승인 기다리는 PR** — 아래는 전부 **승인 0건**입니다\n\n%s%s\n' "$lines" "$age")
+            # ⚠️ 시각을 반드시 넣는다. 이 메시지는 #공지 에 남는데, 나중에 읽는
+            #    사람에게는 실시간 목록처럼 보인다. 실제로 발송 뒤에 머지된 PR 이
+            #    「내 승인 대기」로 계속 보인다는 제보가 있었다 (2026-08-26).
+            now=$(date -u -d '+9 hours' '+%m-%d %H:%M')   # KST = UTC+9. TZ 데이터베이스에 의존하지 않는다
+            review_block=$(printf '\n🔍 **승인 기다리는 PR** — %s 기준 · 아래는 전부 **승인 0건**입니다\n\n%s%s\n\n> 이 목록은 발송 시점의 스냅샷입니다. 지금 상태는 PR 목록에서 확인해주세요.\n' \
+                           "$now" "$lines" "$age")
           fi
 
           # ── 본문 ──────────────────────────────────────────────
