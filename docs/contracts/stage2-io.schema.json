@@ -189,6 +189,11 @@
         "generation_signal": {
           "type": ["boolean", "null"],
           "description": "세대 신호 존재 여부. 예 «무릎이 예전 같지 않네요». 라벨러가 가장 많이 갈리는 표현이라 스팬 경계를 정하지 않고 글 단위 플래그로만 둔다."
+        },
+        "dialect_hits": {
+          "type": "array",
+          "description": "방언 사전 매칭 결과. 사전은 A 소유(data/dict/signatures/dialect.json)이며 meme.json과 같이 파일 교체로 갱신된다 — 모델이 방언을 외우지 않게 하는 것이 설계 의도다(plan.md §4 원칙 4).\n\nS15 실측: 지명을 한 번도 쓰지 않았는데 방언이 지역군을 좁힌다. 유형 10종에 지역 신호를 잡을 자리가 없어(LOC_ADMIN은 지명이지 방언이 아니다) 밈과 같은 사전 레이어로 둔다.\n\n⚠️ 밈과 쓰임이 다르다. meme_hits는 2단 판정 근거로만 쓰이지만 dialect_hits는 C의 k 계산에도 들어간다 — specificity.schema.json의 condition으로 {axis: location, kind: dialect_region, value: 권역}이 되어 모집단을 좁힌다.\n\n[미결] 방언은 밈과 달리 어휘 단위로 국소적이라 스팬을 붙일 수 있다. 사전 매칭으로 찾은 자리에 스팬을 붙일지는 W3 골드셋 검수에서 정한다. 유형 10종 상한은 건드리지 않는다.",
+          "items": { "type": "string" }
         }
       }
     },
@@ -431,7 +436,7 @@
         },
         "burden": {
           "type": "string",
-          "description": "사용자 부담. 정렬 키다.",
+          "description": "사용자 부담. 정렬 키다.\n\n[표현별 대체 비용] rewrite 대상이 글의 «뼈대»인 표현이면 high로 낸다. S15 실측이 근거다 — 수미상관 구조라 도입과 결말에 같은 방언 표현이 반복되며, 그 표현을 지우면 글이 무너진다. 뼈대 표현과 곁가지 표현을 같은 비용으로 취급하면 추천이 쓸모없어진다.\n\n판정 기준: 같은 표현이 한 글에서 두 번 이상 나오거나, 제목과 본문에 함께 나오면 뼈대로 본다. Rewrite.semantic_similarity는 «바꾼 뒤»를 재므로 이 판단을 대신하지 못한다.",
           "enum": ["low", "medium", "high"]
         },
         "certainty": {
