@@ -216,6 +216,15 @@
           "type": "object",
           "description": "복원 키. geo-dictionary.md §2의 형식을 따른다 — C의 특정성 엔진과 같은 사전을 쓴다. 가명화기는 특정성 엔진의 역함수이므로 어긋나면 복원이 깨진다. 축에 따라 채워지는 필드가 다르다: location은 code(시설이면 slot도), age·family는 value.",
           "additionalProperties": false,
+          "if": {
+            "properties": { "ambiguous": { "const": true } },
+            "required": ["ambiguous"]
+          },
+          "then": {
+            "description": "좁히지 못했으면 code를 확정값처럼 실어 보내지 않는다. 대신 후보를 넘겨 지역 축이 통째로 빠지는 것을 막는다.",
+            "properties": { "code": { "const": null } },
+            "required": ["candidates"]
+          },
           "properties": {
             "code": {
               "type": ["string", "null"],
@@ -233,7 +242,15 @@
             "ambiguous": {
               "type": "boolean",
               "default": false,
-              "description": "동명 지명 후보를 좁히지 못해 권역 없이 처리했다 (geo-dictionary.md §1 우선순위 4단계). C의 k 계산은 이 경우 보수적으로 k를 크게 잡는다 — 근거 없이 좁히면 위험을 과소평가한다."
+              "description": "동명 지명 후보를 좁히지 못했다 (geo-dictionary.md §1). true이면 code는 null이고 candidates에 후보가 담긴다.\n\n이 값을 k 계산에서 어떻게 다룰지는 이 계약이 정하지 않는다 — 사실만 전달하고 처리 규칙은 specificity.schema.json이 소유한다. 가명화기가 특정성 엔진의 정책을 지시하면 한쪽만 고쳤을 때 조용히 갈린다.\n\n[초안 정정] 여기에 «C의 k 계산은 보수적으로 k를 크게 잡는다 — 근거 없이 좁히면 위험을 과소평가한다»라고 적었었다. 방향이 반대다. k는 조건에 해당하는 인구 수이므로 k가 크면 특정성이 낮고 위험도 낮게 나온다. 신정현 지적(#5, 2026-08-26)."
+            },
+            "candidates": {
+              "type": "array",
+              "description": "ambiguous가 true일 때의 후보 행정코드 목록.\n\n이게 없으면 지역 축이 k 계산에서 통째로 빠져 모집단이 전국이 된다 — 가능한 것 중 가장 큰 과소평가다. «중앙동 12곳 중 하나»는 «전국 어딘가»보다 훨씬 좁은 정보이므로 버리지 않는다.",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9]{10}$"
+              }
             }
           }
         }
