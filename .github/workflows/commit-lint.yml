@@ -1,0 +1,123 @@
+name: commit-lint
+
+# =============================================================
+#  커밋 메시지·PR 제목 형식 검사 — 비밀정보 4중 방어와 같은 논리
+#
+#  .githooks/commit-msg 가 형식을 강제하지만 로컬 훅이다.
+#  세 경우에 그냥 통과한다.
+#    ① bootstrap.sh 를 안 돌린 사람 — 훅이 아예 없다
+#    ② GitHub 웹 UI 로 파일 생성 — 로컬을 안 거친다
+#    ③ git commit --no-verify
+#
+#  실제로 뚫렸다. main 에 이런 커밋이 들어와 있다.
+#    Add empty contribution.schema.json file (#25)
+#    Add empty span.schema.json file (#21)
+#  둘 다 웹 UI 기본 메시지가 그대로 들어간 것이다.
+#
+#  왜 문제인가 — weekly_report.sh 가 이렇게 뽑는다.
+#    git log --grep='^exp'   8주차 「학습·테스트 진행 내용」의 원자료
+#    git log --grep='^data'  데이터 변경 이력
+#  형식이 깨진 커밋은 여기서 통째로 빠진다. 실험을 해놓고도
+#  8주차 보고서에 없는 것처럼 나온다.
+#
+#  guard.yml 머리말이 같은 논리를 이미 적어뒀다 —
+#  「훅은 우회되지만 이 워크플로는 우회할 수 없다」.
+#  시크릿에만 적용돼 있던 그 방어를 커밋 메시지에도 둔다.
+#
+#  ⚠️ TYPES 는 .githooks/commit-msg 와 같아야 한다. 한쪽만 고치면 갈린다.
+# =============================================================
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 형식 검사
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -uo pipefail
+
+          TYPES='feat|fix|data|exp|docs|chore|refactor|test|submit'
+          RE="^($TYPES)(\([a-z0-9._-]+\))?: .+"
+          FAIL=0
+
+          say() { printf '%s\n' "$*"; }
+          bad() { say "  ✗ $*"; FAIL=1; }
+
+          say ""
+          say "── 커밋 메시지 ─────────────────────────────────────"
+
+          n=0
+          while IFS= read -r line; do
+            [ -n "$line" ] || continue
+            sha="${line%% *}"; msg="${line#* }"
+            case "$msg" in
+              Merge*|Revert*|fixup!*|squash!*) continue ;;
+            esac
+            n=$((n+1))
+            if printf '%s' "$msg" | grep -qE "$RE"; then
+              say "  ✓ ${sha:0:7} $msg"
+            else
+              bad "${sha:0:7} $msg"
+            fi
+          done <<< "$(git log --no-merges --format='%H %s' "$BASE..$HEAD")"
+          [ "$n" -gt 0 ] || say "  (검사할 커밋 없음)"
+
+          say ""
+          say "── PR 제목 ─────────────────────────────────────────"
+          if printf '%s' "$PR_TITLE" | grep -qE "$RE"; then
+            say "  ✓ $PR_TITLE"
+          else
+            bad "$PR_TITLE"
+          fi
+
+          if [ "$FAIL" -ne 0 ]; then
+            say ""
+            say "── 형식이 맞지 않는다 ────────────────────────────"
+            say ""
+            say "  <type>(<scope>): 주간보고에 그대로 실릴 문장"
+            say ""
+            say "  type"
+            say "    feat      기능 추가"
+            say "    fix       버그 수정"
+            say "    data      코퍼스·라벨·사전 변경"
+            say "    exp       실험 실행·결과      ← 8주차 보고서의 원자료"
+            say "    docs      문서"
+            say "    chore     설정·빌드"
+            say "    refactor  리팩터링"
+            say "    test      테스트"
+            say "    submit    KISIA 제출물"
+            say ""
+            say "  scope (선택)  c1~c7 컴포넌트 또는 자유"
+            say "  예            exp(c1): KoELECTRA 1차 — 스팬 F1 명시 .84 [MF-012]"
+            say "                chore(contracts): span 계약 껍데기 추가"
+            say ""
+            say "  고치는 법"
+            say "    커밋 메시지  git rebase -i 로 reword 후 force push"
+            say "                 (마지막 커밋만이면 git commit --amend)"
+            say "    PR 제목      PR 페이지에서 제목 옆 Edit"
+            say ""
+            say "  ⚠️ GitHub 웹 UI 로 파일을 만들면 기본 메시지가 그대로 들어간다."
+            say "     커밋 전에 메시지 칸을 직접 채울 것."
+            say ""
+            say "──────────────────────────────────────────────────"
+            exit 1
+          fi
+
+          say ""
+          say "  ✓ 통과"
+          say "────────────────────────────────────────────────────"
