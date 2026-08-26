@@ -88,6 +88,44 @@ def aggregate(records: list[dict]) -> dict:
     return out
 
 
+# voice 자유서술에서 숫자를 뽑는다. 선언값과 실측을 나란히 놓지 않으면
+# "통제해서 갈렸다"와 "각자 반대로 빗나가서 갈렸다"가 구분되지 않는다.
+DECLARED = {
+    "문장길이": ("문장길이_평균", re.compile(r"평균\s*(\d+)\s*자")),
+    "이모지":   ("자모이모티콘", re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*회")),
+    "오타율":   (None, re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*건")),
+}
+
+
+def declared_targets(persona: dict) -> dict:
+    """voice 에 적힌 목표 수치를 뽑는다. 못 뽑으면 그 항목은 건너뛴다."""
+    out = {}
+    voice = persona.get("voice") or {}
+    for vkey, (metric, pat) in DECLARED.items():
+        if not metric or vkey not in voice:
+            continue
+        m = pat.search(str(voice[vkey]))
+        if not m:
+            continue
+        nums = [int(g) for g in m.groups() if g]
+        out[metric] = sum(nums) / len(nums)
+    return out
+
+
+def compare_declared(measured: dict, targets: dict) -> list[str]:
+    if not targets:
+        return []
+    lines = ["  [선언값 대비]"]
+    for metric, target in targets.items():
+        v = measured.get(metric)
+        if v is None:
+            continue
+        dev = (v - target) / target * 100 if target else 0
+        mark = "OK " if abs(dev) <= 25 else "✗  "
+        lines.append(f"  {mark}   {metric:16} 선언 {target:g} · 실측 {v:g} ({dev:+.0f}%)")
+    return lines
+
+
 def check(measured: dict, rubric: dict) -> list[str]:
     """루브릭은 {"지표": [최소, 최대]} 또는 {"지표": 목표값} 형태."""
     lines = []
@@ -110,6 +148,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("jsonl", nargs="+")
     ap.add_argument("--rubric", default=None, help="카드 채점표 JSON")
+    ap.add_argument("--personas", default=None,
+                    help="인물 JSON 디렉터리. voice 선언값과 실측을 나란히 본다")
     args = ap.parse_args()
 
     rubric = json.loads(Path(args.rubric).read_text(encoding="utf-8-sig")) if args.rubric else None
@@ -140,6 +180,17 @@ def main() -> int:
               f"모델 {recs[0].get('gen_model', '?')}")
         for k, v in m.items():
             print(f"    {k:20} {v}")
+        # 인물 JSON 이 있으면 선언값 대비를 먼저 보여준다
+        pid = recs[0].get("persona_id")
+        if args.personas and pid:
+            pf = Path(args.personas) / f"{pid}.json"
+            if pf.is_file():
+                tgt = declared_targets(json.loads(pf.read_text(encoding="utf-8-sig")))
+                out = compare_declared(m, tgt)
+                if out:
+                    print("\n".join(out))
+                    fail += sum(1 for l in out if l.strip().startswith("✗"))
+
         if rubric:
             print("  [채점]")
             lines = check(m, rubric)

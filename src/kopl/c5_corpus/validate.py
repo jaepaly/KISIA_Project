@@ -31,6 +31,17 @@ LEVELS = ("explicit", "implicit", "inferential")
 SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
+# label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
+# 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
+TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption_\d+)$")
+# profile_bio 는 글이 아니라 사용자에 속한다 → post 가 null 이어야 한다
+USER_SCOPED_TEXT_IDS = ("profile_bio",)
+
+# §9-1 본문 밖 단서 할당량. 인물 5명 묶음마다 채널별 최소 건수.
+OFF_BODY_CHANNELS = ("title", "photo_caption", "profile_bio")
+OFF_BODY_QUOTA_PER = 2
+QUOTA_GROUP_SIZE = 5
+
 # RULES-DO-NOT: 방어 도구가 민감 속성 추론을 학습하면 그 자체가 무기가 된다.
 FORBIDDEN_TERMS = (
     "학력", "학벌", "전공", "졸업", "학번", "수능", "편입",
@@ -184,10 +195,15 @@ def validate(persona: dict) -> list[Issue]:
         err("post_plan", f"noise+ambient+clue+trap={sum(parts.values())} ≠ total={total}")
 
     clue_plan = persona.get("clue_plan", []) or []
-    if len(clue_plan) != parts["clue"] + parts["trap"]:
+    # profile_bio 단서는 글에 실리지 않으므로 post_plan 산술에서 제외한다
+    post_clues = [c for c in clue_plan if c.get("text_id") not in USER_SCOPED_TEXT_IDS]
+    # 한 글이 본문·제목·캡션에 각각 단서를 가질 수 있으므로 항목 수가 아니라 글 수로 센다
+    clue_posts = {c.get("post") for c in post_clues}
+    if len(clue_posts) != parts["clue"] + parts["trap"]:
         err(
             "clue_plan",
-            f"항목 {len(clue_plan)}개 ≠ post_plan의 clue({parts['clue']})+trap({parts['trap']})",
+            f"단서를 가진 글 {len(clue_posts)}편 ≠ post_plan의 "
+            f"clue({parts['clue']})+trap({parts['trap']})",
         )
 
     # ── clue_plan 각 항목 ─────────────────────────────────────────────
@@ -195,14 +211,27 @@ def validate(persona: dict) -> list[Issue]:
     for i, c in enumerate(clue_plan):
         p = f"clue_plan[{i}]"
         post = c.get("post", "")
-        if not POST_ID_RE.match(post):
+        if post is None:
+            pass   # profile_bio 단서 — 글에 속하지 않는다
+        elif not POST_ID_RE.match(str(post)):
             err(p, f"post={post!r} — b01 형식이어야 한다")
-        elif post in seen:
-            err(p, f"post={post} 가 {seen[post]} 와 중복")
         else:
-            seen[post] = p
-        if total and POST_ID_RE.match(post) and int(post[1:]) > total:
+            key = f"{post}/{c.get('text_id', 'body')}"
+            if key in seen:
+                err(p, f"{key} 가 {seen[key]} 와 중복")
+            else:
+                seen[key] = p
+        if total and post and POST_ID_RE.match(str(post)) and int(post[1:]) > total:
             err(p, f"post={post} 가 total({total})을 넘는다")
+
+        tid = c.get("text_id", "body")   # 미지정은 본문으로 본다 (하위호환)
+        if not TEXT_ID_RE.match(str(tid)):
+            err(p, f"text_id={tid!r} — body/title/profile_bio/photo_caption_N 중 하나 "
+                   f"(label-schema §5-3)")
+        elif tid in USER_SCOPED_TEXT_IDS and c.get("post") is not None:
+            err(p, f"text_id={tid} 는 사용자 단위다. post 는 null 이어야 한다")
+        elif tid not in USER_SCOPED_TEXT_IDS and c.get("post") is None:
+            err(p, f"text_id={tid} 는 글 단위다. post 가 필요하다")
 
         if c.get("attr") not in ATTRS:
             err(p, f"attr={c.get('attr')!r} — 7속성 밖")
@@ -234,14 +263,14 @@ def validate(persona: dict) -> list[Issue]:
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []
     for post in ambient:
-        if post in seen:
+        if any(k.startswith(f"{post}/") for k in seen):
             err("ambient_plan.posts", f"{post} 가 clue_plan에도 있다")
     if len(ambient) != parts["ambient"]:
         err("ambient_plan.posts", f"{len(ambient)}개 ≠ post_plan.ambient({parts['ambient']})")
 
     # 노이즈 비율 B안: 단서 보유 편수(clue+trap) 기준
     if total:
-        noise = 1 - len(clue_plan) / total
+        noise = 1 - len(clue_posts) / total
         lo, hi = PERSONA_NOISE_BAND
         if not lo <= noise <= hi:
             warn(
@@ -324,7 +353,10 @@ def main(argv: list[str]) -> int:
             continue
         d = json.loads(f.read_text(encoding="utf-8-sig"))
         tot_posts += d.get("post_plan", {}).get("total", 0)
-        tot_clue += len(d.get("clue_plan", []))
+        tot_clue += len({
+            c.get("post") for c in d.get("clue_plan", []) or []
+            if c.get("text_id") not in USER_SCOPED_TEXT_IDS
+        })
         tot_amb += sum(1 for c in d.get("clue_plan", []) if c.get("ambiguous"))
         loaded.append((d.get("id") or d.get("persona_id") or f.stem, d))
 
@@ -342,6 +374,31 @@ def main(argv: list[str]) -> int:
         )
         if not ok and len(files) > 1:
             bad += 1
+
+    # ── §9-1 본문 밖 단서 할당량 ─────────────────────────────────────
+    # "인물 5명 묶음마다 채널별 2건 이상". 5명 미만이면 비례로 환산해 진척만 보여준다.
+    if loaded:
+        chan: dict[str, int] = {c: 0 for c in OFF_BODY_CHANNELS}
+        for _, d in loaded:
+            for c in d.get("clue_plan", []) or []:
+                tid = str(c.get("text_id", "body"))
+                if tid.startswith("photo_caption"):
+                    chan["photo_caption"] += 1
+                elif tid in chan:
+                    chan[tid] += 1
+        groups = len(loaded) / QUOTA_GROUP_SIZE
+        need = OFF_BODY_QUOTA_PER * groups
+        print(f"\n[본문 밖 단서 — §9-1] 인물 {len(loaded)}명 "
+              f"(5명 묶음 {groups:.1f}개 · 채널별 {need:.1f}건 필요)")
+        short = False
+        for c in OFF_BODY_CHANNELS:
+            ok = chan[c] >= need
+            if not ok:
+                short = True
+            print(f"  {'OK ' if ok else '⚠  '} {c:16} {chan[c]}건")
+        if short:
+            print("  → clue_plan 에 text_id 를 지정해 배치할 것. "
+                  "본문만 스캔하는 도구가 못 잡는 지점이라 「추가 탐지율」의 근거가 된다")
 
     cross = cross_check(loaded)
     if cross:
