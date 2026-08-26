@@ -37,7 +37,7 @@
               "items": {
                 "allOf": [
                   { "$ref": "#/$defs/TextSegment" },
-                  { "properties": { "field": { "const": "profile_bio" } } }
+                  { "properties": { "text_id": { "const": "profile_bio" } } }
                 ]
               }
             },
@@ -81,7 +81,7 @@
           "items": {
             "allOf": [
               { "$ref": "#/$defs/TextSegment" },
-              { "properties": { "field": { "enum": ["title", "body", "photo_caption"] } } }
+              { "properties": { "text_id": { "pattern": "^(body|title|photo_caption_[0-9]+)$" } } }
             ]
           }
         },
@@ -129,23 +129,13 @@
     "TextSegment": {
       "type": "object",
       "description": "가명화된 텍스트 채널 하나. 스팬과 복원 키가 text_id로 이걸 가리킨다.",
-      "required": ["text_id", "field", "pseudonymized"],
+      "required": ["text_id", "pseudonymized"],
       "additionalProperties": false,
       "properties": {
         "text_id": {
           "type": "string",
-          "description": "이 입력 안에서 유일한 식별자. Span.text_id · PseudonymEntry.text_id가 참조한다.",
-          "pattern": "^t[0-9]+$"
-        },
-        "field": {
-          "type": "string",
-          "description": "어느 채널인가. 쓰이는 자리가 갈린다 — profile_bio는 Stage2Input.profile에만, 나머지 셋은 InputPost.texts에만 온다. 각 자리에서 다시 좁히므로 여기서는 전체 목록을 둔다.\n\n⚠️ 이 목록을 늘리려면 계약 변경(2명 승인)이 필요하다. 가상 SNS(⑦)가 제공하는 필드와 1:1로 맞아야 하므로 E와 함께 정한다.",
-          "enum": ["title", "body", "photo_caption", "profile_bio"]
-        },
-        "ordinal": {
-          "type": ["integer", "null"],
-          "minimum": 0,
-          "description": "같은 field가 여러 개일 때의 순서. 사진 캡션은 글 하나에 여러 개다. 단일 채널(title·body)이면 null."
+          "description": "어느 텍스트 채널인가. 채널 이름이 곧 식별자다 — label-schema.md §5-3의 표기를 그대로 쓴다.\n\n사진 캡션은 한 글에 여러 장이라 인덱스를 붙인다(photo_caption_0, photo_caption_1, …). 0부터, 글 안의 표시 순서대로.\n\n⚠️ 이 목록을 늘리려면 계약 변경(2명 승인)이 필요하다. 가상 SNS(⑦)가 제공하는 필드와 1:1로 맞아야 하므로 E와 함께 정한다.\n\n[초안에서 바꾼 것] 불투명 식별자(t1, t2)를 채널 이름으로 바꿨다. 골드셋은 사람이 손으로 라벨링하므로 사람이 쓰는 쪽 표기가 이긴다 — 이렇게 하면 label-schema.md와 값이 같아져 변환 계층이 사라진다. 이 값에 흡수되는 field·ordinal은 삭제했다. 같은 사실을 두 곳에 적으면 text_id와 field가 서로 다른 채널을 가리키는 입력이 검증을 통과한다.",
+          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
         },
         "pseudonymized": {
           "type": "string",
@@ -164,7 +154,7 @@
         "text_id": {
           "type": "string",
           "description": "이 스팬이 어느 텍스트 채널에 있는가. ⚠️ 본문 offset만으로는 프로필·캡션의 단서를 가리킬 수 없으므로 필수다.",
-          "pattern": "^t[0-9]+$"
+          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
         },
         "start": { "type": "integer", "minimum": 0, "description": "해당 text_id의 원문 기준 문자 offset, 0-based, 포함" },
         "end": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 미포함. label-schema.md §5-1의 «text == body[start:end] 가 항상 참» 규약과 같다." },
@@ -213,7 +203,7 @@
         "text_id": {
           "type": "string",
           "description": "offset이 어느 채널 기준인가. 채널마다 원문/가명 텍스트가 따로라 이게 없으면 복원이 엉뚱한 곳을 가리킨다.",
-          "pattern": "^t[0-9]+$"
+          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
         },
         "label": {
           "type": "string",
@@ -434,14 +424,14 @@
         "targets": {
           "type": "array",
           "minItems": 1,
-          "description": "unpublish·rewrite는 post_id, activity_meta는 메타 필드명을 담는다.",
+          "description": "무엇을 고치는 대상인가. 글 · 활동 메타 · 프로필 소개란 셋이다.\n\nprofile을 따로 둔 이유 — 프로필은 글에 속하지 않아 글을 전부 비공개해도 사라지지 않는다. C의 contribution이 그 몫을 user_scoped·residual_risk로 넘겨주는데, 여기 자리가 없으면 「글을 지워도 위험도가 안 내려간다」까지만 계산되고 화면에 해결책을 못 띄운다. S12 실측이 그 사례다 — 직업이 본문에 한 번도 안 나오고 프로필에만 있다.",
           "items": {
             "type": "object",
             "required": ["kind", "ref"],
             "additionalProperties": false,
             "properties": {
-              "kind": { "type": "string", "enum": ["post", "meta_field"] },
-              "ref": { "type": "string", "description": "post_id 또는 nickname/geo_tag/post_time" }
+              "kind": { "type": "string", "enum": ["post", "meta_field", "profile"] },
+              "ref": { "type": "string", "description": "kind에 따라 — post는 post_id, meta_field는 nickname/geo_tag/post_time, profile은 profile_bio" }
             }
           }
         },
