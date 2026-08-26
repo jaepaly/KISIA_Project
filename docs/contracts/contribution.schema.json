@@ -1,1 +1,358 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jaepaly/KISIA_Project/docs/contracts/contribution.schema.json",
+  "title": "게시물별 특정성 위험 기여도 입출력",
+  "description": "전체 게시물 기준 위험도와 각 게시물을 제외하고 재계산한 위험도의 차이를 기록하는 기여도 계산 계약",
+  "$comment": "런타임 검증 불변식: (1) risk_after는 null이 아니면 residual_risk 이상이어야 한다. (2) greedy_path의 모든 risk_after는 residual_risk 이상이어야 한다. (3) 각 contribution에서 risk_without = baseline_risk + delta가 성립해야 한다. (4) residual_risk > 0이면 user_scoped는 비어 있지 않아야 한다. residual_risk = 0이면 user_scoped는 []일 수 있다. (5) contributions는 input.post_ids의 모든 게시물에 대해 정확히 하나씩 존재해야 한다. (6) rank는 abs(delta) 내림차순이며 동률은 post_id 오름차순이어야 한다. 이 관계들은 JSON Schema만으로 완전히 강제할 수 없으므로 별도 검증 코드에서 검사한다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "engine_version",
+    "input",
+    "output"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "engine_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "기여도 계산 엔진 버전. 예: c3-0.1.0"
+    },
+    "input": {
+      "$ref": "#/$defs/input"
+    },
+    "output": {
+      "$ref": "#/$defs/output"
+    }
+  },
+  "$defs": {
+    "risk_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "user_ref",
+        "post_ids",
+        "method"
+      ],
+      "properties": {
+        "user_ref": {
+          "type": "string",
+          "pattern": "^u_[0-9a-f]{8,}$",
+          "description": "런타임 사용자를 가리키는 비식별 참조값. 원본 사용자 ID를 넣지 않는다."
+        },
+        "post_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "기준 위험도와 게시물별 기여도를 계산할 게시물 참조값 목록. contributions에는 이 목록의 모든 게시물이 하나씩 포함되어야 한다."
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "loo",
+            "approx"
+          ],
+          "description": "기여도 계산 방식. loo는 Leave-One-Out 기준 계산, approx는 이후 근사 기여도 계산 방식이다."
+        },
+        "removed_post_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "조치를 가정해 위험도를 재계산할 때 비공개한 것으로 처리할 게시물 참조값 목록. D 또는 사용자가 선택한 임의 조합을 전달할 수 있다. 없으면 현재 상태를 기준으로 계산한다."
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_risk",
+        "residual_risk",
+        "contributions",
+        "user_scoped",
+        "greedy_path",
+        "note"
+      ],
+      "properties": {
+        "baseline_risk": {
+          "$ref": "#/$defs/risk_score",
+          "description": "입력된 모든 게시물과 사용자 단위 단서를 포함하여 계산한 현재 기준 위험도"
+        },
+        "residual_risk": {
+          "$ref": "#/$defs/risk_score",
+          "description": "모든 게시물을 비공개해도 프로필 소개란, 닉네임, 활동 패턴 등 사용자 단위 단서 때문에 남는 위험도. 사용자 단위 단서가 없으면 0이다. 게시물 제거만으로 계산되는 위험도는 이 값 아래로 내려가서는 안 된다."
+        },
+        "risk_after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/risk_score"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "input.removed_post_ids에 지정된 게시물을 모두 제외한 뒤 다시 계산한 위험도. removed_post_ids가 없으면 null."
+        },
+        "contributions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/contribution"
+          },
+          "description": "input.post_ids의 각 게시물을 하나씩 제외하여 계산한 게시물별 위험도 변화. 모든 post_id에 대해 정확히 하나의 항목을 반환한다."
+        },
+        "user_scoped": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/user_scoped_item"
+          },
+          "description": "게시물에 속하지 않는 사용자 단위 단서의 위험 기여도. 프로필 소개란, 닉네임, 활동 패턴 등을 기록하며 removed_post_ids로는 제거되지 않는다. 해당 단서가 없으면 []를 반환한다."
+        },
+        "greedy_path": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/greedy_step"
+          },
+          "description": "기여도가 큰 게시물을 순차적으로 제외하면서 매 단계 위험도를 다시 계산한 경로. delta의 단순 합으로 계산하지 않는다."
+        },
+        "approx_error": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "method가 approx일 때 LOO 결과 대비 근사 오차를 기록하기 위한 값. loo 또는 미측정 상태에서는 null일 수 있다."
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "description": "기여도 및 greedy 재계산 결과를 해석할 때 필요한 설명"
+        }
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "post_id",
+        "risk_without",
+        "delta",
+        "rank",
+        "clue_ids",
+        "top_spans"
+      ],
+      "properties": {
+        "post_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "제외하여 기여도를 계산한 게시물 참조값"
+        },
+        "risk_without": {
+          "$ref": "#/$defs/risk_score",
+          "description": "해당 게시물 하나를 제외한 뒤 다시 계산한 위험도"
+        },
+        "delta": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100,
+          "description": "해당 게시물을 비공개했을 때의 위험도 변화량. delta = risk_without - baseline_risk. 위험도가 내려가면 음수이고 올라가면 양수다."
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "게시물이 위험도 계산에 미치는 영향 크기 순위. abs(delta) 내림차순이며 동률은 post_id 오름차순이다."
+        },
+        "clue_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "해당 게시물의 기여도 판단에 사용된 단서 참조값"
+        },
+        "top_spans": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/span_ref"
+          },
+          "description": "화면에서 기여 이유로 표시할 대표 근거 스팬. 원문 텍스트를 직접 전달하지 않고 span_id와 text_id로 참조한다. 최대 3개."
+        }
+      }
+    },
+    "user_scoped_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "delta",
+        "top_spans"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "profile_bio",
+            "nickname",
+            "activity_pattern"
+          ],
+          "description": "게시물에 속하지 않는 사용자 단위 단서의 출처. profile_bio는 프로필 소개란, nickname은 닉네임, activity_pattern은 게시 시각·위치태그 등의 반복 패턴을 의미한다."
+        },
+        "delta": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100,
+          "description": "해당 사용자 단위 단서를 수정하거나 제거했을 때의 위험도 변화량. 위험도가 내려가면 음수이고 올라가면 양수다."
+        },
+        "top_spans": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/span_ref"
+          },
+          "description": "사용자 단위 위험의 대표 근거 스팬. 원문 텍스트 대신 span_id와 text_id로 참조하며 최대 3개."
+        }
+      }
+    },
+    "span_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "span_id",
+        "text_id"
+      ],
+      "properties": {
+        "span_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "근거 스팬의 참조 ID"
+        },
+        "text_id": {
+          "type": "string",
+          "pattern": "^(title|body|profile_bio|photo_caption:[0-9]+)$",
+          "description": "스팬이 속한 텍스트 참조값. 사진 캡션은 photo_caption:N 형식을 사용한다."
+        }
+      }
+    },
+    "greedy_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "remove",
+        "risk_after"
+      ],
+      "properties": {
+        "remove": {
+          "type": "string",
+          "minLength": 1,
+          "description": "해당 단계에서 추가로 제외한 게시물 참조값"
+        },
+        "risk_after": {
+          "$ref": "#/$defs/risk_score",
+          "description": "현재 단계까지 선택된 게시물을 모두 제외한 뒤 다시 계산한 위험도"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "schema_version": "1.0",
+      "engine_version": "c3-0.1.0",
+      "input": {
+        "user_ref": "u_deadbeef",
+        "post_ids": [
+          "R1-b01",
+          "R1-b07"
+        ],
+        "method": "loo",
+        "removed_post_ids": [
+          "R1-b07"
+        ]
+      },
+      "output": {
+        "baseline_risk": 79.7,
+        "residual_risk": 34.0,
+        "risk_after": 61.7,
+        "contributions": [
+          {
+            "post_id": "R1-b07",
+            "risk_without": 61.7,
+            "delta": -18.0,
+            "rank": 1,
+            "clue_ids": [
+              "R1-b07#0"
+            ],
+            "top_spans": [
+              {
+                "span_id": "R1-b07_s01",
+                "text_id": "body"
+              }
+            ]
+          },
+          {
+            "post_id": "R1-b01",
+            "risk_without": 74.0,
+            "delta": -5.7,
+            "rank": 2,
+            "clue_ids": [
+              "R1-b01#0"
+            ],
+            "top_spans": [
+              {
+                "span_id": "R1-b01_s01",
+                "text_id": "body"
+              }
+            ]
+          }
+        ],
+        "user_scoped": [
+          {
+            "source": "profile_bio",
+            "delta": -34.0,
+            "top_spans": [
+              {
+                "span_id": "R1_bio_s01",
+                "text_id": "profile_bio"
+              }
+            ]
+          }
+        ],
+        "greedy_path": [
+          {
+            "remove": "R1-b07",
+            "risk_after": 61.7
+          },
+          {
+            "remove": "R1-b01",
+            "risk_after": 52.4
+          }
+        ],
+        "approx_error": null,
+        "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+      }
+    }
+  ]
+}
