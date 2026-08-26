@@ -7,7 +7,8 @@ name: weekly-reminder
 #
 #    월 14:00  주간 보고회    → 13:00 알림
 #    화 20:00  팀 회의        → 19:00 알림
-#    수 23:59  개별 보고 마감  → 18:00 알림 (PR·이슈 목록 첨부)
+#    수 23:59  개별 보고 마감  → 18:00 알림
+#                                 (승인 대기 PR 을 «사람별로» + PR·이슈 목록)
 #    목 20:00  정기 멘토링    → 19:00 알림
 #
 #  모임 알림은 «누가·언제» 만 남긴다. 안건을 넣으면 길어지고,
@@ -96,6 +97,51 @@ jobs:
                    2>/dev/null || echo "")
           [ -n "$issues" ] || issues="· 없음"
 
+          # ── 승인 0건인 PR 을 «사람별로» 묶는다 ─────────────────
+          #    위 PR 목록은 평평해서 급한 게 안 보인다. 「PR 6개」보다
+          #    「당신이 4건 밀려 있다」가 사람을 움직인다.
+          #
+          #    승인 판정은 latestReviews 로 한다. reviewDecision 은
+          #    필수 승인 수가 0이면 null 로 와서 못 쓴다 (실측).
+          waiting=$(gh pr list --state open --limit 30 \
+                      --json number,reviewRequests,latestReviews \
+                      --jq '[ .[]
+                              | select((.latestReviews // [] | map(select(.state=="APPROVED")) | length) == 0)
+                              | . as $p | .reviewRequests[] | {login:.login, num:$p.number} ]
+                            | group_by(.login)
+                            | map({login:.[0].login, prs:(map(.num)|sort|reverse)})
+                            | sort_by(-(.prs|length)) | .[]
+                            | "\(.login)\t\(.prs|map("#\(.)")|join(" "))"' \
+                    2>/dev/null || echo "")
+
+          review_block=""
+          if [ -n "$waiting" ]; then
+            lines=""
+            while IFS=$'\t' read -r who list; do
+              [ -n "$who" ] || continue
+              lines="$lines$(mention "$who") · $list"$'\n'
+            done <<< "$waiting"
+            lines=${lines%$'\n'}
+
+            # 제일 오래 묵은 것 하나만 시간과 함께 — 전부 적으면 안 읽는다
+            oldest=$(gh pr list --state open --limit 30 \
+                       --json number,createdAt,reviewRequests,latestReviews \
+                       --jq '[ .[]
+                               | select((.latestReviews // [] | map(select(.state=="APPROVED")) | length) == 0)
+                               | select((.reviewRequests|length) > 0) ]
+                             | sort_by(.createdAt) | .[0] | "#\(.number) \(.createdAt)"' \
+                     2>/dev/null || echo "")
+            age=""
+            if [ -n "$oldest" ] && [ "$oldest" != "null" ]; then
+              onum=${oldest%% *}; oiso=${oldest##* }
+              h=$(( ( $(date -u +%s) - $(date -u -d "$oiso" +%s) ) / 3600 ))
+              age=$(printf '\n가장 오래 기다린 건 **%s — %d시간**입니다.' "$onum" "$h")
+            fi
+
+            # 멘션은 코드블록 밖에 둔다. 안에 넣으면 <@id> 가 글자로 나온다
+            review_block=$(printf '\n🔍 **승인 기다리는 PR** — 아래는 전부 **승인 0건**입니다\n\n%s%s\n' "$lines" "$age")
+          fi
+
           # ── 본문 ──────────────────────────────────────────────
           case "$KIND" in
             mon)
@@ -105,8 +151,8 @@ jobs:
               body=$(printf '%s\n\n🗓️ **팀 회의 — 오늘 20:00**' "$ALL")
               ;;
             wed)
-              body=$(printf '%s\n\n📋 **개별 보고 5줄 — 오늘 23:59 마감**\n\nCONTRIBUTING 의 5줄 형식 그대로 보내주세요.\n**4번 「증빙 링크」에 커밋·PR 링크**를 꼭 넣어주세요 — 그게 있어야 주간보고에 그대로 옮깁니다.\n\n**지금 열린 PR**\n```\n%s\n```\n**열린 이슈**\n```\n%s\n```' \
-                     "$TEAM" "$prs" "$issues")
+              body=$(printf '%s\n\n📋 **개별 보고 5줄 — 오늘 23:59 마감**\n\nCONTRIBUTING 의 5줄 형식 그대로 보내주세요.\n**4번 「증빙 링크」에 커밋·PR 링크**를 꼭 넣어주세요 — 그게 있어야 주간보고에 그대로 옮깁니다.\n%s\n**지금 열린 PR**\n```\n%s\n```\n**열린 이슈**\n```\n%s\n```' \
+                     "$TEAM" "$review_block" "$prs" "$issues")
               ;;
             thu)
               body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00**' "$ALL")
