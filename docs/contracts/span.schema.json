@@ -1,1 +1,129 @@
-{}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kopl/contracts/span.schema.json",
+  "title": "1단 스팬 탐지 출력",
+  "description": "주는 쪽 B(최진필) · 받는 쪽 C·D·E. 버전 1.0 — 2026-08-26.\n\n[설계 원칙 및 제약 — label-schema.md v1.0 §5-3·§8-1 확정 정합]\n1. 좌표 기준: 문자 offset, 0-based, [start, end) 반열림, NFC 정규화 필수.\n2. 기준 텍스트: text_id 채널(title, body, profile_bio, photo_caption:<n>) 기준. 검증식 text == texts[text_id][start:end] 성립.\n3. 텍스트 정렬 순서: title → body → photo_caption:0 → … → profile_bio. (색인은 숫자로 정렬: photo_caption:10은 photo_caption:2보다 뒤).\n4. 스팬 식별자: span_id는 「텍스트 정렬 순서 → start 오름차순」으로 부여. 색인 불변(캡션 삭제 시에도 재부여 없이 빈자리 유지).\n5. 겹침 금지: 같은 text_id 안에서 겹침 금지 · 최장 우선 (Longest match, BIO 태깅 제약).\n6. 유형 정본: label-schema.md §3-2 10종 상한 (AGE, SEX, LOC_ADMIN, LOC_FACILITY, REL_HOME, REL_WORK, JOB, FAM, COMMUTE, INCOME).\n7. 주체 귀속: self, other, unknown 3종 (동탄 사는 친구 함정 분기).\n8. 모델 신뢰도: score [0, 1] 선택 필드 (규칙 기반 베이스라인 도구 호환).\n9. 모델 버전: RULES-DO-NOT #9에 따라 model_version 필수 명시.\n10. 검증 분담: 구조 검증은 JSON Schema가, 0 <= start < end 및 겹침 검사는 semantic validator(validate.py)가 수행.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "model_version",
+    "post_id",
+    "spans"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "계약 버전"
+    },
+    "model_version": {
+      "type": "string",
+      "description": "예 koelectra-base-v3-span-0.1.0 (RULES-DO-NOT #9)"
+    },
+    "post_id": {
+      "type": "string",
+      "description": "게시글 식별자"
+    },
+    "spans": {
+      "type": "array",
+      "description": "탐지된 준식별자 스팬 목록 (텍스트 정렬 순서 → start 오름차순 정렬)",
+      "items": {
+        "type": "object",
+        "required": [
+          "span_id",
+          "text_id",
+          "start",
+          "end",
+          "text",
+          "type",
+          "level",
+          "subject"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "span_id": {
+            "type": "string",
+            "description": "<post_id>_s<2자리>. 프로필은 <persona_id>_bio_s<2자리> (label-schema §8-1)"
+          },
+          "text_id": {
+            "type": "string",
+            "pattern": "^(title|body|profile_bio|photo_caption:\\d+)$",
+            "description": "offset의 기준 텍스트 (label-schema §5-3)"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "문자 offset, 0-based, 포함, NFC"
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "문자 offset, 미포함, NFC. start < end 검증은 semantic validator에서 수행"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "description": "text == texts[text_id][start:end] 가 항상 참 (빈 문자열 불가)"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "AGE",
+              "SEX",
+              "LOC_ADMIN",
+              "LOC_FACILITY",
+              "REL_HOME",
+              "REL_WORK",
+              "JOB",
+              "FAM",
+              "COMMUTE",
+              "INCOME"
+            ],
+            "$comment": "정본은 label-schema.md §3-2. 여기는 복사본이다"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "explicit",
+              "implicit",
+              "inferential"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "enum": [
+              "self",
+              "other",
+              "unknown"
+            ]
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "모델 확률값이며 위험도가 아니다 (label-schema §8-2). 규칙 기반 베이스라인에는 없다 — 선택 필드"
+          }
+        }
+      }
+    },
+    "flags": {
+      "type": "object",
+      "description": "BIO 밖 글 단위 보조 플래그 (label-schema §7). 생략 시 미수행으로 해석.",
+      "additionalProperties": false,
+      "properties": {
+        "gen_signal": {
+          "type": "boolean",
+          "description": "세대 신호 표현 존재 여부"
+        },
+        "meme_hits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "매칭된 밈·유행어 표제어 목록 (data/dict/signatures/meme.json 기반)"
+        }
+      }
+    }
+  }
+}
