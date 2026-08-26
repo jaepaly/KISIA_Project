@@ -81,7 +81,7 @@
           "items": {
             "allOf": [
               { "$ref": "#/$defs/TextSegment" },
-              { "properties": { "text_id": { "pattern": "^(body|title|photo_caption_[0-9]+)$" } } }
+              { "properties": { "text_id": { "pattern": "^(body|title|photo_caption:[0-9]+)$" } } }
             ]
           }
         },
@@ -134,8 +134,8 @@
       "properties": {
         "text_id": {
           "type": "string",
-          "description": "어느 텍스트 채널인가. 채널 이름이 곧 식별자다 — label-schema.md §5-3의 표기를 그대로 쓴다.\n\n사진 캡션은 한 글에 여러 장이라 인덱스를 붙인다(photo_caption_0, photo_caption_1, …). 0부터, 글 안의 표시 순서대로.\n\n⚠️ 이 목록을 늘리려면 계약 변경(2명 승인)이 필요하다. 가상 SNS(⑦)가 제공하는 필드와 1:1로 맞아야 하므로 E와 함께 정한다.\n\n[초안에서 바꾼 것] 불투명 식별자(t1, t2)를 채널 이름으로 바꿨다. 골드셋은 사람이 손으로 라벨링하므로 사람이 쓰는 쪽 표기가 이긴다 — 이렇게 하면 label-schema.md와 값이 같아져 변환 계층이 사라진다. 이 값에 흡수되는 field·ordinal은 삭제했다. 같은 사실을 두 곳에 적으면 text_id와 field가 서로 다른 채널을 가리키는 입력이 검증을 통과한다.",
-          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
+          "description": "어느 텍스트 채널인가. 채널 이름이 곧 식별자다 — label-schema.md §5-3의 표기를 그대로 쓴다.\n\n사진 캡션은 한 글에 여러 장이라 인덱스를 붙인다(photo_caption:0, photo_caption:1, …). 0부터, 글 안의 표시 순서대로.\n\n⚠️ 이 목록을 늘리려면 계약 변경(2명 승인)이 필요하다. 가상 SNS(⑦)가 제공하는 필드와 1:1로 맞아야 하므로 E와 함께 정한다.\n\n[초안에서 바꾼 것] 불투명 식별자(t1, t2)를 채널 이름으로 바꿨다. 골드셋은 사람이 손으로 라벨링하므로 사람이 쓰는 쪽 표기가 이긴다 — 이렇게 하면 label-schema.md와 값이 같아져 변환 계층이 사라진다. 이 값에 흡수되는 field·ordinal은 삭제했다. 같은 사실을 두 곳에 적으면 text_id와 field가 서로 다른 채널을 가리키는 입력이 검증을 통과한다.",
+          "pattern": "^(body|title|profile_bio|photo_caption:[0-9]+)$"
         },
         "pseudonymized": {
           "type": "string",
@@ -154,7 +154,7 @@
         "text_id": {
           "type": "string",
           "description": "이 스팬이 어느 텍스트 채널에 있는가. ⚠️ 본문 offset만으로는 프로필·캡션의 단서를 가리킬 수 없으므로 필수다.",
-          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
+          "pattern": "^(body|title|profile_bio|photo_caption:[0-9]+)$"
         },
         "start": { "type": "integer", "minimum": 0, "description": "해당 text_id의 원문 기준 문자 offset, 0-based, 포함" },
         "end": { "type": "integer", "minimum": 0, "description": "원문 기준 문자 offset, 미포함. label-schema.md §5-1의 «text == body[start:end] 가 항상 참» 규약과 같다." },
@@ -203,7 +203,7 @@
         "text_id": {
           "type": "string",
           "description": "offset이 어느 채널 기준인가. 채널마다 원문/가명 텍스트가 따로라 이게 없으면 복원이 엉뚱한 곳을 가리킨다.",
-          "pattern": "^(body|title|profile_bio|photo_caption_[0-9]+)$"
+          "pattern": "^(body|title|profile_bio|photo_caption:[0-9]+)$"
         },
         "label": {
           "type": "string",
