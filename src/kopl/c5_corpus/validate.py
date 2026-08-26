@@ -50,6 +50,83 @@ CORPUS_NOISE_BAND = (0.70, 0.80)    # 코퍼스 합산 — 완료 기준
 
 POST_ID_RE = re.compile(r"^b\d{2}$")
 
+# ── 카드 공유 인물 간 목소리 대조 (persona-design.md §2-⑤) ──────────────
+#
+# 카드 → 인물 → 글 구조에서 카드 1장으로 인물 N명을 만든다. 이때 인물끼리
+# 목소리가 안 갈리면 "전부 똑같은 AI"가 되고, 모델이 내용이 아니라 문체를 외운다.
+#
+# 다만 카드를 공유한다는 건 상위 톤을 공유한다는 뜻이라 전부 달라야 하는 건 아니다.
+# 카드가 정하는 축은 겹쳐도 정상이고, 인물이 정하는 축이 겹치면 문제다.
+CARD_BOUND_KEYS = ("종결어미", "격식", "톤", "말투")   # 카드가 정한다 — 겹쳐도 정상
+VOICE_SIM_THRESHOLD = 0.6                              # 이 이상이면 "겹침"
+MIN_DISTINCT_AXES = 4                                  # 인물 축은 최소 이만큼 달라야
+
+
+def _bigrams(text: str) -> set:
+    t = re.sub(r"[\s·,./·~()\[\]'\"]+", "", str(text))
+    return {t[i:i + 2] for i in range(len(t) - 1)} or {t}
+
+
+def _similarity(a, b) -> float:
+    """자유서술은 문자 바이그램 자카드, 목록은 원소 자카드."""
+    if isinstance(a, list) and isinstance(b, list):
+        sa, sb = set(map(str, a)), set(map(str, b))
+    else:
+        sa, sb = _bigrams(a), _bigrams(b)
+    if not sa or not sb:
+        return 0.0
+    return len(sa & sb) / len(sa | sb)
+
+
+def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
+    """같은 카드를 참조하는 인물끼리 목소리가 갈리는지 본다."""
+    by_card: dict[str, list[tuple[str, dict]]] = {}
+    for pid, d in personas:
+        for ref in d.get("card_ref", []) or []:
+            by_card.setdefault(ref, []).append((pid, d))
+
+    lines: list[str] = []
+    for card, group in sorted(by_card.items()):
+        if len(group) < 2:
+            continue
+        for i in range(len(group)):
+            for j in range(i + 1, len(group)):
+                pid_a, a = group[i]
+                pid_b, b = group[j]
+                va = a.get("voice") or {}
+                vb = b.get("voice") or {}
+                rows, distinct, bound = [], 0, 0
+                for k in sorted(set(va) & set(vb)):
+                    sim = _similarity(va[k], vb[k])
+                    is_bound = any(t in k for t in CARD_BOUND_KEYS)
+                    if is_bound:
+                        bound += 1
+                        mark = "(카드 축)"
+                    elif sim < VOICE_SIM_THRESHOLD:
+                        distinct += 1
+                        mark = "다름"
+                    else:
+                        mark = "⚠ 겹침"
+                    rows.append(f"      {k:12} {sim:.2f}  {mark}")
+                ta = a.get("noise_topics") or (va.get("소재") or [])
+                tb = b.get("noise_topics") or (vb.get("소재") or [])
+                if ta and tb:
+                    sim = _similarity(ta, tb)
+                    if sim < VOICE_SIM_THRESHOLD:
+                        distinct += 1
+                    rows.append(f"      {'소재':12} {sim:.2f}  "
+                                f"{'다름' if sim < VOICE_SIM_THRESHOLD else '⚠ 겹침'}")
+
+                total = len(rows) - bound
+                ok = distinct >= min(MIN_DISTINCT_AXES, total)
+                lines.append(f"  카드 {card}: {pid_a} ↔ {pid_b}")
+                lines += rows
+                lines.append(
+                    f"      → 인물 축 {total}개 중 {distinct}개 다름 "
+                    f"{'OK' if ok else f'⚠ {MIN_DISTINCT_AXES}개 이상 달라야 한다'}"
+                )
+    return lines
+
 
 class Issue:
     __slots__ = ("level", "path", "msg")
@@ -173,6 +250,17 @@ def validate(persona: dict) -> list[Issue]:
                 f"참조 카드의 노이즈 목표와 맞는지 확인",
             )
 
+    # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
+    topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")
+    if not topics:
+        warn(
+            "noise_topics",
+            "잡담 소재가 지정되지 않았다. §2-⑤ 는 '소재'를 목소리 차별화 축으로 둔다 — "
+            "없으면 인물 간 잡담이 같은 소재로 수렴한다",
+        )
+    elif isinstance(topics, list) and len(topics) < 5:
+        warn("noise_topics", f"{len(topics)}개 — 잡담 글 수만큼 있어야 반복되지 않는다")
+
     # ── voice ─────────────────────────────────────────────────────────
     voice = persona.get("voice") or {}
     if not voice:
@@ -224,6 +312,7 @@ def main(argv: list[str]) -> int:
         return 2
     bad = 0
     tot_posts = tot_clue = tot_amb = 0
+    loaded: list[tuple[str, dict]] = []
     for f in files:
         ok, issues = validate_file(f)
         mark = "OK  " if ok else "FAIL"
@@ -237,6 +326,7 @@ def main(argv: list[str]) -> int:
         tot_posts += d.get("post_plan", {}).get("total", 0)
         tot_clue += len(d.get("clue_plan", []))
         tot_amb += sum(1 for c in d.get("clue_plan", []) if c.get("ambiguous"))
+        loaded.append((d.get("id") or d.get("persona_id") or f.stem, d))
 
     print(f"\n{len(files) - bad}/{len(files)} 통과")
 
@@ -252,6 +342,11 @@ def main(argv: list[str]) -> int:
         )
         if not ok and len(files) > 1:
             bad += 1
+
+    cross = cross_check(loaded)
+    if cross:
+        print("\n[카드 공유 인물 간 목소리 대조 — §2-⑤]")
+        print("\n".join(cross))
 
     if tot_clue:
         print(

@@ -14,22 +14,48 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import re
 import statistics as stat
 import sys
 from pathlib import Path
 
+# Windows 콘솔이 CP949 로 잡혀 있어도 한글이 깨지지 않게
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
+
 HANJA = re.compile(r"[\u4E00-\u9FFF\u3400-\u4DBF]")
 EMOJI = re.compile(r"[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF]")
+# 한글 자모 이모티콘. ㅎㅎ ㅋㅋ ㅜㅜ ㅠㅠ 는 이모지 정규식에 안 걸린다.
+# 문체 리얼리티의 핵심 지표라 따로 센다 (연속은 1회로 묶는다: "ㅋㅋㅋㅋ" = 1)
+JAMO_EMO = re.compile(r"[ㅋㅎㅜㅠㅡㅅ]{1,}")
 PUNCT = re.compile(r"[.,!?~…·;:\"'“”‘’()\[\]<>]")
-SENT_SPLIT = re.compile(r"[.!?…\n]+")
+
+# 문장 분리. 종결부호만으로 자르면 "쉼표로 이어붙이는" 인물의 문장이
+# 문단 통째로 한 문장이 되어 평균 길이가 폭주한다(실측 186자).
+# 한국어 종결어미 뒤에서도 끊는다.
+SENT_SPLIT = re.compile(
+    r"(?:[.!?…]+|\n+|"
+    r"(?<=요)\s+|(?<=음)\s+|(?<=함)\s+|(?<=다)\s+|(?<=죠)\s+|(?<=네)\s+)"
+)
 # 해요체/합쇼체 종결 vs 반말·명사형 종결
 POLITE_END = re.compile(r"(요|죠|습니다|입니다|세요)\s*$")
 
 
 def post_metrics(body: str) -> dict:
-    sents = [s.strip() for s in SENT_SPLIT.split(body) if s.strip()]
+    sents = [s.strip() for s in SENT_SPLIT.split(body) if s and s.strip()]
+    # 3자 미만 조각은 분리 오류로 보고 앞 문장에 붙인다
+    merged: list[str] = []
+    for x in sents:
+        if merged and len(x) < 3:
+            merged[-1] += " " + x
+        else:
+            merged.append(x)
+    sents = merged
     lens = [len(s) for s in sents] or [0]
     polite = sum(1 for s in sents if POLITE_END.search(s))
     return {
@@ -40,6 +66,7 @@ def post_metrics(body: str) -> dict:
         "부호": len(PUNCT.findall(body)),
         "한자": len(HANJA.findall(body)),
         "이모지": len(EMOJI.findall(body)),
+        "자모이모티콘": len(JAMO_EMO.findall(body)),
         "존댓말_문장": polite,
         "존댓말_비율": polite / len(sents) if sents else 0.0,
     }
@@ -88,7 +115,19 @@ def main() -> int:
     rubric = json.loads(Path(args.rubric).read_text(encoding="utf-8-sig")) if args.rubric else None
     fail = 0
 
-    for path in args.jsonl:
+    # PowerShell 은 와일드카드를 펼치지 않고 그대로 넘긴다. 여기서 직접 처리한다.
+    paths: list[str] = []
+    for a in args.jsonl:
+        hits = sorted(glob.glob(a))
+        paths += hits if hits else [a]
+    if not paths:
+        print("읽을 파일이 없다")
+        return 1
+
+    for path in paths:
+        if not Path(path).is_file():
+            print(f"(없음: {path})")
+            continue
         recs = [
             json.loads(l) for l in Path(path).read_text(encoding="utf-8-sig").splitlines() if l.strip()
         ]
