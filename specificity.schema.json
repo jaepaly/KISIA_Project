@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c2-0.1.0",
+  "dict_version": "geo-2026-07",
+
+  "input": {
+    "user_ref": "u_a1b2c3d4",
+    "conditions": [
+      {
+        "axis": "location",
+        "kind": "facility",
+        "geo_code": "4146310100",
+        "resolution": 4,
+        "confidence": 0.8,
+        "source_post_ids": ["R1-b07"]
+      },
+      {
+        "axis": "age",
+        "kind": "age_band",
+        "value": "45-49",
+        "resolution": 3,
+        "confidence": 0.9,
+        "source_post_ids": ["R1-b01"]
+      }
+    ]
+  },
+
+  "output": {
+    "k": 581.4,
+    "k_level": "ACCEPTABLE",
+
+    "basis": {
+      "source": "행정안전부 주민등록 인구통계",
+      "as_of": "2026-07"
+    },
+
+    "risk": 70.7,
+
+    "risk_by_axis": {
+      "location": 85,
+      "age": 70,
+      "sex": 60,
+      "occupation": 70,
+      "family": 85,
+      "commute": 75,
+      "income": 50
+    },
+
+    "floor_applied": false,
+
+    "steps": [
+      {
+        "axis": "location",
+        "condition": "신갈동(4146310100)",
+        "n_after": 21930,
+        "method": "population_lookup"
+      },
+      {
+        "axis": "age+sex",
+        "condition": "45-49세 남성",
+        "n_after": 3021,
+        "method": "crosstab_lookup"
+      },
+      {
+        "axis": "family",
+        "condition": "중고생 자녀 2명",
+        "p": 0.08,
+        "confidence": 0.8,
+        "q_damped": 0.45,
+        "n_after": 1359,
+        "method": "ratio_damped"
+      }
+    ],
+
+    "assumptions": [
+      "모집단: 주민등록 인구통계 2026-07 기준",
+      "alpha=0.6"
+    ]
+  }
+}
