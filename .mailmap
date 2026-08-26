@@ -14,6 +14,10 @@
 
 박재현 (PM·D) <jaepaly8216@gmail.com>
 박재현 (PM·D) <jaepaly8216@gmail.com> <jaepaly@users.noreply.github.com>
+박재현 (PM·D) <jaepaly8216@gmail.com> <98218233+jaepaly@users.noreply.github.com>
+#   GitHub: jaepaly · 숫자 ID 접두사가 붙은 noreply 가 정본이다.
+#   GitHub 웹 UI 의 squash merge 가 이 주소로 커밋을 만든다 — 접두사 없는
+#   주소만 등록하면 머지 커밋이 별도 인물로 갈린다 (2026-08-24 실측 3건).
 
 # --- 역할 확정 완료. 각자 GitHub 아이디·커밋 메일을 받아 채운다 -------
 # 받을 것: ① GitHub 아이디 ② 커밋에 찍히는 이름·메일
@@ -30,11 +34,14 @@
 #      학교 메일을 정규화 이름에 두면 git shortlog 출력에 그대로 찍히고,
 #      그걸 주간보고서에 붙이는 순간 공개 문서에 실메일이 실린다.
 
-# 최진필 (B) <메일>
-# 최진필 (B) <메일> <users.noreply 메일>
+최진필 (B) <170066171+philotti@users.noreply.github.com>
+#   GitHub: philotti · noreply 주소 확인 (2026-08-24)
 
-# 신정현 (C) <메일>
-# 신정현 (C) <메일> <users.noreply 메일>
+신정현 (C) <144237164+jhyun114@users.noreply.github.com>
+#   GitHub: jhyun114 · noreply 주소 확인 (2026-08-24)
+#   user.name 표기 흔들림은 이 줄이 흡수한다 — mailmap은 메일로 매칭한다
 
-# 이지희 (E) <메일>
-# 이지희 (E) <메일> <users.noreply 메일>
+이지희 (E) <128776761+zihhhhh@users.noreply.github.com>
+#   GitHub: zihhhhh · noreply 주소 확인 (2026-08-24)
+#   로컬 user.name 이 LeeJiHee 라 shortlog 에 라틴 표기로 찍힌다.
+#   mailmap 은 메일로 매칭하므로 이 줄이 「이지희 (E)」로 정규화한다.
