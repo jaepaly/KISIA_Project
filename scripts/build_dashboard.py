@@ -203,91 +203,162 @@ def bake(prs, issues, todos, todo_files) -> dict:
 # 그래야 «구운 화면»과 «실시간 화면»이 갈리지 않는다 — 렌더 코드가 하나다.
 
 CSS = r"""
+/* ── 토큰 ─────────────────────────────────────────────────────────
+   색은 여기서만 정한다. 어두운 화면은 토큰만 바꾼다 — 규칙은 한 벌이다. */
 :root{
-  --bg:#fbfbfa; --card:#fff; --ink:#1a1a19; --dim:#6b6b68; --line:#e5e5e2;
-  --accent:#7c5cff; --accent-soft:#f3f0ff; --red:#c4342b; --amber:#a86400;
-  --green:#2c7a4b; --chip:#f0f0ee;
+  --bg:#faf9f7; --card:#fff; --ink:#191917; --dim:#71716c; --faint:#a3a39c;
+  --line:#e8e6e1; --line-soft:#f1efeb;
+  --accent:#6d4aff; --accent-ink:#5a37e8; --accent-bg:#f4f1ff;
+  --red:#c0362c; --red-bg:#fdf1f0; --amber:#9a5b00; --green:#217a4b;
+  --chip:#f2f0ec;
+  --r:14px; --shadow:0 1px 2px rgba(24,22,18,.05);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#16161a; --card:#1e1e23; --ink:#eceef2; --dim:#9a9aa4; --line:#2e2e36;
-  --accent:#9d85ff; --accent-soft:#241f38; --red:#ff8a80; --amber:#e3aa4a;
-  --green:#6fcf97; --chip:#26262e;
+  --bg:#141417; --card:#1c1c21; --ink:#eeeef1; --dim:#9b9ba4; --faint:#6e6e78;
+  --line:#2b2b33; --line-soft:#232329;
+  --accent:#a78bff; --accent-ink:#c4b2ff; --accent-bg:#221d33;
+  --red:#ff8a7e; --red-bg:#2a1c1b; --amber:#e0a54a; --green:#63cd92;
+  --chip:#26262e; --shadow:none;
 }}
 :root[data-theme="dark"]{
-  --bg:#16161a; --card:#1e1e23; --ink:#eceef2; --dim:#9a9aa4; --line:#2e2e36;
-  --accent:#9d85ff; --accent-soft:#241f38; --red:#ff8a80; --amber:#e3aa4a;
-  --green:#6fcf97; --chip:#26262e;
+  --bg:#141417; --card:#1c1c21; --ink:#eeeef1; --dim:#9b9ba4; --faint:#6e6e78;
+  --line:#2b2b33; --line-soft:#232329;
+  --accent:#a78bff; --accent-ink:#c4b2ff; --accent-bg:#221d33;
+  --red:#ff8a7e; --red-bg:#2a1c1b; --amber:#e0a54a; --green:#63cd92;
+  --chip:#26262e; --shadow:none;
 }
+
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);
-  font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",
-       "Apple SD Gothic Neo",sans-serif;}
-.wrap{max-width:880px;margin:0 auto;padding:26px 18px 64px}
-h1{font-size:20px;margin:0 0 5px;letter-spacing:-.01em}
-.sub{color:var(--dim);font-size:13px;display:flex;flex-wrap:wrap;
-  gap:4px 10px;align-items:center}
+  font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard",
+       "Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:760px;margin:0 auto;padding:22px 20px 72px}
+a{color:inherit;text-decoration:none}
+
+/* ── 머리말 ───────────────────────────────────────────────────── */
+h1{font-size:19px;line-height:1.3;margin:0 0 7px;letter-spacing:-.015em;
+  font-weight:700}
+.sub{color:var(--dim);font-size:12.5px;display:flex;flex-wrap:wrap;
+  gap:6px 9px;align-items:center}
+.sub .who-team{color:var(--faint)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--green);
-  display:inline-block;margin-right:5px;vertical-align:1px}
-.dot.snap{background:var(--amber)}
+  display:inline-block;margin-right:6px;vertical-align:1px;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 18%,transparent)}
+.dot.snap{background:var(--amber);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--amber) 18%,transparent)}
 button.rf{font:inherit;font-size:12px;cursor:pointer;border:1px solid var(--line);
-  background:var(--card);color:var(--dim);border-radius:6px;padding:2px 9px}
-button.rf:hover{border-color:var(--accent);color:var(--ink)}
-.strip{margin:16px 0 0;font-size:13px;color:var(--dim);
-  display:flex;flex-wrap:wrap;gap:4px 14px}
-.strip b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
-nav{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 22px}
-nav button{font:inherit;font-size:14px;cursor:pointer;padding:7px 14px;
+  background:var(--card);color:var(--dim);border-radius:7px;
+  padding:4px 10px;min-height:28px;transition:.12s}
+button.rf:hover{border-color:var(--accent);color:var(--accent-ink)}
+
+/* 팀 전체 한 줄 */
+.strip{margin:-16px 0 26px;font-size:12px;color:var(--faint);
+  display:flex;flex-wrap:wrap;gap:2px 13px;padding:0 2px}
+.strip b{color:var(--dim);font-weight:650;font-variant-numeric:tabular-nums}
+
+/* ── 탭 — 한 줄 가로 스크롤. 3줄로 늘어나 본문을 밀어내지 않게. ── */
+nav{display:flex;gap:6px;margin:18px -20px 22px;padding:2px 20px;
+  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;scroll-snap-align:center;
+  font:inherit;font-size:13.5px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;
+  min-height:44px;padding:0 15px;                 /* 44px — 손가락이 닿는 최소 */
   border-radius:999px;border:1px solid var(--line);background:var(--card);
-  color:var(--ink);transition:.12s}
-nav button:hover{border-color:var(--accent)}
+  color:var(--dim);transition:.14s;white-space:nowrap}
+nav button:hover{border-color:var(--accent);color:var(--ink)}
+nav button .role{font-weight:750;color:var(--ink);font-size:14px}
+nav button .who{color:var(--faint);font-size:12.5px}
+nav button .n{font-variant-numeric:tabular-nums;font-weight:650;font-size:12px;
+  min-width:19px;height:19px;line-height:19px;text-align:center;
+  border-radius:999px;background:var(--chip);color:var(--dim)}
+nav button .n.zero{opacity:.45}
 nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);
-  color:#fff;font-weight:600}
-nav button .n{opacity:.6;margin-left:5px;font-variant-numeric:tabular-nums}
-nav button .n.zero{opacity:.35}
+  color:#fff}
+nav button[aria-selected="true"] .role,
+nav button[aria-selected="true"] .who{color:#fff}
+nav button[aria-selected="true"] .who{opacity:.75}
+nav button[aria-selected="true"] .n{background:rgba(255,255,255,.24);color:#fff}
 
-/* 지금 할 일 */
-.now{background:var(--accent-soft);border:1px solid var(--accent);
-  border-radius:12px;padding:15px 17px;margin-bottom:26px}
-.now .lab{font-size:11.5px;font-weight:700;letter-spacing:.06em;
-  color:var(--accent);margin-bottom:6px}
-.now .act{font-size:17px;font-weight:650;line-height:1.45;margin-bottom:5px}
-.now .why{font-size:13px;color:var(--dim)}
-.now a.go{display:inline-block;margin-top:11px;font-size:13.5px;font-weight:600;
-  color:#fff;background:var(--accent);border-radius:7px;padding:6px 14px}
-.now a.go:hover{filter:brightness(1.1)}
-.now.calm{background:var(--card);border-color:var(--line)}
+/* ── 지금 할 일 ───────────────────────────────────────────────── */
+.now{background:var(--accent-bg);border:1px solid var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 32%,transparent);
+  border-radius:var(--r);padding:16px 17px 17px;margin-bottom:28px}
+.now .lab{font-size:11px;font-weight:750;letter-spacing:.08em;
+  color:var(--accent-ink);margin-bottom:7px;text-transform:uppercase}
+.now .act{font-size:17.5px;font-weight:700;line-height:1.4;
+  letter-spacing:-.012em;margin-bottom:6px}
+.now .ttl{font-size:13.5px;color:var(--ink);opacity:.72;margin-bottom:5px;
+  line-height:1.5}
+.now .why{font-size:12.5px;color:var(--dim);line-height:1.55}
+.now a.go{display:inline-flex;align-items:center;min-height:40px;
+  margin-top:13px;font-size:13.5px;font-weight:650;
+  color:#fff;background:var(--accent);border-radius:9px;padding:0 16px}
+.now a.go:hover{filter:brightness(1.08)}
+.now.calm{background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
 .now.calm .lab{color:var(--green)}
-.now.calm .act{font-weight:500;font-size:15.5px}
+.now.calm .act{font-weight:600;font-size:16px}
 
-h2{font-size:13.5px;margin:24px 0 9px;color:var(--dim);font-weight:600}
-h2 .c{font-variant-numeric:tabular-nums;opacity:.7}
-ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-li{background:var(--card);border:1px solid var(--line);border-radius:10px;
-  padding:11px 13px}
+/* ── 묶음 ─────────────────────────────────────────────────────── */
+h2{font-size:12.5px;margin:26px 0 9px;color:var(--dim);font-weight:650;
+  letter-spacing:.005em;display:flex;align-items:center;gap:7px}
+h2 .c{font-variant-numeric:tabular-nums;font-size:11.5px;font-weight:650;
+  min-width:18px;height:18px;line-height:18px;text-align:center;
+  border-radius:999px;background:var(--chip);color:var(--dim)}
+h2::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+li{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow);transition:.12s}
+li:hover{border-color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+li>a{display:block;padding:12px 14px 4px}         /* 카드 전체가 눌린다 */
+li .meta{padding:0 14px 11px}
 li.hot{border-left:3px solid var(--red)}
 li.warm{border-left:3px solid var(--amber)}
-a{color:inherit;text-decoration:none}
-a:hover .t{text-decoration:underline}
-.num{color:var(--dim);font-variant-numeric:tabular-nums;margin-right:6px}
-.t{font-weight:500}
-.do{display:block;margin-top:5px;font-size:12.5px;font-weight:600;color:var(--accent)}
-.meta{margin-top:4px;font-size:12.5px;color:var(--dim);
-  display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
-.chip{background:var(--chip);border-radius:5px;padding:1px 7px;font-size:12px}
-.ok{color:var(--green)} .fail{color:var(--red)} .warnc{color:var(--amber)}
-.empty{color:var(--dim);font-size:13.5px;padding:10px 0}
-.todo .t{font-weight:400}
-.t code{background:var(--chip);border-radius:4px;padding:1px 5px;font-size:12.5px;
+
+.num{color:var(--faint);font-variant-numeric:tabular-nums;margin-right:7px;
+  font-size:13.5px;font-weight:600}
+.t{font-weight:500;line-height:1.5}
+li>a:hover .t{text-decoration:underline;text-underline-offset:2px}
+.do{display:block;margin-top:7px;font-size:12.5px;font-weight:650;
+  color:var(--accent-ink)}
+.meta{margin-top:7px;font-size:12px;color:var(--dim);
+  display:flex;flex-wrap:wrap;gap:4px 9px;align-items:center}
+.chip{background:var(--chip);border-radius:6px;padding:2px 8px;font-size:11.5px;
+  font-weight:500}
+.ok{color:var(--green);font-weight:600} .fail{color:var(--red);font-weight:600}
+.warnc{color:var(--amber);font-weight:600}
+.empty{color:var(--faint);font-size:13px;padding:2px 0 4px}
+.todo .t{font-weight:450}
+.t code{background:var(--chip);border-radius:5px;padding:1px 5px;font-size:12.5px;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.t strong{font-weight:650}
-.src{font-size:12px;color:var(--dim);font-family:ui-monospace,SFMono-Regular,
-  Menlo,Consolas,monospace}
-footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);
-  color:var(--dim);font-size:12.5px}
-footer a{text-decoration:underline}
-footer p{margin:6px 0}
-@media(max-width:520px){.wrap{padding:18px 13px 48px}h1{font-size:18px}
-  .now .act{font-size:15.5px}}
+.t strong{font-weight:700}
+.src{font-size:11.5px;color:var(--faint);font-family:ui-monospace,SFMono-Regular,
+  Menlo,Consolas,monospace;word-break:break-all}
+
+footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--faint);font-size:12px;line-height:1.65}
+footer a{text-decoration:underline;text-underline-offset:2px}
+footer p{margin:7px 0}
+footer code{background:var(--chip);border-radius:4px;padding:1px 4px;font-size:11px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* ── 모바일 ───────────────────────────────────────────────────── */
+@media(max-width:600px){
+  .wrap{padding:18px 15px 56px}
+  nav{margin:16px -15px 20px;padding:2px 15px}
+  nav button .who{display:none}      /* 「A · @nuewsun」→「A」. 한 줄에 다 들어간다 */
+  h1{font-size:17.5px}
+  .now{padding:15px 15px 16px}
+  .now .act{font-size:16.5px}
+  li>a{padding:11px 13px 4px}
+  li .meta{padding:0 13px 11px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 """
 
 JS = r"""
@@ -455,7 +526,15 @@ function render(login) {
       ${a.url ? `<a class="go" href="${esc(a.url)}" target="_blank"
                     rel="noopener">${esc(a.go)} →</a>` : ""}
     </div>`;
-  document.getElementById("main").innerHTML = now
+  // 팀 전체 한 줄. «내 차례» 는 안 넣는다 — 탭 배지가 이미 같은 숫자를 보여준다.
+  const oldest = DATA.prs.filter(p => p.reviewers.length)
+    .map(p => days(p.created)).sort((x, y) => y - x)[0] || 0;
+  const strip = `<div class="strip">
+      <span>열린 PR <b>${DATA.prs.length}</b></span>
+      <span>승인 대기 <b>${DATA.prs.filter(p => p.reviewers.length).length}</b></span>
+      <span>가장 오래 기다린 것 <b>${oldest}</b>일</span></div>`;
+
+  document.getElementById("main").innerHTML = now + strip
     + block("🔴 내 승인을 기다리는 PR", b.review,
             p => prLi(p, { verb: "승인해 주세요", hot: true, showWho: true }),
             "없습니다.")
@@ -469,14 +548,6 @@ function render(login) {
             "없습니다.")
     + block("📋 문서에서 확인할 것", b.todos, todoLi, "없습니다.")
     + block("📌 맡고 있는 이슈", b.issues, issueLi, "없습니다.");
-
-  const oldest = DATA.prs.filter(p => p.reviewers.length)
-    .map(p => days(p.created)).sort((x, y) => y - x)[0] || 0;
-  document.getElementById("strip").innerHTML =
-    `<span>열린 PR <b>${DATA.prs.length}</b></span>
-     <span>그중 승인 대기 <b>${DATA.prs.filter(p => p.reviewers.length).length}</b></span>
-     <span>가장 오래 기다린 것 <b>${oldest}</b>일</span>
-     <span>내 차례 <b>${count(b)}</b></span>`;
 
   DATA.team.forEach(([r, l]) => {
     const el = document.querySelector(`nav button[data-tab="${l}"] .n`);
@@ -564,6 +635,10 @@ const current = () => (tabs.find(b => b.getAttribute("aria-selected") === "true"
                        || tabs[0]).dataset.tab;
 function show(id) {
   tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
+  const sel = tabs.find(b => b.dataset.tab === id);
+  if (sel && sel.scrollIntoView) {
+    try { sel.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e) {}
+  }
   try { localStorage.setItem("kopl-dash-tab", id); } catch (e) {}
   if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
   render(id);
@@ -590,11 +665,10 @@ PAGE = """<!doctype html>
 <header>
   <h1>지금 내 차례인 것</h1>
   <div class="sub">
-    <span>KISIA 3팀 파도풀</span>
+    <span class="who-team">KISIA 3팀 파도풀</span>
     <span id="fresh"><span class="dot snap"></span>스냅샷 · __STAMP__ 기준</span>
     <button class="rf" id="rf" type="button">새로고침</button>
   </div>
-  <div class="strip" id="strip"></div>
 </header>
 <nav role="tablist">__NAV__</nav>
 <main id="main"></main>
@@ -632,7 +706,8 @@ def main() -> int:
 
     nav = "".join(
         '<button data-tab="{lg}" role="tab" aria-selected="false">'
-        '{r} · @{lg}<span class="n">·</span></button>'.format(r=r, lg=lg)
+        '<span class="role">{r}</span><span class="who">@{lg}</span>'
+        '<span class="n">·</span></button>'.format(r=r, lg=lg)
         for r, lg in TEAM
     )
 
