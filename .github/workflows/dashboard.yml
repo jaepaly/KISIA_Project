@@ -14,8 +14,9 @@ name: dashboard
 
 on:
   schedule:
-    # 30분마다. cron 은 UTC 지만 이 작업은 시각과 무관하다.
-    - cron: '*/30 * * * *'
+    # 2시간마다. 페이지가 브라우저에서 GitHub API 를 직접 읽으므로 이 실행은
+    # «API 가 막혔을 때 쓸 폴백»을 갱신할 뿐이다. 30분마다 돌 이유가 없다.
+    - cron: '0 */2 * * *'
   push:
     branches: [main]
     paths:
