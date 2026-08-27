@@ -700,6 +700,10 @@ M1 실질 기간 = W2~W3 2주 (W1을 주제·역할 확정에 썼다)
 
 호출부가 갈아끼워지도록 되어 있어([#16](../../issues/16) §4-①) 같은 파이프라인을 경로만 바꿔 쓴다.
 
+> ⚠️ **먼저 `pip install -e .` 을 한 번 해야 한다.** 소스가 `src/` 아래라
+> 안 하면 `ModuleNotFoundError: No module named 'kopl'` 로 죽는다.
+> 상세는 [setup-python.md §4-1](docs/setup-python.md).
+
 ```bash
 python -m kopl.c5_corpus.generate --provider cli --cli-cmd "codex exec -"
 ```

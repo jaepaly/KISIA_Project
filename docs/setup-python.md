@@ -75,12 +75,60 @@ pip install -r requirements.txt
 
 ---
 
+---
+
+## 4-1. 저장소를 import 가능하게 — **이걸 빼면 실행 예시가 안 돈다**
+
+저장소 루트에서 한 번만 하면 된다.
+
+```bash
+pip install -e .
+```
+
+**왜 필요한가.** 소스가 `src/` 아래에 있어서(src 레이아웃) 저장소 루트에서
+실행해도 `src` 가 `sys.path` 에 안 들어간다. 그래서 이걸 안 하면
+README 의 실행 예시가 이렇게 죽는다.
+
+```
+python -m kopl.c5_corpus.generate ...
+-> ModuleNotFoundError: No module named 'kopl'
+```
+
+`-e` 는 **파일을 복사하지 않고 경로만 등록**한다. 그래서 `git pull` 로
+소스가 바뀌어도 다시 깔 필요가 없다.
+
+> ⚠️ `pyproject.toml` 에 의존성을 적지 않았다. `requirements.txt` 가 정본이다.
+> torch 는 GPU 마다 CUDA 빌드가 달라 별도 인덱스에서 깔아야 하는데,
+> `pyproject.toml` 에 적으면 pip 가 기본 인덱스에서 끌어와 덮어쓴다.
+
+**설치가 싫다면** 매번 환경변수로도 된다. 다만 셸을 새로 열 때마다 다시 해야 한다.
+
+```powershell
+# PowerShell
+$env:PYTHONPATH = "src"
+```
+
+```bash
+# Git Bash / Linux
+export PYTHONPATH=src
+```
+
+---
+
 ## 5. 확인
 
 ```bash
 python -c "import torch, transformers, peft, bitsandbytes; \
 print(torch.__version__, torch.version.cuda, torch.cuda.is_available())"
 ```
+
+저장소가 import 되는지도 같이 본다. **A·B·C·D 는 이게 되어야 생성 파이프라인을 돌릴 수 있다.**
+
+```bash
+python -c "import kopl.c5_corpus.validate; print('kopl OK')"
+```
+
+`kopl OK` 가 안 나오면 §4-1 을 안 한 것이다.
 
 GPU 담당(B·D)은 4bit 커널까지 확인한다. **이게 통과해야 QLoRA가 성립한다.**
 
