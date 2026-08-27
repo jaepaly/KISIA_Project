@@ -22,6 +22,7 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import time
 import urllib.error
@@ -187,12 +188,21 @@ class LLMClient:
         """
         if not self.cli_cmd:
             raise LLMError("--cli-cmd 가 필요하다 (예: 'codex exec -')")
+        parts = shlex.split(self.cli_cmd)
+        # Windows 에서 codex 는 codex.CMD 다. CreateProcess 가 PATHEXT 를 해석하지
+        # 않아 FileNotFoundError 가 난다. shutil.which 는 PATHEXT 를 본다.
+        exe = shutil.which(parts[0]) or parts[0]
         r = subprocess.run(
-            shlex.split(self.cli_cmd),
+            [exe] + parts[1:],
             input=f"{system}\n\n---\n\n{user}",
             capture_output=True,
-            text=True,
-            timeout=180,
+            # text=True 는 로케일 인코딩을 쓴다. 한국어 Windows 는 cp949 라
+            # 한글 프롬프트가 cp949 로 나가고 codex 가
+            # «input is not valid UTF-8» 로 거부한다. 반드시 utf-8 로 고정한다.
+            encoding="utf-8",
+            errors="replace",
+            # codex 는 API 가 아니라 에이전트라 한 호출에 수십 초~수 분이 걸린다
+            timeout=600,
         )
         if r.returncode != 0:
             raise LLMError(f"CLI 실패(rc={r.returncode}): {r.stderr[:300]}")

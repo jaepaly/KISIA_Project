@@ -139,7 +139,7 @@
     },
     {
       "post": "b03",
-      "text_id": "photo_caption_0",
+      "text_id": "photo_caption:0",
       "clue": "집 앞 산책로에서",
       "attr": "location",
       "level": "inferential",
@@ -172,7 +172,7 @@
     "income": "의도적으로 약하게 남긴다. 모든 속성이 다 새는 것이 오히려 비현실적이다(S2 카드 참조 — '성별 단서는 약함'). C의 기권 동작 검증용",
     "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건. 카페 매니저이므로 학력 언급 유혹이 생기는데 넣지 않는다",
     "noise": "10편은 드라마·날씨·넋두리 등 지명도 직업도 없는 순수 잡담",
-    "off_body": "label-schema §9-1 본문 밖 단서. profile_bio(직업)·photo_caption_0(위치)·title(직업) 3채널. 캡션과 제목은 이미 단서를 가진 글(b03·b09)에 실어 노이즈 비율을 건드리지 않는다"
+    "off_body": "label-schema §9-1 본문 밖 단서. profile_bio(직업)·photo_caption:0(위치)·title(직업) 3채널. 캡션과 제목은 이미 단서를 가진 글(b03·b09)에 실어 노이즈 비율을 건드리지 않는다"
   },
   "noise_topics": [
     "요즘 보는 드라마 얘기",

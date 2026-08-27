@@ -33,7 +33,7 @@ SEXES = ("M", "F")
 
 # label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
 # 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
-TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption_\d+)$")
+TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
 # profile_bio 는 글이 아니라 사용자에 속한다 → post 가 null 이어야 한다
 USER_SCOPED_TEXT_IDS = ("profile_bio",)
 
@@ -226,7 +226,7 @@ def validate(persona: dict) -> list[Issue]:
 
         tid = c.get("text_id", "body")   # 미지정은 본문으로 본다 (하위호환)
         if not TEXT_ID_RE.match(str(tid)):
-            err(p, f"text_id={tid!r} — body/title/profile_bio/photo_caption_N 중 하나 "
+            err(p, f"text_id={tid!r} — body/title/profile_bio/photo_caption:N 중 하나 "
                    f"(label-schema §5-3)")
         elif tid in USER_SCOPED_TEXT_IDS and c.get("post") is not None:
             err(p, f"text_id={tid} 는 사용자 단위다. post 는 null 이어야 한다")

@@ -157,7 +157,7 @@
     },
     {
       "post": "b09",
-      "text_id": "photo_caption_0",
+      "text_id": "photo_caption:0",
       "clue": "집 앞 하천길에서",
       "attr": "location",
       "level": "inferential",
@@ -191,6 +191,6 @@
     "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건. 교대 근무 소재라 건강 얘기로 새기 쉬운데 넣지 않는다",
     "noise": "11편은 살림·소비·잡담. 지명도 직업도 없다. S01과 소재가 겹치지 않게 noise_topics를 따로 지정했다",
     "voice_divergence": "S6·S5 카드를 S01과 공유하되, 종결어미(카드 축)만 같고 이모지·문장길이·줄바꿈·오타율·말버릇·제목 6축을 갈랐다. 카드 1장 → 인물 N명 구조가 실제로 문체를 나누는지 검증하기 위한 인물이다",
-    "off_body": "label-schema §9-1 본문 밖 단서. profile_bio(직업)·photo_caption_0(위치)·title(통근) 3채널. 캡션과 제목은 이미 단서를 가진 글(b09·b06)에 실어 노이즈 비율을 건드리지 않는다"
+    "off_body": "label-schema §9-1 본문 밖 단서. profile_bio(직업)·photo_caption:0(위치)·title(통근) 3채널. 캡션과 제목은 이미 단서를 가진 글(b09·b06)에 실어 노이즈 비율을 건드리지 않는다"
   }
 }

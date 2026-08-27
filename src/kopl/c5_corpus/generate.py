@@ -300,6 +300,13 @@ def main() -> int:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     cards_dir = Path(args.cards) if args.cards else None
+    if args.provider == "cli" and not args.model:
+        print("✗ --provider cli 는 --model 이 필요하다.\n"
+              "    --cli-cmd 의 -m 값과 같은 것을 넣어라. 앞은 기록용(gen_model),\n"
+              "    뒤가 실제 실행이다. 없으면 어느 모델로 뽑은 코퍼스인지 복원할 수 없다.\n"
+              "    예: --model gpt-5.6-sol --cli-cmd \"codex exec --sandbox read-only -m gpt-5.6-sol -\"")
+        return 2
+
     try:
         # 이슈 1항: 생성 경로에 Claude·Qwen 계열이 들어오면 여기서 멈춘다
         check_generation_model(args.provider, args.model or "", args.cli_cmd)

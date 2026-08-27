@@ -38,10 +38,13 @@ PUNCT = re.compile(r"[.,!?~…·;:\"'“”‘’()\[\]<>]")
 # 문장 분리. 종결부호만으로 자르면 "쉼표로 이어붙이는" 인물의 문장이
 # 문단 통째로 한 문장이 되어 평균 길이가 폭주한다(실측 186자).
 # 한국어 종결어미 뒤에서도 끊는다.
+# 문장 경계 — 줄바꿈은 문장 경계가 아니다. 종결부호와 한국어 종결어미로만 끊는다.
+# (\s 가 개행을 포함하므로 종결어미 뒤 줄바꿈에서는 정상적으로 끊긴다)
 SENT_SPLIT = re.compile(
-    r"(?:[.!?…]+|\n+|"
+    r"(?:[.!?…]+|"
     r"(?<=요)\s+|(?<=음)\s+|(?<=함)\s+|(?<=다)\s+|(?<=죠)\s+|(?<=네)\s+)"
 )
+LINE_SPLIT = re.compile(r"\n+")
 # 해요체/합쇼체 종결 vs 반말·명사형 종결
 POLITE_END = re.compile(r"(요|죠|습니다|입니다|세요)\s*$")
 
@@ -58,9 +61,16 @@ def post_metrics(body: str) -> dict:
     sents = merged
     lens = [len(s) for s in sents] or [0]
     polite = sum(1 for s in sents if POLITE_END.search(s))
+    lines = [x.strip() for x in LINE_SPLIT.split(body) if x.strip()]
+    llens = [len(x) for x in lines] or [0]
+    eojeol = [len(x.split()) for x in lines] or [0]
+
     return {
         "글자수": len(body),
         "문장수": len(sents),
+        "줄수": len(lines),
+        "줄길이_평균": stat.mean(llens),
+        "줄당_어절": stat.mean(eojeol),
         "문장길이_평균": stat.mean(lens),
         "문장길이_표준편차": stat.pstdev(lens) if len(lens) > 1 else 0.0,
         "부호": len(PUNCT.findall(body)),
@@ -94,6 +104,7 @@ DECLARED = {
     "문장길이": ("문장길이_평균", re.compile(r"평균\s*(\d+)\s*자")),
     "이모지":   ("자모이모티콘", re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*회")),
     "오타율":   (None, re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*건")),
+    "줄바꿈":   ("줄당_어절", re.compile(r"(\d+)\s*~\s*(\d+)\s*어절")),
 }
 
 
