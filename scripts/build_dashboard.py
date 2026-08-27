@@ -102,7 +102,7 @@ def fetch():
     #    그대로 남긴다 (실측 2026-08-26). 빼면 닫힌 PR 이 «승인 대기» 로 뜬다.
     prs = gh(["pr", "list", "--repo", REPO, "--state", "open", "--limit", "100",
               "--json", "number,title,url,author,reviewRequests,isDraft,"
-                        "createdAt,statusCheckRollup"])
+                        "createdAt,statusCheckRollup,latestReviews"])
     issues = gh(["issue", "list", "--repo", REPO, "--state", "open", "--limit", "100",
                  "--json", "number,title,url,assignees,updatedAt"])
     return prs, issues
@@ -182,8 +182,17 @@ def bake(prs, issues, todos, todo_files) -> dict:
         "prs": [{
             "n": p["number"], "title": p["title"], "url": p["url"],
             "author": (p.get("author") or {}).get("login", ""),
-            "reviewers": [r.get("login") for r in (p.get("reviewRequests") or [])
-                          if r.get("login")],
+            # ⚠️ 중복 제거. CODEOWNERS 자동 요청과 --reviewer 명시 요청이 겹치면
+            #    같은 사람이 두 번 들어온다 (실측 2026-08-27, #63).
+            "reviewers": sorted({r.get("login") for r in (p.get("reviewRequests") or [])
+                                 if r.get("login")}),
+            # ⚠️ 승인한 사람은 reviewRequests 에 남아 있을 수 있다. 요청이 둘이면
+            #    승인이 하나만 소멸시키기 때문이다 (#63 에서 실제로 그랬다).
+            #    그래서 «요청받았나» 만 보지 않고 «이미 승인했나» 를 함께 본다.
+            "approved": sorted({r.get("author", {}).get("login")
+                                for r in (p.get("latestReviews") or [])
+                                if r.get("state") == "APPROVED"
+                                and r.get("author", {}).get("login")}),
             "draft": bool(p.get("isDraft")),
             "created": p.get("createdAt", ""),
             "check": check_kind(p),
@@ -361,6 +370,9 @@ JS = r"""
 const R = DATA.repo;
 const ROLE = {}; DATA.team.forEach(([r,l]) => ROLE[l] = r);
 const CHECK = {}; DATA.prs.forEach(p => { if (p.check) CHECK[p.n] = p.check; });
+// 구울 때 박아둔 승인자. 실시간 API(pulls)는 리뷰를 안 주므로 이걸 쓴다.
+const APPROVED = {}; DATA.prs.forEach(p => { APPROVED[p.n] = p.approved || []; });
+const didApprove = (n, l) => (APPROVED[n] || []).includes(l);
 let live = false;
 
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g,
@@ -384,7 +396,9 @@ function split(login) {
   //   waiting 리뷰어가 보고 있다 → 내가 할 일은 없다. 상황만 알면 된다
   const b = { review: [], broken: [], mine: [], waiting: [], todos: [], issues: [] };
   DATA.prs.forEach(p => {
-    if (p.reviewers.includes(login)) { b.review.push(p); return; }
+    // 이미 승인했으면 내 차례가 아니다. reviewers 에 남아 있어도 뺀다.
+    if (p.reviewers.includes(login) && !didApprove(p.n, login)) { b.review.push(p); return; }
+    if (didApprove(p.n, login)) return;   // 승인한 PR 은 다른 묶음에도 안 넣는다
     if (p.author !== login) return;
     if (CHECK[p.n] === "fail") b.broken.push(p);
     else if (!p.reviewers.length) b.mine.push(p);
@@ -493,7 +507,7 @@ function prLi(p, opts) {
     bits.push("기다리는 사람: " +
       esc(p.reviewers.map(l => `${ROLE[l] || ""} @${l}`.trim()).join(" · ")));
   } else if (opts.who === "count") {
-    const n = p.reviewers.filter(l => l !== ME).length;
+    const n = p.reviewers.filter(l => l !== ME && !didApprove(p.n, l)).length;
     if (n) bits.push(`<span class="chip">나 말고 ${n}명도 요청받음</span>`);
   }
   const doing = k === "fail" && opts.verb === "승인해 주세요"
@@ -601,6 +615,7 @@ async function refresh() {
       reviewers: (p.requested_reviewers || []).map(r => r.login),
       draft: !!p.draft, created: p.created_at,
       check: CHECK[p.number] || "",
+      approved: APPROVED[p.number] || [],
     }));
     DATA.issues = items.filter(i => !i.pull_request).map(i => ({
       n: i.number, title: i.title, url: i.html_url,
