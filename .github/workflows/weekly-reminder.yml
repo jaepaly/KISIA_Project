@@ -11,6 +11,13 @@ name: weekly-reminder
 #                                 (승인 대기 PR 을 «사람별로» + PR·이슈 목록)
 #    목 20:00  정기 멘토링    → 19:00 알림
 #
+#  그리고 일정과 무관한 현황판이 하나 있다 (수동 실행 전용).
+#
+#    status   PM 이 아무 때나 쏜다. 「지금 무엇이 누구 손에 있는가」만
+#             적는다. 마감·독촉 문구를 넣지 않는다 — 사실만 있어야
+#             읽고 판단한다.
+#             gh workflow run weekly-reminder.yml -f kind=status
+#
 #  모임 알림은 «누가·언제» 만 남긴다. 안건을 넣으면 길어지고,
 #  길면 안 읽는다. 안건은 docs/mentoring/ 에 있다.
 #  제출 마감(금)은 PM 단독 작업이라 알림을 두지 않는다.
@@ -35,7 +42,7 @@ on:
   workflow_dispatch:
     inputs:
       kind:
-        description: "어느 리마인더인가 (mon / tue / wed / thu)"
+        description: "어느 리마인더인가 (mon / tue / wed / thu / status)"
         required: true
         default: "wed"
 
@@ -166,6 +173,50 @@ jobs:
               ;;
             thu)
               body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00**' "$ALL")
+              ;;
+            status)
+              # PM 이 아무 때나 쏘는 현황판. 일정 알림이 아니라 «지금 무엇이
+              # 누구 손에 있는가» 만 적는다. 마감·독촉 문구를 넣지 않는다 —
+              # 사실만 있어야 읽고 판단한다.
+              #
+              # 승인 대기 / 작성자 차례를 reviewRequests 로 가른다.
+              # GitHub 이 CODEOWNERS 를 보고 자동으로 요청을 걸어주므로,
+              # 요청이 남아 있으면 «남이 승인할 차례», 비었으면 «작성자가
+              # 리뷰에 답할 차례» 다. 사람이 분류하지 않아도 맞는다.
+              contracts=$(git ls-tree -l HEAD docs/contracts/ \
+                            | awk '{printf "%9s  %s\n", $4, $5}' \
+                            | sed 's|docs/contracts/||')
+
+              need_review=$(gh pr list --state open --limit 30 \
+                              --json number,title,author,reviewRequests \
+                              --jq '.[] | select((.reviewRequests|length) > 0)
+                                    | "\(.number)\t\(.title)\t\(.author.login)\t\([.reviewRequests[].login]|join(" "))"' \
+                            2>/dev/null || echo "")
+
+              need_author=$(gh pr list --state open --limit 30 \
+                              --json number,title,author,reviewRequests \
+                              --jq '.[] | select((.reviewRequests|length) == 0)
+                                    | "\(.number)\t\(.title)\t\(.author.login)"' \
+                            2>/dev/null || echo "")
+
+              blk_r=""
+              while IFS=$'\t' read -r num title who reqs; do
+                [ -n "$num" ] || continue
+                blk_r="$blk_r**#$num** $title"$'\n'"작성 $(mention "$who") · 승인 가능 $(mention $reqs)"$'\n\n'
+              done <<< "$need_review"
+
+              blk_a=""
+              while IFS=$'\t' read -r num title who; do
+                [ -n "$num" ] || continue
+                blk_a="$blk_a**#$num** $title — $(mention "$who")"$'\n'
+              done <<< "$need_author"
+
+              [ -n "$blk_r" ] && blk_r=$(printf '\n**승인 대기**\n\n%s' "${blk_r%$'\n\n'}")
+              [ -n "$blk_a" ] && blk_a=$(printf '\n**작성자 차례** — 리뷰 코멘트가 달려 있습니다\n\n%s' "${blk_a%$'\n'}")
+
+              now=$(date -u -d '+9 hours' '+%m-%d %H:%M')
+              body=$(printf '📌 **현황 — %s 기준**\n\n**docs/contracts/**\n```\n%s\n```\n%s\n%s\n\n리뷰 내용은 각 PR 코멘트에 있습니다.' \
+                     "$now" "$contracts" "$blk_r" "$blk_a")
               ;;
           esac
 
