@@ -53,13 +53,22 @@ def normalize_nfc(text: str) -> str:
     return unicodedata.normalize("NFC", text)
 
 
-def format_span_id(post_id: str, index: int, text_id: str = "body") -> str:
+def format_span_id(
+    post_id: Optional[str],
+    index: int,
+    text_id: str = "body",
+    persona_id: Optional[str] = None,
+) -> str:
     """label-schema.md §8-1 / span.schema.json:
     <post_id>_s<2자리>. 프로필은 <persona_id>_bio_s<2자리>.
     """
     if text_id == "profile_bio":
-        return f"{post_id}_bio_s{index:02d}"
-    return f"{post_id}_s{index:02d}"
+        pid = persona_id or (post_id if post_id and not post_id.startswith("post_") else None)
+        if not pid:
+            raise ValueError("profile_bio 스팬에는 persona_id가 필요합니다 (label-schema §8-1)")
+        return f"{pid}_bio_s{index:02d}"
+    pid = post_id or "post_unspecified"
+    return f"{pid}_s{index:02d}"
 
 
 def create_span_record(
@@ -160,8 +169,9 @@ def sort_spans(spans: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 def validate_span_output(
     output: Dict[str, Any],
     texts: Optional[Dict[str, str]] = None,
+    is_post: bool = True,
 ) -> List[str]:
-    """span.schema.json 및 시맨틱 제약 검증 (0 <= start < end, 같은 text_id 겹침 금지, 텍스트 일치).
+    """span.schema.json 및 시맨틱 제약 검증 (0 <= start < end, 같은 text_id 겹침 금지, 텍스트 일치, 규칙10).
 
     오류가 없으면 빈 리스트 []를 반환합니다.
     """
@@ -179,6 +189,11 @@ def validate_span_output(
     if not isinstance(spans, list):
         errors.append(f"spans 필드는 list여야 합니다 (현재: {type(spans)})")
         return errors
+
+    # 규칙 10: profile_bio 스팬은 글 레코드에 없음 (사용자 레코드에만 존재)
+    if is_post:
+        if any(s.get("text_id") == "profile_bio" for s in spans):
+            errors.append("규칙10: profile_bio 스팬이 글 레코드에 있습니다 (사용자 레코드에만 분리 존재해야 함)")
 
     # 2. 개별 스팬 검증 및 겹침 검사
     spans_by_channel: Dict[str, List[Dict[str, Any]]] = {}

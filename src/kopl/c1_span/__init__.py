@@ -9,7 +9,7 @@ import os
 from typing import Any, Dict, Optional
 
 from .detector import SpanDetector, decode
-from .mock import MockSpanDetector, predict_mock
+from .mock import MockSpanDetector, predict_mock, predict_profile_mock
 from .schema import (
     ALLOWED_LEVELS,
     ALLOWED_SUBJECTS,
@@ -37,7 +37,9 @@ __all__ = [
     "decode",
     "predict",
     "predict_post",
+    "predict_profile",
     "predict_mock",
+    "predict_profile_mock",
     "create_span_record",
     "format_span_id",
     "format_output",
@@ -88,3 +90,14 @@ def predict(
 def predict_post(post: Dict[str, Any]) -> Dict[str, Any]:
     """다중 채널 글 객체 탐지 편의 함수."""
     return predict(post)
+
+
+def predict_profile(persona_id: str, bio: str) -> Dict[str, Any]:
+    """사용자 프로필 소개란(profile_bio) 단독 탐지 함수.
+
+    스팬 식별자는 <persona_id>_bio_s<2자리> 로 부여되며, 글 단위 레코드와 철저히 분리됩니다 (label-schema §8-1, 규칙 10).
+    """
+    detector = get_detector()
+    if detector is not None:
+        return detector.detect_profile(persona_id, bio)
+    return predict_profile_mock(persona_id, bio)

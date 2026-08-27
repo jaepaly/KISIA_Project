@@ -173,13 +173,18 @@ class SpanDetector:
         )
 
     def detect_post(self, post: Dict[str, Any]) -> Dict[str, Any]:
-        """다중 텍스트 채널(title, body, photo_caption:N, profile_bio)을 포함한 글 전체를 탐지합니다."""
+        """글 단위 다중 텍스트 채널(title, body, photo_caption:N)을 탐지합니다.
+
+        profile_bio는 사용자 단위이므로 detect_profile로 분리 처리합니다 (label-schema §8-1, 규칙 10).
+        """
         pid = post.get("post_id") or "post_unspecified"
         all_raw_spans: List[Dict[str, Any]] = []
 
         channels: Dict[str, str] = {}
         if "texts" in post and isinstance(post["texts"], dict):
-            channels.update(post["texts"])
+            for k, v in post["texts"].items():
+                if k != "profile_bio":
+                    channels[k] = str(v)
         else:
             if "title" in post and post["title"]:
                 channels["title"] = str(post["title"])
@@ -189,8 +194,6 @@ class SpanDetector:
                 for idx, cap in enumerate(post["photo_captions"]):
                     if cap:
                         channels[f"photo_caption:{idx}"] = str(cap)
-            if "profile_bio" in post and post["profile_bio"]:
-                channels["profile_bio"] = str(post["profile_bio"])
 
         for tid, txt in channels.items():
             all_raw_spans.extend(self._detect_channel_raw(txt, text_id=tid))
@@ -209,6 +212,32 @@ class SpanDetector:
 
         return format_output(
             post_id=pid,
+            model_version=self.version,
+            spans=formatted_spans,
+            flags=flags,
+        )
+
+    def detect_profile(self, persona_id: str, bio: str) -> Dict[str, Any]:
+        """사용자 프로필 소개란(profile_bio) 단독 탐지.
+
+        스팬 식별자는 글 번호 없이 <persona_id>_bio_s<2자리> 로 부여됩니다 (label-schema §8-1).
+        """
+        raw_spans = self._detect_channel_raw(bio, text_id="profile_bio")
+        sorted_spans = sort_spans(raw_spans)
+
+        formatted_spans: List[Dict[str, Any]] = []
+        for idx, sp in enumerate(sorted_spans, start=1):
+            item = dict(sp)
+            item["span_id"] = format_span_id(None, idx, text_id="profile_bio", persona_id=persona_id)
+            formatted_spans.append(item)
+
+        flags = {
+            "gen_signal": False,
+            "meme_hits": [],
+        }
+
+        return format_output(
+            post_id=persona_id,
             model_version=self.version,
             spans=formatted_spans,
             flags=flags,

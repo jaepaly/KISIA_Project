@@ -117,14 +117,19 @@ class MockSpanDetector:
         )
 
     def detect_post(self, post: Dict[str, Any]) -> Dict[str, Any]:
-        """다중 텍스트 채널(title, body, photo_caption:N, profile_bio)을 포함한 글 전체를 탐지합니다."""
+        """글 단위 다중 텍스트 채널(title, body, photo_caption:N)을 탐지합니다.
+
+        profile_bio는 글이 아닌 사람(사용자)에 속하므로 detect_profile로 분리 처리합니다 (label-schema §8-1, 규칙 10).
+        """
         pid = post.get("post_id") or "post_mock"
         all_candidates: List[Dict[str, Any]] = []
 
-        # 채널 맵 수집
+        # 글 단위 채널만 수집 (profile_bio 제외)
         channels: Dict[str, str] = {}
         if "texts" in post and isinstance(post["texts"], dict):
-            channels.update(post["texts"])
+            for k, v in post["texts"].items():
+                if k != "profile_bio":
+                    channels[k] = str(v)
         else:
             if "title" in post and post["title"]:
                 channels["title"] = str(post["title"])
@@ -134,8 +139,6 @@ class MockSpanDetector:
                 for idx, cap in enumerate(post["photo_captions"]):
                     if cap:
                         channels[f"photo_caption:{idx}"] = str(cap)
-            if "profile_bio" in post and post["profile_bio"]:
-                channels["profile_bio"] = str(post["profile_bio"])
 
         # 각 채널별 독립 겹침 방지 탐지
         for tid, txt in channels.items():
@@ -170,6 +173,40 @@ class MockSpanDetector:
             flags=flags,
         )
 
+    def detect_profile(self, persona_id: str, bio: str) -> Dict[str, Any]:
+        """사용자 프로필 소개란(profile_bio) 단독 탐지.
+
+        스팬 식별자는 글 번호 없이 <persona_id>_bio_s<2자리> 로 부여됩니다 (label-schema §8-1).
+        """
+        accepted = self._extract_candidates(bio, text_id="profile_bio")
+        sorted_candidates = sort_spans(accepted)
+
+        spans: List[Dict[str, Any]] = []
+        for idx, item in enumerate(sorted_candidates, start=1):
+            spans.append({
+                "span_id": format_span_id(None, idx, text_id="profile_bio", persona_id=persona_id),
+                "text_id": "profile_bio",
+                "start": item["start"],
+                "end": item["end"],
+                "text": item["text"],
+                "type": item["type"],
+                "level": item["level"],
+                "subject": item["subject"],
+                "score": item["score"],
+            })
+
+        flags = {
+            "gen_signal": False,
+            "meme_hits": [],
+        }
+
+        return format_output(
+            post_id=persona_id,
+            model_version=self.model_version,
+            spans=spans,
+            flags=flags,
+        )
+
 
 _default_mock = MockSpanDetector()
 
@@ -186,3 +223,8 @@ def predict_mock(
     if isinstance(target, dict):
         return _default_mock.detect_post(target)
     return _default_mock.detect(str(target), post_id=post_id, text_id=text_id)
+
+
+def predict_profile_mock(persona_id: str, bio: str) -> Dict[str, Any]:
+    """사용자 프로필 전용 목 탐지 함수."""
+    return _default_mock.detect_profile(persona_id, bio)
