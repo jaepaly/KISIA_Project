@@ -30,10 +30,10 @@ on:
     types: [opened, closed, reopened, assigned, unassigned]
   workflow_dispatch:
 
+# 기본은 읽기만. 배포 잡에서만 올린다 — PR 이벤트로 돌 때 그 PR 의 코드가
+# pages 쓰기 토큰을 쥐면 안 된다.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # 동시에 여러 번 돌면 늦게 시작한 것이 먼저 끝나 옛 내용을 덮을 수 있다.
 # ⚠️ cancel-in-progress 를 켜지 않는다. 배포 중에 끊기면 Pages 가 어중간한
@@ -43,14 +43,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # PR 에서도 돈다. 스크립트가 깨졌는지 여기서 걸린다. 다만 배포는 안 한다.
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # ⚠️ 항상 main 의 스크립트로 만든다. PR 이벤트로 돌 때 그 PR 브랜치의
-          #    스크립트를 쓰면, 아직 리뷰 안 된 코드가 공개 페이지를 만들게 된다.
-          ref: main
+        # ⚠️ ref 를 고정하지 않는다. PR 이벤트면 그 PR 의 코드로 만들어
+        #    스크립트가 도는지 확인하고, push·schedule 이면 main 으로 만든다.
+        #    PR 빌드는 contents:read 밖에 없어서 토큰이 새어도 할 수 있는 게 없다.
 
       - uses: actions/setup-python@v5
         with:
@@ -70,14 +70,18 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
   deploy:
     needs: build
+    # PR 에서는 배포하지 않는다. main 에 들어온 뒤에만 공개 페이지가 바뀐다.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
