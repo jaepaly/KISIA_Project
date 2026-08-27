@@ -186,7 +186,7 @@
           "description": "밈·유행어 사전 매칭 결과. 사전은 B 소유(data/dict/signatures/meme.json)이며 파일 교체로 갱신된다 — 모델이 밈을 외우지 않게 하는 것이 설계 의도다(plan.md §4 원칙 4).",
           "items": { "type": "string" }
         },
-        "generation_signal": {
+        "gen_signal": {
           "type": ["boolean", "null"],
           "description": "세대 신호 존재 여부. 예 «무릎이 예전 같지 않네요». 라벨러가 가장 많이 갈리는 표현이라 스팬 경계를 정하지 않고 글 단위 플래그로만 둔다."
         },
