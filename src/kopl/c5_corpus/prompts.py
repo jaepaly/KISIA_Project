@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-PROMPT_VERSION = "p0.8"
+PROMPT_VERSION = "p0.9"
 
 # 인물 JSON 에 noise_topics 가 없을 때만 쓰는 폴백.
 # persona-design.md §2-⑤ 는 "소재"를 목소리 차별화 축으로 명시한다
@@ -135,7 +135,17 @@ def build_user(kind: str, clue: dict | None = None, ambient_design: str = "",
     """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다."""
     if kind == "clue":
         assert clue is not None
-        who = "친구·지인의 이야기다. 내 이야기가 아니다." if clue.get("subject") == "other" else "내 이야기다."
+        # subject 는 label-schema §4-2 기준 "그 스팬의 주체"이지 글 전체의 시점이 아니다.
+        # 글 단위 지시로 쓰면 함정 글이 통째로 3인칭이 되어, 모델이 "남 얘기"라고
+        # 쉽게 판정해버린다. 그러면 「지명이 나오면 거주지로 찍는」 실수를 유발하지 못해
+        # 함정이 함정 구실을 못 한다.
+        who = (
+            "이 단서 문장의 주인공만 친구·지인이다. **글의 나머지는 전부 내 이야기로 쓴다.**\n"
+            "  글 전체를 남 얘기로 만들지 마라. 내가 겪은 일을 쓰다가 그 한 문장에서만 "
+            "다른 사람이 등장한다."
+            if clue.get("subject") == "other"
+            else "내 이야기다."
+        )
         return (
             "블로그 글 한 편을 써라.\n\n"
             f"[이 글에 심을 단서] {clue['clue']}\n"
