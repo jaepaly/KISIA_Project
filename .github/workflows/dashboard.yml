@@ -1,0 +1,86 @@
+name: dashboard
+
+# 팀 대시보드를 GitHub Pages 에 올린다.
+#
+#   https://jaepaly.github.io/KISIA_Project/
+#
+# 왜 있나 — 디스코드 알림은 «흐름»이고 PR 은 «상태»다. 흐름으로 상태를
+# 전하면 쌓일수록 자기 것을 못 찾는다. 만드는 규칙은 scripts/build_dashboard.py
+# 맨 위 주석에 있다.
+#
+# ⚠️ 처음 한 번은 저장소 설정을 켜야 한다.
+#    Settings → Pages → Source: GitHub Actions
+#    안 켜면 deploy 단계가 «Not Found» 로 실패한다.
+
+on:
+  schedule:
+    # 30분마다. cron 은 UTC 지만 이 작업은 시각과 무관하다.
+    - cron: '*/30 * * * *'
+  push:
+    branches: [main]
+    paths:
+      # 체크리스트 표식이 문서에 있으므로 문서가 바뀌면 다시 만든다
+      - 'docs/**'
+      - 'scripts/build_dashboard.py'
+      - '.github/workflows/dashboard.yml'
+  pull_request:
+    types: [opened, closed, reopened, ready_for_review, converted_to_draft,
+            review_requested, review_request_removed]
+  issues:
+    types: [opened, closed, reopened, assigned, unassigned]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시에 여러 번 돌면 늦게 시작한 것이 먼저 끝나 옛 내용을 덮을 수 있다.
+# ⚠️ cancel-in-progress 를 켜지 않는다. 배포 중에 끊기면 Pages 가 어중간한
+#    상태로 남는다. 한 번에 1분이라 줄 세워도 문제없다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # ⚠️ 항상 main 의 스크립트로 만든다. PR 이벤트로 돌 때 그 PR 브랜치의
+          #    스크립트를 쓰면, 아직 리뷰 안 된 코드가 공개 페이지를 만들게 된다.
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 대시보드 생성
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p site
+          python scripts/build_dashboard.py > site/index.html
+          # 빈 파일이 올라가면 «대시보드가 죽었다» 로 보인다. 크기로 막는다.
+          size=$(wc -c < site/index.html)
+          echo "생성 ${size} 바이트"
+          if [ "$size" -lt 2000 ]; then
+            echo "::error::생성물이 너무 작다 (${size} 바이트). 배포하지 않는다"
+            exit 1
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
