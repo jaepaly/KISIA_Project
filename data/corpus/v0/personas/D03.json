@@ -1,0 +1,214 @@
+{
+  "id": "D03",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "동네 공방 운영 워킹맘 (30대 중반 여성)",
+  "persona_type": "30대 중반 여성 · 공방 운영 기록 + 육아 일상. 정보 공유체에 홍보가 섞임",
+  "card_ref": [
+    "S5",
+    "S9"
+  ],
+  "account": {
+    "blog_id": "small_table_days",
+    "nickname": "작은책상",
+    "profile_intro": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로",
+    "joined": "2022-04",
+    "typical_active_hours": "평일 오전 10~12시, 아이 재운 밤 10시"
+  },
+  "voice": {
+    "종결어미": "~습니다 / ~해요 혼용. 정보 문단은 ~습니다, 감정 문단은 ~해요. 글당 전환 2~3회",
+    "이모지": "🙂 를 문단 끝에 글당 1~2회. ㅋㅋ·ㅠㅠ 는 쓰지 않음",
+    "문장길이": "평균 34자. 최소 12자 ~ 최대 80자",
+    "줄바꿈": "문단당 4~5문장. 문단 사이 빈 줄 1개. 목록은 줄바꿈으로 나열",
+    "오타율": "글당 0~1건. 조사 오류 위주 ('아이가를', '되서')",
+    "말버릇": "'그래서 말인데요'로 문단을 전환. 2편에 1회. 글 끝에 '오늘도 고생하셨어요'",
+    "제목": "12~20자 서술형. 물음표로 끝나는 경우 3편에 1회 ('비 오는 날엔 왜 더 붐빌까요')"
+  },
+  "ground_truth": {
+    "age": 36,
+    "sex": "F",
+    "location": "경기도 고양시 일산동구 백석동",
+    "occupation": "소규모 공방 운영",
+    "family": "기혼, 자녀 1명(7세)",
+    "commute": "도보 15분",
+    "income": "중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른여섯",
+      "36",
+      "30대"
+    ],
+    "sex": [
+      "엄마들",
+      "남편"
+    ],
+    "location": [
+      "백석",
+      "일산",
+      "고양",
+      "호수공원"
+    ],
+    "occupation": [
+      "공방",
+      "수업",
+      "재료비",
+      "원데이",
+      "작업대"
+    ],
+    "family": [
+      "아이",
+      "일곱 살",
+      "하원",
+      "남편"
+    ],
+    "commute": [
+      "걸어서",
+      "십오 분",
+      "작업실까지"
+    ],
+    "income": [
+      "재료비",
+      "임대료",
+      "적자",
+      "정산"
+    ]
+  },
+  "post_plan": {
+    "total": 22,
+    "noise": 11,
+    "ambient": 5,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 73%"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "clue": "임대료 오르고 재료비도 올라서 이번 달은 정산이 마이너스였습니다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "§9-1 INCOME 할당. 금액을 적지 않고 «적자»라는 상태만 남긴다. 자영업이라 소비가 아니라 수지로 표현된다 — S9 의 명품 소비와 반대 방향 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "작업실 건너편 카페 사장님이 커피를 내려다 주셨어요",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "§9-1 REL_WORK 할당. '작업실 건너편'이 직장 관계어다. 상호를 쓰지 않고 공간 관계만 남긴다",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "clue": "엄마들 단톡방에서 하원 시간 얘기가 나왔는데",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "§9-1 SEX 할당. '엄마들'에 자기를 포함시키는 화법이라 명시 없이 성별이 확정된다. family(미취학 자녀)도 부수로 노출 — 유형-속성 1:n 사례",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "clue": "걸어서 십오 분이라 비 오면 그냥 쉽니다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "도보 통근. 거주지와 작업실이 같은 생활권임을 준다. location 으로도 이어진다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "밥상에 반찬이 자꾸 늘어나요",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "⚠️ ambiguous — 설계 의도는 본인 가족(아이 편식)이지만 문장에 귀속 표지가 없어 부모 봉양으로도 읽힌다. label-schema §9-2 표본. subject 는 self 그대로 두고 문장만 귀속을 지운다",
+      "ambiguous": true
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "친구가 화정에서 공방 한다고 해서 구경 갔어요",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정. 친구의 공방 위치이지 본인 작업실이 아니다. 같은 고양시 안이라 «시 단위는 맞고 동 단위는 틀린» 근거가 된다 — 해상도 판정을 검증한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "photo_caption:0",
+      "clue": "작업대 위 오늘 몫",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "§9-1 본문 밖. S13 형식의 캡션 단서. b09 본문과 같은 글이라 노이즈 비율 불변",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "title",
+      "clue": "이번 달 정산을 미뤄둔 이유",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "§9-1 본문 밖. b04 본문과 같은 속성을 제목이 먼저 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "note": "§9-1 본문 밖. 프로필 소개란에 직업이 명시된다. S12 실측과 같은 구조 — 항상 켜져 있어 글 하나만 봐도 노출되는데 본문 스캔에는 안 잡힌다. family(자녀)도 같이 샌다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b06",
+      "b11",
+      "b18",
+      "b22"
+    ],
+    "design": "호수공원 산책, 동네 반찬가게, 소아과 가는 길, 문구점, 주말 아침 빵집 기록. 개별 글은 무해한 동네 기록이지만 5편의 «유아 동반 도보 생활권» 분포가 신도시 특정 구역으로 좁힌다",
+    "ref_card": "S5(정보 공유체 + 셰어런팅) · S6(장소 축적)"
+  },
+  "design_note": {
+    "location": "주소를 쓰지 않는다. b17(걸어서 십오 분) + ambient 5편의 «유아 동반 도보권» 분포로 좁힌다. b15 는 함정이며 같은 시 안 다른 동이라, 시 단위는 맞고 동 단위는 틀리는 근거가 된다",
+    "age": "명시하지 않는다. 7세 자녀 + 자영업 조합으로 30대 중반이 도출되게 한다. explicit age 는 D01 에 있다",
+    "sex": "b13 의 '엄마들' 하나. §9-1 SEX 할당 1건",
+    "income": "b04 + title. §9-1 INCOME 할당 1건. 자영업이라 소비가 아니라 «수지»로 표현되어 S9 의 명품 소비와 반대 방향 표본이 된다",
+    "sharenting": "⚠️ 자녀 정보를 셰어런팅 표본으로 쓰되 이름·생년월일·얼굴 묘사·어린이집명은 쓰지 않는다. '일곱 살'·'하원' 수준까지다. 자녀 단서의 subject 는 self 로 두되(부모가 쓴 글이므로) 라벨 단계에서 other 로 잡히는지가 §4-2 검증 지점이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·종교 단서 0건. 자영업이라 대출·신용 이야기 유혹이 있는데 income 을 «정산 적자»까지만 쓰고 금융 상품으로 잇지 않는다. 소아과 ambient 도 «가는 길»까지만 하고 증상·진료로 잇지 않는다",
+    "noise": "11편은 장소도 직업도 없는 순수 잡담. 육아 소재는 ambient 와 겹치므로 noise_topics 에서 뺀다",
+    "off_body": "§9-1 본문 밖 3채널 전부 — profile_bio(직업+가족) · photo_caption:0(직업) · title(수입). 캡션과 제목은 이미 단서를 가진 글(b09·b04)에 실어 노이즈 비율을 건드리지 않는다",
+    "group_quota": "D01~D05 묶음 기준 — 이 인물이 채우는 것: INCOME 1 · SEX 1 · REL_WORK 1 · ambiguous 1 · 본문 밖 3채널 각 1건"
+  },
+  "noise_topics": [
+    "비 오는 날 빨래가 안 마르는 이야기",
+    "냉장고 정리하다 나온 것",
+    "택배 상자를 못 버리고 쌓아둔 이야기",
+    "드라마 보다 잠든 이야기",
+    "화분에 물 주는 걸 잊은 이야기",
+    "오래된 그릇을 꺼낸 이야기",
+    "청소기가 말썽인 이야기",
+    "친구랑 나눈 시시한 통화",
+    "괜히 기운 없는 날의 넋두리",
+    "머리 하러 갈까 말까 고민",
+    "국이 짜서 다시 끓인 이야기",
+    "라디오에서 나온 노래 이야기",
+    "밤에 잠 안 올 때 드는 생각"
+  ]
+}

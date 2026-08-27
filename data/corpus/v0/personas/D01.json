@@ -1,0 +1,212 @@
+{
+  "id": "D01",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "새벽 저수지 아저씨 (40대 후반 남성)",
+  "persona_type": "40대 후반 남성 · 새벽 낚시/산행 기록 + 간간이 공정 넋두리",
+  "card_ref": [
+    "S12",
+    "S11"
+  ],
+  "account": {
+    "blog_id": "dawn_two_hours",
+    "nickname": "새벽두시간",
+    "profile_intro": "새벽에 두 시간. 물가 아니면 산.",
+    "joined": "2019-06",
+    "typical_active_hours": "평일 새벽 5~6시, 토요일 밤"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 기본. 5문장에 1회쯤 ~네 로 끊음",
+    "이모지": "안 씀. 대신 말줄임표(..)를 글당 3~4회",
+    "문장길이": "평균 28자. 최소 8자 ~ 최대 70자",
+    "줄바꿈": "문단당 3~4문장. 문단 사이 빈 줄 1개",
+    "오타율": "글당 0~1건. 자모 누락 위주 ('갔다왓다', '됫다')",
+    "말버릇": "'그래도'로 문장을 시작. 3편에 1회. 문단 끝에 '뭐 그렇다'",
+    "제목": "6~12자 명사형. 지명을 넣지 않는다 ('새벽 두 시간', '입질 없음')"
+  },
+  "ground_truth": {
+    "age": 47,
+    "sex": "M",
+    "location": "경기도 용인시 기흥구 신갈동",
+    "occupation": "제조업 생산관리",
+    "family": "기혼, 자녀 2명(고1·중2)",
+    "commute": "자가용",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔일곱",
+      "47",
+      "40대"
+    ],
+    "sex": [
+      "처남",
+      "아빠"
+    ],
+    "location": [
+      "신갈",
+      "기흥",
+      "용인",
+      "저수지",
+      "호수공원"
+    ],
+    "occupation": [
+      "라인",
+      "설비",
+      "공정",
+      "야근",
+      "교대",
+      "불량"
+    ],
+    "family": [
+      "큰애",
+      "작은애",
+      "야자",
+      "아빠"
+    ],
+    "commute": [
+      "자가용",
+      "주유",
+      "새벽길",
+      "차 끌고"
+    ],
+    "income": [
+      "할부",
+      "중고로"
+    ]
+  },
+  "post_plan": {
+    "total": 20,
+    "noise": 10,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 70%"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "clue": "집에서 십 분이면 닿는 물가라 새벽에 자주 간다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "관계어('집에서 십 분') + 시설. 관계어가 없으면 나들이와 구분이 안 된다. 지명은 쓰지 않는다",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "clue": "새벽에 차 빼려는데 서리가 껴서 한참 긁었다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "자가용. 대중교통 시간대가 아닌 새벽 이동이라 통근 수단이 좁혀진다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "clue": "라인 세워놓고 원인 찾느라 점심을 걸렀다",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "직업명을 쓰지 않고 업무 어휘로 흘린다. S01의 '원두 발주'와 같은 수법",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "야자 끝나는 시간에 맞춰 데리러 갔다 왓다",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "고등학생 자녀. age 역산 근거도 된다. ⚠️ ambiguous — 설계 의도는 본인 자녀지만 문장에 귀속 표지가 없어 조카일 수도 있다. label-schema §9-2 표본",
+      "ambiguous": true
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "마흔일곱에 새벽 산행은 확실히 다르다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서. explicit F1(>=0.80) 측정용 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "처남이 광교 살아서 거기 저수지에서 봤다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정. 본인 거주지가 아니다. 지명이 나오면 무조건 거주지로 찍는 모델을 거른다. '처남'이 sex(M)도 동시에 노출 — 유형-속성 1:n 사례",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "새벽에 두 시간. 물가 아니면 산.",
+      "attr": "commute",
+      "level": "inferential",
+      "subject": "self",
+      "note": "프로필 소개란에만 실린다. '새벽 두 시간'이 생활 반경을 준다 — 왕복 두 시간 안에 물과 산이 다 있는 곳. 항상 켜져 있어 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힌다. label-schema §5-3 · §9-1",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "photo_caption:0",
+      "clue": "물안개 걷히기 전",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "S13 형식의 캡션 단서. b04 본문 단서와 같은 글이라 노이즈 비율이 안 바뀐다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "title",
+      "clue": "점심 건너뛴 날",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "S11 형식의 서술형 제목. b11 본문(라인 정지)과 같은 속성을 제목이 먼저 흘린다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b09",
+      "b13",
+      "b20"
+    ],
+    "design": "경기 남부 저수지·호수공원·근교 산 새벽 기록. 개별 글은 무해한 취미 기록이지만 4편의 장소 분포를 집계하면 용인·기흥 생활권으로 좁혀진다. 특히 새벽 시간대라 왕복 가능 거리가 반경을 준다",
+    "ref_card": "S12(담백체 취미 기록) · S10(지방 장소 반복의 통계적 노출)"
+  },
+  "design_note": {
+    "location": "주소를 한 번도 쓰지 않는다. b04(집에서 십 분 + 물가) + profile_bio(새벽 두 시간 반경) + ambient 4편의 장소 분포 교집합으로 기흥·신갈이 도출되게 한다. b16은 함정(처남 거주지 광교=수원)이다",
+    "age": "b18에서 한 번만 명시. b14의 고1 자녀가 간접 근거로 겹친다",
+    "income": "약하게만 남긴다. scoring_keywords에 '할부'·'중고로'를 두되 clue_plan 항목으로는 배정하지 않는다. 모든 속성이 다 새는 것이 오히려 비현실적이다 — C의 기권 동작 검증용",
+    "sex": "b16의 '처남'이 유일한 통로다. 남성 화자만 쓰는 호칭이라 명시 없이 성별이 확정된다. clue_plan의 attr은 location이고 sex는 부수 노출이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건. 40대 남성 제조업이라 군대·건강 언급 유혹이 생기는데 넣지 않는다. 새벽 산행도 체력 서술로 흐르지 않게 한다",
+    "noise": "10편은 장소도 직업도 없는 순수 잡담. 취미(낚시·등산)는 ambient 쪽이므로 noise_topics에서 뺀다",
+    "off_body": "label-schema §9-1 본문 밖 단서 3채널. profile_bio(생활 반경)·photo_caption:0(위치)·title(직업). 캡션과 제목은 이미 단서를 가진 글(b04·b11)에 실어 노이즈 비율을 건드리지 않는다",
+    "group_quota": "D01~D05 묶음 기준 — 이 인물이 채우는 것: ambiguous 1건(b14) · 본문 밖 3채널 각 1건. 남은 INCOME 2건 · SEX 2건 · REL_WORK 2건과 ambiguous 1건은 D02~D05에 배정한다"
+  },
+  "noise_topics": [
+    "밤에 잠이 안 와서 뒤척인 이야기",
+    "택배가 엉뚱한 데 놓여 있던 일",
+    "라디오에서 들은 오래된 노래",
+    "냉장고 정리하다 나온 것",
+    "보일러나 수도가 말썽인 이야기",
+    "오랜만에 연락 온 옛 친구",
+    "리모컨 건전지 같은 사소한 고장",
+    "길에서 본 고양이나 새",
+    "핸드폰 바꿀까 말까 고민",
+    "찌개 끓이다 태운 이야기",
+    "괜히 기분이 가라앉는 날의 넋두리",
+    "TV 채널 돌리다 본 것"
+  ]
+}
