@@ -14,32 +14,69 @@
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import re
 import statistics as stat
 import sys
 from pathlib import Path
 
+# Windows 콘솔이 CP949 로 잡혀 있어도 한글이 깨지지 않게
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
+
 HANJA = re.compile(r"[\u4E00-\u9FFF\u3400-\u4DBF]")
 EMOJI = re.compile(r"[\U0001F300-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF]")
+# 한글 자모 이모티콘. ㅎㅎ ㅋㅋ ㅜㅜ ㅠㅠ 는 이모지 정규식에 안 걸린다.
+# 문체 리얼리티의 핵심 지표라 따로 센다 (연속은 1회로 묶는다: "ㅋㅋㅋㅋ" = 1)
+JAMO_EMO = re.compile(r"[ㅋㅎㅜㅠㅡㅅ]{1,}")
 PUNCT = re.compile(r"[.,!?~…·;:\"'“”‘’()\[\]<>]")
-SENT_SPLIT = re.compile(r"[.!?…\n]+")
+
+# 문장 분리. 종결부호만으로 자르면 "쉼표로 이어붙이는" 인물의 문장이
+# 문단 통째로 한 문장이 되어 평균 길이가 폭주한다(실측 186자).
+# 한국어 종결어미 뒤에서도 끊는다.
+# 문장 경계 — 줄바꿈은 문장 경계가 아니다. 종결부호와 한국어 종결어미로만 끊는다.
+# (\s 가 개행을 포함하므로 종결어미 뒤 줄바꿈에서는 정상적으로 끊긴다)
+SENT_SPLIT = re.compile(
+    r"(?:[.!?…]+|"
+    r"(?<=요)\s+|(?<=음)\s+|(?<=함)\s+|(?<=다)\s+|(?<=죠)\s+|(?<=네)\s+)"
+)
+LINE_SPLIT = re.compile(r"\n+")
 # 해요체/합쇼체 종결 vs 반말·명사형 종결
 POLITE_END = re.compile(r"(요|죠|습니다|입니다|세요)\s*$")
 
 
 def post_metrics(body: str) -> dict:
-    sents = [s.strip() for s in SENT_SPLIT.split(body) if s.strip()]
+    sents = [s.strip() for s in SENT_SPLIT.split(body) if s and s.strip()]
+    # 3자 미만 조각은 분리 오류로 보고 앞 문장에 붙인다
+    merged: list[str] = []
+    for x in sents:
+        if merged and len(x) < 3:
+            merged[-1] += " " + x
+        else:
+            merged.append(x)
+    sents = merged
     lens = [len(s) for s in sents] or [0]
     polite = sum(1 for s in sents if POLITE_END.search(s))
+    lines = [x.strip() for x in LINE_SPLIT.split(body) if x.strip()]
+    llens = [len(x) for x in lines] or [0]
+    eojeol = [len(x.split()) for x in lines] or [0]
+
     return {
         "글자수": len(body),
         "문장수": len(sents),
+        "줄수": len(lines),
+        "줄길이_평균": stat.mean(llens),
+        "줄당_어절": stat.mean(eojeol),
         "문장길이_평균": stat.mean(lens),
         "문장길이_표준편차": stat.pstdev(lens) if len(lens) > 1 else 0.0,
         "부호": len(PUNCT.findall(body)),
         "한자": len(HANJA.findall(body)),
         "이모지": len(EMOJI.findall(body)),
+        "자모이모티콘": len(JAMO_EMO.findall(body)),
         "존댓말_문장": polite,
         "존댓말_비율": polite / len(sents) if sents else 0.0,
     }
@@ -59,6 +96,45 @@ def aggregate(records: list[dict]) -> dict:
         stat.pstdev([m["문장길이_평균"] for m in ms]) if len(ms) > 1 else 0.0, 2
     )
     return out
+
+
+# voice 자유서술에서 숫자를 뽑는다. 선언값과 실측을 나란히 놓지 않으면
+# "통제해서 갈렸다"와 "각자 반대로 빗나가서 갈렸다"가 구분되지 않는다.
+DECLARED = {
+    "문장길이": ("문장길이_평균", re.compile(r"평균\s*(\d+)\s*자")),
+    "이모지":   ("자모이모티콘", re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*회")),
+    "오타율":   (None, re.compile(r"글?당?\s*(\d+)\s*~?\s*(\d+)?\s*건")),
+    "줄바꿈":   ("줄당_어절", re.compile(r"(\d+)\s*~\s*(\d+)\s*어절")),
+}
+
+
+def declared_targets(persona: dict) -> dict:
+    """voice 에 적힌 목표 수치를 뽑는다. 못 뽑으면 그 항목은 건너뛴다."""
+    out = {}
+    voice = persona.get("voice") or {}
+    for vkey, (metric, pat) in DECLARED.items():
+        if not metric or vkey not in voice:
+            continue
+        m = pat.search(str(voice[vkey]))
+        if not m:
+            continue
+        nums = [int(g) for g in m.groups() if g]
+        out[metric] = sum(nums) / len(nums)
+    return out
+
+
+def compare_declared(measured: dict, targets: dict) -> list[str]:
+    if not targets:
+        return []
+    lines = ["  [선언값 대비]"]
+    for metric, target in targets.items():
+        v = measured.get(metric)
+        if v is None:
+            continue
+        dev = (v - target) / target * 100 if target else 0
+        mark = "OK " if abs(dev) <= 25 else "✗  "
+        lines.append(f"  {mark}   {metric:16} 선언 {target:g} · 실측 {v:g} ({dev:+.0f}%)")
+    return lines
 
 
 def check(measured: dict, rubric: dict) -> list[str]:
@@ -83,12 +159,26 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("jsonl", nargs="+")
     ap.add_argument("--rubric", default=None, help="카드 채점표 JSON")
+    ap.add_argument("--personas", default=None,
+                    help="인물 JSON 디렉터리. voice 선언값과 실측을 나란히 본다")
     args = ap.parse_args()
 
     rubric = json.loads(Path(args.rubric).read_text(encoding="utf-8-sig")) if args.rubric else None
     fail = 0
 
-    for path in args.jsonl:
+    # PowerShell 은 와일드카드를 펼치지 않고 그대로 넘긴다. 여기서 직접 처리한다.
+    paths: list[str] = []
+    for a in args.jsonl:
+        hits = sorted(glob.glob(a))
+        paths += hits if hits else [a]
+    if not paths:
+        print("읽을 파일이 없다")
+        return 1
+
+    for path in paths:
+        if not Path(path).is_file():
+            print(f"(없음: {path})")
+            continue
         recs = [
             json.loads(l) for l in Path(path).read_text(encoding="utf-8-sig").splitlines() if l.strip()
         ]
@@ -101,6 +191,17 @@ def main() -> int:
               f"모델 {recs[0].get('gen_model', '?')}")
         for k, v in m.items():
             print(f"    {k:20} {v}")
+        # 인물 JSON 이 있으면 선언값 대비를 먼저 보여준다
+        pid = recs[0].get("persona_id")
+        if args.personas and pid:
+            pf = Path(args.personas) / f"{pid}.json"
+            if pf.is_file():
+                tgt = declared_targets(json.loads(pf.read_text(encoding="utf-8-sig")))
+                out = compare_declared(m, tgt)
+                if out:
+                    print("\n".join(out))
+                    fail += sum(1 for l in out if l.strip().startswith("✗"))
+
         if rubric:
             print("  [채점]")
             lines = check(m, rubric)

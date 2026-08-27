@@ -31,6 +31,17 @@ LEVELS = ("explicit", "implicit", "inferential")
 SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
+# label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
+# 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
+TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
+# profile_bio 는 글이 아니라 사용자에 속한다 → post 가 null 이어야 한다
+USER_SCOPED_TEXT_IDS = ("profile_bio",)
+
+# §9-1 본문 밖 단서 할당량. 인물 5명 묶음마다 채널별 최소 건수.
+OFF_BODY_CHANNELS = ("title", "photo_caption", "profile_bio")
+OFF_BODY_QUOTA_PER = 2
+QUOTA_GROUP_SIZE = 5
+
 # RULES-DO-NOT: 방어 도구가 민감 속성 추론을 학습하면 그 자체가 무기가 된다.
 FORBIDDEN_TERMS = (
     "학력", "학벌", "전공", "졸업", "학번", "수능", "편입",
@@ -49,6 +60,83 @@ PERSONA_NOISE_BAND = (0.55, 0.85)   # 인물 단위 — WARN
 CORPUS_NOISE_BAND = (0.70, 0.80)    # 코퍼스 합산 — 완료 기준
 
 POST_ID_RE = re.compile(r"^b\d{2}$")
+
+# ── 카드 공유 인물 간 목소리 대조 (persona-design.md §2-⑤) ──────────────
+#
+# 카드 → 인물 → 글 구조에서 카드 1장으로 인물 N명을 만든다. 이때 인물끼리
+# 목소리가 안 갈리면 "전부 똑같은 AI"가 되고, 모델이 내용이 아니라 문체를 외운다.
+#
+# 다만 카드를 공유한다는 건 상위 톤을 공유한다는 뜻이라 전부 달라야 하는 건 아니다.
+# 카드가 정하는 축은 겹쳐도 정상이고, 인물이 정하는 축이 겹치면 문제다.
+CARD_BOUND_KEYS = ("종결어미", "격식", "톤", "말투")   # 카드가 정한다 — 겹쳐도 정상
+VOICE_SIM_THRESHOLD = 0.6                              # 이 이상이면 "겹침"
+MIN_DISTINCT_AXES = 4                                  # 인물 축은 최소 이만큼 달라야
+
+
+def _bigrams(text: str) -> set:
+    t = re.sub(r"[\s·,./·~()\[\]'\"]+", "", str(text))
+    return {t[i:i + 2] for i in range(len(t) - 1)} or {t}
+
+
+def _similarity(a, b) -> float:
+    """자유서술은 문자 바이그램 자카드, 목록은 원소 자카드."""
+    if isinstance(a, list) and isinstance(b, list):
+        sa, sb = set(map(str, a)), set(map(str, b))
+    else:
+        sa, sb = _bigrams(a), _bigrams(b)
+    if not sa or not sb:
+        return 0.0
+    return len(sa & sb) / len(sa | sb)
+
+
+def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
+    """같은 카드를 참조하는 인물끼리 목소리가 갈리는지 본다."""
+    by_card: dict[str, list[tuple[str, dict]]] = {}
+    for pid, d in personas:
+        for ref in d.get("card_ref", []) or []:
+            by_card.setdefault(ref, []).append((pid, d))
+
+    lines: list[str] = []
+    for card, group in sorted(by_card.items()):
+        if len(group) < 2:
+            continue
+        for i in range(len(group)):
+            for j in range(i + 1, len(group)):
+                pid_a, a = group[i]
+                pid_b, b = group[j]
+                va = a.get("voice") or {}
+                vb = b.get("voice") or {}
+                rows, distinct, bound = [], 0, 0
+                for k in sorted(set(va) & set(vb)):
+                    sim = _similarity(va[k], vb[k])
+                    is_bound = any(t in k for t in CARD_BOUND_KEYS)
+                    if is_bound:
+                        bound += 1
+                        mark = "(카드 축)"
+                    elif sim < VOICE_SIM_THRESHOLD:
+                        distinct += 1
+                        mark = "다름"
+                    else:
+                        mark = "⚠ 겹침"
+                    rows.append(f"      {k:12} {sim:.2f}  {mark}")
+                ta = a.get("noise_topics") or (va.get("소재") or [])
+                tb = b.get("noise_topics") or (vb.get("소재") or [])
+                if ta and tb:
+                    sim = _similarity(ta, tb)
+                    if sim < VOICE_SIM_THRESHOLD:
+                        distinct += 1
+                    rows.append(f"      {'소재':12} {sim:.2f}  "
+                                f"{'다름' if sim < VOICE_SIM_THRESHOLD else '⚠ 겹침'}")
+
+                total = len(rows) - bound
+                ok = distinct >= min(MIN_DISTINCT_AXES, total)
+                lines.append(f"  카드 {card}: {pid_a} ↔ {pid_b}")
+                lines += rows
+                lines.append(
+                    f"      → 인물 축 {total}개 중 {distinct}개 다름 "
+                    f"{'OK' if ok else f'⚠ {MIN_DISTINCT_AXES}개 이상 달라야 한다'}"
+                )
+    return lines
 
 
 class Issue:
@@ -107,10 +195,15 @@ def validate(persona: dict) -> list[Issue]:
         err("post_plan", f"noise+ambient+clue+trap={sum(parts.values())} ≠ total={total}")
 
     clue_plan = persona.get("clue_plan", []) or []
-    if len(clue_plan) != parts["clue"] + parts["trap"]:
+    # profile_bio 단서는 글에 실리지 않으므로 post_plan 산술에서 제외한다
+    post_clues = [c for c in clue_plan if c.get("text_id") not in USER_SCOPED_TEXT_IDS]
+    # 한 글이 본문·제목·캡션에 각각 단서를 가질 수 있으므로 항목 수가 아니라 글 수로 센다
+    clue_posts = {c.get("post") for c in post_clues}
+    if len(clue_posts) != parts["clue"] + parts["trap"]:
         err(
             "clue_plan",
-            f"항목 {len(clue_plan)}개 ≠ post_plan의 clue({parts['clue']})+trap({parts['trap']})",
+            f"단서를 가진 글 {len(clue_posts)}편 ≠ post_plan의 "
+            f"clue({parts['clue']})+trap({parts['trap']})",
         )
 
     # ── clue_plan 각 항목 ─────────────────────────────────────────────
@@ -118,14 +211,27 @@ def validate(persona: dict) -> list[Issue]:
     for i, c in enumerate(clue_plan):
         p = f"clue_plan[{i}]"
         post = c.get("post", "")
-        if not POST_ID_RE.match(post):
+        if post is None:
+            pass   # profile_bio 단서 — 글에 속하지 않는다
+        elif not POST_ID_RE.match(str(post)):
             err(p, f"post={post!r} — b01 형식이어야 한다")
-        elif post in seen:
-            err(p, f"post={post} 가 {seen[post]} 와 중복")
         else:
-            seen[post] = p
-        if total and POST_ID_RE.match(post) and int(post[1:]) > total:
+            key = f"{post}/{c.get('text_id', 'body')}"
+            if key in seen:
+                err(p, f"{key} 가 {seen[key]} 와 중복")
+            else:
+                seen[key] = p
+        if total and post and POST_ID_RE.match(str(post)) and int(post[1:]) > total:
             err(p, f"post={post} 가 total({total})을 넘는다")
+
+        tid = c.get("text_id", "body")   # 미지정은 본문으로 본다 (하위호환)
+        if not TEXT_ID_RE.match(str(tid)):
+            err(p, f"text_id={tid!r} — body/title/profile_bio/photo_caption:N 중 하나 "
+                   f"(label-schema §5-3)")
+        elif tid in USER_SCOPED_TEXT_IDS and c.get("post") is not None:
+            err(p, f"text_id={tid} 는 사용자 단위다. post 는 null 이어야 한다")
+        elif tid not in USER_SCOPED_TEXT_IDS and c.get("post") is None:
+            err(p, f"text_id={tid} 는 글 단위다. post 가 필요하다")
 
         if c.get("attr") not in ATTRS:
             err(p, f"attr={c.get('attr')!r} — 7속성 밖")
@@ -157,14 +263,14 @@ def validate(persona: dict) -> list[Issue]:
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []
     for post in ambient:
-        if post in seen:
+        if any(k.startswith(f"{post}/") for k in seen):
             err("ambient_plan.posts", f"{post} 가 clue_plan에도 있다")
     if len(ambient) != parts["ambient"]:
         err("ambient_plan.posts", f"{len(ambient)}개 ≠ post_plan.ambient({parts['ambient']})")
 
     # 노이즈 비율 B안: 단서 보유 편수(clue+trap) 기준
     if total:
-        noise = 1 - len(clue_plan) / total
+        noise = 1 - len(clue_posts) / total
         lo, hi = PERSONA_NOISE_BAND
         if not lo <= noise <= hi:
             warn(
@@ -172,6 +278,17 @@ def validate(persona: dict) -> list[Issue]:
                 f"노이즈 {noise:.0%} — 인물 밴드 {lo:.0%}~{hi:.0%} 밖. "
                 f"참조 카드의 노이즈 목표와 맞는지 확인",
             )
+
+    # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
+    topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")
+    if not topics:
+        warn(
+            "noise_topics",
+            "잡담 소재가 지정되지 않았다. §2-⑤ 는 '소재'를 목소리 차별화 축으로 둔다 — "
+            "없으면 인물 간 잡담이 같은 소재로 수렴한다",
+        )
+    elif isinstance(topics, list) and len(topics) < 5:
+        warn("noise_topics", f"{len(topics)}개 — 잡담 글 수만큼 있어야 반복되지 않는다")
 
     # ── voice ─────────────────────────────────────────────────────────
     voice = persona.get("voice") or {}
@@ -224,6 +341,7 @@ def main(argv: list[str]) -> int:
         return 2
     bad = 0
     tot_posts = tot_clue = tot_amb = 0
+    loaded: list[tuple[str, dict]] = []
     for f in files:
         ok, issues = validate_file(f)
         mark = "OK  " if ok else "FAIL"
@@ -235,8 +353,12 @@ def main(argv: list[str]) -> int:
             continue
         d = json.loads(f.read_text(encoding="utf-8-sig"))
         tot_posts += d.get("post_plan", {}).get("total", 0)
-        tot_clue += len(d.get("clue_plan", []))
+        tot_clue += len({
+            c.get("post") for c in d.get("clue_plan", []) or []
+            if c.get("text_id") not in USER_SCOPED_TEXT_IDS
+        })
         tot_amb += sum(1 for c in d.get("clue_plan", []) if c.get("ambiguous"))
+        loaded.append((d.get("id") or d.get("persona_id") or f.stem, d))
 
     print(f"\n{len(files) - bad}/{len(files)} 통과")
 
@@ -252,6 +374,36 @@ def main(argv: list[str]) -> int:
         )
         if not ok and len(files) > 1:
             bad += 1
+
+    # ── §9-1 본문 밖 단서 할당량 ─────────────────────────────────────
+    # "인물 5명 묶음마다 채널별 2건 이상". 5명 미만이면 비례로 환산해 진척만 보여준다.
+    if loaded:
+        chan: dict[str, int] = {c: 0 for c in OFF_BODY_CHANNELS}
+        for _, d in loaded:
+            for c in d.get("clue_plan", []) or []:
+                tid = str(c.get("text_id", "body"))
+                if tid.startswith("photo_caption"):
+                    chan["photo_caption"] += 1
+                elif tid in chan:
+                    chan[tid] += 1
+        groups = len(loaded) / QUOTA_GROUP_SIZE
+        need = OFF_BODY_QUOTA_PER * groups
+        print(f"\n[본문 밖 단서 — §9-1] 인물 {len(loaded)}명 "
+              f"(5명 묶음 {groups:.1f}개 · 채널별 {need:.1f}건 필요)")
+        short = False
+        for c in OFF_BODY_CHANNELS:
+            ok = chan[c] >= need
+            if not ok:
+                short = True
+            print(f"  {'OK ' if ok else '⚠  '} {c:16} {chan[c]}건")
+        if short:
+            print("  → clue_plan 에 text_id 를 지정해 배치할 것. "
+                  "본문만 스캔하는 도구가 못 잡는 지점이라 「추가 탐지율」의 근거가 된다")
+
+    cross = cross_check(loaded)
+    if cross:
+        print("\n[카드 공유 인물 간 목소리 대조 — §2-⑤]")
+        print("\n".join(cross))
 
     if tot_clue:
         print(

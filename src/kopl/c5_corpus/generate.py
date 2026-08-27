@@ -139,7 +139,7 @@ def parse(raw: str) -> tuple[str, str]:
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
 def generate_persona(
     persona: dict, client: LLMClient, out_dir: Path, cards_dir: Path | None,
-    seed: int, sample: int = 0, sleep: float = 0.0
+    seed: int, sample: int = 0, sleep: float = 0.0, inject_cards: bool = False
 ) -> dict:
     pid = persona.get("id") or persona["persona_id"]
     rng = random.Random(f"{pid}:{seed}")
@@ -156,15 +156,32 @@ def generate_persona(
             print(f"  resume — {len(done)}편 건너뜀")
 
     card_text = ""
-    if cards_dir:
+    if cards_dir and inject_cards:
         for ref in persona.get("card_ref", []):
             for f in sorted(cards_dir.glob(f"{ref}_*.md")) + sorted(cards_dir.glob(f"{ref}.md")):
                 card_text += f.read_text(encoding="utf-8-sig") + "\n"
                 break
-    if persona.get("card_ref") and not card_text:
-        print(f"  ⚠ card_ref={persona['card_ref']} 인데 카드 파일을 못 찾았다 — 문체 지시가 약해진다")
+    # 주입하지 않아도 card_ref 가 실제 카드를 가리키는지는 확인한다
+    if cards_dir and persona.get("card_ref"):
+        missing = [
+            r for r in persona["card_ref"]
+            if not (list(cards_dir.glob(f"{r}_*.md")) or list(cards_dir.glob(f"{r}.md")))
+        ]
+        if missing:
+            print(f"  ⚠ card_ref {missing} 에 해당하는 카드 파일이 없다")
+    if inject_cards:
+        print("  ⚠ 카드 원문 주입 모드 — persona-design.md §6 이탈. 같은 카드 참조 인물끼리 문체가 수렴한다")
 
     system = prompts.build_system(persona, card_text)
+    # persona-design.md §2-⑤ 소재 축. 인물이 지정하지 않으면 전역 폴백을 쓰되 경고한다.
+    topics = persona.get("noise_topics") or (persona.get("voice", {}) or {}).get("소재")
+    if isinstance(topics, str):
+        topics = [t.strip() for t in topics.split("/") if t.strip()]
+    if not topics:
+        topics = prompts.FALLBACK_NOISE_TOPICS
+        print("  ⚠ noise_topics 없음 — 전역 폴백 사용. 인물 간 잡담 소재가 겹친다 (§2-⑤ 소재 축)")
+    topic_offset = rng.randrange(len(topics))
+    noise_seen = 0
     full_plan = classify_posts(persona)
     plan = stratified_sample(full_plan, sample, rng) if sample else full_plan
     if sample and len(plan) < len(full_plan):
@@ -178,8 +195,12 @@ def generate_persona(
         for idx, item in enumerate(plan):
             if item["post"] in done:
                 continue
+            topic = ""
+            if item["kind"] == "noise":
+                topic = topics[(noise_seen + topic_offset) % len(topics)]
+                noise_seen += 1
             user = prompts.build_user(
-                item["kind"], item.get("clue"), item.get("design", "")
+                item["kind"], item.get("clue"), item.get("design", ""), topic
             )
             if sleep and written:
                 time.sleep(sleep)
@@ -201,6 +222,8 @@ def generate_persona(
                 "created_at": sample_time(persona, rng, idx),
                 "nickname": (persona.get("account") or {}).get("nickname", ""),
                 "kind": item["kind"],
+                # label-schema §8-3 — 단서를 의도적으로 넣지 않은 글인가
+                "negative_control": item["kind"] == "noise",
                 "clue": item.get("clue"),
                 # 재현 메타 — 없으면 10주 뒤에 이 글이 뭐였는지 복원 못 한다
                 # 재현 메타 (이슈 4-② / RULES-DO-NOT #9)
@@ -237,7 +260,10 @@ def main() -> int:
     ap.add_argument("--list-models", action="store_true",
                     help="내 키로 쓸 수 있는 모델 ID를 조회하고 종료")
     ap.add_argument("--out", default="data/corpus/v0/posts")
-    ap.add_argument("--cards", default=None, help="data/realism/cards")
+    ap.add_argument("--cards", default=None,
+                    help="data/realism/cards — card_ref 존재 확인용")
+    ap.add_argument("--inject-cards", action="store_true",
+                    help="카드 원문을 프롬프트에 주입 (실험용). persona-design.md §6 이탈")
     ap.add_argument("--provider", default="echo")
     ap.add_argument("--model", default=None)
     ap.add_argument("--cli-cmd", default="", help="--provider cli 일 때 (예: 'codex exec -')")
@@ -274,6 +300,13 @@ def main() -> int:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     cards_dir = Path(args.cards) if args.cards else None
+    if args.provider == "cli" and not args.model:
+        print("✗ --provider cli 는 --model 이 필요하다.\n"
+              "    --cli-cmd 의 -m 값과 같은 것을 넣어라. 앞은 기록용(gen_model),\n"
+              "    뒤가 실제 실행이다. 없으면 어느 모델로 뽑은 코퍼스인지 복원할 수 없다.\n"
+              "    예: --model gpt-5.6-sol --cli-cmd \"codex exec --sandbox read-only -m gpt-5.6-sol -\"")
+        return 2
+
     try:
         # 이슈 1항: 생성 경로에 Claude·Qwen 계열이 들어오면 여기서 멈춘다
         check_generation_model(args.provider, args.model or "", args.cli_cmd)
@@ -312,7 +345,8 @@ def main() -> int:
         persona = json.loads(path.read_text(encoding="utf-8-sig"))
         summaries.append(
             generate_persona(
-                persona, client, out_dir, cards_dir, args.seed, args.sample, args.sleep
+                persona, client, out_dir, cards_dir, args.seed, args.sample, args.sleep,
+                args.inject_cards
             )
         )
         print()
