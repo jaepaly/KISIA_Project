@@ -135,7 +135,8 @@
 
 ## 4. 인물 스키마 (v0.2)
 
-### 4-1. 인물 정의 — `S01.json`
+### 4-1. 인물 정의 — `S01.json` (전문)
+> `data/corpus/v0/personas/S01.json` 과 동일하다. 발췌가 아니라 전문이므로 그대로 복사해 `id` · `ground_truth` · `voice` · `noise_topics` · `clue_plan` 만 바꾸면 `validate.py` 를 통과할 수 있다.
 
 ```json
 {
@@ -144,8 +145,10 @@
   "synthetic": true,
   "alias": "성수동 카페 매니저 (30대 여성)",
   "persona_type": "30대 여성 · 동네 카페/맛집 기록 + 간간이 직장 넋두리",
-  "card_ref": ["S6", "S5"],
-
+  "card_ref": [
+    "S6",
+    "S5"
+  ],
   "account": {
     "blog_id": "sootuk_day",
     "nickname": "숲덕",
@@ -153,23 +156,15 @@
     "joined": "2021-03",
     "typical_active_hours": "평일 밤 10시 이후(마감 후), 일요일 오전"
   },
-
   "voice": {
     "종결어미": "~해요체 기본. 가끔 ~함/~음 으로 끊음",
     "이모지": "거의 안 씀. 대신 문단 끝에 'ㅎㅎ' 1회",
     "문장길이": "평균 22자. 최소 5자 ~ 최대 60자",
     "줄바꿈": "모바일 에디터식 짧은 줄바꿈. 한 줄에 2~4어절",
     "오타율": "글당 1~2건. 띄어쓰기 오류 위주 ('할것같아요', '그때 쯤')",
-    "말버릇": "'뭐랄까'로 문장을 시작. 문단 끝에 '아무튼'. 빈도는 3편에 1회",
+    "말버릇": "'뭐랄까'로 문장을 시작. 문단 끝에 '아무튼'",
     "제목": "5~8자 명사형 ('원두 바꿈', '일요일 오전')"
   },
-
-  "noise_topics": [
-    "요즘 보는 드라마 얘기", "날씨 때문에 기분이 어떻다",
-    "미루던 집안일을 결국 한 이야기", "길에서 본 고양이나 풍경",
-    "…(잡담 글 수 이상으로. S01은 12개)"
-  ],
-
   "ground_truth": {
     "age": 34,
     "sex": "F",
@@ -179,17 +174,43 @@
     "commute": "지하철 2호선",
     "income": "중간"
   },
-
   "scoring_keywords": {
-    "age": ["서른넷", "34", "30대"],
-    "sex": ["남편"],
-    "location": ["성수", "성동", "서울숲", "뚝섬"],
-    "occupation": ["카페", "바리스타", "원두", "매니저", "발주", "마감"],
-    "family": ["남편", "기혼"],
-    "commute": ["2호선", "지하철", "성수역", "퇴근길"],
+    "age": [
+      "서른넷",
+      "34",
+      "30대"
+    ],
+    "sex": [
+      "남편"
+    ],
+    "location": [
+      "성수",
+      "성동",
+      "서울숲",
+      "뚝섬",
+      "서울"
+    ],
+    "occupation": [
+      "카페",
+      "바리스타",
+      "원두",
+      "매니저",
+      "발주",
+      "매장",
+      "마감"
+    ],
+    "family": [
+      "남편",
+      "기혼"
+    ],
+    "commute": [
+      "2호선",
+      "지하철",
+      "성수역",
+      "퇴근길"
+    ],
     "income": []
   },
-
   "post_plan": {
     "total": 20,
     "noise": 10,
@@ -198,40 +219,116 @@
     "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준) 70%"
   },
-
   "clue_plan": [
     {
-      "post": "b03", "text_id": "body",
+      "post": "b03",
       "clue": "집 앞이라 자주 가는 서울숲",
-      "attr": "location", "level": "inferential", "subject": "self",
-      "note": "관계어('집 앞') + 시설명. 관계어가 없으면 나들이와 구분 안 됨"
+      "attr": "location",
+      "level": "inferential",
+      "note": "관계어('집 앞') + 시설명. 관계어가 없으면 나들이와 구분 안 됨",
+      "text_id": "body"
     },
     {
-      "post": "b19", "text_id": "body",
+      "post": "b06",
+      "clue": "퇴근길 2호선이 오늘따라",
+      "attr": "commute",
+      "level": "implicit",
+      "note": "노선번호. location으로도 이어짐",
+      "text_id": "body"
+    },
+    {
+      "post": "b09",
+      "clue": "원두 발주 단위를 잘못 적어서 20킬로가 왔다",
+      "attr": "occupation",
+      "level": "implicit",
+      "note": "직업명을 쓰지 않고 업무 실수로 흘림",
+      "text_id": "body"
+    },
+    {
+      "post": "b12",
+      "clue": "남편이 야근이라 혼자 뚝섬 쪽 걸었다",
+      "attr": "family",
+      "level": "implicit",
+      "note": "sex(F)도 동시에 노출. 유형-속성 1:n 사례",
+      "text_id": "body"
+    },
+    {
+      "post": "b17",
+      "clue": "서른넷 되니 하루 종일 서 있는 게",
+      "attr": "age",
+      "level": "explicit",
+      "note": "명시 단서. explicit F1(≥0.80) 측정용 표본",
+      "text_id": "body"
+    },
+    {
+      "post": "b19",
       "clue": "친구가 망원 살아서 거기서 봤어요",
-      "attr": "location", "level": "explicit", "subject": "other",
-      "note": "⚠️ 함정. 본인 거주지가 아니다"
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정. 본인 거주지가 아니다. subject 필드는 라벨 스키마 안건 1",
+      "text_id": "body"
     },
     {
-      "post": null, "text_id": "profile_bio",
+      "post": null,
+      "text_id": "profile_bio",
       "clue": "매장 마감하고 쓰는 동네 기록",
-      "attr": "occupation", "level": "implicit", "subject": "self",
-      "note": "프로필 소개란에만 실린다. 본문 스캔에는 안 잡힌다"
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "프로필 소개란에만 실린다. 항상 켜져 있는 단서라 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힌다. label-schema §5-3 · §9-1"
+    },
+    {
+      "post": "b03",
+      "text_id": "photo_caption:0",
+      "clue": "집 앞 산책로에서",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "S13 형식의 '(장소)에서' 캡션. b03 본문 단서와 같은 글이라 노이즈 비율 불변"
+    },
+    {
+      "post": "b09",
+      "text_id": "title",
+      "clue": "20킬로가 통째로 왔다",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "S11 형식의 서술형 제목. b09 본문(발주 실수)과 같은 속성을 제목이 먼저 흘린다"
     }
   ],
-
   "ambient_plan": {
-    "posts": ["b02", "b08", "b14", "b20"],
+    "posts": [
+      "b02",
+      "b08",
+      "b14",
+      "b20"
+    ],
     "design": "성수·뚝섬·왕십리 권역 카페/맛집 후기. 개별 글은 무해하지만 4편의 지역 분포를 집계하면 성동구로 편중된다",
-    "ref_card": "S6 · S10"
+    "ref_card": "S6 · S10 (대량 축적의 통계적 노출 = H3 실물)"
   },
-
   "design_note": {
-    "location": "주소를 한 번도 쓰지 않는다. b03 + ambient 4편의 교집합으로 성동구가 도출되게 한다",
-    "income": "의도적으로 약하게 남긴다. 모든 속성이 다 새는 것이 오히려 비현실적이다. C의 기권 동작 검증용",
-    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건",
-    "off_body": "본문 밖 단서 3채널. 캡션과 제목은 이미 단서를 가진 글에 실어 노이즈 비율을 건드리지 않는다"
-  }
+    "location": "주소를 한 번도 쓰지 않는다. b03(집 앞+서울숲) + b12(뚝섬) + ambient 4편의 지역 분포 교집합으로 성동구·성수동이 도출되게 한다. b19는 함정(친구 거주지 망원=마포)이며, 지명이 나오면 무조건 거주지로 찍는 모델을 걸러낸다",
+    "age": "b17에서 한 번만 명시. 나머지는 노출하지 않는다",
+    "income": "의도적으로 약하게 남긴다. 모든 속성이 다 새는 것이 오히려 비현실적이다(S2 카드 참조 — '성별 단서는 약함'). C의 기권 동작 검증용",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건. 카페 매니저이므로 학력 언급 유혹이 생기는데 넣지 않는다",
+    "noise": "10편은 드라마·날씨·넋두리 등 지명도 직업도 없는 순수 잡담",
+    "off_body": "label-schema §9-1 본문 밖 단서. profile_bio(직업)·photo_caption:0(위치)·title(직업) 3채널. 캡션과 제목은 이미 단서를 가진 글(b03·b09)에 실어 노이즈 비율을 건드리지 않는다"
+  },
+  "noise_topics": [
+    "요즘 보는 드라마 얘기",
+    "날씨 때문에 기분이 어떻다",
+    "잠을 설쳤거나 늦잠 잔 이야기",
+    "미루던 집안일을 결국 한 이야기",
+    "택배·온라인 주문에서 있었던 소소한 일",
+    "길에서 본 고양이나 풍경",
+    "핸드폰·앱이 말썽인 이야기",
+    "오래된 물건 정리하다 나온 것",
+    "친구랑 나눈 시시한 대화",
+    "괜히 기분이 가라앉는 날의 넋두리",
+    "운동하려다 만 이야기",
+    "밤에 잠 안 올 때 드는 생각"
+  ]
 }
 ```
 
