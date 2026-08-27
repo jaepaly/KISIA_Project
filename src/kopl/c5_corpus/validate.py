@@ -68,7 +68,11 @@ POST_ID_RE = re.compile(r"^b\d{2}$")
 #
 # 다만 카드를 공유한다는 건 상위 톤을 공유한다는 뜻이라 전부 달라야 하는 건 아니다.
 # 카드가 정하는 축은 겹쳐도 정상이고, 인물이 정하는 축이 겹치면 문제다.
-CARD_BOUND_KEYS = ("종결어미", "격식", "톤", "말투")   # 카드가 정한다 — 겹쳐도 정상
+# 어느 축을 카드에서 물려받았는지는 **인물이 선언한다** (`card_binding`).
+# 카드마다 대표 발견(⭐)이 다르므로 키 이름을 코드에 박아둘 수 없다.
+# 예) S13 의 ⭐ 는 「길이 편차」이지 「35자」가 아니고, S15 의 ⭐ 는 「방언」이다.
+# card_binding 이 없는 인물은 아래 폴백을 쓰되 선언을 권한다.
+FALLBACK_CARD_BOUND = ("종결어미", "격식", "톤", "말투")
 VOICE_SIM_THRESHOLD = 0.6                              # 이 이상이면 "겹침"
 MIN_DISTINCT_AXES = 4                                  # 인물 축은 최소 이만큼 달라야
 
@@ -89,8 +93,106 @@ def _similarity(a, b) -> float:
     return len(sa & sb) / len(sa | sb)
 
 
+VOICE_AXES_RE = re.compile(r"<!--\s*voice-axes(.*?)-->", re.S)
+UNSPECIFIED = ("—", "-", "", "미상")
+
+
+def load_card_axes(cards_dir) -> dict:
+    """카드의 <!-- voice-axes --> 블록을 읽는다.
+
+    카드 산문은 형식이 제각각이라 기계가 못 읽는다. 그래서 대조할 축만 블록으로 추린다.
+    산문 본문이 정본이고 블록은 그 요약이다.
+    """
+    from pathlib import Path
+
+    out: dict[str, dict] = {}
+    d = Path(cards_dir)
+    if not d.is_dir():
+        return out
+    for f in sorted(d.glob("S*.md")):
+        sid = f.name.split("_")[0]
+        m = VOICE_AXES_RE.search(f.read_text(encoding="utf-8-sig"))
+        if not m:
+            continue
+        axes = {}
+        for line in m.group(1).splitlines():
+            if ":" not in line or line.strip().startswith("기계 대조용"):
+                continue
+            k, v = line.split(":", 1)
+            k, v = k.strip(), v.strip()
+            if k and v not in UNSPECIFIED:
+                axes[k] = v
+        out[sid] = axes
+    return out
+
+
+def _covers(persona_val, card_val) -> float:
+    """카드 값이 인물 값 안에 들어 있는가 (포함 계수).
+
+    인물은 카드를 그대로 옮기지 않고 부연한다 —
+    카드 「한 줄에 2~4어절」 → 인물 「모바일 에디터식 짧은 줄바꿈. 한 줄에 2~4어절」.
+    자카드로 재면 부연할수록 점수가 떨어져 오탐이 난다.
+    """
+    a, b = _bigrams(persona_val), _bigrams(card_val)
+    if not a or not b:
+        return 0.0
+    base = len(a & b) / min(len(a), len(b))
+    # 종결어미는 카드가 성격을("존댓말 정보 공유체") 인물이 형태를("~해요체") 적어
+    # 같은 뜻인데 글자가 다르다. ~로 시작하는 어미 토큰을 따로 대조해 보정한다.
+    # "~해요체" 와 "~해요" 가 같은 것을 가리키므로 접미 「체/형」을 떼고 비교한다
+    norm = lambda xs: {re.sub(r"(체|형)$", "", x) for x in xs}
+    ta = norm(re.findall(r"~\w+", str(persona_val)))
+    tb = norm(re.findall(r"~\w+", str(card_val)))
+    if ta and tb:
+        base = max(base, len(ta & tb) / min(len(ta), len(tb)))
+    return base
+
+
+def card_check(personas: list[tuple[str, dict]], card_axes: dict) -> list[str]:
+    """인물의 voice 가 물려받기로 한 카드와 맞는지 본다.
+
+    기본은 card_ref 첫 카드가 이긴다. card_binding 에 적으면 그쪽이 이긴다.
+    """
+    lines: list[str] = []
+    for pid, d in personas:
+        refs = d.get("card_ref", []) or []
+        if not refs:
+            continue
+        binding = d.get("card_binding") or {}
+        # 축 → 어느 카드를 따르나
+        gov: dict[str, str] = {}
+        for card, axes in binding.items():
+            for ax in axes:
+                gov[ax] = card
+        voice = d.get("voice") or {}
+        rows = []
+        for ax, val in sorted(voice.items()):
+            card = gov.get(ax, refs[0])          # 미지정이면 첫 카드
+            target = (card_axes.get(card) or {}).get(ax)
+            if target is None:
+                continue                          # 카드가 그 축을 규정하지 않았다
+            sim = _covers(val, target)
+            mark = "OK " if sim >= 0.5 else ("△  " if sim >= 0.15 else "✗  ")
+            src = f"{card}{'' if ax in gov else ' (첫 카드)'}"
+            rows.append(f"      {mark} {ax:10} {src:14} 카드 「{target}」")
+        if rows:
+            lines.append(f"  {pid}  card_ref={refs}")
+            lines += rows
+    return lines
+
+
+def _bound(persona: dict, card: str) -> set:
+    """이 인물이 그 카드에서 물려받았다고 선언한 축."""
+    return set((persona.get("card_binding") or {}).get(card, []))
+
+
 def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
-    """같은 카드를 참조하는 인물끼리 목소리가 갈리는지 본다."""
+    """같은 카드를 참조하는 인물끼리 목소리가 갈리는지 본다.
+
+    카드 축(인물이 card_binding 으로 선언한 축)은 겹치는 게 정상이라 계수에서 빼되,
+    **둘 다 같은 카드에 묶었다고 선언했는데 값이 다르면** 한쪽이 카드를 안 따른 것이므로
+    별도로 경고한다.
+    """
     by_card: dict[str, list[tuple[str, dict]]] = {}
     for pid, d in personas:
         for ref in d.get("card_ref", []) or []:
@@ -104,21 +206,28 @@ def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
             for j in range(i + 1, len(group)):
                 pid_a, a = group[i]
                 pid_b, b = group[j]
-                va = a.get("voice") or {}
-                vb = b.get("voice") or {}
-                rows, distinct, bound = [], 0, 0
+                va, vb = a.get("voice") or {}, b.get("voice") or {}
+                ba, bb = _bound(a, card), _bound(b, card)
+                declared = bool(ba or bb)
+
+                rows, distinct, bound_n = [], 0, 0
                 for k in sorted(set(va) & set(vb)):
                     sim = _similarity(va[k], vb[k])
-                    is_bound = any(t in k for t in CARD_BOUND_KEYS)
+                    is_bound = (k in ba or k in bb) if declared else any(
+                        t in k for t in FALLBACK_CARD_BOUND)
                     if is_bound:
-                        bound += 1
-                        mark = "(카드 축)"
+                        bound_n += 1
+                        # 둘 다 이 카드에 묶었다고 했는데 값이 다르면 한쪽이 카드를 안 따랐다
+                        if k in ba and k in bb and sim < VOICE_SIM_THRESHOLD:
+                            rows.append(f"      {k:12} {sim:.2f}  ⚠ 카드 축인데 값이 다르다")
+                        else:
+                            rows.append(f"      {k:12} {sim:.2f}  (카드 축)")
                     elif sim < VOICE_SIM_THRESHOLD:
                         distinct += 1
-                        mark = "다름"
+                        rows.append(f"      {k:12} {sim:.2f}  다름")
                     else:
-                        mark = "⚠ 겹침"
-                    rows.append(f"      {k:12} {sim:.2f}  {mark}")
+                        rows.append(f"      {k:12} {sim:.2f}  ⚠ 겹침")
+
                 ta = a.get("noise_topics") or (va.get("소재") or [])
                 tb = b.get("noise_topics") or (vb.get("소재") or [])
                 if ta and tb:
@@ -128,9 +237,10 @@ def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
                     rows.append(f"      {'소재':12} {sim:.2f}  "
                                 f"{'다름' if sim < VOICE_SIM_THRESHOLD else '⚠ 겹침'}")
 
-                total = len(rows) - bound
+                total = len(rows) - bound_n
                 ok = distinct >= min(MIN_DISTINCT_AXES, total)
-                lines.append(f"  카드 {card}: {pid_a} ↔ {pid_b}")
+                tag = "" if declared else "  (card_binding 미선언 — 폴백 적용)"
+                lines.append(f"  카드 {card}: {pid_a} ↔ {pid_b}{tag}")
                 lines += rows
                 lines.append(
                     f"      → 인물 축 {total}개 중 {distinct}개 다름 "
@@ -279,6 +389,28 @@ def validate(persona: dict) -> list[Issue]:
                 f"참조 카드의 노이즈 목표와 맞는지 확인",
             )
 
+    # ── card_binding (persona-design.md §2-⑤-3) ──────────────────────
+    cb = persona.get("card_binding")
+    refs = persona.get("card_ref", []) or []
+    if cb is None:
+        if refs:
+            warn("card_binding",
+                 "어느 카드에서 어느 축을 물려받았는지 선언되지 않았다. "
+                 "카드를 공유하는 인물끼리 대조할 때 폴백 규칙이 적용된다")
+    elif not isinstance(cb, dict):
+        err("card_binding", "객체여야 한다 — {\"S13\": [\"글길이\"], ...}")
+    else:
+        for card, axes in cb.items():
+            if card not in refs:
+                err(f"card_binding.{card}",
+                    f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
+            if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
+                err(f"card_binding.{card}", "문자열 배열이어야 한다")
+        if len(refs) > 1 and len(cb) < 2:
+            warn("card_binding",
+                 f"카드를 {len(refs)}장 참조하는데 {len(cb)}장에만 축을 배정했다. "
+                 "축마다 주 카드를 정하지 않으면 카드를 섞은 인물이 된다")
+
     # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
     topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")
     if not topics:
@@ -328,6 +460,11 @@ def main(argv: list[str]) -> int:
     if not argv:
         print(__doc__)
         return 2
+    cards_dir = None
+    if "--cards" in argv:
+        i = argv.index("--cards")
+        cards_dir = argv[i + 1] if i + 1 < len(argv) else None
+        argv = argv[:i] + argv[i + 2:]
     # PowerShell 은 와일드카드를 펼치지 않고 그대로 넘긴다. 여기서 직접 처리한다.
     files: list[Path] = []
     for a in argv:
@@ -399,6 +536,20 @@ def main(argv: list[str]) -> int:
         if short:
             print("  → clue_plan 에 text_id 를 지정해 배치할 것. "
                   "본문만 스캔하는 도구가 못 잡는 지점이라 「추가 탐지율」의 근거가 된다")
+
+    if cards_dir:
+        ca = load_card_axes(cards_dir)
+        if not ca:
+            print(f"\n(카드 블록을 못 읽었다: {cards_dir})")
+        else:
+            rows = card_check(loaded, ca)
+            if rows:
+                print(f"\n[카드 대조 — 카드 {len(ca)}장]  "
+                      f"OK 일치 · △ 부분 일치 · ✗ 어긋남")
+                print("\n".join(rows))
+                if any(r.strip().startswith("✗") for r in rows):
+                    print("      ✗ 는 카드를 안 따랐다는 뜻이다. "
+                          "의도한 것이면 card_binding 에 다른 카드를 적어라")
 
     cross = cross_check(loaded)
     if cross:
