@@ -107,6 +107,7 @@ class MockSpanDetector:
         flags = {
             "gen_signal": False,
             "meme_hits": [],
+            "dialect_hits": [],
         }
 
         return format_output(
@@ -164,6 +165,7 @@ class MockSpanDetector:
         flags = {
             "gen_signal": False,
             "meme_hits": [],
+            "dialect_hits": [],
         }
 
         return format_output(
@@ -198,6 +200,7 @@ class MockSpanDetector:
         flags = {
             "gen_signal": False,
             "meme_hits": [],
+            "dialect_hits": [],
         }
 
         return format_output(

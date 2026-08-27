@@ -47,6 +47,7 @@ def test_mock_detect_and_schema() -> None:
     # 1. 자체 시맨틱 검증
     errors = validate_span_output(res, texts={"body": text})
     assert not errors, f"단일 텍스트 검증 오류: {errors}"
+    assert "dialect_hits" in res.get("flags", {}), "flags에 dialect_hits가 누락되었습니다"
 
     # 2. JSON Schema 검증 (파일 존재 시)
     schema_path = Path("docs/contracts/span.schema.json")

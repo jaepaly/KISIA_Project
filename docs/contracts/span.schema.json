@@ -112,6 +112,13 @@
       "description": "BIO 밖 글 단위 보조 플래그 (label-schema §7). 생략 시 미수행으로 해석.",
       "additionalProperties": false,
       "properties": {
+        "dialect_hits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "매칭된 방언 표제어 목록 (data/dict/signatures/dialect.json 기반). meme_hits 와 같은 사전 레이어이고 읽는 파일만 다르다.\n\n⚠️ 쓰임은 다르다. meme_hits 는 2단 판정 근거로만 쓰이지만 dialect_hits 는 C 의 k 계산에도 들어간다 — specificity 의 condition 으로 {axis: location, kind: dialect_region} 이 되어 모집단을 좁힌다."
+        },
         "gen_signal": {
           "type": "boolean",
           "description": "세대 신호 표현 존재 여부"
