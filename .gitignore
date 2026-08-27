@@ -124,3 +124,11 @@ desktop.ini
 .vscode/
 .idea/
 .claude/
+
+# 대시보드 생성물 — 워크플로가 만든다
+site/
+
+# 빌드 부산물 (pip install -e . / pip wheel)
+*.egg-info/
+build/
+dist/
