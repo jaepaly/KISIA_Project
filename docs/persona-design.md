@@ -348,7 +348,7 @@
 | `post_plan` | 편수 배분. `noise+ambient+clue+trap == total` | ✅ |
 | `clue_plan` | 단서 배치 (§4-3) | ✅ |
 | `ambient_plan` | 집계 시에만 드러나는 지역 분포용 글 | ✅ |
-| `design_note` | 설계 의도 산문. 검수자가 읽는다 | ✅ |
+| `design_note` | 설계 의도 산문. 검수자가 읽는 기록이며, 생성 입력이 아님. | ✅ |
 
 > ⚠️ 생성 프롬프트에 들어가는 것은 `persona_type` · `account` · `voice` · `noise_topics` · `clue_plan` 뿐이다. 
 `design_note` · `ground_truth` · `scoring_keywords` · `ambient_plan.design` 은 모델에 도달하지 않는다. 여기에 "주소를 쓰지 마라" 같은 제약을 적어두고 지켜지길 기대하면 안 된다. 생성에 반영되어야 하는 지시는 `voice` 에 쓰거나 `clue_plan[].clue` 문장 자체에 담는다.
