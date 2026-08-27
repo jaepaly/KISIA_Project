@@ -258,30 +258,27 @@ button.rf:hover{border-color:var(--accent);color:var(--accent-ink)}
   display:flex;flex-wrap:wrap;gap:2px 13px;padding:0 2px}
 .strip b{color:var(--dim);font-weight:650;font-variant-numeric:tabular-nums}
 
-/* ── 탭 — 한 줄 가로 스크롤. 3줄로 늘어나 본문을 밀어내지 않게. ── */
-nav{display:flex;gap:6px;margin:18px -20px 22px;padding:2px 20px;
-  overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-  scroll-snap-type:x proximity}
-nav::-webkit-scrollbar{display:none}
-nav button{flex:0 0 auto;scroll-snap-align:center;
-  font:inherit;font-size:13.5px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:5px;
-  min-height:44px;padding:0 15px;                 /* 44px — 손가락이 닿는 최소 */
-  border-radius:999px;border:1px solid var(--line);background:var(--card);
-  color:var(--dim);transition:.14s;white-space:nowrap}
-nav button:hover{border-color:var(--accent);color:var(--ink)}
-nav button .role{font-weight:750;color:var(--ink);font-size:14px}
-nav button .who{color:var(--faint);font-size:12.5px}
-nav button .n{font-variant-numeric:tabular-nums;font-weight:650;font-size:12px;
-  min-width:19px;height:19px;line-height:19px;text-align:center;
-  border-radius:999px;background:var(--chip);color:var(--dim)}
-nav button .n.zero{opacity:.45}
-nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);
-  color:#fff}
-nav button[aria-selected="true"] .role,
-nav button[aria-selected="true"] .who{color:#fff}
-nav button[aria-selected="true"] .who{opacity:.75}
-nav button[aria-selected="true"] .n{background:rgba(255,255,255,.24);color:#fff}
+/* ── 나 — 탭 바를 없앴다. 남의 건수가 나란히 있으면 그게 점수판이다. ── */
+.who-line{display:flex;align-items:center;gap:9px;margin:16px 0 20px;
+  padding:9px 13px;background:var(--card);border:1px solid var(--line);
+  border-radius:11px;box-shadow:var(--shadow)}
+.who-line .me{display:inline-flex;align-items:center;gap:6px;flex:1;min-width:0}
+.who-line .role{font-weight:750;font-size:15px;color:var(--ink)}
+.who-line .who{color:var(--faint);font-size:12.5px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.who-line .rf{flex:0 0 auto}
+
+/* 처음 왔을 때 고르는 화면 */
+.pick .picks{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pick .picks button{flex:1 1 auto;min-width:104px;min-height:52px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font:inherit;cursor:pointer;border-radius:11px;
+  border:1px solid var(--line);background:var(--bg);color:var(--ink);
+  transition:.14s}
+.pick .picks button:hover{border-color:var(--accent);background:var(--accent-bg)}
+.pick .picks .role{font-weight:750;font-size:16px}
+.pick .picks .who{color:var(--faint);font-size:12.5px}
+.pick .why b{color:var(--ink);font-weight:650}
 
 /* ── 지금 할 일 ───────────────────────────────────────────────── */
 .now{background:var(--accent-bg);border:1px solid var(--accent);
@@ -350,8 +347,7 @@ footer code{background:var(--chip);border-radius:4px;padding:1px 4px;font-size:1
 /* ── 모바일 ───────────────────────────────────────────────────── */
 @media(max-width:600px){
   .wrap{padding:18px 15px 56px}
-  nav{margin:16px -15px 20px;padding:2px 15px}
-  nav button .who{display:none}      /* 「A · @nuewsun」→「A」. 한 줄에 다 들어간다 */
+  .pick .picks button{min-width:0;flex:1 1 28%}
   h1{font-size:17.5px}
   .now{padding:15px 15px 16px}
   .now .act{font-size:16.5px}
@@ -488,9 +484,17 @@ function prLi(p, opts) {
   if (k === "run")  bits.push('<span class="warnc">검사 중</span>');
   if (d >= 1) bits.push(`<span class="chip">${d}일째</span>`);
   if (p.draft) bits.push('<span class="chip">Draft</span>');
-  if (opts.showWho && p.reviewers.length) {
+  // ⚠️ 이름을 언제 보이느냐가 갈린다.
+  //    names — «내가» 리뷰를 요청한 내 PR. 누구한테 물어야 하는지가 필요하고,
+  //            GitHub PR 페이지에 이미 크게 떠 있다
+  //    count — 내가 리뷰어인 PR 의 «공동» 리뷰어. 나한테 필요한 건
+  //            «혼자가 아니다» 뿐이다. 이름을 띄우면 남의 밀린 목록이 된다
+  if (opts.who === "names" && p.reviewers.length) {
     bits.push("기다리는 사람: " +
       esc(p.reviewers.map(l => `${ROLE[l] || ""} @${l}`.trim()).join(" · ")));
+  } else if (opts.who === "count") {
+    const n = p.reviewers.filter(l => l !== ME).length;
+    if (n) bits.push(`<span class="chip">나 말고 ${n}명도 요청받음</span>`);
   }
   const doing = k === "fail" && opts.verb === "승인해 주세요"
     ? "검사가 실패했습니다 — 작성자에게 알려주세요" : opts.verb;
@@ -536,7 +540,7 @@ function render(login) {
 
   document.getElementById("main").innerHTML = now + strip
     + block("🔴 내 승인을 기다리는 PR", b.review,
-            p => prLi(p, { verb: "승인해 주세요", hot: true, showWho: true }),
+            p => prLi(p, { verb: "승인해 주세요", hot: true, who: "count" }),
             "없습니다.")
     + block("🔴 내가 올렸는데 검사가 실패한 PR", b.broken,
             p => prLi(p, { verb: "검사를 고쳐 주세요", hot: true }), "없습니다.")
@@ -544,18 +548,10 @@ function render(login) {
             p => prLi(p, { verb: "리뷰어를 지정하세요", hot: false }),
             "없습니다.")
     + block("⏳ 내가 올렸고 남을 기다리는 중", b.waiting,
-            p => prLi(p, { verb: "", hot: false, showWho: true }),
+            p => prLi(p, { verb: "", hot: false, who: "names" }),
             "없습니다.")
     + block("📋 문서에서 확인할 것", b.todos, todoLi, "없습니다.")
     + block("📌 맡고 있는 이슈", b.issues, issueLi, "없습니다.");
-
-  DATA.team.forEach(([r, l]) => {
-    const el = document.querySelector(`nav button[data-tab="${l}"] .n`);
-    if (!el) return;
-    const n = count(split(l));
-    el.textContent = n;
-    el.className = "n" + (n ? "" : " zero");
-  });
 }
 
 /* ── 실시간 ───────────────────────────────────────────────────────
@@ -626,33 +622,79 @@ async function refresh() {
       + (e === 403 ? " (요청 한도 초과 — 잠시 뒤 새로고침)" : "");
   }
   LAST = Date.now();
-  render(current());
+  if (ME) render(ME);
 }
 
-/* ── 탭 ───────────────────────────────────────────────────────────── */
-const tabs = [...document.querySelectorAll("nav button[data-tab]")];
-const current = () => (tabs.find(b => b.getAttribute("aria-selected") === "true")
-                       || tabs[0]).dataset.tab;
-function show(id) {
-  tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
-  const sel = tabs.find(b => b.dataset.tab === id);
-  if (sel && sel.scrollIntoView) {
-    try { sel.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e) {}
-  }
-  try { localStorage.setItem("kopl-dash-tab", id); } catch (e) {}
-  if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
-  render(id);
+/* ── 나는 누구인가 ────────────────────────────────────────────────
+   ⚠️ 이건 «보안»이 아니다. 저장소가 공개라 API 를 직접 부르면 누구든 같은
+      정보를 얻는다. 여기서 하는 일은 «열자마자 남의 밀린 목록이 눈에 들어오는
+      것»을 없애는 것이다. 접근 비용과 기본 노출은 다른 문제이고,
+      팀 분위기를 흔드는 쪽은 후자다.
+
+   그래서 잠금장치를 흉내내지 않는다. 비밀번호도 로그인도 없다 —
+   있으면 «보호되고 있다»는 착각만 생긴다. 바닥글에 공개 데이터라고 밝힌다. */
+const KEY = "kopl-dash-me";
+let ME = "";
+const known = l => DATA.team.some(([, lg]) => lg === l);
+
+function setMe(l, remember) {
+  ME = l;
+  if (remember) { try { localStorage.setItem(KEY, l); } catch (e) {} }
+  if (location.hash.slice(1) !== l) history.replaceState(null, "", "#" + l);
+  draw();
 }
-tabs.forEach(b => b.onclick = () => show(b.dataset.tab));
+
+function forget() {
+  try { localStorage.removeItem(KEY); } catch (e) {}
+  ME = "";
+  history.replaceState(null, "", location.pathname);
+  draw();
+}
+
+/* 처음 왔을 때. 여기에 건수를 띄우지 않는다 — 고르는 화면에 숫자가 나란히
+   있으면 그게 곧 점수판이다. */
+function picker() {
+  document.getElementById("who").innerHTML = "";
+  document.getElementById("main").innerHTML = `
+    <div class="now calm pick">
+      <div class="lab">시작하기</div>
+      <div class="act">누구신가요?</div>
+      <div class="why">고르시면 이 브라우저가 기억합니다.
+        다음부터는 열자마자 본인 화면이 나옵니다.</div>
+      <div class="picks">${DATA.team.map(([r, lg]) =>
+        `<button type="button" data-me="${lg}">
+           <span class="role">${r}</span><span class="who">@${lg}</span>
+         </button>`).join("")}</div>
+      <div class="why" style="margin-top:12px">
+        ⚠️ 이건 잠금장치가 아닙니다. 저장소가 공개라 마음먹으면 누구나 같은
+        정보를 GitHub 에서 볼 수 있습니다. 다만 <b>이 화면에서는 본인 것만</b>
+        보이게 해서, 서로의 밀린 목록이 눈에 띄지 않게 했습니다.</div>
+    </div>`;
+  document.querySelectorAll("[data-me]").forEach(b =>
+    b.onclick = () => setMe(b.dataset.me, true));
+}
+
+function draw() {
+  if (!ME) { picker(); return; }
+  const role = (DATA.team.find(([, lg]) => lg === ME) || ["", ME])[0];
+  document.getElementById("who").innerHTML =
+    `<span class="me"><span class="role">${esc(role)}</span>
+       <span class="who">@${esc(ME)}</span></span>
+     <button type="button" class="rf" id="notme">내가 아님</button>`;
+  document.getElementById("notme").onclick = forget;
+  render(ME);
+}
+
 document.getElementById("rf").onclick = () => refresh();
 
-let start = location.hash.slice(1);
-if (!start) { try { start = localStorage.getItem("kopl-dash-tab") || ""; } catch (e) {} }
-show(tabs.some(b => b.dataset.tab === start) ? start : tabs[0].dataset.tab);
-refresh();
+const hash = location.hash.slice(1);
+if (known(hash)) ME = hash;
+else { try { const v = localStorage.getItem(KEY); if (known(v)) ME = v; } catch (e) {} }
+draw();
+if (ME) refresh();
 // 탭을 다시 보면 그때 갱신한다. 타이머로 계속 두드리면 시간당 한도를 태운다.
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && Date.now() - LAST > 60000) refresh();
+  if (!document.hidden && ME && Date.now() - LAST > 60000) refresh();
 });
 """
 
@@ -670,7 +712,7 @@ PAGE = """<!doctype html>
     <button class="rf" id="rf" type="button">새로고침</button>
   </div>
 </header>
-<nav role="tablist">__NAV__</nav>
+<div id="who" class="who-line"></div>
 <main id="main"></main>
 <noscript><p>이 페이지는 자바스크립트로 그립니다. 켜고 다시 열어 주세요.
   아니면 <a href="https://github.com/__REPO__/pulls">GitHub 에서 직접</a>
@@ -682,6 +724,12 @@ PAGE = """<!doctype html>
   <p><strong>📋 문서에서 확인할 것</strong>은 문서에
      <code>&lt;!-- dashboard: owner=계정 --&gt;</code> 표식을 단 블록만 읽습니다.
      표식 없는 <code>- [ ]</code> 는 「작성 시 확인」 같은 템플릿이라 무시합니다.</p>
+  <p><strong>본인 것만 보입니다.</strong> 처음에 고른 사람이 이 브라우저에
+     기억되고, 그 사람 화면만 그립니다. 서로의 밀린 목록이 나란히 뜨지 않게
+     한 것입니다.<br>
+     ⚠️ <strong>다만 잠금장치는 아닙니다.</strong> 저장소가 공개라 마음먹으면
+     누구나 같은 정보를 GitHub 에서 볼 수 있습니다. 가려진 척하지 않겠습니다 —
+     이 화면이 하는 일은 «열자마자 눈에 들어오는 것»을 줄이는 데까지입니다.</p>
   <p>손으로 채우는 칸은 하나도 없습니다. 내용이 틀렸으면 저장소가 틀린 것입니다 —
      <a href="https://github.com/__REPO__/blob/main/scripts/build_dashboard.py"
         target="_blank" rel="noopener">만드는 코드</a></p>
@@ -704,17 +752,9 @@ def main() -> int:
     now = time.gmtime(data["built"] + 9 * 3600)   # KST = UTC+9. TZ DB 에 의존하지 않는다
     stamp = time.strftime("%m월 %d일 %H:%M", now)
 
-    nav = "".join(
-        '<button data-tab="{lg}" role="tab" aria-selected="false">'
-        '<span class="role">{r}</span><span class="who">@{lg}</span>'
-        '<span class="n">·</span></button>'.format(r=r, lg=lg)
-        for r, lg in TEAM
-    )
-
     doc = (PAGE
            .replace("__CSS__", CSS)
            .replace("__JS__", JS)
-           .replace("__NAV__", nav)
            .replace("__DATA__", json.dumps(data, ensure_ascii=False))
            .replace("__STAMP__", stamp)
            .replace("__REPO__", REPO))
