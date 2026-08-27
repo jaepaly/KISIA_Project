@@ -189,7 +189,7 @@
             "ACCEPTABLE",
             "UNKNOWN"
           ],
-          "description": "k 판정 등급. k<=2는 VERY_HIGH, 2<k<5는 HIGH, k>=5는 ACCEPTABLE, k=null은 UNKNOWN"
+          "description": "k 판정 등급. k<=2는 VERY_HIGH, 2<k<5는 HIGH, k>=5는 ACCEPTABLE, k=null은 UNKNOWN.\n\n[경계값의 근거] 이 숫자는 우리 데이터 분포에서 나온 것이 아니라 개인정보위 «가명정보 처리 가이드라인»의 적정성 검토 절차에서 온다 — k<=2 개인 특정 가능 / 3~4 소수로 좁혀짐 / >=5 집단 내 익명. plan.md §13.1 이 정본이다.\n\n그래서 실측 k 분포가 예상과 달라도 이 경계는 안 움직인다. 분포가 이상하면 경계가 아니라 k 추정기(alpha·감쇠 계수·floor_applied)를 본다. 경계를 데이터로 맞추면 심사에서 «왜 k<=2 인가»에 답할 근거가 사라지고, W1 에 선언한 성공 기준(«위험도의 법적 정박»)도 함께 무너진다.\n\n한글 문구는 화면 표기이며 E 가 매핑한다. 코드 값은 영문 상수다."
         },
         "basis": {
           "$ref": "#/$defs/basis"
