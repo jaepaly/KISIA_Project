@@ -325,6 +325,7 @@ li>a{display:block;padding:12px 14px 4px}         /* 카드 전체가 눌린다 
 li .meta{padding:0 14px 11px}
 li.hot{border-left:3px solid var(--red)}
 li.warm{border-left:3px solid var(--amber)}
+li.good{border-left:3px solid var(--green)}
 
 .num{color:var(--faint);font-variant-numeric:tabular-nums;margin-right:7px;
   font-size:13.5px;font-weight:600}
@@ -391,16 +392,23 @@ const days = iso => {
 /* ── 사람별로 나눈다 ─────────────────────────────────────────────── */
 function split(login) {
   // 내가 올린 PR 을 셋으로 쪼갠다. «내 차례»인 것과 «남을 기다리는 것»은 다르다.
-  //   broken  검사가 깨졌다 → 내가 고쳐야 한다
-  //   mine    리뷰어가 없다 → 내가 지정해야 한다
-  //   waiting 리뷰어가 보고 있다 → 내가 할 일은 없다. 상황만 알면 된다
-  const b = { review: [], broken: [], mine: [], waiting: [], todos: [], issues: [] };
+  //   broken  검사가 깨졌다     → 내가 고쳐야 한다
+  //   ready   승인을 받았다     → 머지만 하면 끝난다
+  //   mine    아무도 안 보고 있다 → 리뷰어를 지정해야 한다
+  //   waiting 리뷰어가 보는 중   → 내가 할 일은 없다. 상황만 알면 된다
+  //
+  // ⚠️ ready 와 mine 을 가르는 것이 approved 다. 리뷰가 끝나면 GitHub 이
+  //    요청 목록을 비우기 때문에, 그것만 보면 «아직 아무도 안 봤다» 와
+  //    «다 보고 끝났다» 가 똑같이 빈 배열로 온다 (실측 #55).
+  const b = { review: [], broken: [], ready: [], mine: [], waiting: [],
+              todos: [], issues: [] };
   DATA.prs.forEach(p => {
     // 이미 승인했으면 내 차례가 아니다. reviewers 에 남아 있어도 뺀다.
     if (p.reviewers.includes(login) && !didApprove(p.n, login)) { b.review.push(p); return; }
     if (didApprove(p.n, login)) return;   // 승인한 PR 은 다른 묶음에도 안 넣는다
     if (p.author !== login) return;
     if (CHECK[p.n] === "fail") b.broken.push(p);
+    else if ((p.approved || []).length) b.ready.push(p);
     else if (!p.reviewers.length) b.mine.push(p);
     else b.waiting.push(p);
   });
@@ -411,8 +419,8 @@ function split(login) {
   return b;
 }
 // ⚠️ waiting 은 안 센다. 내 차례가 아닌데 숫자에 넣으면 «할 일 5건»으로 읽힌다.
-const count = b => b.review.length + b.broken.length + b.mine.length
-                 + b.todos.length + b.issues.length;
+const count = b => b.review.length + b.broken.length + b.ready.length
+                 + b.mine.length + b.todos.length + b.issues.length;
 
 /* ── 지금 할 일 하나 ──────────────────────────────────────────────
    고르는 순서. 위에 있을수록 «남을 막고 있는 것»이다.
@@ -445,6 +453,15 @@ function nextAction(b, login) {
       act: `#${p.n} 의 검사가 실패했습니다`, sub: esc(p.title),
       why: "고치기 전에는 승인을 받아도 머지가 안 됩니다",
       url: p.url + "/checks", go: "무엇이 실패했는지 보기", hot: true
+    };
+  }
+  if (b.ready.length) {
+    const p = b.ready[0];
+    const who = (p.approved || []).map(l => `${ROLE[l] || ""} @${l}`.trim()).join(" · ");
+    return {
+      act: `#${p.n} 을 머지하시면 됩니다`, sub: esc(p.title),
+      why: `${esc(who)} 승인 완료 · 검사 통과 — 남은 건 머지뿐입니다`,
+      url: p.url, go: "열어서 머지하기", hot: false
     };
   }
   if (b.mine.length) {
@@ -506,6 +523,9 @@ function prLi(p, opts) {
   if (opts.who === "names" && p.reviewers.length) {
     bits.push("기다리는 사람: " +
       esc(p.reviewers.map(l => `${ROLE[l] || ""} @${l}`.trim()).join(" · ")));
+  } else if (opts.who === "approved" && (p.approved || []).length) {
+    bits.push('<span class="ok">' +
+      esc(p.approved.map(l => `${ROLE[l] || ""} @${l}`.trim()).join(" · ")) + " 승인</span>");
   } else if (opts.who === "count") {
     const n = p.reviewers.filter(l => l !== ME && !didApprove(p.n, l)).length;
     if (n) bits.push(`<span class="chip">나 말고 ${n}명도 요청받음</span>`);
@@ -558,7 +578,9 @@ function render(login) {
             "없습니다.")
     + block("🔴 내가 올렸는데 검사가 실패한 PR", b.broken,
             p => prLi(p, { verb: "검사를 고쳐 주세요", hot: true }), "없습니다.")
-    + block("🟡 내가 올렸는데 리뷰어가 없는 PR", b.mine,
+    + block("🟢 승인받았습니다 — 머지만 하면 끝", b.ready,
+            p => prLi(p, { verb: "머지하세요", hot: false, who: "approved" }), "없습니다.")
+    + block("🟡 내가 올렸는데 아무도 안 보고 있는 PR", b.mine,
             p => prLi(p, { verb: "리뷰어를 지정하세요", hot: false }),
             "없습니다.")
     + block("⏳ 내가 올렸고 남을 기다리는 중", b.waiting,
