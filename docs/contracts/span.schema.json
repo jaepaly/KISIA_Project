@@ -20,12 +20,22 @@
   "then": {
     "required": [
       "persona_id"
-    ]
+    ],
+    "not": {
+      "required": [
+        "post_id"
+      ]
+    }
   },
   "else": {
     "required": [
       "post_id"
-    ]
+    ],
+    "not": {
+      "required": [
+        "persona_id"
+      ]
+    }
   },
   "additionalProperties": false,
   "properties": {

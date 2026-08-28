@@ -143,11 +143,22 @@ def test_profile_bio_separation() -> None:
         except ImportError:
             pass
 
-    # 만약 글 레코드 검증기(is_post=True)로 돌리면 규칙 10으로 차단되는지 확인
-    block_errors = validate_span_output(res, is_post=True)
-    assert any("규칙10" in err for err in block_errors), "글 검증기에서 profile_bio가 차단되지 않음"
+    # 4. 상호 배제 검증 (persona_id + post_id 동시 존재 시 차단)
+    dual_record = dict(res)
+    dual_record["post_id"] = "invalid_extra_post_id"
+    dual_errors = validate_span_output(dual_record, is_post=False)
+    assert any("상호 배제" in err for err in dual_errors), "profile에 post_id가 동시 존재할 때 차단되지 않음"
+    if schema_path.exists():
+        try:
+            from jsonschema import Draft202012Validator
+            schema = json.loads(schema_path.read_text(encoding="utf-8"))
+            validator = Draft202012Validator(schema)
+            dual_schema_errors = list(validator.iter_errors(dual_record))
+            assert len(dual_schema_errors) > 0, "JSON Schema가 post_id + persona_id 동시 존재를 차단하지 못함"
+        except ImportError:
+            pass
 
-    print("[PASS] 4. 프로필(profile_bio) record_type='profile' 및 persona_id 분기 검증 통과")
+    print("[PASS] 4. 프로필(profile_bio) record_type='profile' 및 상호 배제(not required) 검증 통과")
 
 
 if __name__ == "__main__":

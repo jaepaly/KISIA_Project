@@ -210,11 +210,15 @@ def validate_span_output(
     if rt == "profile":
         if "persona_id" not in output:
             errors.append("profile 레코드에는 persona_id가 필수입니다")
+        if "post_id" in output:
+            errors.append("profile 레코드에 post_id가 포함되어선 안 됩니다 (상호 배제 제약)")
         if is_post:
             errors.append("규칙10: profile 레코드가 글 레코드(is_post=True)로 전달되었습니다")
     else:
         if "post_id" not in output:
             errors.append("post 레코드에는 post_id가 필수입니다")
+        if "persona_id" in output:
+            errors.append("post 레코드에 persona_id가 포함되어선 안 됩니다 (상호 배제 제약)")
 
     if output.get("schema_version") != SCHEMA_VERSION:
         errors.append(f"schema_version 불일치: 기대값 '{SCHEMA_VERSION}', 실제값 '{output.get('schema_version')}'")
