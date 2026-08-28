@@ -1,0 +1,220 @@
+{
+  "id": "C02",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "대전 주차 중심 맛집 기록 배송기사 (46세 남성)",
+  "persona_type": "40대 중반 남성 · 지역 배송기사 · 주차와 접근성을 중시하는 건조한 맛집 방문기",
+  "card_ref": [
+    "S10"
+  ],
+  "card_binding": {
+    "S10": [
+      "종결어미",
+      "부호",
+      "주소·영업시간 정형 나열"
+    ]
+  },
+  "account": {
+    "blog_id": "parking_first_meal",
+    "nickname": "주차먼저",
+    "profile_intro": "운행 사이 직접 들른 곳만 간단히 기록합니다",
+    "joined": "2020-11",
+    "typical_active_hours": "평일 오후 3~5시, 일요일 밤 8~9시"
+  },
+  "voice": {
+    "종결어미": "~습니다체 기본. 판단 문장은 '~무난합니다'로 끝내며 글당 2~3회 사용",    "이모지": "사용하지 않음. 별점이나 특수기호도 사용하지 않음",
+    "문장길이": "평균 18자. 최소 5자 ~ 최대 40자",
+    "줄바꿈": "주소·주차·메뉴 항목을 각각 한 줄로 작성. 본문은 한 줄에 1문장",
+    "오타율": "글당 1건 이하. 띄어쓰기 생략이 5편에 1회 나타남",
+    "말버릇": "'참고로'를 글 중간에 사용. 2편에 1회",
+    "제목": "8~12자 명사형 제목. 메뉴와 주차 여부를 중심으로 표기"
+  },
+  "ground_truth": {
+    "age": 46,
+    "sex": "M",
+    "location": "대전광역시 유성구 노은1동",
+    "occupation": "지역 식자재 배송기사",
+    "family": "기혼, 고등학생 자녀 1명",
+    "commute": "1톤 화물차",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔여섯",
+      "46",
+      "40대 중반"
+    ],
+    "sex": [
+      "아내",
+      "아빠",
+      "남편"
+    ],
+    "location": [
+      "대전",
+      "유성",
+      "노은",
+      "월드컵경기장",
+      "노은역"
+    ],
+    "occupation": [
+      "배송",
+      "납품",
+      "식자재",
+      "거래처",
+      "상차"
+    ],
+    "family": [
+      "아내",
+      "아이",
+      "고등학생",
+      "가족"
+    ],
+    "commute": [
+      "화물차",
+      "운행",
+      "적재함",
+      "주차",
+      "차량"
+    ],
+    "income": [
+      "가성비",
+      "부담 없는",
+      "한 끼",
+      "가격"
+    ]
+  },
+  "post_plan": {
+    "total": 20,
+    "noise": 10,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 70%"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "오전 납품을 마치고 노은역 방향으로 이동했습니다",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "납품이라는 업무 표현과 반복 운행 지역을 결합한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "clue": "납품 뒤 국밥 한 끼",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "본문과 같은 속성을 제목에서도 흘리는 본문 밖 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "clue": "적재함이 비어 있을 때만 골목 안쪽까지 들어갈 만합니다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "차종을 직접 말하지 않고 적재함과 진입 조건으로 화물차 운행을 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "photo_caption:0",
+      "clue": "차량 한 대 들어가는 골목",
+      "attr": "commute",
+      "level": "inferential",
+      "subject": "self",
+      "note": "b06의 통근 단서를 사진 캡션에서도 보강한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "아이가 야간 자율학습을 마치는 시간에 맞춰 포장했습니다",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "고등학생 자녀가 있는 가족 구성을 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "clue": "마흔여섯이 되니 기름진 메뉴는 점심에만 찾게 됩니다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "나이를 한 번만 명시하는 explicit 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "매일 들르기에는 부담 없고 가족 셋이 먹기에도 무난한 가격입니다",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "note": "구체적인 금액 없이 반복 외식 가능성과 가족 단위 소비 기준을 보여준다",
+      "ambiguous": true
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "아내 직장이 둔산동이라 그 근처에서 저녁을 먹었습니다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "함정 단서. 둔산동은 아내의 직장 위치이며 본인의 거주지가 아니다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "운행 사이 직접 들른 곳만 간단히 기록합니다",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "운행이라는 표현으로 이동 업무를 암시하는 본문 밖 단서",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b08",
+      "b14",
+      "b19"
+    ],
+    "design": "유성구 북부와 노은역 인근의 가상 식당을 반복적으로 기록한다. 각 글에는 주소·영업시간·화물차 주차 가능 여부를 정형적으로 싣고, 네 글의 운행 경로를 모으면 노은1동 생활권으로 좁혀진다",
+    "ref_card": "S10(비수도권 지역 맛집 정보와 정확한 주소·영업시간·주차 정보)"
+  },
+  "design_note": {
+    "location": "거주 행정동을 직접 쓰지 않는다. b03의 노은역 방향 이동과 ambient 4편의 방문 분포를 결합해 노은1동 생활권이 드러나도록 한다",
+    "age": "b12에서 마흔여섯을 한 번만 명시한다",
+    "sex": "아내와 아빠라는 가족 호칭에서만 부수적으로 드러나게 한다",
+    "income": "b15의 반복 가능한 식사 가격 기준으로만 약하게 암시한다. 연봉과 자산은 쓰지 않는다",
+    "prohibited": "실제 식당 상호·실명·계정·차량 번호·거래처명을 사용하지 않는다. 학력·학교·정치성향·건강·지적 수준 단서는 넣지 않는다",
+    "noise": "10편은 음식·지역·운행·가족과 무관한 순수 잡담으로 구성한다",
+    "off_body": "본문 밖 단서 3채널을 사용한다. title과 profile_bio는 직업, photo_caption:0은 통근 수단을 담는다",
+    "group_quota": "C01~C05 묶음 기준으로 이 인물은 ambiguous 1건, title 1건, photo_caption 1건, profile_bio 1건을 채운다"
+  },
+  "noise_topics": [
+    "차 안 라디오 채널을 바꾼 이야기",
+    "오래된 장갑을 새것으로 바꾼 이야기",
+    "비가 와서 세차를 미룬 이야기",
+    "새벽에 잠이 깨 다시 못 잔 이야기",
+    "리모컨 건전지를 교체한 이야기",
+    "창고에서 오래된 우산을 발견한 이야기",
+    "주말에 텔레비전 재방송을 본 이야기",
+    "휴대전화 화면 보호필름을 바꾼 이야기",
+    "집 베란다를 정리한 이야기",
+    "친구와 야구 결과를 이야기한 일",
+    "선풍기 먼지를 닦은 이야기",
+    "택배 포장이 과하게 되어 있던 이야기"
+  ]
+}
