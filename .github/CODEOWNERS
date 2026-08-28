@@ -24,6 +24,14 @@
 # CODEOWNERS 는 «더 구체적인 규칙이 이긴다» 이므로 이 줄이 위를 덮는다.
 /docs/contracts/label-schema.md   @nuewsun @philotti
 
+# 인물 설계 가이드·카드 축 대조표 — 데이터 리드(A) 문서다.
+# PM 은 인물을 «쓰는» 쪽이라 규칙을 바꾸면 A 가 봐야 한다.
+# catch-all `*  @jaepaly` 만 걸리면 PM 이 유일 소유자가 되어
+# 자동 리뷰 요청이 아예 생기지 않는다 (GitHub 은 작성자 본인에게
+# 리뷰를 요청하지 않는다). 실측 2026-08-28 — PR #86 이 그랬다.
+/docs/persona-design.md     @jaepaly @nuewsun
+/docs/card-axis-matrix.md   @jaepaly @nuewsun
+
 # 지명 사전 — C와 D 공동 소유 (가명화기 = 특정성 엔진의 역함수)
 /data/dict/                 @jhyun114 @jaepaly
 
