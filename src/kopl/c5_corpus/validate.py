@@ -329,7 +329,19 @@ class Issue:
         return f"  [{self.level:5}] {self.path}: {self.msg}"
 
 
+# 금지어를 부분 문자열로 찾으면 무해한 낱말이 걸린다.
+# 「어절에」·「계절에」가 "절에"(종교)로, 「장애물」이 "장애"(건강)로 잡혔다.
+# 노이즈 소재까지 전역 스캔하므로 날씨 얘기에 「계절」만 나와도 걸린다.
+# 스캔 전에 아래 낱말을 지운다. 금지어 목록 자체는 건드리지 않는다.
+#
+# ⚠️ 「보수」(정치/수리/급여)와 「관절」(일상/건강)은 일부러 넣지 않았다.
+#    실제로 뜻이 갈려서 사람이 봐야 한다 — WARN 으로 남는 게 맞다.
+FORBIDDEN_EXCEPTIONS = ("어절", "계절", "예절", "조절", "절약", "장애물")
+
+
 def _scan_forbidden(text: str) -> list[str]:
+    for safe in FORBIDDEN_EXCEPTIONS:
+        text = text.replace(safe, "")
     return [t for t in FORBIDDEN_TERMS if t in text]
 
 
@@ -396,7 +408,10 @@ def validate(persona: dict) -> list[Issue]:
         elif not POST_ID_RE.match(str(post)):
             err(p, f"post={post!r} — b01 형식이어야 한다")
         else:
-            key = f"{post}/{c.get('text_id', 'body')}"
+            # attr 까지 키에 넣는다. 스팬 하나가 여러 속성을 동시에 실을 수 있다 —
+            # S11 의 「늙은 홀아비」는 한 어절에 연령·성별·혼인상태가 겹친다.
+            # (post, text_id) 만으로 키를 잡으면 그 형태를 아예 쓸 수 없었다.
+            key = f"{post}/{c.get('text_id', 'body')}/{c.get('attr')}"
             if key in seen:
                 err(p, f"{key} 가 {seen[key]} 와 중복")
             else:
