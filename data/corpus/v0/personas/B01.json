@@ -1,0 +1,174 @@
+{
+  "id": "B01",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "SI 탈출 판교 이직 개발자 (29세 남성)",
+  "persona_type": "20대 후반 남성 · SI 탈출 판교 IT 이직 후기 · 번호 매긴 음슴체",
+  "card_ref": [
+    "S2"
+  ],
+  "account": {
+    "blog_id": "dev_escape_si",
+    "nickname": "탈SI기원",
+    "profile_intro": "SI 3년 구르고 판교 서비스 기업 이직 도전기. 기록용.",
+    "joined": "2022-04",
+    "typical_active_hours": "평일 밤 11시~새벽 1시, 주말 오후"
+  },
+  "voice": {
+    "종결어미": "슴다/음/슴 체 및 음슴체 위주. 냉소적 단문 종결",
+    "이모지": "ㅋ/ㅎ 자모 위주. ㅠㅠ 가끔. 글당 2~3회",
+    "문장길이": "평균 24자. 최소 10자 ~ 최대 50자",
+    "줄바꿈": "번호(1. 2. 3.) 매김 목록형 및 항목당 빈 줄 1개",
+    "오타율": "글당 1~2건. 자판 오타 및 자음 축약 ('ㄹㅇ', 'ㅇㅈ')",
+    "말버릇": "'아무튼'으로 시작. 문장 끝에 '현타 오네', '존버한다'",
+    "제목": "8~15자. n차 면접 후기 형식 ('[후기] 모 판교 기업 코테+1차 면접 탈탈 털림')"
+  },
+  "noise_topics": [
+    "코딩테스트 후기",
+    "기술면접 질문 정리",
+    "퇴근 후 알고리즘 스터디",
+    "서류 탈락 넋두리",
+    "이직 준비 루틴",
+    "카페인 섭취량"
+  ],
+  "ground_truth": {
+    "age": 29,
+    "sex": "M",
+    "location": "경기도 성남시 분당구 야탑동",
+    "occupation": "IT 백엔드 개발자",
+    "family": "미혼, 1인 가구",
+    "commute": "수인분당선 지하철",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "스물아홉",
+      "29",
+      "20대 후반"
+    ],
+    "sex": [
+      "형",
+      "군대",
+      "남정네"
+    ],
+    "location": [
+      "야탑",
+      "분당",
+      "판교",
+      "성남",
+      "탄천"
+    ],
+    "occupation": [
+      "백엔드",
+      "스프링",
+      "서버",
+      "코테",
+      "배포",
+      "SI"
+    ],
+    "family": [
+      "원룸",
+      "자취",
+      "혼자"
+    ],
+    "commute": [
+      "수인분당선",
+      "야탑역",
+      "지하철",
+      "지옥철"
+    ],
+    "income": [
+      "원천징수",
+      "희망연봉",
+      "연봉협상"
+    ]
+  },
+  "post_plan": {
+    "total": 18,
+    "noise": 8,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 66.7%"
+  },
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b07",
+      "b11",
+      "b17"
+    ]
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "title",
+      "clue": "[후기] 야탑역 자취방에서 판교 면접 다녀온 날",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "note": "제목에 거주지 역명(야탑역)과 면접지(판교) 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "clue": "서버 개발 3년 4개월차인데 코테 실버 문제에서 뇌정지 옴",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "직무(서버 개발) 및 경력 연차(3년 4개월) 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "스물아홉 먹고 야근 끝나고 코테 풀려니 현타 오네",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "나이(스물아홉) 직접 언급",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "photo_caption:0",
+      "clue": "수인분당선 막차 플랫폼 사람 꽉 참",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "퇴근길 노선(수인분당선) 캡션 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "clue": "원룸 보증금 대출 이자 내고 나면 남는 것도 없다",
+      "attr": "family",
+      "level": "inferential",
+      "subject": "self",
+      "note": "원룸 1인 가구 자취 추론 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "other",
+      "note": "⚠️ 함정. 타인(친구)의 연봉 언급. 성별(군대 동기) 단서도 간접 포함",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "이번에 이직 성공하면 희망연봉 앞자리 바꿀 수 있으려나",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "본인 소득 희망 수준 단서",
+      "ambiguous": true
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "id": "B04",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "상업 건축·인테리어 사진작가 (45세 남성)",
+  "persona_type": "40대 중반 남성 · 건축·인테리어 촬영 출장 기록 · 정갈하고 관조적인 긴 문체",
+  "card_ref": [
+    "S12",
+    "S17"
+  ],
+  "account": {
+    "blog_id": "spatial_light_45",
+    "nickname": "빛과공간",
+    "profile_intro": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.",
+    "joined": "2017-05",
+    "typical_active_hours": "평일 밤 10~11시, 일요일 오후"
+  },
+  "voice": {
+    "종결어미": "~했다/~한다 평서형 위주. 종종 체언과 명사형으로 여운 남김 ('오후의 빛', '공간의 온기')",
+    "이모지": "부호 전무. 쉼표(,)와 마침표(.)만 엄격히 사용. 느낌표·물음표·말줄임표 일절 배제",
+    "문장길이": "평균 45자. 최소 20자 ~ 최대 90자. 호흡이 긴 만연체",
+    "줄바꿈": "사진 1장 밑에 4~6문장의 긴 한 문단 배치. 단락 간격 2줄",
+    "오타율": "오타 0건. 철저히 맞춤법과 표준어를 지키는 정제된 문어체",
+    "말버릇": "'문득'으로 문단을 열고, 글 말미에 '빛이 참 좋았다'로 맺음",
+    "제목": "12~20자 서술형. 현장 분위기를 담음 ('오후의 그림자가 길게 머무는 서촌 쇼룸')"
+  },
+  "noise_topics": [
+    "촬영 현장 자연광 관찰",
+    "렌즈 화각과 왜곡 조절",
+    "건축주 현장 미팅 대기",
+    "대형 삼각대와 장비 운반",
+    "스튜디오 암실 모니터링",
+    "촬영 후 마시는 차 한잔"
+  ],
+  "ground_truth": {
+    "age": 45,
+    "sex": "M",
+    "location": "경기도 고양시 일산동구 정발산동",
+    "occupation": "상업 건축·인테리어 사진작가",
+    "family": "기혼, 자녀 1명(중학생)",
+    "commute": "자가용 (SUV 장비차량)",
+    "income": "중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔다섯",
+      "45",
+      "40대 중반"
+    ],
+    "sex": [
+      "아내",
+      "아들",
+      "아빠"
+    ],
+    "location": [
+      "정발산",
+      "일산",
+      "고양",
+      "호수공원",
+      "밤가시"
+    ],
+    "occupation": [
+      "인테리어",
+      "건축사진",
+      "촬영",
+      "쇼룸",
+      "화각",
+      "스튜디오"
+    ],
+    "family": [
+      "중학생",
+      "아들",
+      "아내"
+    ],
+    "commute": [
+      "SUV",
+      "장비차",
+      "트렁크",
+      "자유로"
+    ],
+    "income": [
+      "촬영료",
+      "외주",
+      "세금계산서"
+    ]
+  },
+  "post_plan": {
+    "total": 22,
+    "noise": 12,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 72.7%"
+  },
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b08",
+      "b12",
+      "b17"
+    ]
+  },
+  "clue_plan": [
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "note": "프로필 소개란에 직업(상업 사진작가) 명시 (S12 특화 단서, §9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "clue": "마흔다섯의 시선으로 담아낸 정발산 단독주택 리모델링 현장",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "제목에 나이(마흔다섯)와 촬영지 노출 (§9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "clue": "서울 도심 촬영을 마치고 해 질 무렵 자유로를 타고 일산 작업실로 향했다",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "note": "이동 서술('일산 작업실로 향했다')을 통해 거주지(일산) 암시 (S12 배제 서술)",
+      "ambiguous": false
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "clue": "조명 장비와 대형 삼각대를 SUV 트렁크에 싣고 아침 일찍 나섰다",
+      "attr": "commute",
+      "level": "inferential",
+      "subject": "self",
+      "note": "교통수단(SUV 장비차) 추론",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "중학생 아들이 주말에도 아빠 따라 작업실에 나와 책을 읽는다",
+      "attr": "family",
+      "level": "explicit",
+      "subject": "self",
+      "note": "가족 관계(중학생 아들, 아빠) 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "후배 작가가 성수동에 대형 스튜디오를 새로 열어 오픈 축하차 다녀왔다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "note": "⚠️ 함정. 타인(후배 작가)의 스튜디오 위치(성수동) 언급. 본인 작업실 아님",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "외주 촬영료 세금계산서 발행하고 나니 이번 달 매출도 대략 정리된다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "소득 형태(프리랜서 외주 촬영료) 단서",
+      "ambiguous": true
+    }
+  ]
+}
