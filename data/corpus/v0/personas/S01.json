@@ -134,7 +134,7 @@
       "attr": "location",
       "level": "explicit",
       "subject": "other",
-      "note": "⚠️ 함정. 본인 거주지가 아니다. subject 필드는 라벨 스키마 안건 1",
+      "note": "⚠️ 함정 ① 타지명 (§4-4-1). 본인 거주지가 아니다. subject 필드는 라벨 스키마 안건 1",
       "text_id": "body"
     },
     {

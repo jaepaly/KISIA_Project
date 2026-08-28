@@ -146,7 +146,7 @@
       "attr": "occupation",
       "level": "inferential",
       "subject": "other",
-      "note": "⚠️ 함정. 타인(이전 동료)의 직장(금융권) 언급. 본인 이직처 아님",
+      "note": "⚠️ 함정 · occupation 축 (§4-4-1). 타인(이전 동료)의 직장(금융권) 언급. 본인 이직처 아님",
       "ambiguous": false
     },
     {
