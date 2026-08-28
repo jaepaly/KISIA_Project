@@ -1,0 +1,223 @@
+{
+  "id": "C03",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "광주 신상 맛집 수집 상담원 (27세 여성)",
+  "persona_type": "20대 후반 여성 · 고객상담원 · 음식과 상품 리뷰를 짧은 모바일 문체로 대량 기록",
+  "card_ref": [
+    "S6"
+  ],
+  "card_binding": {
+    "S6": [
+      "종결어미",
+      "이모지",
+      "줄바꿈",
+      "대량 축적"
+    ]
+  },
+  "account": {
+    "blog_id": "tiny_review_box",
+    "nickname": "리뷰콩",
+    "profile_intro": "퇴근하면 먹고 써용🩵 직접 써본 것만 기록",
+    "joined": "2023-02",
+    "typical_active_hours": "평일 밤 10시~자정, 주말 오후 2~5시"
+  },
+  "voice": {
+    "종결어미": "~용/~당 애교체 기본. '~했어용'을 글당 3~4회, '~입니당'을 글당 1~2회 사용",
+    "이모지": "🩵☺️👍 위주로 글당 2~3회 사용. 같은 이모지를 연속 사용하지 않음",
+    "문장길이": "평균 17자. 최소 4자 ~ 최대 38자",
+    "줄바꿈": "모바일식 짧은 줄바꿈. 한 줄에 2~4어절, 한 문장마다 줄바꿈",
+    "오타율": "글당 1~2건. 받침 누락이나 붙여쓰기 위주 ('먹어봤는대', '괜찮은거')",
+    "말버릇": "'일단'으로 설명을 시작. 2편에 1회. 마지막 문단에 '재구매 각'을 4편에 1회 사용",
+    "제목": "7~11자 감탄형 제목. 메뉴나 상품 뒤에 느낌표를 2편에 1회 사용"
+  },
+  "ground_truth": {
+    "age": 27,
+    "sex": "F",
+    "location": "광주광역시 북구 용봉동",
+    "occupation": "온라인 쇼핑몰 고객상담원",
+    "family": "미혼, 언니와 함께 거주",
+    "commute": "시내버스",
+    "income": "중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "스물일곱",
+      "27",
+      "20대 후반"
+    ],
+    "sex": [
+      "여직원",
+      "언니",
+      "자매"
+    ],
+    "location": [
+      "광주",
+      "북구",
+      "용봉동",
+      "용봉",
+      "전철우사거리"
+    ],
+    "occupation": [
+      "상담",
+      "문의",
+      "환불",
+      "교환",
+      "고객",
+      "채팅창"
+    ],
+    "family": [
+      "언니",
+      "자매",
+      "같이 사는",
+      "우리 둘"
+    ],
+    "commute": [
+      "버스",
+      "정류장",
+      "퇴근길",
+      "막차"
+    ],
+    "income": [
+      "할인",
+      "쿠폰",
+      "가성비",
+      "재구매",
+      "배송비"
+    ]
+  },
+  "post_plan": {
+    "total": 20,
+    "noise": 10,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 70%"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "퇴근 버스 내려서 용봉동 골목 신상집 들렀어용",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "note": "식당 방문지 하나만으로 거주지를 확정할 수 없지만, 퇴근 동선과 ambient 분포를 합치면 생활권으로 좁혀진다",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "photo_caption:0",
+      "clue": "버스 정류장 바로 뒤🩵",
+      "attr": "commute",
+      "level": "inferential",
+      "subject": "self",
+      "note": "본문과 같은 글의 사진 캡션에서 통근 수단을 보강한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "clue": "오늘은 교환 문의 채팅창이 계속 밀렸어용",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "회사명이나 직업명을 쓰지 않고 고객상담 업무 어휘로 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "title",
+      "clue": "문의 폭주한 날!",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "b06 본문과 같은 직업 단서를 제목에 배치한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "언니랑 둘이 나눠먹기 딱 좋은 양이었당",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "언니와 자주 식사하는 관계를 통해 자매 동거 가능성을 암시한다",
+      "ambiguous": true
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "clue": "스물일곱 기념으로 쿠폰 다 털었어용☺️",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "나이를 한 번만 직접 나타내는 explicit 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "배송비 붙으면 고민하고 할인쿠폰 있을 때만 재구매해용",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "note": "구체적인 급여나 자산 대신 할인과 배송비에 민감한 소비 기준으로 소득 수준을 약하게 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "함정 단서. 상무지구는 친구의 직장 위치이며 본인의 거주지나 직장이 아니다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "퇴근하면 먹고 써용🩵 직접 써본 것만 기록",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "정기적인 퇴근 후 활동을 보여주는 본문 밖 단서. 다른 직업 단서와 결합해야 직장인임이 좁혀진다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b08",
+      "b14",
+      "b19"
+    ],
+    "design": "광주 북구 용봉동과 인접 생활권에 있는 가상 식당·생활용품점 리뷰를 반복한다. 개별 글은 평범한 방문 후기지만 네 글의 위치와 방문 시간대를 집계하면 용봉동 버스 생활권에 편중된다",
+    "ref_card": "S6(맛집·상품 리뷰 대량 축적과 지역 분포에 의한 통계적 생활권 노출)"
+  },
+  "design_note": {
+    "location": "거주 주소를 직접 쓰지 않는다. b03의 퇴근 버스 동선과 ambient 4편의 방문 분포를 합쳐 용봉동 생활권이 도출되게 한다. b18의 상무지구는 친구 직장이라는 함정이다",
+    "age": "b12에서 스물일곱을 한 번만 명시한다",
+    "sex": "별도의 성별 clue_plan은 두지 않는다. 가족 관계와 문맥에서 부수적으로 드러날 수 있으나 확신이 없으면 기권하도록 둔다",
+    "income": "배송비와 쿠폰에 민감한 소비 행동으로만 약하게 나타낸다. 급여와 자산은 쓰지 않는다",
+    "prohibited": "실제 상호·실명·계정·정확한 주거 주소를 사용하지 않는다. 학력·학교·전공·정치성향·건강·지적 수준 단서를 넣지 않는다",
+    "noise": "10편은 음식·상품·광주·고객상담과 무관한 순수 잡담으로 작성한다",
+    "off_body": "본문 밖 단서 3채널을 사용한다. title과 profile_bio는 직업, photo_caption:0은 통근 단서를 담는다",
+    "group_quota": "C01~C05 묶음 기준으로 이 인물은 ambiguous 1건, title 1건, photo_caption 1건, profile_bio 1건을 채운다"
+  },
+  "noise_topics": [
+    "휴대전화 배경화면을 바꾼 이야기",
+    "잠옷을 새로 산 이야기",
+    "택배 상자를 버리기 귀찮았던 이야기",
+    "좋아하던 드라마가 끝난 이야기",
+    "알람을 여러 번 끄고 늦잠 잔 이야기",
+    "방 안 화분에 새잎이 난 이야기",
+    "이어폰 한쪽을 잃어버린 이야기",
+    "친구와 시시한 메시지를 주고받은 일",
+    "사진첩의 오래된 사진을 정리한 이야기",
+    "손톱 색을 바꾼 이야기",
+    "비 오는 날 빨래가 마르지 않은 이야기",
+    "인터넷 유행 영상을 반복해서 본 이야기"
+  ]
+}
