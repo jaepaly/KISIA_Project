@@ -272,7 +272,7 @@ regions["1120065000"].population
 
 ```python
 specificity("성수1가제1동")
-# → {"k": 14748, "level": "..."}
+# → {"k": 14748, "k_level": "..."}
 ```
 
 ### 연령·성별까지 있는 경우
