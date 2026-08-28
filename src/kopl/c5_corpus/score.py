@@ -123,7 +123,13 @@ def declared_targets(persona: dict) -> dict:
     return out
 
 
-def compare_declared(measured: dict, targets: dict) -> list[str]:
+def compare_declared(measured: dict, targets: dict, carded: set | None = None) -> list[str]:
+    """선언값과 실측을 대조한다.
+
+    carded 는 「카드에 근거가 있는 축」이다. 근거 없는 축은 작성자가 정한 값이라,
+    벗어났을 때 «모델이 못 따라간 것»인지 «목표가 임의였던 것»인지 구분해야 한다.
+    S01 의 문장길이 −39% 가 후자였다.
+    """
     if not targets:
         return []
     lines = ["  [선언값 대비]"]
@@ -133,7 +139,9 @@ def compare_declared(measured: dict, targets: dict) -> list[str]:
             continue
         dev = (v - target) / target * 100 if target else 0
         mark = "OK " if abs(dev) <= 25 else "✗  "
-        lines.append(f"  {mark}   {metric:16} 선언 {target:g} · 실측 {v:g} ({dev:+.0f}%)")
+        tag = "" if carded is None or metric in carded else "  ← 카드 근거 없음"
+        lines.append(
+            f"  {mark}   {metric:16} 선언 {target:g} · 실측 {v:g} ({dev:+.0f}%){tag}")
     return lines
 
 
@@ -159,6 +167,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("jsonl", nargs="+")
     ap.add_argument("--rubric", default=None, help="카드 채점표 JSON")
+    ap.add_argument("--cards", default=None,
+                    help="카드 디렉터리. 선언값에 카드 근거가 있는지 표시한다")
     ap.add_argument("--personas", default=None,
                     help="인물 JSON 디렉터리. voice 선언값과 실측을 나란히 본다")
     args = ap.parse_args()
@@ -196,8 +206,26 @@ def main() -> int:
         if args.personas and pid:
             pf = Path(args.personas) / f"{pid}.json"
             if pf.is_file():
-                tgt = declared_targets(json.loads(pf.read_text(encoding="utf-8-sig")))
-                out = compare_declared(m, tgt)
+                pj = json.loads(pf.read_text(encoding="utf-8-sig"))
+                tgt = declared_targets(pj)
+                carded = None
+                if args.cards:
+                    try:
+                        from validate import load_card_axes
+                        ca = load_card_axes(args.cards)
+                        axes = set()
+                        for c in pj.get("card_ref", []) or []:
+                            axes |= set((ca.get(c) or {}).keys())
+                        # voice 키 → 측정 지표 이름으로 환산
+                        # 카드 블록의 축 이름과 인물 voice 키가 갈리는 곳을 잇는다
+                        ALIAS = {"부호": ("이모지", "이모티콘"), "줄바꿈": ("줄바꿈",)}
+                        for a, vs in ALIAS.items():
+                            if a in axes:
+                                axes |= set(vs)
+                        carded = {DECLARED[k][0] for k in axes if k in DECLARED and DECLARED[k][0]}
+                    except Exception:  # noqa: BLE001
+                        carded = None
+                out = compare_declared(m, tgt, carded)
                 if out:
                     print("\n".join(out))
                     fail += sum(1 for l in out if l.strip().startswith("✗"))
