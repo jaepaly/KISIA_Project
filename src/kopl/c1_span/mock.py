@@ -114,6 +114,7 @@ class MockSpanDetector:
             post_id=pid,
             model_version=self.model_version,
             spans=spans,
+            record_type="post",
             flags=flags,
         )
 
@@ -172,6 +173,7 @@ class MockSpanDetector:
             post_id=pid,
             model_version=self.model_version,
             spans=spans,
+            record_type="post",
             flags=flags,
         )
 
@@ -204,9 +206,10 @@ class MockSpanDetector:
         }
 
         return format_output(
-            post_id=persona_id,
             model_version=self.model_version,
             spans=spans,
+            record_type="profile",
+            persona_id=persona_id,
             flags=flags,
         )
 

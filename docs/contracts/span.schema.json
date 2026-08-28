@@ -7,9 +7,26 @@
   "required": [
     "schema_version",
     "model_version",
-    "post_id",
+    "record_type",
     "spans"
   ],
+  "if": {
+    "properties": {
+      "record_type": {
+        "const": "profile"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "persona_id"
+    ]
+  },
+  "else": {
+    "required": [
+      "post_id"
+    ]
+  },
   "additionalProperties": false,
   "properties": {
     "schema_version": {
@@ -21,9 +38,21 @@
       "type": "string",
       "description": "예 koelectra-base-v3-span-0.1.0 (RULES-DO-NOT #9)"
     },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "post",
+        "profile"
+      ],
+      "description": "입력 레코드 종류. profile이면 사용자 단위 레코드이며 글 단위 집계에 넣지 않는다 (C 특정성 엔진 연계 필드)."
+    },
     "post_id": {
       "type": "string",
-      "description": "게시글 식별자"
+      "description": "게시글 식별자 (record_type=post 시 필수)"
+    },
+    "persona_id": {
+      "type": "string",
+      "description": "사용자 페르소나 식별자 (record_type=profile 시 필수)"
     },
     "spans": {
       "type": "array",

@@ -170,6 +170,7 @@ class SpanDetector:
             post_id=pid,
             model_version=self.version,
             spans=formatted_spans,
+            record_type="post",
             flags=flags,
         )
 
@@ -216,6 +217,7 @@ class SpanDetector:
             post_id=pid,
             model_version=self.version,
             spans=formatted_spans,
+            record_type="post",
             flags=flags,
         )
 
@@ -240,9 +242,10 @@ class SpanDetector:
         }
 
         return format_output(
-            post_id=persona_id,
             model_version=self.version,
             spans=formatted_spans,
+            record_type="profile",
+            persona_id=persona_id,
             flags=flags,
         )
 
