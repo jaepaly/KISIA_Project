@@ -81,6 +81,11 @@ def main() -> int:
         "measured_at": datetime.now().strftime("%Y-%m-%d"),
         "data_version": "corpus-v0",
         "scoring": "exact_match",
+        "environment": {
+            "presidio": "presidio-analyzer + spacy ko_core_news_sm-3.8.0",
+            "korean_ner": "spaCy ko_core_news_sm-3.8.0",
+            "regex": "8-pattern baseline",
+        },
         "summary": {
             "total_clues_evaluated": total_clues,
             "missed_by_all_three_tools": all_missed,

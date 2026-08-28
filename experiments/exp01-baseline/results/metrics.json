@@ -3,10 +3,15 @@
   "measured_at": "2026-08-28",
   "data_version": "corpus-v0",
   "scoring": "exact_match",
+  "environment": {
+    "presidio": "presidio-analyzer + spacy ko_core_news_sm-3.8.0",
+    "korean_ner": "spaCy ko_core_news_sm-3.8.0",
+    "regex": "8-pattern baseline"
+  },
   "summary": {
     "total_clues_evaluated": 185,
-    "missed_by_all_three_tools": 176,
-    "missed_rate": 0.951,
-    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 95.1%를 탐지하지 못함 확인 -> c1_span 1단 모델 필요성 입증"
+    "missed_by_all_three_tools": 98,
+    "missed_rate": 0.53,
+    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 53.0%를 탐지하지 못함 확인 -> c1_span 1단 모델 필요성 입증"
   }
 }

@@ -1,185 +1,185 @@
 {"persona_id": "B01", "post_id": "b02", "text_id": "B01_b02:title", "text": "[후기] 야탑역 자취방에서 판교 면접 다녀온 날", "spans": [], "detected": false}
-{"persona_id": "B01", "post_id": "b05", "text_id": "B01_b05:body", "text": "서버 개발 3년 4개월차인데 코테 실버 문제에서 뇌정지 옴", "spans": [], "detected": false}
+{"persona_id": "B01", "post_id": "b05", "text_id": "B01_b05:body", "text": "서버 개발 3년 4개월차인데 코테 실버 문제에서 뇌정지 옴", "spans": [{"start": 0, "end": 2, "text": "서버", "type": "LC", "score": 0.85}, {"start": 6, "end": 8, "text": "3년", "type": "DT", "score": 0.85}, {"start": 9, "end": 15, "text": "4개월차인데", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "B01", "post_id": "b09", "text_id": "B01_b09:body", "text": "스물아홉 먹고 야근 끝나고 코테 풀려니 현타 오네", "spans": [], "detected": false}
 {"persona_id": "B01", "post_id": "b09", "text_id": "B01_b09:photo_caption:0", "text": "수인분당선 막차 플랫폼 사람 꽉 참", "spans": [], "detected": false}
 {"persona_id": "B01", "post_id": "b13", "text_id": "B01_b13:body", "text": "원룸 보증금 대출 이자 내고 나면 남는 것도 없다", "spans": [], "detected": false}
-{"persona_id": "B01", "post_id": "b16", "text_id": "B01_b16:body", "text": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함", "spans": [], "detected": false}
+{"persona_id": "B01", "post_id": "b16", "text_id": "B01_b16:body", "text": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함", "spans": [{"start": 28, "end": 30, "text": "7천", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "B01", "post_id": "b18", "text_id": "B01_b18:body", "text": "이번에 이직 성공하면 희망연봉 앞자리 바꿀 수 있으려나", "spans": [], "detected": false}
-{"persona_id": "B02", "post_id": null, "text_id": "B02_None:profile_bio", "text": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록.", "spans": [{"start": 0, "end": 2, "text": "울산", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "B02", "post_id": "b02", "text_id": "B02_b02:body", "text": "서른하나에 첫 직장 나와서 이직하려니 생각이 많아진다", "spans": [], "detected": false}
-{"persona_id": "B02", "post_id": "b06", "text_id": "B02_b06:title", "text": "[후기] 신정동에서 KTX 타고 서울 2차 임원 면접 다녀온 날", "spans": [{"start": 18, "end": 20, "text": "서울", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "B02", "post_id": "b09", "text_id": "B02_b09:body", "text": "아침 6시 40분에 사택 앞 통근버스 정류장으로 나서는 길", "spans": [], "detected": false}
-{"persona_id": "B02", "post_id": "b13", "text_id": "B02_b13:body", "text": "주말에 아내랑 울산대공원 한 바퀴 돌며 면접 피드백 나눔", "spans": [{"start": 8, "end": 10, "text": "울산", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "B02", "post_id": "b16", "text_id": "B02_b16:body", "text": "친형이 여수 산단 정유사로 작년에 먼저 이직해서 조언을 많이 해줬다", "spans": [], "detected": false}
+{"persona_id": "B02", "post_id": null, "text_id": "B02_None:profile_bio", "text": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록.", "spans": [{"start": 0, "end": 2, "text": "울산", "type": "LC", "score": 0.85}, {"start": 10, "end": 14, "text": "5년 차", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "B02", "post_id": "b02", "text_id": "B02_b02:body", "text": "서른하나에 첫 직장 나와서 이직하려니 생각이 많아진다", "spans": [{"start": 0, "end": 5, "text": "서른하나에", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "B02", "post_id": "b06", "text_id": "B02_b06:title", "text": "[후기] 신정동에서 KTX 타고 서울 2차 임원 면접 다녀온 날", "spans": [{"start": 18, "end": 20, "text": "서울", "type": "LC", "score": 0.85}, {"start": 21, "end": 23, "text": "2차", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "B02", "post_id": "b09", "text_id": "B02_b09:body", "text": "아침 6시 40분에 사택 앞 통근버스 정류장으로 나서는 길", "spans": [{"start": 0, "end": 10, "text": "아침 6시 40분에", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "B02", "post_id": "b13", "text_id": "B02_b13:body", "text": "주말에 아내랑 울산대공원 한 바퀴 돌며 면접 피드백 나눔", "spans": [{"start": 0, "end": 3, "text": "주말에", "type": "DT", "score": 0.85}, {"start": 4, "end": 13, "text": "아내랑 울산대공원", "type": "LC", "score": 0.85}, {"start": 14, "end": 18, "text": "한 바퀴", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "B02", "post_id": "b16", "text_id": "B02_b16:body", "text": "친형이 여수 산단 정유사로 작년에 먼저 이직해서 조언을 많이 해줬다", "spans": [{"start": 4, "end": 6, "text": "여수", "type": "LC", "score": 0.85}, {"start": 15, "end": 18, "text": "작년에", "type": "DT", "score": 0.85}, {"start": 22, "end": 26, "text": "이직해서", "type": "PS", "score": 0.85}], "detected": true}
 {"persona_id": "B02", "post_id": "b20", "text_id": "B02_b20:body", "text": "지방 대기업 제조업 성과급 영끌하던 시절 연봉을 수도권에서 맞추기가 쉽지 않다", "spans": [], "detected": false}
-{"persona_id": "B03", "post_id": null, "text_id": "B03_None:profile_bio", "text": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.", "spans": [{"start": 36, "end": 38, "text": "서울", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "B03", "post_id": "b02", "text_id": "B03_b02:body", "text": "스물여덟에 대행사 2년 구르니 체력 바닥남", "spans": [], "detected": false}
+{"persona_id": "B03", "post_id": null, "text_id": "B03_None:profile_bio", "text": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.", "spans": [{"start": 13, "end": 17, "text": "4년 차", "type": "DT", "score": 0.85}, {"start": 36, "end": 41, "text": "서울 마포", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "B03", "post_id": "b02", "text_id": "B03_b02:body", "text": "스물여덟에 대행사 2년 구르니 체력 바닥남", "spans": [{"start": 0, "end": 5, "text": "스물여덟에", "type": "LC", "score": 0.85}, {"start": 10, "end": 12, "text": "2년", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "B03", "post_id": "b09", "text_id": "B03_b09:body", "text": "중소 대행사 퍼포먼스 마케터 포괄임금제 탈출 준비 중", "spans": [], "detected": false}
-{"persona_id": "B03", "post_id": "b09", "text_id": "B03_b09:photo_caption:0", "text": "망원역 6호선 퇴근길 플랫폼", "spans": [], "detected": false}
+{"persona_id": "B03", "post_id": "b09", "text_id": "B03_b09:photo_caption:0", "text": "망원역 6호선 퇴근길 플랫폼", "spans": [{"start": 4, "end": 7, "text": "6호선", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "B03", "post_id": "b14", "text_id": "B03_b14:body", "text": "이전 직장 동료가 금융권 인하우스 마케팅으로 이직했다고 연락 옴", "spans": [], "detected": false}
 {"persona_id": "B03", "post_id": "b17", "text_id": "B03_b17:body", "text": "청년 전세대출 이자랑 공과금 내면 남는 월급이 없다", "spans": [], "detected": false}
-{"persona_id": "B03", "post_id": "b20", "text_id": "B03_b20:body", "text": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다", "spans": [], "detected": false}
-{"persona_id": "B04", "post_id": null, "text_id": "B04_None:profile_bio", "text": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.", "spans": [], "detected": false}
+{"persona_id": "B03", "post_id": "b20", "text_id": "B03_b20:body", "text": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다", "spans": [{"start": 13, "end": 17, "text": "한 푼도", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "B04", "post_id": null, "text_id": "B04_None:profile_bio", "text": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.", "spans": [{"start": 22, "end": 27, "text": "경기 일산", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "B04", "post_id": "b02", "text_id": "B04_b02:title", "text": "마흔다섯의 시선으로 담아낸 정발산 단독주택 리모델링 현장", "spans": [], "detected": false}
-{"persona_id": "B04", "post_id": "b06", "text_id": "B04_b06:body", "text": "서울 도심 촬영을 마치고 해 질 무렵 자유로를 타고 일산 작업실로 향했다", "spans": [{"start": 0, "end": 2, "text": "서울", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "B04", "post_id": "b10", "text_id": "B04_b10:body", "text": "조명 장비와 대형 삼각대를 SUV 트렁크에 싣고 아침 일찍 나섰다", "spans": [], "detected": false}
+{"persona_id": "B04", "post_id": "b06", "text_id": "B04_b06:body", "text": "서울 도심 촬영을 마치고 해 질 무렵 자유로를 타고 일산 작업실로 향했다", "spans": [{"start": 0, "end": 2, "text": "서울", "type": "LC", "score": 0.85}, {"start": 29, "end": 31, "text": "일산", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "B04", "post_id": "b10", "text_id": "B04_b10:body", "text": "조명 장비와 대형 삼각대를 SUV 트렁크에 싣고 아침 일찍 나섰다", "spans": [{"start": 27, "end": 29, "text": "아침", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "B04", "post_id": "b14", "text_id": "B04_b14:body", "text": "중학생 아들이 주말에도 아빠 따라 작업실에 나와 책을 읽는다", "spans": [], "detected": false}
 {"persona_id": "B04", "post_id": "b16", "text_id": "B04_b16:body", "text": "후배 작가가 성수동에 대형 스튜디오를 새로 열어 오픈 축하차 다녀왔다", "spans": [], "detected": false}
-{"persona_id": "B04", "post_id": "b20", "text_id": "B04_b20:body", "text": "외주 촬영료 세금계산서 발행하고 나니 이번 달 매출도 대략 정리된다", "spans": [], "detected": false}
-{"persona_id": "B05", "post_id": null, "text_id": "B05_None:profile_bio", "text": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.", "spans": [], "detected": false}
+{"persona_id": "B04", "post_id": "b20", "text_id": "B04_b20:body", "text": "외주 촬영료 세금계산서 발행하고 나니 이번 달 매출도 대략 정리된다", "spans": [{"start": 21, "end": 25, "text": "이번 달", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "B05", "post_id": null, "text_id": "B05_None:profile_bio", "text": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.", "spans": [{"start": 18, "end": 20, "text": "필름", "type": "PS", "score": 0.85}], "detected": true}
 {"persona_id": "B05", "post_id": "b04", "text_id": "B05_b04:body", "text": "쉰둘 나이에 무거운 기계식 수동 카메라를 메고 골목을 걷는다", "spans": [], "detected": false}
-{"persona_id": "B05", "post_id": "b08", "text_id": "B05_b08:body", "text": "흑백 필름 수동 현상소 운영 15년 차인데 신포시장 집에서 도보 5분 거리라 다행이다", "spans": [], "detected": false}
-{"persona_id": "B05", "post_id": "b08", "text_id": "B05_b08:photo_caption:0", "text": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길", "spans": [], "detected": false}
-{"persona_id": "B05", "post_id": "b14", "text_id": "B05_b14:body", "text": "군 복무 중인 작은아들이 첫 휴가 나와서 흑백 사진 한 장 남겨줬다", "spans": [], "detected": false}
+{"persona_id": "B05", "post_id": "b08", "text_id": "B05_b08:body", "text": "흑백 필름 수동 현상소 운영 15년 차인데 신포시장 집에서 도보 5분 거리라 다행이다", "spans": [{"start": 16, "end": 19, "text": "15년", "type": "DT", "score": 0.85}, {"start": 36, "end": 38, "text": "5분", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "B05", "post_id": "b08", "text_id": "B05_b08:photo_caption:0", "text": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길", "spans": [{"start": 20, "end": 22, "text": "5분", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "B05", "post_id": "b14", "text_id": "B05_b14:body", "text": "군 복무 중인 작은아들이 첫 휴가 나와서 흑백 사진 한 장 남겨줬다", "spans": [{"start": 29, "end": 32, "text": "한 장", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "B05", "post_id": "b14", "text_id": "B05_b14:photo_caption:0", "text": "필름 한 롤 가격이 또 올라서 현상소 유지비가 빠듯하다", "spans": [], "detected": false}
-{"persona_id": "B05", "post_id": "b18", "text_id": "B05_b18:body", "text": "친한 선배가 군산 구도심에 사진 갤러리 카페를냈다고 해서 다녀왔다", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": "b03", "text_id": "C01_b03:body", "text": "퇴근길 1호선에서 내려 온천천 방향으로 걸었습니다", "spans": [], "detected": false}
+{"persona_id": "B05", "post_id": "b18", "text_id": "B05_b18:body", "text": "친한 선배가 군산 구도심에 사진 갤러리 카페를냈다고 해서 다녀왔다", "spans": [{"start": 7, "end": 9, "text": "군산", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "C01", "post_id": "b03", "text_id": "C01_b03:body", "text": "퇴근길 1호선에서 내려 온천천 방향으로 걸었습니다", "spans": [{"start": 4, "end": 9, "text": "1호선에서", "type": "QT", "score": 0.85}, {"start": 13, "end": 16, "text": "온천천", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "C01", "post_id": "b03", "text_id": "C01_b03:photo_caption:0", "text": "퇴근길 산책로 근처", "spans": [], "detected": false}
 {"persona_id": "C01", "post_id": "b06", "text_id": "C01_b06:body", "text": "월말 발주서 결재를 올리고 늦게 나왔습니다", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": "b06", "text_id": "C01_b06:title", "text": "결재 마친 날의 늦은 저녁", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": "b09", "text_id": "C01_b09:body", "text": "한 상 차리기 귀찮은 날에는 1인 메뉴가 편합니다", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": "b12", "text_id": "C01_b12:body", "text": "서른하나가 되고 나니 줄 서는 식당은 조금 망설여집니다", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": "b15", "text_id": "C01_b15:body", "text": "점심 한 끼 가격을 넘으면 평일에는 다시 방문하기 어렵습니다", "spans": [], "detected": false}
+{"persona_id": "C01", "post_id": "b06", "text_id": "C01_b06:title", "text": "결재 마친 날의 늦은 저녁", "spans": [{"start": 12, "end": 14, "text": "저녁", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "C01", "post_id": "b09", "text_id": "C01_b09:body", "text": "한 상 차리기 귀찮은 날에는 1인 메뉴가 편합니다", "spans": [{"start": 16, "end": 18, "text": "1인", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "C01", "post_id": "b12", "text_id": "C01_b12:body", "text": "서른하나가 되고 나니 줄 서는 식당은 조금 망설여집니다", "spans": [{"start": 0, "end": 5, "text": "서른하나가", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "C01", "post_id": "b15", "text_id": "C01_b15:body", "text": "점심 한 끼 가격을 넘으면 평일에는 다시 방문하기 어렵습니다", "spans": [{"start": 3, "end": 6, "text": "한 끼", "type": "QT", "score": 0.85}, {"start": 15, "end": 19, "text": "평일에는", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "C01", "post_id": "b18", "text_id": "C01_b18:body", "text": "친구가 해운대에 살아서 그쪽 식당에서 만났습니다", "spans": [], "detected": false}
-{"persona_id": "C01", "post_id": null, "text_id": "C01_None:profile_bio", "text": "퇴근 후와 주말에 남기는 내돈내산 기록", "spans": [], "detected": false}
-{"persona_id": "C02", "post_id": "b03", "text_id": "C02_b03:body", "text": "오전 납품을 마치고 노은역 방향으로 이동했습니다", "spans": [], "detected": false}
+{"persona_id": "C01", "post_id": null, "text_id": "C01_None:profile_bio", "text": "퇴근 후와 주말에 남기는 내돈내산 기록", "spans": [{"start": 6, "end": 9, "text": "주말에", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "C02", "post_id": "b03", "text_id": "C02_b03:body", "text": "오전 납품을 마치고 노은역 방향으로 이동했습니다", "spans": [{"start": 0, "end": 2, "text": "오전", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "C02", "post_id": "b03", "text_id": "C02_b03:title", "text": "납품 뒤 국밥 한 끼", "spans": [], "detected": false}
 {"persona_id": "C02", "post_id": "b06", "text_id": "C02_b06:body", "text": "적재함이 비어 있을 때만 골목 안쪽까지 들어갈 만합니다", "spans": [], "detected": false}
-{"persona_id": "C02", "post_id": "b06", "text_id": "C02_b06:photo_caption:0", "text": "차량 한 대 들어가는 골목", "spans": [], "detected": false}
-{"persona_id": "C02", "post_id": "b09", "text_id": "C02_b09:body", "text": "아이가 야간 자율학습을 마치는 시간에 맞춰 포장했습니다", "spans": [], "detected": false}
+{"persona_id": "C02", "post_id": "b06", "text_id": "C02_b06:photo_caption:0", "text": "차량 한 대 들어가는 골목", "spans": [{"start": 3, "end": 6, "text": "한 대", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "C02", "post_id": "b09", "text_id": "C02_b09:body", "text": "아이가 야간 자율학습을 마치는 시간에 맞춰 포장했습니다", "spans": [{"start": 4, "end": 6, "text": "야간", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "C02", "post_id": "b12", "text_id": "C02_b12:body", "text": "마흔여섯이 되니 기름진 메뉴는 점심에만 찾게 됩니다", "spans": [], "detected": false}
-{"persona_id": "C02", "post_id": "b15", "text_id": "C02_b15:body", "text": "매일 들르기에는 부담 없고 가족 셋이 먹기에도 무난한 가격입니다", "spans": [], "detected": false}
+{"persona_id": "C02", "post_id": "b15", "text_id": "C02_b15:body", "text": "매일 들르기에는 부담 없고 가족 셋이 먹기에도 무난한 가격입니다", "spans": [{"start": 18, "end": 20, "text": "셋이", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "C02", "post_id": "b18", "text_id": "C02_b18:body", "text": "아내 직장이 둔산동이라 그 근처에서 저녁을 먹었습니다", "spans": [], "detected": false}
 {"persona_id": "C02", "post_id": null, "text_id": "C02_None:profile_bio", "text": "운행 사이 직접 들른 곳만 간단히 기록합니다", "spans": [], "detected": false}
 {"persona_id": "C03", "post_id": "b03", "text_id": "C03_b03:body", "text": "퇴근 버스 내려서 용봉동 골목 신상집 들렀어용", "spans": [], "detected": false}
-{"persona_id": "C03", "post_id": "b03", "text_id": "C03_b03:photo_caption:0", "text": "버스 정류장 바로 뒤🩵", "spans": [], "detected": false}
-{"persona_id": "C03", "post_id": "b06", "text_id": "C03_b06:body", "text": "오늘은 교환 문의 채팅창이 계속 밀렸어용", "spans": [], "detected": false}
+{"persona_id": "C03", "post_id": "b03", "text_id": "C03_b03:photo_caption:0", "text": "버스 정류장 바로 뒤🩵", "spans": [{"start": 0, "end": 6, "text": "버스 정류장", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "C03", "post_id": "b06", "text_id": "C03_b06:body", "text": "오늘은 교환 문의 채팅창이 계속 밀렸어용", "spans": [{"start": 0, "end": 3, "text": "오늘은", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "C03", "post_id": "b06", "text_id": "C03_b06:title", "text": "문의 폭주한 날!", "spans": [], "detected": false}
-{"persona_id": "C03", "post_id": "b09", "text_id": "C03_b09:body", "text": "언니랑 둘이 나눠먹기 딱 좋은 양이었당", "spans": [], "detected": false}
+{"persona_id": "C03", "post_id": "b09", "text_id": "C03_b09:body", "text": "언니랑 둘이 나눠먹기 딱 좋은 양이었당", "spans": [{"start": 4, "end": 6, "text": "둘이", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "C03", "post_id": "b12", "text_id": "C03_b12:body", "text": "스물일곱 기념으로 쿠폰 다 털었어용☺️", "spans": [], "detected": false}
 {"persona_id": "C03", "post_id": "b15", "text_id": "C03_b15:body", "text": "배송비 붙으면 고민하고 할인쿠폰 있을 때만 재구매해용", "spans": [], "detected": false}
-{"persona_id": "C03", "post_id": "b18", "text_id": "C03_b18:body", "text": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당", "spans": [], "detected": false}
+{"persona_id": "C03", "post_id": "b18", "text_id": "C03_b18:body", "text": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당", "spans": [{"start": 11, "end": 14, "text": "일해서", "type": "DT", "score": 0.85}, {"start": 15, "end": 18, "text": "오늘은", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "C03", "post_id": null, "text_id": "C03_None:profile_bio", "text": "퇴근하면 먹고 써용🩵 직접 써본 것만 기록", "spans": [], "detected": false}
 {"persona_id": "C04", "post_id": "b03", "text_id": "C04_b03:body", "text": "현장 끝나고 차로 상인역 뒤편에 들렀어용", "spans": [], "detected": false}
-{"persona_id": "C04", "post_id": "b03", "text_id": "C04_b03:photo_caption:0", "text": "트렁크 짐 빼고 바로 앞에서👍", "spans": [], "detected": false}
+{"persona_id": "C04", "post_id": "b03", "text_id": "C04_b03:photo_caption:0", "text": "트렁크 짐 빼고 바로 앞에서👍", "spans": [{"start": 0, "end": 3, "text": "트렁크", "type": "PS", "score": 0.85}, {"start": 4, "end": 5, "text": "짐", "type": "PS", "score": 0.85}], "detected": true}
 {"persona_id": "C04", "post_id": "b06", "text_id": "C04_b06:body", "text": "실외기 점검이 길어져서 작업복 그대로 들어갔어용", "spans": [], "detected": false}
-{"persona_id": "C04", "post_id": "b06", "text_id": "C04_b06:title", "text": "점검 끝나고 늦은 한 끼", "spans": [], "detected": false}
-{"persona_id": "C04", "post_id": "b09", "text_id": "C04_b09:body", "text": "아이 둘이 서로 다른 메뉴를 고르는 바람에 세트를 두 개 시켰당", "spans": [], "detected": false}
+{"persona_id": "C04", "post_id": "b06", "text_id": "C04_b06:title", "text": "점검 끝나고 늦은 한 끼", "spans": [{"start": 10, "end": 13, "text": "한 끼", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "C04", "post_id": "b09", "text_id": "C04_b09:body", "text": "아이 둘이 서로 다른 메뉴를 고르는 바람에 세트를 두 개 시켰당", "spans": [{"start": 3, "end": 5, "text": "둘이", "type": "QT", "score": 0.85}, {"start": 28, "end": 31, "text": "두 개", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "C04", "post_id": "b12", "text_id": "C04_b12:body", "text": "서른여덟 생일이라고 아내가 저녁을 골랐어용", "spans": [], "detected": false}
-{"persona_id": "C04", "post_id": "b15", "text_id": "C04_b15:body", "text": "네 식구가 먹을 때는 단품보다 세트 구성이 부담이 덜해용", "spans": [], "detected": false}
-{"persona_id": "C04", "post_id": "b18", "text_id": "C04_b18:body", "text": "동료가 수성구에 살아서 오늘은 그쪽에서 만났어용", "spans": [], "detected": false}
+{"persona_id": "C04", "post_id": "b15", "text_id": "C04_b15:body", "text": "네 식구가 먹을 때는 단품보다 세트 구성이 부담이 덜해용", "spans": [{"start": 0, "end": 5, "text": "네 식구가", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "C04", "post_id": "b18", "text_id": "C04_b18:body", "text": "동료가 수성구에 살아서 오늘은 그쪽에서 만났어용", "spans": [{"start": 13, "end": 16, "text": "오늘은", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "C04", "post_id": null, "text_id": "C04_None:profile_bio", "text": "직접 먹고 써본 것만 남겨용. 주차 정보 우선👍", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b03", "text_id": "C05_b03:body", "text": "퇴근 버스에서 내려 삼산동 안쪽으로 조금 걸었어용", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b03", "text_id": "C05_b03:photo_caption:0", "text": "늘 내리는 정류장 근처☺️", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b06", "text_id": "C05_b06:body", "text": "세금계산서 마감을 끝내고 장부를 덮으니 저녁이 되었어용", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b06", "text_id": "C05_b06:title", "text": "장부 마감 뒤 다시 찾은 저녁집", "spans": [], "detected": false}
-{"persona_id": "C05", "post_id": "b09", "text_id": "C05_b09:body", "text": "딸이 독립하고 나니 둘이 먹을 양을 고르는 일이 아직 낯설어용", "spans": [], "detected": false}
+{"persona_id": "C05", "post_id": "b09", "text_id": "C05_b09:body", "text": "딸이 독립하고 나니 둘이 먹을 양을 고르는 일이 아직 낯설어용", "spans": [{"start": 11, "end": 13, "text": "둘이", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "C05", "post_id": "b12", "text_id": "C05_b12:body", "text": "쉰다섯 생일에는 오래 다니던 곳에서 조용히 먹었답니당", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b15", "text_id": "C05_b15:body", "text": "조금 비싸도 오래 쓰는 물건이면 할인할 때 다시 사두는 편이에용", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": "b18", "text_id": "C05_b18:body", "text": "딸이 중구에 살아서 그 근처 가게에서 만났어용", "spans": [], "detected": false}
 {"persona_id": "C05", "post_id": null, "text_id": "C05_None:profile_bio", "text": "직접 확인한 것만 천천히 기록해용☺️", "spans": [], "detected": false}
-{"persona_id": "D01", "post_id": "b04", "text_id": "D01_b04:body", "text": "집에서 십 분이면 닿는 물가라 새벽에 자주 간다", "spans": [], "detected": false}
-{"persona_id": "D01", "post_id": "b07", "text_id": "D01_b07:body", "text": "새벽에 차 빼려는데 서리가 껴서 한참 긁었다", "spans": [], "detected": false}
+{"persona_id": "D01", "post_id": "b04", "text_id": "D01_b04:body", "text": "집에서 십 분이면 닿는 물가라 새벽에 자주 간다", "spans": [{"start": 4, "end": 9, "text": "십 분이면", "type": "QT", "score": 0.85}, {"start": 17, "end": 20, "text": "새벽에", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "D01", "post_id": "b07", "text_id": "D01_b07:body", "text": "새벽에 차 빼려는데 서리가 껴서 한참 긁었다", "spans": [{"start": 0, "end": 3, "text": "새벽에", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "D01", "post_id": "b11", "text_id": "D01_b11:body", "text": "라인 세워놓고 원인 찾느라 점심을 걸렀다", "spans": [], "detected": false}
 {"persona_id": "D01", "post_id": "b14", "text_id": "D01_b14:body", "text": "야자 끝나는 시간에 맞춰 데리러 갔다 왓다", "spans": [], "detected": false}
-{"persona_id": "D01", "post_id": "b18", "text_id": "D01_b18:body", "text": "마흔일곱에 새벽 산행은 확실히 다르다", "spans": [], "detected": false}
+{"persona_id": "D01", "post_id": "b18", "text_id": "D01_b18:body", "text": "마흔일곱에 새벽 산행은 확실히 다르다", "spans": [{"start": 0, "end": 5, "text": "마흔일곱에", "type": "PS", "score": 0.85}, {"start": 6, "end": 8, "text": "새벽", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "D01", "post_id": "b16", "text_id": "D01_b16:body", "text": "처남이 광교 살아서 거기 저수지에서 봤다", "spans": [], "detected": false}
-{"persona_id": "D01", "post_id": null, "text_id": "D01_None:profile_bio", "text": "새벽에 두 시간. 물가 아니면 산.", "spans": [], "detected": false}
+{"persona_id": "D01", "post_id": null, "text_id": "D01_None:profile_bio", "text": "새벽에 두 시간. 물가 아니면 산.", "spans": [{"start": 0, "end": 3, "text": "새벽에", "type": "TI", "score": 0.85}, {"start": 4, "end": 8, "text": "두 시간", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "D01", "post_id": "b04", "text_id": "D01_b04:photo_caption:0", "text": "물안개 걷히기 전", "spans": [], "detected": false}
 {"persona_id": "D01", "post_id": "b11", "text_id": "D01_b11:title", "text": "점심 건너뛴 날", "spans": [], "detected": false}
 {"persona_id": "D02", "post_id": "b05", "text_id": "D02_b05:body", "text": "시급 올랐다고 좋아했는데 월세가 더 올랐음", "spans": [], "detected": false}
 {"persona_id": "D02", "post_id": "b08", "text_id": "D02_b08:body", "text": "언니가 이거 바르면 낫다고 보내줬는데", "spans": [], "detected": false}
 {"persona_id": "D02", "post_id": "b11", "text_id": "D02_b11:body", "text": "가게 뒤편에서 폐기 정리하다가 손을 베였다", "spans": [], "detected": false}
-{"persona_id": "D02", "post_id": "b14", "text_id": "D02_b14:body", "text": "걸어서 십 분이라 이 동네 못 떠남", "spans": [], "detected": false}
+{"persona_id": "D02", "post_id": "b14", "text_id": "D02_b14:body", "text": "걸어서 십 분이라 이 동네 못 떠남", "spans": [{"start": 4, "end": 9, "text": "십 분이라", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "D02", "post_id": "b16", "text_id": "D02_b16:body", "text": "동생 학교가 신림이라 가끔 거기서 만난다", "spans": [], "detected": false}
-{"persona_id": "D02", "post_id": null, "text_id": "D02_None:profile_bio", "text": "야간 뛰고 낮에 자는 사람", "spans": [], "detected": false}
+{"persona_id": "D02", "post_id": null, "text_id": "D02_None:profile_bio", "text": "야간 뛰고 낮에 자는 사람", "spans": [{"start": 0, "end": 2, "text": "야간", "type": "TI", "score": 0.85}, {"start": 6, "end": 8, "text": "낮에", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "D02", "post_id": "b11", "text_id": "D02_b11:title", "text": "폐기 정리하다", "spans": [], "detected": false}
 {"persona_id": "D03", "post_id": "b04", "text_id": "D03_b04:body", "text": "임대료 오르고 재료비도 올라서 이번 달은 정산이 마이너스였습니다", "spans": [], "detected": false}
 {"persona_id": "D03", "post_id": "b09", "text_id": "D03_b09:body", "text": "작업실 건너편 카페 사장님이 커피를 내려다 주셨어요", "spans": [], "detected": false}
 {"persona_id": "D03", "post_id": "b13", "text_id": "D03_b13:body", "text": "엄마들 단톡방에서 하원 시간 얘기가 나왔는데", "spans": [], "detected": false}
-{"persona_id": "D03", "post_id": "b17", "text_id": "D03_b17:body", "text": "걸어서 십오 분이라 비 오면 그냥 쉽니다", "spans": [], "detected": false}
+{"persona_id": "D03", "post_id": "b17", "text_id": "D03_b17:body", "text": "걸어서 십오 분이라 비 오면 그냥 쉽니다", "spans": [{"start": 4, "end": 6, "text": "십오", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "D03", "post_id": "b20", "text_id": "D03_b20:body", "text": "밥상에 반찬이 자꾸 늘어나요", "spans": [], "detected": false}
 {"persona_id": "D03", "post_id": "b15", "text_id": "D03_b15:body", "text": "친구가 화정에서 공방 한다고 해서 구경 갔어요", "spans": [], "detected": false}
-{"persona_id": "D03", "post_id": "b09", "text_id": "D03_b09:photo_caption:0", "text": "작업대 위 오늘 몫", "spans": [], "detected": false}
-{"persona_id": "D03", "post_id": "b04", "text_id": "D03_b04:title", "text": "이번 달 정산을 미뤄둔 이유", "spans": [], "detected": false}
+{"persona_id": "D03", "post_id": "b09", "text_id": "D03_b09:photo_caption:0", "text": "작업대 위 오늘 몫", "spans": [{"start": 6, "end": 8, "text": "오늘", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "D03", "post_id": "b04", "text_id": "D03_b04:title", "text": "이번 달 정산을 미뤄둔 이유", "spans": [{"start": 0, "end": 4, "text": "이번 달", "type": "DT", "score": 0.85}, {"start": 5, "end": 8, "text": "정산을", "type": "PS", "score": 0.85}], "detected": true}
 {"persona_id": "D03", "post_id": null, "text_id": "D03_None:profile_bio", "text": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로", "spans": [], "detected": false}
 {"persona_id": "D04", "post_id": "b03", "text_id": "D04_b03:body", "text": "사무실 아래층 복사기가 또 멈췄다", "spans": [], "detected": false}
-{"persona_id": "D04", "post_id": "b07", "text_id": "D04_b07:body", "text": "집사람이 아침에 우산을 챙겨줬다", "spans": [], "detected": false}
-{"persona_id": "D04", "post_id": "b12", "text_id": "D04_b12:body", "text": "정류장 두 정거장 전에 내려서 걸었다", "spans": [], "detected": false}
+{"persona_id": "D04", "post_id": "b07", "text_id": "D04_b07:body", "text": "집사람이 아침에 우산을 챙겨줬다", "spans": [{"start": 5, "end": 8, "text": "아침에", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "D04", "post_id": "b12", "text_id": "D04_b12:body", "text": "정류장 두 정거장 전에 내려서 걸었다", "spans": [{"start": 4, "end": 9, "text": "두 정거장", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "D04", "post_id": "b16", "text_id": "D04_b16:body", "text": "정년까지 삼 년 남았다는 말을 들었다", "spans": [], "detected": false}
 {"persona_id": "D04", "post_id": "b19", "text_id": "D04_b19:body", "text": "물가에서 오리 세는 사람이 나 말고도 있었다", "spans": [], "detected": false}
-{"persona_id": "D04", "post_id": "b14", "text_id": "D04_b14:body", "text": "큰애가 세종 산다고 해서 주말에 다녀왔다", "spans": [{"start": 4, "end": 6, "text": "세종", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
+{"persona_id": "D04", "post_id": "b14", "text_id": "D04_b14:body", "text": "큰애가 세종 산다고 해서 주말에 다녀왔다", "spans": [{"start": 14, "end": 17, "text": "주말에", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "D04", "post_id": "b03", "text_id": "D04_b03:photo_caption:0", "text": "아래층 복도 끝", "spans": [], "detected": false}
-{"persona_id": "D05", "post_id": "b03", "text_id": "D05_b03:body", "text": "면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대 라 그냥 걸어왔다", "spans": [], "detected": false}
+{"persona_id": "D05", "post_id": "b03", "text_id": "D05_b03:body", "text": "면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대 라 그냥 걸어왔다", "spans": [{"start": 25, "end": 30, "text": "한 대 라", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "D05", "post_id": "b08", "text_id": "D05_b08:body", "text": "올해부텀 경로당 총무를 맡게 됐다", "spans": [], "detected": false}
 {"persona_id": "D05", "post_id": "b12", "text_id": "D05_b12:body", "text": "방학 이라고 며칠 있다 간다길래 이불을 꺼내 놨다", "spans": [], "detected": false}
 {"persona_id": "D05", "post_id": "b15", "text_id": "D05_b15:body", "text": "연금 나오는 날 맞차서 장 을 본다", "spans": [], "detected": false}
-{"persona_id": "D05", "post_id": "b17", "text_id": "D05_b17:body", "text": "예전에 광주 살 때는 이런 거 흔 했는디 여기 와서는 못 봤다", "spans": [{"start": 4, "end": 6, "text": "광주", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
+{"persona_id": "D05", "post_id": "b17", "text_id": "D05_b17:body", "text": "예전에 광주 살 때는 이런 거 흔 했는디 여기 와서는 못 봤다", "spans": [{"start": 4, "end": 6, "text": "광주", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "D05", "post_id": "b14", "text_id": "D05_b14:body", "text": "내 나이가  예순여덟인디 아직 이만하면 다닐 만 하다", "spans": [], "detected": false}
-{"persona_id": "D05", "post_id": null, "text_id": "D05_None:profile_bio", "text": "손녀가 맹글어 줬다. 시골서 그냥 소일한다", "spans": [], "detected": false}
-{"persona_id": "D05", "post_id": "b03", "text_id": "D05_b03:photo_caption:0", "text": "한 대 놓치면 두 시간", "spans": [], "detected": false}
+{"persona_id": "D05", "post_id": null, "text_id": "D05_None:profile_bio", "text": "손녀가 맹글어 줬다. 시골서 그냥 소일한다", "spans": [{"start": 0, "end": 3, "text": "손녀가", "type": "PS", "score": 0.85}], "detected": true}
+{"persona_id": "D05", "post_id": "b03", "text_id": "D05_b03:photo_caption:0", "text": "한 대 놓치면 두 시간", "spans": [{"start": 0, "end": 3, "text": "한 대", "type": "QT", "score": 0.85}, {"start": 8, "end": 12, "text": "두 시간", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "D05", "post_id": "b03", "text_id": "D05_b03:photo_caption:1", "text": "정류장에서", "spans": [], "detected": false}
 {"persona_id": "D05", "post_id": "b15", "text_id": "D05_b15:title", "text": "어매가 늘 그러셨는디", "spans": [], "detected": false}
 {"persona_id": "E01", "post_id": "b03", "text_id": "E01_b03:body", "text": "신차 시승하러 수성못 쪽으로 갔다왔다,,", "spans": [], "detected": false}
 {"persona_id": "E01", "post_id": "b03", "text_id": "E01_b03:photo_caption:0", "text": "저 멀리 보이는 못,,", "spans": [], "detected": false}
 {"persona_id": "E01", "post_id": "b05", "text_id": "E01_b05:body", "text": "이번 시즌 오더 마감 때문에 야근했다", "spans": [], "detected": false}
-{"persona_id": "E01", "post_id": "b05", "text_id": "E01_b05:title", "text": "오더 마감 전쟁", "spans": [], "detected": false}
+{"persona_id": "E01", "post_id": "b05", "text_id": "E01_b05:title", "text": "오더 마감 전쟁", "spans": [{"start": 0, "end": 2, "text": "오더", "type": "PS", "score": 0.85}], "detected": true}
 {"persona_id": "E01", "post_id": "b09", "text_id": "E01_b09:body", "text": "통근버스 놓쳐서 지각할 뻔", "spans": [], "detected": false}
-{"persona_id": "E01", "post_id": "b12", "text_id": "E01_b12:body", "text": "명절이라 부모님 뵈러 한국 나왔다", "spans": [], "detected": false}
+{"persona_id": "E01", "post_id": "b12", "text_id": "E01_b12:body", "text": "명절이라 부모님 뵈러 한국 나왔다", "spans": [{"start": 12, "end": 14, "text": "한국", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "E01", "post_id": "b17", "text_id": "E01_b17:body", "text": "스물다섯인데 벌써 이렇게 됐네,,", "spans": [], "detected": false}
-{"persona_id": "E01", "post_id": "b15", "text_id": "E01_b15:body", "text": "친구가 부산 살아서 지난번에 거기서 봤다", "spans": [{"start": 4, "end": 6, "text": "부산", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "E01", "post_id": null, "text_id": "E01_None:profile_bio", "text": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗", "spans": [], "detected": false}
+{"persona_id": "E01", "post_id": "b15", "text_id": "E01_b15:body", "text": "친구가 부산 살아서 지난번에 거기서 봤다", "spans": [{"start": 4, "end": 6, "text": "부산", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "E01", "post_id": null, "text_id": "E01_None:profile_bio", "text": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗", "spans": [{"start": 15, "end": 19, "text": "중국에서", "type": "LC", "score": 0.85}, {"start": 25, "end": 26, "text": "🧶", "type": "QT", "score": 0.85}, {"start": 26, "end": 27, "text": "🚗", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "E02", "post_id": "b02", "text_id": "E02_b02:body", "text": "본가 근처 오름 산책하던 게 그립다,, 여긴 그런 게 없음", "spans": [], "detected": false}
 {"persona_id": "E02", "post_id": "b02", "text_id": "E02_b02:photo_caption:0", "text": "귤밭 옆 그 길", "spans": [], "detected": false}
-{"persona_id": "E02", "post_id": "b06", "text_id": "E02_b06:body", "text": "오늘도 라떼아트 망해서 사장님한테 혼남 ㅋㅋ", "spans": [], "detected": false}
-{"persona_id": "E02", "post_id": "b06", "text_id": "E02_b06:title", "text": "7주차: 손목 나감", "spans": [], "detected": false}
-{"persona_id": "E02", "post_id": "b10", "text_id": "E02_b10:body", "text": "플랫메이트 차 얻어타서 겨우 지각 면함", "spans": [], "detected": false}
-{"persona_id": "E02", "post_id": "b13", "text_id": "E02_b13:body", "text": "귤 철이라 집 걱정되네,, 올해도 잘 될지", "spans": [], "detected": false}
+{"persona_id": "E02", "post_id": "b06", "text_id": "E02_b06:body", "text": "오늘도 라떼아트 망해서 사장님한테 혼남 ㅋㅋ", "spans": [{"start": 0, "end": 3, "text": "오늘도", "type": "DT", "score": 0.85}, {"start": 4, "end": 8, "text": "라떼아트", "type": "PS", "score": 0.85}], "detected": true}
+{"persona_id": "E02", "post_id": "b06", "text_id": "E02_b06:title", "text": "7주차: 손목 나감", "spans": [{"start": 0, "end": 3, "text": "7주차", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "E02", "post_id": "b10", "text_id": "E02_b10:body", "text": "플랫메이트 차 얻어타서 겨우 지각 면함", "spans": [{"start": 0, "end": 5, "text": "플랫메이트", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "E02", "post_id": "b13", "text_id": "E02_b13:body", "text": "귤 철이라 집 걱정되네,, 올해도 잘 될지", "spans": [{"start": 15, "end": 18, "text": "올해도", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "E02", "post_id": "b19", "text_id": "E02_b19:body", "text": "스물둘인데 여기 오니까 애 됨 ㅋㅋ", "spans": [], "detected": false}
 {"persona_id": "E02", "post_id": "b16", "text_id": "E02_b16:body", "text": "친구가 애월 살아서 귤 농장 도와준 적 있다곸ㅋ", "spans": [], "detected": false}
-{"persona_id": "E02", "post_id": null, "text_id": "E02_None:profile_bio", "text": "호주에서 라떼 내리는 중.. 언제 한국 감?☕🇦🇺", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": "b04", "text_id": "E03_b04:body", "text": "본가 갈 때마다 경포 들르는 게 국룰이지", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": "b04", "text_id": "E03_b04:photo_caption:0", "text": "호수 앞에서 한 컷", "spans": [], "detected": false}
+{"persona_id": "E02", "post_id": null, "text_id": "E02_None:profile_bio", "text": "호주에서 라떼 내리는 중.. 언제 한국 감?☕🇦🇺", "spans": [{"start": 0, "end": 4, "text": "호주에서", "type": "LC", "score": 0.85}, {"start": 19, "end": 21, "text": "한국", "type": "LC", "score": 0.85}, {"start": 25, "end": 26, "text": "🇦", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "E03", "post_id": "b04", "text_id": "E03_b04:body", "text": "본가 갈 때마다 경포 들르는 게 국룰이지", "spans": [{"start": 9, "end": 15, "text": "경포 들르는", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "E03", "post_id": "b04", "text_id": "E03_b04:photo_caption:0", "text": "호수 앞에서 한 컷", "spans": [{"start": 7, "end": 10, "text": "한 컷", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "E03", "post_id": "b08", "text_id": "E03_b08:body", "text": "이번 출장 가서 트림 비교하느라 정신없었다", "spans": [], "detected": false}
 {"persona_id": "E03", "post_id": "b08", "text_id": "E03_b08:title", "text": "협력사 미팅 후기", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": "b14", "text_id": "E03_b14:body", "text": "2호선 환승 줄이 길어서 지각할 뻔", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": "b11", "text_id": "E03_b11:body", "text": "이번 명절엔 시댁이랑 본가 둘 다 못 갔다", "spans": [], "detected": false}
+{"persona_id": "E03", "post_id": "b14", "text_id": "E03_b14:body", "text": "2호선 환승 줄이 길어서 지각할 뻔", "spans": [{"start": 0, "end": 3, "text": "2호선", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "E03", "post_id": "b11", "text_id": "E03_b11:body", "text": "이번 명절엔 시댁이랑 본가 둘 다 못 갔다", "spans": [{"start": 15, "end": 16, "text": "둘", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "E03", "post_id": "b19", "text_id": "E03_b19:body", "text": "서른하나 되니까 확실히 체력이 다르네요", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": "b16", "text_id": "E03_b16:body", "text": "언니가 속초 살아서 여름마다 놀러갔었다", "spans": [], "detected": false}
-{"persona_id": "E03", "post_id": null, "text_id": "E03_None:profile_bio", "text": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀🧶🚙", "spans": [], "detected": false}
+{"persona_id": "E03", "post_id": "b16", "text_id": "E03_b16:body", "text": "언니가 속초 살아서 여름마다 놀러갔었다", "spans": [{"start": 11, "end": 15, "text": "여름마다", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "E03", "post_id": null, "text_id": "E03_None:profile_bio", "text": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀🧶🚙", "spans": [{"start": 0, "end": 3, "text": "상하이", "type": "LC", "score": 0.85}, {"start": 7, "end": 10, "text": "6년차", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "E04", "post_id": "b01", "text_id": "E04_b01:body", "text": "본가 근처 갑천 산책하던 게 은근 그립다", "spans": [], "detected": false}
 {"persona_id": "E04", "post_id": "b01", "text_id": "E04_b01:photo_caption:0", "text": "그 다리 야경 진짜 좋았는데", "spans": [], "detected": false}
-{"persona_id": "E04", "post_id": "b07", "text_id": "E04_b07:body", "text": "배포하다가 새벽까지 버그 잡음 ㅋㅋㅋ", "spans": [], "detected": false}
+{"persona_id": "E04", "post_id": "b07", "text_id": "E04_b07:body", "text": "배포하다가 새벽까지 버그 잡음 ㅋㅋㅋ", "spans": [{"start": 6, "end": 10, "text": "새벽까지", "type": "TI", "score": 0.85}], "detected": true}
 {"persona_id": "E04", "post_id": "b07", "text_id": "E04_b07:title", "text": "여행 왔는데요 취업했습니다", "spans": [], "detected": false}
 {"persona_id": "E04", "post_id": "b12", "text_id": "E04_b12:body", "text": "재택 각 나와서 카풀 취소함", "spans": [], "detected": false}
 {"persona_id": "E04", "post_id": "b15", "text_id": "E04_b15:body", "text": "명절인데 이번에도 못 감,, 다음엔 꼭", "spans": [], "detected": false}
-{"persona_id": "E04", "post_id": "b18", "text_id": "E04_b18:body", "text": "스물여덟인데 아직도 정신 못 차림 ㅋㅋㅋ", "spans": [], "detected": false}
-{"persona_id": "E04", "post_id": "b10", "text_id": "E04_b10:body", "text": "형이 청주 살아서 그쪽 구경시켜준 적 있음", "spans": [], "detected": false}
+{"persona_id": "E04", "post_id": "b18", "text_id": "E04_b18:body", "text": "스물여덟인데 아직도 정신 못 차림 ㅋㅋㅋ", "spans": [{"start": 0, "end": 6, "text": "스물여덟인데", "type": "PS", "score": 0.85}], "detected": true}
+{"persona_id": "E04", "post_id": "b10", "text_id": "E04_b10:body", "text": "형이 청주 살아서 그쪽 구경시켜준 적 있음", "spans": [{"start": 3, "end": 5, "text": "청주", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "E04", "post_id": null, "text_id": "E04_None:profile_bio", "text": "놀러왔다가 눌러앉음.. 코드 치는 워홀러💻", "spans": [], "detected": false}
-{"persona_id": "E05", "post_id": "b03", "text_id": "E05_b03:body", "text": "오랜만에 쉬는 날이라 동백섬 한 바퀴 돌고 왔다,,", "spans": [], "detected": false}
+{"persona_id": "E05", "post_id": "b03", "text_id": "E05_b03:body", "text": "오랜만에 쉬는 날이라 동백섬 한 바퀴 돌고 왔다,,", "spans": [{"start": 16, "end": 20, "text": "한 바퀴", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "E05", "post_id": "b03", "text_id": "E05_b03:photo_caption:0", "text": "저 멀리 광안대교 불빛,,", "spans": [], "detected": false}
 {"persona_id": "E05", "post_id": "b06", "text_id": "E05_b06:body", "text": "이번 주는 산불 났던 자리 답사 때문에 계속 밖이었다", "spans": [], "detected": false}
-{"persona_id": "E05", "post_id": "b06", "text_id": "E05_b06:title", "text": "타버린 숲 다시 걷다", "spans": [], "detected": false}
-{"persona_id": "E05", "post_id": "b10", "text_id": "E05_b10:body", "text": "오늘도 부지 왔다갔다 하느라 하루종일 차 안에 있었다", "spans": [], "detected": false}
-{"persona_id": "E05", "post_id": "b13", "text_id": "E05_b13:body", "text": "명절이라 오랜만에 한국 나왔다", "spans": [], "detected": false}
+{"persona_id": "E05", "post_id": "b06", "text_id": "E05_b06:title", "text": "타버린 숲 다시 걷다", "spans": [{"start": 0, "end": 3, "text": "타버린", "type": "PS", "score": 0.85}], "detected": true}
+{"persona_id": "E05", "post_id": "b10", "text_id": "E05_b10:body", "text": "오늘도 부지 왔다갔다 하느라 하루종일 차 안에 있었다", "spans": [{"start": 16, "end": 20, "text": "하루종일", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "E05", "post_id": "b13", "text_id": "E05_b13:body", "text": "명절이라 오랜만에 한국 나왔다", "spans": [{"start": 10, "end": 12, "text": "한국", "type": "LC", "score": 0.85}], "detected": true}
 {"persona_id": "E05", "post_id": "b17", "text_id": "E05_b17:body", "text": "서른다섯인데 요즘 체력이 확실히 다르게 느껴짐,,", "spans": [], "detected": false}
 {"persona_id": "E05", "post_id": "b15", "text_id": "E05_b15:body", "text": "친구가 기장 살아서 오랜만에 거기서 캠핑했다", "spans": [], "detected": false}
-{"persona_id": "E05", "post_id": null, "text_id": "E05_None:profile_bio", "text": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿", "spans": [], "detected": false}
-{"persona_id": "S01", "post_id": "b03", "text_id": "S01_b03:body", "text": "집 앞이라 자주 가는 서울숲", "spans": [{"start": 12, "end": 14, "text": "서울", "type": "PS_LOCATION", "score": 0.9}], "detected": true}
-{"persona_id": "S01", "post_id": "b06", "text_id": "S01_b06:body", "text": "퇴근길 2호선이 오늘따라", "spans": [], "detected": false}
-{"persona_id": "S01", "post_id": "b09", "text_id": "S01_b09:body", "text": "원두 발주 단위를 잘못 적어서 20킬로가 왔다", "spans": [], "detected": false}
+{"persona_id": "E05", "post_id": null, "text_id": "E05_None:profile_bio", "text": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿", "spans": [{"start": 0, "end": 3, "text": "타버린", "type": "PS", "score": 0.85}, {"start": 24, "end": 29, "text": "다이빙이랑", "type": "OG", "score": 0.85}], "detected": true}
+{"persona_id": "S01", "post_id": "b03", "text_id": "S01_b03:body", "text": "집 앞이라 자주 가는 서울숲", "spans": [{"start": 12, "end": 15, "text": "서울숲", "type": "LC", "score": 0.85}], "detected": true}
+{"persona_id": "S01", "post_id": "b06", "text_id": "S01_b06:body", "text": "퇴근길 2호선이 오늘따라", "spans": [{"start": 4, "end": 8, "text": "2호선이", "type": "QT", "score": 0.85}, {"start": 9, "end": 13, "text": "오늘따라", "type": "DT", "score": 0.85}], "detected": true}
+{"persona_id": "S01", "post_id": "b09", "text_id": "S01_b09:body", "text": "원두 발주 단위를 잘못 적어서 20킬로가 왔다", "spans": [{"start": 17, "end": 22, "text": "20킬로가", "type": "QT", "score": 0.85}], "detected": true}
 {"persona_id": "S01", "post_id": "b12", "text_id": "S01_b12:body", "text": "남편이 야근이라 혼자 뚝섬 쪽 걸었다", "spans": [], "detected": false}
 {"persona_id": "S01", "post_id": "b17", "text_id": "S01_b17:body", "text": "서른넷 되니 하루 종일 서 있는 게", "spans": [], "detected": false}
 {"persona_id": "S01", "post_id": "b19", "text_id": "S01_b19:body", "text": "친구가 망원 살아서 거기서 봤어요", "spans": [], "detected": false}
 {"persona_id": "S01", "post_id": null, "text_id": "S01_None:profile_bio", "text": "매장 마감하고 쓰는 동네 기록", "spans": [], "detected": false}
 {"persona_id": "S01", "post_id": "b03", "text_id": "S01_b03:photo_caption:0", "text": "집 앞 산책로에서", "spans": [], "detected": false}
-{"persona_id": "S01", "post_id": "b09", "text_id": "S01_b09:title", "text": "20킬로가 통째로 왔다", "spans": [], "detected": false}
-{"persona_id": "S01b", "post_id": "b03", "text_id": "S01b_b03:body", "text": "셔틀 첫차가 여섯시 반이라 새벽에 나선다", "spans": [], "detected": false}
-{"persona_id": "S01b", "post_id": "b06", "text_id": "S01b_b06:body", "text": "피킹 동선이 바뀌어서 하루 종일 헤맸다", "spans": [], "detected": false}
+{"persona_id": "S01", "post_id": "b09", "text_id": "S01_b09:title", "text": "20킬로가 통째로 왔다", "spans": [{"start": 0, "end": 5, "text": "20킬로가", "type": "QT", "score": 0.85}], "detected": true}
+{"persona_id": "S01b", "post_id": "b03", "text_id": "S01b_b03:body", "text": "셔틀 첫차가 여섯시 반이라 새벽에 나선다", "spans": [{"start": 15, "end": 18, "text": "새벽에", "type": "TI", "score": 0.85}], "detected": true}
+{"persona_id": "S01b", "post_id": "b06", "text_id": "S01b_b06:body", "text": "피킹 동선이 바뀌어서 하루 종일 헤맸다", "spans": [{"start": 12, "end": 14, "text": "하루", "type": "DT", "score": 0.85}], "detected": true}
 {"persona_id": "S01b", "post_id": "b09", "text_id": "S01b_b09:body", "text": "퇴근하고 집 근처 하천길을 걸었다", "spans": [], "detected": false}
 {"persona_id": "S01b", "post_id": "b12", "text_id": "S01b_b12:body", "text": "서른여덟 되니 야간조가 확실히 버겁다", "spans": [], "detected": false}
 {"persona_id": "S01b", "post_id": "b15", "text_id": "S01b_b15:body", "text": "밥상에 반찬이 자꾸 늘어난다", "spans": [], "detected": false}
 {"persona_id": "S01b", "post_id": "b18", "text_id": "S01b_b18:body", "text": "언니가 청주 살아서 거기서 만났어요", "spans": [], "detected": false}
 {"persona_id": "S01b", "post_id": null, "text_id": "S01b_None:profile_bio", "text": "교대 근무 하는 사람의 그날그날 기록", "spans": [], "detected": false}
 {"persona_id": "S01b", "post_id": "b09", "text_id": "S01b_b09:photo_caption:0", "text": "집 앞 하천길에서", "spans": [], "detected": false}
-{"persona_id": "S01b", "post_id": "b06", "text_id": "S01b_b06:title", "text": "셔틀에서 졸다 지나칠 뻔한 날", "spans": [], "detected": false}
+{"persona_id": "S01b", "post_id": "b06", "text_id": "S01b_b06:title", "text": "셔틀에서 졸다 지나칠 뻔한 날", "spans": [{"start": 0, "end": 4, "text": "셔틀에서", "type": "PS", "score": 0.85}], "detected": true}

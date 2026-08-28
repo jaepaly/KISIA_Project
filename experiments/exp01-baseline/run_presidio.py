@@ -24,7 +24,13 @@ def build_analyzer():
     if not HAS_PRESIDIO:
         return None
     try:
-        analyzer = AnalyzerEngine(supported_languages=["ko", "en"])
+        nlp_config = {
+            "nlp_engine_name": "spacy",
+            "models": [{"lang_code": "ko", "model_name": "ko_core_news_sm"}],
+        }
+        provider = NlpEngineProvider(nlp_configuration=nlp_config)
+        nlp_engine = provider.create_engine()
+        analyzer = AnalyzerEngine(nlp_engine=nlp_engine, supported_languages=["ko"])
         # 한국어 모바일 번호 패턴 추가
         kr_phone = PatternRecognizer(
             supported_entity="PHONE_NUMBER",
@@ -34,7 +40,10 @@ def build_analyzer():
         analyzer.registry.add_recognizer(kr_phone)
         return analyzer
     except Exception:
-        return None
+        try:
+            return AnalyzerEngine(supported_languages=["ko", "en"])
+        except Exception:
+            return None
 
 
 def detect_presidio_fallback(text: str) -> list[dict]:
