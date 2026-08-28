@@ -157,7 +157,7 @@
       "attr": "income",
       "level": "inferential",
       "subject": "other",
-      "note": "⚠️ 함정. 타인(친구)의 연봉 언급. 성별(군대 동기) 단서도 간접 포함",
+      "note": "⚠️ 함정 · income 축 (§4-4-1). 타인(친구)의 연봉 언급. 성별(군대 동기) 단서도 간접 포함",
       "ambiguous": false
     },
     {
