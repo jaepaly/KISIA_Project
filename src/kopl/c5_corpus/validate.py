@@ -37,6 +37,11 @@ TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
 # profile_bio 는 글이 아니라 사용자에 속한다 → post 가 null 이어야 한다
 USER_SCOPED_TEXT_IDS = ("profile_bio",)
 
+# card_binding 예약 키. 「어느 카드도 정하지 않는다 — 인물이 스스로 정했다」는 선언.
+# 카드와 어긋나는 것이 의도인 축을 여기 적으면 대조에서 빠지고,
+# 인물 간 분기 계수에는 그대로 들어간다 (개인차 축이므로 달라야 한다).
+FREE_AXIS_KEY = "—"
+
 # §9-1 본문 밖 단서 할당량. 인물 5명 묶음마다 채널별 최소 건수.
 OFF_BODY_CHANNELS = ("title", "photo_caption", "profile_bio")
 OFF_BODY_QUOTA_PER = 2
@@ -126,6 +131,36 @@ def load_card_axes(cards_dir) -> dict:
     return out
 
 
+NUM_RE = re.compile(r"\d+")
+AVG_RE = re.compile(r"평균\s*(\d+)")
+
+
+def _as_number(val, prefer_avg: bool = False):
+    """문자열에서 대표 수치를 뽑는다.
+
+    카드는 「35」 「30~40」 「200 (꼬리 600)」 처럼 쓰고
+    인물은 「평균 28자. 최소 8자 ~ 최대 70자」 처럼 쓴다.
+    인물 쪽은 「평균 N」 을 우선한다 — 뒤에 오는 최소·최대는 목표값이 아니다.
+    """
+    t = str(val)
+    if prefer_avg:
+        m = AVG_RE.search(t)
+        if m:
+            return float(m.group(1))
+    nums = [float(x) for x in NUM_RE.findall(t)]
+    if not nums:
+        return None
+    # 「30~40」 같은 범위는 중앙값. 「200 (꼬리 600)」 은 앞의 것이 기본값
+    if "~" in t.split("(")[0] and len(nums) >= 2:
+        return (nums[0] + nums[1]) / 2
+    return nums[0]
+
+
+def _numeric_axis(card_val) -> bool:
+    """카드 값이 수치인가. 앞부분이 숫자로 시작하면 수치 축으로 본다."""
+    return bool(re.match(r"^\s*\d", str(card_val)))
+
+
 def _covers(persona_val, card_val) -> float:
     """카드 값이 인물 값 안에 들어 있는가 (포함 계수).
 
@@ -161,20 +196,38 @@ def card_check(personas: list[tuple[str, dict]], card_axes: dict) -> list[str]:
         binding = d.get("card_binding") or {}
         # 축 → 어느 카드를 따르나
         gov: dict[str, str] = {}
+        free: set = set()
         for card, axes in binding.items():
+            if card == FREE_AXIS_KEY:
+                free |= set(axes)
+                continue
             for ax in axes:
                 gov[ax] = card
         voice = d.get("voice") or {}
         rows = []
         for ax, val in sorted(voice.items()):
+            if ax in free:                       # 카드를 따르지 않기로 선언한 축
+                rows.append(f"      --  {ax:10} {'(카드 없음)':14} 인물이 정함")
+                continue
             card = gov.get(ax, refs[0])          # 미지정이면 첫 카드
             target = (card_axes.get(card) or {}).get(ax)
             if target is None:
                 continue                          # 카드가 그 축을 규정하지 않았다
-            sim = _covers(val, target)
-            mark = "OK " if sim >= 0.5 else ("△  " if sim >= 0.15 else "✗  ")
+            if _numeric_axis(target):
+                pv = _as_number(val, prefer_avg=True)
+                cv = _as_number(target)
+                if pv is None or not cv:
+                    mark, extra = "?  ", "  ← 인물 값에서 수치를 못 읽음"
+                else:
+                    dev = abs(pv - cv) / cv
+                    mark = "OK " if dev <= 0.25 else ("△  " if dev <= 0.5 else "✗  ")
+                    extra = f"  (인물 {pv:g} · 편차 {(pv - cv) / cv * 100:+.0f}%)"
+            else:
+                sim = _covers(val, target)
+                mark = "OK " if sim >= 0.5 else ("△  " if sim >= 0.15 else "✗  ")
+                extra = ""
             src = f"{card}{'' if ax in gov else ' (첫 카드)'}"
-            rows.append(f"      {mark} {ax:10} {src:14} 카드 「{target}」")
+            rows.append(f"      {mark} {ax:10} {src:14} 카드 「{target}」{extra}")
         if rows:
             lines.append(f"  {pid}  card_ref={refs}")
             lines += rows
@@ -182,70 +235,87 @@ def card_check(personas: list[tuple[str, dict]], card_axes: dict) -> list[str]:
 
 
 def _bound(persona: dict, card: str) -> set:
-    """이 인물이 그 카드에서 물려받았다고 선언한 축."""
+    """이 인물이 그 카드에서 물려받았다고 선언한 축.
+
+    예약 키(FREE_AXIS_KEY)에 적힌 축은 어느 카드도 정하지 않은 것이므로
+    카드 축이 아니다 — 인물 간 분기 계수에 그대로 들어간다.
+    """
+    if card == FREE_AXIS_KEY:
+        return set()
     return set((persona.get("card_binding") or {}).get(card, []))
 
 
-def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
-    """같은 카드를 참조하는 인물끼리 목소리가 갈리는지 본다.
+def _gov(persona: dict) -> dict:
+    """축 → 그 축을 정한 카드. card_binding 에 명시된 것만 본다."""
+    out = {}
+    for card, axes in (persona.get("card_binding") or {}).items():
+        for ax in axes:
+            out[ax] = card
+    return out
 
-    카드 축(인물이 card_binding 으로 선언한 축)은 겹치는 게 정상이라 계수에서 빼되,
-    **둘 다 같은 카드에 묶었다고 선언했는데 값이 다르면** 한쪽이 카드를 안 따른 것이므로
-    별도로 경고한다.
+
+def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
+    """카드를 공유하는 인물끼리 목소리가 갈리는지 본다.
+
+    카드 축(둘 다 같은 카드에 명시적으로 묶은 축)은 겹치는 게 정상이라 계수에서 빼되,
+    값이 다르면 한쪽이 카드를 안 따른 것이므로 경고한다.
+    한 쌍은 공유 카드가 몇 장이든 **한 번만** 비교한다.
     """
-    by_card: dict[str, list[tuple[str, dict]]] = {}
-    for pid, d in personas:
-        for ref in d.get("card_ref", []) or []:
-            by_card.setdefault(ref, []).append((pid, d))
+    pairs: dict[tuple[str, str], tuple] = {}
+    for i in range(len(personas)):
+        for j in range(i + 1, len(personas)):
+            (pa, a), (pb, b) = personas[i], personas[j]
+            shared = sorted(set(a.get("card_ref") or []) & set(b.get("card_ref") or []))
+            if shared:
+                pairs[(pa, pb)] = (a, b, shared)
 
     lines: list[str] = []
-    for card, group in sorted(by_card.items()):
-        if len(group) < 2:
-            continue
-        for i in range(len(group)):
-            for j in range(i + 1, len(group)):
-                pid_a, a = group[i]
-                pid_b, b = group[j]
-                va, vb = a.get("voice") or {}, b.get("voice") or {}
-                ba, bb = _bound(a, card), _bound(b, card)
-                declared = bool(ba or bb)
+    for (pa, pb), (a, b, shared) in pairs.items():
+        va, vb = a.get("voice") or {}, b.get("voice") or {}
+        ga, gb = _gov(a), _gov(b)
+        declared = bool(ga or gb)
 
-                rows, distinct, bound_n = [], 0, 0
-                for k in sorted(set(va) & set(vb)):
-                    sim = _similarity(va[k], vb[k])
-                    is_bound = (k in ba or k in bb) if declared else any(
-                        t in k for t in FALLBACK_CARD_BOUND)
-                    if is_bound:
-                        bound_n += 1
-                        # 둘 다 이 카드에 묶었다고 했는데 값이 다르면 한쪽이 카드를 안 따랐다
-                        if k in ba and k in bb and sim < VOICE_SIM_THRESHOLD:
-                            rows.append(f"      {k:12} {sim:.2f}  ⚠ 카드 축인데 값이 다르다")
-                        else:
-                            rows.append(f"      {k:12} {sim:.2f}  (카드 축)")
-                    elif sim < VOICE_SIM_THRESHOLD:
-                        distinct += 1
-                        rows.append(f"      {k:12} {sim:.2f}  다름")
-                    else:
-                        rows.append(f"      {k:12} {sim:.2f}  ⚠ 겹침")
+        rows, distinct, bound_n = [], 0, 0
+        for k in sorted(set(va) & set(vb)):
+            sim = _similarity(va[k], vb[k])
+            if declared:
+                # 둘 다 같은 카드에 명시적으로 묶은 축만 카드 축이다.
+                # 예약 키(자유 축)나 한쪽만 묶은 축은 인물 축으로 센다.
+                is_bound = (k in ga and k in gb
+                            and ga[k] == gb[k] and ga[k] != FREE_AXIS_KEY)
+            else:
+                is_bound = any(t in k for t in FALLBACK_CARD_BOUND)
+            if is_bound:
+                bound_n += 1
+                if sim < VOICE_SIM_THRESHOLD:
+                    rows.append(f"      {k:12} {sim:.2f}  ⚠ 같은 카드에 묶었는데 값이 다르다")
+                else:
+                    src = ga.get(k, "폴백")
+                    rows.append(f"      {k:12} {sim:.2f}  (카드 축 {src})")
+            elif sim < VOICE_SIM_THRESHOLD:
+                distinct += 1
+                rows.append(f"      {k:12} {sim:.2f}  다름")
+            else:
+                rows.append(f"      {k:12} {sim:.2f}  ⚠ 겹침")
 
-                ta = a.get("noise_topics") or (va.get("소재") or [])
-                tb = b.get("noise_topics") or (vb.get("소재") or [])
-                if ta and tb:
-                    sim = _similarity(ta, tb)
-                    if sim < VOICE_SIM_THRESHOLD:
-                        distinct += 1
-                    rows.append(f"      {'소재':12} {sim:.2f}  "
-                                f"{'다름' if sim < VOICE_SIM_THRESHOLD else '⚠ 겹침'}")
+        ta = a.get("noise_topics") or (va.get("소재") or [])
+        tb = b.get("noise_topics") or (vb.get("소재") or [])
+        if ta and tb:
+            sim = _similarity(ta, tb)
+            if sim < VOICE_SIM_THRESHOLD:
+                distinct += 1
+            rows.append(f"      {'소재':12} {sim:.2f}  "
+                        f"{'다름' if sim < VOICE_SIM_THRESHOLD else '⚠ 겹침'}")
 
-                total = len(rows) - bound_n
-                ok = distinct >= min(MIN_DISTINCT_AXES, total)
-                tag = "" if declared else "  (card_binding 미선언 — 폴백 적용)"
-                lines.append(f"  카드 {card}: {pid_a} ↔ {pid_b}{tag}")
-                lines += rows
-                lines.append(
-                    f"      → 인물 축 {total}개 중 {distinct}개 다름 "
-                    f"{'OK' if ok else f'⚠ {MIN_DISTINCT_AXES}개 이상 달라야 한다'}"
-                )
+        total = len(rows) - bound_n
+        ok = distinct >= min(MIN_DISTINCT_AXES, total)
+        tag = "" if declared else "  (card_binding 미선언 — 폴백 적용)"
+        lines.append(f"  {pa} ↔ {pb}  공유 카드 {','.join(shared)}{tag}")
+        lines += rows
+        lines.append(
+            f"      → 인물 축 {total}개 중 {distinct}개 다름 "
+            f"{'OK' if ok else f'⚠ {MIN_DISTINCT_AXES}개 이상 달라야 한다'}"
+        )
     return lines
 
 
@@ -401,12 +471,14 @@ def validate(persona: dict) -> list[Issue]:
         err("card_binding", "객체여야 한다 — {\"S13\": [\"글길이\"], ...}")
     else:
         for card, axes in cb.items():
+            if card == FREE_AXIS_KEY:
+                continue
             if card not in refs:
                 err(f"card_binding.{card}",
                     f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
             if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
                 err(f"card_binding.{card}", "문자열 배열이어야 한다")
-        if len(refs) > 1 and len(cb) < 2:
+        if len(refs) > 1 and len([k for k in cb if k != FREE_AXIS_KEY]) < 2:
             warn("card_binding",
                  f"카드를 {len(refs)}장 참조하는데 {len(cb)}장에만 축을 배정했다. "
                  "축마다 주 카드를 정하지 않으면 카드를 섞은 인물이 된다")
