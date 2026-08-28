@@ -1,0 +1,175 @@
+{
+  "id": "B05",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "인천 개항장 필름 스냅 사진가 (52세 남성)",
+  "persona_type": "50대 초반 남성 · 인천 구도심 골목길 필름 카메라 관찰기 · 압축된 단문체",
+  "card_ref": [
+    "S12"
+  ],
+  "account": {
+    "blog_id": "incheon_film_walk",
+    "nickname": "골목산책자",
+    "profile_intro": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.",
+    "joined": "2016-10",
+    "typical_active_hours": "토요일 이른 아침, 일요일 저녁"
+  },
+  "voice": {
+    "종결어미": "~한다/~했다 평서형과 체언 종결 ('오랜 골목', '작은 간판')을 번갈아 씀",
+    "이모지": "가운뎃점(·)과 홑따옴표(' ')만 절제하여 사용. 그림 이모티콘 일절 없음",
+    "문장길이": "평균 15자. 최소 4자 ~ 최대 28자. 극도로 압축된 짧은 호흡",
+    "줄바꿈": "모든 문장마다 줄바꿈. 한 행에 한 문장씩만 적는 시적 줄바꿈",
+    "오타율": "오타 0건. 고어투나 예스러운 어휘('어스름', '어귀', '해질녘') 구사",
+    "말버릇": "'그저'로 문장을 시작. 글 말미는 항상 명사형 단어로 매듭",
+    "제목": "2~6자 극단적 압축 명사 ('골목', '어스름', '필름 한 롤', '그늘 아래')"
+  },
+  "noise_topics": [
+    "수동 필름 카메라 기계식 셔터음",
+    "현상소에서 찾아온 흑백 밀착 인화",
+    "오래된 적벽돌 담벼락의 질감",
+    "해질녘 항구 부둣가 바람",
+    "단골 시계 수리점 쇼윈도",
+    "빛바랜 옛 간판 글씨체"
+  ],
+  "ground_truth": {
+    "age": 52,
+    "sex": "M",
+    "location": "인천광역시 중구 신포동",
+    "occupation": "다큐멘터리 사진가 겸 현상소 운영",
+    "family": "기혼, 자녀 2명(성인·군복무)",
+    "commute": "도보",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰둘",
+      "52",
+      "50대 초반"
+    ],
+    "sex": [
+      "아내",
+      "아들",
+      "군대"
+    ],
+    "location": [
+      "신포동",
+      "개항장",
+      "동인천",
+      "차이나타운",
+      "중구"
+    ],
+    "occupation": [
+      "현상소",
+      "필름",
+      "암실",
+      "다큐멘터리",
+      "인화",
+      "현상액"
+    ],
+    "family": [
+      "아내",
+      "큰놈",
+      "작은놈",
+      "군복무"
+    ],
+    "commute": [
+      "도보",
+      "걸어서",
+      "슬리퍼",
+      "골목길"
+    ],
+    "income": [
+      "필름값",
+      "인화료",
+      "수리비"
+    ]
+  },
+  "post_plan": {
+    "total": 20,
+    "noise": 12,
+    "ambient": 4,
+    "clue": 3,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 80.0% — S12 단독 고노이즈 앵커"
+  },
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b06",
+      "b11",
+      "b16"
+    ]
+  },
+  "clue_plan": [
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "note": "프로필 소개란에 거주지 동(신포동) 명시 (본문 밖 단서 §9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "body",
+      "clue": "쉰둘 나이에 무거운 기계식 수동 카메라를 메고 골목을 걷는다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "나이(쉰둘) 직접 언급",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "clue": "흑백 필름 수동 현상소 운영 15년 차인데 신포시장 집에서 도보 5분 거리라 다행이다",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "note": "직업(현상소 운영) 및 경력 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "photo_caption:0",
+      "clue": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "통근 수단(도보) 및 거리 캡션 노출 (본문 밖 단서 §9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "군 복무 중인 작은아들이 첫 휴가 나와서 흑백 사진 한 장 남겨줬다",
+      "attr": "family",
+      "level": "explicit",
+      "subject": "self",
+      "note": "가족 관계(군 복무 중인 아들) 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "photo_caption:0",
+      "clue": "필름 한 롤 가격이 또 올라서 현상소 유지비가 빠듯하다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "소득 및 운영비 단서 (본문 밖 캡션)",
+      "ambiguous": true
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "친한 선배가 군산 구도심에 사진 갤러리 카페를냈다고 해서 다녀왔다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "note": "⚠️ 함정. 타인(선배)의 갤러리 위치(군산) 언급. 본인 거주지 아님",
+      "ambiguous": false
+    }
+  ]
+}

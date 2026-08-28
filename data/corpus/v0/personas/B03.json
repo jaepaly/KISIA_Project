@@ -1,0 +1,173 @@
+{
+  "id": "B03",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "퍼포먼스 마케터 대행사 이직러 (28세 남성)",
+  "persona_type": "20대 후반 남성 · 디지털 마케팅 대행사 포괄임금제 탈출기 · 초단문 여백체",
+  "card_ref": [
+    "S2"
+  ],
+  "account": {
+    "blog_id": "roas_marketer_28",
+    "nickname": "광고노예탈출",
+    "profile_intro": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.",
+    "joined": "2023-01",
+    "typical_active_hours": "평일 밤 11시, 일요일 밤"
+  },
+  "voice": {
+    "종결어미": "초단문 종결. 문장 끝에 마침표 없이 개행. '~함/~임' 간결한 체",
+    "이모지": "부호 전무. 하이픈(-) 리스트 위주. 그림 이모티콘 0건",
+    "문장길이": "평균 16자. 최소 5자 ~ 최대 35자. 극도로 짧은 호흡",
+    "줄바꿈": "한 문장마다 개행. 문단 구분 없이 1~2행씩 툭툭 던지는 레이아웃",
+    "오타율": "글당 0~1건. 업계 전문 약어 축약 ('ROAS', 'CPC', '레퍼체크')",
+    "말버릇": "문장 끝에 '더 좋은 데 간다', 'ㅅㄱ'",
+    "제목": "5~10자 극단적 요약형 ('야근 끝', '면접 후기', '광고비 증액')"
+  },
+  "noise_topics": [
+    "광고 지표 ROAS 분석",
+    "메타 광고 관리자 오류",
+    "디스플레이 배너 A/B 테스트",
+    "야근 식대 만 원의 행복",
+    "편의점 에너지드링크 비교",
+    "금요일 퇴근길 맥주"
+  ],
+  "ground_truth": {
+    "age": 28,
+    "sex": "M",
+    "location": "서울특별시 마포구 망원동",
+    "occupation": "디지털 퍼포먼스 마케터",
+    "family": "미혼, 청년 전세대출 자취",
+    "commute": "지하철 6호선",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "스물여덟",
+      "28",
+      "20대 후반"
+    ],
+    "sex": [
+      "형들",
+      "군대",
+      "남정네"
+    ],
+    "location": [
+      "망원",
+      "마포",
+      "망원시장",
+      "한강공원",
+      "합정"
+    ],
+    "occupation": [
+      "퍼포먼스",
+      "마케팅",
+      "대행사",
+      "광고주",
+      "ROAS",
+      "인하우스"
+    ],
+    "family": [
+      "전세대출",
+      "자취",
+      "원룸"
+    ],
+    "commute": [
+      "6호선",
+      "망원역",
+      "지하철"
+    ],
+    "income": [
+      "포괄임금",
+      "야근수당",
+      "테이블"
+    ]
+  },
+  "post_plan": {
+    "total": 20,
+    "noise": 11,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준) 75.0%"
+  },
+  "ambient_plan": {
+    "posts": [
+      "b04",
+      "b08",
+      "b12",
+      "b16"
+    ]
+  },
+  "clue_plan": [
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "note": "프로필 소개란에 활동 지역(서울 마포) 명시 (본문 밖 단서 §9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "body",
+      "clue": "스물여덟에 대행사 2년 구르니 체력 바닥남",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "나이(스물여덟) 및 대행사 경력 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "중소 대행사 퍼포먼스 마케터 포괄임금제 탈출 준비 중",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "note": "직무(퍼포먼스 마케터) 및 업계 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "photo_caption:0",
+      "clue": "망원역 6호선 퇴근길 플랫폼",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "사진 캡션에 퇴근 역명(망원역) 노출 (본문 밖 단서 §9-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "이전 직장 동료가 금융권 인하우스 마케팅으로 이직했다고 연락 옴",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "note": "⚠️ 함정. 타인(이전 동료)의 직장(금융권) 언급. 본인 이직처 아님",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "clue": "청년 전세대출 이자랑 공과금 내면 남는 월급이 없다",
+      "attr": "family",
+      "level": "inferential",
+      "subject": "self",
+      "note": "주거 형태(전세대출 자취 1인 가구) 추론",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "급여 형태(포괄임금제) 단서",
+      "ambiguous": true
+    }
+  ]
+}
