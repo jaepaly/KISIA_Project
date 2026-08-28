@@ -1,0 +1,181 @@
+{
+  "id": "A08",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "재수생 (10대 후반 여성)",
+  "persona_type": "10대 후반 여성 · 재수 생활 기록 + 소비 후기",
+  "card_ref": [
+    "S18"
+  ],
+  "card_binding": {
+    "S18": [
+      "종결어미",
+      "글길이"
+    ],
+    "—": [
+      "문장길이",
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "one_more_yr",
+    "nickname": "한번더",
+    "profile_intro": "올해는 다를 거라고",
+    "joined": "2025-02",
+    "typical_active_hours": "새벽 1시 이후"
+  },
+  "voice": {
+    "종결어미": "인터넷 구어 애교체. 본인 일을 '~했다네요'로 옮기는 3인칭 전달체를 섞음",
+    "글길이": "평균 400자. 사진마다 2~4행",
+    "문장길이": "평균 18자",
+    "이모지": "'ㅠ'를 글당 6회",
+    "줄바꿈": "조사 단위. 한 행 3~6자",
+    "오타율": "글당 5건. 음절 삽입 위주",
+    "말버릇": "'하 진짜'로 문장을 시작. 빈도는 3편에 1회",
+    "제목": "문장형 12~20자"
+  },
+  "noise_topics": [
+    "떡볶이 얘기",
+    "인형뽑기 실패담",
+    "새벽에 깬 이야기",
+    "카페 자리 못 잡은 날",
+    "핸드크림 다 쓴 이야기",
+    "지하철 놓친 일",
+    "머리핀 잃어버린 이야기",
+    "손이 트는 날씨",
+    "필통이 무거운 이야기",
+    "충전기 빌린 날",
+    "간식 나눠 먹은 이야기",
+    "밤에 잠 안 오는 일"
+  ],
+  "ground_truth": {
+    "age": 19,
+    "sex": "F",
+    "location": "인천광역시 부평구 부평동",
+    "occupation": "학생",
+    "family": "장녀, 부모와 거주",
+    "commute": "지하철",
+    "income": "중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "19",
+      "10대",
+      "하기",
+      "올해"
+    ],
+    "sex": [],
+    "location": [
+      "부평구",
+      "부평동",
+      "인천",
+      "도서관",
+      "제일"
+    ],
+    "occupation": [
+      "학생"
+    ],
+    "family": [
+      "장녀",
+      "부모",
+      "거주",
+      "동생",
+      "학원비"
+    ],
+    "commute": [
+      "지하철"
+    ],
+    "income": []
+  },
+  "post_plan": {
+    "total": 24,
+    "noise": 15,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b05",
+      "text_id": "body",
+      "clue": "한 번 더 하기로 했다",
+      "attr": "age",
+      "level": "implicit",
+      "subject": "self",
+      "note": "재수 → 연령 좁힘"
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "지하철 두 번 갈아탄다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": ""
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "동생 학원비도 나가니까",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "income 도 동시 노출"
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "집 앞 도서관이 제일 편하다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "관계어 + 시설"
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "clue": "친구가 부천 살아서 중간에서 봤다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명"
+    },
+    {
+      "post": "b18",
+      "text_id": "photo_caption:0",
+      "clue": "집 앞 도서관에서",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "캡션 단서"
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "올해는 다를 거라고 믿는 중",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "note": "프로필 단서"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b04",
+      "b08",
+      "b12",
+      "b20"
+    ],
+    "design": "생활권 글의 지역 분포를 집계하면 거주 권역이 드러난다",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S18 한 장을 참조한다. 종결어미·글길이는 카드 축이고 나머지 6축은 인물이 정했다 — 같은 카드에서 5명을 뽑기 때문이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}
