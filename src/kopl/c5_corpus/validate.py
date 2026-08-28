@@ -463,10 +463,13 @@ def validate(persona: dict) -> list[Issue]:
     cb = persona.get("card_binding")
     refs = persona.get("card_ref", []) or []
     if cb is None:
-        if refs:
+        # 카드가 한 장이면 바인딩할 것이 없다 — 「첫 카드가 이긴다」가 곧 전부다.
+        # 여기서 경고하면 단일 카드 인물 전원이 걸려 진짜 미배정 경고가 묻힌다.
+        if len(refs) > 1:
             warn("card_binding",
-                 "어느 카드에서 어느 축을 물려받았는지 선언되지 않았다. "
-                 "카드를 공유하는 인물끼리 대조할 때 폴백 규칙이 적용된다")
+                 f"카드를 {len(refs)}장 참조하는데 어느 카드에서 어느 축을 물려받았는지 "
+                 "선언되지 않았다. 카드를 공유하는 인물끼리 대조할 때 폴백 규칙"
+                 "(card_ref 첫 카드가 이긴다)이 적용된다")
     elif not isinstance(cb, dict):
         err("card_binding", "객체여야 한다 — {\"S13\": [\"글길이\"], ...}")
     else:
@@ -478,10 +481,18 @@ def validate(persona: dict) -> list[Issue]:
                     f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
             if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
                 err(f"card_binding.{card}", "문자열 배열이어야 한다")
-        if len(refs) > 1 and len([k for k in cb if k != FREE_AXIS_KEY]) < 2:
-            warn("card_binding",
-                 f"카드를 {len(refs)}장 참조하는데 {len(cb)}장에만 축을 배정했다. "
-                 "축마다 주 카드를 정하지 않으면 카드를 섞은 인물이 된다")
+        # 참조만 하고 축을 하나도 안 물려받은 카드를 찾는다.
+        # 첫 카드는 폴백으로 나머지 축을 전부 가져가므로 유휴가 아니다.
+        # FREE_AXIS_KEY 는 카드가 아니므로 세지 않는다 — 세면 "2장 참조인데
+        # 2장에만 배정했다" 같은 모순된 문구가 나온다.
+        if len(refs) > 1:
+            bound = {k for k in cb if k != FREE_AXIS_KEY}
+            idle = [c for c in refs[1:] if c not in bound]
+            if idle:
+                warn("card_binding",
+                     f"{', '.join(idle)} 을(를) card_ref 에 두었는데 물려받은 축이 없다. "
+                     f"폴백으로 첫 카드({refs[0]})가 나머지를 전부 가져간다 — "
+                     "참조만 하고 안 쓸 거면 card_ref 에서 빼는 편이 낫다")
 
     # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
     topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")
