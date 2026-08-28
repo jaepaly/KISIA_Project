@@ -71,13 +71,43 @@ jobs:
 
           # 어느 리마인더인가
           case "${CRON:-}" in
-            "0 4 * * 1")  KIND=mon ;;
-            "0 10 * * 2") KIND=tue ;;
-            "0 9 * * 3")  KIND=wed ;;
-            "0 10 * * 4") KIND=thu ;;
-            *)            KIND="${KIND_IN:-wed}" ;;
+            "0 4 * * 1")  KIND=mon; SDOW=1; SHOUR=4  ;;
+            "0 10 * * 2") KIND=tue; SDOW=2; SHOUR=10 ;;
+            "0 9 * * 3")  KIND=wed; SDOW=3; SHOUR=9  ;;
+            "0 10 * * 4") KIND=thu; SDOW=4; SHOUR=10 ;;
+            *)            KIND="${KIND_IN:-wed}"; SDOW=""; SHOUR="" ;;
           esac
           echo "kind=$KIND"
+
+          # ── 지연 감지 ─────────────────────────────────────────
+          #  GitHub 의 schedule 은 best-effort 다. 큐가 밀리면 몇 시간씩
+          #  늦게 돈다. 실측 2026-08-27 — 목 19:00 KST 예정이 10.1시간
+          #  늦어 금 05:07 KST 에 도착했다. 그때 본문의 「오늘 20:00」은
+          #  거짓말이 된다 — 이미 끝난 일정을 오늘 일로 알린다.
+          #  cron 계산 자체는 맞다(KST = UTC+9). 문제는 발송 시각이다.
+          WHEN="오늘"; LATE=""
+          if [ -n "${SDOW:-}" ]; then
+            now_s=$(date -u +%s); sched_s=""
+            for i in 0 1 2 3 4 5 6 7; do
+              c=$(( now_s - i * 86400 ))
+              [ "$(date -u -d "@$c" +%u)" = "$SDOW" ] || continue
+              s=$(date -u -d "$(date -u -d "@$c" +%Y-%m-%d) $SHOUR:00:00" +%s)
+              if [ "$s" -le "$now_s" ]; then sched_s=$s; break; fi
+            done
+            if [ -n "$sched_s" ]; then
+              mins=$(( (now_s - sched_s) / 60 ))
+              echo "지연 ${mins}분"
+              if [ "$mins" -gt 90 ]; then
+                sk=$(( sched_s + 32400 ))
+                case "$(date -u -d "@$sk" +%u)" in
+                  1) w=월 ;; 2) w=화 ;; 3) w=수 ;; 4) w=목 ;;
+                  5) w=금 ;; 6) w=토 ;; 7) w=일 ;;
+                esac
+                WHEN="$(date -u -d "@$sk" "+%-m월 %-d일")($w)"
+                LATE=$(printf "⚠️ 예정보다 **%d시간 %d분** 늦게 도착했습니다 — GitHub 스케줄 지연입니다.\n아래 **%s** 는 도착일이 아니라 **예정일**입니다." $(( mins / 60 )) $(( mins % 60 )) "$WHEN")
+              fi
+            fi
+          fi
 
           # ── 멘션 만들기. ID 미등록자는 이름만 ─────────────────
           mention() {
@@ -219,6 +249,11 @@ jobs:
                      "$now" "$contracts" "$blk_r" "$blk_a")
               ;;
           esac
+
+          # 지연이면 「오늘」이 거짓말이 된다. 예정일로 바꾸고 경고를 앞에 붙인다.
+          # status(수동 현황판)는 SDOW 가 비어 LATE 도 비므로 그대로 나간다.
+          # $(...) 는 꼬리 개행을 잘라낸다. 빈 줄은 여기서 넣는다.
+          if [ -n "$LATE" ]; then body="$LATE"$'\n\n'"${body//오늘/$WHEN}"; fi
 
           payload=$(jq -nc --arg c "$body" '{content:$c, allowed_mentions:{parse:["users"]}}')
           code=$(curl -sS -o /tmp/r -w '%{http_code}' -H 'Content-Type: application/json' \
