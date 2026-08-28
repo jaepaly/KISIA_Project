@@ -106,14 +106,19 @@ def test_multi_channel_post() -> None:
 
 
 def test_profile_bio_separation() -> None:
-    """사용자 프로필(profile_bio) 단독 탐지 및 span_id (<persona_id>_bio_sNN) 검증."""
+    """사용자 프로필(profile_bio) 단독 탐지 및 record_type="profile", persona_id 검증."""
     from kopl.c1_span import predict_profile
 
     persona_id = "D05"
     bio_text = "성수동 거주하는 30대 카페 매니저입니다."
     res = predict_profile(persona_id, bio_text)
 
-    # 사용자 레코드로서 스키마 검증
+    # 1. record_type 및 persona_id 무결성 검증
+    assert res.get("record_type") == "profile", f"record_type 불일치: {res.get('record_type')} != 'profile'"
+    assert res.get("persona_id") == persona_id, f"persona_id 불일치: {res.get('persona_id')} != '{persona_id}'"
+    assert "post_id" not in res, "profile 레코드에 post_id가 존재하면 안 됩니다 (if/then 분기)"
+
+    # 2. 사용자 레코드로서 스키마 검증
     errors = validate_span_output(res, is_post=False)
     assert not errors, f"프로필 검증 오류: {errors}"
 
@@ -126,11 +131,34 @@ def test_profile_bio_separation() -> None:
         assert sp["span_id"] == expected_id, f"span_id 형식 오류: {sp['span_id']} != {expected_id}"
         assert sp["text_id"] == "profile_bio"
 
-    # 만약 글 레코드 검증기(is_post=True)로 돌리면 규칙 10으로 차단되는지 확인
-    block_errors = validate_span_output(res, is_post=True)
-    assert any("규칙10" in err for err in block_errors), "글 검증기에서 profile_bio가 차단되지 않음"
+    # 3. JSON Schema 검증 (파일 존재 시)
+    schema_path = Path("docs/contracts/span.schema.json")
+    if schema_path.exists():
+        try:
+            from jsonschema import Draft202012Validator
+            schema = json.loads(schema_path.read_text(encoding="utf-8"))
+            validator = Draft202012Validator(schema)
+            schema_errors = list(validator.iter_errors(res))
+            assert not schema_errors, f"span.schema.json profile 계약 검증 실패: {schema_errors}"
+        except ImportError:
+            pass
 
-    print("[PASS] 4. 프로필(profile_bio) 사용자 단위 독립 탐지 및 <persona_id>_bio_sNN 검증 통과")
+    # 4. 상호 배제 검증 (persona_id + post_id 동시 존재 시 차단)
+    dual_record = dict(res)
+    dual_record["post_id"] = "invalid_extra_post_id"
+    dual_errors = validate_span_output(dual_record, is_post=False)
+    assert any("상호 배제" in err for err in dual_errors), "profile에 post_id가 동시 존재할 때 차단되지 않음"
+    if schema_path.exists():
+        try:
+            from jsonschema import Draft202012Validator
+            schema = json.loads(schema_path.read_text(encoding="utf-8"))
+            validator = Draft202012Validator(schema)
+            dual_schema_errors = list(validator.iter_errors(dual_record))
+            assert len(dual_schema_errors) > 0, "JSON Schema가 post_id + persona_id 동시 존재를 차단하지 못함"
+        except ImportError:
+            pass
+
+    print("[PASS] 4. 프로필(profile_bio) record_type='profile' 및 상호 배제(not required) 검증 통과")
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ from .detector import SpanDetector, decode
 from .mock import MockSpanDetector, predict_mock, predict_profile_mock
 from .schema import (
     ALLOWED_LEVELS,
+    ALLOWED_RECORD_TYPES,
     ALLOWED_SUBJECTS,
     ALLOWED_TYPES,
     SCHEMA_VERSION,
@@ -28,6 +29,7 @@ from .schema import (
 
 __all__ = [
     "SCHEMA_VERSION",
+    "ALLOWED_RECORD_TYPES",
     "ALLOWED_TYPES",
     "ALLOWED_LEVELS",
     "ALLOWED_SUBJECTS",
