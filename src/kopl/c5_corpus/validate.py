@@ -481,6 +481,26 @@ def validate(persona: dict) -> list[Issue]:
                     f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
             if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
                 err(f"card_binding.{card}", "문자열 배열이어야 한다")
+
+        # 바인딩한 축 이름이 인물 voice 키와 맞는지 본다.
+        # 안 맞으면 그 바인딩은 조용히 아무 일도 안 한다 — 축을 못 찾으니
+        # 폴백(첫 카드)이 그 축을 가져간다. 작성자는 배정했다고 믿는다.
+        #
+        # 실측 2026-08-28 (#95): 카드 축은 「오타」인데 인물 키는 「오타율」이라
+        # {"S8": ["오타"]} 가 통째로 무시됐다. 축 이름이 카드 쪽과 인물 쪽
+        # 두 벌이라 생기는 문제다(#78 에서 지적, W3 정리 예정).
+        vkeys = set((persona.get("voice") or {}).keys())
+        for card, axes in cb.items():
+            if not isinstance(axes, list):
+                continue
+            for ax in axes:
+                if not isinstance(ax, str) or ax in vkeys:
+                    continue
+                near = [k for k in vkeys if k.startswith(ax) or ax.startswith(k)]
+                hint = f" (「{near[0]}」 인 듯하다)" if near else ""
+                warn(f"card_binding.{card}",
+                     f"「{ax}」 는 이 인물의 voice 에 없는 축이다. "
+                     f"이 바인딩은 아무 일도 하지 않고 폴백이 적용된다.{hint}")
         # 참조만 하고 축을 하나도 안 물려받은 카드를 찾는다.
         # 첫 카드는 폴백으로 나머지 축을 전부 가져가므로 유휴가 아니다.
         # FREE_AXIS_KEY 는 카드가 아니므로 세지 않는다 — 세면 "2장 참조인데
