@@ -474,10 +474,13 @@ def validate(persona: dict) -> list[Issue]:
     cb = persona.get("card_binding")
     refs = persona.get("card_ref", []) or []
     if cb is None:
-        if refs:
+        # 카드가 한 장이면 바인딩할 것이 없다 — 「첫 카드가 이긴다」가 곧 전부다.
+        # 여기서 경고하면 단일 카드 인물 전원이 걸려 진짜 미배정 경고가 묻힌다.
+        if len(refs) > 1:
             warn("card_binding",
-                 "어느 카드에서 어느 축을 물려받았는지 선언되지 않았다. "
-                 "카드를 공유하는 인물끼리 대조할 때 폴백 규칙이 적용된다")
+                 f"카드를 {len(refs)}장 참조하는데 어느 카드에서 어느 축을 물려받았는지 "
+                 "선언되지 않았다. 카드를 공유하는 인물끼리 대조할 때 폴백 규칙"
+                 "(card_ref 첫 카드가 이긴다)이 적용된다")
     elif not isinstance(cb, dict):
         err("card_binding", "객체여야 한다 — {\"S13\": [\"글길이\"], ...}")
     else:
@@ -489,10 +492,38 @@ def validate(persona: dict) -> list[Issue]:
                     f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
             if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
                 err(f"card_binding.{card}", "문자열 배열이어야 한다")
-        if len(refs) > 1 and len([k for k in cb if k != FREE_AXIS_KEY]) < 2:
-            warn("card_binding",
-                 f"카드를 {len(refs)}장 참조하는데 {len(cb)}장에만 축을 배정했다. "
-                 "축마다 주 카드를 정하지 않으면 카드를 섞은 인물이 된다")
+
+        # 바인딩한 축 이름이 인물 voice 키와 맞는지 본다.
+        # 안 맞으면 그 바인딩은 조용히 아무 일도 안 한다 — 축을 못 찾으니
+        # 폴백(첫 카드)이 그 축을 가져간다. 작성자는 배정했다고 믿는다.
+        #
+        # 실측 2026-08-28 (#95): 카드 축은 「오타」인데 인물 키는 「오타율」이라
+        # {"S8": ["오타"]} 가 통째로 무시됐다. 축 이름이 카드 쪽과 인물 쪽
+        # 두 벌이라 생기는 문제다(#78 에서 지적, W3 정리 예정).
+        vkeys = set((persona.get("voice") or {}).keys())
+        for card, axes in cb.items():
+            if not isinstance(axes, list):
+                continue
+            for ax in axes:
+                if not isinstance(ax, str) or ax in vkeys:
+                    continue
+                near = [k for k in vkeys if k.startswith(ax) or ax.startswith(k)]
+                hint = f" (「{near[0]}」 인 듯하다)" if near else ""
+                warn(f"card_binding.{card}",
+                     f"「{ax}」 는 이 인물의 voice 에 없는 축이다. "
+                     f"이 바인딩은 아무 일도 하지 않고 폴백이 적용된다.{hint}")
+        # 참조만 하고 축을 하나도 안 물려받은 카드를 찾는다.
+        # 첫 카드는 폴백으로 나머지 축을 전부 가져가므로 유휴가 아니다.
+        # FREE_AXIS_KEY 는 카드가 아니므로 세지 않는다 — 세면 "2장 참조인데
+        # 2장에만 배정했다" 같은 모순된 문구가 나온다.
+        if len(refs) > 1:
+            bound = {k for k in cb if k != FREE_AXIS_KEY}
+            idle = [c for c in refs[1:] if c not in bound]
+            if idle:
+                warn("card_binding",
+                     f"{', '.join(idle)} 을(를) card_ref 에 두었는데 물려받은 축이 없다. "
+                     f"폴백으로 첫 카드({refs[0]})가 나머지를 전부 가져간다 — "
+                     "참조만 하고 안 쓸 거면 card_ref 에서 빼는 편이 낫다")
 
     # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
     topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")
