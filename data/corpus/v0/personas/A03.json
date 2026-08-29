@@ -1,0 +1,175 @@
+{
+  "id": "A03",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "연구직 복귀 (30대 중반 여성)",
+  "persona_type": "30대 중반 여성 · 육아휴직 복귀 서사 + 일상 관찰",
+  "card_ref": [
+    "S14"
+  ],
+  "card_binding": {
+    "S14": [
+      "종결어미",
+      "글길이",
+      "문장길이"
+    ],
+    "—": [
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "back_to_lab",
+    "nickname": "복직중",
+    "profile_intro": "돌아온 자리에서",
+    "joined": "2021-06",
+    "typical_active_hours": "아이 재운 뒤 밤 11시"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 1인칭 독백체",
+    "글길이": "평균 3000자. 한 편에 서사가 통째로 들어간다",
+    "문장길이": "평균 48자. 만연체에 가깝다",
+    "이모지": "괄호 안 혼잣말을 글당 2~3회",
+    "줄바꿈": "문단 3~4개로만 나눔",
+    "오타율": "없음",
+    "말버릇": "문단 끝에 '그랬다'. 빈도는 3편에 1회",
+    "제목": "의문형 10~15자"
+  },
+  "noise_topics": [
+    "아침에 늦잠 잔 이야기",
+    "엘리베이터에서 있었던 일",
+    "커피포트 고장",
+    "주말에 본 영화",
+    "정리하다 나온 오래된 편지",
+    "비 예보가 틀린 날",
+    "밤에 배고픈 이야기",
+    "택배 상자가 쌓인 일",
+    "산책하다 본 고양이",
+    "라면 끓이다 넘친 일",
+    "머리 자른 날",
+    "베개를 바꾼 이야기"
+  ],
+  "ground_truth": {
+    "age": 34,
+    "sex": "F",
+    "location": "대전광역시 유성구 전민동",
+    "occupation": "공공연구기관 연구원",
+    "family": "기혼, 미취학 자녀 1명",
+    "commute": "통근버스",
+    "income": "중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "34",
+      "30대",
+      "서른넷"
+    ],
+    "sex": [],
+    "location": [
+      "유성구",
+      "전민동",
+      "대전",
+      "친구",
+      "세종"
+    ],
+    "occupation": [
+      "공공연구기관",
+      "연구원",
+      "연구동"
+    ],
+    "family": [
+      "기혼",
+      "미취학",
+      "자녀",
+      "1명",
+      "어린이집"
+    ],
+    "commute": [
+      "통근버스",
+      "첫차",
+      "일곱"
+    ],
+    "income": []
+  },
+  "post_plan": {
+    "total": 16,
+    "noise": 9,
+    "ambient": 3,
+    "clue": 3,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b05",
+      "text_id": "body",
+      "clue": "서른넷에 복직했다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "clue": "통근버스 첫차가 일곱 시",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "노선 대신 형태로"
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "애 어린이집 보내고 나서",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "ambiguous": true,
+      "note": "설계 의도는 본인 자녀. 문장에 귀속 표지가 없다 → 기대 라벨 unknown"
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "clue": "친구가 세종 살아서 중간에서 봤다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명"
+    },
+    {
+      "post": "b05",
+      "text_id": "photo_caption:0",
+      "clue": "연구동 앞에서",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "캡션 단서"
+    },
+    {
+      "post": "b08",
+      "text_id": "title",
+      "clue": "첫차를 놓치면 하루가 밀린다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "제목 단서"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b07",
+      "b13"
+    ],
+    "design": "생활권 글의 지역 분포를 집계하면 거주 권역이 드러난다",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S14 한 장을 참조한다. 종결어미·글길이는 카드 축이고 나머지 6축은 인물이 정했다 — 같은 카드에서 5명을 뽑기 때문이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}
