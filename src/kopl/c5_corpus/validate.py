@@ -212,6 +212,10 @@ def card_check(personas: list[tuple[str, dict]], card_axes: dict) -> list[str]:
             card = gov.get(ax, refs[0])          # 미지정이면 첫 카드
             target = (card_axes.get(card) or {}).get(ax)
             if target is None:
+                if ax in gov:
+                    # 명시적으로 묶었는데 그 카드에 그 축이 없다.
+                    # 카드가 안 규정했거나, 축 이름이 카드 블록과 다르거나.
+                    rows.append(f"      ?   {ax:10} {card:14} 그 카드에 이 축이 없다 — 대조 불가")
                 continue                          # 카드가 그 축을 규정하지 않았다
             if _numeric_axis(target):
                 pv = _as_number(val, prefer_avg=True)
@@ -287,6 +291,13 @@ def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
                 is_bound = any(t in k for t in FALLBACK_CARD_BOUND)
             if is_bound:
                 bound_n += 1
+                # 수치 축은 숫자로 본다. 둘 다 같은 카드를 따르되 허용 범위 안의
+                # 다른 지점에 있을 수 있다 (카드 40자 → 인물 32자·48자)
+                # 카드 대비 ±25% 를 각자 허용하므로 둘 사이는 최대 40% 벌어질 수 있다.
+                # 카드와의 일치는 card_check 가 이미 본다. 여기서는 같은 밴드인지만 본다.
+                na, nb = _as_number(va[k], True), _as_number(vb[k], True)
+                if na and nb:
+                    sim = 1.0 if abs(na - nb) / max(na, nb) <= 0.45 else 0.0
                 if sim < VOICE_SIM_THRESHOLD:
                     rows.append(f"      {k:12} {sim:.2f}  ⚠ 같은 카드에 묶었는데 값이 다르다")
                 else:
