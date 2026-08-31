@@ -1,0 +1,183 @@
+{
+  "id": "D22",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "성산 감귤밭 (69세 여성 · 방언 섞임)",
+  "persona_type": "60대 후반 여성 · 제주 시 지역 읍 거주 · 감귤 재배 · 방언 어미가 잦다",
+  "card_ref": [
+    "S15"
+  ],
+  "account": {
+    "blog_id": "seongsan_gam",
+    "nickname": "성산할망",
+    "profile_intro": "감귤 키웁니다",
+    "joined": "2020-10",
+    "typical_active_hours": "17:00~19:00"
+  },
+  "voice": {
+    "종결어미": "~다 평서형에 방언 어미(~수다 / ~쿠과)가 회당 3~5회 혼용된다",
+    "문장길이": "평균 21자",
+    "줄바꿈": "여백 중심",
+    "이모지": "회당 1회 이하",
+    "오타율": "보통. 방언 표기 흔들림 회당 2회",
+    "제목": "완결 문장",
+    "말버릇": "「경헌디」가 회당 1~2회",
+    "소재": "감귤·바람·이웃·시세"
+  },
+  "ground_truth": {
+    "age": 69,
+    "sex": "F",
+    "location": "제주특별자치도 서귀포시 성산읍",
+    "occupation": "감귤 재배",
+    "family": "배우자 사별, 아들 1명",
+    "commute": "경운기·도보",
+    "income": "작황 변동. 중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "예순아홉",
+      "칠순"
+    ],
+    "sex": [
+      "할망",
+      "며느리"
+    ],
+    "location": [
+      "성산",
+      "서귀포",
+      "밭",
+      "오름"
+    ],
+    "occupation": [
+      "감귤",
+      "수확",
+      "비상품"
+    ],
+    "family": [
+      "아들",
+      "며느리",
+      "손지"
+    ],
+    "commute": [
+      "경운기"
+    ],
+    "income": [
+      "시세",
+      "비상품",
+      "선과"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 3,
+    "trap": 2,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. S15 는 노이즈 축이 「75~85%」다. ⚠️ 함정이 둘이라(b19 ⑥ · b25 ①) trap=2 다"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "비상품 골라내는 게 제일 손이 가는 일이우다",
+      "note": "JOB. 「비상품」은 감귤 업계 용어라 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "며느리가 할망 소리 하지 말랜 허는디 나는 그게 편허우다",
+      "note": "⭐ 복합 자기지칭 — 「할망」이 성별·연령을 한 어절에 담는다(#116 ② 통로). D09「홀아비」·D17「영감」의 여성 판. 방언 어휘라 표면형이 코퍼스에서 유일하다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "시세가 내려가면 선과장에 넘기는 값이 반 토막이우다",
+      "note": "INCOME. 업계 유통 구조로 규모를 드러낸다",
+      "ambiguous": false
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "예전엔 한림 살았수다. 바람 방향이 아주 달라마씀",
+      "note": "⚠️ 함정 ⑥ 과거 거주 (§4-4-1 B 계열). 한림읍은 제주시, 성산읍은 서귀포시라 다른 시군구다. 시제 표지는 「예전엔」·「살았수다」. D13·D20 과 같은 계열이되 문형이 셋 다 다르다",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "아들이 표선 쪽 농협으로 발령 나서 요샌 자주 못 옵니다",
+      "note": "⚠️ 함정 · occupation 축 겸 지명 축 (§4-4-1 A 계열 ①). 아들의 근무지이지 본인 밭이 아니다. 표선면은 성산읍과 다른 읍면이다. 문형은 B 카테고리 1",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "감귤 키웁니다",
+      "note": "프로필 단서. 업종이 프로필에 그대로 적힌다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b07",
+      "b16",
+      "b27"
+    ],
+    "design": "읍내 농협·선과장·오름 산책로. 선과장은 감귤 산지에만 있는 시설이라 LOC_FACILITY 만으로 시도까지 좁혀진다 — 지역 고유 시설 표본",
+    "ref_card": "S15(장문 · 존댓말)"
+  },
+  "design_note": {
+    "group_quota": "읍 지역과 60대를 늘린다. 제주는 2명뿐이었다",
+    "축": "방언 어미가 문체 축이자 지역 단서인 표본이다 — voice 와 clue_plan 이 겹치는 첫 사례라 B 의 스팬 경계 판정에서 「문체인가 단서인가」를 시험한다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "바람",
+    "고양이",
+    "이웃 참견",
+    "라디오",
+    "드라마",
+    "김치",
+    "경운기",
+    "비",
+    "장날",
+    "손지 전화",
+    "무릎",
+    "텃밭"
+  ],
+  "card_binding": {
+    "S15": [
+      "종결어미",
+      "문장길이",
+      "줄바꿈",
+      "노이즈"
+    ],
+    "—": [
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}
