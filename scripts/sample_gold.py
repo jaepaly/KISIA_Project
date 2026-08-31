@@ -73,9 +73,18 @@ def load_designs(d: str) -> list[dict]:
 
 
 def load_excluded(gold_dir: str) -> set[tuple[str, str]]:
-    """이미 검수 골드셋에 들어간 글. blind 와 겹치면 안 된다."""
+    """이미 검수 골드셋에 들어간 글. blind 와 겹치면 안 된다.
+
+    ⚠️ 골드 스팬 레코드에는 persona_id·post_id 가 없다.
+    span.schema.json 이 additionalProperties: false 로 8개 필드만 허용하기 때문이다.
+    label-schema §8-1 대로 **파일명에서 인물을, span_id 앞부분에서 글**을 뗀다.
+
+        data/corpus/v0/gold/S01_spans.jsonl   → 인물 S01
+        span_id "S01_b07_s02"                 → 글 b07
+    """
     out: set[tuple[str, str]] = set()
     for f in glob.glob(str(Path(gold_dir) / "*_spans.jsonl")):
+        pid = Path(f).stem.replace("_spans", "")
         for line in Path(f).read_text(encoding="utf-8-sig").splitlines():
             if not line.strip():
                 continue
@@ -83,10 +92,25 @@ def load_excluded(gold_dir: str) -> set[tuple[str, str]]:
                 r = json.loads(line)
             except Exception:  # noqa: BLE001
                 continue
-            pid, post = r.get("persona_id"), r.get("post_id")
-            if pid and post:
-                out.add((pid, post.rsplit("_", 1)[-1]))
+            sid = str(r.get("span_id", ""))
+            parts = sid.split("_")
+            # <persona>_<post>_s<NN> 에서 가운데를 뗀다. 프로필 스팬(<persona>_bio_sNN)은 글이 아니다
+            if len(parts) >= 3 and parts[-2] != "bio":
+                out.add((pid, parts[-2]))
     return out
+
+
+def load_blind(assignment: str) -> set[tuple[str, str]]:
+    """이미 뽑아둔 blind 목록. 검수 배정이 이걸 피해야 한다.
+
+    시간 순서가 blind(화~수) → 검수(수~금) 라서, 월요일에 gold/ 는 비어 있다.
+    정작 필요한 것은 반대 방향이다 — 이 함수는 검수 배정 쪽에서 쓴다.
+    """
+    f = Path(assignment)
+    if not f.is_file():
+        return set()
+    d = json.loads(f.read_text(encoding="utf-8-sig"))
+    return {(x["persona_id"], x["post"]) for x in d.get("글", [])}
 
 
 def stratified(designs: list[dict], target: int, seed: int,
@@ -106,21 +130,37 @@ def stratified(designs: list[dict], target: int, seed: int,
         if key in excluded:
             continue
         cur = by_post.get(key)
-        if cur is None or rank.get(d["level"], 9) > rank.get(cur["level"], 9):
-            by_post[key] = d
-        by_post[key].setdefault("n_clues", 0)
+        if cur is None:
+            by_post[key] = {**d, "n_clues": 0}
+        elif rank.get(d["level"], 9) > rank.get(cur["level"], 9):
+            # 더 어려운 등급이 나오면 대표를 바꾸되 누적은 살린다.
+            # dict 를 통째로 갈아치우면 n_clues 가 1 부터 다시 세어진다
+            by_post[key] = {**d, "n_clues": cur["n_clues"]}
         by_post[key]["n_clues"] += 1
 
     posts = list(by_post.values())
-    ratio = collections.Counter(p["level"] for p in posts)
-    total = sum(ratio.values())
-    if not total:
+    if not posts:
         return [], {}
+
+    # ── 5. 층 목표는 「접기 전 단서 분포」로 잡는다 ────────────────────
+    # A-data.md §5 가 층화 키를 clue_plan[].level 분포로 지정했다.
+    # 혼합 등급 글을 어려운 쪽으로 접으면 층 비율이 계약 키와 어긋난다
+    # (implicit 이 3.5%p 깎이고 explicit 이 붙었다).
+    # 목표는 단서 분포로 잡고, 뽑을 때만 대표 등급을 쓴다.
+    clue_ratio = collections.Counter(
+        d["level"] for d in designs
+        if (d["persona"], d["post"]) not in excluded)
+    clue_total = sum(clue_ratio.values())
+
+    # ── 4. --target 은 스팬 수다. 글 수로 환산한다 ────────────────────
+    # §5: "200스팬이 나올 만큼의 글 수로 환산해 뽑는다"
+    per_post = sum(p["n_clues"] for p in posts) / len(posts)
+    n_posts = round(target / per_post) if per_post else target
 
     picked, plan = [], {}
     for lv in LEVELS:
         pool = [p for p in posts if p["level"] == lv]
-        want = round(target * ratio[lv] / total)
+        want = round(n_posts * clue_ratio[lv] / clue_total) if clue_total else 0
         # 인물을 돌아가며 채운다 — 한 명에게 몰리면 blind 가 그 인물 문체만 본다
         rng.shuffle(pool)
         buckets: dict[str, list] = collections.defaultdict(list)
@@ -137,9 +177,13 @@ def stratified(designs: list[dict], target: int, seed: int,
             if i > len(pool) * 3:
                 break
         picked += take
-        plan[lv] = {"모집단": ratio[lv], "비율": round(ratio[lv] / total, 4),
-                    "목표": want, "뽑힘": len(take)}
-    return picked, plan
+        plan[lv] = {
+            "단서_비율": round(clue_ratio[lv] / clue_total, 4) if clue_total else 0,
+            "글_모집단": len(pool), "목표": want, "뽑힘": len(take),
+            "예상_스팬": sum(p["n_clues"] for p in take),
+        }
+    meta = {"글당_평균_단서": round(per_post, 3), "환산_글수": n_posts}
+    return picked, {"층": plan, "환산": meta}
 
 
 def main() -> int:
@@ -153,8 +197,15 @@ def main() -> int:
     ap.add_argument("--target", type=int, default=DEF_TARGET)
     ap.add_argument("--seed", type=int, default=DEF_SEED)
     ap.add_argument("--verify", action="store_true",
-                    help="생성된 글에 실제로 있는지 대조한다 (생성 후)")
+                    help="생성된 글에 실제로 있는지 대조만 한다. 파일을 쓰지 않는다")
     a = ap.parse_args()
+
+    import subprocess
+    try:
+        head = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                              text=True, timeout=5).stdout.strip() or None
+    except Exception:  # noqa: BLE001
+        head = None
 
     designs = load_designs(a.personas)
     if not designs:
@@ -172,19 +223,46 @@ def main() -> int:
         print(f"검수 골드셋에 이미 든 글 {len(excluded)}편 제외")
     print(f"seed {a.seed} · 목표 {a.target} 스팬\n")
 
-    print("층화 — 설계 등급 비율을 유지한다")
+    st, meta = plan["층"], plan["환산"]
+    print(f"환산 — 글당 평균 단서 {meta['글당_평균_단서']}건 "
+          f"→ {a.target}스팬 ≈ {meta['환산_글수']}편")
+    print("\n층화 — 층 목표는 접기 전 clue_plan[].level 분포로 잡는다")
     for lv in LEVELS:
-        s = plan.get(lv, {})
-        print(f"  {lv:12} 모집단 {s.get('모집단', 0):4}편 ({s.get('비율', 0):5.1%})"
-              f"  →  {s.get('뽑힘', 0):3}편")
-    print(f"  {'합계':12} {sum(s['뽑힘'] for s in plan.values()):>21}편")
+        d = st.get(lv, {})
+        print(f"  {lv:12} 단서 {d.get('단서_비율', 0):5.1%}"
+              f" · 글 모집단 {d.get('글_모집단', 0):3}편"
+              f"  →  {d.get('뽑힘', 0):3}편 (예상 {d.get('예상_스팬', 0):3}스팬)")
+    print(f"  {'합계':12} {sum(d['뽑힘'] for d in st.values()):>29}편"
+          f" (예상 {sum(d['예상_스팬'] for d in st.values())}스팬)")
 
     per = collections.Counter(p["persona"] for p in picked)
     print(f"\n인물 {len(per)}명에 분산 · 한 인물 최대 {max(per.values())}편")
 
-    est = sum(p.get("n_clues", 1) for p in picked)
-    print(f"설계 단서 기준 예상 스팬 {est}건 (목표 {a.target})")
     print("  ⚠️ 설계 단서 1건이 스팬 1개가 된다는 보장은 없다. 근사값이다")
+
+    if a.verify:
+        # 대조만 한다. C 가 작업 중일 때 목록이 바뀌면 안 된다
+        exist = Path(a.out) / "_assignment.json"
+        if exist.is_file():
+            picked_keys = {(x["persona_id"], x["post"])
+                           for x in json.loads(exist.read_text(encoding="utf-8-sig"))["글"]}
+            print(f"\n기존 배정 {len(picked_keys)}편을 대조한다 (새로 뽑지 않는다)")
+        else:
+            picked_keys = {(p["persona"], p["post"]) for p in picked}
+        have = set()
+        for f in glob.glob(str(Path(a.posts) / "*.jsonl")):
+            for line in Path(f).read_text(encoding="utf-8-sig").splitlines():
+                if line.strip():
+                    r = json.loads(line)
+                    have.add((r.get("persona_id"),
+                              str(r.get("post_id", "")).rsplit("_", 1)[-1]))
+        miss = sorted(picked_keys - have)
+        print(f"생성 확인: {len(picked_keys) - len(miss)}/{len(picked_keys)}편 존재")
+        for m in miss[:5]:
+            print(f"    ⚠️ {m[0]} {m[1]}")
+        if len(miss) > 5:
+            print(f"    … 외 {len(miss) - 5}편")
+        return 0
 
     # ── C 가 읽는 파일 — 글 번호만. 등급·속성은 담지 않는다 ──────────
     out = Path(a.out)
@@ -203,30 +281,22 @@ def main() -> int:
     # ── A 가 보관하는 층화 근거 — C 디렉터리 밖에 둔다 ────────────────
     aud = Path(a.audit)
     aud.mkdir(parents=True, exist_ok=True)
+    # ⚠️ 표본별 level·attr 을 적지 않는다.
+    # experiments/ 는 C 가 clone 하는 같은 저장소다. 「보지 마세요」는 물리적 불가능이 아니다.
+    # A-data.md §5 가 순서를 바꾼 이유가 「순환이 물리적으로 불가능해진다」이므로
+    # 층별 집계만 남긴다 — seed 와 코드와 입력 커밋이 있으면 A 가 언제든 재생성한다.
     (aud / "strata.json").write_text(json.dumps({
-        "seed": a.seed, "target": a.target,
-        "층화": plan, "인물별": dict(per),
+        "seed": a.seed, "target_spans": a.target,
+        "입력_커밋": head or "(git 정보 없음)",
+        "인물수": len({d["persona"] for d in designs}),
+        "층화": plan, "인물별_글수": dict(per),
         "제외": len(excluded),
-        "표본": sorted([{**{k: p[k] for k in ("persona", "post", "level", "attr", "text_id")}}
-                       for p in picked], key=lambda x: (x["persona"], x["post"])),
+        "주의": "표본별 등급·속성은 일부러 적지 않는다. blind 가 끝나기 전에 "
+                "이 파일이 정답지가 되면 안 된다. 재현은 seed + 입력_커밋 + 코드로 한다.",
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"\n{out / '_assignment.json'}   ← C 가 읽는다 (글 번호만)")
     print(f"{aud / 'strata.json'}   ← A 가 보관 (층화 근거)")
-
-    if a.verify:
-        have = set()
-        for f in glob.glob(str(Path(a.posts) / "*.jsonl")):
-            for line in Path(f).read_text(encoding="utf-8-sig").splitlines():
-                if line.strip():
-                    r = json.loads(line)
-                    have.add((r.get("persona_id"), r.get("post_id", "").rsplit("_", 1)[-1]))
-        miss = [p for p in picked if (p["persona"], p["post"]) not in have]
-        print(f"\n생성 확인: {len(picked) - len(miss)}/{len(picked)}편 존재")
-        if miss:
-            print(f"  ⚠️ 없는 글 {len(miss)}편 — 생성이 덜 됐거나 잘려서 저장되지 않았다")
-            for m in miss[:5]:
-                print(f"    {m['persona']} {m['post']}")
 
     print("\n커밋 해시를 리포트에 적는다 (A-data.md §5)")
     return 0
