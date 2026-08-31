@@ -31,6 +31,20 @@ LEVELS = ("explicit", "implicit", "inferential")
 SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
+# 2023 년 개편으로 폐지된 시도명. 사전(data/dict/admin)에 없어 조회가 실패한다.
+# corpus_audit 이 잡아주지만 그건 사후다. 여기서 막으면 커밋 전에 걸리고,
+# generate.py 가 ERROR 인물의 생성을 거부하므로 생성 전에도 걸린다.
+# #113·#114 로 한 번 고쳤는데 인물 조립 스크립트에 옛 이름이 남아 되돌아왔다.
+DEPRECATED_SIDO = {
+    "전라북도": "전북특별자치도",
+    "강원도": "강원특별자치도",
+    # 전남·광주 통합. 사전 정본 시도명 16개에 「전라남도」·「광주광역시」가 없다
+    # (data/dict/admin/regions.json · level=="sido"). 광주광역시는 수십 년 쓰인
+    # 이름이라 새 인물을 쓸 때 제일 손이 가기 쉽다.
+    "전라남도": "전남광주통합특별시",
+    "광주광역시": "전남광주통합특별시",
+}
+
 # label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
 # 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
 TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
@@ -52,7 +66,10 @@ FORBIDDEN_TERMS = (
     "학력", "학벌", "전공", "졸업", "학번", "수능", "편입",
     "정치", "지지율", "보수", "진보", "투표",
     "건강", "지병", "진단", "복용", "수술", "우울", "장애",
-    "아이큐", "지능", "종교", "교회", "성당", "절에",
+    # ⚠️ 「미사」는 넣지 않는다. 「미사용」(우리가 카드 얘기에 늘 쓰는 말 —
+    #    D06·D08 design_note · README · corpus-audit.md)과 하남시 미사1~3동
+    #    (data/dict/admin 정본)이 통째로 걸린다. 예외로 빼기에는 지명이 남는다.
+    "아이큐", "지능", "종교", "교회", "성당", "절에", "사찰", "예배",
 )
 
 # 노이즈 정의 B안(개별 무해 기준).
@@ -347,7 +364,7 @@ class Issue:
 #
 # ⚠️ 「보수」(정치/수리/급여)와 「관절」(일상/건강)은 일부러 넣지 않았다.
 #    실제로 뜻이 갈려서 사람이 봐야 한다 — WARN 으로 남는 게 맞다.
-FORBIDDEN_EXCEPTIONS = ("어절", "계절", "예절", "조절", "절약", "장애물")
+FORBIDDEN_EXCEPTIONS = ("어절", "계절", "예절", "조절", "절약", "명절", "장애물")
 
 
 def _scan_forbidden(text: str) -> list[str]:
@@ -385,6 +402,12 @@ def validate(persona: dict) -> list[Issue]:
                 err(f"ground_truth.{k}", f"7속성 밖의 키. 허용: {', '.join(ATTRS)}")
         if gt.get("sex") not in SEXES and "sex" in gt:
             err("ground_truth.sex", f"{gt.get('sex')!r} — M 또는 F만 허용")
+
+        loc = str(gt.get("location", "")).split()
+        if loc and loc[0] in DEPRECATED_SIDO:
+            err("ground_truth.location",
+                f"{loc[0]} 은 폐지된 시도명이다 → {DEPRECATED_SIDO[loc[0]]}. "
+                f"사전에 없어 거주지 조회가 실패한다")
         if not isinstance(gt.get("age"), int) and "age" in gt:
             warn("ground_truth.age", "정수가 아니다. C의 연령대 집계가 깨질 수 있다")
 
