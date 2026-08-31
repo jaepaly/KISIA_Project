@@ -1,0 +1,216 @@
+{
+  "id": "B07",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "정밀가공 소상공인 (48세 남성)",
+  "persona_type": "40대 후반 기혼 남성 · 광주 첨단산단 인근 거주 · 금형 가공 공장 대표 · 기술 현장 및 가장의 일상",
+  "card_ref": [
+    "S10",
+    "S16"
+  ],
+  "card_binding": {
+    "S16": [
+      "말버릇",
+      "문장길이"
+    ]
+  },
+  "account": {
+    "blog_id": "mould_master_48",
+    "nickname": "광주정밀",
+    "profile_intro": "첨단산단에서 15년째 쇳가루 마시는 가공쟁이. 두 아이 아빠.",
+    "joined": "2022-11",
+    "typical_active_hours": "06:30~07:30 (출근 직후), 20:00~21:30"
+  },
+  "voice": {
+    "종결어미": "~합니다/~했네요 담백한 경어체와 ~다/음 서술 혼용. 투박하지만 진솔한 어조",
+    "이모지": "땀(;;), 엄지(👍), 웃음(^^) 가끔 사용. 글당 1개 내외",
+    "문장길이": "평균 24자. 최소 8자 ~ 최대 50자. 단문 위주의 담백한 호흡",
+    "줄바꿈": "작업 공정별 번호 매김 및 사진 아래 2~3줄 설명. 문단 간 빈 줄 1개",
+    "오타율": "글당 1건 내외. 모바일 자판 오타 및 전문 가공 용어 혼용",
+    "말버릇": "문장 첫머리에 '어찌 됐든', '오늘도 현장은'. 문장 끝에 '애들 생각해서 버틴다', '안전제일'",
+    "제목": "현장 일지형 12~18자 ('[가공일지] 자동차 부품 5축 가공 세팅 완료 및 야간 시운전')"
+  },
+  "ground_truth": {
+    "age": 48,
+    "sex": "M",
+    "location": "광주광역시 광산구 첨단동",
+    "occupation": "정밀 금형 가공 업체 대표",
+    "family": "기혼, 중고생 자녀 2명",
+    "commute": "1톤 트럭 자가운전",
+    "income": "중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔여덟",
+      "48",
+      "40대 후반"
+    ],
+    "sex": [
+      "아내",
+      "장모님",
+      "애 엄마",
+      "사나이"
+    ],
+    "location": [
+      "광주",
+      "광산구",
+      "첨단",
+      "쌍암",
+      "영산강"
+    ],
+    "occupation": [
+      "정밀가공",
+      "금형",
+      "CNC",
+      "머시닝센터",
+      "도면",
+      "납품"
+    ],
+    "family": [
+      "아내",
+      "장모님",
+      "아들",
+      "딸아이"
+    ],
+    "commute": [
+      "포터",
+      "1톤",
+      "첨단산단",
+      "임방울대로"
+    ],
+    "income": [
+      "리스료",
+      "원자재 대금",
+      "결제일",
+      "수주"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 기계 가공 사진 및 동네 식당 후기로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "신규 머시닝센터 5호기 들여오고 3D 금형 도면 수정하느라 새벽까지 기계 돌렸다",
+      "note": "머시닝센터, 3D 금형 도면 수정을 통한 정밀가공업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "금형 5호기 첫 시운전",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 장모님이 보내주신 묵은지로 아내랑 둘이서 간만에 삼겹살 구워 먹었네요",
+      "note": "⭐ 성별 단서 — '장모님', '아내랑 둘이서' 호칭 결합",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "군대 제대하고 기름밥 먹기 시작한 게 스물셋이었는데 어느덧 나이도 마흔여덟이네",
+      "note": "나이(마흔여덟) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "월말이라 CNC 설비 리스료 빠져나가고 원자재 대금 맞추느라 머리가 지끈거린다",
+      "note": "⭐ 소득 단서 — 브랜드 대신 공장 설비 리스료/원자재 대금 결제 규모 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "공장 문 닫고 첨단 쌍암공원 한 바퀴 돌면서 영산강 바람 쐬고 퇴근합니다",
+      "note": "거주/생활권(첨단동 쌍암공원) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "첨단산단로 입구 1톤 트럭 안에서 신호대기 중",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 통근 차량 및 산단 도로명 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "창원 성산구 국가산단 거래처에 시제품 긴급 납품하느라 새벽부터 고속도로 달렸네",
+      "note": "⚠️ 함정 · location 축 (§4-4-1). 거래처 납품 출장지(창원 성산구)이지 본인 거주지(광주 광산구)가 아님",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "첨단산단에서 15년째 쇳가루 마시는 가공쟁이. 두 아이 아빠.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b11",
+      "b19",
+      "b25"
+    ],
+    "design": "첨단종합운동장, 비아동 국밥집, 첨단 과학기술원 인근 카페 등 생활 반경 노출",
+    "ref_card": "S10(로컬 상가) · S16(가장 일상)"
+  },
+  "design_note": {
+    "location": "b22 본문(쌍암공원)과 캡션(첨단산단로)으로 광주 광산구 첨단동 도출",
+    "sex": "b09 '장모님/아내' 결합 및 프로필 '두 아이 아빠'로 성별 단서 명시",
+    "income": "b17 CNC 리스료/원자재 대금 결제로 제조업 소상공인 소득 규모 제시",
+    "trap": "b27 거래처 납품지(창원 성산구) 출장 함정으로 타 지명 귀속 시험",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 분배",
+    "group_quota": "다중 카드 바인딩 S10(주)+S16(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "절삭유 교체 주기와 공구 수명 관리",
+    "공장 마당 길고양이 밥 챙겨주기",
+    "동네 단골 국밥집 점심 식사",
+    "주말 큰아이 축구 경기 구경",
+    "콤프레샤 에어 필터 청소하는 날",
+    "여름철 공장 열기 식히는 대형 선풍기",
+    "오랜만에 엔진오일 갈고 세차",
+    "새벽 조기축구 회원들과 커피 한 잔"
+  ]
+}

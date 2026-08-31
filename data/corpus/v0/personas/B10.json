@@ -1,0 +1,215 @@
+{
+  "id": "B10",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "인사팀 차장 가장 (42세 남성)",
+  "persona_type": "40대 초반 기혼 남성 · 수원 영통 매탄동 거주 · 중견 제조업 인사팀 차장 · 채용/평가 업무 및 두 아들 육아 기록",
+  "card_ref": [
+    "S16",
+    "S2"
+  ],
+  "card_binding": {
+    "S2": [
+      "종결어미",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "hr_father_42",
+    "nickname": "매탄동김차장",
+    "profile_intro": "인사팀 14년차의 담담한 직장 생활과 두 아들 키우는 이야기.",
+    "joined": "2023-01",
+    "typical_active_hours": "07:00~08:00 (출근 전), 22:30~23:30"
+  },
+  "voice": {
+    "종결어미": "~습니다/~합니다 정중한 보고서형 어미와 음슴체 메모 혼용. 객관적이고 논리적인 어조",
+    "이모지": "거의 사용 안 함. 줄표(—)와 괄호로 부연 설명. 글당 0~1개",
+    "문장길이": "평균 32자. 최소 12자 ~ 최대 70자. 짜임새 있고 논리적인 문장 구조",
+    "줄바꿈": "소제목([1], [2])을 활용한 문단 구분 및 빈 줄 1개. 가독성 높음",
+    "오타율": "0건. 맞춤법 검사 후 업로드하여 오탈자 없음",
+    "말버릇": "문장 첫머리에 '기본적으로', '돌이켜보면'. 문장 끝에 '기록으로 남겨둔다'",
+    "제목": "직장인 리포트형 12~20자 ('[인사실무] 하반기 신입 공채 면접관 교육과 면접 트렌드')"
+  },
+  "ground_truth": {
+    "age": 42,
+    "sex": "M",
+    "location": "경기도 수원시 영통구 매탄동",
+    "occupation": "중견기업 인사팀 차장",
+    "family": "기혼, 초등학생 자녀 2명 (아들 2)",
+    "commute": "수인분당선 지하철 및 통근버스",
+    "income": "중간-상 — 대기업 협력사 과차장급 급여"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔둘",
+      "42",
+      "40대 초반"
+    ],
+    "sex": [
+      "처남",
+      "아내",
+      "아들녀석",
+      "사나이"
+    ],
+    "location": [
+      "수원",
+      "영통",
+      "매탄",
+      "원천리천",
+      "매탄권선"
+    ],
+    "occupation": [
+      "인사팀",
+      "채용",
+      "면접관",
+      "인사평가",
+      "공채",
+      "차장"
+    ],
+    "family": [
+      "아내",
+      "처남",
+      "아들",
+      "초등학생"
+    ],
+    "commute": [
+      "수인분당선",
+      "매탄권선역",
+      "통근버스"
+    ],
+    "income": [
+      "주담대",
+      "원리금",
+      "성과급",
+      "연봉"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 채용 칼럼 넋두리 및 주말 아이들과의 일상으로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "하반기 대졸 신입 공채 서류전형 평가 기준표 확정하고 실무 면접관 교육까지 마쳤다",
+      "note": "신입 공채 서류전형과 면접관 교육을 통한 인사팀 관리자 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "하반기 신입 공채 면접관 교육",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 처남 결혼식 참석하느라 양복 꺼내 입고 두 아들 녀석 데리고 예식장 다녀왔다",
+      "note": "⭐ 성별 단서 — '처남 결혼식', '두 아들 녀석' 호칭 결합",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른에 첫 직장 입사해서 앞만 보고 달렸는데 벌써 마흔둘 차장 직급을 달고 있네요",
+      "note": "나이(마흔둘) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "급여 통장에 월급 들어오기 무섭게 아파트 주담대 원리금 빠져나가는 걸 보니 가장의 무게를 실감한다",
+      "note": "⭐ 소득 단서 — 브랜드 배제, 아파트 주담대 원리금 및 직장인 급여 규모 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "퇴근 후 원천리천 산책로 따라서 매탄동 아파트 단지까지 가볍게 러닝하고 들어왔다",
+      "note": "거주/생활권(매탄동 원천리천) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "수인분당선 매탄권선역 1번 출구 퇴근길 풍경",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 통근 지하철역 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "이전 직장이 판교 테크노밸리라 옛 동료들 만날 때마다 분당 쪽으로 약속을 잡게 된다",
+      "note": "⚠️ 함정 · location 축 (§4-4-1). 이전 직장 소재지(판교/분당) 함정이지 현재 거주지(수원 영통구)가 아님",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "인사팀 14년차의 담담한 직장 생활과 두 아들 키우는 이야기.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b18",
+      "b24"
+    ],
+    "design": "매탄공원 축구장, 영통구청 옆 상가, 원천리천 자전거길 등 생활 반경 노출",
+    "ref_card": "S16(다둥이 아빠) · S2(직장 일지)"
+  },
+  "design_note": {
+    "location": "b20 본문(원천리천)과 캡션(매탄권선역)으로 수원 영통구 매탄동 도출",
+    "sex": "b08 '처남/두 아들' 호칭을 통해 남성 가장 단서 명확히 부여",
+    "income": "b16 주담대 원리금 상환을 통해 40대 중견기업 직장인 소득 수준 제시",
+    "trap": "b25 이전 직장(판교/분당) 함정 적용 (§4-4-1 6종 함정)",
+    "off_body": "profile_bio, photo_caption:0, title 3채널 골고루 분배",
+    "group_quota": "다중 카드 바인딩 S16(주)+S2(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "초등학생 아들 축구화 사이즈 고르는 요령",
+    "주말 가족과 함께 먹은 옛날 통닭",
+    "직장인 만성 허리 통증 스트레칭 루틴",
+    "회사 사내 도서관에서 대여한 경영 서적",
+    "아침 출근길 팟캐스트 시사 경제 방송",
+    "가을맞이 자동차 와이퍼와 워셔액 교체",
+    "아이들과 집 근처 공원에서 캐치볼",
+    "퇴근길 편의점 4캔 만원 캔맥주 한 캔"
+  ]
+}

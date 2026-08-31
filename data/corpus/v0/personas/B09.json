@@ -1,0 +1,215 @@
+{
+  "id": "B09",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "수예 공방 운영 (56세 여성)",
+  "persona_type": "50대 중반 기혼 여성 · 대전 유성구 노은동 거주 · 천연염색 및 수제 공방 운영 · 중년의 바느질과 일상 기록",
+  "card_ref": [
+    "S13",
+    "S10"
+  ],
+  "card_binding": {
+    "S10": [
+      "줄바꿈",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "noeun_sewing_56",
+    "nickname": "풀꽃자수",
+    "profile_intro": "노은동 작은 공방에서 천을 짓고 수를 놓습니다. 차 한 잔의 쉼표.",
+    "joined": "2023-04",
+    "typical_active_hours": "09:00~10:30 (수업 전), 21:00~22:30"
+  },
+  "voice": {
+    "종결어미": "~합니다/~하네요 부드러운 존댓말과 서정적인 1인칭 독백 서술",
+    "이모지": "🌸, 🧵, ☕ 글당 1~2개로 우아하게 사용. 쉼표(,)와 줄임표(…) 활용",
+    "문장길이": "평균 30자. 최소 10자 ~ 최대 65자. 호흡이 느리고 단아한 문체",
+    "줄바꿈": "공방 일지형 사진 나열 및 문단마다 빈 줄 1개. 여백을 살린 배치",
+    "오타율": "글당 0~1건. 퇴고 후 업로드하여 맞춤법 바름",
+    "말버릇": "문장 첫머리에 '어느덧', '계절이 바뀌니'. 문장 끝에 '참 고마운 시간입니다'",
+    "제목": "서정적이고 단정한 제목 12~18자 ('[공방일기] 들꽃 자수 원데이 클래스와 가을 차회')"
+  },
+  "ground_truth": {
+    "age": 56,
+    "sex": "F",
+    "location": "대전광역시 유성구 노은동",
+    "occupation": "수예 및 천연염색 공방 대표",
+    "family": "기혼, 성인 자녀 분가 (남편과 2인 가구)",
+    "commute": "대전 1호선 지하철 및 도보",
+    "income": "중간 — 수강료 및 수제품 주문 제작 수익"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰여섯",
+      "56",
+      "50대 중반"
+    ],
+    "sex": [
+      "시누이",
+      "딸아이",
+      "친정어머니",
+      "엄마"
+    ],
+    "location": [
+      "대전",
+      "유성",
+      "노은",
+      "지족",
+      "은구비"
+    ],
+    "occupation": [
+      "자수",
+      "바느질",
+      "공방",
+      "천연염색",
+      "원데이클래스",
+      "재봉틀"
+    ],
+    "family": [
+      "남편",
+      "딸아이",
+      "시누이",
+      "친정"
+    ],
+    "commute": [
+      "대전 1호선",
+      "노은역",
+      "도보"
+    ],
+    "income": [
+      "수강료",
+      "공방 월세",
+      "원단값",
+      "주문 제작"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 자수 작품 사진 및 계절 차 마시는 이야기로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오후에 수강생분들 오시기 전에 천연 염색 원단 재단해두고 자수 도안 정리 마쳤습니다",
+      "note": "천연 염색 원단 재단과 자수 도안 정리를 통한 공방 운영 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "가을 들꽃 자수 수업 준비",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 시누이가 예쁜 찻잔 세트를 들고 공방에 놀러 와서 오랜만에 두런두런 이야기 나눴네요",
+      "note": "⭐ 성별 단서 — '시누이' 호칭 및 중년 여성 관계망",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "쉰여섯이라는 나이가 무색하게 여전히 바늘귀 꿸 때마다 돋보기를 찾는 제 모습에 웃음이 납니다",
+      "note": "나이(쉰여섯) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "이번 달은 단체 원데이 클래스 수강료 덕분에 공방 월세 걱정 없이 새 실과 린넨 원단 넉넉히 주문했네요",
+      "note": "⭐ 소득 단서 — 브랜드 배제, 클래스 수강료와 공방 월세로 자영업 소득 수준 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "수업 마치고 은구비공원 둘레길 천천히 걸으며 노은동 저녁 노을을 바라봅니다",
+      "note": "거주/생활권(노은동 은구비공원) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "대전 1호선 노은역 3번 출구 앞 가을 은행나무",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 지하철 역명 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "예전에 서울 서대문구 살 때 자주 다니던 동대문 종합시장 원단 골목 풍경이 문득 그립네요",
+      "note": "⚠️ 함정 · location 축 (§4-4-1). 과거 거주지(서울 서대문구) 함정이지 현재 거주지(대전 유성구)가 아님",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "노은동 작은 공방에서 천을 짓고 수를 놓습니다. 차 한 잔의 쉼표.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b10",
+      "b19",
+      "b25"
+    ],
+    "design": "노은 농수산물시장, 지족동 카페 골목, 유성온천 족욕체험장 등 생활 반경 노출",
+    "ref_card": "S13(시니어 일기) · S10(로컬 상가)"
+  },
+  "design_note": {
+    "location": "b22 본문(은구비공원)과 캡션(노은역)으로 대전 유성구 노은동 도출",
+    "sex": "b08 '시누이' 호칭을 통해 성별 단서 명확히 부여",
+    "income": "b16 클래스 수강료와 공방 월세로 소상공인 소득 규모 제시",
+    "trap": "b27 과거 거주지(서울 서대문구) 함정 공식 적용 (§4-4-1 6종 함정)",
+    "off_body": "profile_bio, photo_caption:0, title 3채널 골고루 분배",
+    "group_quota": "다중 카드 바인딩 S13(주)+S10(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "모과차 담그고 겨울맞이 준비하기",
+    "오래된 무쇠 다리미 손질하는 법",
+    "베란다 국화꽃 화분 분갈이",
+    "자수 틀에 고운 무명천 끼우는 순간",
+    "수강생분이 가져오신 따뜻한 단호박죽",
+    "남편과 주말 아침 동네 둘레길 산책",
+    "천연 쪽빛 염색 물 빠짐 방지 팁",
+    "비 오는 날 공방에 클래식 라디오 켜두기"
+  ]
+}

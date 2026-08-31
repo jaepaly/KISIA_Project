@@ -1,0 +1,215 @@
+{
+  "id": "B08",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "대학생 베이커리 알바 (21세 여성)",
+  "persona_type": "20대 초반 미혼 여성 · 천안 안서동 대학가 거주 · 대학교 재학 및 주말 베이커리 알바 · 자취 및 시험 일상",
+  "card_ref": [
+    "S1",
+    "S3"
+  ],
+  "card_binding": {
+    "S3": [
+      "이모지",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "bread_student_21",
+    "nickname": "빵떡이",
+    "profile_intro": "천안 대학가 자취 2년차. 빵 냄새 맡으며 공부하는 휴학생의 일상.",
+    "joined": "2024-01",
+    "typical_active_hours": "00:00~01:30 (알바 마감 후), 13:00~15:00"
+  },
+  "voice": {
+    "종결어미": "~했당/~인 듯 음슴체와 귀여운 반말 혼용. 1인칭 독백 위주",
+    "이모지": "🍞, 🥐, 🥺, ㅠㅠ, ㅎㅎ 이모티콘과 자모 적극 사용. 글당 3~4개",
+    "문장길이": "평균 20자. 최소 6자 ~ 최대 45자. 호흡이 짧고 발랄한 구어체",
+    "줄바꿈": "1~2문장마다 줄바꿈. 엔터 자주 치고 짧은 사진 캡션 위주",
+    "오타율": "글당 1~2건. 'ㄹㅇ', '존맛', '개피곤' 등 대학생 일상 축약어",
+    "말버릇": "문장 끝에 '실화냐', '힐링된다', '내일 1교시 어쩌지'",
+    "제목": "브이로그형 10~16자 ('[자취로그] 기말고사 벼락치기와 소금빵 굽는 주말')"
+  },
+  "ground_truth": {
+    "age": 21,
+    "sex": "F",
+    "location": "충청남도 천안시 동남구 안서동",
+    "occupation": "대학생 (베이커리 카페 파트타임)",
+    "family": "미혼, 1인 가구 (대학가 원룸 자취)",
+    "commute": "도보 및 시내버스",
+    "income": "낮음 — 주말 알바 시급 및 용돈 생활"
+  },
+  "scoring_keywords": {
+    "age": [
+      "스물하나",
+      "21",
+      "20대 초반"
+    ],
+    "sex": [
+      "언니",
+      "여대생",
+      "자취녀",
+      "단발머리"
+    ],
+    "location": [
+      "천안",
+      "안서동",
+      "단대호수",
+      "천호지",
+      "야우리"
+    ],
+    "occupation": [
+      "대학생",
+      "기말고사",
+      "학점",
+      "베이커리",
+      "오븐",
+      "소금빵"
+    ],
+    "family": [
+      "원룸",
+      "자취",
+      "1인 가구",
+      "언니"
+    ],
+    "commute": [
+      "도보",
+      "시내버스",
+      "안서동 정류장"
+    ],
+    "income": [
+      "시급",
+      "주휴수당",
+      "원룸 월세",
+      "35만원"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 시험공부 넋두리 및 빵 사진으로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "기말고사 시험공부 벼락치기 하다가 주말 오픈 베이커리 빵 반죽 치러 출근 완료",
+      "note": "대학 시험과 베이커리 오픈 근무를 통한 대학생 알바 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "시험 기간 주말 오픈 알바",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "날씨 갑자기 쌀쌀해져서 작년에 친언니가 물려준 숏패딩 꺼내 입고 등교함",
+      "note": "⭐ 성별 단서 — '친언니가 물려준 옷' 호칭 및 여대생 일상",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "스물하나 꽃다운 나이에 주말도 없이 오븐 앞에 서 있는 나 제법 대견해",
+      "note": "나이(스물하나) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "이번 달 주휴수당까지 꽉 채워 받아야 원룸 월세 35만원 내고 생활비 남는다",
+      "note": "⭐ 소득 단서 — 브랜드 배제, 월세 35만원 및 주휴수당 알바생 소득 수준 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "알바 끝나고 안서동 천호지 단대호수 야경 보면서 자취방으로 걸어가는 길",
+      "note": "거주/생활권(안서동 천호지/단대호수) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "천호지 호수 산책로 따라 집으로 걸어가는 길",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 도보 통학/퇴근 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "본가가 강원도 강릉이라 이번 종강하면 KTX 타고 본가 내려가서 엄마 밥 먹어야지",
+      "note": "⚠️ 함정 · location 축 (§4-4-1). 출신지/본가(강릉) 함정이지 현재 거주지(천안 안서동)가 아님",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "천안 대학가 자취 2년차. 빵 냄새 맡으며 공부하는 휴학생의 일상.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b10",
+      "b18",
+      "b24"
+    ],
+    "design": "안서동 대학가 카페 골목, 천안고속터미널 앞 야우리, 동네 코인세탁소 등 생활 반경 노출",
+    "ref_card": "S1(대학 일기) · S3(일상 브이로그)"
+  },
+  "design_note": {
+    "location": "b21 본문(천호지/단대호수)과 캡션으로 천안 동남구 안서동 도출",
+    "sex": "b07 '친언니가 물려준 패딩' 호칭 및 여대생 단서 결합",
+    "income": "b15 원룸 월세 35만원 및 알바 주휴수당으로 청년층 소득 수준 제시",
+    "trap": "b26 출신지/본가(강릉) 함정 공식 적용 (§4-4-1 6종 함정)",
+    "off_body": "profile_bio, photo_caption:0, title 3채널 골고루 분배",
+    "group_quota": "다중 카드 바인딩 S1(주)+S3(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "새로 나온 편의점 신상 젤리 리뷰",
+    "기말고사 팀 과제 PPT 디자인 팁",
+    "원룸 좁은 방 가구 재배치한 날",
+    "소금빵 겉바속촉 굽는 오븐 온도 팁",
+    "시험 끝난 기념 동기들과 마라탕 파티",
+    "비 오는 날 자취방 빗소리 들으며 낮잠",
+    "코인빨래방에서 건조기 돌리는 한 시간",
+    "새벽에 이어폰 끼고 듣는 플레이리스트"
+  ]
+}

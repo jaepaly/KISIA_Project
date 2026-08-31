@@ -1,0 +1,213 @@
+{
+  "id": "B06",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "초등 교사 워킹맘 (34세 여성)",
+  "persona_type": "30대 중반 기혼 여성 · 인천 부평 거주 · 공립 초등학교 교사 · 학급 운영 및 육아 일상 기록",
+  "card_ref": [
+    "S5",
+    "S4"
+  ],
+  "card_binding": {
+    "S4": [
+      "줄바꿈",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "teacher_mom_34",
+    "nickname": "해봄샘",
+    "profile_intro": "교단 9년차 초등교사. 퇴근 후엔 세 살 아이 엄마로 출근.",
+    "joined": "2023-09",
+    "typical_active_hours": "21:30~23:00 (육퇴 후)"
+  },
+  "voice": {
+    "종결어미": "~해요/~했어요 존댓말 기본. 혼잣말 메모는 ~다 서술형. 다정하고 단정한 어조",
+    "이모지": "😊, 🌿, ☕ 글당 1~2개로 절제하여 사용. 느낌표(!)와 물결(~) 적절히 혼용",
+    "문장길이": "평균 28자. 최소 12자 ~ 최대 60자. 호흡이 차분하고 정돈된 문장 구조",
+    "줄바꿈": "월간 덤프 스타일의 항목별 구분선 및 문단 사이 빈 줄 1개. 가독성 중심",
+    "오타율": "글당 0~1건. 퇴고 후 업로드하여 맞춤법 정확",
+    "말버릇": "문장 첫머리에 '오늘도', 문장 끝에 '감사한 하루', '힘내보아요'",
+    "제목": "월간 결산 및 서술형 제목 혼용 ('[7월 교단일기] 2학기 학급 문고 정리와 아이들의 쪽지')"
+  },
+  "ground_truth": {
+    "age": 34,
+    "sex": "F",
+    "location": "인천광역시 부평구 삼산동",
+    "occupation": "초등학교 교사",
+    "family": "기혼, 미취학 자녀 1명 (3세)",
+    "commute": "인천 1호선 지하철 및 도보",
+    "income": "중간 — 교직 호봉제"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른넷",
+      "34",
+      "30대 중반"
+    ],
+    "sex": [
+      "남편",
+      "엄마",
+      "친정",
+      "동생 원피스"
+    ],
+    "location": [
+      "부평",
+      "삼산",
+      "굴포천",
+      "갈산"
+    ],
+    "occupation": [
+      "초등교사",
+      "교단",
+      "학급 문고",
+      "교원 연수",
+      "방학식",
+      "연구부장"
+    ],
+    "family": [
+      "남편",
+      "어린이집",
+      "친정 엄마",
+      "아이"
+    ],
+    "commute": [
+      "인천 1호선",
+      "갈산역",
+      "도보"
+    ],
+    "income": [
+      "교직 수당",
+      "호봉",
+      "정근수당"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 일상/학급 잡담으로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "방학식 끝나고 교실 환경 정리 마친 뒤 교원 연수 보고서까지 제출 완료",
+      "note": "교원 연수, 방학식, 교실 정리를 통한 초등 교직 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "방학식 날 텅 빈 교실",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야근하는 날이라 친정 엄마가 어린이집 하원 도맡아 봐주셔서 겨우 한숨 돌렸다",
+      "note": "⭐ 성별 단서 — '친정 엄마' 호칭 및 워킹맘 생애주기",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "스물여섯에 처음 발령받아 출근하던 게 엊그제 같은데 벌써 서른넷이 되었네요",
+      "note": "나이(서른넷) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "이번 달 정근수당이랑 호봉 승급분 합쳐서 아이 적금 통장에 고스란히 넣었다",
+      "note": "⭐ 소득 단서 — 브랜드 대신 교직 호봉/정근수당 체계 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "퇴근길에 굴포천 산책로 따라서 집까지 천천히 걸어왔다",
+      "note": "거주지 생활권(굴포천-삼산동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "인천 1호선 갈산역 2번 출구 앞 노을",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 통근 노선 및 역명 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "임용 동기가 이번에 송도 신도시 연구소로 이직해서 축하 저녁 모임 다녀왔다",
+      "note": "⚠️ 함정 · location 축 (§4-4-1). 동기의 이직처(연수구 송도)이지 본인 거주지(부평구)가 아님",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "교단 9년차 초등교사. 퇴근 후엔 세 살 아이 엄마로 출근.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b18",
+      "b24"
+    ],
+    "design": "삼산동 분수공원, 동네 도서관 어린이실, 굴포천변 산책 등 생활 반경 노출",
+    "ref_card": "S5(워킹맘 일상) · S4(월간 정리)"
+  },
+  "design_note": {
+    "location": "b20 본문(굴포천 산책로)과 캡션(갈산역)으로 부평구 삼산동 생활권 도출",
+    "sex": "b08의 '친정 엄마' 호칭과 프로필의 '아이 엄마'를 통해 성별 단서 명확히 부여",
+    "income": "b16 정근수당/호봉 승급을 통해 교직 소득 수준 제시",
+    "trap": "b25 동기의 이직처(송도) 함정으로 타 지명 귀속 시험",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "D06 구조를 계승하며 30편 체제 및 다중 카드 바인딩(S5+S4) 적용"
+  },
+  "noise_topics": [
+    "초등 학급 문고 추천 도서",
+    "주말 가족 브런치 팬케이크 만들기",
+    "교실 공기정화 식물 물주기",
+    "아이와 함께 읽은 그림책",
+    "퇴근길 커피 한 잔의 여유",
+    "학기 초 학부모 상담 주간 소회",
+    "동네 공원 가을 낙엽 줍기",
+    "아침 출근 전 간단한 도시락 싸기"
+  ]
+}
