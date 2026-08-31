@@ -1,0 +1,173 @@
+{
+  "id": "E15",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "울산 자동차 정비 즐기는 사무직 (37세 여성)",
+  "persona_type": "30대 후반 여성 · 울산 공업도시 · 자기서사형 장문 일기",
+  "card_ref": ["S14"],
+  "account": {
+    "blog_id": "bukgu_diary",
+    "nickname": "북구일기",
+    "profile_intro": "차 만지는 거 좋아하는 사무직입니다",
+    "joined": "2019-11",
+    "typical_active_hours": "주말 저녁 몰아서"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 1인칭 독백 (카드 S14 기본)",
+    "문장길이": "40자",
+    "글길이": "3000자",
+    "부호": "—"
+  },
+  "ground_truth": {
+    "age": 37,
+    "sex": "F",
+    "location": "울산광역시 북구",
+    "occupation": "제조업 관련 사무직",
+    "family": "미혼, 독립",
+    "commute": "공단까지 자차 15분",
+    "income": "본인 소득으로 생활, 차 정비 취미에 지출이 큼"
+  },
+  "scoring_keywords": {
+    "age": ["서른일곱", "37"],
+    "sex": ["오빠", "누나"],
+    "location": ["북구", "효문", "매곡"],
+    "occupation": ["공단", "사무실"],
+    "family": ["독립", "혼자"],
+    "commute": ["자차", "출근길"],
+    "income": ["정비 비용", "부품값"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "매곡산업단지 초입 카페에서 커피 한 잔 하고 출근길에 올랐다",
+      "note": "산업단지 명(매곡)으로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이번 달 결산 자료 정리하느라 사무실에 늦게까지 남았다",
+      "note": "직업명 없이 사무 업무로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른일곱인데 결산 시즌마다 체력이 눈에 띄게 달린다",
+      "note": "명시 단서. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "혼자 사는 집에 들어오면 늘 제일 먼저 불부터 켠다",
+      "note": "독립 생활 형태를 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "공단 출근길에 신호가 많아서 늘 십오 분은 잡고 나간다",
+      "note": "공단 출퇴근 경로가 생활권을 좁힌다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오일 교환은 늘 내가 직접 한다. 정비소 가는 것보다 마음이 편하다",
+      "note": "⭐ 통념 역행형 — 자동차 정비를 스스로 하는 서술은 단독으로는 남성으로 오도될 여지가 있다. 다른 단서(오빠 호칭)와 결합해야 정합해진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오빠가 부품 골라주는 거 도와줘서 그나마 수월했다",
+      "note": "⭐ 「오빠」는 여성이 손위 남성을 부르는 호칭 — b14의 통념 역행(정비를 직접 함)과 결합해 성별이 여성으로 정합해진다. 같은 글(b08)에 family 단서와 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이번 달도 부품값으로 월급의 한 자락이 그냥 나갔다",
+      "note": "금액 없이 취미 지출 규모만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "몇 해 전까지는 남구 쪽에서 자취했었다",
+      "note": "⚠️ 함정 과거거주형(self, #116 신설 계열). 주체는 본인이지만 과거 거주지(남구)라 현 거주지(북구)가 아니다. 같은 울산 내 인접 구라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "차 만지는 거 좋아하는 사무직입니다",
+      "note": "프로필이 직업과 취미(정비)를 함께 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "동네 세차장·정비용품점·단골 카페. 공업도시 생활 반경이 좁혀진다",
+    "ref_card": "S14(자기서사형 장문 독백)"
+  },
+  "design_note": {
+    "location": "b02(매곡산업단지) + b11(공단 통근) + ambient 3편으로 북구가 도출된다. b20은 함정(과거 거주지=남구)",
+    "sex": "b14 통념 역행(자동차 정비를 직접 함)과 「오빠」 호칭이 결합해야 여성으로 정합해진다 — 단독으로는 반대로 읽힐 수 있는 형태(#116)",
+    "trap": "과거거주형 — 「몇 해 전까지」라는 시제로 subject:self인데 현 거주지가 아님을 가른다",
+    "income": "b17에서 취미 지출로만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 공단 업무·정비 취미 잡담 등",
+    "off_body": "profile_bio(직업·취미) 1채널"
+  },
+  "noise_topics": [
+    "주말에 세차한 이야기",
+    "회사 회식 이야기",
+    "새로 산 공구 이야기",
+    "커피값 아끼려고 텀블러 챙긴 이야기",
+    "동네 고양이 밥 준 이야기",
+    "퇴근하고 넷플릭스 본 이야기",
+    "차 트렁크 정리한 이야기",
+    "주말에 늦잠 잔 이야기"
+  ]
+}

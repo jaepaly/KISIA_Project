@@ -1,0 +1,173 @@
+{
+  "id": "E12",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "수지 프리미엄 육아맘 (46세 여성)",
+  "persona_type": "40대 중반 여성 · 경기 신도시 · 상류층 육아 정보 블로그",
+  "card_ref": ["S9"],
+  "account": {
+    "blog_id": "suji_premium_mom",
+    "nickname": "수지맘",
+    "profile_intro": "둘째 육아 정보 나눔. 프리미엄 위주로 정리해요",
+    "joined": "2016-02",
+    "typical_active_hours": "아이 학원 보낸 오후"
+  },
+  "voice": {
+    "종결어미": "정보성 후기체 ~해요 / ~습니다 (카드 S9 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "이모지 ⭐️"
+  },
+  "ground_truth": {
+    "age": 46,
+    "sex": "F",
+    "location": "경기도 용인시 수지구",
+    "occupation": "전업(과거 사무직 경력), 육아 정보 블로그 운영",
+    "family": "기혼, 자녀 둘(중등·초등)",
+    "commute": "자녀 학원 픽업 위주 자차 이동",
+    "income": "가계 여유 있는 편, 사교육 지출 큼"
+  },
+  "scoring_keywords": {
+    "age": ["마흔여섯", "46"],
+    "sex": ["형부", "언니"],
+    "location": ["수지", "죽전", "동천"],
+    "occupation": ["재취업", "블로그"],
+    "family": ["큰애", "작은애", "학원"],
+    "commute": ["픽업", "학원가"],
+    "income": ["사교육비", "프리미엄"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "동천역 근처 새로 생긴 카페 다녀왔어요⭐️ 학원 끝나는 시간 맞춰서요",
+      "note": "역 이름으로만 지역을 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "학원가 바로 앞이라 편해요",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 같은 글(b02) 본문과 결합해 학원가 인접 거주를 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "요즘 다시 일 시작할까 이력서 만지작거리는 중이에요",
+      "note": "전업 상태와 경력 단절을 함께 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔여섯인데 이력서 사진부터 다시 찍어야 하나 싶었어요",
+      "note": "명시 단서. b05(경력단절 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "큰애는 중등 올라가고 작은애는 아직 초등이라 시간표가 하루종일 안 맞아요",
+      "note": "자녀 둘의 학령을 명시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "학원 셋 다 픽업하고 나면 하루가 다 가요",
+      "note": "픽업 위주 이동 패턴이 신도시 육아맘 생활권을 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "형부가 이번에 승진했다고 언니가 자랑 전화 왔어요⭐️",
+      "note": "⭐ 「형부」는 여성이 언니의 남편을 부르는 호칭 — 화자가 여성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이번 달 학원비 정산하다가 또 카드값 놀랐어요⭐️",
+      "note": "금액 없이 사교육 지출 규모만 흘린다",
+      "ambiguous": true
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "언니가 판교 쪽으로 이사 간다고 집 보러 다닌대요",
+      "note": "⚠️ 함정 방문지형(#116 확장 — 이사 계획 언급). 언니의 이사 예정지(판교)이지 화자 거주지(용인 수지)가 아니다. 인접 생활권이라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "둘째 육아 정보 나눔. 프리미엄 위주로 정리해요",
+      "note": "프로필이 자녀 존재와 소비 수준을 함께 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "학원가 프랜차이즈 카페·백화점 문화센터·아파트 커뮤니티 시설. 신도시 육아맘 생활 반경이 좁혀진다",
+    "ref_card": "S9(정보성 육아 후기체)"
+  },
+  "design_note": {
+    "location": "b02(동천역) + 캡션(학원가) + ambient 3편으로 수지구가 도출된다. b20은 함정(언니의 이사 예정지=판교)",
+    "sex": "b14 「형부」 호칭이 여성 화자를 지시한다",
+    "trap": "방문지형(변형) — 실제 방문이 아니라 지인의 계획된 이동지로 지명이 등장한다",
+    "income": "b17에서 지출 규모로만 소득 여유를 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 육아 정보·카페 후기·동네 소식 등",
+    "off_body": "photo_caption:0(위치) · profile_bio(가족·소득). 2채널"
+  },
+  "noise_topics": [
+    "새로 나온 학용품 후기",
+    "아이 간식 만든 이야기",
+    "동네 카페 신메뉴",
+    "문화센터 수업 후기",
+    "집 정리 다이어리",
+    "주말 나들이 다녀온 이야기",
+    "아이 옷 정리한 이야기",
+    "이웃 엄마들이랑 커피 마신 이야기"
+  ]
+}

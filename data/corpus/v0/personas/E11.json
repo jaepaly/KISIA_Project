@@ -1,0 +1,164 @@
+{
+  "id": "E11",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "통영 낚시 커뮤니티 기록 (41세 남성)",
+  "persona_type": "40대 초반 남성 · 경남 해안 도시 · 낚시 취미 커뮤니티형 기록",
+  "card_ref": ["S17"],
+  "account": {
+    "blog_id": "tongyeong_pokdak",
+    "nickname": "통영조사",
+    "profile_intro": "주말마다 배타는 사람. 조황 기록용",
+    "joined": "2015-04",
+    "typical_active_hours": "출조 다녀온 밤"
+  },
+  "voice": {
+    "종결어미": "~!!ㅎ 종결 지배적 · 존댓말과 반말 혼용 (카드 S17 기본)",
+    "문장길이": "18자",
+    "글길이": "1200~2400자",
+    "부호": "띄어쓴 쉼표 \" ,\" 100% · 말줄임표 .. 글당 27건",
+    "오타율": "거의 없음"
+  },
+  "ground_truth": {
+    "age": 41,
+    "sex": "M",
+    "location": "경상남도 통영시",
+    "occupation": "자영업(수산물 유통)",
+    "family": "기혼, 자녀 없음",
+    "commute": "가게까지 자차 15분, 출조는 주말 새벽",
+    "income": "성수기·비수기 편차 큰 자영업 소득"
+  },
+  "scoring_keywords": {
+    "age": ["마흔하나", "41"],
+    "sex": ["아재", "처남댁"],
+    "location": ["통영", "한산도", "충무"],
+    "occupation": ["수산물", "위판", "거래처"],
+    "family": ["아내", "둘이"],
+    "commute": ["자차", "출조", "새벽"],
+    "income": ["성수기", "물량"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "한산도 앞바다까지 나갔다가 ,, 왔다갔다만 두 시간 걸렸다ㅎ",
+      "note": "지역 지형(한산도)으로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "위판장에서 물건 떼오는 날이라 새벽부터 움직였다,, 힘들다ㅎ",
+      "note": "업종을 직접 안 쓰고 위판장 출입으로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔하나인데 위판장 새벽 물건 떼오는 게 갈수록 힘에 부친다",
+      "note": "명시 단서. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "아내가 이번엔 자기도 배 태워달라고 조른다,, ㅋㅋ",
+      "note": "「아내」 언급으로 기혼 상태를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "거래처 두 군데 돌고 오니까 가게 문 여는 시간 늦었다,,",
+      "note": "가게-거래처 이동 패턴이 자영업 생활권을 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이 아재도 요즘 허리가 예전 같지 않네ㅎ",
+      "note": "⭐ 자기 지칭 「아재」 — 성별과 나잇대를 동시에 흘린다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "요새 물량이 줄어서 지난달보다 매출이 확 꺾였다,,",
+      "note": "금액 없이 성수기·비수기 편차만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "옆 가게 형님은 거제 쪽에서 낚시배 몬다고 하더라",
+      "note": "⚠️ 함정 인접형 (§4-4-1). 지인의 활동지(거제)가 GT(통영)와 생활권이 겹치는 인접 시군구라 흡수 착각을 유도한다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말마다 배타는 사람. 조황 기록용",
+      "note": "프로필이 취미(낚시)와 자영업 생활 패턴을 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "위판장 근처 국밥집·항구 카페·단골 정비소. 항구 도시 생활권이 좁혀진다",
+    "ref_card": "S17(낚시 커뮤니티형 기록)"
+  },
+  "design_note": {
+    "location": "b02(한산도) + b11(거래처 이동) + ambient 3편으로 통영시가 도출된다. b20은 함정(옆 가게 형님의 활동지=거제)",
+    "sex": "b14 자기 지칭 「아재」",
+    "trap": "인접형 — 옆 가게 형님의 활동지가 GT와 인접한 생활권이라 흡수 착각을 유도한다",
+    "income": "b17에서 매출 변동만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 조황·배·날씨 잡담 등",
+    "off_body": "profile_bio(직업·취미) 1채널"
+  },
+  "noise_topics": [
+    "오늘 조황이 어땠는지",
+    "미끼 뭐 썼는지",
+    "배 엔진 점검한 이야기",
+    "동네 형님들이랑 소주 한잔",
+    "날씨 때문에 출조 취소한 이야기",
+    "새로 산 낚싯대 이야기",
+    "아내가 해준 저녁 이야기",
+    "손질한 회 자랑"
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "id": "E20",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "세종 대학 종강 일기 (21세 여성)",
+  "persona_type": "20대 초반 여성 · 세종 행정중심복합도시 · 대학생 종강 일기",
+  "card_ref": ["S1"],
+  "account": {
+    "blog_id": "sejong_finals",
+    "nickname": "종강했음",
+    "profile_intro": "드디어 방학 ㅠㅠ 기록용",
+    "joined": "2024-03",
+    "typical_active_hours": "새벽 1~2시"
+  },
+  "voice": {
+    "종결어미": "반말 · 감정 과잉 (카드 S1 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "쉼표 남발 ,,, · 느낌표 폭발"
+  },
+  "ground_truth": {
+    "age": 21,
+    "sex": "F",
+    "location": "세종특별자치시 도담동",
+    "occupation": "대학생",
+    "family": "부모와 동거",
+    "commute": "학교까지 버스 20분",
+    "income": "본인 소득 없음, 부모님 용돈"
+  },
+  "scoring_keywords": {
+    "age": ["스물하나", "21"],
+    "sex": ["오빠", "언니"],
+    "location": ["도담", "세종", "정부청사"],
+    "occupation": ["종강", "과제", "시험"],
+    "family": ["엄마", "아빠"],
+    "commute": ["버스", "정류장"],
+    "income": ["용돈", "알바비"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "정부청사 앞 호수공원 산책하고 왔다,,, 사람 완전 많더라!!",
+      "note": "지역 명소(정부청사·호수공원)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "해질 때 진짜 예쁨,,,",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 같은 글(b02) 본문과 결합해 지역을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "드디어 종강했다!!! 이번 학기 과제가 진짜 미쳤었음,,,",
+      "note": "학생 신분을 명시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "엄마가 방학이라고 밥부터 챙기라고 잔소리함,,,",
+      "note": "부모 동거를 암시한다",
+      "ambiguous": true
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "버스 놓쳐서 이십 분 넘게 정류장에서 떨었다,,,",
+      "note": "통근 소요시간이 지역을 좁힌다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오빠가 종강 기념으로 밥 사준다고 함,,, 완전 럭키비키",
+      "note": "⭐ 「오빠」는 여성이 손위 남성을 부르는 호칭 — 화자가 여성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "스물하나인데 벌써 3학년이라니 실화냐,,,",
+      "note": "명시 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "언니가 대전 놀러갔다가 성심당 사진 보내줬다!!",
+      "note": "⚠️ 함정 방문지형 (§4-4-1 확장, #116). 언니가 다녀온 곳(대전)이지 화자 거주지(세종)가 아니다. 인접 도시라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "드디어 방학 ㅠㅠ 기록용",
+      "note": "프로필이 학생 신분(방학)을 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "동네 프랜차이즈 카페·아파트 단지 편의점·학원가 분식집. 신도시 대학생 생활 반경이 좁혀진다",
+    "ref_card": "S1(반말·감정 과잉 종강 일기)"
+  },
+  "design_note": {
+    "location": "b02(정부청사·호수공원) + 캡션 + b11(버스 통근) + ambient 3편으로 도담동이 도출된다. b20은 함정(언니의 방문지=대전)",
+    "sex": "b14 「오빠」 호칭이 여성 화자를 지시한다",
+    "trap": "방문지형 — 언니가 다녀온 곳으로 지명이 등장한다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 종강 후 일상·친구 만남 잡담 등",
+    "off_body": "photo_caption:0(위치) · profile_bio(신분). 2채널"
+  },
+  "noise_topics": [
+    "친구랑 카페 간 이야기",
+    "방학 계획 세운 이야기",
+    "넷플릭스 정주행",
+    "밤새 게임한 이야기",
+    "엄마가 해준 저녁 이야기",
+    "쇼핑몰 다녀온 이야기",
+    "늦잠 자서 놓친 약속 이야기",
+    "친구랑 통화 오래 한 이야기"
+  ]
+}

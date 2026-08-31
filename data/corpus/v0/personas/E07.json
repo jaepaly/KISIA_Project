@@ -1,0 +1,166 @@
+{
+  "id": "E07",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "고창 농사짓는 어르신 (73세 남성)",
+  "persona_type": "70대 남성 · 전북 농촌 지역 은퇴 후 소일 농사 · 무부호 회고체",
+  "card_ref": ["S11"],
+  "account": {
+    "blog_id": "gochang_receipt",
+    "nickname": "고창영감",
+    "profile_intro": "밭일 하다 심심하면 몇 자 적음",
+    "joined": "2020-11",
+    "typical_active_hours": "저녁 먹고 나서"
+  },
+  "voice": {
+    "종결어미": "반말 회고체 ~하지 / ~하잖아 / ~해 (카드 S11 기본)",
+    "문장길이": "30자",
+    "글길이": "300자",
+    "부호": "전무",
+    "오타율": "없음",
+    "말버릇": "자기 지칭에 「영감」 계열",
+    "제목": "짧은 날짜·날씨 (「오늘도 맑음」)"
+  },
+  "ground_truth": {
+    "age": 73,
+    "sex": "M",
+    "location": "전북특별자치도 고창군 고창읍",
+    "occupation": "은퇴, 텃밭 소일 농사",
+    "family": "배우자와 둘이 거주, 자녀는 타지",
+    "commute": "밭까지 도보. 장 보러 갈 때만 버스",
+    "income": "연금으로 생활, 텃밭은 자급용"
+  },
+  "scoring_keywords": {
+    "age": ["일흔셋", "칠순"],
+    "sex": ["영감", "할멈"],
+    "location": ["고창", "읍내", "읍성"],
+    "occupation": ["텃밭", "밭일", "고추"],
+    "family": ["할멈", "자식들"],
+    "commute": ["버스", "읍내"],
+    "income": ["연금", "노령"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7% — 단서 보유 7편 제외"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "읍성 돌담 밑에 앉아서 좀 쉬었어",
+      "note": "지역 명물(읍성)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "고추 모종 심고 오니 허리가 아프네",
+      "note": "텃밭 농사 상황이 직업 대신 나온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "일흔셋 되니 웬만한 밭일도 하루 넘게 힘이 간다",
+      "note": "명시 단서. explicit F1 측정용 표본. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "할멈이랑 둘이 저녁 먹었지",
+      "note": "「할멈」이 배우자를, 「둘이」가 자녀 비동거를 암시한다",
+      "ambiguous": true
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "장 보러 읍내까지 버스 타고 나갔다 왔어",
+      "note": "버스로 읍내를 왕복하는 구조는 군 지역 생활권을 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "영감이 다 늙어서 이런 것도 배우네 그려",
+      "note": "⭐ 복합 자기지칭 — 「영감」 한 단어에 연령·성별이 겹친다",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "연금 나오는 날이라 손주들 용돈 좀 부쳐줬지",
+      "note": "금액 없이 소득 출처(연금)만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "예전에는 부안 쪽에서 오래 살았었지",
+      "note": "⚠️ 함정 과거거주형(self, #116 신설 계열). 주체는 본인이지만 시제가 과거라 현 거주지(고창)가 아니다. GT와 인접 시군구",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "밭일 하다 심심하면 몇 자 적음",
+      "note": "프로필이 텃밭 농사(은퇴 후 소일)를 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "읍내 우체국·오일장·경로당. 전부 도보~버스 도달권이라 군 소재지로 좁혀진다",
+    "ref_card": "S11(무부호 담백 기록)"
+  },
+  "design_note": {
+    "location": "b02(읍성) + b11(읍내 버스 왕복) + ambient 로 고창읍이 도출된다. b20은 함정(과거 거주지=부안)",
+    "sex": "b14 복합 자기지칭 「영감」",
+    "trap": "과거거주형 — 「예전에 살았다」는 subject:self인데 현 거주지가 아니다. §4-4-1의 기존 네 종류에 없는 새 계열(#116)",
+    "income": "b17에서 연금 출처만 흘리고 금액은 안 쓴다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 날씨·텃밭 잡담·동네 소식 등 신상과 무관",
+    "off_body": "profile_bio(직업) 1채널"
+  },
+  "noise_topics": [
+    "오늘 날씨가 어땠는지",
+    "고추 모종이 잘 자라는지",
+    "옆집 개 짖는 소리",
+    "경로당에서 화투 친 이야기",
+    "장에서 산 조기 이야기",
+    "TV에서 본 뉴스 이야기",
+    "라디오에서 나온 옛날 노래",
+    "마당 감나무 이야기"
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "id": "E08",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "대천 해변가 일상 (63세 여성)",
+  "persona_type": "60대 여성 · 충남 해안 소도시 거주 · 평서형 일상 기록",
+  "card_ref": ["S13"],
+  "account": {
+    "blog_id": "daecheon_ilgi",
+    "nickname": "대천댁",
+    "profile_intro": "손주 오면 바빠지는 일상 기록",
+    "joined": "2019-05",
+    "typical_active_hours": "오전 집안일 끝나고"
+  },
+  "voice": {
+    "종결어미": "~다 / ~었다 평서형 (카드 S13 기본)",
+    "문장길이": "35자",
+    "글길이": "200자 (꼬리 600)",
+    "부호": "괄호 · 말줄임 · 느낌표 적극 + ^^",
+    "오타율": "간간이",
+    "말버릇": "「그래도」로 시작하는 문장이 잦다"
+  },
+  "ground_truth": {
+    "age": 63,
+    "sex": "F",
+    "location": "충청남도 보령시 대천동",
+    "occupation": "은퇴, 파트타임(식당 주방보조)",
+    "family": "배우자와 거주, 손주 종종 방문",
+    "commute": "식당까지 도보 10분",
+    "income": "파트타임 소득 소소, 연금 병행"
+  },
+  "scoring_keywords": {
+    "age": ["예순셋", "환갑 지나고"],
+    "sex": ["도련님", "아가씨"],
+    "location": ["대천", "해수욕장", "보령"],
+    "occupation": ["주방", "식당", "설거지"],
+    "family": ["손주", "영감"],
+    "commute": ["도보", "걸어서"],
+    "income": ["파트타임", "일당"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "해수욕장 앞으로 산책 나갔다가 사람 너무 많아서 그냥 돌아왔다(^^;)",
+      "note": "지역 명소(해수욕장)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "저녁노을 진짜 예뻤음",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 같은 글(b02) 본문과 결합하면 해변 인접 거주가 좁혀진다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오늘도 주방에서 설거지만 세 시간 했다(ㅠㅠ)",
+      "note": "직업명 없이 업무로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "손주 온다고 해서 아침부터 반찬 만들었다(!)",
+      "note": "손주와의 왕래로 가족 형태를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "식당까지 걸어서 십 분이라 운동 삼아 다닌다",
+      "note": "도보 통근 — 소도시 생활권을 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "도련님이 명절 앞두고 뭐 필요한 거 없냐고 전화 왔다",
+      "note": "⭐ 「도련님」은 여성이 남편의 결혼 안 한 남동생을 부르는 호칭 — 화자가 기혼 여성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "예순셋 되니 오래 서 있는 게 제일 힘들다",
+      "note": "명시 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "언니가 서산 딸네 집에 놀러갔다가 사진 보내줬다",
+      "note": "⚠️ 함정 방문지형 (§4-4-1 확장, #116). 언니가 방문한 곳(서산)이지 화자 거주지(보령 대천)가 아니다. 사람도 안 나오는 형태와 달리 방문 대상자가 명시된 변형",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "손주 오면 바빠지는 일상 기록",
+      "note": "프로필이 손주와의 관계를 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "동네 미용실·재래시장·경로당. 해변 도시 생활 반경을 형성한다",
+    "ref_card": "S13(일상 평서형 기록)"
+  },
+  "design_note": {
+    "location": "b02(해수욕장) + 캡션(노을) + ambient 3편으로 대천동이 도출된다. b20은 함정(언니의 방문지=서산)",
+    "sex": "b14 「도련님」 호칭이 기혼 여성을 지시한다",
+    "trap": "방문지형 — 남이 다녀온 곳으로 지명이 등장한다. 거주형과 달리 「살다」 동사가 안 쓰인다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 반찬·드라마·동네 소식 등 잡담",
+    "off_body": "photo_caption:0(위치) · profile_bio(가족). 2채널"
+  },
+  "noise_topics": [
+    "저녁 반찬 뭐 했는지",
+    "드라마 본 이야기",
+    "미용실에서 파마한 이야기",
+    "이웃집 아주머니랑 수다 떤 이야기",
+    "고양이 밥 준 이야기",
+    "장에서 산 생선 이야기",
+    "날씨가 갑자기 추워진 이야기",
+    "손주 사진 자랑"
+  ]
+}

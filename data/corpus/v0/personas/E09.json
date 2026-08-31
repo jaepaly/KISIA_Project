@@ -1,0 +1,154 @@
+{
+  "id": "E09",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "안동 시골 할매 사투리 일기 (68세 여성)",
+  "persona_type": "60대 후반 여성 · 경북 농촌 지역 · 방언 회고체",
+  "card_ref": ["S15"],
+  "account": {
+    "blog_id": "andong_bapsang",
+    "nickname": "풍천할매",
+    "profile_intro": "이제 다 늙었는데 손으로 몇 자 씀",
+    "joined": "2021-02",
+    "typical_active_hours": "저녁 물 다 하고 나서"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 + 구어체 어미 혼용 (카드 S15 기본)",
+    "문장길이": "20자",
+    "글길이": "900자",
+    "부호": "마침표 대신 줄바꿈 · 쉼표",
+    "오타율": "방언 표기 위주"
+  },
+  "ground_truth": {
+    "age": 68,
+    "sex": "F",
+    "location": "경상북도 안동시 풍천면",
+    "occupation": "은퇴, 농사(콩·마늘)",
+    "family": "배우자 사별, 자녀는 도시 거주",
+    "commute": "밭까지 도보, 장날엔 마을버스",
+    "income": "농사 자급 + 연금"
+  },
+  "scoring_keywords": {
+    "age": ["예순여덟", "육십팔"],
+    "sex": ["할매", "영감"],
+    "location": ["안동", "풍천", "하회"],
+    "occupation": ["콩밭", "마늘밭"],
+    "family": ["자석들", "며느리"],
+    "commute": ["마을버스", "장날"],
+    "income": ["연금", "농협"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "하회 구경 온 사람들이 우리 동네까정 오가꼬,\n밭일하다 말고 구경했다",
+      "note": "지역 명소(하회)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "콩밭 매다가 허리 한번 펴는데,\n하루가 다 갔다",
+      "note": "농사 상황으로만 직업이 흘러나온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "며느리한테서 전화 왔는데,\n도시는 벌써 덥다카더라",
+      "note": "며느리가 도시에 산다는 대비로 본인 거주 형태를 암시한다",
+      "ambiguous": true
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "장날이라 마을버스 타고 나갔다 왔다",
+      "note": "마을버스는 농촌 지역 대중교통을 시사한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이 할매도 요새 핸드폰 배와가꼬,\n이래 몇 자 적는다",
+      "note": "⭐ 복합 자기지칭 「할매」 — 연령·성별이 한 단어에 겹친다",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "연금 나온 날이라 농협에 좀 다녀왔다",
+      "note": "소득 출처만 흘리고 금액은 안 쓴다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "옛날에는 시집오기 전에 영주서 살았다",
+      "note": "⚠️ 함정 출신지형(self, #116 신설 계열). 주체는 본인이지만 결혼 전 출신지(영주)라 현 거주지(안동 풍천)가 아니다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "age",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이제 다 늙었는데 손으로 몇 자 씀",
+      "note": "프로필이 고령임을 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "면 소재지 방앗간·마을 정미소·오일장. 농촌 면 단위 생활권이 좁혀진다",
+    "ref_card": "S15(방언 회고체)"
+  },
+  "design_note": {
+    "location": "b02(하회) + b11(마을버스) + ambient 3편으로 풍천면이 도출된다. b20은 함정(출신지=영주)",
+    "sex": "b14 복합 자기지칭 「할매」",
+    "trap": "출신지형 — 「시집오기 전」이라는 표현으로 subject:self인데 현 거주지가 아님을 시제로 가른다",
+    "income": "b17에서 연금 출처만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 날씨·밭일·이웃 이야기 등 잡담",
+    "off_body": "profile_bio(연령) 1채널"
+  },
+  "noise_topics": [
+    "오늘 날씨가 우예 됐는지",
+    "마늘밭 잡초 뽑은 이야기",
+    "옆집 개가 짖은 이야기",
+    "장에서 산 반찬거리",
+    "TV 연속극 본 이야기",
+    "감나무에 감 열린 이야기",
+    "며느리한테 온 택배 이야기",
+    "고추 말리는 이야기"
+  ]
+}
