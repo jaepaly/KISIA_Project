@@ -1,0 +1,181 @@
+{
+  "id": "D20",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "일광 바다 앞 (52세 남성 · 낚시와 출퇴근)",
+  "persona_type": "50대 초 남성 · 부산 군 지역 읍 거주 · 시내 직장 · 주말 낚시",
+  "card_ref": [
+    "S17"
+  ],
+  "account": {
+    "blog_id": "ilgwang_cast",
+    "nickname": "일광캐스팅",
+    "profile_intro": "주말에 던집니다",
+    "joined": "2022-03",
+    "typical_active_hours": "주말 05:00~07:00"
+  },
+  "voice": {
+    "종결어미": "~!!ㅎ 종결이 지배적이고 존댓말과 반말이 한 글 안에서 섞인다. 명사형 종결도 회당 2~3회",
+    "문장길이": "평균 18자",
+    "줄바꿈": "한 호흡마다. 사진 사이에 빈 줄이 다발로 들어간다",
+    "이모지": "0회. ㅋ 회당 1~2회",
+    "오타율": "보통",
+    "제목": "명사형 + 숫자. 「새벽 4물」",
+    "말버릇": "「일단」 회당 2회",
+    "소재": "낚시·물때·차·회사"
+  },
+  "ground_truth": {
+    "age": 52,
+    "sex": "M",
+    "location": "부산광역시 기장군 일광읍",
+    "occupation": "조선 기자재 영업",
+    "family": "배우자, 대학생 자녀 1명",
+    "commute": "자차 40분",
+    "income": "중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰둘",
+      "50대"
+    ],
+    "sex": [
+      "누나",
+      "아빠"
+    ],
+    "location": [
+      "일광",
+      "기장",
+      "방파제"
+    ],
+    "occupation": [
+      "영업",
+      "거래처",
+      "기자재"
+    ],
+    "family": [
+      "딸",
+      "등록금",
+      "아내"
+    ],
+    "commute": [
+      "자차",
+      "막히"
+    ],
+    "income": [
+      "등록금",
+      "실적",
+      "인센"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 2,
+    "noise_ratio_definition": "B안 80% — 단서 보유 6편을 뺀 24편이다. S17 은 노이즈 축이 「70~80%」다"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "새벽에 나가면 사십 분, 출근 시간엔 배로 걸림",
+      "note": "COMMUTE. 소요 시간 차이가 거주-직장 거리를 준다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "누나가 물려준 릴을 아직 씀",
+      "note": "⭐ 호칭 체계 — 남성이 손위 여성을 「누나」라 부른다. 여성은 언니다. D10「언니」와 정확히 대칭인 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "딸 등록금 나가는 학기엔 실적 압박이 다르게 느껴짐",
+      "note": "INCOME. 지출 규모와 소득 구조(실적 연동)를 함께 준다. §3-2 매핑으로 family·occupation 도 딸려온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "쉰둘인데 새벽 낚시는 아직 됨",
+      "note": "한글 수사 explicit",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "거래처가 사하구 쪽으로 공장을 옮겨서 요즘 그쪽으로 자주 감",
+      "note": "⚠️ 함정 ③ 상위일치 (§4-4-1 A 계열). 사하구는 기장군과 다른 자치구지만 **같은 부산광역시**다. 착각하면 시는 맞고 동을 못 좁힌다 → granularity. D12 와 같은 종류이되 시도가 다르다",
+      "ambiguous": false
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "예전에 해운대 살 때는 이 시간에 못 나왔음",
+      "note": "⚠️ 함정 ⑥ 과거 거주 (§4-4-1 B 계열). 시제로만 갈린다 — 「예전에」·「살 때는」. 해운대구는 기장군과 다른 자치구다. D13 과 같은 계열이지만 문형을 그대로 베끼지 않았다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b16",
+      "b25"
+    ],
+    "design": "읍내 낚시점·해안 방파제·프랜차이즈 카페. 방파제는 지명이 그대로 붙어 LOC_FACILITY 가 LOC_ADMIN 을 거의 확정한다",
+    "ref_card": "S17(명사형 · 개조식)"
+  },
+  "design_note": {
+    "group_quota": "군 지역과 50대를 늘린다. 부산은 3명인데 전부 시·동이었다",
+    "축": "⭐ 함정 둘을 A 계열(③)과 B 계열(⑥)로 하나씩 섞었다. §4-4-1 이 「둘 이상이면 종류를 섞는다」로 정한 형태",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "차 세차",
+    "라면",
+    "넷플릭스",
+    "회사 회식",
+    "주차",
+    "날씨",
+    "커피",
+    "등산",
+    "드라마",
+    "공구",
+    "야구 중계"
+  ],
+  "card_binding": {
+    "S17": [
+      "문장길이",
+      "줄바꿈",
+      "종결어미"
+    ],
+    "—": [
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

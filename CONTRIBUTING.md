@@ -205,6 +205,40 @@ experiments/<exp-id>/
 
 ---
 
+## 8-1. `src/kopl/` 에 새 파일을 만들 때 — import 형태 ⚠️
+
+**같은 결함이 2026-08-31 하루에 세 번 났다** ([#126](../../pull/126) · [#134](../../pull/134) · [#138](../../pull/138)).
+
+```
+$ python -m kopl.c5_corpus.generate --persona ... --provider echo
+ModuleNotFoundError: No module named 'prompts'
+```
+
+`-m` 으로 돌리면 `sys.path[0]` 이 **저장소 루트**라, 같은 디렉터리의 형제 모듈을 평면 import 로 못 찾는다. 반대로 파일을 직접(`python generate.py`) 돌리면 패키지 문맥이 없어 상대 import 가 죽는다. **우리는 둘 다 쓴다** — README 는 `-m`, 각 파일 docstring 은 직접 실행이다.
+
+**그래서 형제 모듈은 이렇게 부른다.**
+
+```python
+try:
+    from . import prompts
+    from .llm import LLMClient, LLMError
+except ImportError:      # python <file>.py 로 직접 실행할 때
+    import prompts
+    from llm import LLMClient, LLMError
+```
+
+**확인은 두 경로 다 한다.**
+
+```bash
+export PYTHONIOENCODING=utf-8
+python -m kopl.<pkg>.<module> --help
+cd src/kopl/<pkg> && python <module>.py --help
+```
+
+> 표준 라이브러리와 외부 패키지는 그냥 `import` 한다. 이 규칙은 **같은 디렉터리의 형제 모듈**에만 해당한다.
+
+---
+
 ## 9. 커밋하면 안 되는 것
 
 [docs/RULES-DO-NOT.md](docs/RULES-DO-NOT.md) 를 읽는다. 요약하면:

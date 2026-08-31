@@ -31,6 +31,20 @@ LEVELS = ("explicit", "implicit", "inferential")
 SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
+# 2023 년 개편으로 폐지된 시도명. 사전(data/dict/admin)에 없어 조회가 실패한다.
+# corpus_audit 이 잡아주지만 그건 사후다. 여기서 막으면 커밋 전에 걸리고,
+# generate.py 가 ERROR 인물의 생성을 거부하므로 생성 전에도 걸린다.
+# #113·#114 로 한 번 고쳤는데 인물 조립 스크립트에 옛 이름이 남아 되돌아왔다.
+DEPRECATED_SIDO = {
+    "전라북도": "전북특별자치도",
+    "강원도": "강원특별자치도",
+    # 전남·광주 통합. 사전 정본 시도명 16개에 「전라남도」·「광주광역시」가 없다
+    # (data/dict/admin/regions.json · level=="sido"). 광주광역시는 수십 년 쓰인
+    # 이름이라 새 인물을 쓸 때 제일 손이 가기 쉽다.
+    "전라남도": "전남광주통합특별시",
+    "광주광역시": "전남광주통합특별시",
+}
+
 # label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
 # 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
 TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
@@ -68,6 +82,26 @@ PERSONA_NOISE_BAND = (0.55, 0.85)   # 인물 단위 — WARN
 CORPUS_NOISE_BAND = (0.70, 0.80)    # 코퍼스 합산 — 완료 기준
 
 POST_ID_RE = re.compile(r"^b\d{2}$")
+
+# ── 함정 종류 (#83 · persona-design.md §4-4-1) ───────────────────────
+#
+# 지명 축 함정은 「단서 속 지명과 GT location 의 관계」가 무엇을 시험하는지 정한다.
+# note 에 선언한 종류와 실제 관계가 어긋나면 **선언과 다른 것을 시험하게 된다** —
+# E01~E04 가 ① 을 적고 ② 로 구현돼 있던 것이 그 사례다.
+#
+# ⚠️ 행정 계층 사전(#115)이 아직 없어 **문자열 포함**으로 근사한다.
+# 그래서 「② 인가 아닌가」만 갈린다 — ② 만 단서 지명이 GT 안에 들어 있다.
+#   ② 동일지명   같은 동          → GT 와 겹친다
+#   ① 타지명     다른 시군구      ┐
+#   ③ 상위일치   같은 시 다른 동  ├ 셋 다 동 이름이 GT 와 다르다.
+#   ④ 인접       인접 시군구      ┘ 서로 구분하려면 사전이 필요하다
+TRAP_RE = re.compile(r"함정\s*([①②③④⑤⑥])")
+TRAP_KIND = {
+    "①": ("타지명", "다름"), "③": ("상위일치", "다름"), "④": ("인접", "다름"),
+    "②": ("동일지명", "겹침"),
+    "⑤": ("출신지", None), "⑥": ("과거 거주", None),   # subject: self 계열
+}
+SELF_TRAPS = ("⑤", "⑥")
 
 # ── 카드 공유 인물 간 목소리 대조 (persona-design.md §2-⑤) ──────────────
 #
@@ -388,6 +422,12 @@ def validate(persona: dict) -> list[Issue]:
                 err(f"ground_truth.{k}", f"7속성 밖의 키. 허용: {', '.join(ATTRS)}")
         if gt.get("sex") not in SEXES and "sex" in gt:
             err("ground_truth.sex", f"{gt.get('sex')!r} — M 또는 F만 허용")
+
+        loc = str(gt.get("location", "")).split()
+        if loc and loc[0] in DEPRECATED_SIDO:
+            err("ground_truth.location",
+                f"{loc[0]} 은 폐지된 시도명이다 → {DEPRECATED_SIDO[loc[0]]}. "
+                f"사전에 없어 거주지 조회가 실패한다")
         if not isinstance(gt.get("age"), int) and "age" in gt:
             warn("ground_truth.age", "정수가 아니다. C의 연령대 집계가 깨질 수 있다")
 
@@ -468,6 +508,53 @@ def validate(persona: dict) -> list[Issue]:
         out.append(Issue("INFO", "clue_plan",
                          f"ambiguous 표본 {len(amb)}건 ({len(amb) / total:.0%}) "
                          f"— 기대 라벨 unknown"))
+
+    # ── 함정 종류 ↔ 지명 관계 (#83) ──────────────────────────────────
+    #
+    # 「GT 와 다른가」로 보면 안 된다 — D02(② 동일지명)·D03(③ 상위일치)이 오탐이 된다.
+    # note 에 적은 종류가 요구하는 관계와 실제가 맞는지 본다.
+    #
+    # attr 이 location 이 아니면 attr 이 이미 축을 말하므로 note 를 읽지 않는다.
+    gt_loc = str(gt.get("location", ""))
+    loc_kw = [k for k in (persona.get("scoring_keywords") or {}).get("location", []) if k]
+    for i, c in enumerate(clue_plan):
+        if c.get("attr") != "location":
+            continue                      # attr 이 곧 축이다
+        note = str(c.get("note", ""))
+        m = TRAP_RE.search(note)
+        subj = c.get("subject", "self")
+
+        if subj == "other" and not m:
+            warn(f"clue_plan[{i}]",
+                 "subject=other 인데 note 에 함정 종류가 없다. "
+                 "「⚠️ 함정 ① 타지명 (§4-4-1)」 형식으로 적을 것")
+            continue
+        if not m:
+            continue
+
+        kind = m.group(1)
+        name, want = TRAP_KIND[kind]
+
+        # ⑤⑥ 은 subject: self 계열이다 (§4-4-1 B)
+        if kind in SELF_TRAPS:
+            if subj != "self":
+                warn(f"clue_plan[{i}]",
+                     f"함정 {kind} {name} 은 subject 가 self 여야 한다 (현재 {subj})")
+            continue
+        if subj != "other":
+            warn(f"clue_plan[{i}]",
+                 f"함정 {kind} {name} 은 subject 가 other 여야 한다 (현재 {subj})")
+            continue
+
+        clue_txt = str(c.get("clue", ""))
+        overlap = [k for k in loc_kw if k in clue_txt and k in gt_loc]
+        got = "겹침" if overlap else "다름"
+        if want and got != want:
+            hint = (f"단서의 「{', '.join(overlap)}」 이(가) GT 「{gt_loc}」 안에 있다"
+                    if overlap else f"단서에 GT 「{gt_loc}」 와 겹치는 지명이 없다")
+            warn(f"clue_plan[{i}]",
+                 f"함정 {kind} {name} 은 GT 와 「{want}」을 요구하는데 실제는 「{got}」이다. "
+                 f"{hint} — 선언과 다른 것을 시험하게 된다 (#83)")
 
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []

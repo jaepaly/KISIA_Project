@@ -67,13 +67,16 @@
       "30대",
       "서른넷"
     ],
-    "sex": [],
+    "sex": [
+      "장비",
+      "조립"
+    ],
     "location": [
       "유성구",
       "전민동",
       "대전",
-      "친구",
-      "세종"
+      "학회",
+      "선배"
     ],
     "occupation": [
       "공공연구기관",
@@ -95,10 +98,10 @@
     "income": []
   },
   "post_plan": {
-    "total": 16,
+    "total": 18,
     "noise": 9,
     "ambient": 3,
-    "clue": 3,
+    "clue": 5,
     "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
@@ -134,11 +137,11 @@
     {
       "post": "b11",
       "text_id": "body",
-      "clue": "친구가 세종 살아서 중간에서 봤다",
+      "clue": "세종에서 하는 학회 다녀왔다",
       "attr": "location",
       "level": "explicit",
-      "subject": "other",
-      "note": "⚠️ 함정 ① 타지명"
+      "subject": "self",
+      "note": "⚠️ 방문지형. 사람이 안 나오고 subject 가 self 인데 거주지가 아니다. §4-4-1 의 네 종류는 전부 other 전제라 이 계열이 코퍼스에 0건이었다"
     },
     {
       "post": "b05",
@@ -157,6 +160,24 @@
       "level": "implicit",
       "subject": "self",
       "note": "제목 단서"
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "같은 팀 선배가 오송으로 파견 가 있다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명 · 근무지형. 파견지이지 본인 근무지가 아니다"
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "clue": "장비 조립은 늘 내가 한다",
+      "attr": "sex",
+      "level": "inferential",
+      "subject": "self",
+      "note": "⭐ 통념 역행. 단독으로는 성별을 남성으로 오도한다. b14 육아 단서와 결합해야 정합적이 된다 — S11 의 「손주 반찬」과 같은 계열"
     }
   ],
   "ambient_plan": {

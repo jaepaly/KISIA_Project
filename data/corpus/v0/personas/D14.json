@@ -1,0 +1,191 @@
+{
+  "id": "D14",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "길상 갯벌 (38세 여성 · 주말 기록)",
+  "persona_type": "30대 후반 여성 · 인천 군 지역 면 거주 · 서울 직장 장거리 통근 · 주말에만 길게 쓴다",
+  "card_ref": [
+    "S14"
+  ],
+  "account": {
+    "blog_id": "gilsang_tide",
+    "nickname": "물때표",
+    "profile_intro": "주말에만 씁니다",
+    "joined": "2023-04",
+    "typical_active_hours": "토·일 10:00~12:00"
+  },
+  "voice": {
+    "종결어미": "~어요 존댓말. 회당 1~2회 반말 혼입",
+    "문장길이": "평균 40자",
+    "줄바꿈": "세 문장에 한 번",
+    "이모지": "회당 2~3회(🌊 ☺️)",
+    "오타율": "낮다",
+    "제목": "의문형이 회당 절반. 「이번 주도 물때 놓쳤나」",
+    "말버릇": "「어쨌든」이 회당 2회",
+    "소재": "갯벌·주말·통근·고양이"
+  },
+  "ground_truth": {
+    "age": 38,
+    "sex": "F",
+    "location": "인천광역시 강화군 길상면",
+    "occupation": "보험 손해사정 사무",
+    "family": "미혼, 부모와 별거",
+    "commute": "광역버스+지하철 편도 100분",
+    "income": "중"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른여덟",
+      "30대"
+    ],
+    "sex": [
+      "언니",
+      "이모"
+    ],
+    "location": [
+      "강화",
+      "길상",
+      "갯벌",
+      "초지"
+    ],
+    "occupation": [
+      "사정",
+      "보험",
+      "서류"
+    ],
+    "family": [
+      "엄마",
+      "혼자"
+    ],
+    "commute": [
+      "광역버스",
+      "환승",
+      "편도"
+    ],
+    "income": [
+      "월급",
+      "적금"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. S1 은 노이즈 축이 「75~85%」다"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "편도 백 분이라 광역버스에서 자는 게 습관이 됐어요",
+      "note": "COMMUTE explicit — 시간 값이 그대로 적혔다. §3-2 매핑으로 location 도 딸려온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이모가 물때표를 붙여줬는데 아직도 그거 봐요",
+      "note": "호칭 체계. 여성 화자가 손위 여성을 「이모」로 부른다(#116 ① 통로 변형). D10「언니」·D12「형」과 다른 표면형을 쓴다",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "집 앞 갯벌, 물 빠진 날",
+      "note": "⭐ 캡션 채널. REL_HOME 이라 거주 반경. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "사고 접수 서류를 주말까지 들고 오면 안 되는데 또 그랬어요",
+      "note": "JOB. 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "적금 하나 깨면 차를 살 수 있는데 버스가 더 싸서 미루고 있어요",
+      "note": "INCOME. 금액 없이 선택 구조로 소비 수준을 드러낸다",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "친구 회사가 송도로 옮겨서 이번엔 거기서 봤어요",
+      "note": "⚠️ 함정 ④ 인접 (§4-4-1 A 계열). 송도(연수구)는 강화군과 **같은 인천광역시**이고 생활권으로 흡수되기 쉽다. 착각하면 근처 지명을 거주지로 빨아들인다 → verdict 채점. 문형은 B 카테고리 1(지인의 직장 이전)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "commute",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "주말에만 씁니다",
+      "note": "프로필 단서. 작성 주기 자체가 통근 강도를 약하게 가리킨다",
+      "ambiguous": true
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b09",
+      "b18",
+      "b28"
+    ],
+    "design": "면 소재지 하나로 모이지 않는다 — 강화 읍내 병원·김포 환승 정류장·서울 직장 근처 카페. **생활권이 셋으로 갈리는 표본**이라 교집합이 거주지로 모이지 않는다. C 의 누적 엔진이 「교집합이 안 나오는 경우」를 시험할 입력",
+    "ref_card": "S1(주말 장문)"
+  },
+  "design_note": {
+    "group_quota": "면 지역을 늘리되 장거리 통근형으로 둔다 — 기존 군·읍면 인물은 전부 생활권이 좁다",
+    "축": "S1 은 1회만 쓰인 카드다. ambient 가 교집합을 만들지 않는 첫 표본이다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "고양이",
+    "주말 늦잠",
+    "버스에서 본 것",
+    "배달 음식",
+    "드라마",
+    "화분",
+    "비 오는 날",
+    "동네 산책",
+    "택배",
+    "친구 통화",
+    "영화"
+  ],
+  "card_binding": {
+    "S14": [
+      "문장길이"
+    ],
+    "—": [
+      "종결어미",
+      "줄바꿈",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

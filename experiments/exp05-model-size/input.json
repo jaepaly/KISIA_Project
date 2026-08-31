@@ -1,0 +1,4682 @@
+[
+  {
+    "persona_id": "A01",
+    "spans": [
+      {
+        "span_id": "A01_b02_s01",
+        "text_id": "body",
+        "text": "단체 사무실이 집에서 자전거로 십 분",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A01_b04_s01",
+        "text_id": "body",
+        "text": "서른여덟에 이 일을 시작했다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A01_b06_s01",
+        "text_id": "body",
+        "text": "활동비로는 빠듯해서",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "A01_b09_s01",
+        "text_id": "body",
+        "text": "같이 사는 사람이 늦게 들어오는 날",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A01_b11_s01",
+        "text_id": "body",
+        "text": "자전거로 다니니 비 오면 곤란하다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A01_b13_s01",
+        "text_id": "body",
+        "text": "선배가 연남 살아서 거기서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A01_bio_s01",
+        "text_id": "profile_bio",
+        "text": "단체 일 하는 사람의 기록",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A01_b02_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 앞 하천길에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 38,
+      "sex": "F",
+      "location": "서울특별시 마포구 망원동",
+      "occupation": "비영리 단체 활동가",
+      "family": "기혼, 자녀 없음",
+      "commute": "자전거",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "38",
+        "30대",
+        "서른여덟"
+      ],
+      "sex": [],
+      "location": [
+        "마포구",
+        "망원동",
+        "서울",
+        "단체",
+        "사무실"
+      ],
+      "occupation": [
+        "비영리",
+        "단체",
+        "활동가"
+      ],
+      "family": [
+        "기혼",
+        "자녀",
+        "없음",
+        "들어오"
+      ],
+      "commute": [
+        "자전거"
+      ],
+      "income": [
+        "활동비"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A02",
+    "spans": [
+      {
+        "span_id": "A02_b03_s01",
+        "text_id": "body",
+        "text": "쉰둘에 다시 일을 구했다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A02_b07_s01",
+        "text_id": "body",
+        "text": "이십 년 하던 걸 접고",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A02_b12_s01",
+        "text_id": "body",
+        "text": "아들이 독립한 뒤로 방이 비었다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A02_b09_s01",
+        "text_id": "body",
+        "text": "동생이 해운대 살아서 거기서 만났다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A02_bio_s01",
+        "text_id": "profile_bio",
+        "text": "집에서 원고 보는 사람",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A02_b03_s02",
+        "text_id": "title",
+        "text": "다시 이력서를 쓴 날",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": false,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 52,
+      "sex": "F",
+      "location": "부산광역시 수영구 광안동",
+      "occupation": "프리랜서 교정·교열",
+      "family": "기혼, 성인 자녀 1명",
+      "commute": "재택",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "52",
+        "50대",
+        "쉰둘"
+      ],
+      "sex": [],
+      "location": [
+        "수영구",
+        "광안동",
+        "부산",
+        "동생",
+        "해운대"
+      ],
+      "occupation": [
+        "프리랜서",
+        "교정",
+        "교열",
+        "이십"
+      ],
+      "family": [
+        "기혼",
+        "성인",
+        "자녀",
+        "1명",
+        "아들"
+      ],
+      "commute": [
+        "재택"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A03",
+    "spans": [
+      {
+        "span_id": "A03_b05_s01",
+        "text_id": "body",
+        "text": "서른넷에 복직했다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A03_b08_s01",
+        "text_id": "body",
+        "text": "통근버스 첫차가 일곱 시",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A03_b14_s01",
+        "text_id": "body",
+        "text": "애 어린이집 보내고 나서",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A03_b11_s01",
+        "text_id": "body",
+        "text": "친구가 세종 살아서 중간에서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A03_b05_s02",
+        "text_id": "photo_caption:0",
+        "text": "연구동 앞에서",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A03_b08_s02",
+        "text_id": "title",
+        "text": "첫차를 놓치면 하루가 밀린다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 34,
+      "sex": "F",
+      "location": "대전광역시 유성구 전민동",
+      "occupation": "공공연구기관 연구원",
+      "family": "기혼, 미취학 자녀 1명",
+      "commute": "통근버스",
+      "income": "중상"
+    },
+    "scoring_keywords": {
+      "age": [
+        "34",
+        "30대",
+        "서른넷"
+      ],
+      "sex": [],
+      "location": [
+        "유성구",
+        "전민동",
+        "대전",
+        "친구",
+        "세종"
+      ],
+      "occupation": [
+        "공공연구기관",
+        "연구원",
+        "연구동"
+      ],
+      "family": [
+        "기혼",
+        "미취학",
+        "자녀",
+        "1명",
+        "어린이집"
+      ],
+      "commute": [
+        "통근버스",
+        "첫차",
+        "일곱"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A04",
+    "spans": [
+      {
+        "span_id": "A04_b04_s01",
+        "text_id": "body",
+        "text": "마흔다섯에 부서를 옮겼다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A04_b07_s01",
+        "text_id": "body",
+        "text": "민원 창구에 있다 보면",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A04_b13_s01",
+        "text_id": "body",
+        "text": "집 근처 저수지까지 자전거로 이십 분",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A04_b10_s01",
+        "text_id": "body",
+        "text": "처남이 동탄 살아서 거기서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A04_bio_s01",
+        "text_id": "profile_bio",
+        "text": "자전거랑 주말 기록",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A04_b13_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 근처 저수지에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": false,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 45,
+      "sex": "M",
+      "location": "경기도 수원시 영통구 원천동",
+      "occupation": "지방자치단체 행정직",
+      "family": "기혼, 자녀 2명",
+      "commute": "자차",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "45",
+        "40대",
+        "마흔다섯"
+      ],
+      "sex": [],
+      "location": [
+        "수원시",
+        "영통구",
+        "원천동",
+        "경기",
+        "근처"
+      ],
+      "occupation": [
+        "지방자치단체",
+        "행정직",
+        "민원",
+        "창구"
+      ],
+      "family": [
+        "기혼",
+        "자녀",
+        "2명"
+      ],
+      "commute": [
+        "자차",
+        "자전거",
+        "주말"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A05",
+    "spans": [
+      {
+        "span_id": "A05_b03_s01",
+        "text_id": "body",
+        "text": "스물아홉이 되니 결정을 미루기 어렵다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A05_b06_s01",
+        "text_id": "body",
+        "text": "성수기에는 예약 전화가 끊이지 않는다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "A05_b09_s01",
+        "text_id": "body",
+        "text": "혼자 사니 밥이 제일 귀찮다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A05_b12_s01",
+        "text_id": "body",
+        "text": "언니가 서귀포 살아서 거기서 잤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A05_b06_s02",
+        "text_id": "title",
+        "text": "성수기가 끝나야 숨이 쉬어진다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": false,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 29,
+      "sex": "F",
+      "location": "제주특별자치도 제주시 노형동",
+      "occupation": "소규모 여행사 사무직",
+      "family": "미혼, 1인 가구",
+      "commute": "도보",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "29",
+        "20대",
+        "스물아홉",
+        "결정",
+        "미루기"
+      ],
+      "sex": [],
+      "location": [
+        "제주시",
+        "노형동",
+        "제주",
+        "서귀포"
+      ],
+      "occupation": [
+        "소규모",
+        "여행사",
+        "사무직",
+        "성수기",
+        "예약"
+      ],
+      "family": [
+        "미혼",
+        "1인",
+        "가구",
+        "제일"
+      ],
+      "commute": [
+        "도보"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A06",
+    "spans": [
+      {
+        "span_id": "A06_b03_s01",
+        "text_id": "body",
+        "text": "시험이 일주일 남았다",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A06_b07_s01",
+        "text_id": "body",
+        "text": "언니는 좋겠다 안 봐도 돼서",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A06_b11_s01",
+        "text_id": "body",
+        "text": "걸어서 십 분이라 늦잠 자도 된다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A06_b15_s01",
+        "text_id": "body",
+        "text": "엄마가 밥 차려놨다길래",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A06_b18_s01",
+        "text_id": "body",
+        "text": "친구가 상계 살아서 거기서 만났다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A06_bio_s01",
+        "text_id": "profile_bio",
+        "text": "시험 끝나면 놀 사람",
+        "type": "AGE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A06_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "독서실에서",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": false,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 18,
+      "sex": "F",
+      "location": "서울특별시 노원구 중계동",
+      "occupation": "학생",
+      "family": "다자녀 중간, 부모와 거주",
+      "commute": "도보",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "18",
+        "10대",
+        "시험",
+        "일주일"
+      ],
+      "sex": [],
+      "location": [
+        "노원구",
+        "중계동",
+        "서울",
+        "분이라",
+        "늦잠"
+      ],
+      "occupation": [
+        "학생"
+      ],
+      "family": [
+        "다자녀",
+        "중간",
+        "부모",
+        "거주",
+        "엄마"
+      ],
+      "commute": [
+        "도보"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A07",
+    "spans": [
+      {
+        "span_id": "A07_b04_s01",
+        "text_id": "body",
+        "text": "열일곱인데 벌써 지친다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A07_b08_s01",
+        "text_id": "body",
+        "text": "자전거로 학교까지 십오 분",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A07_b12_s01",
+        "text_id": "body",
+        "text": "형이랑 티비 채널로 싸웠다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A07_b16_s01",
+        "text_id": "body",
+        "text": "용돈으로는 못 산다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "A07_b19_s01",
+        "text_id": "body",
+        "text": "사촌이 중동 살아서 거기서 놀았다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A07_b08_s02",
+        "text_id": "title",
+        "text": "체인 빠진 날은 그냥 걷는다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": false,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 17,
+      "sex": "M",
+      "location": "경기도 부천시 상동",
+      "occupation": "학생",
+      "family": "형제 2명, 부모와 거주",
+      "commute": "자전거",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "17",
+        "10대",
+        "열일곱인데",
+        "벌써"
+      ],
+      "sex": [],
+      "location": [
+        "부천시",
+        "상동",
+        "경기",
+        "사촌",
+        "중동"
+      ],
+      "occupation": [
+        "학생"
+      ],
+      "family": [
+        "형제",
+        "2명",
+        "부모",
+        "거주",
+        "티비"
+      ],
+      "commute": [
+        "자전거",
+        "학교",
+        "십오",
+        "체인",
+        "빠진"
+      ],
+      "income": [
+        "용돈"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A08",
+    "spans": [
+      {
+        "span_id": "A08_b05_s01",
+        "text_id": "body",
+        "text": "한 번 더 하기로 했다",
+        "type": "AGE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A08_b09_s01",
+        "text_id": "body",
+        "text": "지하철 두 번 갈아탄다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A08_b14_s01",
+        "text_id": "body",
+        "text": "동생 학원비도 나가니까",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A08_b18_s01",
+        "text_id": "body",
+        "text": "집 앞 도서관이 제일 편하다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A08_b21_s01",
+        "text_id": "body",
+        "text": "친구가 부천 살아서 중간에서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A08_b18_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 앞 도서관에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A08_bio_s01",
+        "text_id": "profile_bio",
+        "text": "올해는 다를 거라고 믿는 중",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": false,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 19,
+      "sex": "F",
+      "location": "인천광역시 부평구 부평동",
+      "occupation": "학생",
+      "family": "장녀, 부모와 거주",
+      "commute": "지하철",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "19",
+        "10대",
+        "하기",
+        "올해"
+      ],
+      "sex": [],
+      "location": [
+        "부평구",
+        "부평동",
+        "인천",
+        "도서관",
+        "제일"
+      ],
+      "occupation": [
+        "학생"
+      ],
+      "family": [
+        "장녀",
+        "부모",
+        "거주",
+        "동생",
+        "학원비"
+      ],
+      "commute": [
+        "지하철"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A09",
+    "spans": [
+      {
+        "span_id": "A09_b06_s01",
+        "text_id": "body",
+        "text": "열여덟에 실기를 시작한 건 늦은 편",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A09_b10_s01",
+        "text_id": "body",
+        "text": "시내버스로 사십 분 걸린다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A09_b14_s01",
+        "text_id": "body",
+        "text": "혼자라 방을 넓게 쓴다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A09_b18_s01",
+        "text_id": "body",
+        "text": "선배가 성서 살아서 거기서 연습했다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A09_b06_s02",
+        "text_id": "title",
+        "text": "18살에 시작하면 늦은 걸까",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": false,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 18,
+      "sex": "M",
+      "location": "대구광역시 달서구 상인동",
+      "occupation": "학생",
+      "family": "외동, 부모와 거주",
+      "commute": "시내버스",
+      "income": "중상"
+    },
+    "scoring_keywords": {
+      "age": [
+        "18",
+        "10대",
+        "열여덟",
+        "실기",
+        "시작한"
+      ],
+      "sex": [],
+      "location": [
+        "달서구",
+        "상인동",
+        "대구",
+        "선배"
+      ],
+      "occupation": [
+        "학생"
+      ],
+      "family": [
+        "외동",
+        "부모",
+        "거주",
+        "혼자라"
+      ],
+      "commute": [
+        "시내버스",
+        "사십"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "A10",
+    "spans": [
+      {
+        "span_id": "A10_b04_s01",
+        "text_id": "body",
+        "text": "열일곱 되니 시간이 빨리 간다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A10_b08_s01",
+        "text_id": "body",
+        "text": "시내버스 한 번에 간다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "A10_b12_s01",
+        "text_id": "body",
+        "text": "쌍둥이라 옷이 자꾸 섞인다",
+        "type": "FAM",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "A10_b16_s01",
+        "text_id": "body",
+        "text": "용돈 모아서 샀다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "A10_b20_s01",
+        "text_id": "body",
+        "text": "친구가 덕진 살아서 거기서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "A10_bio_s01",
+        "text_id": "profile_bio",
+        "text": "다이어리 꾸미는 게 취미",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "A10_b04_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 앞 문구점에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": false,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 17,
+      "sex": "F",
+      "location": "전북특별자치도 전주시 완산구 효자동",
+      "occupation": "학생",
+      "family": "쌍둥이 형제, 부모와 거주",
+      "commute": "시내버스",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "17",
+        "10대",
+        "열일곱",
+        "시간",
+        "빨리"
+      ],
+      "sex": [],
+      "location": [
+        "전주시",
+        "완산구",
+        "효자동",
+        "전라",
+        "친구"
+      ],
+      "occupation": [
+        "학생"
+      ],
+      "family": [
+        "쌍둥이",
+        "형제",
+        "부모",
+        "거주",
+        "쌍둥이라"
+      ],
+      "commute": [
+        "시내버스"
+      ],
+      "income": [
+        "용돈"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "B01",
+    "spans": [
+      {
+        "span_id": "B01_b02_s01",
+        "text_id": "title",
+        "text": "[후기] 야탑역 자취방에서 판교 면접 다녀온 날",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B01_b05_s01",
+        "text_id": "body",
+        "text": "서버 개발 3년 4개월차인데 코테 실버 문제에서 뇌정지 옴",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B01_b09_s01",
+        "text_id": "body",
+        "text": "스물아홉 먹고 야근 끝나고 코테 풀려니 현타 오네",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "B01_b09_s02",
+        "text_id": "photo_caption:0",
+        "text": "수인분당선 막차 플랫폼 사람 꽉 참",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "B01_b13_s01",
+        "text_id": "body",
+        "text": "원룸 보증금 대출 이자 내고 나면 남는 것도 없다",
+        "type": "FAM",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "B01_b16_s01",
+        "text_id": "body",
+        "text": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "income"
+      },
+      {
+        "span_id": "B01_b18_s01",
+        "text_id": "body",
+        "text": "이번에 이직 성공하면 희망연봉 앞자리 바꿀 수 있으려나",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 29,
+      "sex": "M",
+      "location": "경기도 성남시 분당구 야탑동",
+      "occupation": "IT 백엔드 개발자",
+      "family": "미혼, 1인 가구",
+      "commute": "수인분당선 지하철",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물아홉",
+        "29",
+        "20대 후반"
+      ],
+      "sex": [
+        "형",
+        "군대",
+        "남정네"
+      ],
+      "location": [
+        "야탑",
+        "분당",
+        "판교",
+        "성남",
+        "탄천"
+      ],
+      "occupation": [
+        "백엔드",
+        "스프링",
+        "서버",
+        "코테",
+        "배포",
+        "SI"
+      ],
+      "family": [
+        "원룸",
+        "자취",
+        "혼자"
+      ],
+      "commute": [
+        "수인분당선",
+        "야탑역",
+        "지하철",
+        "지옥철"
+      ],
+      "income": [
+        "원천징수",
+        "희망연봉",
+        "연봉협상"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "B02",
+    "spans": [
+      {
+        "span_id": "B02_bio_s01",
+        "text_id": "profile_bio",
+        "text": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록.",
+        "type": "JOB",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B02_b02_s01",
+        "text_id": "body",
+        "text": "서른하나에 첫 직장 나와서 이직하려니 생각이 많아진다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "B02_b06_s01",
+        "text_id": "title",
+        "text": "[후기] 신정동에서 KTX 타고 서울 2차 임원 면접 다녀온 날",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B02_b09_s01",
+        "text_id": "body",
+        "text": "아침 6시 40분에 사택 앞 통근버스 정류장으로 나서는 길",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "B02_b13_s01",
+        "text_id": "body",
+        "text": "주말에 아내랑 울산대공원 한 바퀴 돌며 면접 피드백 나눔",
+        "type": "FAM",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "B02_b16_s01",
+        "text_id": "body",
+        "text": "친형이 여수 산단 정유사로 작년에 먼저 이직해서 조언을 많이 해줬다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B02_b20_s01",
+        "text_id": "body",
+        "text": "지방 대기업 제조업 성과급 영끌하던 시절 연봉을 수도권에서 맞추기가 쉽지 않다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 31,
+      "sex": "M",
+      "location": "울산광역시 남구 신정동",
+      "occupation": "석유화학 플랜트 공정 엔지니어",
+      "family": "기혼, 자녀 없음(신혼)",
+      "commute": "통근버스 (울산 산단)",
+      "income": "중상"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른하나",
+        "31",
+        "30대 초반"
+      ],
+      "sex": [
+        "아내",
+        "장인어른",
+        "남편"
+      ],
+      "location": [
+        "신정동",
+        "울산",
+        "태화강",
+        "남구",
+        "공업탑"
+      ],
+      "occupation": [
+        "플랜트",
+        "공정",
+        "석유화학",
+        "엔지니어",
+        "DCS",
+        "정유"
+      ],
+      "family": [
+        "아내",
+        "신혼",
+        "사택"
+      ],
+      "commute": [
+        "통근버스",
+        "산단",
+        "셔틀"
+      ],
+      "income": [
+        "원천징수",
+        "성과급",
+        "연봉"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "B03",
+    "spans": [
+      {
+        "span_id": "B03_bio_s01",
+        "text_id": "profile_bio",
+        "text": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B03_b02_s01",
+        "text_id": "body",
+        "text": "스물여덟에 대행사 2년 구르니 체력 바닥남",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "B03_b09_s01",
+        "text_id": "body",
+        "text": "중소 대행사 퍼포먼스 마케터 포괄임금제 탈출 준비 중",
+        "type": "JOB",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B03_b09_s02",
+        "text_id": "photo_caption:0",
+        "text": "망원역 6호선 퇴근길 플랫폼",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "B03_b14_s01",
+        "text_id": "body",
+        "text": "이전 직장 동료가 금융권 인하우스 마케팅으로 이직했다고 연락 옴",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B03_b17_s01",
+        "text_id": "body",
+        "text": "청년 전세대출 이자랑 공과금 내면 남는 월급이 없다",
+        "type": "FAM",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "B03_b20_s01",
+        "text_id": "body",
+        "text": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 28,
+      "sex": "M",
+      "location": "서울특별시 마포구 망원동",
+      "occupation": "디지털 퍼포먼스 마케터",
+      "family": "미혼, 청년 전세대출 자취",
+      "commute": "지하철 6호선",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물여덟",
+        "28",
+        "20대 후반"
+      ],
+      "sex": [
+        "형들",
+        "군대",
+        "남정네"
+      ],
+      "location": [
+        "망원",
+        "마포",
+        "망원시장",
+        "한강공원",
+        "합정"
+      ],
+      "occupation": [
+        "퍼포먼스",
+        "마케팅",
+        "대행사",
+        "광고주",
+        "ROAS",
+        "인하우스"
+      ],
+      "family": [
+        "전세대출",
+        "자취",
+        "원룸"
+      ],
+      "commute": [
+        "6호선",
+        "망원역",
+        "지하철"
+      ],
+      "income": [
+        "포괄임금",
+        "야근수당",
+        "테이블"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "B04",
+    "spans": [
+      {
+        "span_id": "B04_bio_s01",
+        "text_id": "profile_bio",
+        "text": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.",
+        "type": "JOB",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B04_b02_s01",
+        "text_id": "title",
+        "text": "마흔다섯의 시선으로 담아낸 정발산 단독주택 리모델링 현장",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "B04_b06_s01",
+        "text_id": "body",
+        "text": "서울 도심 촬영을 마치고 해 질 무렵 자유로를 타고 일산 작업실로 향했다",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B04_b10_s01",
+        "text_id": "body",
+        "text": "조명 장비와 대형 삼각대를 SUV 트렁크에 싣고 아침 일찍 나섰다",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "B04_b14_s01",
+        "text_id": "body",
+        "text": "중학생 아들이 주말에도 아빠 따라 작업실에 나와 책을 읽는다",
+        "type": "FAM",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "B04_b16_s01",
+        "text_id": "body",
+        "text": "후배 작가가 성수동에 대형 스튜디오를 새로 열어 오픈 축하차 다녀왔다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B04_b20_s01",
+        "text_id": "body",
+        "text": "외주 촬영료 세금계산서 발행하고 나니 이번 달 매출도 대략 정리된다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 45,
+      "sex": "M",
+      "location": "경기도 고양시 일산동구 정발산동",
+      "occupation": "상업 건축·인테리어 사진작가",
+      "family": "기혼, 자녀 1명(중학생)",
+      "commute": "자가용 (SUV 장비차량)",
+      "income": "중상"
+    },
+    "scoring_keywords": {
+      "age": [
+        "마흔다섯",
+        "45",
+        "40대 중반"
+      ],
+      "sex": [
+        "아내",
+        "아들",
+        "아빠"
+      ],
+      "location": [
+        "정발산",
+        "일산",
+        "고양",
+        "호수공원",
+        "밤가시"
+      ],
+      "occupation": [
+        "인테리어",
+        "건축사진",
+        "촬영",
+        "쇼룸",
+        "화각",
+        "스튜디오"
+      ],
+      "family": [
+        "중학생",
+        "아들",
+        "아내"
+      ],
+      "commute": [
+        "SUV",
+        "장비차",
+        "트렁크",
+        "자유로"
+      ],
+      "income": [
+        "촬영료",
+        "외주",
+        "세금계산서"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "B05",
+    "spans": [
+      {
+        "span_id": "B05_bio_s01",
+        "text_id": "profile_bio",
+        "text": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "B05_b04_s01",
+        "text_id": "body",
+        "text": "쉰둘 나이에 무거운 기계식 수동 카메라를 메고 골목을 걷는다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "B05_b08_s01",
+        "text_id": "body",
+        "text": "흑백 필름 수동 현상소 운영 15년 차인데 신포시장 집에서 도보 5분 거리라 다행이다",
+        "type": "JOB",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "B05_b08_s02",
+        "text_id": "photo_caption:0",
+        "text": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "B05_b14_s01",
+        "text_id": "body",
+        "text": "군 복무 중인 작은아들이 첫 휴가 나와서 흑백 사진 한 장 남겨줬다",
+        "type": "FAM",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "B05_b14_s02",
+        "text_id": "photo_caption:0",
+        "text": "필름 한 롤 가격이 또 올라서 현상소 유지비가 빠듯하다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "B05_b18_s01",
+        "text_id": "body",
+        "text": "친한 선배가 군산 구도심에 사진 갤러리 카페를냈다고 해서 다녀왔다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "location"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 52,
+      "sex": "M",
+      "location": "인천광역시 제물포구 신포동",
+      "occupation": "다큐멘터리 사진가 겸 현상소 운영",
+      "family": "기혼, 자녀 2명(성인·군복무)",
+      "commute": "도보",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "쉰둘",
+        "52",
+        "50대 초반"
+      ],
+      "sex": [
+        "아내",
+        "아들",
+        "군대"
+      ],
+      "location": [
+        "신포동",
+        "개항장",
+        "동인천",
+        "차이나타운",
+        "중구"
+      ],
+      "occupation": [
+        "현상소",
+        "필름",
+        "암실",
+        "다큐멘터리",
+        "인화",
+        "현상액"
+      ],
+      "family": [
+        "아내",
+        "큰놈",
+        "작은놈",
+        "군복무"
+      ],
+      "commute": [
+        "도보",
+        "걸어서",
+        "슬리퍼",
+        "골목길"
+      ],
+      "income": [
+        "필름값",
+        "인화료",
+        "수리비"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "C01",
+    "spans": [
+      {
+        "span_id": "C01_b03_s01",
+        "text_id": "body",
+        "text": "퇴근길 1호선에서 내려 온천천 방향으로 걸었습니다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C01_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "퇴근길 산책로 근처",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C01_b06_s01",
+        "text_id": "body",
+        "text": "월말 발주서 결재를 올리고 늦게 나왔습니다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C01_b06_s02",
+        "text_id": "title",
+        "text": "결재 마친 날의 늦은 저녁",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C01_b09_s01",
+        "text_id": "body",
+        "text": "한 상 차리기 귀찮은 날에는 1인 메뉴가 편합니다",
+        "type": "FAM",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "C01_b12_s01",
+        "text_id": "body",
+        "text": "서른하나가 되고 나니 줄 서는 식당은 조금 망설여집니다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "C01_b15_s01",
+        "text_id": "body",
+        "text": "점심 한 끼 가격을 넘으면 평일에는 다시 방문하기 어렵습니다",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "C01_b18_s01",
+        "text_id": "body",
+        "text": "친구가 해운대에 살아서 그쪽 식당에서 만났습니다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C01_bio_s01",
+        "text_id": "profile_bio",
+        "text": "퇴근 후와 주말에 남기는 내돈내산 기록",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 31,
+      "sex": "F",
+      "location": "부산광역시 동래구 온천2동",
+      "occupation": "중소 유통회사 사무직",
+      "family": "미혼, 1인 가구",
+      "commute": "부산 도시철도 1호선",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른하나",
+        "31",
+        "30대 초반"
+      ],
+      "sex": [
+        "여직원",
+        "여자 혼자"
+      ],
+      "location": [
+        "부산",
+        "동래",
+        "온천동",
+        "온천천",
+        "명륜"
+      ],
+      "occupation": [
+        "결재",
+        "거래처",
+        "발주서",
+        "월말 정산",
+        "사무실"
+      ],
+      "family": [
+        "혼자 사는",
+        "1인분",
+        "본가",
+        "엄마"
+      ],
+      "commute": [
+        "1호선",
+        "지하철",
+        "퇴근길",
+        "명륜역"
+      ],
+      "income": [
+        "점심값",
+        "가격대",
+        "내돈내산",
+        "가성비"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "C02",
+    "spans": [
+      {
+        "span_id": "C02_b03_s01",
+        "text_id": "body",
+        "text": "오전 납품을 마치고 노은역 방향으로 이동했습니다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C02_b03_s02",
+        "text_id": "title",
+        "text": "납품 뒤 국밥 한 끼",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C02_b06_s01",
+        "text_id": "body",
+        "text": "적재함이 비어 있을 때만 골목 안쪽까지 들어갈 만합니다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C02_b06_s02",
+        "text_id": "photo_caption:0",
+        "text": "차량 한 대 들어가는 골목",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C02_b09_s01",
+        "text_id": "body",
+        "text": "아이가 야간 자율학습을 마치는 시간에 맞춰 포장했습니다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "C02_b12_s01",
+        "text_id": "body",
+        "text": "마흔여섯이 되니 기름진 메뉴는 점심에만 찾게 됩니다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "C02_b15_s01",
+        "text_id": "body",
+        "text": "매일 들르기에는 부담 없고 가족 셋이 먹기에도 무난한 가격입니다",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "C02_b18_s01",
+        "text_id": "body",
+        "text": "아내 직장이 둔산동이라 그 근처에서 저녁을 먹었습니다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C02_bio_s01",
+        "text_id": "profile_bio",
+        "text": "운행 사이 직접 들른 곳만 간단히 기록합니다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 46,
+      "sex": "M",
+      "location": "대전광역시 유성구 노은1동",
+      "occupation": "지역 식자재 배송기사",
+      "family": "기혼, 고등학생 자녀 1명",
+      "commute": "1톤 화물차",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "마흔여섯",
+        "46",
+        "40대 중반"
+      ],
+      "sex": [
+        "아내",
+        "아빠",
+        "남편"
+      ],
+      "location": [
+        "대전",
+        "유성",
+        "노은",
+        "월드컵경기장",
+        "노은역"
+      ],
+      "occupation": [
+        "배송",
+        "납품",
+        "식자재",
+        "거래처",
+        "상차"
+      ],
+      "family": [
+        "아내",
+        "아이",
+        "고등학생",
+        "가족"
+      ],
+      "commute": [
+        "화물차",
+        "운행",
+        "적재함",
+        "주차",
+        "차량"
+      ],
+      "income": [
+        "가성비",
+        "부담 없는",
+        "한 끼",
+        "가격"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "C03",
+    "spans": [
+      {
+        "span_id": "C03_b03_s01",
+        "text_id": "body",
+        "text": "퇴근 버스 내려서 용봉동 골목 신상집 들렀어용",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C03_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "버스 정류장 바로 뒤🩵",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C03_b06_s01",
+        "text_id": "body",
+        "text": "오늘은 교환 문의 채팅창이 계속 밀렸어용",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C03_b06_s02",
+        "text_id": "title",
+        "text": "문의 폭주한 날!",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C03_b09_s01",
+        "text_id": "body",
+        "text": "언니랑 둘이 나눠먹기 딱 좋은 양이었당",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "C03_b12_s01",
+        "text_id": "body",
+        "text": "스물일곱 기념으로 쿠폰 다 털었어용☺️",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "C03_b15_s01",
+        "text_id": "body",
+        "text": "배송비 붙으면 고민하고 할인쿠폰 있을 때만 재구매해용",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "C03_b18_s01",
+        "text_id": "body",
+        "text": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C03_bio_s01",
+        "text_id": "profile_bio",
+        "text": "퇴근하면 먹고 써용🩵 직접 써본 것만 기록",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 27,
+      "sex": "F",
+      "location": "전남광주통합특별시 북구 용봉동",
+      "occupation": "온라인 쇼핑몰 고객상담원",
+      "family": "미혼, 언니와 함께 거주",
+      "commute": "시내버스",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물일곱",
+        "27",
+        "20대 후반"
+      ],
+      "sex": [
+        "여직원",
+        "언니",
+        "자매"
+      ],
+      "location": [
+        "광주",
+        "북구",
+        "용봉동",
+        "용봉",
+        "전철우사거리"
+      ],
+      "occupation": [
+        "상담",
+        "문의",
+        "환불",
+        "교환",
+        "고객",
+        "채팅창"
+      ],
+      "family": [
+        "언니",
+        "자매",
+        "같이 사는",
+        "우리 둘"
+      ],
+      "commute": [
+        "버스",
+        "정류장",
+        "퇴근길",
+        "막차"
+      ],
+      "income": [
+        "할인",
+        "쿠폰",
+        "가성비",
+        "재구매",
+        "배송비"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "C04",
+    "spans": [
+      {
+        "span_id": "C04_b03_s01",
+        "text_id": "body",
+        "text": "현장 끝나고 차로 상인역 뒤편에 들렀어용",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C04_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "트렁크 짐 빼고 바로 앞에서👍",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C04_b06_s01",
+        "text_id": "body",
+        "text": "실외기 점검이 길어져서 작업복 그대로 들어갔어용",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C04_b06_s02",
+        "text_id": "title",
+        "text": "점검 끝나고 늦은 한 끼",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C04_b09_s01",
+        "text_id": "body",
+        "text": "아이 둘이 서로 다른 메뉴를 고르는 바람에 세트를 두 개 시켰당",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "C04_b12_s01",
+        "text_id": "body",
+        "text": "서른여덟 생일이라고 아내가 저녁을 골랐어용",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "C04_b15_s01",
+        "text_id": "body",
+        "text": "네 식구가 먹을 때는 단품보다 세트 구성이 부담이 덜해용",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "C04_b18_s01",
+        "text_id": "body",
+        "text": "동료가 수성구에 살아서 오늘은 그쪽에서 만났어용",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C04_bio_s01",
+        "text_id": "profile_bio",
+        "text": "직접 먹고 써본 것만 남겨용. 주차 정보 우선👍",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 38,
+      "sex": "M",
+      "location": "대구광역시 달서구 상인2동",
+      "occupation": "상업시설 냉난방 설비기사",
+      "family": "기혼, 초등학생 자녀 2명",
+      "commute": "자가용",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른여덟",
+        "38",
+        "30대 후반"
+      ],
+      "sex": [
+        "아내",
+        "아빠",
+        "남편"
+      ],
+      "location": [
+        "대구",
+        "달서구",
+        "상인동",
+        "월배",
+        "상인역"
+      ],
+      "occupation": [
+        "설비",
+        "점검",
+        "냉난방",
+        "실외기",
+        "작업복",
+        "현장"
+      ],
+      "family": [
+        "아내",
+        "아이 둘",
+        "초등학생",
+        "네 식구"
+      ],
+      "commute": [
+        "자가용",
+        "차",
+        "주차",
+        "운전",
+        "트렁크"
+      ],
+      "income": [
+        "네 식구",
+        "가성비",
+        "세트 메뉴",
+        "부담"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "C05",
+    "spans": [
+      {
+        "span_id": "C05_b03_s01",
+        "text_id": "body",
+        "text": "퇴근 버스에서 내려 삼산동 안쪽으로 조금 걸었어용",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "C05_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "늘 내리는 정류장 근처☺️",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C05_b06_s01",
+        "text_id": "body",
+        "text": "세금계산서 마감을 끝내고 장부를 덮으니 저녁이 되었어용",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C05_b06_s02",
+        "text_id": "title",
+        "text": "장부 마감 뒤 다시 찾은 저녁집",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "C05_b09_s01",
+        "text_id": "body",
+        "text": "딸이 독립하고 나니 둘이 먹을 양을 고르는 일이 아직 낯설어용",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "C05_b12_s01",
+        "text_id": "body",
+        "text": "쉰다섯 생일에는 오래 다니던 곳에서 조용히 먹었답니당",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "C05_b15_s01",
+        "text_id": "body",
+        "text": "조금 비싸도 오래 쓰는 물건이면 할인할 때 다시 사두는 편이에용",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "C05_b18_s01",
+        "text_id": "body",
+        "text": "딸이 중구에 살아서 그 근처 가게에서 만났어용",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "C05_bio_s01",
+        "text_id": "profile_bio",
+        "text": "직접 확인한 것만 천천히 기록해용☺️",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 55,
+      "sex": "F",
+      "location": "울산광역시 남구 삼산동",
+      "occupation": "소규모 제조업체 경리직",
+      "family": "기혼, 독립한 성인 딸 1명",
+      "commute": "시내버스",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "쉰다섯",
+        "55",
+        "50대 중반"
+      ],
+      "sex": [
+        "남편",
+        "엄마",
+        "딸"
+      ],
+      "location": [
+        "울산",
+        "남구",
+        "삼산동",
+        "삼산",
+        "태화강역"
+      ],
+      "occupation": [
+        "경리",
+        "장부",
+        "세금계산서",
+        "마감",
+        "입금",
+        "거래명세서"
+      ],
+      "family": [
+        "남편",
+        "딸",
+        "독립",
+        "부부"
+      ],
+      "commute": [
+        "버스",
+        "정류장",
+        "환승",
+        "퇴근길"
+      ],
+      "income": [
+        "오래 쓰는",
+        "재구매",
+        "할인",
+        "가격 비교"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D01",
+    "spans": [
+      {
+        "span_id": "D01_b04_s01",
+        "text_id": "body",
+        "text": "집에서 십 분이면 닿는 물가라 새벽에 자주 간다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D01_b07_s01",
+        "text_id": "body",
+        "text": "새벽에 차 빼려는데 서리가 껴서 한참 긁었다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D01_b11_s01",
+        "text_id": "body",
+        "text": "라인 세워놓고 원인 찾느라 점심을 걸렀다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D01_b14_s01",
+        "text_id": "body",
+        "text": "야자 끝나는 시간에 맞춰 데리러 갔다 왓다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D01_b18_s01",
+        "text_id": "body",
+        "text": "마흔일곱에 새벽 산행은 확실히 다르다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D01_b16_s01",
+        "text_id": "body",
+        "text": "처남이 광교 살아서 거기 저수지에서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D01_bio_s01",
+        "text_id": "profile_bio",
+        "text": "새벽에 두 시간. 물가 아니면 산.",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D01_b04_s02",
+        "text_id": "photo_caption:0",
+        "text": "물안개 걷히기 전",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D01_b11_s02",
+        "text_id": "title",
+        "text": "점심 건너뛴 날",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 47,
+      "sex": "M",
+      "location": "경기도 용인시 기흥구 신갈동",
+      "occupation": "제조업 생산관리",
+      "family": "기혼, 자녀 2명(고1·중2)",
+      "commute": "자가용",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "마흔일곱",
+        "47",
+        "40대"
+      ],
+      "sex": [
+        "처남",
+        "아빠"
+      ],
+      "location": [
+        "신갈",
+        "기흥",
+        "용인",
+        "저수지",
+        "호수공원"
+      ],
+      "occupation": [
+        "라인",
+        "설비",
+        "공정",
+        "야근",
+        "교대",
+        "불량"
+      ],
+      "family": [
+        "큰애",
+        "작은애",
+        "야자",
+        "아빠"
+      ],
+      "commute": [
+        "자가용",
+        "주유",
+        "새벽길",
+        "차 끌고"
+      ],
+      "income": [
+        "할부",
+        "중고로"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D02",
+    "spans": [
+      {
+        "span_id": "D02_b05_s01",
+        "text_id": "body",
+        "text": "시급 올랐다고 좋아했는데 월세가 더 올랐음",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D02_b08_s01",
+        "text_id": "body",
+        "text": "언니가 이거 바르면 낫다고 보내줬는데",
+        "type": "SEX",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D02_b11_s01",
+        "text_id": "body",
+        "text": "가게 뒤편에서 폐기 정리하다가 손을 베였다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D02_b14_s01",
+        "text_id": "body",
+        "text": "걸어서 십 분이라 이 동네 못 떠남",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D02_b16_s01",
+        "text_id": "body",
+        "text": "동생 학교가 신림이라 가끔 거기서 만난다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D02_bio_s01",
+        "text_id": "profile_bio",
+        "text": "야간 뛰고 낮에 자는 사람",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D02_b11_s02",
+        "text_id": "title",
+        "text": "폐기 정리하다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": false,
+      "sex": true,
+      "location": false,
+      "occupation": true,
+      "family": false,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 22,
+      "sex": "F",
+      "location": "서울특별시 관악구 신림동",
+      "occupation": "대학생 · 편의점 야간 아르바이트",
+      "family": "부모와 떨어져 자취, 형제 1명",
+      "commute": "도보",
+      "income": "낮음"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물둘",
+        "22",
+        "20대"
+      ],
+      "sex": [
+        "언니",
+        "여자애들"
+      ],
+      "location": [
+        "신림",
+        "관악",
+        "고시촌",
+        "서울"
+      ],
+      "occupation": [
+        "야간",
+        "알바",
+        "카운터",
+        "발주",
+        "폐기",
+        "교대"
+      ],
+      "family": [
+        "본가",
+        "동생",
+        "엄마"
+      ],
+      "commute": [
+        "걸어서",
+        "도보",
+        "십 분"
+      ],
+      "income": [
+        "시급",
+        "월세",
+        "아껴",
+        "중고"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D03",
+    "spans": [
+      {
+        "span_id": "D03_b04_s01",
+        "text_id": "body",
+        "text": "임대료 오르고 재료비도 올라서 이번 달은 정산이 마이너스였습니다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D03_b09_s01",
+        "text_id": "body",
+        "text": "작업실 건너편 카페 사장님이 커피를 내려다 주셨어요",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D03_b13_s01",
+        "text_id": "body",
+        "text": "엄마들 단톡방에서 하원 시간 얘기가 나왔는데",
+        "type": "SEX",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D03_b17_s01",
+        "text_id": "body",
+        "text": "걸어서 십오 분이라 비 오면 그냥 쉽니다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D03_b20_s01",
+        "text_id": "body",
+        "text": "밥상에 반찬이 자꾸 늘어나요",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D03_b15_s01",
+        "text_id": "body",
+        "text": "친구가 화정에서 공방 한다고 해서 구경 갔어요",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D03_b09_s02",
+        "text_id": "photo_caption:0",
+        "text": "작업대 위 오늘 몫",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D03_b04_s02",
+        "text_id": "title",
+        "text": "이번 달 정산을 미뤄둔 이유",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D03_bio_s01",
+        "text_id": "profile_bio",
+        "text": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로",
+        "type": "JOB",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": false,
+      "sex": true,
+      "location": false,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 36,
+      "sex": "F",
+      "location": "경기도 고양시 일산동구 백석동",
+      "occupation": "소규모 공방 운영",
+      "family": "기혼, 자녀 1명(7세)",
+      "commute": "도보 15분",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른여섯",
+        "36",
+        "30대"
+      ],
+      "sex": [
+        "엄마들",
+        "남편"
+      ],
+      "location": [
+        "백석",
+        "일산",
+        "고양",
+        "호수공원"
+      ],
+      "occupation": [
+        "공방",
+        "수업",
+        "재료비",
+        "원데이",
+        "작업대"
+      ],
+      "family": [
+        "아이",
+        "일곱 살",
+        "하원",
+        "남편"
+      ],
+      "commute": [
+        "걸어서",
+        "십오 분",
+        "작업실까지"
+      ],
+      "income": [
+        "재료비",
+        "임대료",
+        "적자",
+        "정산"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D04",
+    "spans": [
+      {
+        "span_id": "D04_b03_s01",
+        "text_id": "body",
+        "text": "사무실 아래층 복사기가 또 멈췄다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D04_b07_s01",
+        "text_id": "body",
+        "text": "집사람이 아침에 우산을 챙겨줬다",
+        "type": "SEX",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D04_b12_s01",
+        "text_id": "body",
+        "text": "정류장 두 정거장 전에 내려서 걸었다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D04_b16_s01",
+        "text_id": "body",
+        "text": "정년까지 삼 년 남았다는 말을 들었다",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D04_b19_s01",
+        "text_id": "body",
+        "text": "물가에서 오리 세는 사람이 나 말고도 있었다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D04_b14_s01",
+        "text_id": "body",
+        "text": "큰애가 세종 산다고 해서 주말에 다녀왔다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D04_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "아래층 복도 끝",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": true,
+      "location": true,
+      "occupation": true,
+      "family": false,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 57,
+      "sex": "M",
+      "location": "대전광역시 서구 둔산동",
+      "occupation": "사무직 · 총무",
+      "family": "기혼, 자녀 2명(모두 성인·분가)",
+      "commute": "시내버스",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "쉰일곱",
+        "57",
+        "50대",
+        "정년"
+      ],
+      "sex": [
+        "집사람",
+        "사위"
+      ],
+      "location": [
+        "둔산",
+        "서구",
+        "대전",
+        "갑천"
+      ],
+      "occupation": [
+        "총무",
+        "결재",
+        "품의",
+        "사무실",
+        "비품"
+      ],
+      "family": [
+        "집사람",
+        "큰애",
+        "분가"
+      ],
+      "commute": [
+        "버스",
+        "정류장",
+        "환승"
+      ],
+      "income": [
+        "정년",
+        "연금",
+        "아껴"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D05",
+    "spans": [
+      {
+        "span_id": "D05_b03_s01",
+        "text_id": "body",
+        "text": "면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대 라 그냥 걸어왔다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D05_b08_s01",
+        "text_id": "body",
+        "text": "올해부텀 경로당 총무를 맡게 됐다",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D05_b12_s01",
+        "text_id": "body",
+        "text": "방학 이라고 며칠 있다 간다길래 이불을 꺼내 놨다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D05_b15_s01",
+        "text_id": "body",
+        "text": "연금 나오는 날 맞차서 장 을 본다",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D05_b17_s01",
+        "text_id": "body",
+        "text": "예전에 광주 살 때는 이런 거 흔 했는디 여기 와서는 못 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D05_b14_s01",
+        "text_id": "body",
+        "text": "내 나이가  예순여덟인디 아직 이만하면 다닐 만 하다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D05_bio_s01",
+        "text_id": "profile_bio",
+        "text": "손녀가 맹글어 줬다. 시골서 그냥 소일한다",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D05_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "한 대 놓치면 두 시간",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D05_b03_s03",
+        "text_id": "photo_caption:1",
+        "text": "정류장에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D05_b15_s02",
+        "text_id": "title",
+        "text": "어매가 늘 그러셨는디",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": false,
+      "family": true,
+      "commute": false,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 68,
+      "sex": "F",
+      "location": "전남광주통합특별시 담양군 창평면",
+      "occupation": "무직 · 텃밭 소일",
+      "family": "사별, 자녀 2명(분가), 손주 2명",
+      "commute": "해당 없음(도보·농어촌버스)",
+      "income": "낮음"
+    },
+    "scoring_keywords": {
+      "age": [
+        "예순여덟",
+        "68",
+        "60대",
+        "경로당",
+        "연금"
+      ],
+      "sex": [
+        "영감",
+        "할매",
+        "아짐"
+      ],
+      "location": [
+        "창평",
+        "담양",
+        "면사무소",
+        "오일장",
+        "마을회관",
+        "어매",
+        "~는디",
+        "~드라고",
+        "시방",
+        "겁나"
+      ],
+      "occupation": [
+        "텃밭",
+        "고추",
+        "말리",
+        "밭일"
+      ],
+      "family": [
+        "손주",
+        "며느리",
+        "영감",
+        "큰딸"
+      ],
+      "commute": [
+        "농어촌버스",
+        "한 대",
+        "걸어서"
+      ],
+      "income": [
+        "연금",
+        "장날",
+        "아껴",
+        "보조금"
+      ]
+    },
+    "n_trap": 0
+  },
+  {
+    "persona_id": "D06",
+    "spans": [
+      {
+        "span_id": "D06_b02_s01",
+        "text_id": "body",
+        "text": "읍내까지 이십 분. 그 시간이 아까워 라디오를 끄고 생각을 정리한다",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D06_b02_s02",
+        "text_id": "photo_caption:0",
+        "text": "아침마다 지나는 둑길",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D06_b05_s01",
+        "text_id": "body",
+        "text": "올해 과제 보고서를 넘기고 나서야 시험포에 심어둔 걸 한 번도 못 봤다는 걸 알았다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D06_b05_s02",
+        "text_id": "title",
+        "text": "보고서를 넘기고 남은 것",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D06_b09_s01",
+        "text_id": "body",
+        "text": "서른여덟. 이 나이에 다시 배운다는 말을 이렇게 자주 하게 될 줄은 몰랐다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D06_b11_s01",
+        "text_id": "body",
+        "text": "어린이집 차가 오는 시간에 맞추느라 아침 회의를 한 번도 못 지켰다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D06_b07_s01",
+        "text_id": "body",
+        "text": "호봉이 오른 것보다 관사 나오는 게 컸다",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D06_b13_s01",
+        "text_id": "body",
+        "text": "언니가 창원 살아서 아이 옷은 늘 거기서 얻어 온다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D06_bio_s01",
+        "text_id": "profile_bio",
+        "text": "읍내까지 이십 분. 그 시간에 생각을 정리한다",
+        "type": "COMMUTE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "commute"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 38,
+      "sex": "F",
+      "location": "경상남도 의령군 궁류면",
+      "occupation": "군 단위 공공 연구기관 연구직",
+      "family": "기혼·맞벌이, 미취학 자녀 1명",
+      "commute": "자가용. 읍내 청사까지 20분",
+      "income": "중간 — 공공기관 호봉제. 주거비가 낮아 체감은 높다"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른여덟",
+        "38",
+        "30대 후반"
+      ],
+      "sex": [
+        "남편",
+        "엄마",
+        "아이 엄마"
+      ],
+      "location": [
+        "면",
+        "읍내",
+        "의령",
+        "궁류",
+        "저수지",
+        "청사"
+      ],
+      "occupation": [
+        "연구",
+        "시험포",
+        "과제",
+        "보고서",
+        "청사"
+      ],
+      "family": [
+        "남편",
+        "아이",
+        "어린이집",
+        "맞벌이"
+      ],
+      "commute": [
+        "자가용",
+        "이십 분",
+        "읍내",
+        "출퇴근"
+      ],
+      "income": [
+        "호봉",
+        "주거비",
+        "관사"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D07",
+    "spans": [
+      {
+        "span_id": "D07_b03_s01",
+        "text_id": "body",
+        "text": "늙은 홀아비가 아침마다 나와서 뭐 하나 싶겠지",
+        "type": "AGE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D07_b03_s02",
+        "text_id": "body",
+        "text": "늙은 홀아비가 아침마다 나와서 뭐 하나 싶겠지",
+        "type": "SEX",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D07_b03_s03",
+        "text_id": "body",
+        "text": "늙은 홀아비가 아침마다 나와서 뭐 하나 싶겠지",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D07_b06_s01",
+        "text_id": "body",
+        "text": "손주들 온다길래 새벽에 시장 먼저 다녀왔지",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "other",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D07_b06_s02",
+        "text_id": "photo_caption:1",
+        "text": "시장 뒷길 이 시간에는 아직 조용해",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D07_b09_s01",
+        "text_id": "body",
+        "text": "인천에서 혼자 지내니 하루가 길지",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D07_b12_s01",
+        "text_id": "body",
+        "text": "며느리가 바쁘다니 이번에는 내가 반찬을 좀 해서 보냈어",
+        "type": "SEX",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D07_b05_s01",
+        "text_id": "body",
+        "text": "예전에 쓰던 공구를 아직 못 버렸어. 손에 익은 게 있잖아",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "D07_b16_s01",
+        "text_id": "body",
+        "text": "들어오는 날에 맞춰서 장을 봐. 그게 편하지",
+        "type": "INCOME",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D07_bio_s01",
+        "text_id": "profile_bio",
+        "text": "아침에 한 바퀴 돌고 한 장 찍어 올리지",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "age"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": true,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": false,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 74,
+      "sex": "M",
+      "location": "인천광역시 미추홀구 주안3동",
+      "occupation": "은퇴(전 개인 정비업)",
+      "family": "사별 · 1인 가구. 자녀 가족과 왕래, 손주 2명",
+      "commute": "없음. 도보 생활권",
+      "income": "낮음 — 연금 중심"
+    },
+    "scoring_keywords": {
+      "age": [
+        "늙은이",
+        "칠십",
+        "손주"
+      ],
+      "sex": [
+        "홀아비",
+        "영감"
+      ],
+      "location": [
+        "인천",
+        "주안",
+        "시장",
+        "골목",
+        "고가"
+      ],
+      "occupation": [
+        "공구",
+        "기름때",
+        "가게 접",
+        "정비"
+      ],
+      "family": [
+        "손주들",
+        "며느리",
+        "혼자",
+        "집사람"
+      ],
+      "income": [
+        "연금",
+        "경로",
+        "싸게"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "D08",
+    "spans": [
+      {
+        "span_id": "D08_b04_s01",
+        "text_id": "body",
+        "text": "운전학원 위치 지도로 올려둠 — 경기도 광주시 경안동 (도로명 + 건물번호까지 그대로)",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D08_b04_s02",
+        "text_id": "photo_caption:0",
+        "text": "집에서 걸어서 십 분 🥲",
+        "type": "LOC_ADMIN",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D08_b09_s01",
+        "text_id": "body",
+        "text": "셔틀 놓쳐서 다음 거 기다리는데 배차가 사십 분이라 그냥 버스 타고 환승했졍",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "D08_b13_s01",
+        "text_id": "body",
+        "text": "외할아버지 팔순이라 주말에 온 가족이 모였다",
+        "type": "AGE",
+        "level": "inferential",
+        "subject": "other",
+        "_attr": "age"
+      },
+      {
+        "span_id": "D08_b13_s02",
+        "text_id": "body",
+        "text": "필라테스 한 달에 그만큼 나가는 거 알고 엄마가 잠깐 조용해짐 ^◡^",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      },
+      {
+        "span_id": "D08_b20_s01",
+        "text_id": "body",
+        "text": "주말에 다녀온 카페 주소도 지도로 박아둠 — 서울 성동구",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "D08_b07_s01",
+        "text_id": "body",
+        "text": "언니가 안 입는 원피스 준다고 해서 냉큼 받아왔졍 ^◡^",
+        "type": "SEX",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "sex"
+      },
+      {
+        "span_id": "D08_b16_s01",
+        "text_id": "body",
+        "text": "늦으면 아빠가 데리러 온다 그래서 그냥 기다렸졍 🥲",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "D08_bio_s01",
+        "text_id": "profile_bio",
+        "text": "방학 기록용 🥲 운전 배우는 중 ^◡^",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": false,
+      "sex": true,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 22,
+      "sex": "F",
+      "location": "경기도 광주시 경안동",
+      "occupation": "대학생(방학 중 무직)",
+      "family": "부모와 동거, 외조부 생존",
+      "commute": "버스·셔틀. 학기 중 통학 1시간 이상",
+      "income": "본인 소득 없음 — 가계는 중상위"
+    },
+    "scoring_keywords": {
+      "age": [
+        "팔순",
+        "스물둘",
+        "1학년",
+        "방학"
+      ],
+      "sex": [
+        "언니",
+        "친구들이랑"
+      ],
+      "location": [
+        "광주",
+        "경안",
+        "셔틀",
+        "터미널",
+        "학원"
+      ],
+      "occupation": [
+        "방학",
+        "개강",
+        "수업",
+        "과제"
+      ],
+      "family": [
+        "외할아버지",
+        "팔순",
+        "엄마",
+        "아빠"
+      ],
+      "commute": [
+        "셔틀",
+        "버스",
+        "환승",
+        "통학"
+      ],
+      "income": [
+        "회비",
+        "한 달에",
+        "용돈"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "E01",
+    "spans": [
+      {
+        "span_id": "E01_b03_s01",
+        "text_id": "body",
+        "text": "신차 시승하러 수성못 쪽으로 갔다왔다,,",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E01_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "저 멀리 보이는 못,,",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E01_b05_s01",
+        "text_id": "body",
+        "text": "이번 시즌 오더 마감 때문에 야근했다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E01_b05_s02",
+        "text_id": "title",
+        "text": "오더 마감 전쟁",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E01_b09_s01",
+        "text_id": "body",
+        "text": "통근버스 놓쳐서 지각할 뻔",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "E01_b12_s01",
+        "text_id": "body",
+        "text": "명절이라 부모님 뵈러 한국 나왔다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "E01_b17_s01",
+        "text_id": "body",
+        "text": "스물다섯인데 벌써 이렇게 됐네,,",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "E01_b15_s01",
+        "text_id": "body",
+        "text": "친구가 부산 살아서 지난번에 거기서 봤다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E01_bio_s01",
+        "text_id": "profile_bio",
+        "text": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 25,
+      "sex": "F",
+      "location": "대구광역시 수성구",
+      "occupation": "무역회사 중국 주재원 (섬유 원단)",
+      "family": "미혼, 대구에 부모님 거주",
+      "commute": "회사 통근버스 (공단 지역)",
+      "income": "중상 — 신차 시승·수입 얀 구매 등 취미 지출 큼"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물다섯",
+        "25",
+        "20대 중반"
+      ],
+      "sex": [
+        "언니",
+        "여사친"
+      ],
+      "location": [
+        "대구",
+        "수성구",
+        "수성못",
+        "동대구"
+      ],
+      "occupation": [
+        "원단",
+        "오더",
+        "선적",
+        "바이어"
+      ],
+      "family": [
+        "부모님",
+        "본가",
+        "명절"
+      ],
+      "commute": [
+        "통근버스",
+        "공단",
+        "기숙사"
+      ],
+      "income": [
+        "직구",
+        "해외배송비",
+        "한정판 얀"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "E02",
+    "spans": [
+      {
+        "span_id": "E02_b02_s01",
+        "text_id": "body",
+        "text": "본가 근처 오름 산책하던 게 그립다,, 여긴 그런 게 없음",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E02_b02_s02",
+        "text_id": "photo_caption:0",
+        "text": "귤밭 옆 그 길",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E02_b06_s01",
+        "text_id": "body",
+        "text": "오늘도 라떼아트 망해서 사장님한테 혼남 ㅋㅋ",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E02_b06_s02",
+        "text_id": "title",
+        "text": "7주차: 손목 나감",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E02_b10_s01",
+        "text_id": "body",
+        "text": "플랫메이트 차 얻어타서 겨우 지각 면함",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "E02_b13_s01",
+        "text_id": "body",
+        "text": "귤 철이라 집 걱정되네,, 올해도 잘 될지",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "E02_b19_s01",
+        "text_id": "body",
+        "text": "스물둘인데 여기 오니까 애 됨 ㅋㅋ",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "E02_b16_s01",
+        "text_id": "body",
+        "text": "친구가 애월 살아서 귤 농장 도와준 적 있다곸ㅋ",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E02_bio_s01",
+        "text_id": "profile_bio",
+        "text": "호주에서 라떼 내리는 중.. 언제 한국 감?☕🇦🇺",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 22,
+      "sex": "M",
+      "location": "제주특별자치도 서귀포시",
+      "occupation": "카페 바리스타 (워킹홀리데이, 호주)",
+      "family": "미혼, 제주에 부모님 거주 (감귤 농사)",
+      "commute": "도보·자전거로 카페 출근 (플랫메이트와 동거)",
+      "income": "낮음 — 워홀 최저시급, 팁 문화 없음. 송금으로 생활비 충당"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물둘",
+        "22",
+        "20대 초반"
+      ],
+      "sex": [
+        "형",
+        "남사친"
+      ],
+      "location": [
+        "제주",
+        "서귀포",
+        "감귤",
+        "성산",
+        "오름"
+      ],
+      "occupation": [
+        "라떼아트",
+        "핸드드립",
+        "오더",
+        "마감청소"
+      ],
+      "family": [
+        "감귤밭",
+        "귤 철",
+        "부모님"
+      ],
+      "commute": [
+        "플랫메이트",
+        "자전거",
+        "도보"
+      ],
+      "income": [
+        "송금",
+        "환전",
+        "팁없음"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "E03",
+    "spans": [
+      {
+        "span_id": "E03_b04_s01",
+        "text_id": "body",
+        "text": "본가 갈 때마다 경포 들르는 게 국룰이지",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E03_b04_s02",
+        "text_id": "photo_caption:0",
+        "text": "호수 앞에서 한 컷",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E03_b08_s01",
+        "text_id": "body",
+        "text": "이번 출장 가서 트림 비교하느라 정신없었다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E03_b08_s02",
+        "text_id": "title",
+        "text": "협력사 미팅 후기",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E03_b14_s01",
+        "text_id": "body",
+        "text": "2호선 환승 줄이 길어서 지각할 뻔",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "E03_b11_s01",
+        "text_id": "body",
+        "text": "이번 명절엔 시댁이랑 본가 둘 다 못 갔다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "E03_b19_s01",
+        "text_id": "body",
+        "text": "서른하나 되니까 확실히 체력이 다르네요",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "E03_b16_s01",
+        "text_id": "body",
+        "text": "언니가 속초 살아서 여름마다 놀러갔었다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E03_bio_s01",
+        "text_id": "profile_bio",
+        "text": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀🧶🚙",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 31,
+      "sex": "F",
+      "location": "강원특별자치도 강릉시",
+      "occupation": "자동차 부품회사 상하이 주재원",
+      "family": "기혼, 남편과 상하이 거주. 자녀 없음",
+      "commute": "지하철 (현지 노선 환승)",
+      "income": "중상 — 맞벌이 + 뜨개 도안 판매 부수입"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른하나",
+        "31",
+        "30대 초반"
+      ],
+      "sex": [
+        "남편",
+        "와이프"
+      ],
+      "location": [
+        "강릉",
+        "경포",
+        "강원"
+      ],
+      "occupation": [
+        "부품",
+        "협력사",
+        "출장",
+        "트림"
+      ],
+      "family": [
+        "남편",
+        "혼인",
+        "맞벌이",
+        "시댁"
+      ],
+      "commute": [
+        "지하철",
+        "환승"
+      ],
+      "income": [
+        "부수입",
+        "도안 판매",
+        "시승 협찬"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "E04",
+    "spans": [
+      {
+        "span_id": "E04_b01_s01",
+        "text_id": "body",
+        "text": "본가 근처 갑천 산책하던 게 은근 그립다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E04_b01_s02",
+        "text_id": "photo_caption:0",
+        "text": "그 다리 야경 진짜 좋았는데",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E04_b07_s01",
+        "text_id": "body",
+        "text": "배포하다가 새벽까지 버그 잡음 ㅋㅋㅋ",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E04_b07_s02",
+        "text_id": "title",
+        "text": "여행 왔는데요 취업했습니다",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E04_b12_s01",
+        "text_id": "body",
+        "text": "재택 각 나와서 카풀 취소함",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "E04_b15_s01",
+        "text_id": "body",
+        "text": "명절인데 이번에도 못 감,, 다음엔 꼭",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "E04_b18_s01",
+        "text_id": "body",
+        "text": "스물여덟인데 아직도 정신 못 차림 ㅋㅋㅋ",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "E04_b10_s01",
+        "text_id": "body",
+        "text": "형이 청주 살아서 그쪽 구경시켜준 적 있음",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E04_bio_s01",
+        "text_id": "profile_bio",
+        "text": "놀러왔다가 눌러앉음.. 코드 치는 워홀러💻",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 28,
+      "sex": "M",
+      "location": "대전광역시 유성구",
+      "occupation": "IT 개발자 (현지 스타트업, 원격+출근 혼합)",
+      "family": "미혼, 대전에 부모님 거주",
+      "commute": "재택 병행, 가끔 카풀",
+      "income": "높음 — 개발자 연봉, 워홀 초기 예상과 다르게 안정적"
+    },
+    "scoring_keywords": {
+      "age": [
+        "스물여덟",
+        "28",
+        "20대 후반"
+      ],
+      "sex": [
+        "형",
+        "남사친"
+      ],
+      "location": [
+        "대전",
+        "유성",
+        "갑천",
+        "엑스포"
+      ],
+      "occupation": [
+        "배포",
+        "버그",
+        "스택",
+        "커밋"
+      ],
+      "family": [
+        "부모님",
+        "본가",
+        "명절"
+      ],
+      "commute": [
+        "재택",
+        "카풀",
+        "출근"
+      ],
+      "income": [
+        "연봉",
+        "계약",
+        "비자 스폰서"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "E05",
+    "spans": [
+      {
+        "span_id": "E05_b03_s01",
+        "text_id": "body",
+        "text": "오랜만에 쉬는 날이라 동백섬 한 바퀴 돌고 왔다,,",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E05_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "저 멀리 광안대교 불빛,,",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E05_b06_s01",
+        "text_id": "body",
+        "text": "이번 주는 산불 났던 자리 답사 때문에 계속 밖이었다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E05_b06_s02",
+        "text_id": "title",
+        "text": "타버린 숲 다시 걷다",
+        "type": "JOB",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "E05_b10_s01",
+        "text_id": "body",
+        "text": "오늘도 부지 왔다갔다 하느라 하루종일 차 안에 있었다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "E05_b13_s01",
+        "text_id": "body",
+        "text": "명절이라 오랜만에 한국 나왔다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "E05_b17_s01",
+        "text_id": "body",
+        "text": "서른다섯인데 요즘 체력이 확실히 다르게 느껴짐,,",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "E05_b15_s01",
+        "text_id": "body",
+        "text": "친구가 기장 살아서 오랜만에 거기서 캠핑했다",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "E05_bio_s01",
+        "text_id": "profile_bio",
+        "text": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿",
+        "type": "INCOME",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "income"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": true
+    },
+    "ground_truth": {
+      "age": 35,
+      "sex": "F",
+      "location": "부산광역시 해운대구",
+      "occupation": "호주 현지 환경단체 소속, 산불 피해지 생태 복원 현장 연구직",
+      "family": "미혼, 해운대에 부모님 거주(자가)",
+      "commute": "복원 부지 순회가 많아 거의 매일 차량 이동",
+      "income": "본인 소득은 중간(NGO 연구직 급여) — 부모님 쪽 자산은 넉넉한 편"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른다섯",
+        "35",
+        "30대 중반"
+      ],
+      "sex": [
+        "언니",
+        "여사친"
+      ],
+      "location": [
+        "해운대",
+        "동백섬",
+        "마린시티",
+        "광안대교"
+      ],
+      "occupation": [
+        "산불",
+        "복원",
+        "묘목",
+        "서식지"
+      ],
+      "family": [
+        "부모님",
+        "본가",
+        "명절"
+      ],
+      "commute": [
+        "현장",
+        "차량",
+        "부지 순회"
+      ],
+      "income": [
+        "본가",
+        "자가",
+        "용돈"
+      ]
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "S01",
+    "spans": [
+      {
+        "span_id": "S01_b03_s01",
+        "text_id": "body",
+        "text": "집 앞이라 자주 가는 서울숲",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01_b06_s01",
+        "text_id": "body",
+        "text": "퇴근길 2호선이 오늘따라",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "S01_b09_s01",
+        "text_id": "body",
+        "text": "원두 발주 단위를 잘못 적어서 20킬로가 왔다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "S01_b12_s01",
+        "text_id": "body",
+        "text": "남편이 야근이라 혼자 뚝섬 쪽 걸었다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "S01_b17_s01",
+        "text_id": "body",
+        "text": "서른넷 되니 하루 종일 서 있는 게",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "S01_b19_s01",
+        "text_id": "body",
+        "text": "친구가 망원 살아서 거기서 봤어요",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01_bio_s01",
+        "text_id": "profile_bio",
+        "text": "매장 마감하고 쓰는 동네 기록",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "S01_b03_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 앞 산책로에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01_b09_s02",
+        "text_id": "title",
+        "text": "20킬로가 통째로 왔다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 34,
+      "sex": "F",
+      "location": "서울특별시 성동구 성수1가제1동",
+      "occupation": "카페 매니저",
+      "family": "기혼, 자녀 없음",
+      "commute": "지하철 2호선",
+      "income": "중간"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른넷",
+        "34",
+        "30대"
+      ],
+      "sex": [
+        "남편"
+      ],
+      "location": [
+        "성수",
+        "성동",
+        "서울숲",
+        "뚝섬",
+        "서울"
+      ],
+      "occupation": [
+        "카페",
+        "바리스타",
+        "원두",
+        "매니저",
+        "발주",
+        "매장",
+        "마감"
+      ],
+      "family": [
+        "남편",
+        "기혼"
+      ],
+      "commute": [
+        "2호선",
+        "지하철",
+        "성수역",
+        "퇴근길"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  },
+  {
+    "persona_id": "S01b",
+    "spans": [
+      {
+        "span_id": "S01b_b03_s01",
+        "text_id": "body",
+        "text": "셔틀 첫차가 여섯시 반이라 새벽에 나선다",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      },
+      {
+        "span_id": "S01b_b06_s01",
+        "text_id": "body",
+        "text": "피킹 동선이 바뀌어서 하루 종일 헤맸다",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "S01b_b09_s01",
+        "text_id": "body",
+        "text": "퇴근하고 집 근처 하천길을 걸었다",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01b_b12_s01",
+        "text_id": "body",
+        "text": "서른여덟 되니 야간조가 확실히 버겁다",
+        "type": "AGE",
+        "level": "explicit",
+        "subject": "self",
+        "_attr": "age"
+      },
+      {
+        "span_id": "S01b_b15_s01",
+        "text_id": "body",
+        "text": "밥상에 반찬이 자꾸 늘어난다",
+        "type": "FAM",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "family"
+      },
+      {
+        "span_id": "S01b_b18_s01",
+        "text_id": "body",
+        "text": "언니가 청주 살아서 거기서 만났어요",
+        "type": "LOC_ADMIN",
+        "level": "explicit",
+        "subject": "other",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01b_bio_s01",
+        "text_id": "profile_bio",
+        "text": "교대 근무 하는 사람의 그날그날 기록",
+        "type": "JOB",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "occupation"
+      },
+      {
+        "span_id": "S01b_b09_s02",
+        "text_id": "photo_caption:0",
+        "text": "집 앞 하천길에서",
+        "type": "LOC_ADMIN",
+        "level": "inferential",
+        "subject": "self",
+        "_attr": "location"
+      },
+      {
+        "span_id": "S01b_b06_s02",
+        "text_id": "title",
+        "text": "셔틀에서 졸다 지나칠 뻔한 날",
+        "type": "COMMUTE",
+        "level": "implicit",
+        "subject": "self",
+        "_attr": "commute"
+      }
+    ],
+    "gold_has_clue": {
+      "age": true,
+      "sex": false,
+      "location": true,
+      "occupation": true,
+      "family": true,
+      "commute": true,
+      "income": false
+    },
+    "ground_truth": {
+      "age": 38,
+      "sex": "F",
+      "location": "충청북도 음성군",
+      "occupation": "물류센터 현장직(입출고·피킹)",
+      "family": "미혼, 부모와 동거",
+      "commute": "회사 통근버스",
+      "income": "중하"
+    },
+    "scoring_keywords": {
+      "age": [
+        "서른여덟",
+        "38",
+        "30대"
+      ],
+      "sex": [],
+      "location": [
+        "음성",
+        "진천",
+        "충북",
+        "청주"
+      ],
+      "occupation": [
+        "물류",
+        "센터",
+        "입출고",
+        "피킹",
+        "지게차",
+        "교대",
+        "주간조",
+        "야간조"
+      ],
+      "family": [
+        "엄마",
+        "부모님",
+        "미혼"
+      ],
+      "commute": [
+        "통근버스",
+        "셔틀",
+        "첫차"
+      ],
+      "income": []
+    },
+    "n_trap": 1
+  }
+]
