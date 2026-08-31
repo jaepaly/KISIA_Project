@@ -166,7 +166,7 @@ python scripts/corpus_audit.py
 
 > 원래는 blind 200을 마지막에 뒀었다. **그러면 blind가 성립하지 않는다.** ⑤ 검수를 한 사람은 교사 출력을 전량 본 뒤이고, 그 사람이 "정답을 안 보고" 매길 수는 없다.
 >
-> **blind 200은 C가 맡고, C는 `data/gold/labeled/`와 교사 라벨 원본에 접근하지 않는다.**
+> **blind 200은 C가 맡고, C는 `data/corpus/v0/gold/`(검수분)와 교사 라벨 원본에 접근하지 않는다.**
 
 그래서 이번 주 배치는 이렇다.
 
@@ -460,7 +460,7 @@ data/corpus/v0/gold/<persona_id>_spans.jsonl      검수 100~125 스팬
 
 `A-data.md` §5 가 담당까지 못박았다.
 
-> **blind 200은 C가 맡고, C는 `data/gold/labeled/`와 교사 라벨 원본에 접근하지 않는다.**
+> **blind 200은 C가 맡고, C는 `data/corpus/v0/gold/`(검수분)와 교사 라벨 원본에 접근하지 않는다.**
 
 **그래서 C 는 교사 라벨 검수를 하지 않는다.** 한 번이라도 교사 출력을 보면 blind 가 무효가 된다.
 
@@ -494,7 +494,7 @@ renamed     0/2    폐지된 행정구역명             ← 구현 ④
 
 A 가 월요일에 커밋한 층화 표본을 받아서 매긴다. **교사 라벨이 나오기 전에 끝낸다.**
 
-- 교사 라벨 원본과 `data/gold/labeled/` 에 **접근하지 않는다**
+- 교사 라벨 원본과 `data/corpus/v0/gold/` 의 검수분에 **접근하지 않는다**
 - blind 분은 **별도 파일**로 낸다 — 스팬 레코드에 `blind` 필드를 넣지 않는다(§8-1 은 8필드까지)
 
 ```
@@ -679,7 +679,7 @@ E 의 인물은 **해외 축**이지만 **인물 JSON 은 `restore_key` 를 요�
 ⭐ **내보내기 API 가 계층 경계다.**
 
 ```
-GET /api/export/<author_id>
+GET /api/export/<user_ref>
 ```
 
 **분석기는 이것만 본다.** 이 경계가 [plan.md §4](docs/plan.md) 자기모순 논거의 성립 조건이다.
