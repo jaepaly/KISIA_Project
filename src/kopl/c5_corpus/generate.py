@@ -28,9 +28,20 @@ import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-import prompts
-from llm import LLMClient, LLMError, check_generation_model, list_models, load_dotenv
-from validate import validate_file
+# README 의 `python -m kopl.c5_corpus.generate` 로 돌리면 sys.path[0] 이 저장소
+# 루트라 평면 import 가 ModuleNotFoundError 로 죽는다. 반대로 이 파일을 직접
+# `python generate.py` 로 돌리면 패키지 문맥이 없어 상대 import 가 죽는다.
+# 둘 다 쓰이므로(위 docstring 예시가 후자다) 상대를 먼저 보고 평면으로 떨어진다.
+try:
+    from . import prompts
+    from .llm import (LLMClient, LLMError, check_generation_model,
+                      list_models, load_dotenv)
+    from .validate import validate_file
+except ImportError:
+    import prompts
+    from llm import (LLMClient, LLMError, check_generation_model,
+                     list_models, load_dotenv)
+    from validate import validate_file
 
 KST = timezone(timedelta(hours=9))
 CORPUS_SCHEMA_VERSION = "0.1"  # 인물 JSON의 schema_version과 다른 값이다
