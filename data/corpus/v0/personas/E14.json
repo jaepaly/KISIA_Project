@@ -1,0 +1,152 @@
+{
+  "id": "E14",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "계양 워킹맘 겸업 블로거 (39세 여성)",
+  "persona_type": "30대 후반 여성 · 인천 신도시 · 워킹맘 겸 소규모 자영업 정보 블로그",
+  "card_ref": ["S5"],
+  "account": {
+    "blog_id": "gyeyang_workingmom",
+    "nickname": "계양댁",
+    "profile_intro": "육아하며 부업으로 공방 운영해요. 소소한 정보 나눔",
+    "joined": "2020-09",
+    "typical_active_hours": "아이 재운 밤 9시 이후"
+  },
+  "voice": {
+    "종결어미": "존댓말 정보 공유체 ~해요 / ~습니다 (카드 S5 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "절제 (ㅎㅎ ^^ ㅜㅜ ㅋㅋ)"
+  },
+  "ground_truth": {
+    "age": 39,
+    "sex": "F",
+    "location": "인천광역시 계양구",
+    "occupation": "육아 겸업, 소규모 공방(온라인 판매) 운영",
+    "family": "기혼, 자녀 하나(미취학)",
+    "commute": "집 안 작업실, 배송은 주 2회 우체국",
+    "income": "부업 소득 소소, 남편 소득이 주 수입"
+  },
+  "scoring_keywords": {
+    "age": ["서른아홉", "39"],
+    "sex": ["언니", "형부"],
+    "location": ["계양", "작전동", "귤현"],
+    "occupation": ["공방", "주문제작"],
+    "family": ["어린이집", "남편"],
+    "commute": ["우체국", "택배"],
+    "income": ["부업", "매출"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "작전역 근처 우체국까지 유모차 끌고 다녀왔어요ㅎㅎ",
+      "note": "역 이름(작전역)으로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이번 주문 제작 건이 몰려서 새벽까지 재봉틀 돌렸어요ㅜㅜ",
+      "note": "업종명 없이 작업 상황으로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "어린이집 등원 준비만 한 시간 걸려요ㅋㅋ",
+      "note": "자녀가 미취학임을 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "택배 부치러 일주일에 두 번은 꼭 우체국에 가요",
+      "note": "재택 부업 특유의 반복 이동 패턴을 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "언니가 육아템 추천해달라고 연락 왔어요^^",
+      "note": "⭐ 「언니」는 여성이 손위 여성을 부르는 호칭 — 화자가 여성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른아홉 되니까 밤새 작업하고 나면 다음 날이 힘들어요",
+      "note": "명시 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "형부가 부평 쪽으로 회사를 옮겼다고 하더라고요",
+      "note": "⚠️ 함정 근무지형 (§4-4-1 확장, #116). 형부의 새 근무지(부평)이지 화자 거주지(계양)가 아니다. 인접 구라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "육아하며 부업으로 공방 운영해요. 소소한 정보 나눔",
+      "note": "프로필이 겸업 형태를 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "동네 소아과·작전역 상가·아파트 단지 놀이터. 신도시 워킹맘 생활 반경이 좁혀진다",
+    "ref_card": "S5(존댓말 정보 공유체)"
+  },
+  "design_note": {
+    "location": "b02(작전역) + b11(우체국 왕복) + ambient 3편으로 계양구가 도출된다. b20은 함정(형부 근무지=부평)",
+    "sex": "b14 「언니」 호칭이 여성 화자를 지시한다",
+    "trap": "근무지형 — 형부의 이직지로 지명이 등장한다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 육아·공방 작업 잡담 등",
+    "off_body": "profile_bio(직업) 1채널"
+  },
+  "noise_topics": [
+    "아이 낮잠 안 잔 이야기",
+    "새로 산 원단 이야기",
+    "택배 포장하다 손 벤 이야기",
+    "남편이 저녁 차려준 이야기",
+    "동네 놀이터에서 만난 엄마들",
+    "재봉틀 바늘 부러진 이야기",
+    "주말에 시장 본 이야기",
+    "아이 어린이집 준비물 챙긴 이야기"
+  ]
+}

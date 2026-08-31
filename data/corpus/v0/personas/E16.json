@@ -1,0 +1,173 @@
+{
+  "id": "E16",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "광산 이직 성공 후기 (29세 남성)",
+  "persona_type": "20대 후반 남성 · 광주 지역 · 이직·취준 후기 블로그",
+  "card_ref": ["S2"],
+  "account": {
+    "blog_id": "gwangsan_switch",
+    "nickname": "이직러",
+    "profile_intro": "이직 두 번째. 후기 남기는 중",
+    "joined": "2022-01",
+    "typical_active_hours": "퇴근 후 밤"
+  },
+  "voice": {
+    "종결어미": "자조 · 냉소 정보체 (카드 S2 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "—"
+  },
+  "ground_truth": {
+    "age": 29,
+    "sex": "M",
+    "location": "전남광주통합특별시 광산구",
+    "occupation": "제조업 협력사 사무직(최근 이직)",
+    "family": "미혼, 자취",
+    "commute": "공단까지 자차 20분",
+    "income": "이직하며 연봉 소폭 상승, 아직 여유는 없음"
+  },
+  "scoring_keywords": {
+    "age": ["스물아홉", "29"],
+    "sex": ["매형", "누나"],
+    "location": ["광산", "송정", "하남산단"],
+    "occupation": ["협력사", "인수인계"],
+    "family": ["자취", "혼자"],
+    "commute": ["자차", "출근길"],
+    "income": ["연봉", "이직"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "송정역 근처로 이사하고 나서야 출근이 편해졌다",
+      "note": "역 이름(송정역)으로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "송정역 근처 자취 후기",
+      "note": "⭐ 본문 밖 단서 — 제목 채널. 같은 글(b02) 본문의 지역을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "인수인계 받는 게 생각보다 오래 걸려서 아직도 헤맨다",
+      "note": "이직 초기 업무 상황으로만 직업을 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "스물아홉인데 인수인계 받는 것도 벌써 벅차다",
+      "note": "명시 단서. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "자취방 정리를 이제야 끝냈다. 혼자 사니까 미루게 된다",
+      "note": "자취(독립) 생활 형태를 암시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "하남산단 들어가는 길이 아침마다 막힌다",
+      "note": "산업단지 통근 경로가 지역을 좁힌다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "매형이 이직 축하한다고 밥 사줬다",
+      "note": "⭐ 「매형」은 남성이 누나의 남편을 부르는 호칭 — 화자가 남성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "연봉이 소폭 올랐다고는 하는데 체감이 아직 안 된다",
+      "note": "금액 없이 이직 후 소득 변화 정도만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "누나가 나주 혁신도시 쪽으로 발령났다고 이사 준비 중이다",
+      "note": "⚠️ 함정 근무지형 (§4-4-1 확장, #116). 누나의 새 발령지(나주)이지 화자 거주지(광산)가 아니다. 인접 지역이라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이직 두 번째. 후기 남기는 중",
+      "note": "프로필이 이직 경험을 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "송정역 상가 식당·자취방 근처 세탁소·동네 헬스장. 생활 반경이 광산구로 모인다",
+    "ref_card": "S2(자조·냉소 정보체)"
+  },
+  "design_note": {
+    "location": "b02(송정역) + b11(하남산단 통근) + ambient 3편으로 광산구가 도출된다. b20은 함정(누나 발령지=나주)",
+    "sex": "b14 「매형」 호칭이 남성 화자를 지시한다",
+    "trap": "근무지형 — 누나의 발령지로 지명이 등장한다",
+    "income": "b17에서 연봉 변화 체감으로만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 이직 초기 잡담·자취 생활 등",
+    "off_body": "title(b02, 위치) · profile_bio(직업). 2채널"
+  },
+  "noise_topics": [
+    "회사 점심 메뉴 이야기",
+    "자취방 가전 산 이야기",
+    "새 동료들과 어색했던 이야기",
+    "주말에 밀린 잠 잔 이야기",
+    "이사하면서 버린 짐 이야기",
+    "편의점 도시락 후기",
+    "출근길 라디오 들은 이야기",
+    "주말에 넷플릭스 정주행"
+  ]
+}

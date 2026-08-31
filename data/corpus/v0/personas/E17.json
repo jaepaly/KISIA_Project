@@ -1,0 +1,173 @@
+{
+  "id": "E17",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "원주 맛집 대량 리뷰어 (44세 남성)",
+  "persona_type": "40대 중반 남성 · 강원 내륙 도시 · 맛집·상품 리뷰 대량 블로거",
+  "card_ref": ["S6"],
+  "account": {
+    "blog_id": "wonju_review",
+    "nickname": "원주먹방",
+    "profile_intro": "먹은 거 다 기록하는 사람💪🏻",
+    "joined": "2014-10",
+    "typical_active_hours": "점심·저녁 식후"
+  },
+  "voice": {
+    "종결어미": "~용 / ~당 애교 리뷰체 (카드 S6 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "이모지 💪🏻🩵☺️👍"
+  },
+  "ground_truth": {
+    "age": 44,
+    "sex": "M",
+    "location": "강원특별자치도 원주시",
+    "occupation": "자영업(소규모 유통)",
+    "family": "기혼, 자녀 없음",
+    "commute": "거래처 순회 위주 자차 이동",
+    "income": "매달 편차 있는 자영업 소득"
+  },
+  "scoring_keywords": {
+    "age": ["마흔넷", "44"],
+    "sex": ["처남", "형수"],
+    "location": ["원주", "혁신도시", "치악산"],
+    "occupation": ["거래처", "납품"],
+    "family": ["아내", "둘이"],
+    "commute": ["자차", "순회"],
+    "income": ["매출", "이번 달"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "치악산 자락 카페까지 드라이브 갔다 왔어용💪🏻",
+      "note": "지역 명소(치악산)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "여기 뷰 미쳤당🩵",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 같은 글(b02) 본문과 결합해 지역을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "거래처 세 군데 돌고 나니 하루가 끝나 있었당",
+      "note": "업종명 없이 거래처 순회로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔넷인데 거래처 세 군데 도는 것도 예전 같지 않당",
+      "note": "명시 단서. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "아내랑 둘이 이 집 진짜 자주 와용☺️",
+      "note": "「아내」 언급으로 기혼 상태를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오늘도 거래처 돌다가 점심시간 완전 놓쳤어용",
+      "note": "거래처 순회형 이동 패턴이 지역을 좁힌다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "처남이 이 집 맛집이라고 알려줬는데 진짜였당👍",
+      "note": "⭐ 「처남」은 결혼한 남성이 처가 쪽 손아래 남자를 가리키는 호칭 — 화자가 기혼 남성임이 좁혀진다",
+      "ambiguous": true
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이번 달 매출이 좀 아쉬워서 외식은 여기까지만 하려구용",
+      "note": "금액 없이 매출 편차로만 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "형수가 횡성 쪽 카페 예쁜 데 찾았다고 사진 보내줬당",
+      "note": "⚠️ 함정 방문지형 (§4-4-1 확장, #116). 형수가 다녀온 곳(횡성)이지 화자 거주지(원주)가 아니다. 인접 군이라 착각 유도가 강하다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "먹은 거 다 기록하는 사람💪🏻",
+      "note": "프로필이 리뷰 블로그 성격을 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "혁신도시 프랜차이즈 카페·단골 정비소·재래시장. 내륙 도시 생활 반경이 좁혀진다",
+    "ref_card": "S6(대량 축적형 리뷰)"
+  },
+  "design_note": {
+    "location": "b02(치악산) + 캡션 + b11(거래처 순회) + ambient 3편으로 원주시가 도출된다. b20은 함정(형수의 방문지=횡성)",
+    "sex": "b14 「처남」 호칭이 기혼 남성을 지시한다",
+    "trap": "방문지형 — 형수가 다녀온 곳으로 지명이 등장한다",
+    "income": "b17에서 매출 편차로만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 맛집·상품 리뷰 잡담 등",
+    "off_body": "photo_caption:0(위치) · profile_bio(직업). 2채널"
+  },
+  "noise_topics": [
+    "새로 나온 과자 후기",
+    "동네 카페 신메뉴",
+    "배달 시켜 먹은 이야기",
+    "아내랑 장 본 이야기",
+    "거래처 사장님이랑 커피 마신 이야기",
+    "주말에 세차한 이야기",
+    "TV에서 본 맛집 프로그램",
+    "냉장고 정리한 이야기"
+  ]
+}

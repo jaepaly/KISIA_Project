@@ -1,0 +1,173 @@
+{
+  "id": "E13",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "군산 백반집 사장님 (55세 여성)",
+  "persona_type": "50대 여성 · 전북 해안 도시 · 지역 맛집 자영업 기록",
+  "card_ref": ["S10"],
+  "account": {
+    "blog_id": "gunsan_bapsang",
+    "nickname": "군산아지매",
+    "profile_intro": "혼자 하는 백반집. 오늘 반찬 기록",
+    "joined": "2018-06",
+    "typical_active_hours": "브레이크타임 오후 3시"
+  },
+  "voice": {
+    "종결어미": "담백 방문기체 ~습니다 (카드 S10 기본)",
+    "문장길이": "—",
+    "글길이": "—",
+    "부호": "절제"
+  },
+  "ground_truth": {
+    "age": 55,
+    "sex": "F",
+    "location": "전북특별자치도 군산시",
+    "occupation": "자영업(백반집 운영)",
+    "family": "기혼, 자녀 출가",
+    "commute": "가게 2층이 자택, 통근 없음",
+    "income": "가게 매출로 생활, 재료비 오르면 바로 티가 남"
+  },
+  "scoring_keywords": {
+    "age": ["쉰다섯", "55"],
+    "sex": ["아줌마", "아저씨"],
+    "location": ["군산", "월명", "은파"],
+    "occupation": ["백반", "가게", "손님상"],
+    "family": ["출가", "영감"],
+    "commute": ["2층", "가게"],
+    "income": ["재료비", "장사"]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 3,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 76.7%"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "은파호수 산책로까지 걸어갔다 왔습니다. 저녁에 걷기 딱 좋습니다",
+      "note": "지역 명소(은파호수)로만 위치를 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "은파 저녁 산책",
+      "note": "⭐ 본문 밖 단서 — 제목 채널. 같은 글(b02) 본문의 지역을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "혼자 하는 백반집이라 반찬 가짓수 맞추는 게 늘 숙제입니다",
+      "note": "업종을 직접 명시한다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "쉰다섯인데 아직은 혼자서 반찬 다 해냅니다",
+      "note": "명시 단서. b05(직업 단서)와 같은 글에 다른 스팬으로 놓인다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "자식들 다 출가시키고 이제 영감이랑 둘이 가게 봅니다",
+      "note": "자녀 출가와 배우자 동거를 함께 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "가게 2층이 집이라 출퇴근이랄 게 없습니다",
+      "note": "거주-사업장 일체형 생활 패턴을 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이 아줌마도 요새 손목이 예전 같지 않습니다",
+      "note": "⭐ 복합 자기지칭 「아줌마」 — 성별과 연령대가 한 단어에 겹친다",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "요즘 재료비가 올라서 반찬 가짓수 줄일까 고민입니다",
+      "note": "금액 없이 원가 압박으로만 소득 상황을 흘린다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "이 장사 시작하기 전에는 익산에서 시장 장사를 오래 했습니다",
+      "note": "⚠️ 함정 출신지형(self, #116 신설 계열). 주체는 본인이지만 창업 이전 이력(익산)이라 현 거주지(군산)가 아니다",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "혼자 하는 백반집. 오늘 반찬 기록",
+      "note": "프로필이 자영업 형태를 상시 암시한다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": ["b03", "b09", "b15"],
+    "design": "재래시장 단골 정육점·가게 앞 골목 세탁소·동네 은행. 지역 소상공인 생활 반경이 좁혀진다",
+    "ref_card": "S10(지방 맛집 담백 방문기체)"
+  },
+  "design_note": {
+    "location": "b02(은파호수) + 제목 + b11(2층 자택) + ambient 3편으로 군산시가 도출된다. b20은 함정(과거 이력지=익산)",
+    "sex": "b14 복합 자기지칭 「아줌마」",
+    "trap": "출신지형 — 창업 이전 활동지가 subject:self인데 현 거주지가 아니다",
+    "income": "b17에서 원가 압박으로만 흘린다",
+    "prohibited": "학력·정치성향·건강 단서 0건",
+    "noise": "20편은 반찬·손님·날씨 잡담 등",
+    "off_body": "title(b02, 위치) · profile_bio(직업). 2채널"
+  },
+  "noise_topics": [
+    "오늘 손님이 많았는지",
+    "새로 담근 김치 이야기",
+    "단골 손님 근황",
+    "가게 앞 화분 이야기",
+    "영감이랑 다툰 사소한 이야기",
+    "장에서 산 생선 이야기",
+    "TV 연속극 본 이야기",
+    "가게 간판 손본 이야기"
+  ]
+}
