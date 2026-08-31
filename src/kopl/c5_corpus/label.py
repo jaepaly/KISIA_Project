@@ -29,14 +29,10 @@ import time
 import unicodedata
 from pathlib import Path
 
-# `python -m kopl.c5_corpus.label` 로 돌리면 sys.path[0] 이 저장소 루트라
-# 평면 import 가 ModuleNotFoundError 로 죽는다. 반대로 이 파일을 직접
-# `python label.py` 로 돌리면 패키지 문맥이 없어 상대 import 가 죽는다.
-# 둘 다 쓰이므로 상대를 먼저 보고 평면으로 떨어진다 (generate.py 와 같은 형태 · #126).
 try:
     from . import label_prompts
     from .llm import LLMClient, LLMError, load_dotenv
-except ImportError:
+except ImportError:      # python label.py 로 직접 실행할 때
     import label_prompts
     from llm import LLMClient, LLMError, load_dotenv
 
@@ -54,6 +50,34 @@ def family(model: str) -> str | None:
         if f in m:
             return {"anthropic": "claude", "openai": "gpt", "codex": "gpt"}.get(f, f)
     return None
+
+
+def texts_of(rec: dict) -> dict:
+    """글 레코드에서 채널별 텍스트를 꺼낸다.
+
+    #134 이후는 `texts` 객체 하나로 온다. 그 이전 형식은 `title`·`body` 가
+    최상위에 있고 캡션이 `photo_captions` 에 따로 있다.
+    **폴백에서 캡션을 빠뜨리면 설계 단서 40건이 교사 라벨에 안 붙는다** —
+    그러면 검수 골드셋에도 못 들어가고 그 채널이 통째로 측정에서 빠진다.
+    화요일 생성에 #134 이전 글이 섞일 수 있어 둘 다 읽는다.
+    """
+    t = rec.get("texts")
+    if isinstance(t, dict) and t:
+        out = dict(t)
+    else:
+        out = {k: rec[k] for k in ("title", "body") if rec.get(k)}
+        caps = rec.get("photo_captions") or {}
+        if isinstance(caps, dict):
+            for k, v in caps.items():
+                # 키가 이미 photo_caption:N 이면 그대로, 숫자만 오면 붙인다
+                key = k if str(k).startswith("photo_caption") else f"photo_caption:{k}"
+                if v:
+                    out[key] = v
+        elif isinstance(caps, list):
+            for i, v in enumerate(caps):
+                if v:
+                    out[f"photo_caption:{i}"] = v
+    return {k: unicodedata.normalize("NFC", v) for k, v in out.items() if v}
 
 
 def parse_spans(raw: str) -> list[dict]:
@@ -132,7 +156,9 @@ def dedupe(spans: list[dict]) -> tuple[list[dict], list[str]]:
     for o in out:
         eaten = [s for s in spans if s is not o and s["text_id"] == o["text_id"]
                  and o["start"] <= s["start"] and s["end"] <= o["end"]]
-        if len(eaten) >= 2:
+        if eaten:
+            # 1건 삼킴도 손실이다. §6 의 예시가 2개라 문턱을 2로 뒀었는데,
+            # 짧은 스팬 하나를 잃는 것도 그 채널에서 단서가 사라지는 것이다
             warn.append(f"「{o['text'][:24]}」 가 짧은 스팬 {len(eaten)}개를 덮었다")
     return sorted(out, key=lambda x: (x["text_id"], x["start"])), warn
 
@@ -214,12 +240,20 @@ def main() -> int:
         if not recs:
             continue
 
-        # 순환 편향 차단 — 생성 모델과 계열이 같으면 멈춘다
-        gen = family(recs[0].get("gen_model", ""))
-        if gen and teacher_fam and gen == teacher_fam:
-            print(f"✗ 순환 편향: 생성이 {recs[0]['gen_model']} 인데 교사도 {gen} 계열이다.\n"
+        # 순환 편향 차단 — 한 파일 안에 gen_model 이 섞일 수 있으므로 전량을 본다.
+        # 생성이 끊겨 다시 돌릴 때 provider 를 바꿨거나, 한도에 걸려 경로를 바꿨을 수 있다.
+        # 「생성·교사·교차모델·2단이 전부 다른 계열」이 이 프로젝트의 대표 논거라
+        # 첫 줄만 보고 판정하면 약하다.
+        gens = {family(r.get("gen_model", "")) for r in recs} - {None}
+        if teacher_fam and teacher_fam in gens:
+            models = sorted({r.get("gen_model", "") for r in recs
+                             if family(r.get("gen_model", "")) == teacher_fam})
+            print(f"✗ 순환 편향: 생성에 {', '.join(models)} 이(가) 섞여 있는데 "
+                  f"교사도 {teacher_fam} 계열이다.\n"
                   f"    자기가 심은 것을 자기가 회수하면 「추가 탐지율」이 무의미해진다.")
             return 2
+        if len(gens) > 1:
+            print(f"  ⚠ 생성 계열이 섞여 있다: {sorted(gens)} — provenance 에 남는다")
 
         hints: dict[str, list] = {}
         if a.design:
@@ -235,8 +269,7 @@ def main() -> int:
         print(f"■ {pid}  {len(recs)}편")
 
         for n, r in enumerate(recs):
-            texts = r.get("texts") or {k: r[k] for k in ("title", "body") if r.get(k)}
-            texts = {k: unicodedata.normalize("NFC", v) for k, v in texts.items() if v}
+            texts = texts_of(r)
             if not texts:
                 continue
             if a.sleep and n:
