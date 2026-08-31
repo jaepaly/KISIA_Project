@@ -134,7 +134,7 @@ post_time = created_at[11:16]      # '23:41'
 | 글 본문 | `GET /posts/<post_id>` | 제목·본문·작성시각·위치태그·작성자 |
 | 글 작성 | `GET /new` · `POST /posts` | 작성자 선택 · 제목 · 본문 · 위치태그 · **작성시각 직접 입력** |
 | 프로필 | `GET /u/<author_id>` | 닉네임·소개·그 사람 글 목록·글 수 |
-| **내보내기** | `GET /api/export/<author_id>` | ⭐ **입력 어댑터. 분석기는 여기만 본다** |
+| **내보내기** | `GET /api/export/<user_ref>` | ⭐ **입력 어댑터. 분석기는 여기만 본다** |
 
 ### 작성 화면에서 작성시각을 직접 입력받는다
 
@@ -215,27 +215,10 @@ def profile(author_id):
         "SELECT * FROM posts WHERE author_id=? ORDER BY created_at DESC", (author_id,)).fetchall()
     return render_template("profile.html", a=a, posts=posts)
 
-@app.get("/api/export/<author_id>")
-def export(author_id):
-    """⭐ 입력 어댑터. 계층 경계는 여기다. 이 응답에 없는 것은 분석기가 볼 수 없다"""
-    a = db().execute("SELECT * FROM authors WHERE author_id=?", (author_id,)).fetchone()
-    rows = db().execute(
-        "SELECT * FROM posts WHERE author_id=? AND visibility='public'"
-        " ORDER BY created_at", (author_id,)).fetchall()
-    return jsonify({
-        "schema_version": "1.0",
-        "author_id": author_id,
-        "posts": [{
-            "post_id": r["post_id"],
-            "body": r["body"],
-            "created_at": r["created_at"],
-            "activity_meta": {
-                "nickname": a["nickname"],
-                "geo_tag": r["geo_tag"],
-                "post_time": r["created_at"][11:16],
-            },
-        } for r in rows],
-    })
+# ⭐ 이 함수는 apps/sns/app.py 에 이미 채워져 있다 (D 가 계약에 맞춰 넣었다).
+# 계약 적합성은 apps/sns/test_export.py 가 강제한다 — 고칠 때 그 테스트를 돌린다.
+#
+#     python -m pytest apps/sns/test_export.py
 
 if __name__ == "__main__":
     app.run(port=int(os.getenv("SNS_PORT", 3000)), debug=True)
@@ -244,8 +227,14 @@ if __name__ == "__main__":
 ### 이 코드에서 계층 경계가 드러나는 세 곳
 
 1. **`export`가 `visibility='public'`만 내보낸다** — 비공개 전환의 효과가 분석 결과에 그대로 반영된다. 조치 → 재스캔 → 위험도 하락이 **실제로** 일어난다
-2. **`export`에 `title`·`source`·`author_id` 내부 값이 없다** — 계약에 정의된 것만 나간다. 플랫폼 내부 사정은 넘기지 않는다
+2. **`export`에 `author_id`·`source`·`visibility` 내부 값이 없다** — 계약에 정의된 것만 나간다. 플랫폼 내부 사정은 넘기지 않는다
 3. **`toggle`이 SNS 쪽에 있다** — 조치 실행은 플랫폼이 한다. 분석기는 *"이걸 비공개하라"* 까지만 말한다
+
+> ⚠️ **`title` 은 내보낸다.** 이전 판의 이 문단이 `title` 을 「내부 값」으로 적었는데 틀렸다.
+> `title` 은 `sns-minimal-spec.md` §1 의 선택 필드이고 §3 의 텍스트 채널이며,
+> `label-schema` §5-3 의 네 채널 중 하나다. **빼면 제목 단서를 골드셋에 넣어도 분석기가 못 본다.**
+> 같은 이유로 `photos[].caption`(→ `photo_caption:N`)과 `profile_bio` 도 내보낸다.
+> 사용자 식별자는 `author_id` 가 아니라 **`user_ref`**(`^u_[0-9a-f]{8,}$`) 다 — `필드-대조표.md` ①.
 
 ---
 
