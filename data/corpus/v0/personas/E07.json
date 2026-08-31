@@ -79,6 +79,16 @@
       "ambiguous": false
     },
     {
+      "post": "b05",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "고추 모종 심은 날",
+      "note": "⭐ 본문 밖 단서 — 제목 채널. 같은 글(b05) 본문(고추 모종 심기)과 결합해 텃밭 소일 농사임을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
       "post": "b08",
       "text_id": "body",
       "attr": "family",
@@ -151,7 +161,7 @@
     "income": "b17에서 연금 출처만 흘리고 금액은 안 쓴다",
     "prohibited": "학력·정치성향·건강 단서 0건",
     "noise": "20편은 날씨·텃밭 잡담·동네 소식 등 신상과 무관",
-    "off_body": "profile_bio(직업) 1채널"
+    "off_body": "title(b05, 직업) · profile_bio(직업). 2채널"
   },
   "noise_topics": [
     "오늘 날씨가 어땠는지",
