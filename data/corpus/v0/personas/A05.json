@@ -104,10 +104,10 @@
   },
   "post_plan": {
     "total": 16,
-    "noise": 9,
+    "noise": 8,
     "ambient": 2,
     "clue": 5,
-    "trap": 0,
+    "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -157,11 +157,20 @@
       "note": "제목 단서"
     },
     {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "동기가 성산에 게스트하우스를 냈다고 해서 다녀왔다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ③ 상위일치 · 개업형. 같은 도 다른 시라 해상도를 시험한다"
+    },
+    {
       "post": "b10",
       "text_id": "body",
       "clue": "여자 혼자 산다고 하면 다들 한마디씩 한다",
       "attr": "sex",
-      "level": "implicit",
+      "level": "explicit",
       "subject": "self",
       "note": "복합 자기지칭. 성별과 가구 형태가 한 문장에 겹친다"
     }

@@ -154,7 +154,7 @@
       "text_id": "body",
       "clue": "남자애치고 손이 작다는 말을 자주 듣는다",
       "attr": "sex",
-      "level": "implicit",
+      "level": "explicit",
       "subject": "self",
       "note": "복합 자기지칭. GT 가 외동이라 형제 호칭을 쓸 수 없다"
     },

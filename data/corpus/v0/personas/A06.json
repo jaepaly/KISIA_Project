@@ -105,9 +105,9 @@
       "text_id": "body",
       "clue": "시험이 일주일 남았다",
       "attr": "age",
-      "level": "explicit",
+      "level": "implicit",
       "subject": "self",
-      "note": "시점 + 나이를 동시에 준다. S18 대표 단서"
+      "note": "나이 값이 적히지 않았으므로 explicit 이 아니다. 다만 시험이 연 1회 고정 시기라 다른 스팬 없이도 연령대가 1~2세로 좁혀진다 — §4-1 의 「문맥상 거의 확정」"
     },
     {
       "post": "b07",

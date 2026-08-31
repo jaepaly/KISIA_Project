@@ -75,7 +75,8 @@
       "유성구",
       "전민동",
       "대전",
-      "학회"
+      "학회",
+      "선배"
     ],
     "occupation": [
       "공공연구기관",
@@ -98,10 +99,10 @@
   },
   "post_plan": {
     "total": 18,
-    "noise": 10,
+    "noise": 9,
     "ambient": 3,
     "clue": 5,
-    "trap": 0,
+    "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -161,11 +162,20 @@
       "note": "제목 단서"
     },
     {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "같은 팀 선배가 오송으로 파견 가 있다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명 · 근무지형. 파견지이지 본인 근무지가 아니다"
+    },
+    {
       "post": "b10",
       "text_id": "body",
       "clue": "장비 조립은 늘 내가 한다",
       "attr": "sex",
-      "level": "implicit",
+      "level": "inferential",
       "subject": "self",
       "note": "⭐ 통념 역행. 단독으로는 성별을 남성으로 오도한다. b14 육아 단서와 결합해야 정합적이 된다 — S11 의 「손주 반찬」과 같은 계열"
     }

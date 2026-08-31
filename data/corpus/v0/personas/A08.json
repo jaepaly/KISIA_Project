@@ -95,10 +95,10 @@
   },
   "post_plan": {
     "total": 24,
-    "noise": 14,
+    "noise": 13,
     "ambient": 4,
     "clue": 6,
-    "trap": 0,
+    "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -155,6 +155,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "캡션 단서"
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "친구가 송도에 있는 학원으로 옮겼다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ③ 상위일치 · 근무지형. 같은 시 다른 구다"
     },
     {
       "post": "b11",
