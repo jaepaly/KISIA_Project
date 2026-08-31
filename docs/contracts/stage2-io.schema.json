@@ -229,6 +229,16 @@
           "type": "object",
           "description": "복원 키. geo-dictionary.md §2의 형식을 따른다 — C의 특정성 엔진과 같은 사전을 쓴다. 가명화기는 특정성 엔진의 역함수이므로 어긋나면 복원이 깨진다. 축에 따라 채워지는 필드가 다르다: location은 code(시설이면 slot도), age·family는 value.",
           "additionalProperties": false,
+          "allOf": [
+            {
+              "description": "해외면 국내 행정코드가 없다. 붙이면 분모 없는 코드가 되어 k 조회가 항상 실패한다 (#82 · DEC-005).",
+              "if": {
+                "properties": { "foreign": { "type": "string" } },
+                "required": ["foreign"]
+              },
+              "then": { "properties": { "code": { "const": null } } }
+            }
+          ],
           "if": {
             "properties": { "ambiguous": { "const": true } },
             "required": ["ambiguous"]
@@ -256,6 +266,11 @@
               "type": "boolean",
               "default": false,
               "description": "동명 지명 후보를 좁히지 못했다 (geo-dictionary.md §1). true이면 code는 null이고 candidates에 후보가 담긴다.\n\n이 값을 k 계산에서 어떻게 다룰지는 이 계약이 정하지 않는다 — 사실만 전달하고 처리 규칙은 specificity.schema.json이 소유한다. 가명화기가 특정성 엔진의 정책을 지시하면 한쪽만 고쳤을 때 조용히 갈린다.\n\n[초안 정정] 여기에 «C의 k 계산은 보수적으로 k를 크게 잡는다 — 근거 없이 좁히면 위험을 과소평가한다»라고 적었었다. 방향이 반대다. k는 조건에 해당하는 인구 수이므로 k가 크면 특정성이 낮고 위험도 낮게 나온다. 신정현 지적(#5, 2026-08-26)."
+            },
+            "foreign": {
+              "type": ["string", "null"],
+              "pattern": "^해외[A-Z]$",
+              "description": "현 거주지가 국내가 아닐 때의 권역 라벨. 예 「해외A」. null 이면 국내다. (#82 · 2026-08-31 A·C·E·D 합의)\n\n[왜 code 에 안 넣나] 우리 k 는 행정안전부 주민등록 인구통계(읍면동 x 5세 x 성별)를 분모로 쓴다. 해외에는 같은 구조의 데이터가 없다. 코드를 붙이면 형식은 맞고 분모가 없어 조회가 항상 실패한다 — k 가 거짓말이 된다. 그리고 pattern 을 완화하면 국내 코드의 앞자리 0 보존 검증도 같이 느슨해진다.\n\n[왜 candidates 에 안 넣나] candidates 는 「국내 동명 지명 중 어느 것인지 못 좁혔다」는 뜻이다. 해외를 거기 넣으면 한 필드가 두 뜻을 갖는다 — 4146310100 건과 같은 종류의 사고가 된다.\n\n[해상도] 권역 한 단계까지만 쓴다. 도시명을 남기면 그 자체가 준식별자인데 k 로 뒷받침할 수 없다.\n\n[k 처리] 이 값이 있으면 특정성 엔진은 k: null · k_level: \"UNKNOWN\" 을 낸다. UNKNOWN 은 «안전하다»가 아니라 «현재 통계 기준으로 산출할 수 없다»는 뜻이며 화면에도 그렇게 표시한다.\n\n[code 와 상호 배제] foreign 이 null 이 아니면 code 는 null 이다. restore_key 의 allOf 가 강제한다.\n\n[위험은 어디서 나오나] 해외 거주 인물의 재식별 위험은 국내 연고(고향·가족·본가·과거 거주)에서 나온다. 리얼리즘 카드 S7 의 화자 유형이 「한국 특정 지방 연고」로 이미 그렇게 설계돼 있다."
             },
             "candidates": {
               "type": "array",
