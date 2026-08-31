@@ -175,11 +175,16 @@ class LLMClient:
     # ── providers ────────────────────────────────────────────────────
     def _echo(self, system: str, user: str) -> str:
         kind = "clue" if "심을 단서" in user else "ambient" if "지역 생활" in user else "noise"
-        return (
-            "제목: 스텁\n"
+        out = [
+            "제목: 스텁",
             f"[ECHO 더미 · {kind} · 실제 생성물 아님] "
-            "파이프라인 배선 확인용 문자열. provider를 바꾸면 실제 글로 대체된다."
-        )
+            "파이프라인 배선 확인용 문자열. provider를 바꾸면 실제 글로 대체된다.",
+        ]
+        # 캡션이 지정됐으면 그 수만큼 낸다 — parse 배선을 확인하기 위해서다
+        import re as _re
+        for i, _ in enumerate(_re.findall(r"^\s*캡션(\d+):", user, _re.M)):
+            out.append(f"캡션{i}: 스텁 캡션")
+        return "\n".join(out)
 
     def _cli(self, system: str, user: str) -> str:
         """무료 Codex 등 로컬 CLI에 위임. 프롬프트는 stdin으로 넘긴다.
