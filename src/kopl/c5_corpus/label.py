@@ -29,8 +29,16 @@ import time
 import unicodedata
 from pathlib import Path
 
-import label_prompts
-from llm import LLMClient, LLMError, load_dotenv
+# `python -m kopl.c5_corpus.label` 로 돌리면 sys.path[0] 이 저장소 루트라
+# 평면 import 가 ModuleNotFoundError 로 죽는다. 반대로 이 파일을 직접
+# `python label.py` 로 돌리면 패키지 문맥이 없어 상대 import 가 죽는다.
+# 둘 다 쓰이므로 상대를 먼저 보고 평면으로 떨어진다 (generate.py 와 같은 형태 · #126).
+try:
+    from . import label_prompts
+    from .llm import LLMClient, LLMError, load_dotenv
+except ImportError:
+    import label_prompts
+    from llm import LLMClient, LLMError, load_dotenv
 
 SCHEMA_VERSION = "1.0"
 TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
