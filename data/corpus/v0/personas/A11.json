@@ -1,0 +1,187 @@
+{
+  "id": "A11",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "취업 준비생 (20대 후반 남성)",
+  "persona_type": "20대 후반 남성 · 취업 준비 넋두리 + 생활비 절약 기록",
+  "card_ref": [
+    "S14"
+  ],
+  "card_binding": {
+    "S14": [
+      "종결어미",
+      "글길이",
+      "문장길이"
+    ],
+    "—": [
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "job_seeker_log",
+    "nickname": "취준생존",
+    "profile_intro": "올해는 제발",
+    "joined": "2024-01",
+    "typical_active_hours": "새벽 2시 이후"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 1인칭 독백체. 자조적인 표현 잦음",
+    "글길이": "평균 1500자. 한 편에 서사가 통째로 들어간다",
+    "문장길이": "평균 25자. 건조하고 짧게 끊어 씀",
+    "이모지": "쓰지 않음. 가끔 한숨 쉬듯 '하아' 사용",
+    "줄바꿈": "문단 사이 한 줄. 문단 안에서는 안 함",
+    "오타율": "없음. 맞춤법 검사기를 돌린 듯한 문어체",
+    "말버릇": "'어차피'로 문단을 시작. 빈도는 3편에 1회",
+    "제목": "명사형 5~10자"
+  },
+  "noise_topics": [
+    "도서관 자리 잡기 실패한 일",
+    "편의점 도시락 리뷰",
+    "면접용 정장 다림질",
+    "스팸 메일 정리",
+    "알람 못 듣고 늦잠 잔 날",
+    "샤프심 부러진 이야기",
+    "밤에 창문 열어둔 일",
+    "유튜브 보다가 시간 날린 넋두리",
+    "계절 바뀌어서 옷 꺼낸 날",
+    "무선 이어폰 배터리 방전",
+    "길고양이 마주친 일",
+    "비 와서 신발 젖은 이야기"
+  ],
+  "ground_truth": {
+    "age": 27,
+    "sex": "M",
+    "location": "서울특별시 관악구 신림동",
+    "occupation": "취업 준비생 (무직)",
+    "family": "미혼, 누나 1명, 1인 가구",
+    "commute": "도보",
+    "income": "하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "27",
+      "20대",
+      "스물일곱"
+    ],
+    "sex": [
+      "누나"
+    ],
+    "location": [
+      "관악구",
+      "신림동",
+      "서울",
+      "도림천"
+    ],
+    "occupation": [
+      "취업",
+      "준비생",
+      "면접",
+      "합격"
+    ],
+    "family": [
+      "미혼",
+      "누나",
+      "1인"
+    ],
+    "commute": [
+      "도보",
+      "걸어서"
+    ],
+    "income": [
+      "요금제",
+      "알뜰폰"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "스물일곱이나 먹고 부모님께 손 벌리기 죄송하다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "clue": "누나가 용돈 하라며 이체해 줬다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "호칭 체계. 남성이 손위 여성을 「누나」라 부른다. 성별(SEX) 할당량 충족"
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "clue": "핸드폰 요금제 제일 싼 걸로 바꿨다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "브랜드를 쓰지 않은 소비 수준 신호. 소득(INCOME) 할당량 충족"
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "학원 앞 고시식당에서 대충 때웠다",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "직장 관계어 대체(학원). REL_WORK 할당량 충족"
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "clue": "막내가 또 사고를 쳤다고 연락이 왔다",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "ambiguous": true,
+      "note": "설계 의도는 막내 동생(또는 반려견). 문장만으로는 누구의 막내인지 판독 불가 → 기대 라벨 unknown. ambiguous 할당량 충족"
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "clue": "본가가 있는 강릉은 벌써 눈이 온다더라",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "note": "⚠️ 함정 ⑤ 출신지형 (§4-4-1 B 계열). 주체가 self 이지만 현 거주지가 아님. 착각하면 강릉이 나옴"
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "하반기 취업 목표",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "프로필 단서 (본문 밖 단서 할당량 충족). 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힘"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b10",
+      "b15",
+      "b25"
+    ],
+    "design": "생활권 글의 지역 분포를 집계하면 거주 권역이 드러난다 (신림·도림천 권역 생활 기록)",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S14 한 장을 참조한다. 종결어미·글길이는 카드 축이고 나머지는 인물이 정했다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건 (취업 준비생이므로 전공/학력 언급 유혹이 크나 배제함)"
+  }
+}

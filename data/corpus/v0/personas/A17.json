@@ -1,0 +1,178 @@
+{
+  "id": "A17",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "대학생 종강 일기 (20대 초반 여성)",
+  "persona_type": "20대 여성 · 파편적 의식의 흐름 + 알바/과제 넋두리",
+  "card_ref": [
+    "S1"
+  ],
+  "card_binding": {
+    "S1": [
+      "종결어미",
+      "이모지",
+      "오타율"
+    ],
+    "—": [
+      "글길이",
+      "문장길이",
+      "줄바꿈",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "univ_chaos",
+    "nickname": "종강기원",
+    "profile_intro": "과제 멈춰",
+    "joined": "2024-03",
+    "typical_active_hours": "새벽 3시~4시"
+  },
+  "voice": {
+    "종결어미": "반말. 감정 과잉의 파편적 서술 (~토나와, ~미침)",
+    "글길이": "평균 500자 내외",
+    "문장길이": "평균 15자. 극도로 짧고 두서없이 끊어짐",
+    "이모지": "쉼표 남발(,,,), 느낌표 폭발(!!!!!!!)",
+    "줄바꿈": "의식의 흐름이 바뀔 때마다 뭉텅이로 줄바꿈",
+    "오타율": "매우 높음. 의도적 축약 및 오타 (출긘, 마쉿음, 왤케)",
+    "말버릇": "문단 첫머리에 '아니 근데' 빈번히 사용 (3편에 1회)",
+    "제목": "명사나 감탄사 단독 2~5자 (예: 아오, 과제, 미침)"
+  },
+  "noise_topics": [
+    "유튜브 보다가 밤샌 이야기",
+    "편의점 신상 아이스크림 먹은 일",
+    "마라탕 배달 늦어서 빡친 날",
+    "어제 산 티셔츠 환불할까 고민",
+    "버스에서 에어팟 배터리 나간 일",
+    "교수님 농담에 혼자 웃은 이야기",
+    "키보드 소리 너무 커서 눈치 보인 날",
+    "다이소에서 쓸데없는 거 털어온 일",
+    "룸메이트랑 야식 참기 실패",
+    "웹툰 쿠키 다 쓴 이야기",
+    "비 오는데 우산 안 챙긴 날",
+    "갑자기 앞머리 자르고 망친 일",
+    "폰 액정 깨진 이야기",
+    "보조배터리 안 챙겨서 불안한 날",
+    "친구랑 보톡하다가 해 뜬 이야기"
+  ],
+  "ground_truth": {
+    "age": 22,
+    "sex": "F",
+    "location": "서울특별시 동대문구 이문동",
+    "occupation": "대학생",
+    "family": "미혼, 자취 (1인 가구)",
+    "commute": "도보",
+    "income": "하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "22",
+      "20대",
+      "스물둘"
+    ],
+    "sex": [
+      "여대",
+      "여자"
+    ],
+    "location": [
+      "동대문구",
+      "이문동",
+      "외대"
+    ],
+    "occupation": [
+      "대학생",
+      "알바",
+      "과제"
+    ],
+    "family": [
+      "자취",
+      "미혼"
+    ],
+    "commute": [
+      "도보",
+      "걸어서"
+    ],
+    "income": [
+      "알바비",
+      "시급"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "clue": "스물둘 먹고 이러고 사는 게 맞나,,,,,",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "clue": "알바비 들어온 거 다 어디 갔냐고!!!!!!!",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "소비/소득 수준 암시. INCOME 할당량 기여"
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "clue": "여대 특) 시험기간에 다들 폐인됨ㅋㅋㅋㅋ",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "여대 언급으로 본인 성별 확정. SEX 할당량 기여"
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "자취방에서 걸어서 5분 거리라 다행임,,",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "거주 관계어 + 통근 거리"
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "clue": "예전에 수원 살 때가 교통은 더 편했음 진심,,",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "note": "⚠️ 함정 ⑥ 과거 거주. 시제 표지로 수원 오답 유도"
+    },
+    {
+      "post": "b15",
+      "text_id": "photo_caption:0",
+      "clue": "외대앞역 근처 카페",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "본문 밖 단서 (캡션)"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b10",
+      "b18",
+      "b26"
+    ],
+    "design": "동대문구 및 외대앞역 상권 방문 기록. 집계 시 생활권 특정.",
+    "ref_card": "S1"
+  },
+  "design_note": {
+    "card_binding": "S1 카드를 기반으로 과장된 감정 표현과 오타를 적극 반영.",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}
