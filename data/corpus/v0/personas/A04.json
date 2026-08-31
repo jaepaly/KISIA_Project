@@ -67,7 +67,10 @@
       "40대",
       "마흔다섯"
     ],
-    "sex": [],
+    "sex": [
+      "애들",
+      "도시락"
+    ],
     "location": [
       "수원시",
       "영통구",
@@ -94,10 +97,10 @@
     "income": []
   },
   "post_plan": {
-    "total": 16,
-    "noise": 9,
+    "total": 18,
+    "noise": 10,
     "ambient": 3,
-    "clue": 3,
+    "clue": 4,
     "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
@@ -155,6 +158,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "캡션 단서"
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "clue": "애들 도시락은 내가 싼다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "⭐ 통념 역행. 단독으로는 성별을 여성으로 오도한다. b10 의 「처남」과 결합해야 정합적이 된다"
     }
   ],
   "ambient_plan": {

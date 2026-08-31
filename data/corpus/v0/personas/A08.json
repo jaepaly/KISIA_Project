@@ -68,7 +68,9 @@
       "하기",
       "올해"
     ],
-    "sex": [],
+    "sex": [
+      "동생"
+    ],
     "location": [
       "부평구",
       "부평동",
@@ -93,10 +95,10 @@
   },
   "post_plan": {
     "total": 24,
-    "noise": 15,
+    "noise": 14,
     "ambient": 4,
-    "clue": 4,
-    "trap": 1,
+    "clue": 6,
+    "trap": 0,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -139,11 +141,11 @@
     {
       "post": "b21",
       "text_id": "body",
-      "clue": "친구가 부천 살아서 중간에서 봤다",
+      "clue": "예전에 부천 살 때는 이렇지 않았다",
       "attr": "location",
       "level": "explicit",
-      "subject": "other",
-      "note": "⚠️ 함정 ① 타지명"
+      "subject": "self",
+      "note": "⚠️ 과거 거주형. 시제로만 현 거주지와 갈린다. 「예전에」를 못 읽으면 부천을 거주지로 찍는다"
     },
     {
       "post": "b18",
@@ -153,6 +155,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "캡션 단서"
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "clue": "동생이 나를 언니라고 부를 때마다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "호칭 체계. 「언니」라 불리는 쪽이라 화자가 여성이다 — 부르는 쪽과 반대 방향"
     },
     {
       "post": null,

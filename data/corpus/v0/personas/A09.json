@@ -69,7 +69,9 @@
       "실기",
       "시작한"
     ],
-    "sex": [],
+    "sex": [
+      "자주"
+    ],
     "location": [
       "달서구",
       "상인동",
@@ -83,7 +85,8 @@
       "외동",
       "부모",
       "거주",
-      "혼자라"
+      "혼자라",
+      "눈치"
     ],
     "commute": [
       "시내버스",
@@ -93,9 +96,9 @@
   },
   "post_plan": {
     "total": 20,
-    "noise": 12,
+    "noise": 10,
     "ambient": 4,
-    "clue": 3,
+    "clue": 5,
     "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
@@ -145,6 +148,24 @@
       "level": "explicit",
       "subject": "self",
       "note": "제목 단서"
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "clue": "남자애치고 손이 작다는 말을 자주 듣는다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "복합 자기지칭. GT 가 외동이라 형제 호칭을 쓸 수 없다"
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "혼자 크면 눈치가 없다고들 한다",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "외동. 앞서 ambiguous 로 둔 b14 와 결합해야 확정된다"
     }
   ],
   "ambient_plan": {

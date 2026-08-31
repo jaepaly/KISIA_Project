@@ -55,7 +55,7 @@
   "ground_truth": {
     "age": 17,
     "sex": "F",
-    "location": "전북특별자치도 전주시 완산구 효자동",
+    "location": "전라북도 전주시 완산구 효자동",
     "occupation": "학생",
     "family": "쌍둥이 형제, 부모와 거주",
     "commute": "시내버스",
@@ -69,7 +69,11 @@
       "시간",
       "빨리"
     ],
-    "sex": [],
+    "sex": [
+      "쌍둥",
+      "오빠",
+      "자꾸"
+    ],
     "location": [
       "전주시",
       "완산구",
@@ -84,8 +88,7 @@
       "쌍둥이",
       "형제",
       "부모",
-      "거주",
-      "쌍둥이라"
+      "거주"
     ],
     "commute": [
       "시내버스"
@@ -124,11 +127,11 @@
     {
       "post": "b12",
       "text_id": "body",
-      "clue": "쌍둥이라 옷이 자꾸 섞인다",
-      "attr": "family",
-      "level": "explicit",
+      "clue": "쌍둥이 오빠랑 옷이 자꾸 섞인다",
+      "attr": "sex",
+      "level": "implicit",
       "subject": "self",
-      "note": "형제 구조"
+      "note": "호칭 체계. 여성이 손위 남성을 「오빠」라 부른다. family 는 §3-2 매핑으로 따라온다"
     },
     {
       "post": "b16",
@@ -142,11 +145,11 @@
     {
       "post": "b20",
       "text_id": "body",
-      "clue": "친구가 덕진 살아서 거기서 봤다",
+      "clue": "친구 학원이 덕진이라 끝나고 거기서 봤다",
       "attr": "location",
       "level": "explicit",
       "subject": "other",
-      "note": "⚠️ 함정 ③ 상위일치. 같은 시, 다른 구"
+      "note": "⚠️ 함정 ③ 상위일치 · 근무지형. 같은 시 다른 구이고, 거주가 아니라 학원 위치다"
     },
     {
       "post": null,
