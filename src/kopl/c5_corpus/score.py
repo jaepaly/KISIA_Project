@@ -40,8 +40,13 @@ PUNCT = re.compile(r"[.,!?~…·;:\"'“”‘’()\[\]<>]")
 # 한국어 종결어미 뒤에서도 끊는다.
 # 문장 경계 — 줄바꿈은 문장 경계가 아니다. 종결부호와 한국어 종결어미로만 끊는다.
 # (\s 가 개행을 포함하므로 종결어미 뒤 줄바꿈에서는 정상적으로 끊긴다)
+#
+# ⚠️ **말줄임표는 문장 경계가 아니다.** 「..」 「...」 은 문장 안에서 뜸을 들이는 부호로
+# 훨씬 자주 쓰인다. 마침표 하나로 보고 끊으면 문장 수가 부풀고 평균 길이가 내려간다 —
+# D01(말줄임표 글당 3~4회)에서 문장길이가 −35% 로 잘못 측정됐다.
+# 마침표가 둘 이상 이어지면 말줄임표로 보고 끊지 않는다.
 SENT_SPLIT = re.compile(
-    r"(?:[.!?…]+|"
+    r"(?:(?<!\.)\.(?!\.)|[!?]+|"           # 홑마침표만. .. 과 ... 은 뺀다
     r"(?<=요)\s+|(?<=음)\s+|(?<=함)\s+|(?<=다)\s+|(?<=죠)\s+|(?<=네)\s+)"
 )
 LINE_SPLIT = re.compile(r"\n+")
@@ -119,6 +124,14 @@ DECLARED = {
 }
 
 
+# 자모 이모티콘을 실제로 쓴다고 적었는지. 「이모지」 축은 부호·이모티콘·자모를
+# 통틀어 담아서, 「말줄임표를 글당 3~4회」 같은 값이 들어온다. 그 숫자를 자모이모티콘
+# 목표로 읽으면 실측 0 과 대조되어 −100% 오탐이 난다 (D01 사례).
+# 낱자 하나도 잡는다 — 「'ㅋ'를 글당 8회」 처럼 쓴다.
+# ㅋㅎㅜㅠ 는 완성 음절이 아니라 낱자라 본문에 우연히 섞이지 않는다.
+JAMO_DECLARED = re.compile(r"[ㄱ-ㅎㅏ-ㅣ]|자모|이모티콘|이모지")
+
+
 def declared_targets(persona: dict) -> dict:
     """voice 에 적힌 목표 수치를 뽑는다. 못 뽑으면 그 항목은 건너뛴다."""
     out = {}
@@ -126,7 +139,11 @@ def declared_targets(persona: dict) -> dict:
     for vkey, (metric, pat) in DECLARED.items():
         if not metric or vkey not in voice:
             continue
-        m = pat.search(str(voice[vkey]))
+        val = str(voice[vkey])
+        # 「이모지」 축에 자모 얘기가 없으면 그 숫자는 다른 것(말줄임표·괄호 등)의 빈도다
+        if metric == "자모이모티콘" and not JAMO_DECLARED.search(val):
+            continue
+        m = pat.search(val)
         if not m:
             continue
         nums = [int(g) for g in m.groups() if g]
