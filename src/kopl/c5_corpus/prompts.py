@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-# p1.0 — 채널(text_id) 지시를 프롬프트에 넣었다. p0.9 까지는 글 하나에 단서
-#        하나만 전달했고 text_id 를 아예 읽지 않아, 본문 밖 단서가 생성되지 않았다.
 PROMPT_VERSION = "p1.0"
 
 # 인물 JSON 에 noise_topics 가 없을 때만 쓰는 폴백.
@@ -86,19 +84,13 @@ OUTPUT_FORMAT = """\
 화제가 바뀌는 자리에 전환 표지가 있는가? → 없으면 넣어라. (내용까지 이어줄 필요는 없다)
 마지막 문장이 독자에게 하는 인사인가? → 앞 내용의 연장으로 바꿔라.
 
-[출력 형식 — 이 두 줄 외에 아무것도 쓰지 마라]
+[출력 형식 — 아래 형식만 쓴다]
 제목: (제목)
 (본문)
 
-단, 아래 지시에 사진 캡션이 있으면 본문 뒤에 캡션 줄을 붙인다."""
-
-
-CAPTION_FORMAT = """\
-[사진 캡션 — 본문을 끝낸 뒤 아래 형식으로 이어 쓴다]
-{lines}
-
-캡션은 사진에 달린 한 줄이다. 본문을 요약하지 말고, 그 사진을 찍은 사람이
-툭 적은 한마디로 써라. 본문에 이미 쓴 문장을 그대로 옮기지 마라."""
+캡션이 지정된 경우에만 본문 뒤에 이어 붙인다. 지정이 없으면 쓰지 않는다.
+캡션0: (첫 사진 설명)
+캡션1: (둘째 사진 설명)"""
 
 
 def render_voice(voice: dict) -> str:
@@ -142,77 +134,47 @@ def build_system(persona: dict, card_text: str = "") -> str:
     return "\n".join(parts)
 
 
-def _channel_label(text_id: str) -> str:
-    """text_id (label-schema §5-3) 를 사람이 읽는 채널 이름으로 바꾼다."""
-    if text_id == "title":
-        return "제목"
-    if text_id.startswith("photo_caption:"):
-        return f"사진 캡션 {text_id.split(':', 1)[1]}"
-    if text_id == "profile_bio":
-        return "프로필 소개"
-    return "본문"
-
-
-def build_user(kind: str, clues: dict | list | None = None, ambient_design: str = "",
+def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                topic: str = "") -> str:
-    """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다.
-
-    clues 는 그 글에 놓인 단서 전부다. 한 글에 둘 이상일 수 있다 —
-    본문 밖 단서(§9-1)를 쓰면 body 와 photo_caption:N 에 하나씩 놓이는 것이
-    정상 형태다. 단일 dict 도 받는다(하위호환).
-    """
+    """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다."""
     if kind == "clue":
         assert clues
-        if isinstance(clues, dict):
-            clues = [clues]
+        body = [c for c in clues if c.get("text_id", "body") == "body"]
+        title = [c for c in clues if c.get("text_id") == "title"]
+        caps = sorted([c for c in clues if str(c.get("text_id", "")).startswith("photo_caption")],
+                      key=lambda c: c["text_id"])
 
-        # subject 는 label-schema §4-2 기준 "그 스팬의 주체"이지 글 전체의 시점이 아니다.
-        # 글 단위 지시로 쓰면 함정 글이 통째로 3인칭이 되어, 모델이 "남 얘기"라고
-        # 쉽게 판정해버린다. 그러면 「지명이 나오면 거주지로 찍는」 실수를 유발하지 못해
-        # 함정이 함정 구실을 못 한다.
-        blocks, captions = [], []
-        for c in clues:
-            tid = c.get("text_id", "body")
-            if tid.startswith("photo_caption:"):
-                captions.append(tid.split(":", 1)[1])
-            who = ("이 문장의 주인공만 친구·지인이다"
-                   if c.get("subject") == "other" else "내 이야기다")
-            blocks.append(
-                f"- [{_channel_label(tid)}] {c['clue']}\n"
-                f"    · 주체: {who}\n"
-                f"    · 강도: {c.get('level', '')}\n"
-                f"    · 설계 메모: {c.get('note', '')}"
+        parts = ["블로그 글 한 편을 써라.\n"]
+        for c in body:
+            who = (
+                "이 단서 문장의 주인공만 친구·지인이다. **글의 나머지는 전부 내 이야기로 쓴다.**\n"
+                "  글 전체를 남 얘기로 만들지 마라. 내가 겪은 일을 쓰다가 그 한 문장에서만 "
+                "다른 사람이 등장한다."
+                if c.get("subject") == "other" else "내 이야기다."
             )
+            parts += [f"[본문에 심을 단서] {c['clue']}",
+                      f"[주체] {who}", f"[강도] {c['level']}", ""]
 
-        who_note = (
-            "\n[주의] 위에 '친구·지인'이라고 적힌 단서가 있다. "
-            "**그 문장의 주인공만** 다른 사람이고 **글의 나머지는 전부 내 이야기다.**\n"
-            "글 전체를 남 얘기로 만들지 마라. 내가 겪은 일을 쓰다가 그 한 문장에서만 "
-            "다른 사람이 등장한다.\n"
-            if any(c.get("subject") == "other" for c in clues) else ""
-        )
+        if title:
+            parts += ["[제목에 심을 단서] " + title[0]["clue"],
+                      "  제목을 그 내용으로 쓴다. 본문이 아니라 **제목 줄**에 실어야 한다.", ""]
+        if caps:
+            parts.append("[사진 캡션] 아래 순서대로 캡션을 붙인다. "
+                         "사진 밑에 한 줄씩 다는 짧은 말이라 문장이 완결되지 않아도 된다.")
+            for i, c in enumerate(caps):
+                parts.append(f"  캡션{i}: {c['clue']}")
+            parts.append("")
 
-        parts = [
-            "블로그 글 한 편을 써라.",
-            "",
-            f"[이 글에 심을 단서 {len(clues)}개 — 대괄호 안이 그 단서가 들어갈 자리다]",
-            "\n".join(blocks),
-            who_note,
+        parts += [
             "단서는 글 전체의 주제가 아니라 곁가지로 스쳐야 한다. "
-            "글의 절반 이상은 단서와 무관한 잡담으로 채워라.",
-            "",
-            "[중요] 위에 나열한 단서만 넣어라. **채널을 지킨다** — "
-            "제목에 넣으라고 한 것을 본문에 풀어 쓰거나, 캡션에 넣으라고 한 것을 "
-            "본문으로 옮기면 설계가 깨진다. 각 단서는 지정된 자리에 한 번씩만 넣는다.\n"
-            "그 외의 신상 정보 — 사는 곳이나 집 근처를 가리키는 표현, 직업이나 업무를 "
-            "짐작하게 하는 어휘, 나이, 가족, 출퇴근 수단 — 은 단 하나도 흘리지 마라. "
-            "글마다 단서를 배분해 두었기 때문에, 지정하지 않은 것이 섞이면 설계가 깨진다.\n"
+            "글의 절반 이상은 단서와 무관한 잡담으로 채워라.\n",
+            "[중요] 위에 지정한 단서만 넣어라. 그 외의 신상 정보 — "
+            "사는 곳이나 집 근처를 가리키는 표현, 직업이나 업무를 짐작하게 하는 어휘, "
+            "나이, 가족, 출퇴근 수단 — 은 단 하나도 흘리지 마라.",
             "잡담 부분은 신상과 무관한 소재(날씨·드라마·음식·기분)로만 채워라.",
         ]
-        if captions:
-            lines = "\n".join(f"캡션{i}: (사진 {i}의 캡션)" for i in sorted(captions))
-            parts += ["", CAPTION_FORMAT.format(lines=lines)]
         return "\n".join(parts)
+
     if kind == "ambient":
         return (
             "블로그 글 한 편을 써라.\n\n"

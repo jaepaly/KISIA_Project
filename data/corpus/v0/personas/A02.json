@@ -67,7 +67,9 @@
       "50대",
       "쉰둘"
     ],
-    "sex": [],
+    "sex": [
+      "아줌마"
+    ],
     "location": [
       "수영구",
       "광안동",
@@ -94,10 +96,10 @@
     "income": []
   },
   "post_plan": {
-    "total": 15,
-    "noise": 8,
+    "total": 17,
+    "noise": 9,
     "ambient": 3,
-    "clue": 3,
+    "clue": 4,
     "trap": 1,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
@@ -155,6 +157,15 @@
       "level": "implicit",
       "subject": "self",
       "note": "S11 형식 서술형 제목. b03 본문과 같은 글"
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "clue": "아줌마 셋이 모이면 말이 길어진다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "복합 자기지칭. 자기가 속한 집단을 부르는 말로 성별이 샌다"
     }
   ],
   "ambient_plan": {
