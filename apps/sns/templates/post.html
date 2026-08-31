@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title or "글" }} — 파도풀{% endblock %}
+{% block content %}
+
+<p><a href="/">← 목록으로</a></p>
+
+<div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
+  <h1>{{ p.title or "(제목 없음)" }}</h1>
+  <div class="post-meta">
+    <a href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
+    · {{ p.created_at[:16].replace('T', ' ') }}
+    {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+    {% if p.visibility == 'private' %}· <span class="badge private">비공개</span>{% endif %}
+  </div>
+
+  <p style="white-space: pre-wrap; margin-top: 16px;">{{ p.body }}</p>
+
+  {% if photos %}
+    <div style="margin-top: 16px;">
+      {% for ph in photos %}
+        <p style="color:#888; font-size:0.9em;">📷 사진 {{ ph.idx + 1 }} — {{ ph.caption }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility" style="margin-top:16px;">
+    <input type="hidden" name="back" value="/posts/{{ p.post_id }}">
+    <button type="submit" class="ghost">
+      {% if p.visibility == 'public' %}🔒 비공개로 전환{% else %}🌐 공개로 전환{% endif %}
+    </button>
+  </form>
+</div>
+
+{% endblock %}

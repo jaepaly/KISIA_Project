@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}글 작성 — 파도풀{% endblock %}
+{% block content %}
+
+<h1>글 작성</h1>
+
+{% if not authors %}
+  <p class="empty">
+    작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다
+    (W4 시딩 전이라면 테스트용으로 하나 넣어보세요).
+  </p>
+{% endif %}
+
+<form method="post" action="/posts">
+  <label for="author_id">작성자</label>
+  <select name="author_id" id="author_id" required>
+    {% for a in authors %}
+      <option value="{{ a.author_id }}">{{ a.nickname }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="title">제목 (선택)</label>
+  <input type="text" name="title" id="title">
+
+  <label for="body">본문</label>
+  <textarea name="body" id="body" rows="8" required></textarea>
+
+  <label for="geo_tag">위치 태그 (선택)</label>
+  <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 용인시 기흥구">
+
+  <label for="captions">사진 캡션 (선택, 한 줄에 하나씩 — 순서대로 사진 0, 1, 2...로 들어갑니다)</label>
+  <textarea name="captions" id="captions" rows="3" placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"></textarea>
+
+  <label for="created_at">
+    작성 시각 — 실제 SNS엔 없는 기능이지만 여기서는 직접 바꿀 수 있습니다
+    (새벽 시간대에 쓰는 패턴 등을 시연하려면 필요합니다)
+  </label>
+  <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
+
+  <button type="submit" {% if not authors %}disabled{% endif %}>올리기</button>
+</form>
+
+{% endblock %}
