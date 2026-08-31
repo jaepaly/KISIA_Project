@@ -43,6 +43,12 @@ ALLOWED_SUBJECTS: Tuple[str, ...] = (
     "unknown",
 )
 
+# span.schema.json: 레코드 종류
+ALLOWED_RECORD_TYPES: Tuple[str, ...] = (
+    "post",
+    "profile",
+)
+
 # span.schema.json: text_id 정규식
 TEXT_ID_PATTERN: str = r"^(title|body|profile_bio|photo_caption:\d+)$"
 _TEXT_ID_RE = re.compile(TEXT_ID_PATTERN)
@@ -115,18 +121,33 @@ def create_span_record(
 
 
 def format_output(
-    post_id: str,
-    model_version: str,
-    spans: List[Dict[str, Any]],
+    post_id: Optional[str] = None,
+    model_version: str = "koelectra-base-v3-span-0.1.0",
+    spans: Optional[List[Dict[str, Any]]] = None,
+    record_type: str = "post",
+    persona_id: Optional[str] = None,
     flags: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """span.schema.json 최상위 출력 객체 구성."""
+    if record_type not in ALLOWED_RECORD_TYPES:
+        raise ValueError(f"유효하지 않은 record_type: {record_type}. 허용값: {ALLOWED_RECORD_TYPES}")
+
     output: Dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "model_version": model_version,
-        "post_id": post_id,
-        "spans": spans,
+        "record_type": record_type,
     }
+    if record_type == "profile":
+        pid = persona_id or post_id
+        if not pid:
+            raise ValueError("profile 레코드에는 persona_id가 필수입니다")
+        output["persona_id"] = pid
+    else:
+        if not post_id:
+            raise ValueError("post 레코드에는 post_id가 필수입니다")
+        output["post_id"] = post_id
+
+    output["spans"] = spans or []
     if flags is not None:
         output["flags"] = flags
     return output
@@ -178,9 +199,26 @@ def validate_span_output(
     errors: List[str] = []
 
     # 1. 최상위 필수 키
-    for k in ("schema_version", "model_version", "post_id", "spans"):
+    for k in ("schema_version", "model_version", "record_type", "spans"):
         if k not in output:
             errors.append(f"필수 최상위 필드 누락: {k}")
+
+    rt = output.get("record_type")
+    if rt and rt not in ALLOWED_RECORD_TYPES:
+        errors.append(f"유효하지 않은 record_type: '{rt}'. 허용값: {ALLOWED_RECORD_TYPES}")
+
+    if rt == "profile":
+        if "persona_id" not in output:
+            errors.append("profile 레코드에는 persona_id가 필수입니다")
+        if "post_id" in output:
+            errors.append("profile 레코드에 post_id가 포함되어선 안 됩니다 (상호 배제 제약)")
+        if is_post:
+            errors.append("규칙10: profile 레코드가 글 레코드(is_post=True)로 전달되었습니다")
+    else:
+        if "post_id" not in output:
+            errors.append("post 레코드에는 post_id가 필수입니다")
+        if "persona_id" in output:
+            errors.append("post 레코드에 persona_id가 포함되어선 안 됩니다 (상호 배제 제약)")
 
     if output.get("schema_version") != SCHEMA_VERSION:
         errors.append(f"schema_version 불일치: 기대값 '{SCHEMA_VERSION}', 실제값 '{output.get('schema_version')}'")

@@ -1,0 +1,173 @@
+{
+  "id": "A04",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "경력 전환 공무원 (40대 중반 남성)",
+  "persona_type": "40대 중반 남성 · 직무 전환 서사 + 자전거 기록",
+  "card_ref": [
+    "S14"
+  ],
+  "card_binding": {
+    "S14": [
+      "종결어미",
+      "글길이",
+      "문장길이"
+    ],
+    "—": [
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "wheel_and_desk",
+    "nickname": "바퀴와책상",
+    "profile_intro": "주말엔 자전거",
+    "joined": "2018-03",
+    "typical_active_hours": "주말 새벽·평일 밤"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 1인칭 독백체",
+    "글길이": "평균 3000자. 한 편에 서사가 통째로 들어간다",
+    "문장길이": "평균 36자. 문단 끝에 3~5어절 단문을 둔다",
+    "이모지": "말줄임표(…)를 글당 5회",
+    "줄바꿈": "한 호흡마다",
+    "오타율": "글당 2건. 띄어쓰기 오류 위주",
+    "말버릇": "'돌이켜보면'으로 문단을 시작. 빈도는 3편에 1회",
+    "제목": "날짜 + 명사형"
+  },
+  "noise_topics": [
+    "주말에 세차한 이야기",
+    "라디오 사연 듣다 웃은 일",
+    "장마철 습기",
+    "냉면 먹으러 간 날",
+    "타이어 공기압 점검",
+    "밤에 잠 안 오는 이야기",
+    "리모컨 건전지가 나간 일",
+    "오래 안 신은 신발",
+    "구독 서비스 해지",
+    "화장실 전구 갈기",
+    "가계부 쓰다 만 이야기",
+    "커피 끊으려다 만 일"
+  ],
+  "ground_truth": {
+    "age": 45,
+    "sex": "M",
+    "location": "경기도 수원시 영통구 원천동",
+    "occupation": "지방자치단체 행정직",
+    "family": "기혼, 자녀 2명",
+    "commute": "자차",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "45",
+      "40대",
+      "마흔다섯"
+    ],
+    "sex": [],
+    "location": [
+      "수원시",
+      "영통구",
+      "원천동",
+      "경기",
+      "근처"
+    ],
+    "occupation": [
+      "지방자치단체",
+      "행정직",
+      "민원",
+      "창구"
+    ],
+    "family": [
+      "기혼",
+      "자녀",
+      "2명"
+    ],
+    "commute": [
+      "자차",
+      "자전거",
+      "주말"
+    ],
+    "income": []
+  },
+  "post_plan": {
+    "total": 16,
+    "noise": 9,
+    "ambient": 3,
+    "clue": 3,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "clue": "마흔다섯에 부서를 옮겼다",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "clue": "민원 창구에 있다 보면",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "직명 없이 업무로"
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "clue": "집 근처 저수지까지 자전거로 이십 분",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "관계어 + 시설"
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "clue": "처남이 동탄 살아서 거기서 봤다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명"
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "자전거랑 주말 기록",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "프로필 단서"
+    },
+    {
+      "post": "b13",
+      "text_id": "photo_caption:0",
+      "clue": "집 근처 저수지에서",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "캡션 단서"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b02",
+      "b06",
+      "b15"
+    ],
+    "design": "생활권 글의 지역 분포를 집계하면 거주 권역이 드러난다",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S14 한 장을 참조한다. 종결어미·글길이는 카드 축이고 나머지 6축은 인물이 정했다 — 같은 카드에서 5명을 뽑기 때문이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}

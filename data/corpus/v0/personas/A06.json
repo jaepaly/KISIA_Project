@@ -1,0 +1,182 @@
+{
+  "id": "A06",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "고3 수험생 (10대 후반 여성)",
+  "persona_type": "10대 후반 여성 · 시험 앞둔 넋두리 + 포토덤프",
+  "card_ref": [
+    "S18"
+  ],
+  "card_binding": {
+    "S18": [
+      "종결어미",
+      "글길이",
+      "문장길이"
+    ],
+    "—": [
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "dday_log",
+    "nickname": "디데이",
+    "profile_intro": "끝나면 놀 거임",
+    "joined": "2024-03",
+    "typical_active_hours": "자정 전후"
+  },
+  "voice": {
+    "종결어미": "인터넷 구어 애교체. 본인 일을 '~했다네요'로 옮기는 3인칭 전달체를 섞음",
+    "글길이": "평균 400자. 사진마다 2~4행",
+    "문장길이": "평균 22자",
+    "이모지": "'ㅋ'를 글당 8회. 다른 자음은 거의 안 씀",
+    "줄바꿈": "어절 단위. 한 행 3~8자",
+    "오타율": "글당 4건. 자모 분리 위주",
+    "말버릇": "'아니 근데'로 문장을 시작. 빈도는 3편에 1회",
+    "제목": "이모지 포함 5~8자"
+  },
+  "noise_topics": [
+    "급식 얘기",
+    "쉬는 시간에 잔 이야기",
+    "핸드폰 배터리가 없던 날",
+    "편의점 신상",
+    "친구랑 싸운 척한 이야기",
+    "노래 무한반복",
+    "머리 감기 귀찮은 날",
+    "가방이 무거운 이야기",
+    "버스 놓친 일",
+    "필기구 잃어버린 이야기",
+    "날씨가 이상한 날",
+    "밤에 배고픈 이야기"
+  ],
+  "ground_truth": {
+    "age": 18,
+    "sex": "F",
+    "location": "서울특별시 노원구 중계동",
+    "occupation": "학생",
+    "family": "다자녀 중간, 부모와 거주",
+    "commute": "도보",
+    "income": "중간"
+  },
+  "scoring_keywords": {
+    "age": [
+      "18",
+      "10대",
+      "시험",
+      "일주일"
+    ],
+    "sex": [],
+    "location": [
+      "노원구",
+      "중계동",
+      "서울",
+      "분이라",
+      "늦잠"
+    ],
+    "occupation": [
+      "학생"
+    ],
+    "family": [
+      "다자녀",
+      "중간",
+      "부모",
+      "거주",
+      "엄마"
+    ],
+    "commute": [
+      "도보"
+    ],
+    "income": []
+  },
+  "post_plan": {
+    "total": 22,
+    "noise": 13,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "시험이 일주일 남았다",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "note": "시점 + 나이를 동시에 준다. S18 대표 단서"
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "clue": "언니는 좋겠다 안 봐도 돼서",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "형제 서열"
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "clue": "걸어서 십 분이라 늦잠 자도 된다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "관계어 + 이동시간"
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "엄마가 밥 차려놨다길래",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "ambiguous": true,
+      "note": "3인칭 전달체. 문장만 보면 타인 서술 → 기대 라벨 unknown"
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "친구가 상계 살아서 거기서 만났다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ③ 상위일치. 같은 구, 다른 동 — 해상도 판정"
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "시험 끝나면 놀 사람",
+      "attr": "age",
+      "level": "implicit",
+      "subject": "self",
+      "note": "프로필 단서"
+    },
+    {
+      "post": "b03",
+      "text_id": "photo_caption:0",
+      "clue": "독서실에서",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "캡션 단서"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b09",
+      "b13",
+      "b20"
+    ],
+    "design": "생활권 글의 지역 분포를 집계하면 거주 권역이 드러난다",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S18 한 장을 참조한다. 종결어미·글길이는 카드 축이고 나머지 6축은 인물이 정했다 — 같은 카드에서 5명을 뽑기 때문이다",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}

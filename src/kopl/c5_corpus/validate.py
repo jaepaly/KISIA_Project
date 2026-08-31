@@ -31,6 +31,20 @@ LEVELS = ("explicit", "implicit", "inferential")
 SUBJECTS = ("self", "other", "unknown")
 SEXES = ("M", "F")
 
+# 2023 년 개편으로 폐지된 시도명. 사전(data/dict/admin)에 없어 조회가 실패한다.
+# corpus_audit 이 잡아주지만 그건 사후다. 여기서 막으면 커밋 전에 걸리고,
+# generate.py 가 ERROR 인물의 생성을 거부하므로 생성 전에도 걸린다.
+# #113·#114 로 한 번 고쳤는데 인물 조립 스크립트에 옛 이름이 남아 되돌아왔다.
+DEPRECATED_SIDO = {
+    "전라북도": "전북특별자치도",
+    "강원도": "강원특별자치도",
+    # 전남·광주 통합. 사전 정본 시도명 16개에 「전라남도」·「광주광역시」가 없다
+    # (data/dict/admin/regions.json · level=="sido"). 광주광역시는 수십 년 쓰인
+    # 이름이라 새 인물을 쓸 때 제일 손이 가기 쉽다.
+    "전라남도": "전남광주통합특별시",
+    "광주광역시": "전남광주통합특별시",
+}
+
 # label-schema.md §5-3 — 단서가 실릴 텍스트 채널.
 # 캡션은 한 글에 여러 개라 고정 목록으로 닫을 수 없어 정규식으로 강제한다.
 TEXT_ID_RE = re.compile(r"^(title|body|profile_bio|photo_caption:\d+)$")
@@ -52,7 +66,10 @@ FORBIDDEN_TERMS = (
     "학력", "학벌", "전공", "졸업", "학번", "수능", "편입",
     "정치", "지지율", "보수", "진보", "투표",
     "건강", "지병", "진단", "복용", "수술", "우울", "장애",
-    "아이큐", "지능", "종교", "교회", "성당", "절에",
+    # ⚠️ 「미사」는 넣지 않는다. 「미사용」(우리가 카드 얘기에 늘 쓰는 말 —
+    #    D06·D08 design_note · README · corpus-audit.md)과 하남시 미사1~3동
+    #    (data/dict/admin 정본)이 통째로 걸린다. 예외로 빼기에는 지명이 남는다.
+    "아이큐", "지능", "종교", "교회", "성당", "절에", "사찰", "예배",
 )
 
 # 노이즈 정의 B안(개별 무해 기준).
@@ -212,6 +229,10 @@ def card_check(personas: list[tuple[str, dict]], card_axes: dict) -> list[str]:
             card = gov.get(ax, refs[0])          # 미지정이면 첫 카드
             target = (card_axes.get(card) or {}).get(ax)
             if target is None:
+                if ax in gov:
+                    # 명시적으로 묶었는데 그 카드에 그 축이 없다.
+                    # 카드가 안 규정했거나, 축 이름이 카드 블록과 다르거나.
+                    rows.append(f"      ?   {ax:10} {card:14} 그 카드에 이 축이 없다 — 대조 불가")
                 continue                          # 카드가 그 축을 규정하지 않았다
             if _numeric_axis(target):
                 pv = _as_number(val, prefer_avg=True)
@@ -287,6 +308,13 @@ def cross_check(personas: list[tuple[str, dict]]) -> list[str]:
                 is_bound = any(t in k for t in FALLBACK_CARD_BOUND)
             if is_bound:
                 bound_n += 1
+                # 수치 축은 숫자로 본다. 둘 다 같은 카드를 따르되 허용 범위 안의
+                # 다른 지점에 있을 수 있다 (카드 40자 → 인물 32자·48자)
+                # 카드 대비 ±25% 를 각자 허용하므로 둘 사이는 최대 40% 벌어질 수 있다.
+                # 카드와의 일치는 card_check 가 이미 본다. 여기서는 같은 밴드인지만 본다.
+                na, nb = _as_number(va[k], True), _as_number(vb[k], True)
+                if na and nb:
+                    sim = 1.0 if abs(na - nb) / max(na, nb) <= 0.45 else 0.0
                 if sim < VOICE_SIM_THRESHOLD:
                     rows.append(f"      {k:12} {sim:.2f}  ⚠ 같은 카드에 묶었는데 값이 다르다")
                 else:
@@ -329,7 +357,19 @@ class Issue:
         return f"  [{self.level:5}] {self.path}: {self.msg}"
 
 
+# 금지어를 부분 문자열로 찾으면 무해한 낱말이 걸린다.
+# 「어절에」·「계절에」가 "절에"(종교)로, 「장애물」이 "장애"(건강)로 잡혔다.
+# 노이즈 소재까지 전역 스캔하므로 날씨 얘기에 「계절」만 나와도 걸린다.
+# 스캔 전에 아래 낱말을 지운다. 금지어 목록 자체는 건드리지 않는다.
+#
+# ⚠️ 「보수」(정치/수리/급여)와 「관절」(일상/건강)은 일부러 넣지 않았다.
+#    실제로 뜻이 갈려서 사람이 봐야 한다 — WARN 으로 남는 게 맞다.
+FORBIDDEN_EXCEPTIONS = ("어절", "계절", "예절", "조절", "절약", "명절", "장애물")
+
+
 def _scan_forbidden(text: str) -> list[str]:
+    for safe in FORBIDDEN_EXCEPTIONS:
+        text = text.replace(safe, "")
     return [t for t in FORBIDDEN_TERMS if t in text]
 
 
@@ -362,6 +402,12 @@ def validate(persona: dict) -> list[Issue]:
                 err(f"ground_truth.{k}", f"7속성 밖의 키. 허용: {', '.join(ATTRS)}")
         if gt.get("sex") not in SEXES and "sex" in gt:
             err("ground_truth.sex", f"{gt.get('sex')!r} — M 또는 F만 허용")
+
+        loc = str(gt.get("location", "")).split()
+        if loc and loc[0] in DEPRECATED_SIDO:
+            err("ground_truth.location",
+                f"{loc[0]} 은 폐지된 시도명이다 → {DEPRECATED_SIDO[loc[0]]}. "
+                f"사전에 없어 거주지 조회가 실패한다")
         if not isinstance(gt.get("age"), int) and "age" in gt:
             warn("ground_truth.age", "정수가 아니다. C의 연령대 집계가 깨질 수 있다")
 
@@ -396,7 +442,10 @@ def validate(persona: dict) -> list[Issue]:
         elif not POST_ID_RE.match(str(post)):
             err(p, f"post={post!r} — b01 형식이어야 한다")
         else:
-            key = f"{post}/{c.get('text_id', 'body')}"
+            # attr 까지 키에 넣는다. 스팬 하나가 여러 속성을 동시에 실을 수 있다 —
+            # S11 의 「늙은 홀아비」는 한 어절에 연령·성별·혼인상태가 겹친다.
+            # (post, text_id) 만으로 키를 잡으면 그 형태를 아예 쓸 수 없었다.
+            key = f"{post}/{c.get('text_id', 'body')}/{c.get('attr')}"
             if key in seen:
                 err(p, f"{key} 가 {seen[key]} 와 중복")
             else:
@@ -463,10 +512,13 @@ def validate(persona: dict) -> list[Issue]:
     cb = persona.get("card_binding")
     refs = persona.get("card_ref", []) or []
     if cb is None:
-        if refs:
+        # 카드가 한 장이면 바인딩할 것이 없다 — 「첫 카드가 이긴다」가 곧 전부다.
+        # 여기서 경고하면 단일 카드 인물 전원이 걸려 진짜 미배정 경고가 묻힌다.
+        if len(refs) > 1:
             warn("card_binding",
-                 "어느 카드에서 어느 축을 물려받았는지 선언되지 않았다. "
-                 "카드를 공유하는 인물끼리 대조할 때 폴백 규칙이 적용된다")
+                 f"카드를 {len(refs)}장 참조하는데 어느 카드에서 어느 축을 물려받았는지 "
+                 "선언되지 않았다. 카드를 공유하는 인물끼리 대조할 때 폴백 규칙"
+                 "(card_ref 첫 카드가 이긴다)이 적용된다")
     elif not isinstance(cb, dict):
         err("card_binding", "객체여야 한다 — {\"S13\": [\"글길이\"], ...}")
     else:
@@ -478,10 +530,38 @@ def validate(persona: dict) -> list[Issue]:
                     f"card_ref 에 없는 카드다. 참조하지 않은 카드에서 축을 물려받을 수 없다")
             if not isinstance(axes, list) or not all(isinstance(x, str) for x in axes):
                 err(f"card_binding.{card}", "문자열 배열이어야 한다")
-        if len(refs) > 1 and len([k for k in cb if k != FREE_AXIS_KEY]) < 2:
-            warn("card_binding",
-                 f"카드를 {len(refs)}장 참조하는데 {len(cb)}장에만 축을 배정했다. "
-                 "축마다 주 카드를 정하지 않으면 카드를 섞은 인물이 된다")
+
+        # 바인딩한 축 이름이 인물 voice 키와 맞는지 본다.
+        # 안 맞으면 그 바인딩은 조용히 아무 일도 안 한다 — 축을 못 찾으니
+        # 폴백(첫 카드)이 그 축을 가져간다. 작성자는 배정했다고 믿는다.
+        #
+        # 실측 2026-08-28 (#95): 카드 축은 「오타」인데 인물 키는 「오타율」이라
+        # {"S8": ["오타"]} 가 통째로 무시됐다. 축 이름이 카드 쪽과 인물 쪽
+        # 두 벌이라 생기는 문제다(#78 에서 지적, W3 정리 예정).
+        vkeys = set((persona.get("voice") or {}).keys())
+        for card, axes in cb.items():
+            if not isinstance(axes, list):
+                continue
+            for ax in axes:
+                if not isinstance(ax, str) or ax in vkeys:
+                    continue
+                near = [k for k in vkeys if k.startswith(ax) or ax.startswith(k)]
+                hint = f" (「{near[0]}」 인 듯하다)" if near else ""
+                warn(f"card_binding.{card}",
+                     f"「{ax}」 는 이 인물의 voice 에 없는 축이다. "
+                     f"이 바인딩은 아무 일도 하지 않고 폴백이 적용된다.{hint}")
+        # 참조만 하고 축을 하나도 안 물려받은 카드를 찾는다.
+        # 첫 카드는 폴백으로 나머지 축을 전부 가져가므로 유휴가 아니다.
+        # FREE_AXIS_KEY 는 카드가 아니므로 세지 않는다 — 세면 "2장 참조인데
+        # 2장에만 배정했다" 같은 모순된 문구가 나온다.
+        if len(refs) > 1:
+            bound = {k for k in cb if k != FREE_AXIS_KEY}
+            idle = [c for c in refs[1:] if c not in bound]
+            if idle:
+                warn("card_binding",
+                     f"{', '.join(idle)} 을(를) card_ref 에 두었는데 물려받은 축이 없다. "
+                     f"폴백으로 첫 카드({refs[0]})가 나머지를 전부 가져간다 — "
+                     "참조만 하고 안 쓸 거면 card_ref 에서 빼는 편이 낫다")
 
     # ── 소재 축 (persona-design.md §2-⑤) ──────────────────────────────
     topics = persona.get("noise_topics") or (persona.get("voice") or {}).get("소재")

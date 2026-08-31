@@ -20,7 +20,7 @@
   "account": {
     "blog_id": "sootuk_day",
     "nickname": "숲덕",
-    "profile_intro": "커피랑 동네 기록",
+    "profile_intro": "매장 마감하고 쓰는 동네 기록",
     "joined": "2021-03",
     "typical_active_hours": "평일 밤 10시 이후(마감 후), 일요일 오전"
   },
@@ -36,7 +36,7 @@
   "ground_truth": {
     "age": 34,
     "sex": "F",
-    "location": "서울특별시 성동구 성수1가1동",
+    "location": "서울특별시 성동구 성수1가제1동",
     "occupation": "카페 매니저",
     "family": "기혼, 자녀 없음",
     "commute": "지하철 2호선",
@@ -134,7 +134,7 @@
       "attr": "location",
       "level": "explicit",
       "subject": "other",
-      "note": "⚠️ 함정. 본인 거주지가 아니다. subject 필드는 라벨 스키마 안건 1",
+      "note": "⚠️ 함정 ① 타지명 (§4-4-1). 본인 거주지가 아니다. subject 필드는 라벨 스키마 안건 1",
       "text_id": "body"
     },
     {

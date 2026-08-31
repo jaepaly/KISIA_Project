@@ -20,7 +20,7 @@
   "account": {
     "blog_id": "grn_days",
     "nickname": "초록다래",
-    "profile_intro": "그날그날",
+    "profile_intro": "교대 근무 하는 사람의 그날그날 기록",
     "joined": "2019-11",
     "typical_active_hours": "주간조일 때 밤 9~11시, 야간조 주간엔 오후 2~4시"
   },
@@ -152,7 +152,7 @@
       "attr": "location",
       "level": "explicit",
       "subject": "other",
-      "note": "⚠️ 함정. 본인 거주지가 아니다. 지명이 나오면 무조건 거주지로 찍는 모델을 거른다",
+      "note": "⚠️ 함정 ① 타지명 (§4-4-1). 본인 거주지가 아니다. 지명이 나오면 무조건 거주지로 찍는 모델을 거른다",
       "text_id": "body"
     },
     {

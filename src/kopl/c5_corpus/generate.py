@@ -21,15 +21,27 @@ import argparse
 import glob
 import json
 import random
+import re
 import sys
 import time
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-import prompts
-from llm import LLMClient, LLMError, check_generation_model, list_models, load_dotenv
-from validate import validate_file
+# README 의 `python -m kopl.c5_corpus.generate` 로 돌리면 sys.path[0] 이 저장소
+# 루트라 평면 import 가 ModuleNotFoundError 로 죽는다. 반대로 이 파일을 직접
+# `python generate.py` 로 돌리면 패키지 문맥이 없어 상대 import 가 죽는다.
+# 둘 다 쓰이므로(위 docstring 예시가 후자다) 상대를 먼저 보고 평면으로 떨어진다.
+try:
+    from . import prompts
+    from .llm import (LLMClient, LLMError, check_generation_model,
+                      list_models, load_dotenv)
+    from .validate import validate_file
+except ImportError:
+    import prompts
+    from llm import (LLMClient, LLMError, check_generation_model,
+                     list_models, load_dotenv)
+    from validate import validate_file
 
 KST = timezone(timedelta(hours=9))
 CORPUS_SCHEMA_VERSION = "0.1"  # 인물 JSON의 schema_version과 다른 값이다
@@ -39,7 +51,18 @@ CORPUS_SCHEMA_VERSION = "0.1"  # 인물 JSON의 schema_version과 다른 값이�
 def classify_posts(persona: dict) -> list[dict]:
     """b01..bNN 각각에 kind를 배정한다. 이게 노이즈 비율의 유일한 통제 지점."""
     total = persona["post_plan"]["total"]
-    clues = {c["post"]: c for c in persona.get("clue_plan", [])}
+    # ⚠️ 글 하나에 단서가 둘 이상일 수 있다. 본문 밖 단서(§9-1)를 쓰면 같은 글의
+    #    body 와 photo_caption:N 에 하나씩 놓이는 것이 정상 형태다.
+    #    dict 로 모으면 뒤엣것이 앞엣것을 덮어써서 조용히 사라진다 —
+    #    인물 25명 기준 clue_plan 202건 중 42건(21%)이 그렇게 없어지고 있었다.
+    #    그리고 캡션·제목 항목을 뒤에 쓰는 것이 우리 공통 패턴이라, 사라지는 쪽이
+    #    대개 본문 단서였다.
+    clues: dict[str, list[dict]] = {}
+    for c in persona.get("clue_plan", []) or []:
+        post = c.get("post")
+        if post is None:
+            continue      # 사용자 단위 단서(profile_bio) — 글이 아니라 프로필로 나간다
+        clues.setdefault(post, []).append(c)
     ambient = set((persona.get("ambient_plan") or {}).get("posts", []))
     design = (persona.get("ambient_plan") or {}).get("design", "")
 
@@ -47,7 +70,7 @@ def classify_posts(persona: dict) -> list[dict]:
     for n in range(1, total + 1):
         pid = f"b{n:02d}"
         if pid in clues:
-            out.append({"post": pid, "kind": "clue", "clue": clues[pid]})
+            out.append({"post": pid, "kind": "clue", "clues": clues[pid]})
         elif pid in ambient:
             out.append({"post": pid, "kind": "ambient", "design": design})
         else:
@@ -92,7 +115,7 @@ def stratified_sample(plan: list[dict], n: int, rng: random.Random) -> list[dict
             # level 다양성 우선
             by_level: dict[str, list[dict]] = {}
             for it in items:
-                by_level.setdefault(it["clue"].get("level", "?"), []).append(it)
+                by_level.setdefault(it["clues"][0].get("level", "?"), []).append(it)
             order, levels = [], sorted(by_level)
             while len(order) < len(items):
                 for lv in levels:
@@ -125,7 +148,16 @@ def sample_time(persona: dict, rng: random.Random, idx: int) -> str:
 
 
 # ── 응답 파싱 ────────────────────────────────────────────────────────
-def parse(raw: str) -> tuple[str, str]:
+# 캡션 줄. 프롬프트가 "캡션0: ..." 형태로 쓰게 지시한다.
+CAPTION_RE = re.compile(r"^캡션\s*(\d+)\s*:\s*(.*)$")
+
+
+def parse(raw: str) -> tuple[str, str, dict[str, str]]:
+    """제목 · 본문 · 사진 캡션으로 가른다.
+
+    캡션은 본문 뒤에 "캡션0: ..." 줄로 붙어 온다. 키는 계약(label-schema §5-3)
+    그대로 photo_caption:N 으로 돌려준다.
+    """
     text = unicodedata.normalize("NFC", raw).strip()
     title, body = "", text
     for line in text.splitlines():
@@ -133,7 +165,15 @@ def parse(raw: str) -> tuple[str, str]:
             title = line.split(":", 1)[1].strip()
             body = text.split(line, 1)[1].strip()
             break
-    return title, body
+    captions: dict[str, str] = {}
+    kept: list[str] = []
+    for line in body.splitlines():
+        m = CAPTION_RE.match(line.strip())
+        if m:
+            captions[f"photo_caption:{m.group(1)}"] = m.group(2).strip()
+        else:
+            kept.append(line)
+    return title, "\n".join(kept).strip(), captions
 
 
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
@@ -200,7 +240,7 @@ def generate_persona(
                 topic = topics[(noise_seen + topic_offset) % len(topics)]
                 noise_seen += 1
             user = prompts.build_user(
-                item["kind"], item.get("clue"), item.get("design", ""), topic
+                item["kind"], item.get("clues"), item.get("design", ""), topic
             )
             if sleep and written:
                 time.sleep(sleep)
@@ -209,22 +249,25 @@ def generate_persona(
             except LLMError as e:
                 print(f"  ✗ {item['post']} 실패: {e}")
                 continue
-            title, body = parse(raw)
+            title, body, captions = parse(raw)
             if getattr(client, "last_truncated", False):
                 print(f"  ✗ {item['post']} 잘림 — 저장하지 않는다. --max-tokens 를 올려라")
                 continue
             rec = {
                 "post_id": f"{pid}_{item['post']}",
                 "persona_id": pid,
+                # span.schema.json 의 record_type (#107). 프로필 레코드와 가른다.
+                "record_type": "post",
                 "title": title,
                 "body": body,
+                "photo_captions": captions,
                 "n_chars": len(body),  # 문자 offset 기준 라벨의 sanity check용
                 "created_at": sample_time(persona, rng, idx),
                 "nickname": (persona.get("account") or {}).get("nickname", ""),
                 "kind": item["kind"],
                 # label-schema §8-3 — 단서를 의도적으로 넣지 않은 글인가
                 "negative_control": item["kind"] == "noise",
-                "clue": item.get("clue"),
+                "clues": item.get("clues"),
                 # 재현 메타 — 없으면 10주 뒤에 이 글이 뭐였는지 복원 못 한다
                 # 재현 메타 (이슈 4-② / RULES-DO-NOT #9)
                 "gen_model": client.version,
@@ -239,6 +282,42 @@ def generate_persona(
             fh.flush()  # 중간에 끊겨도 여기까지는 남는다
             written += 1
             print(f"  {item['post']} [{item['kind']:7}] {len(body):4}자  {title[:20]}")
+
+        # ── 프로필 레코드 ────────────────────────────────────────────
+        # profile_bio 는 글이 아니라 계정에 붙는 사용자 단위 채널이다(§5-3).
+        # 인물 JSON 의 account.profile_intro 에 이미 손으로 쓰여 있으므로
+        # 모델을 부르지 않는다. 내보내기만 하면 된다.
+        # 이게 없으면 profile_bio 단서 23건이 갈 곳이 없어 통째로 사라진다.
+        if "profile" not in done:
+            acct = persona.get("account") or {}
+            bio = acct.get("profile_intro", "")
+            prof_clues = [c for c in persona.get("clue_plan", []) or []
+                          if c.get("post") is None]
+            for c in prof_clues:
+                if c.get("clue", "").strip() and c["clue"].strip() not in bio:
+                    print(f"  ⚠ profile_bio 단서가 account.profile_intro 에 없다 — "
+                          f"이 단서는 코퍼스에 나타나지 않는다: {c['clue'][:30]}")
+            fh.write(json.dumps({
+                "post_id": f"{pid}_profile",
+                "persona_id": pid,
+                "record_type": "profile",   # span.schema.json (#107)
+                "profile_bio": bio,
+                "nickname": acct.get("nickname", ""),
+                "n_chars": len(bio),
+                "kind": "clue" if prof_clues else "noise",
+                "negative_control": not prof_clues,
+                "clues": prof_clues,
+                "gen_model": "(생성 없음 — 인물 JSON 원문)",
+                "prompt_version": prompts.PROMPT_VERSION,
+                "generated_at": datetime.now(KST).isoformat(),
+                "persona_schema_version": persona.get("schema_version", "?"),
+                "card_ref": persona.get("card_ref", []),
+                "corpus_schema_version": CORPUS_SCHEMA_VERSION,
+                "synthetic": True,
+            }, ensure_ascii=False) + "\n")
+            fh.flush()
+            print(f"  profile [{'clue' if prof_clues else 'noise':7}] {len(bio):4}자  "
+                  f"단서 {len(prof_clues)}건")
 
     total = len(full_plan)
     noise_ratio = (counts["ambient"] + counts["noise"]) / total

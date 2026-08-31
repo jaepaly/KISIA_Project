@@ -36,7 +36,7 @@ B가 "여기 지역 단서가 있다"까지 찾아주면, **그게 얼마나 위
 | **지명 사전 계약** `geo-dictionary.md` | **D와 공동 소유.** 가명 라벨 형식·복원 키 | **W2** ⭐ |
 | **특정성 엔진** `c2_specificity` | 조건 넣으면 k값·등급·위험도 산출 | W3 프로토타입 → W4 |
 | **기여도 엔진** `c3_contribution` | **LOO 정답 생성기**(오프라인, 증류 타깃) + 조치 후 재계산 | W5 |
-| **증류 타깃 세트** `data/gold/contribution/` | 인물별 글 delta. **B가 학습할 데이터** | W5 |
+| **증류 타깃 세트** `data/corpus/v0/gold/contribution/` | 인물별 글 delta. **B가 학습할 데이터** | W5 |
 | **근사기 평가** | 1회 추론이 LOO 정답을 얼마나 맞히나 (순위 상관·상위3 일치율) | W6~W7 |
 | **계약 2종** `specificity.schema.json` `contribution.schema.json` | E·D가 받는 입출력 규격 | **W2** |
 | **위험도 상관 리포트** | 우리 점수 vs LLM 추론 성공률 (Spearman) | W7 |
@@ -323,7 +323,7 @@ b07("신갈저수지")과 b12("기흥호수")는 **둘 다 있어야** 생활권
 ### 그래서 내가 만드는 것이 둘로 나뉜다
 
 ```
-[W5]  LOO 정답 생성기          data/gold/contribution/*.jsonl
+[W5]  LOO 정답 생성기          data/corpus/v0/gold/contribution/*.jsonl
         입력: 인물 1명의 글 전체 + 각 글의 스팬·k값
         출력: 글마다 delta (이 글을 빼면 위험도가 얼마나 내려가나)
         방법: 글 하나씩 빼고 전부 재계산. 느려도 된다
@@ -473,32 +473,67 @@ rho, pval = spearmanr(our_risks, llm_hits)
   "engine_version": "c2-0.1.0",
   "dict_version": "geo-2026-07",
   "input": {
-    "user_id": "R1",
+    "user_ref": "u_3fa8c21e",
     "conditions": [
-      {"axis": "location", "kind": "facility", "value": "신갈저수지",
-       "geo_code": "4146310100", "resolution": 4, "confidence": 0.8,
-       "source_post_ids": ["R1-b07"]},
-      {"axis": "age", "kind": "age_exact", "value": "48",
-       "resolution": 3, "confidence": 0.9, "source_post_ids": ["R1-b01"]}
+      {
+        "axis": "location",
+        "kind": "facility",
+        "value": "신갈저수지",
+        "geo_code": "4146310100",
+        "resolution": 4,
+        "confidence": 0.8,
+        "source_post_ids": [
+          "R1-b07"
+        ]
+      },
+      {
+        "axis": "age",
+        "kind": "age_exact",
+        "value": "48",
+        "resolution": 3,
+        "confidence": 0.9,
+        "source_post_ids": [
+          "R1-b01"
+        ]
+      }
     ]
   },
   "output": {
     "k": 581.4,
-    "level": "ACCEPTABLE",
+    "k_level": "ACCEPTABLE",
+    "basis": {
+      "source": "행정안전부 주민등록 인구통계",
+      "as_of": "2026-07"
+    },
     "risk": 70.7,
-    "risk_by_axis": {"location": 85, "age": 70, "sex": 60,
-                     "occupation": 70, "family": 85, "commute": 75, "income": 50},
+    "risk_by_axis": {
+      "location": 85,
+      "age": 70,
+      "sex": 60,
+      "occupation": 70,
+      "family": 85,
+      "commute": 75,
+      "income": 50
+    },
     "floor_applied": false,
     "steps": [
-      {"axis": "location", "condition": "신갈동(4146310100)",
-       "n_after": 21930, "method": "population_lookup"},
-      {"axis": "age+sex", "condition": "40대 남성",
-       "n_after": 3021, "method": "crosstab_lookup"},
-      {"axis": "family", "condition": "중고생 자녀 2명",
-       "p": 0.08, "confidence": 0.8, "q_damped": 0.450,
-       "n_after": 1359, "method": "ratio_damped"}
+      {
+        "axis": "location",
+        "condition": "신갈동(4146310100)",
+        "n_after": 21930,
+        "method": "population_lookup"
+      },
+      {
+        "axis": "age",
+        "condition": "40대 남성",
+        "n_after": 1652,
+        "method": "crosstab_lookup"
+      }
     ],
-    "assumptions": ["모집단: 주민등록 인구통계 2026-07 기준", "alpha=0.6"]
+    "assumptions": [
+      "모집단: 주민등록 인구통계 2026-07 기준",
+      "지역·연령·성별은 교차표 직접조회, 독립 가정 없음"
+    ]
   }
 }
 ```
@@ -519,24 +554,91 @@ rho, pval = spearmanr(our_risks, llm_hits)
 {
   "schema_version": "1.0",
   "engine_version": "c3-0.1.0",
-  "input": {"user_id": "R1", "post_ids": ["R1-b01", "..."], "method": "loo"},
+  "input": {
+    "user_ref": "u_3fa8c21e",
+    "post_ids": [
+      "R1-b01",
+      "R1-b07",
+      "R1-b09",
+      "R1-b12"
+    ],
+    "method": "loo"
+  },
   "output": {
     "baseline_risk": 79.7,
+    "residual_risk": 41.0,
     "contributions": [
-      {"post_id": "R1-b07", "risk_without": 61.7, "delta": -18.0, "rank": 1,
-       "clue_ids": ["R1-b07#0"], "top_spans": ["신갈저수지", "집 근처"]},
-      {"post_id": "R1-b12", "risk_without": 72.1, "delta": -7.6, "rank": 2,
-       "clue_ids": ["R1-b12#0"], "top_spans": ["기흥호수"]}
+      {
+        "post_id": "R1-b07",
+        "risk_without": 61.7,
+        "delta": -18.0,
+        "rank": 1,
+        "clue_ids": [
+          "R1-b07#0"
+        ],
+        "top_spans": [
+          {
+            "span_id": "R1_b07_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "R1_b07_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "R1-b12",
+        "risk_without": 72.1,
+        "delta": -7.6,
+        "rank": 2,
+        "clue_ids": [
+          "R1-b12#0"
+        ],
+        "top_spans": [
+          {
+            "span_id": "R1_b12_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [
+      {
+        "source": "profile_bio",
+        "delta": -4.2,
+        "top_spans": [
+          {
+            "span_id": "R1_profile_s01",
+            "text_id": "profile_bio"
+          }
+        ]
+      }
     ],
     "greedy_path": [
-      {"remove": "R1-b07", "risk_after": 61.7},
-      {"remove": "R1-b12", "risk_after": 48.3},
-      {"remove": "R1-b09", "risk_after": 41.0}
+      {
+        "remove": "R1-b07",
+        "risk_after": 61.7
+      },
+      {
+        "remove": "R1-b12",
+        "risk_after": 48.3
+      },
+      {
+        "remove": "R1-b09",
+        "risk_after": 41.0
+      }
     ],
     "note": "greedy_path는 매 제거 후 재계산한 값이다. delta 상위 n개의 합과 일치하지 않는다"
   }
 }
 ```
+
+> ⚠️ **위 두 예시는 머지된 계약을 통과하는 형태다.** 이전 판은 `user_id`·`level` 등 계약에 없는 이름을 썼다 — 계약은 `user_ref`(가명 `u_…` 형식)·`k_level`·`basis` 다. `top_spans` 는 원문 텍스트가 아니라 `{span_id, text_id}` 객체다(원문을 담으면 가명화 경계가 뚫린다). `residual_risk`(조치 후 잔여 위험)와 `user_scoped`(프로필 등 글 밖 기여분)는 **필수**다. 확인:
+>
+> ```bash
+> check-jsonschema --schemafile docs/contracts/specificity.schema.json <출력>
+> ```
 
 > 마지막 `note` 를 계약에 박아둔다. **D가 이걸 모르면 추천 화면에 잘못된 예상치가 뜬다.**
 >
@@ -552,8 +654,8 @@ rho, pval = spearmanr(our_risks, llm_hits)
 | 주 | 할 일 | 완료 기준 (검증 가능하게) |
 |---|---|---|
 | **W1** | A의 라벨링 지원 · 행정구역/인구 공공데이터 확보 착수 | 받을 데이터 3종의 출처 확인 |
-| **W2** ← 지금 | 공공데이터 확보 · 사전 자료구조 설계 · **계약 2종** · **D와 지명 사전 합의** ⭐ · L0 프로토타입 | `regions.json`이 로드되고 `specificity("성수1가1동")` 이 인구수를 반환 · `geo-dictionary.md` 머지 · `data/README.md` 라이선스 표에 3줄 추가 |
-| **W3** | ② **특정성 프로토타입 L1** (교차표 조회) · **blind 200 + IAA 파일럿**(A와 공동) | 지명+연령+성별을 넣으면 k값과 등급이 나옴 · R1~R6 6명 전부에 대해 오류 없이 실행 · blind 라벨 분담분 완료 |
+| **W2** ✅ | 공공데이터 확보 · 사전 자료구조 설계 · **계약 2종** · **D와 지명 사전 합의** ⭐ · L0 프로토타입 | `regions.json`이 로드되고 `specificity("성수1가1동")` 이 인구수를 반환 · `geo-dictionary.md` 머지 · `data/README.md` 라이선스 표에 3줄 추가 |
+| **W3** ← 지금 | **지명 조회 계층**(법정동·표기 정규화 — [#115](../../../../issues/115)) · **⭐ blind 200 (단독 · 화~수 · 교사 라벨 전에)** · ② **특정성 프로토타입 L1** · **인물 16명**(누적 21) · IAA 파일럿(목, A와 같은 글 20편) | L1 이 R1~R6 **기대값(지역·k·등급)과 일치** — 「오류 없이 실행」이 아니다 · blind 200 완료(교사 라벨 미열람) · 픽스처 6/18 이상 |
 | **W4** | 행정구역 계층 사전 완성 · 시설 매핑 · **L2** | 전국 읍면동 커버 · 시설 30개 이상 매핑 · 7속성 risk 산출 |
 | **W5** | ③ **LOO 정답 생성기** — 증류 타깃 산출(§6) | R1 19편에 대해 글별 기여도 표가 나옴 · 단조성·결정성 테스트 통과 |
 | **W6** | 연휴 — 튜닝 · **근사기 평가 스크립트** | ALPHA·가중치 후보 3세트 비교표 · 순위 상관 측정 준비 |
@@ -564,7 +666,11 @@ rho, pval = spearmanr(our_risks, llm_hits)
 
 > **W9가 개발 동결이다**([roadmap.md §2](../roadmap.md)). 이후 코드 변경은 버그 수정만. W8~W9는 C의 피크 구간이니 W6 연휴에 튜닝을 미리 끝내두는 편이 안전하다.
 
-> **W2~W3에는 엔진 말고도 코퍼스 몫이 있다.** M1은 전원이 A를 돕는다 — C도 **인물 JSON W2에 5명 · W3에 20명**을 쓰고, W3 골드셋에서는 **blind 200 + IAA 파일럿을 A와 공동**으로 맡는다([README M1 코퍼스 절](../../README.md)). blind 200이 A·C 공동인 이유는 **두 사람이 같은 글을 매겨야 사람끼리의 일치도(IAA)가 나오기 때문**이고, 그 수치가 B의 암묵 F1 목표치의 상한이 된다.
+> **W2~W3에는 엔진 말고도 코퍼스 몫이 있다.** M1은 전원이 A를 돕는다 — C도 **인물 JSON W2에 5명 · W3에 16명(누적 21)**을 쓴다([README](../../README.md)).
+>
+> ⚠️ **blind 200 은 C 단독이다. A와 공동이 아니다.** A는 교사 라벨을 만드는 사람이라 blind 를 매길 수 없다([A-data.md](A-data.md) §5 — 「검수를 한 사람이 정답을 안 보고 매길 수는 없다」). **C는 교사 라벨 원본과 `data/corpus/v0/gold/` 의 검수분에 접근하지 않고**, blind 분은 `data/corpus/v0/gold/blind/<persona_id>_spans.jsonl` 로 낸다.
+>
+> **IAA 는 blind 와 다른 작업이다.** 목요일에만 A와 **같은 글 20편**을 각자 매겨 일치도를 잰다 — pairwise 스팬 F1 · overlap · 유형 일치 필수 · **등급별로 따로**. 그 수치가 B의 암묵 F1 목표치의 상한이 된다. 계산은 `scripts/iaa.py`(이번 주 C가 만든다 — 저장소에 없다).
 
 ### 이번 주(W2) 하루 단위
 
