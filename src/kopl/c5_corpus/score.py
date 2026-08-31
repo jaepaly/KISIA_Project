@@ -82,8 +82,19 @@ def post_metrics(body: str) -> dict:
     }
 
 
+def body_of(r: dict) -> str:
+    """texts 구조와 옛 형식을 둘 다 읽는다 (p1.0 이전 코퍼스 호환).
+
+    계측은 본문만 본다 — 제목·캡션은 길이가 달라 섞으면 문장길이가 왜곡된다.
+    """
+    t = r.get("texts")
+    if isinstance(t, dict):
+        return t.get("body", "")
+    return r.get("body", "")
+
+
 def aggregate(records: list[dict]) -> dict:
-    ms = [post_metrics(r["body"]) for r in records]
+    ms = [post_metrics(body_of(r)) for r in records]
     out = {}
     for k in ms[0]:
         out[k] = round(stat.mean(m[k] for m in ms), 2)
