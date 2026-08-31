@@ -84,12 +84,12 @@
     ]
   },
   "post_plan": {
-    "total": 20,
-    "noise": 10,
+    "total": 30,
+    "noise": 20,
     "ambient": 4,
     "clue": 5,
     "trap": 1,
-    "noise_ratio_definition": "B안(개별 무해 기준) 70%"
+    "noise_ratio_definition": "B안(개별 무해 기준) 80% — 단서 보유 6편을 뺀 24편이다. ⚠️ 20 → 30 으로 올릴 때 단서 보유 글은 그대로 두고 잡담 글만 늘렸다 (README 「새 인물은 post_plan.total 을 30편으로 쓴다」). 단서 글을 늘리면 노이즈 비율이 내려간다"
   },
   "clue_plan": [
     {
