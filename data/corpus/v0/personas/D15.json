@@ -1,0 +1,183 @@
+{
+  "id": "D15",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "삼동 마늘밭 (58세 여성 · 귀농 5년차)",
+  "persona_type": "50대 후반 여성 · 경남 군 지역 면 거주 · 도시에서 귀농 · 작황 기록",
+  "card_ref": [
+    "S5"
+  ],
+  "card_binding": {
+    "S5": [
+      "종결어미"
+    ],
+    "—": [
+      "문장길이",
+      "줄바꿈",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  },
+  "account": {
+    "blog_id": "samdong_garlic",
+    "nickname": "마늘댁5년",
+    "profile_intro": "귀농 오년차 기록",
+    "joined": "2021-02",
+    "typical_active_hours": "19:00~21:00"
+  },
+  "voice": {
+    "종결어미": "~네요 / ~더라고요 존댓말",
+    "문장길이": "평균 39자",
+    "줄바꿈": "두 문장에 한 번",
+    "이모지": "회당 1회 이하",
+    "오타율": "보통",
+    "제목": "완결 문장",
+    "말버릇": "「그러니까」가 회당 2~3회",
+    "소재": "작황·이웃·날씨·시세"
+  },
+  "ground_truth": {
+    "age": 58,
+    "sex": "F",
+    "location": "경상남도 남해군 삼동면",
+    "occupation": "마늘·시금치 소규모 재배",
+    "family": "배우자, 자녀 2명 타지",
+    "commute": "트럭. 밭까지 5분",
+    "income": "작황 변동. 중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰여덟",
+      "오십대"
+    ],
+    "sex": [
+      "새언니",
+      "엄마"
+    ],
+    "location": [
+      "남해",
+      "삼동",
+      "면",
+      "밭"
+    ],
+    "occupation": [
+      "마늘",
+      "시금치",
+      "수확",
+      "작황"
+    ],
+    "family": [
+      "딸",
+      "아들",
+      "남편"
+    ],
+    "commute": [
+      "트럭"
+    ],
+    "income": [
+      "시세",
+      "수매",
+      "계약"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 4,
+    "clue": 3,
+    "trap": 2,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. 두 카드의 노이즈 축이 겹치는 구간 상단이다. ⚠️ 함정이 둘이라(b19 ⑤ · b27 ①) trap=2 다"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "마늘 종구 값이 올라서 올해는 심는 면적을 줄였네요",
+      "note": "JOB. 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "photo_caption:0",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "수매가가 작년만 못해서 계산기만 두드렸어요",
+      "note": "INCOME. 시세·수매라는 규모 신호. 캡션 채널. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "새언니가 알려준 대로 절였더니 훨씬 낫네요",
+      "note": "⭐ 호칭 체계 — 「새언니」는 화자가 여성일 때 쓰는 호칭이다. 「언니」보다 좁아 family 도 함께 준다(§3-2)",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "쉰여덟에 귀농했다고 하면 다들 늦었다고 해요",
+      "note": "한글 수사 explicit. 귀농 시점이 age 와 겹쳐 시간축 역산도 가능하다",
+      "ambiguous": false
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "본가가 창원이라 김장 때만 올라가요",
+      "note": "⚠️ 함정 ⑤ 출신지 (§4-4-1 B 계열). subject 는 self 다 — 본인 얘기이되 현 거주지가 아니다. 창원시는 남해군과 다른 시군구. D10 과 같은 계열이지만 표면형을 「본가가 …라 …때만」으로 맞추지 않고 다르게 썼다",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "거래처 사장이 진주 도매시장 쪽으로 창고를 옮겨서 실어다 주는 길이 길어졌어요",
+      "note": "⚠️ 함정 · occupation 축 겸 지명 축 (§4-4-1 A 계열 ①). 거래처의 이전이지 본인 사업장이 아니다. 진주시는 남해군과 다른 시군구. 문형은 B 카테고리 1",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b12",
+      "b21",
+      "b25"
+    ],
+    "design": "면 농협·보건지소·수협 위판장·읍내 농약사. 넷 다 남해군 안이지만 면과 읍에 갈려 있어 교집합이 군까지만 좁혀지고 면까지는 안 좁혀진다 — C 의 해상도 사다리에서 중간 단계를 시험할 입력",
+    "ref_card": "S5(짧은 줄바꿈) · S15(장문 존댓말)"
+  },
+  "design_note": {
+    "group_quota": "면 지역과 50대를 함께 늘린다. 그리고 카드 2장 참조 시 card_binding 을 선언한 표본을 만든다 — 지금까지 2장 참조 인물이 폴백 규칙에 의존하고 있었다",
+    "축": "S5 는 3회, S15 는 1회 쓰였다. 축을 갈라 붙여 두 카드가 각각 어느 축을 대는지 명시했다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "비 소식",
+    "고양이",
+    "이웃 참견",
+    "트럭 수리",
+    "드라마",
+    "장날",
+    "김장",
+    "고구마",
+    "라디오",
+    "동창 모임",
+    "텃밭 잡초"
+  ]
+}

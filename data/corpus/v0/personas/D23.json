@@ -1,0 +1,192 @@
+{
+  "id": "D23",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "화양 공방거리 (47세 여성 · 투잡 기록)",
+  "persona_type": "40대 후반 여성 · 경북 군 지역 읍 거주 · 낮에는 사무직 밤에는 공예 · 두 생활이 갈린다",
+  "card_ref": [
+    "S5"
+  ],
+  "card_binding": {
+    "S5": [
+      "종결어미"
+    ],
+    "—": [
+      "문장길이",
+      "줄바꿈",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  },
+  "account": {
+    "blog_id": "hwayang_two",
+    "nickname": "낮밤",
+    "profile_intro": "낮에는 사무실 · 밤에는 작업대",
+    "joined": "2023-08",
+    "typical_active_hours": "23:00~01:00"
+  },
+  "voice": {
+    "종결어미": "존댓말 정보 공유체 ~해요 / ~습니다",
+    "문장길이": "평균 27자",
+    "줄바꿈": "문장마다",
+    "이모지": "회당 1~2회",
+    "오타율": "보통",
+    "제목": "명사구",
+    "말버릇": "「어쩌다」가 회당 1~2회",
+    "소재": "작업·회사·재료·잠"
+  },
+  "ground_truth": {
+    "age": 47,
+    "sex": "F",
+    "location": "경상북도 청도군 화양읍",
+    "occupation": "군청 계약직 사무 + 야간 가죽공예",
+    "family": "배우자, 자녀 1명 대학생",
+    "commute": "도보 15분",
+    "income": "두 수입 합쳐 중"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔일곱",
+      "40대"
+    ],
+    "sex": [
+      "언니",
+      "엄마"
+    ],
+    "location": [
+      "화양",
+      "청도",
+      "읍내"
+    ],
+    "occupation": [
+      "사무",
+      "계약직",
+      "가죽",
+      "작업대"
+    ],
+    "family": [
+      "아들",
+      "대학",
+      "남편"
+    ],
+    "commute": [
+      "걸어서"
+    ],
+    "income": [
+      "월급",
+      "부업",
+      "재료비"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. ⚠️ profile_bio 단서는 계정에 붙어 산술에서 빠진다"
+  },
+  "clue_plan": [
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "낮에는 사무실 · 밤에는 작업대",
+      "note": "⭐ 프로필이 **두 직업을 동시에** 드러낸다. S12 통로이되 기존 표본과 달리 occupation 이 하나가 아니다 — C 의 특정성 계산에서 「직업 조건이 둘」인 첫 입력이다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "낮에 서류 넘기고 밤엔 가죽 재단해요",
+      "note": "JOB. 프로필과 본문이 같은 사실을 다른 표현으로 준다 — 중복 단서의 기여도(LOO delta)를 시험할 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "작업실 언니들이랑 재료 공동구매를 해요",
+      "note": "호칭 체계. 여성 화자가 손위 여성을 「언니」로 부른다",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔일곱에 부업을 시작한 게 벌써 삼 년째예요",
+      "note": "한글 수사 explicit. 시작 시점 + 경과라 시간축 역산이 된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "photo_caption:0",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "재료비 빼면 남는 게 얼마 안 돼요",
+      "note": "INCOME. 캡션 채널. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "대학 간 아들이 경산에 방을 얻어서 주말마다 짐을 나릅니다",
+      "note": "⚠️ 함정 ④ 인접 (§4-4-1 A 계열). 경산시는 청도군과 인접해 생활권으로 흡수되기 쉽다. 착각하면 근처 지명을 거주지로 빨아들인다 → verdict. D14 와 같은 종류이되 시도가 다르다. 문형은 B 카테고리 1 변형(가족의 이주)",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "걸어서 십오 분이라 점심에 집에 들렀다 가요",
+      "note": "COMMUTE + 반경. 읍 지역이라 직장이 도보권에 있다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b08",
+      "b14",
+      "b20",
+      "b28"
+    ],
+    "design": "읍내 군청·우체국·재료 택배 픽업점·야간 편의점. 낮 시설과 밤 시설이 갈려 **시각대별로 다른 생활권**이 찍힌다. 활동 메타(작성시각) 조치의 효과를 시연할 입력",
+    "ref_card": "S12(프로필에 직업) · S5(짧은 줄바꿈)"
+  },
+  "design_note": {
+    "group_quota": "읍 지역과 40대를 늘린다. 경북은 D10 과 함께 둘이 된다",
+    "축": "⭐ 직업이 둘인 첫 인물이다. 지금까지 occupation 은 전부 단일 값이었다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "잠",
+    "고양이",
+    "드라마",
+    "커피",
+    "비",
+    "택배",
+    "산책",
+    "동창",
+    "청소",
+    "라면",
+    "주말"
+  ]
+}

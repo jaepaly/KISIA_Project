@@ -1,0 +1,194 @@
+{
+  "id": "D10",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "풍기 인삼시장 (54세 여성 · 장사 일지)",
+  "persona_type": "50대 중반 여성 · 경북 시 지역 읍 거주 · 시장 점포 운영 · 장문 넋두리",
+  "card_ref": [
+    "S14"
+  ],
+  "account": {
+    "blog_id": "punggi_days",
+    "nickname": "풍기댁",
+    "profile_intro": "장사 이십 년차입니다",
+    "joined": "2021-09",
+    "typical_active_hours": "21:00~23:00"
+  },
+  "voice": {
+    "종결어미": "~다 평서형 1인칭 독백이 기본. 손님 얘기에서만 존댓말이 회당 2~3회 섞인다",
+    "문장길이": "평균 40자. 쉼표로 길게 잇는다",
+    "줄바꿈": "세 문장에 한 번",
+    "이모지": "회당 0~1회, ㅎㅎ 로 대체",
+    "오타율": "보통. 자음 중복(ㅏㅏ) 회당 1회",
+    "제목": "완결 문장. 「오늘은 손님이 없네요」",
+    "말버릇": "「아무튼」으로 문단을 닫는 것이 회당 2회",
+    "소재": "장사·날씨·손님·무릎"
+  },
+  "ground_truth": {
+    "age": 54,
+    "sex": "F",
+    "location": "경상북도 영주시 풍기읍",
+    "occupation": "인삼 소매 점포 운영",
+    "family": "배우자·자녀 2명(모두 타지)",
+    "commute": "도보 5분",
+    "income": "자영 소득 변동 큼. 중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰넷",
+      "오십대"
+    ],
+    "sex": [
+      "언니",
+      "새댁"
+    ],
+    "location": [
+      "풍기",
+      "영주",
+      "시장",
+      "점포"
+    ],
+    "occupation": [
+      "장사",
+      "점포",
+      "도매",
+      "손님"
+    ],
+    "family": [
+      "아들",
+      "딸",
+      "남편"
+    ],
+    "commute": [
+      "걸어서"
+    ],
+    "income": [
+      "매출",
+      "비수기",
+      "월세"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 2,
+    "noise_ratio_definition": "B안 80% — 단서 보유 6편을 뺀 24편이다. S15 는 노이즈 축이 「75~85%」다. ⚠️ 함정이 둘이라(b21 ⑤ · b26 ①) trap=2 다"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "이십 년째 같은 자리에서 인삼 떼다 파는데 올해가 제일 어렵네요",
+      "note": "JOB. 업종이 단독으로 거의 확정된다 → implicit",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "비수기 월세 내려고 적금 깼어요",
+      "note": "⚠️ INCOME 을 브랜드 아닌 표현으로 — 월세·적금이라는 규모 신호다. 캡션 채널이라 §9-1 본문 밖 할당량에 든다. ⚠️ 이미 단서를 가진 글에 실었다 — 새 글에 얹으면 노이즈 비율이 내려간다(README)",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "언니가 준 앞치마를 아직도 두르고 있어요",
+      "note": "⭐ 호칭 체계 — 여성이 손위 여성을 「언니」라 부른다(#116 ① 통로). 영어권 데이터에 없는 통로다. family 는 §3-2 매핑으로 따라온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "쉰넷인데 무릎이 먼저 늙네요",
+      "note": "한글 수사 explicit. 뒤의 「무릎」은 스팬이 아니라 flags.gen_signal 이다 — 계약 §7",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "시장 뒷골목이라 아침 여섯 시부터 트럭 소리에 깬다",
+      "note": "REL_HOME. 단독으로는 어느 시장인지 미확정 → inferential. ambient 4편과 교집합을 이뤄야 좁혀진다",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "본가가 안동이라 제사 때만 갑니다",
+      "note": "⚠️ 함정 ⑤ 출신지 (§4-4-1 B 계열). subject 는 self 가 맞다 — 본인 얘기다. 그런데 현 거주지가 아니다. 안동시는 영주시와 다른 시군구라 착각하면 GT 와 다른 값이 나온다. 채점은 2단 verdict",
+      "ambiguous": false
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "옆 가게 새댁이 대구 서문시장 쪽으로 점포를 옮긴다고 해서 한참 얘기했네요",
+      "note": "⚠️ 함정 · occupation 축 겸 지명 축 (§4-4-1 A 계열 ①). 옆 가게 사람의 이전처이지 본인 직장이 아니다. 대구는 영주와 다른 시군구다. 문형은 B 카테고리 1(지인의 직장·이직)",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b04",
+      "b09",
+      "b18",
+      "b24"
+    ],
+    "design": "읍내 보건소·인삼축제장·터미널·목욕탕. 넷 다 풍기읍 도보권이고 인삼축제는 지역 고유 행사라 단독으로도 특정성이 높다. 시설 하나가 시·동 지역보다 k 를 크게 떨어뜨리는 표본",
+    "ref_card": "S15(장문 넋두리 · 존댓말)"
+  },
+  "design_note": {
+    "group_quota": "군·읍면 축을 늘린다. 그리고 50대가 4명뿐이었다",
+    "축": "S15 는 1회만 쓰인 카드다. 함정을 ⑤ 로 둔 것은 §4-4-1 B 계열의 첫 표본을 만들기 위해서다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "손님 없는 날",
+    "비 오는 시장",
+    "점심 배달",
+    "드라마 이야기",
+    "무릎 찜질",
+    "이웃 가게 수다",
+    "고양이 밥 주기",
+    "택배 실수",
+    "라디오 사연",
+    "김장 준비",
+    "동창 전화",
+    "시장 정전"
+  ],
+  "card_binding": {
+    "S14": [
+      "문장길이",
+      "종결어미"
+    ],
+    "—": [
+      "줄바꿈",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

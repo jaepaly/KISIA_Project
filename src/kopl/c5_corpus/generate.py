@@ -51,18 +51,11 @@ CORPUS_SCHEMA_VERSION = "0.1"  # 인물 JSON의 schema_version과 다른 값이�
 def classify_posts(persona: dict) -> list[dict]:
     """b01..bNN 각각에 kind를 배정한다. 이게 노이즈 비율의 유일한 통제 지점."""
     total = persona["post_plan"]["total"]
-    # ⚠️ 글 하나에 단서가 둘 이상일 수 있다. 본문 밖 단서(§9-1)를 쓰면 같은 글의
-    #    body 와 photo_caption:N 에 하나씩 놓이는 것이 정상 형태다.
-    #    dict 로 모으면 뒤엣것이 앞엣것을 덮어써서 조용히 사라진다 —
-    #    인물 25명 기준 clue_plan 202건 중 42건(21%)이 그렇게 없어지고 있었다.
-    #    그리고 캡션·제목 항목을 뒤에 쓰는 것이 우리 공통 패턴이라, 사라지는 쪽이
-    #    대개 본문 단서였다.
-    clues: dict[str, list[dict]] = {}
-    for c in persona.get("clue_plan", []) or []:
-        post = c.get("post")
-        if post is None:
-            continue      # 사용자 단위 단서(profile_bio) — 글이 아니라 프로필로 나간다
-        clues.setdefault(post, []).append(c)
+    # 제목·캡션 단서가 본문과 같은 글에 실리므로 글마다 여럿을 받는다
+    clues: dict[str, list] = {}
+    for c in persona.get("clue_plan", []):
+        if c.get("post"):
+            clues.setdefault(c["post"], []).append(c)
     ambient = set((persona.get("ambient_plan") or {}).get("posts", []))
     design = (persona.get("ambient_plan") or {}).get("design", "")
 
@@ -148,32 +141,37 @@ def sample_time(persona: dict, rng: random.Random, idx: int) -> str:
 
 
 # ── 응답 파싱 ────────────────────────────────────────────────────────
-# 캡션 줄. 프롬프트가 "캡션0: ..." 형태로 쓰게 지시한다.
-CAPTION_RE = re.compile(r"^캡션\s*(\d+)\s*:\s*(.*)$")
+CAPTION_RE = re.compile(r"^\s*캡션\s*(\d+)\s*[:：]\s*(.+)$")
 
 
-def parse(raw: str) -> tuple[str, str, dict[str, str]]:
-    """제목 · 본문 · 사진 캡션으로 가른다.
+def parse(raw: str) -> dict:
+    """모델 응답을 채널별 텍스트로 가른다.
 
-    캡션은 본문 뒤에 "캡션0: ..." 줄로 붙어 온다. 키는 계약(label-schema §5-3)
-    그대로 photo_caption:N 으로 돌려준다.
+    label-schema §8-3 의 `texts` 를 그대로 만든다 — 없는 채널은 키를 넣지 않는다.
+    모든 텍스트를 NFC 로 정규화한다 (검사 6번). 안 하면 문자 offset 이
+    사람마다 어긋난다.
     """
     text = unicodedata.normalize("NFC", raw).strip()
-    title, body = "", text
+    texts: dict[str, str] = {}
+    body_lines: list[str] = []
+
     for line in text.splitlines():
-        if line.strip().startswith("제목:"):
-            title = line.split(":", 1)[1].strip()
-            body = text.split(line, 1)[1].strip()
-            break
-    captions: dict[str, str] = {}
-    kept: list[str] = []
-    for line in body.splitlines():
-        m = CAPTION_RE.match(line.strip())
+        st = line.strip()
+        if st.startswith("제목:") and "title" not in texts:
+            v = st.split(":", 1)[1].strip()
+            if v:
+                texts["title"] = v
+            continue
+        m = CAPTION_RE.match(st)
         if m:
-            captions[f"photo_caption:{m.group(1)}"] = m.group(2).strip()
-        else:
-            kept.append(line)
-    return title, "\n".join(kept).strip(), captions
+            texts[f"photo_caption:{int(m.group(1))}"] = m.group(2).strip()
+            continue
+        body_lines.append(line)
+
+    body = "\n".join(body_lines).strip()
+    if body:
+        texts["body"] = body
+    return texts
 
 
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
@@ -212,6 +210,20 @@ def generate_persona(
     if inject_cards:
         print("  ⚠ 카드 원문 주입 모드 — persona-design.md §6 이탈. 같은 카드 참조 인물끼리 문체가 수렴한다")
 
+    # profile_bio 는 글이 아니라 사용자에 속한다 (label-schema §8-4).
+    # 글마다 복제하면 같은 단서가 N번 세어져 C 의 기여도 계산이 망가진다.
+    bio_clues = [c for c in persona.get("clue_plan", [])
+                 if c.get("text_id") == "profile_bio"]
+    bio = ((persona.get("account") or {}).get("profile_intro") or "")
+    if bio_clues:
+        bio = bio_clues[0]["clue"]          # 단서가 있으면 그것이 소개란이다
+    (out_dir / f"{pid}_profile.json").write_text(json.dumps({
+        "persona_id": pid,
+        "texts": {"profile_bio": unicodedata.normalize("NFC", bio)},
+        "clue": bio_clues[0] if bio_clues else None,
+        "persona_schema_version": persona.get("schema_version", "?"),
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
     system = prompts.build_system(persona, card_text)
     # persona-design.md §2-⑤ 소재 축. 인물이 지정하지 않으면 전역 폴백을 쓰되 경고한다.
     topics = persona.get("noise_topics") or (persona.get("voice", {}) or {}).get("소재")
@@ -249,25 +261,22 @@ def generate_persona(
             except LLMError as e:
                 print(f"  ✗ {item['post']} 실패: {e}")
                 continue
-            title, body, captions = parse(raw)
+            texts = parse(raw)
             if getattr(client, "last_truncated", False):
                 print(f"  ✗ {item['post']} 잘림 — 저장하지 않는다. --max-tokens 를 올려라")
                 continue
             rec = {
                 "post_id": f"{pid}_{item['post']}",
                 "persona_id": pid,
-                # span.schema.json 의 record_type (#107). 프로필 레코드와 가른다.
-                "record_type": "post",
-                "title": title,
-                "body": body,
-                "photo_captions": captions,
-                "n_chars": len(body),  # 문자 offset 기준 라벨의 sanity check용
+                # label-schema §8-3. 없는 채널은 키를 넣지 않는다
+                "texts": texts,
+                "n_chars": {k: len(v) for k, v in texts.items()},
                 "created_at": sample_time(persona, rng, idx),
                 "nickname": (persona.get("account") or {}).get("nickname", ""),
                 "kind": item["kind"],
                 # label-schema §8-3 — 단서를 의도적으로 넣지 않은 글인가
                 "negative_control": item["kind"] == "noise",
-                "clues": item.get("clues"),
+                "clue": item.get("clue"),
                 # 재현 메타 — 없으면 10주 뒤에 이 글이 뭐였는지 복원 못 한다
                 # 재현 메타 (이슈 4-② / RULES-DO-NOT #9)
                 "gen_model": client.version,
@@ -281,43 +290,10 @@ def generate_persona(
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
             fh.flush()  # 중간에 끊겨도 여기까지는 남는다
             written += 1
-            print(f"  {item['post']} [{item['kind']:7}] {len(body):4}자  {title[:20]}")
-
-        # ── 프로필 레코드 ────────────────────────────────────────────
-        # profile_bio 는 글이 아니라 계정에 붙는 사용자 단위 채널이다(§5-3).
-        # 인물 JSON 의 account.profile_intro 에 이미 손으로 쓰여 있으므로
-        # 모델을 부르지 않는다. 내보내기만 하면 된다.
-        # 이게 없으면 profile_bio 단서 23건이 갈 곳이 없어 통째로 사라진다.
-        if "profile" not in done:
-            acct = persona.get("account") or {}
-            bio = acct.get("profile_intro", "")
-            prof_clues = [c for c in persona.get("clue_plan", []) or []
-                          if c.get("post") is None]
-            for c in prof_clues:
-                if c.get("clue", "").strip() and c["clue"].strip() not in bio:
-                    print(f"  ⚠ profile_bio 단서가 account.profile_intro 에 없다 — "
-                          f"이 단서는 코퍼스에 나타나지 않는다: {c['clue'][:30]}")
-            fh.write(json.dumps({
-                "post_id": f"{pid}_profile",
-                "persona_id": pid,
-                "record_type": "profile",   # span.schema.json (#107)
-                "profile_bio": bio,
-                "nickname": acct.get("nickname", ""),
-                "n_chars": len(bio),
-                "kind": "clue" if prof_clues else "noise",
-                "negative_control": not prof_clues,
-                "clues": prof_clues,
-                "gen_model": "(생성 없음 — 인물 JSON 원문)",
-                "prompt_version": prompts.PROMPT_VERSION,
-                "generated_at": datetime.now(KST).isoformat(),
-                "persona_schema_version": persona.get("schema_version", "?"),
-                "card_ref": persona.get("card_ref", []),
-                "corpus_schema_version": CORPUS_SCHEMA_VERSION,
-                "synthetic": True,
-            }, ensure_ascii=False) + "\n")
-            fh.flush()
-            print(f"  profile [{'clue' if prof_clues else 'noise':7}] {len(bio):4}자  "
-                  f"단서 {len(prof_clues)}건")
+            ch = "".join("T" if k == "title" else "C" if k.startswith("photo") else "B"
+                         for k in texts)
+            print(f"  {item['post']} [{item['kind']:7}] "
+                  f"{len(texts.get('body', '')):4}자 [{ch}]  {texts.get('title', '')[:18]}")
 
     total = len(full_plan)
     noise_ratio = (counts["ambient"] + counts["noise"]) / total

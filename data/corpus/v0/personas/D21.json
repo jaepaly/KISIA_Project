@@ -1,0 +1,180 @@
+{
+  "id": "D21",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "부강 창고 (35세 남성 · 물류 야간)",
+  "persona_type": "30대 중반 남성 · 세종 면 지역 거주 · 물류센터 야간 · 짧고 잦다",
+  "card_ref": [
+    "S8"
+  ],
+  "account": {
+    "blog_id": "bugang_night",
+    "nickname": "부강야간",
+    "profile_intro": "야간 끝나고 씀 🥲",
+    "joined": "2024-01",
+    "typical_active_hours": "06:00~08:00"
+  },
+  "voice": {
+    "종결어미": "밈·구어 감탄 자조. ~함 / ~했졍 에 자기비하 농담이 회당 1~2회",
+    "문장길이": "평균 23자",
+    "줄바꿈": "짧은 줄바꿈",
+    "이모지": "회당 2~4회(🥲 😮‍💨)",
+    "오타율": "보통",
+    "제목": "날짜 + 상태. 「9.2 허리 나감」",
+    "말버릇": "「아무튼」 회당 2회",
+    "소재": "야간·라면·게임·차"
+  },
+  "ground_truth": {
+    "age": 35,
+    "sex": "M",
+    "location": "세종특별자치시 부강면",
+    "occupation": "물류센터 야간 분류",
+    "family": "미혼, 형 1명",
+    "commute": "자차 10분",
+    "income": "야간수당 포함 중"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른다섯",
+      "30대"
+    ],
+    "sex": [
+      "형",
+      "형수"
+    ],
+    "location": [
+      "부강",
+      "세종",
+      "창고",
+      "센터"
+    ],
+    "occupation": [
+      "분류",
+      "야간",
+      "물류"
+    ],
+    "family": [
+      "형",
+      "혼자"
+    ],
+    "commute": [
+      "자차"
+    ],
+    "income": [
+      "수당",
+      "주휴",
+      "시급"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안 80% — 단서 보유 5편(b04·b10·b15·b20·b24)을 뺀 24편이다. S3 은 노이즈 축이 「—」라 인물이 정한다"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "분류 라인 서는 자리가 바뀌어서 허리가 더 아픔",
+      "note": "JOB. 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야간 끝나고 차 빼는데 십 분이면 집임",
+      "note": "COMMUTE + 반경. 캡션 채널. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "형수가 반찬 싸줘서 한 주 버팀 🥲",
+      "note": "⭐ 호칭 체계 — 「형수」는 남성 화자가 형의 배우자를 부르는 말이다. 여성은 새언니다. D15「새언니」와 정확히 대칭인 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주휴 붙는 주랑 아닌 주랑 시급 체감이 다름",
+      "note": "INCOME. 시급·주휴라는 임금 구조로 규모를 드러낸다. 브랜드가 아니다",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "title",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른다섯 되고 야간 3년차",
+      "note": "⭐ 한글 수사 explicit 이 제목에만 있다. S11 이 지목한 제목 통로이고 §9-1 본문 밖 할당량에도 든다",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "형이 판교 쪽으로 옮기고 연봉 얘기하는데 나는 그냥 웃었음",
+      "note": "⚠️ 함정 · income 축 겸 지명 축 (§4-4-1 A 계열 ①). **두 축을 한 문장에 겹쳤다** — 형의 소득을 본인 것으로 착각하면 income 이 「높음」으로 틀리고, 판교를 거주지로 찍으면 location 도 틀린다. B01 의 「판교 개발자 연봉 7천」과 같은 설계(B 카테고리 3)이되 문형은 다르다",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b07",
+      "b17",
+      "b27"
+    ],
+    "design": "면 소재지 편의점·24시 국밥집·물류센터 앞 주차장. 야간 근무라 방문 시각이 새벽에 몰린다 — D12 와 같은 「시각이 직업을 드러내는」 구조지만 연령대가 달라 대조가 된다",
+    "ref_card": "S3(짧고 잦은 일지 · 이모지)"
+  },
+  "design_note": {
+    "group_quota": "면 지역과 30대를 함께 둔다. 세종은 1명뿐이었다",
+    "축": "⭐ 함정 하나로 두 축(income·location)을 시험하는 표본. §4-4-1 「한 함정이 두 축을 동시에 시험할 수 있다」",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "라면",
+    "게임",
+    "잠",
+    "차",
+    "편의점",
+    "비",
+    "드라마",
+    "치킨",
+    "택배",
+    "주말",
+    "유튜브"
+  ],
+  "card_binding": {
+    "S8": [
+      "종결어미",
+      "줄바꿈"
+    ],
+    "—": [
+      "문장길이",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

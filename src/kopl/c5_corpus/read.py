@@ -41,14 +41,32 @@ def load(paths: list[str]) -> list[dict]:
     return recs
 
 
+def texts_of(r: dict) -> dict:
+    """texts 구조와 옛 형식을 둘 다 읽는다 (p1.0 이전 코퍼스 호환)."""
+    t = r.get("texts")
+    if isinstance(t, dict):
+        return t
+    out = {}
+    if r.get("title"):
+        out["title"] = r["title"]
+    if r.get("body"):
+        out["body"] = r["body"]
+    return out
+
+
 def fmt(r: dict) -> str:
-    head = f"{r['post_id']}  [{r.get('kind', '?')}]  {r.get('n_chars', 0)}자"
+    t = texts_of(r)
+    head = f"{r['post_id']}  [{r.get('kind', '?')}]  {len(t.get('body', ''))}자"
+    if len(t) > 1:
+        head += "  채널 " + " · ".join(k for k in t if k != "body")
     clue = r.get("clue")
     if clue:
         head += f"  · 심은 단서: {clue.get('attr')}/{clue.get('level')}"
         if clue.get("subject") == "other":
             head += "  ⚠함정(본인 아님)"
-    out = [BAR, head, BAR, f"제목: {r.get('title', '(없음)')}", "", r.get("body", "")]
+    out = [BAR, head, BAR, f"제목: {t.get('title', '(없음)')}", "", t.get("body", "")]
+    for k in sorted(k for k in t if k.startswith("photo_caption")):
+        out.append(f"  [{k}] {t[k]}")
     if clue:
         out += ["", f"  └ 설계: {clue.get('clue')}"]
     return "\n".join(out)
@@ -78,11 +96,14 @@ def main() -> int:
     if args.md:
         lines = [f"# 생성 글 검수 ({len(recs)}편)", ""]
         for r in recs:
-            lines.append(f"## {r['post_id']} · {r.get('kind')} · {r.get('n_chars')}자")
+            lines.append(f"## {r['post_id']} · {r.get('kind')}")
             lines.append("")
-            lines.append(f"**{r.get('title', '')}**")
+            t = texts_of(r)
+            lines.append(f"**{t.get('title', '')}**")
             lines.append("")
-            lines.append(r.get("body", ""))
+            lines.append(t.get("body", ""))
+            for k in sorted(k for k in t if k.startswith("photo_caption")):
+                lines.append(f"> [{k}] {t[k]}")
             if r.get("clue"):
                 lines.append("")
                 lines.append(f"> 설계: {r['clue'].get('clue')} "

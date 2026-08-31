@@ -5,11 +5,18 @@ name: weekly-reminder
 #
 #  매주 반복되는 일정 넷을 알린다. PM 이 매주 카톡으로 챙기던 것이다.
 #
-#    월 14:00  주간 보고회    → 13:00 알림
-#    화 20:00  팀 회의        → 19:00 알림
-#    수 23:59  개별 보고 마감  → 18:00 알림
+#    월 14:00  주간 보고회    → 12:23 알림 (예비 12:59)
+#    화 20:00  팀 회의        → 18:23 알림 (예비 18:59)
+#    수 23:59  개별 보고 마감  → 17:23 알림 (예비 17:59)
 #                                 (승인 대기 PR 을 «사람별로» + PR·이슈 목록)
-#    목 20:00  정기 멘토링    → 19:00 알림
+#    목 20:00  정기 멘토링    → 18:23 알림 (예비 18:59)
+#
+#  ⚠️ 발송 시각이 정시가 아닌 이유 — GitHub schedule 은 best-effort 고,
+#     정각(0분) cron 은 부하 피크라 지연·유실이 가장 잦다(공식 문서).
+#     실측: 목(08-27) 10.1시간 지연 · 월(08-31) 13:00 분은 통째로 유실.
+#     그래서 ① 정각을 피하고 ② 행사보다 넉넉히 앞당기고 ③ 36분 뒤
+#     예비 cron 을 하나 더 둔다. 둘 다 돌면 아래 중복 검사가 두 번째를
+#     막고, 첫 번째가 유실되면 예비가 발송한다.
 #
 #  그리고 일정과 무관한 현황판이 하나 있다 (수동 실행 전용).
 #
@@ -35,10 +42,14 @@ name: weekly-reminder
 
 on:
   schedule:
-    - cron: "0 4 * * 1"    # 월 13:00 KST — 주간 보고회(14:00) 1시간 전
-    - cron: "0 10 * * 2"   # 화 19:00 KST — 팀 회의(20:00) 1시간 전
-    - cron: "0 9 * * 3"    # 수 18:00 KST — 개별 보고 마감(23:59) 6시간 전
-    - cron: "0 10 * * 4"   # 목 19:00 KST — 정기 멘토링(20:00) 1시간 전
+    - cron: "23 3 * * 1"   # 월 12:23 KST — 주간 보고회(14:00) 97분 전
+    - cron: "59 3 * * 1"   # 월 12:59 KST — 예비 (본편 유실 시)
+    - cron: "23 9 * * 2"   # 화 18:23 KST — 팀 회의(20:00) 97분 전
+    - cron: "59 9 * * 2"   # 화 18:59 KST — 예비
+    - cron: "23 8 * * 3"   # 수 17:23 KST — 개별 보고 마감(23:59) 전
+    - cron: "59 8 * * 3"   # 수 17:59 KST — 예비
+    - cron: "23 9 * * 4"   # 목 18:23 KST — 정기 멘토링(20:00) 97분 전
+    - cron: "59 9 * * 4"   # 목 18:59 KST — 예비
   workflow_dispatch:
     inputs:
       kind:
@@ -70,14 +81,27 @@ jobs:
           MAP=.github/discord-map.json
 
           # 어느 리마인더인가
+          # SHOUR:SMIN = 본편 예정 시각(UTC) — 예비 cron 도 본편 기준으로 지연을 잰다
+          # EVH:EVM    = 행사 시각(UTC). 행사가 지났으면 발송하지 않는다
           case "${CRON:-}" in
-            "0 4 * * 1")  KIND=mon; SDOW=1; SHOUR=4  ;;
-            "0 10 * * 2") KIND=tue; SDOW=2; SHOUR=10 ;;
-            "0 9 * * 3")  KIND=wed; SDOW=3; SHOUR=9  ;;
-            "0 10 * * 4") KIND=thu; SDOW=4; SHOUR=10 ;;
-            *)            KIND="${KIND_IN:-wed}"; SDOW=""; SHOUR="" ;;
+            "23 3 * * 1"|"59 3 * * 1") KIND=mon; SDOW=1; SHOUR=3; SMIN=23; EVH=5;  EVM=0  ;;
+            "23 9 * * 2"|"59 9 * * 2") KIND=tue; SDOW=2; SHOUR=9; SMIN=23; EVH=11; EVM=0  ;;
+            "23 8 * * 3"|"59 8 * * 3") KIND=wed; SDOW=3; SHOUR=8; SMIN=23; EVH=14; EVM=59 ;;
+            "23 9 * * 4"|"59 9 * * 4") KIND=thu; SDOW=4; SHOUR=9; SMIN=23; EVH=11; EVM=0  ;;
+            *)                         KIND="${KIND_IN:-wed}"; SDOW=""; SHOUR=""; SMIN="" ;;
           esac
           echo "kind=$KIND"
+
+          # ── 중복 방지 — 오늘 이미 성공한 schedule 발송이 있으면 끝 ──
+          #  본편·예비가 둘 다 돌면 두 번째가 여기서 멈춘다. 수동 실행
+          #  (workflow_dispatch·status)은 세지 않는다.
+          if [ -n "${CRON:-}" ]; then
+            prior=$(gh run list --workflow weekly-reminder.yml -e schedule -s success                       --created "$(date -u +%Y-%m-%d)" --json databaseId --jq 'length' 2>/dev/null || echo 0)
+            if [ "${prior:-0}" -gt 0 ]; then
+              echo "오늘 이미 발송됨(성공한 schedule 실행 ${prior}건) — 중복 방지로 종료"
+              exit 0
+            fi
+          fi
 
           # ── 지연 감지 ─────────────────────────────────────────
           #  GitHub 의 schedule 은 best-effort 다. 큐가 밀리면 몇 시간씩
@@ -91,10 +115,17 @@ jobs:
             for i in 0 1 2 3 4 5 6 7; do
               c=$(( now_s - i * 86400 ))
               [ "$(date -u -d "@$c" +%u)" = "$SDOW" ] || continue
-              s=$(date -u -d "$(date -u -d "@$c" +%Y-%m-%d) $SHOUR:00:00" +%s)
+              s=$(date -u -d "$(date -u -d "@$c" +%Y-%m-%d) $SHOUR:${SMIN:-0}:00" +%s)
               if [ "$s" -le "$now_s" ]; then sched_s=$s; break; fi
             done
             if [ -n "$sched_s" ]; then
+              # 행사가 이미 끝났으면(행사 +30분) 보내지 않는다 — 지각 도착이
+              # 끝난 회의를 알리는 것은 소음이다. 08-27 실측(10.1h 지연)의 교훈.
+              ev_s=$(date -u -d "$(date -u -d "@$sched_s" +%Y-%m-%d) $EVH:$EVM:00" +%s)
+              if [ "$now_s" -gt $(( ev_s + 1800 )) ]; then
+                echo "행사 시각($(date -u -d "@$ev_s" +%H:%M)U +30분)을 지나 도착 — 발송 생략"
+                exit 0
+              fi
               mins=$(( (now_s - sched_s) / 60 ))
               echo "지연 ${mins}분"
               if [ "$mins" -gt 90 ]; then

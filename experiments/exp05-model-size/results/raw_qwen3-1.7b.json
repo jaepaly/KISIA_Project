@@ -1,0 +1,2607 @@
+[
+  {
+    "persona_id": "A01",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A01_b04_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "A01_b02_s01",
+          "A01_b02_s02",
+          "A01_b13_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "A01_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A01_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A01_b11_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A01_b06_s01"
+        ],
+        "confidence": 0.6
+      }
+    },
+    "meta": {
+      "sec": 5.06,
+      "prompt_tokens": 582,
+      "eval_tokens": 306,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.87,
+      "prompt_tokens": 398,
+      "eval_tokens": 43,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A02",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A02_b03_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A02_b09_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A02_b07_s01",
+          "A02_b03_s02",
+          "A02_bio_s01"
+        ],
+        "confidence": 0.8
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A02_b12_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      }
+    },
+    "meta": {
+      "sec": 4.5,
+      "prompt_tokens": 493,
+      "eval_tokens": 247,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "A02_b03_s01",
+      "sex": "self",
+      "location": "A02_b09_s01",
+      "occupation": "A02_bio_s01",
+      "family": "A02_b12_s01",
+      "commute": "A02_b07_s01",
+      "income": "A02_b03_s02"
+    },
+    "probe_meta": {
+      "sec": 3.55,
+      "prompt_tokens": 309,
+      "eval_tokens": 92,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A03",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A03_b05_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A03_b11_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A03_b05_s02"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A03_b14_s01"
+        ],
+        "confidence": 0.4
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A03_b08_s01",
+          "A03_b08_s02"
+        ],
+        "confidence": 0.6
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      }
+    },
+    "meta": {
+      "sec": 4.8,
+      "prompt_tokens": 499,
+      "eval_tokens": 255,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "explicit",
+      "sex": "",
+      "location": "implicit",
+      "occupation": "inferential",
+      "family": "implicit",
+      "commute": "implicit",
+      "income": "unknown"
+    },
+    "probe_meta": {
+      "sec": 2.96,
+      "prompt_tokens": 315,
+      "eval_tokens": 49,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A04",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A04_b04_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A04_b13_s01",
+          "A04_b10_s01",
+          "A04_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A04_b07_s01"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A04_bio_s01",
+          "A04_b13_s02"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.07,
+      "prompt_tokens": 505,
+      "eval_tokens": 294,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "explicit",
+      "sex": "self",
+      "location": "집 근처 저수지",
+      "occupation": "민원 창구",
+      "family": "처남이 동탄",
+      "commute": "자전거",
+      "income": "주말 기록"
+    },
+    "probe_meta": {
+      "sec": 3.11,
+      "prompt_tokens": 321,
+      "eval_tokens": 76,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A05",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A05_b03_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A05_b12_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A05_b06_s01"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A05_b09_s01"
+        ],
+        "confidence": 0.4
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [],
+        "confidence": 0.3
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 4.44,
+      "prompt_tokens": 476,
+      "eval_tokens": 230,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "A05_b03_s01",
+      "sex": "self",
+      "location": "A05_b12_s01",
+      "occupation": "A05_b06_s01",
+      "family": "A05_b09_s01",
+      "commute": "A05_b06_s02",
+      "income": "A05_b03_s01"
+    },
+    "probe_meta": {
+      "sec": 3.33,
+      "prompt_tokens": 292,
+      "eval_tokens": 95,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A06",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A06_b03_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A06_b11_s01",
+          "A06_b18_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A06_b03_s02"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A06_b07_s01",
+          "A06_b15_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A06_b11_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.35,
+      "prompt_tokens": 538,
+      "eval_tokens": 319,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "inferential",
+      "sex": "",
+      "location": "inferential",
+      "occupation": "inferential",
+      "family": "implicit",
+      "commute": "explicit",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 3.14,
+      "prompt_tokens": 354,
+      "eval_tokens": 59,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A07",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A07_b04_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A07_b19_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A07_b12_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A07_b08_s01",
+          "A07_b19_s01"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A07_b16_s01"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.44,
+      "prompt_tokens": 509,
+      "eval_tokens": 288,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "A07_b04_s01",
+      "sex": "",
+      "location": "A07_b19_s01",
+      "occupation": "A07_b16_s01",
+      "family": "A07_b12_s01",
+      "commute": "A07_b08_s01",
+      "income": "A07_b16_s01', "
+    },
+    "probe_meta": {
+      "sec": 3.47,
+      "prompt_tokens": 325,
+      "eval_tokens": 94,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A08",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A08_b05_s01",
+          "A08_b14_s01",
+          "A08_bio_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A08_b18_s01",
+          "A08_b18_s02"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A08_b14_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A08_b09_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.9,
+      "prompt_tokens": 541,
+      "eval_tokens": 319,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "implicit",
+      "sex": "self",
+      "location": "explicit",
+      "occupation": "body",
+      "family": "implicit",
+      "commute": "implicit",
+      "income": "body"
+    },
+    "probe_meta": {
+      "sec": 2.97,
+      "prompt_tokens": 357,
+      "eval_tokens": 50,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A09",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A09_b06_s01",
+          "A09_b06_s02"
+        ],
+        "confidence": 0.75
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A09_b18_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "A09_b06_s01"
+        ],
+        "confidence": 1.0
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A09_b14_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A09_b10_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.45,
+      "prompt_tokens": 467,
+      "eval_tokens": 285,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "18살",
+      "sex": "",
+      "location": "시내버스",
+      "occupation": "실기",
+      "family": "혼자",
+      "commute": "사십 분",
+      "income": "빈 문자열"
+    },
+    "probe_meta": {
+      "sec": 3.08,
+      "prompt_tokens": 283,
+      "eval_tokens": 55,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "A10",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A10_b04_s01"
+        ],
+        "confidence": 0.8
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "A10_b16_s01",
+          "A10_b04_s02"
+        ],
+        "confidence": 0.7
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A10_bio_s01"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "A10_b12_s01"
+        ],
+        "confidence": 0.9
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "A10_b08_s01"
+        ],
+        "confidence": 0.8
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "A10_b16_s01"
+        ],
+        "confidence": 0.6
+      }
+    },
+    "meta": {
+      "sec": 5.72,
+      "prompt_tokens": 545,
+      "eval_tokens": 314,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "explicit",
+      "sex": "",
+      "location": "implicit",
+      "occupation": "inferential",
+      "family": "explicit",
+      "commute": "implicit",
+      "income": "implicit"
+    },
+    "probe_meta": {
+      "sec": 3.07,
+      "prompt_tokens": 361,
+      "eval_tokens": 56,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "B01",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B01_b09_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "B01_b02_s01"
+        ],
+        "confidence": 1
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B01_b05_s01",
+          "B01_b18_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B01_b09_s02"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B01_b16_s01",
+          "B01_b18_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.65,
+      "prompt_tokens": 631,
+      "eval_tokens": 292,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "스물아홉",
+      "sex": "",
+      "location": "[후기] 야탑역 자취방에서 판교 면접 다녀온 날",
+      "occupation": "서버 개발 3년 4개월차",
+      "family": "원룸 보증금 대출 이자 내고 나면 남는 것도 없다",
+      "commute": "수인분당선 막차 플랫폼 사람 꽉 참",
+      "income": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함"
+    },
+    "probe_meta": {
+      "sec": 4.09,
+      "prompt_tokens": 447,
+      "eval_tokens": 152,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "B02",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B02_b02_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 1
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "B02_bio_s01",
+          "B02_b06_s01",
+          "B02_b13_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "B02_bio_s01"
+        ],
+        "confidence": 0.8
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "B02_b13_s01"
+        ],
+        "confidence": 0.7
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B02_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B02_b20_s01"
+        ],
+        "confidence": 0.6
+      }
+    },
+    "meta": {
+      "sec": 5.71,
+      "prompt_tokens": 648,
+      "eval_tokens": 299,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.81,
+      "prompt_tokens": 464,
+      "eval_tokens": 39,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "B03",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B03_b02_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "B03_bio_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B03_b09_s01",
+          "B03_b14_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B03_b09_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B03_b20_s01"
+        ],
+        "confidence": 0.8
+      }
+    },
+    "meta": {
+      "sec": 5.57,
+      "prompt_tokens": 633,
+      "eval_tokens": 285,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "18",
+      "sex": "",
+      "location": "서울 마포",
+      "occupation": "마케터",
+      "family": "청년 전세대출 이자랑 공과금 내면 남는 월급이 없다",
+      "commute": "망원역 6호선 퇴근길 플랫폼",
+      "income": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다"
+    },
+    "probe_meta": {
+      "sec": 3.69,
+      "prompt_tokens": 449,
+      "eval_tokens": 120,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "B04",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B04_b02_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "B04_b06_s01",
+          "B04_b16_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "B04_bio_s01"
+        ],
+        "confidence": 1.0
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B04_b14_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B04_b10_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B04_b20_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.58,
+      "prompt_tokens": 646,
+      "eval_tokens": 291,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "마흔다섯",
+      "sex": "",
+      "location": "서울 도심",
+      "occupation": "상업 사진작가",
+      "family": "중학생 아들",
+      "commute": "SUV 트렁크에 조명 장비와 대형 삼각대 싣고 아침 일찍 나서다",
+      "income": "외주 촬영료 세금계산서 발행"
+    },
+    "probe_meta": {
+      "sec": 3.42,
+      "prompt_tokens": 462,
+      "eval_tokens": 104,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "B05",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B05_b04_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 1
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "B05_bio_s01",
+          "B05_b08_s01",
+          "B05_b08_s02",
+          "B05_b18_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "B05_b08_s01"
+        ],
+        "confidence": 0.8
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B05_b14_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "B05_b08_s02"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "B05_b14_s02"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.79,
+      "prompt_tokens": 670,
+      "eval_tokens": 314,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "쉰둘",
+      "sex": "",
+      "location": "신포동 골목",
+      "occupation": "흑백 필름 수동 현상소 운영",
+      "family": "군 복무 중인 작은아들",
+      "commute": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길",
+      "income": "필름 한 롤 가격이 또 올라서 현상소 유지비가 빠듯하다"
+    },
+    "probe_meta": {
+      "sec": 3.84,
+      "prompt_tokens": 486,
+      "eval_tokens": 124,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "C01",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C01_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "C01_b03_s01",
+          "C01_b06_s01",
+          "C01_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C01_b06_s01",
+          "C01_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C01_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "C01_b03_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C01_b15_s01"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.98,
+      "prompt_tokens": 684,
+      "eval_tokens": 316,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "explicit",
+      "sex": "",
+      "location": "explicit",
+      "occupation": "inferential",
+      "family": "inferential",
+      "commute": "implicit",
+      "income": "inferential"
+    },
+    "probe_meta": {
+      "sec": 3.01,
+      "prompt_tokens": 500,
+      "eval_tokens": 49,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "C02",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C02_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "C02_b18_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "C02_b03_s01",
+          "C02_b06_s01",
+          "C02_b09_s01",
+          "C02_bio_s01"
+        ],
+        "confidence": 0.8
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C02_b09_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C02_b06_s01",
+          "C02_b06_s02"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C02_b15_s01"
+        ],
+        "confidence": 0.7
+      }
+    },
+    "meta": {
+      "sec": 6.01,
+      "prompt_tokens": 687,
+      "eval_tokens": 326,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "마흔여섯이 되니",
+      "sex": "",
+      "location": "아내 직장이 둔산동이라",
+      "occupation": "운행 사이 직접 들른 곳만 간단히 기록합니다",
+      "family": "아이가 야간 자율학습을 마치는 시간에 포장했습니다",
+      "commute": "적재함이 비어 있을 때만 골목 안쪽까지 들어갈 만합니다",
+      "income": "매일 들르기에는 부담 없고 가족 셋이 먹기에도 무난한 가격입니다"
+    },
+    "probe_meta": {
+      "sec": 3.93,
+      "prompt_tokens": 503,
+      "eval_tokens": 137,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "C03",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C03_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "C03_b08_s01",
+          "C03_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C03_b06_s01",
+          "C03_b09_s01",
+          "C03_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "C03_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C03_b03_s02"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C03_b15_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.81,
+      "prompt_tokens": 687,
+      "eval_tokens": 316,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "스물일곱",
+      "sex": "",
+      "location": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당",
+      "occupation": "직업 추측",
+      "family": "언니랑 둘이 나눠먹기 딱 좋은 양이었당",
+      "commute": "버스 정류장 바로 뒤🩵",
+      "income": "배송비 붙으면 고민하고 할인쿠폰 있을 때만 재구매해용', "
+    },
+    "probe_meta": {
+      "sec": 3.86,
+      "prompt_tokens": 503,
+      "eval_tokens": 121,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "C04",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C04_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "C04_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C04_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C04_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C04_b03_s01",
+          "C04_b06_s01",
+          "C04_bio_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C04_b15_s01"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.76,
+      "prompt_tokens": 699,
+      "eval_tokens": 303,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.71,
+      "prompt_tokens": 515,
+      "eval_tokens": 43,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "C05",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C05_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "C05_b03_s01",
+          "C05_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C05_b06_s01",
+          "C05_b06_s02",
+          "C05_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "C05_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "C05_b03_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "C05_b15_s01"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.18,
+      "prompt_tokens": 707,
+      "eval_tokens": 314,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "쉰다섯",
+      "sex": "",
+      "location": "중구",
+      "occupation": "직접 확인한 것만 천천히 기록해용☺️",
+      "family": "딸",
+      "commute": "퇴근 버스에서 내려 삼산동 안쪽으로 조금 걸었어용",
+      "income": "조금 비싸도 오래 쓰는 물건이면 할인할 때 다시 사두는 편이에용"
+    },
+    "probe_meta": {
+      "sec": 5.0,
+      "prompt_tokens": 523,
+      "eval_tokens": 108,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D01",
+    "findings": {
+      "age": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D01_b18_s01"
+        ],
+        "confidence": 0.6
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D01_b04_s01",
+          "D01_b16_s01"
+        ],
+        "confidence": 0.7
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "D01_b11_s01"
+        ],
+        "confidence": 1
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D01_b14_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "D01_b04_s01",
+          "D01_bio_s01"
+        ],
+        "confidence": 0.8
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.09,
+      "prompt_tokens": 671,
+      "eval_tokens": 291,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "마흔일곱",
+      "sex": "",
+      "location": "광교",
+      "occupation": "직업",
+      "family": "야자 끝나는 시간에 맞춰 데리러 갔다 왓다",
+      "commute": "새벽에 두 시간. 물가 아니면 산.",
+      "income": "빈 문자열"
+    },
+    "probe_meta": {
+      "sec": 3.37,
+      "prompt_tokens": 487,
+      "eval_tokens": 95,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D02",
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D02_b05_s01"
+        ],
+        "confidence": 50
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "D02_b16_s01"
+        ],
+        "confidence": 80
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "D02_b11_s01",
+          "D02_bio_s01"
+        ],
+        "confidence": 75
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D02_b08_s01"
+        ],
+        "confidence": 50
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D02_b14_s01"
+        ],
+        "confidence": 30
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D02_b05_s01"
+        ],
+        "confidence": 50
+      }
+    },
+    "meta": {
+      "sec": 5.42,
+      "prompt_tokens": 562,
+      "eval_tokens": 307,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.8,
+      "prompt_tokens": 378,
+      "eval_tokens": 42,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D03",
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D03_b13_s01"
+        ],
+        "confidence": 1
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "D03_b15_s01"
+        ],
+        "confidence": 1
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "D03_b09_s01",
+          "D03_b04_s02",
+          "D03_bio_s01"
+        ],
+        "confidence": 1
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "D03_b20_s01"
+        ],
+        "confidence": 1
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D03_b17_s01"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D03_b04_s01",
+          "D03_b04_s02"
+        ],
+        "confidence": 1
+      }
+    },
+    "meta": {
+      "sec": 5.09,
+      "prompt_tokens": 668,
+      "eval_tokens": 302,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.82,
+      "prompt_tokens": 484,
+      "eval_tokens": 41,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D04",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D04_b16_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D04_b14_s01",
+          "D04_b03_s02"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "D04_b03_s01"
+        ],
+        "confidence": 1
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D04_b19_s01"
+        ],
+        "confidence": 0.4
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "D04_b12_s01"
+        ],
+        "confidence": 1
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 4.95,
+      "prompt_tokens": 564,
+      "eval_tokens": 280,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "inferential",
+      "sex": "explicit",
+      "location": "admin",
+      "occupation": "job",
+      "family": "self",
+      "commute": "commute",
+      "income": "body"
+    },
+    "probe_meta": {
+      "sec": 2.91,
+      "prompt_tokens": 380,
+      "eval_tokens": 48,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D05",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D05_b14_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "D05_b03_s01",
+          "D05_b03_s02",
+          "D05_b03_s03",
+          "D05_b17_s01"
+        ],
+        "confidence": 0.6
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D05_b15_s01"
+        ],
+        "confidence": 0.4
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "D05_b12_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D05_b03_s01"
+        ],
+        "confidence": 0.6
+      },
+      "income": {
+        "verdict": "specified",
+        "evidence": [
+          "D05_b15_s01"
+        ],
+        "confidence": 0.5
+      }
+    },
+    "meta": {
+      "sec": 5.55,
+      "prompt_tokens": 729,
+      "eval_tokens": 341,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "inferential",
+      "sex": "",
+      "location": "inferential",
+      "occupation": "inferential",
+      "family": "implicit",
+      "commute": "inferential",
+      "income": "implicit"
+    },
+    "probe_meta": {
+      "sec": 2.97,
+      "prompt_tokens": 545,
+      "eval_tokens": 56,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D06",
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "evidence": [
+          "D06_b09_s01"
+        ],
+        "confidence": 1
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D06_b02_s01",
+          "D06_b05_s01",
+          "D06_b07_s01",
+          "D06_b13_s01"
+        ],
+        "confidence": 0.7
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D06_b05_s01",
+          "D06_b07_s01"
+        ],
+        "confidence": 0.5
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D06_b11_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D06_bio_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D06_b07_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.4,
+      "prompt_tokens": 714,
+      "eval_tokens": 323,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "서른여덟",
+      "sex": "",
+      "location": "읍내",
+      "occupation": "호봉",
+      "family": "어린이집",
+      "commute": "읍내까지 이십 분",
+      "income": "관사 나오는 게 컸다"
+    },
+    "probe_meta": {
+      "sec": 9.85,
+      "prompt_tokens": 530,
+      "eval_tokens": 63,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D07",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D07_b03_s01",
+          "D07_b05_s01",
+          "D07_bio_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D07_b03_s02",
+          "D07_b12_s01"
+        ],
+        "confidence": 0.5
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "D07_b06_s01",
+          "D07_b09_s01",
+          "D07_b12_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D07_b05_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "D07_b03_s03"
+        ],
+        "confidence": 0.8
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "D07_b06_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D07_b16_s01"
+        ],
+        "confidence": 0.5
+      }
+    },
+    "meta": {
+      "sec": 5.4,
+      "prompt_tokens": 741,
+      "eval_tokens": 346,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "implicit",
+      "sex": "implicit",
+      "location": "explicit",
+      "occupation": "inferential",
+      "family": "implicit",
+      "commute": "inferential",
+      "income": "implicit"
+    },
+    "probe_meta": {
+      "sec": 2.92,
+      "prompt_tokens": 557,
+      "eval_tokens": 57,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "D08",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D08_b13_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D08_b07_s01"
+        ],
+        "confidence": 0.5
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "D08_b04_s01",
+          "D08_b20_s01"
+        ],
+        "confidence": 0.9
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "D08_bio_s01"
+        ],
+        "confidence": 0.8
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D08_b16_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "D08_b09_s01"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "D08_b13_s02"
+        ],
+        "confidence": 0.4
+      }
+    },
+    "meta": {
+      "sec": 5.22,
+      "prompt_tokens": 729,
+      "eval_tokens": 306,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.83,
+      "prompt_tokens": 545,
+      "eval_tokens": 42,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "E01",
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "evidence": [
+          "E01_b17_s01"
+        ],
+        "confidence": 1
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E01_b05_s01",
+          "E01_b09_s01",
+          "E01_b15_s01",
+          "E01_b17_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E01_b05_s01",
+          "E01_b12_s01",
+          "E01_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "E01_b12_s01"
+        ],
+        "confidence": 1
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E01_b09_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E01_bio_s01"
+        ],
+        "confidence": 0.5
+      }
+    },
+    "meta": {
+      "sec": 5.46,
+      "prompt_tokens": 648,
+      "eval_tokens": 332,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "스물다섯인데 벌써 이렇게 됐네,,",
+      "sex": "",
+      "location": "수성못 쪽",
+      "occupation": "오더 마감 전쟁",
+      "family": "부모님 뵈러 한국 나왔다",
+      "commute": "통근버스 놓쳐서 지각할 뻔",
+      "income": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗"
+    },
+    "probe_meta": {
+      "sec": 3.47,
+      "prompt_tokens": 464,
+      "eval_tokens": 118,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "E02",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E02_b19_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "E02_b16_s01",
+          "E02_b19_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E02_b06_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E02_b13_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E02_b10_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E02_bio_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.07,
+      "prompt_tokens": 675,
+      "eval_tokens": 295,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "스물둘",
+      "sex": "",
+      "location": "한국",
+      "occupation": "라떼 내리는 중",
+      "family": "친구가 애월 살아서 귤 농장 도와준 적 있다",
+      "commute": "플랫메이트 차 얻어타서 겨우 지각 면함",
+      "income": "호주에서 라떼 내리는 중.. 언제 한국 감?☕🇦🇺"
+    },
+    "probe_meta": {
+      "sec": 3.42,
+      "prompt_tokens": 491,
+      "eval_tokens": 113,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "E03",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E03_b19_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "E03_b04_s01",
+          "E03_b08_s01",
+          "E03_b16_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E03_b08_s02",
+          "E03_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E03_b11_s01"
+        ],
+        "confidence": 0.5
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E03_b14_s01"
+        ],
+        "confidence": 0.4
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E03_bio_s01"
+        ],
+        "confidence": 0.3
+      }
+    },
+    "meta": {
+      "sec": 5.13,
+      "prompt_tokens": 675,
+      "eval_tokens": 316,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "서른하나",
+      "sex": "",
+      "location": "본가",
+      "occupation": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀",
+      "family": "시댁이랑 본가 둘 다 못 갔다",
+      "commute": "2호선 환승 줄이 길어서 지각할 뻔",
+      "income": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀🧶🚙"
+    },
+    "probe_meta": {
+      "sec": 3.76,
+      "prompt_tokens": 491,
+      "eval_tokens": 140,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "E04",
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "evidence": [
+          "E04_b18_s01"
+        ],
+        "confidence": 1
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E04_b10_s01",
+          "E04_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E04_bio_s01"
+        ],
+        "confidence": 0.6
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "E04_b15_s01"
+        ],
+        "confidence": 1
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E04_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E04_bio_s01"
+        ],
+        "confidence": 0.5
+      }
+    },
+    "meta": {
+      "sec": 5.2,
+      "prompt_tokens": 659,
+      "eval_tokens": 285,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "스물여덟",
+      "sex": "",
+      "location": "청주",
+      "occupation": "워홀러",
+      "family": "형",
+      "commute": "카풀 취소",
+      "income": "노르러왔다가 눌러앉음.. 코드 치는 워홀러💻"
+    },
+    "probe_meta": {
+      "sec": 3.1,
+      "prompt_tokens": 475,
+      "eval_tokens": 70,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "E05",
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "evidence": [
+          "E05_b17_s01"
+        ],
+        "confidence": 1
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E05_b03_s01",
+          "E05_b06_s01",
+          "E05_b10_s01",
+          "E05_b13_s01",
+          "E05_b15_s01"
+        ],
+        "confidence": 0.7
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "E05_bio_s01"
+        ],
+        "confidence": 1
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "E05_b13_s01"
+        ],
+        "confidence": 1
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "E05_b10_s01"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "E05_bio_s01"
+        ],
+        "confidence": 0.6
+      }
+    },
+    "meta": {
+      "sec": 5.37,
+      "prompt_tokens": 693,
+      "eval_tokens": 315,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "",
+      "sex": "",
+      "location": "",
+      "occupation": "",
+      "family": "",
+      "commute": "",
+      "income": ""
+    },
+    "probe_meta": {
+      "sec": 2.73,
+      "prompt_tokens": 509,
+      "eval_tokens": 39,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "S01",
+    "findings": {
+      "age": {
+        "verdict": "weak_signal",
+        "evidence": [
+          "S01_b17_s01"
+        ],
+        "confidence": 0.6
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      },
+      "location": {
+        "verdict": "narrowed",
+        "evidence": [
+          "S01_b03_s01",
+          "S01_b03_s02",
+          "S01_b19_s01"
+        ],
+        "confidence": 0.7
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "S01_bio_s01",
+          "S01_b09_s02"
+        ],
+        "confidence": 0.9
+      },
+      "family": {
+        "verdict": "specified",
+        "evidence": [
+          "S01_b12_s01"
+        ],
+        "confidence": 0.8
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "evidence": [
+          "S01_b06_s01"
+        ],
+        "confidence": 0.5
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0
+      }
+    },
+    "meta": {
+      "sec": 5.23,
+      "prompt_tokens": 639,
+      "eval_tokens": 304,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "서른넷",
+      "sex": "",
+      "location": "집 앞 산책로",
+      "occupation": "매장 마감하고 쓰는 동네 기록",
+      "family": "남편이 야근이라 혼자 뚝섬 쪽 걸었다",
+      "commute": "퇴근길 2호선이 오늘따라",
+      "income": "20킬로가 통째로 왔다"
+    },
+    "probe_meta": {
+      "sec": 3.48,
+      "prompt_tokens": 455,
+      "eval_tokens": 110,
+      "done_reason": "stop"
+    }
+  },
+  {
+    "persona_id": "S01b",
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "evidence": [
+          "S01b_b12_s01"
+        ],
+        "confidence": 0.7
+      },
+      "sex": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      },
+      "location": {
+        "verdict": "specified",
+        "evidence": [
+          "S01b_b09_s01",
+          "S01b_b09_s02",
+          "S01b_bio_s01",
+          "S01b_b18_s01"
+        ],
+        "confidence": 0.8
+      },
+      "occupation": {
+        "verdict": "specified",
+        "evidence": [
+          "S01b_bio_s01",
+          "S01b_b06_s02"
+        ],
+        "confidence": 0.7
+      },
+      "family": {
+        "verdict": "narrowed",
+        "evidence": [
+          "S01b_b15_s01"
+        ],
+        "confidence": 0.6
+      },
+      "commute": {
+        "verdict": "specified",
+        "evidence": [
+          "S01b_b03_s01",
+          "S01b_b06_s02"
+        ],
+        "confidence": 0.7
+      },
+      "income": {
+        "verdict": "abstain",
+        "evidence": [],
+        "confidence": 0.0
+      }
+    },
+    "meta": {
+      "sec": 5.39,
+      "prompt_tokens": 663,
+      "eval_tokens": 336,
+      "done_reason": "stop"
+    },
+    "probe": {
+      "age": "서른여덟",
+      "sex": "",
+      "location": "청주",
+      "occupation": "교대 근무",
+      "family": "반찬이 자꾸 늘어나",
+      "commute": "셔틀 첫차가 여섯시 반이라 새벽에 나선다",
+      "income": "야간조가 확실히 버겁다"
+    },
+    "probe_meta": {
+      "sec": 3.35,
+      "prompt_tokens": 479,
+      "eval_tokens": 98,
+      "done_reason": "stop"
+    }
+  }
+]

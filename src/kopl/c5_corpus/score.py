@@ -82,8 +82,19 @@ def post_metrics(body: str) -> dict:
     }
 
 
+def body_of(r: dict) -> str:
+    """texts 구조와 옛 형식을 둘 다 읽는다 (p1.0 이전 코퍼스 호환).
+
+    계측은 본문만 본다 — 제목·캡션은 길이가 달라 섞으면 문장길이가 왜곡된다.
+    """
+    t = r.get("texts")
+    if isinstance(t, dict):
+        return t.get("body", "")
+    return r.get("body", "")
+
+
 def aggregate(records: list[dict]) -> dict:
-    ms = [post_metrics(r["body"]) for r in records]
+    ms = [post_metrics(body_of(r)) for r in records]
     out = {}
     for k in ms[0]:
         out[k] = round(stat.mean(m[k] for m in ms), 2)
@@ -217,11 +228,7 @@ def main() -> int:
                         for c in pj.get("card_ref", []) or []:
                             axes |= set((ca.get(c) or {}).keys())
                         # voice 키 → 측정 지표 이름으로 환산
-                        # 카드 블록의 축 이름과 인물 voice 키가 갈리는 곳을 잇는다
-                        ALIAS = {"부호": ("이모지", "이모티콘"), "줄바꿈": ("줄바꿈",)}
-                        for a, vs in ALIAS.items():
-                            if a in axes:
-                                axes |= set(vs)
+                        # 축 이름이 카드·인물 양쪽에서 같아졌다 (§2-⑤-4). 별칭이 필요 없다
                         carded = {DECLARED[k][0] for k in axes if k in DECLARED and DECLARED[k][0]}
                     except Exception:  # noqa: BLE001
                         carded = None

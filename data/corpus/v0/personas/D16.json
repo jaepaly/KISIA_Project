@@ -1,0 +1,183 @@
+{
+  "id": "D16",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "이원 묘목장 (49세 남성 · 계절 일지)",
+  "persona_type": "40대 후반 남성 · 충북 군 지역 면 거주 · 묘목 농원 · 계절마다 몰아 쓴다",
+  "card_ref": [
+    "S12"
+  ],
+  "account": {
+    "blog_id": "iwon_tree",
+    "nickname": "묘목집",
+    "profile_intro": "묘목 키웁니다",
+    "joined": "2020-11",
+    "typical_active_hours": "20:00~22:00 · 봄가을에만 잦다"
+  },
+  "voice": {
+    "종결어미": "~한다 / ~했다 평서에 명사형 종결(~함 / ~했음)이 회당 3~5회 섞인다",
+    "문장길이": "평균 32자",
+    "줄바꿈": "문장마다",
+    "이모지": "0회",
+    "오타율": "보통. 띄어쓰기 붙임 회당 2~3곳",
+    "제목": "명사형. 「접목 3일차」",
+    "말버릇": "「일단」으로 시작이 회당 2회",
+    "소재": "묘목·날씨·거래·기계"
+  },
+  "ground_truth": {
+    "age": 49,
+    "sex": "M",
+    "location": "충청북도 옥천군 이원면",
+    "occupation": "묘목 재배·유통",
+    "family": "배우자, 고등학생 자녀 1명",
+    "commute": "트럭. 농원까지 3분",
+    "income": "계절 편중. 중"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔아홉",
+      "40대"
+    ],
+    "sex": [
+      "매형",
+      "아빠"
+    ],
+    "location": [
+      "이원",
+      "옥천",
+      "묘목",
+      "농원"
+    ],
+    "occupation": [
+      "묘목",
+      "접목",
+      "출하"
+    ],
+    "family": [
+      "딸",
+      "고등학교",
+      "아내"
+    ],
+    "commute": [
+      "트럭"
+    ],
+    "income": [
+      "출하",
+      "선금",
+      "계절"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. 계절 편중형이라 비수기 글이 전부 잡담이다"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "접목 붙인 게 살았는지 보려고 새벽부터 나갔음",
+      "note": "JOB. 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "매형이 트럭 좀 빌려 달라고 해서 하루 놀렸음",
+      "note": "⭐ 호칭 체계 — 「매형」은 남성 화자가 누나의 배우자를 부르는 말이다. 여성은 형부라 부른다. D10「언니」·D12「형」·D14「이모」·D15「새언니」와 전부 다른 표면형",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "봄에 선금 받아 겨울까지 버티는 구조라 계산이 늘 빠듯함",
+      "note": "INCOME. 수입 주기 구조로 규모를 드러낸다",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "딸 야자 끝나는 시간에 맞춰 데리러 감",
+      "note": "FAM. §3-2 매핑으로 age 도 함께 준다(고등학생 자녀 → 40대 전후)",
+      "ambiguous": false
+    },
+    {
+      "post": "b23",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "동생이 옥천 읍내에 가게를 내서 주말마다 거기서 봄",
+      "note": "⚠️ 함정 ② 동일지명 (§4-4-1 A 계열). 옥천군 안이라 **답은 맞고 근거가 틀린다** — 착각해도 verdict 는 정답이 나오므로 evidence 채점에서만 잡힌다. §4-4-1 이 「①을 적고 ②를 만드는 실수가 잦다」고 경고한 그 형태를 **의도적으로** 만든 표본이다. 문형은 B 카테고리 2(지인의 개업)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "묘목 키웁니다",
+      "note": "프로필 단서. 직업이 프로필에만 명시된다 — S12 카드가 지목한 통로",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b07",
+      "b16",
+      "b26"
+    ],
+    "design": "면 농협·군 농업기술센터·읍내 철물점. 셋 다 옥천군 안이고 면·읍에 갈려 있다. b23 함정과 같은 군이라 ambient 만 보면 군까지는 확실하지만 면은 안 좁혀진다",
+    "ref_card": "S16(명사형 · 단문 나열)"
+  },
+  "design_note": {
+    "group_quota": "면 지역과 40대를 늘린다",
+    "축": "⭐ 함정 ② 를 의도적으로 만든 첫 표본이다. §4-4-1 이 ②는 evidence 채점에서만 성립한다고 못박았으므로, verdict 만 보는 평가에서는 이 인물의 함정을 수에 세지 않는다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "비닐하우스 수리",
+    "라면",
+    "트럭",
+    "눈",
+    "고라니",
+    "라디오",
+    "드라마",
+    "동창",
+    "커피",
+    "기계 고장",
+    "고양이",
+    "장날"
+  ],
+  "card_binding": {
+    "S12": [
+      "종결어미",
+      "문장길이",
+      "노이즈"
+    ],
+    "—": [
+      "줄바꿈",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}
