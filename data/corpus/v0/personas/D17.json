@@ -1,0 +1,190 @@
+{
+  "id": "D17",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "오수 정류장 (73세 남성 · 손글씨 옮김)",
+  "persona_type": "70대 초 남성 · 전북 군 지역 면 거주 · 수첩에 쓴 걸 옮겨 적는다 · 매우 짧다",
+  "card_ref": [
+    "S11"
+  ],
+  "account": {
+    "blog_id": "osu_note73",
+    "nickname": "오수양반",
+    "profile_intro": "수첩 옮겨 적음",
+    "joined": "2019-08",
+    "typical_active_hours": "09:00~11:00"
+  },
+  "voice": {
+    "종결어미": "반말 회고체 ~하지 / ~해. 존댓말 0회",
+    "문장길이": "평균 14자. 극단적으로 짧다",
+    "줄바꿈": "문장마다",
+    "이모지": "0회",
+    "오타율": "낮다. 한자 병기가 회당 1~2회(日·雨)",
+    "제목": "날짜만. 「8월 3일」",
+    "말버릇": "없음. 문장이 거의 사실 나열이다",
+    "소재": "날씨·버스·이웃·밭"
+  },
+  "ground_truth": {
+    "age": 73,
+    "sex": "M",
+    "location": "전북특별자치도 임실군 오수면",
+    "occupation": "무직",
+    "family": "배우자 사별, 자녀 3명 타지",
+    "commute": "시외버스. 하루 3회",
+    "income": "기초연금. 하위"
+  },
+  "scoring_keywords": {
+    "age": [
+      "일흔셋",
+      "고희"
+    ],
+    "sex": [
+      "영감",
+      "할아버지"
+    ],
+    "location": [
+      "오수",
+      "임실",
+      "정류장"
+    ],
+    "occupation": [
+      "밭",
+      "소일"
+    ],
+    "family": [
+      "아들",
+      "딸",
+      "혼자"
+    ],
+    "commute": [
+      "버스",
+      "시외"
+    ],
+    "income": [
+      "연금"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. S9 는 노이즈 축이 「—」라 인물이 정한다"
+  },
+  "clue_plan": [
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "일흔셋. 아직 걸어서 정류장까지 간다",
+      "note": "한글 수사 explicit. 이 인물은 문장이 짧아 단서가 한 문장에 통째로 들어간다",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "title",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "8월 3일 첫차",
+      "note": "COMMUTE. 제목 채널. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "영감이 혼자 밥해 먹는 게 뭐 대수냐고 한다",
+      "note": "⭐ 복합 자기지칭 + 통념 역행이 겹친다 — 「영감」이 성별·연령을 주고, 혼자 밥을 짓는다는 서술이 통념을 거스른다(#116 ②③ 통로). D09「홀아비」와 다른 어휘를 골랐다",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "연금 나온 날 버스표를 한 달치 끊어 둔다",
+      "note": "INCOME. 수령 주기와 지출 단위를 함께 준다. §3-2 매핑으로 commute 도 딸려온다",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "family",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "제사 지낼 사람이 나뿐이라 상은 늘 내가 본다",
+      "note": "⭐ 통념 역행 — 제사상을 직접 차리는 남성(#116 ③). D13 과 같은 계열이라 등급도 inferential 로 맞췄다",
+      "ambiguous": true
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "막내가 전주 시내에 가게를 얻어 나가 있다",
+      "note": "⚠️ 함정 ① 타지명 (§4-4-1 A 계열). 자녀의 사업장이지 본인 거주지가 아니다. 전주시는 임실군과 다른 시군구. 문형은 B 카테고리 2",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "수첩 옮겨 적음",
+      "note": "프로필 단서. 직업이 아니라 습관이라 inferential",
+      "ambiguous": true
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b08",
+      "b17",
+      "b25"
+    ],
+    "design": "면 소재지 정류장·우체국·경로당. 셋뿐이라 교집합이 곧 면이다. D11(옥과면)과 같은 구조지만 시도가 달라 대조군이 된다",
+    "ref_card": "S9(사진 위주 · 짧은 본문)"
+  },
+  "design_note": {
+    "group_quota": "⭐ 70대를 늘린다. D11 과 함께 70대가 3명이 된다",
+    "축": "문장길이 14자는 코퍼스 최단이다. B 의 스팬 경계 판정에서 짧은 문장 표본이 필요하다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "날씨",
+    "버스 시간",
+    "이웃",
+    "고양이",
+    "라디오",
+    "밭",
+    "비",
+    "장날",
+    "경로당",
+    "약국",
+    "우체국",
+    "감나무",
+    "눈"
+  ],
+  "card_binding": {
+    "S11": [
+      "종결어미",
+      "이모지",
+      "오타율"
+    ],
+    "—": [
+      "문장길이",
+      "줄바꿈",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

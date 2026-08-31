@@ -1,0 +1,182 @@
+{
+  "id": "D19",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "전곡 오일장 (66세 여성 · 장날 기록)",
+  "persona_type": "60대 중반 여성 · 경기 군 지역 읍 거주 · 장날마다 좌판 · 말투가 구어에 가깝다",
+  "card_ref": [
+    "S15"
+  ],
+  "account": {
+    "blog_id": "jeongok_5day",
+    "nickname": "전곡장날",
+    "profile_intro": "장날마다 씁니다",
+    "joined": "2021-04",
+    "typical_active_hours": "18:00~20:00 · 장날 다음날"
+  },
+  "voice": {
+    "종결어미": "~여 / ~지 뭐 구어체. 존댓말과 반말이 섞인다",
+    "문장길이": "평균 16자",
+    "줄바꿈": "여백 중심",
+    "이모지": "회당 0~1회",
+    "오타율": "높다. 소리 나는 대로 적는 것이 회당 3~4곳",
+    "제목": "감탄형이 회당 절반. 「오늘 장 잘됐네」",
+    "말버릇": "「아 글쎄」가 회당 2~3회",
+    "소재": "장날·물건·손님·날씨"
+  },
+  "ground_truth": {
+    "age": 66,
+    "sex": "F",
+    "location": "경기도 연천군 전곡읍",
+    "occupation": "오일장 좌판(나물·건어물)",
+    "family": "배우자, 자녀 2명 타지",
+    "commute": "손수레·도보",
+    "income": "장날 수입 변동. 하위"
+  },
+  "scoring_keywords": {
+    "age": [
+      "예순여섯",
+      "환갑"
+    ],
+    "sex": [
+      "새댁",
+      "할머니"
+    ],
+    "location": [
+      "전곡",
+      "연천",
+      "장",
+      "좌판"
+    ],
+    "occupation": [
+      "좌판",
+      "장날",
+      "나물"
+    ],
+    "family": [
+      "아들",
+      "딸",
+      "영감"
+    ],
+    "commute": [
+      "손수레"
+    ],
+    "income": [
+      "장날",
+      "벌이",
+      "떼",
+      "넘기"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 3,
+    "trap": 2,
+    "noise_ratio_definition": "B안 83% — 단서 보유 5편을 뺀 25편이다. S5 는 노이즈 축이 「75~85%」다. ⚠️ 함정이 둘이라(b16 ⑤ · b26 ①) trap=2 다"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오일장 서는 날만 좌판 펴는데 요새 사람이 없어",
+      "note": "JOB. 업종이 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "전곡장 오늘 파리만 날림",
+      "note": "⭐ LOC_ADMIN 이 제목에만 있다. S11 이 지목한 「제목에 단서가 그대로 실린다」 통로. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "옆 좌판 새댁이 나보고 이모라 부르는 게 영 어색햐",
+      "note": "⭐ 호칭 체계 — 「새댁」도 「이모」도 여성 화자를 가리킨다. D14 는 부르는 쪽, 여기는 불리는 쪽",
+      "ambiguous": false
+    },
+    {
+      "post": "b11",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "떼 온 값도 안 나오는 날은 그냥 넘기고 만다",
+      "note": "INCOME. 원가 회수 실패라는 표현으로 규모를 드러낸다",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "본가가 파주라 어릴 적엔 거기 장을 따라다녔지 뭐",
+      "note": "⚠️ 함정 ⑤ 출신지 (§4-4-1 B 계열). 파주시는 연천군과 다른 시군구. ⚠️ D10·D15 와 같은 계열이지만 표면형이 「본가가 …라 어릴 적엔」으로 셋 다 다르다 — 문형이 겹치면 종류를 늘려도 소용없다(§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "앞자리 아저씨가 동두천 상설시장으로 자리를 옮겼어",
+      "note": "⚠️ 함정 · occupation 축 겸 지명 축 (§4-4-1 A 계열 ①). 동두천시는 연천군과 다른 시군구. 문형은 B 카테고리 1",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b09",
+      "b18",
+      "b24"
+    ],
+    "design": "읍내 보건소·터미널·농협. 셋 다 전곡읍 도보권. 오일장 자체가 지역 고유 행사라 ambient 없이도 특정성이 높은 편",
+    "ref_card": "S5(짧은 줄바꿈 · 구어)"
+  },
+  "design_note": {
+    "group_quota": "군·읍면과 60대를 함께 늘린다. 경기도는 7명으로 최다지만 전부 시·동이라 군 지역 표본이 없었다",
+    "축": "함정 ⑤ 를 셋째로 두되 표면형을 D10·D15 와 다르게 썼다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "비",
+    "고양이",
+    "손님 실랑이",
+    "점심",
+    "라디오",
+    "이웃 수다",
+    "드라마",
+    "손수레 바퀴",
+    "김장",
+    "동창",
+    "무릎"
+  ],
+  "card_binding": {
+    "S15": [
+      "문장길이",
+      "줄바꿈"
+    ],
+    "—": [
+      "종결어미",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

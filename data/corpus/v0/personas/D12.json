@@ -1,0 +1,205 @@
+{
+  "id": "D12",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "온산 3교대 (45세 남성 · 교대근무 기록)",
+  "persona_type": "40대 중반 남성 · 울산 군 지역 읍 거주 · 석유화학 단지 3교대 · 새벽 업로드",
+  "card_ref": [
+    "S17"
+  ],
+  "account": {
+    "blog_id": "onsan_shift",
+    "nickname": "3교대인생",
+    "profile_intro": "야간 끝나고 씁니다",
+    "joined": "2022-11",
+    "typical_active_hours": "01:00~03:00 · 주간조 주에는 21:00~22:00"
+  },
+  "voice": {
+    "종결어미": "~함 / ~됨 명사형 종결이 회당 4~6회",
+    "문장길이": "평균 18자. 개조식에 가깝다",
+    "줄바꿈": "한 호흡마다. 사진 사이에 빈 줄이 다발로 들어간다",
+    "이모지": "0회. 대신 ㅋ 를 회당 2~3회",
+    "오타율": "보통. 자음만 남기는 축약 회당 2회",
+    "제목": "명사형. 「야간 3일차」",
+    "말버릇": "「진짜」를 부사로 회당 3~4회",
+    "소재": "교대·잠·운동·차"
+  },
+  "ground_truth": {
+    "age": 45,
+    "sex": "M",
+    "location": "울산광역시 울주군 온산읍",
+    "occupation": "석유화학 플랜트 설비 보전",
+    "family": "배우자·중학생 자녀 1명",
+    "commute": "자차 15분 · 3교대",
+    "income": "교대수당 포함 중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔다섯",
+      "40대"
+    ],
+    "sex": [
+      "형",
+      "아빠"
+    ],
+    "location": [
+      "온산",
+      "울주",
+      "단지",
+      "공단"
+    ],
+    "occupation": [
+      "보전",
+      "설비",
+      "야간",
+      "3교대"
+    ],
+    "family": [
+      "아들",
+      "중학교",
+      "아내"
+    ],
+    "commute": [
+      "자차",
+      "출근"
+    ],
+    "income": [
+      "수당",
+      "야간수당",
+      "상여"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안 77% — 단서 보유 7편을 뺀 23편이다. S17 은 노이즈 축이 「70~80%」다"
+  },
+  "clue_plan": [
+    {
+      "post": "b01",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야간 들어가기 전에 설비 점검표 훑는 게 습관됨",
+      "note": "JOB. 업종이 단독으로 거의 확정된다",
+      "ambiguous": false
+    },
+    {
+      "post": "b01",
+      "text_id": "title",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야간 3일차 퇴근길",
+      "note": "COMMUTE. 제목 채널이라 §9-1 본문 밖 할당량에 든다. ⚠️ 이미 단서를 가진 글에 실었다",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔다섯인데 야간 회복이 예전 같지 않음",
+      "note": "한글 수사 explicit. 뒤 절은 스팬이 아니라 flags.gen_signal(계약 §7)",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "형이랑 둘이 차 얻어 타고 다니던 때가 생각남",
+      "note": "⭐ 호칭 체계 — 남성이 손위 남성을 「형」이라 부른다(#116 ① 통로). D10 의 「언니」와 대칭 표본",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야간수당 붙는 달이랑 안 붙는 달이 통장에서 티가 남",
+      "note": "INCOME. 금액이 아니라 변동 폭으로 썼다 — 브랜드 금지 회피(README)",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "공단 정문까지 차로 십오 분이라 집을 못 옮김",
+      "note": "REL_WORK + 반경. 단독으로는 어느 공단인지 미확정 → inferential",
+      "ambiguous": false
+    },
+    {
+      "post": "b23",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "아들 중간고사라 새벽에 들어와도 조용히 다님",
+      "note": "FAM. §3-2 매핑으로 age 도 함께 준다(중학생 자녀 → 40대 전후)",
+      "ambiguous": false
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "같이 일하던 반장이 울산 남구 쪽으로 이사 가서 카풀이 깨짐",
+      "note": "⚠️ 함정 ③ 상위일치 (§4-4-1 A 계열). 남구는 울주군과 다른 자치구지만 **같은 울산광역시**다. 착각하면 시는 맞고 동을 못 좁힌다 → granularity 채점 대상. 문형은 B 카테고리 1",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b15",
+      "b21",
+      "b26"
+    ],
+    "design": "읍내 24시 헬스장·해장국집·주유소·공단 정문 앞 편의점. 3교대라 방문 시각이 새벽에 몰린다 — 장소가 아니라 **시각 분포**가 직업을 드러내는 표본이다. E 의 활동 메타(작성시각) 조치를 시연할 입력이 된다",
+    "ref_card": "S17(명사형 종결 · 개조식)"
+  },
+  "design_note": {
+    "group_quota": "군 지역 축을 늘린다. 40대가 4명뿐이었다",
+    "축": "S17 은 1회만 쓰인 카드다. typical_active_hours 를 두 갈래로 둔 것은 교대 주기가 작성시각에 그대로 드러나게 하기 위해서다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "야간 끝나고 라면",
+    "차 세차",
+    "넷플릭스",
+    "헬스",
+    "잠 안 오는 밤",
+    "주차 시비",
+    "치킨",
+    "주말에 늦잠",
+    "드라이브",
+    "공구 산 이야기",
+    "축구 중계"
+  ],
+  "card_binding": {
+    "S17": [
+      "문장길이",
+      "줄바꿈",
+      "노이즈"
+    ],
+    "—": [
+      "종결어미",
+      "이모지",
+      "오타율",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}

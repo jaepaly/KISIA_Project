@@ -1,0 +1,199 @@
+{
+  "id": "D13",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "신동 폐선길 (62세 남성 · 사진과 회고)",
+  "persona_type": "60대 초 남성 · 강원 군 지역 읍 거주 · 폐광 지역 · 옛일 회고가 잦다",
+  "card_ref": [
+    "S11"
+  ],
+  "account": {
+    "blog_id": "sindong_rail",
+    "nickname": "폐선길",
+    "profile_intro": "옛 사진 정리 중",
+    "joined": "2018-07",
+    "typical_active_hours": "14:00~16:00"
+  },
+  "voice": {
+    "종결어미": "반말 회고체 ~하지 / ~했잖아 / ~해. 존댓말 0회",
+    "문장길이": "평균 30자",
+    "줄바꿈": "두 문장에 한 번",
+    "이모지": "0회",
+    "오타율": "낮다",
+    "제목": "장소명 + 연도. 「구절터 1998」",
+    "말버릇": "「그때는」으로 시작하는 문장이 회당 2~3회",
+    "소재": "옛 사진·산책·기차·마을 변화"
+  },
+  "ground_truth": {
+    "age": 62,
+    "sex": "M",
+    "location": "강원특별자치도 정선군 신동읍",
+    "occupation": "전직 광산 설비 · 현 무직",
+    "family": "배우자, 자녀 1명 타지",
+    "commute": "도보. 하루 두 시간 걷는다",
+    "income": "연금 + 소액 임대. 중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "예순둘",
+      "환갑"
+    ],
+    "sex": [
+      "아버지",
+      "형님"
+    ],
+    "location": [
+      "신동",
+      "정선",
+      "폐선",
+      "역"
+    ],
+    "occupation": [
+      "광산",
+      "갱",
+      "설비"
+    ],
+    "family": [
+      "아내",
+      "아들"
+    ],
+    "commute": [
+      "걸어"
+    ],
+    "income": [
+      "연금",
+      "세"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 2,
+    "noise_ratio_definition": "B안 80% — 단서 보유 6편을 뺀 24편이다. S13 은 노이즈 축이 「70~80%」다. ⚠️ 함정이 둘이라(b19 ⑥ · b24 ①) trap=2 다"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "집 뒤 폐선길, 오늘도 여기서 돌아왔다",
+      "note": "⭐ S13 카드의 핵심 — 장소가 캡션에만 적힌다. REL_HOME 이라 거주 반경을 준다",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "예순둘이 되고 나서야 이 길을 매일 걷는다",
+      "note": "한글 수사 explicit",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "photo_caption:0",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "갱 입구였던 자리. 삼십 년 여기 드나들었다",
+      "note": "⭐ 한 글에 캡션과 본문이 각각 단서를 가진다. JOB — 업종이 거의 확정된다. 근속 연수가 age 도 받친다",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "아버지 제사상은 늘 내가 차렸다",
+      "note": "⭐ 통념 역행 — 제사상을 직접 차리는 남성. 단독으로는 성별을 반대로 가리킨다(#116 ③). D07·D09 와 같은 계열이라 등급도 inferential 로 맞췄다",
+      "ambiguous": true
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "연금 들어오는 날에 맞춰 창고 세를 낸다",
+      "note": "INCOME. 수령·지출 주기로 규모를 드러낸다",
+      "ambiguous": false
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "예전에 태백 살 때는 눈이 이만큼 안 왔다",
+      "note": "⚠️ 함정 ⑥ 과거 거주 (§4-4-1 B 계열). 주체도 나고 장소도 내 것이라 **시제로만 갈린다** — 「예전에」·「살 때는」이 그 표지다. 태백시는 정선군과 다른 시군구라 착각하면 GT 와 다른 값이 나온다. 채점은 2단 verdict",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "other",
+      "clue": "같이 일하던 형님이 동해 쪽 발전소로 옮겨 가서 그 뒤로 못 봤다",
+      "note": "⚠️ 함정 · occupation 축 겸 지명 축 (§4-4-1 A 계열 ①). 동료의 이직처이지 본인 직장이 아니다. 문형은 B 카테고리 1",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "옛 사진 정리 중",
+      "note": "프로필 단서. 연령대를 약하게 가리킨다",
+      "ambiguous": true
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b09",
+      "b18",
+      "b27"
+    ],
+    "design": "읍내 우체국·기차역·보건지소. 폐광 지역이라 시설이 적고 역 이름이 그대로 지명이다 — LOC_FACILITY 가 LOC_ADMIN 과 사실상 같아지는 표본",
+    "ref_card": "S13(사진 캡션에 장소)"
+  },
+  "design_note": {
+    "group_quota": "군·읍면 축과 60대를 함께 늘린다",
+    "축": "S13 은 1회만 쓰인 카드다. 함정을 ⑥ 으로 둔 것은 §4-4-1 B 계열 중 시제로만 갈리는 형태의 첫 표본을 만들기 위해서다 — D10 의 ⑤ 와 짝을 이룬다",
+    "카드": "⚠️ 카드를 문체 적합으로 골랐다. 처음에는 「미사용 카드 소진」 기준으로 골랐다가 카드 대조에서 어긋났다 — S9 는 상류층 육아맘, S1 은 대학생 종강 일기처럼 카드 이름이 곧 인물 유형이라 사용 횟수로 고르면 안 된다. 카드가 규정하지 않거나 이 인물이 의도적으로 벗어나는 축은 card_binding 에 「—」로 선언했다 (FREE_AXIS_KEY — 카드 대조에서 빠지고 인물 간 분기에는 그대로 들어간다)."
+  },
+  "noise_topics": [
+    "눈 치운 이야기",
+    "라디오",
+    "산책",
+    "옛 사진 스캔",
+    "고양이",
+    "장작",
+    "아침 안개",
+    "동네 개",
+    "TV 다큐",
+    "커피",
+    "자전거 수리"
+  ],
+  "card_binding": {
+    "S11": [
+      "문장길이",
+      "종결어미",
+      "이모지",
+      "오타율"
+    ],
+    "—": [
+      "줄바꿈",
+      "제목",
+      "말버릇",
+      "소재"
+    ]
+  }
+}
