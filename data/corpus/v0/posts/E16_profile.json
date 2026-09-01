@@ -1,0 +1,17 @@
+{
+  "persona_id": "E16",
+  "texts": {
+    "profile_bio": "이직 두 번째. 후기 남기는 중"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "이직 두 번째. 후기 남기는 중",
+    "note": "프로필이 이직 경험을 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

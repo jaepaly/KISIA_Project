@@ -1,0 +1,17 @@
+{
+  "persona_id": "D22",
+  "texts": {
+    "profile_bio": "감귤 키웁니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "감귤 키웁니다",
+    "note": "프로필 단서. 업종이 프로필에 그대로 적힌다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

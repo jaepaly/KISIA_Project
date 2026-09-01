@@ -1,0 +1,17 @@
+{
+  "persona_id": "E18",
+  "texts": {
+    "profile_bio": "한 달에 한 번 몰아서 씀"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "한 달에 한 번 몰아서 씀",
+    "note": "프로필이 게시 주기(월간)를 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

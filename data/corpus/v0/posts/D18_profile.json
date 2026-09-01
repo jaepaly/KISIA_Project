@@ -1,0 +1,17 @@
+{
+  "persona_id": "D18",
+  "texts": {
+    "profile_bio": "공방 열고 삼년차 · 주 4일 굽습니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "clue": "공방 열고 삼년차 · 주 4일 굽습니다",
+    "note": "⭐⭐ S12 카드의 핵심 — **직업이 프로필에만 있다.** 본문에는 업종 명시가 한 번도 안 나온다. label-schema §5-3 이 이 통로를 지목했다. explicit 인 이유는 「공방」·「굽는다」가 값을 그대로 적기 때문이다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

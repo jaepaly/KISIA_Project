@@ -1,0 +1,17 @@
+{
+  "persona_id": "E20",
+  "texts": {
+    "profile_bio": "드디어 방학 ㅠㅠ 기록용"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "드디어 방학 ㅠㅠ 기록용",
+    "note": "프로필이 학생 신분(방학)을 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

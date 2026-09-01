@@ -1,0 +1,17 @@
+{
+  "persona_id": "D14",
+  "texts": {
+    "profile_bio": "주말에만 씁니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "commute",
+    "level": "inferential",
+    "subject": "self",
+    "clue": "주말에만 씁니다",
+    "note": "프로필 단서. 작성 주기 자체가 통근 강도를 약하게 가리킨다",
+    "ambiguous": true
+  },
+  "persona_schema_version": "0.2"
+}

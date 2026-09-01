@@ -1,0 +1,17 @@
+{
+  "persona_id": "D13",
+  "texts": {
+    "profile_bio": "옛 사진 정리 중"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "age",
+    "level": "inferential",
+    "subject": "self",
+    "clue": "옛 사진 정리 중",
+    "note": "프로필 단서. 연령대를 약하게 가리킨다",
+    "ambiguous": true
+  },
+  "persona_schema_version": "0.2"
+}

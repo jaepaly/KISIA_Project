@@ -1,0 +1,17 @@
+{
+  "persona_id": "D01",
+  "texts": {
+    "profile_bio": "새벽에 두 시간. 물가 아니면 산."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "새벽에 두 시간. 물가 아니면 산.",
+    "attr": "commute",
+    "level": "inferential",
+    "subject": "self",
+    "note": "프로필 소개란에만 실린다. '새벽 두 시간'이 생활 반경을 준다 — 왕복 두 시간 안에 물과 산이 다 있는 곳. 항상 켜져 있어 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힌다. label-schema §5-3 · §9-1",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

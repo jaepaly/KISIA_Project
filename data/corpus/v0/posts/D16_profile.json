@@ -1,0 +1,17 @@
+{
+  "persona_id": "D16",
+  "texts": {
+    "profile_bio": "묘목 키웁니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "묘목 키웁니다",
+    "note": "프로필 단서. 직업이 프로필에만 명시된다 — S12 카드가 지목한 통로",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,17 @@
+{
+  "persona_id": "D23",
+  "texts": {
+    "profile_bio": "낮에는 사무실 · 밤에는 작업대"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "낮에는 사무실 · 밤에는 작업대",
+    "note": "⭐ 프로필이 **두 직업을 동시에** 드러낸다. S12 통로이되 기존 표본과 달리 occupation 이 하나가 아니다 — C 의 특정성 계산에서 「직업 조건이 둘」인 첫 입력이다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

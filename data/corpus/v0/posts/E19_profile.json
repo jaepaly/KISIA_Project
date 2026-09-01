@@ -1,0 +1,17 @@
+{
+  "persona_id": "E19",
+  "texts": {
+    "profile_bio": "충주에서 사진관 오래 했습니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "충주에서 사진관 오래 했습니다",
+    "note": "프로필이 지역과 직업을 함께 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,17 @@
+{
+  "persona_id": "E05",
+  "texts": {
+    "profile_bio": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿",
+    "attr": "income",
+    "level": "inferential",
+    "subject": "self",
+    "note": "프로필은 항상 노출됨. 다이빙+화분 취미 조합과 NGO 연구직 언급의 격차 자체가 '본인 소득은 평범, 배경은 여유'를 암시한다. label-schema §9-1",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
