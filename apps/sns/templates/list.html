@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}글 목록 — 파도풀{% endblock %}
+{% block content %}
+
+<form method="get" action="/" style="margin-bottom:16px;">
+  <label for="author">작성자 필터</label>
+  <select name="author" id="author" onchange="this.form.submit()">
+    <option value="">전체</option>
+    {% for a in authors %}
+      <option value="{{ a.author_id }}" {% if a.author_id == selected_author %}selected{% endif %}>
+        {{ a.nickname }}
+      </option>
+    {% endfor %}
+  </select>
+</form>
+
+{% if not posts %}
+  <p class="empty">아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.</p>
+{% endif %}
+
+{% for p in posts %}
+  <div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
+    <a class="post-title" href="/posts/{{ p.post_id }}">
+      {{ p.title or "(제목 없음)" }}
+    </a>
+    {% if p.visibility == 'private' %}<span class="badge private">비공개</span>{% endif %}
+    <div class="post-meta">
+      <a href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
+      · {{ p.created_at[:16].replace('T', ' ') }}
+      {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}

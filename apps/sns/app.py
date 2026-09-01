@@ -19,12 +19,14 @@ from __future__ import annotations
 
 import os
 import sqlite3
+from datetime import datetime, timedelta, timezone
 
-from flask import Flask, g, jsonify, render_template, request
+from flask import Flask, abort, g, jsonify, redirect, render_template, request
 
 from db import connect, init
 
 app = Flask(__name__)
+KST = timezone(timedelta(hours=9))
 
 
 def db() -> sqlite3.Connection:
@@ -45,38 +47,118 @@ def _todo(screen: str, where: str) -> str:
             f'<p><a href="/api/export/u_00000000">/api/export/&lt;user_ref&gt;</a> 는 됩니다.</p>')
 
 
-# ── 화면 4개 — E 가 채운다 ──────────────────────────────────────────
+# ── 화면 4개 ─────────────────────────────────────────────────────────
 @app.get("/")
 def index():
     """글 목록. 최신순 · 작성자 필터 · private 는 회색."""
+    author_id = request.args.get("author")
+    q = ("SELECT p.*, a.nickname, a.user_ref FROM posts p"
+         " JOIN authors a ON a.author_id = p.author_id")
+    args: list[str] = []
+    if author_id:
+        q += " WHERE p.author_id = ?"
+        args.append(author_id)
+    q += " ORDER BY p.created_at DESC LIMIT 200"
     try:
-        return render_template("list.html")
-    except Exception:
+        posts = db().execute(q, args).fetchall()
+        authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+        return render_template("list.html", posts=posts, authors=authors,
+                                selected_author=author_id)
+    except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 
 
 @app.get("/posts/<post_id>")
 def post(post_id: str):
+    p = db().execute(
+        "SELECT p.*, a.nickname, a.user_ref FROM posts p"
+        " JOIN authors a ON a.author_id = p.author_id"
+        " WHERE p.post_id = ?", (post_id,)).fetchone()
+    if p is None:
+        abort(404)
+    photos = db().execute(
+        "SELECT idx, caption FROM photos WHERE post_id = ? ORDER BY idx",
+        (post_id,)).fetchall()
     try:
-        return render_template("post.html", post_id=post_id)
-    except Exception:
+        return render_template("post.html", p=p, photos=photos)
+    except sqlite3.OperationalError:
         return _todo("글 본문", "§4")
 
 
 @app.get("/new")
 def new():
     """작성 화면. ⚠️ 작성시각을 직접 입력받는다 — howto §4."""
+    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+    now_kst = datetime.now(KST).strftime("%Y-%m-%dT%H:%M")
     try:
-        return render_template("new.html")
-    except Exception:
+        return render_template("new.html", authors=authors, now=now_kst)
+    except sqlite3.OperationalError:
         return _todo("글 작성", "§4")
+
+
+@app.post("/posts")
+def create_post():
+    """조치 시연의 재료가 되는 글을 여기서 만든다. source는 항상 'manual'이다 —
+    시딩(W4)이 넣는 글과 섞이지 않게 구분해 둔다."""
+    f = request.form
+    author_id = f["author_id"]
+    created_at = f["created_at"]
+    if len(created_at) == 16:          # <input type=datetime-local> 은 초가 없다
+        created_at += ":00"
+    created_at += "+09:00"
+
+    post_id = f"{author_id}_m{os.urandom(4).hex()}"
+    db().execute(
+        "INSERT INTO posts(post_id, author_id, title, body, created_at,"
+        " geo_tag, visibility, source) VALUES (?,?,?,?,?,?,'public','manual')",
+        (post_id, author_id, f.get("title") or None, f["body"], created_at,
+         f.get("geo_tag") or None))
+
+    captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
+    for idx, caption in enumerate(captions):
+        db().execute(
+            "INSERT INTO photos(post_id, idx, caption) VALUES (?,?,?)",
+            (post_id, idx, caption))
+
+    db().commit()
+    return redirect(f"/posts/{post_id}")
+
+
+@app.post("/posts/<post_id>/visibility")
+def toggle_visibility(post_id: str):
+    """조치 ③ 비공개 — 사용자가 '플랫폼에서' 실행한다. 분석기가 아니다.
+
+    분석기는 "이 글을 비공개하라"까지만 말하고, 실제로 누르는 건 여기다
+    (E-system.md §2 「조치를 누가 실행하나」). visibility 를 바꾸면 다음
+    /api/export 호출부터 이 글이 바로 빠진다 — 재스캔하면 위험도가 실제로
+    내려가는 걸 보여줄 수 있다.
+    """
+    row = db().execute(
+        "SELECT visibility, author_id FROM posts WHERE post_id = ?",
+        (post_id,)).fetchone()
+    if row is None:
+        abort(404)
+    new_v = "private" if row["visibility"] == "public" else "public"
+    db().execute(
+        "UPDATE posts SET visibility = ? WHERE post_id = ?", (new_v, post_id))
+    db().commit()
+
+    back = request.form.get("back") or f"/posts/{post_id}"
+    return redirect(back)
 
 
 @app.get("/u/<user_ref>")
 def profile(user_ref: str):
+    a = db().execute(
+        "SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
+    if a is None:
+        abort(404)
+    posts = db().execute(
+        "SELECT * FROM posts WHERE author_id = ? ORDER BY created_at DESC",
+        (a["author_id"],)).fetchall()
     try:
-        return render_template("profile.html", user_ref=user_ref)
-    except Exception:
+        return render_template("profile.html", a=a, posts=posts)
+    except sqlite3.OperationalError:
         return _todo("프로필", "§4")
 
 
