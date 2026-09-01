@@ -96,10 +96,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -157,6 +157,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서 (제목). 직업 성격(출장) 암시"
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "동호회 형님이 당진으로 이사하셔서 근처 저수지 탐색 다녀왔슴다..!!",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이사간 곳."
     }
   ],
   "ambient_plan": {

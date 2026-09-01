@@ -97,10 +97,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -157,6 +157,15 @@
       "level": "explicit",
       "subject": "self",
       "note": "본문 밖 단서 (프로필). 지명을 직접 언급하여 위치 노출. 본문 밖 단서 할당량 기여"
+    },
+    {
+      "post": "b29",
+      "text_id": "body",
+      "clue": "친한 동생이 양산으로 이사를 가서 오랜만에 얼굴 보고 왔다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이사간 곳."
     }
   ],
   "ambient_plan": {

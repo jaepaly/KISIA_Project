@@ -103,10 +103,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -163,6 +163,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서 (캡션). 랜드마크를 통한 위치 좁힘. 본문 밖 단서 할당량 충족"
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "clue": "고등학교 친구가 춘천으로 대학 가서 오랜만에 놀러감",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 거주지."
     }
   ],
   "ambient_plan": {

@@ -107,10 +107,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -168,6 +168,15 @@
       "level": "implicit",
       "subject": "self",
       "note": "본문 밖 단서 (제목). 직업과 위치 동시 노출"
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "친한 워홀러 동생이 멜버른으로 지역 이동해서 송별회 했다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이동 지역."
     }
   ],
   "ambient_plan": {
