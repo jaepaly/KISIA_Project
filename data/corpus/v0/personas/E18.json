@@ -56,6 +56,16 @@
       "ambiguous": false
     },
     {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "장유 쪽 넘어가다 들른 카페ㅇㅈ",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 「장유」는 scoring_keywords의 지역 명칭이라 같은 글(b02) 본문(율하)과 결합하면 김해가 좁혀진다",
+      "ambiguous": false
+    },
+    {
       "post": "b05",
       "text_id": "body",
       "attr": "occupation",
@@ -137,7 +147,7 @@
     "trap": "근무지형 — 언니의 이직지로 지명이 등장한다",
     "prohibited": "학력·정치성향·건강 단서 0건",
     "noise": "20편은 자취 생활·사무실 잡담 등",
-    "off_body": "profile_bio(게시 주기) 1채널"
+    "off_body": "photo_caption:0(b02, 위치) · profile_bio(게시 주기). 2채널"
   },
   "noise_topics": [
     "편의점 신상 먹어본 것",

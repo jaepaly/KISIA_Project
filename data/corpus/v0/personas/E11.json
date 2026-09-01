@@ -57,6 +57,16 @@
       "ambiguous": false
     },
     {
+      "post": "b02",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "충무교 야경 진짜 예쁘더라ㅎ",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 「충무」는 통영의 옛 지명(scoring_keywords)이라 같은 글(b02) 본문(한산도)과 결합하면 통영이 좁혀진다",
+      "ambiguous": false
+    },
+    {
       "post": "b05",
       "text_id": "body",
       "attr": "occupation",
@@ -149,7 +159,7 @@
     "income": "b17에서 매출 변동만 흘린다",
     "prohibited": "학력·정치성향·건강 단서 0건",
     "noise": "20편은 조황·배·날씨 잡담 등",
-    "off_body": "profile_bio(직업·취미) 1채널"
+    "off_body": "photo_caption:0(b02, 위치) · profile_bio(직업·취미). 2채널"
   },
   "noise_topics": [
     "오늘 조황이 어땠는지",

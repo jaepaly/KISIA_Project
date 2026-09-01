@@ -56,6 +56,16 @@
       "ambiguous": false
     },
     {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "작전역 우체국 나들이",
+      "note": "⭐ 본문 밖 단서 — 제목 채널. 같은 글(b02) 본문(작전역 근처 우체국)과 결합해 지역을 재확인시킨다",
+      "ambiguous": false
+    },
+    {
       "post": "b05",
       "text_id": "body",
       "attr": "occupation",
@@ -137,7 +147,7 @@
     "trap": "근무지형 — 형부의 이직지로 지명이 등장한다",
     "prohibited": "학력·정치성향·건강 단서 0건",
     "noise": "20편은 육아·공방 작업 잡담 등",
-    "off_body": "profile_bio(직업) 1채널"
+    "off_body": "title(b02, 위치) · profile_bio(직업). 2채널"
   },
   "noise_topics": [
     "아이 낮잠 안 잔 이야기",
