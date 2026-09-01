@@ -164,6 +164,16 @@
       "ambiguous": true
     },
     {
+    "post": "b06",
+    "text_id": "body",
+    "clue": "촬영 의뢰인이 천안 불당동에 새 매장을 열었다며 개업 사진을 부탁했다",
+    "attr": "location",
+    "level": "explicit",
+    "subject": "other",
+    "note": "⚠️ 함정 · 통로=개업 · 관계=① 타지명 (§4-4-1). 천안 불당동은 촬영 의뢰인의 새 매장 위치이며 화자의 현재 거주지가 아니다",
+    "ambiguous": false
+    },
+    {
       "post": "b18",
       "text_id": "body",
       "clue": "내일 촬영에 쓸 장비를 대전 둔산동 행사장으로 먼저 보냈다. 나는 아침에 합류한다",

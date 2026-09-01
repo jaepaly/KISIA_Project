@@ -164,9 +164,19 @@
       "ambiguous": true
     },
     {
+    "post": "b09",
+    "text_id": "body",
+    "clue": "대학 동기가 대구 수성구에서 열리는 모임에 간다며 사진을 보내왔다",
+    "attr": "location",
+    "level": "explicit",
+    "subject": "other",
+    "note": "⚠️ 함정 · 통로=행사·모임 · 관계=① 타지명 (§4-4-1). 대구 수성구는 대학 동기가 참석한 모임의 장소이며 화자의 현재 거주지가 아니다",
+    "ambiguous": false
+    },
+    {
       "post": "b18",
       "text_id": "body",
-      "clue": "한국에 잠깐 갔을 때 전주 효자동 전시장에서 새 차를 시승했구,,, 다시 청두로 돌아옴",
+      "clue": "한국에 잠깐 갔을 때 전주 효자동 전시장에서 새 차를 시승했구,,, 다시 집으로 돌아옴",
       "attr": "location",
       "level": "explicit",
       "subject": "self",

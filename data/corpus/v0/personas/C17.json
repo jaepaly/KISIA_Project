@@ -163,6 +163,16 @@
       "ambiguous": true
     },
     {
+      "post": "b06",
+      "text_id": "body",
+      "clue": "동기가 오송 쪽 품질팀으로 발령 나서 송별회를 했음",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=① 타지명 (§4-4-1). 오송은 동기의 새 근무지이며 화자의 현재 거주지가 아니다",
+      "ambiguous": false
+    },
+    {
       "post": "b18",
       "text_id": "body",
       "clue": "예전 회사는 판교에 있었음\n퇴사한 지 한참 됐는데 면접에서 그때 프로젝트를 또 물어봄",

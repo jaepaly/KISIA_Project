@@ -165,6 +165,16 @@
       "ambiguous": true
     },
     {
+    "post": "b09",
+    "text_id": "body",
+    "clue": "같이 일하던 선배가 순천 조례동으로 이사했다며 집들이 사진을 보내왔다",
+    "attr": "location",
+    "level": "explicit",
+    "subject": "other",
+    "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 순천 조례동은 선배가 이사한 곳이며 화자의 현재 거주지가 아니다",
+    "ambiguous": false
+    },
+    {
       "post": "b18",
       "text_id": "body",
       "clue": "내년에 세종 새롬동 쪽으로 옮길 수 있을지 아내와 이야기만 해봤다. 아직 정한 것은 없다",
