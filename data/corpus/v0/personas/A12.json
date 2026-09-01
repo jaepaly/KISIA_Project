@@ -1,0 +1,216 @@
+{
+  "id": "A12",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "뷰티샵 원장 워킹맘 (30대 초반 여성)",
+  "persona_type": "30대 여성 · 자영업(뷰티샵) 홍보 결합 + 워킹맘 육아 정보",
+  "card_ref": [
+    "S5"
+  ],
+  "card_binding": {
+    "S5": [
+      "종결어미",
+      "이모지"
+    ],
+    "—": [
+      "글길이",
+      "문장길이",
+      "줄바꿈",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "brow_n_mom",
+    "nickname": "지아맘원장",
+    "profile_intro": "샵 운영과 육아 기록",
+    "joined": "2021-05",
+    "typical_active_hours": "밤 11시 이후 (육퇴 후)"
+  },
+  "voice": {
+    "종결어미": "존댓말 정보 공유체 (~해요 / ~습니다). 워킹맘의 따뜻함과 미안함이 섞인 정서",
+    "글길이": "평균 1000자 내외",
+    "문장길이": "평균 30자. 친절하게 설명하듯 길게 풀어 씀",
+    "이모지": "절제. 'ㅎㅎ', 'ㅠㅠ', '^^'를 글당 2~3회 사용",
+    "줄바꿈": "문장 단위로 줄바꿈. 모바일 가독성을 신경 씀",
+    "오타율": "없음. 맞춤법을 잘 지키는 문어체",
+    "말버릇": "글 끝에 항상 샵 예약/문의 안내 멘트를 남김. 빈도는 2편에 1회",
+    "제목": "정보성 및 서술형 15~20자"
+  },
+  "noise_topics": [
+    "유행하는 편의점 과자 리뷰",
+    "거실 매트 물청소 한 날",
+    "밤에 넷플릭스 정주행",
+    "남편과 야식 시켜 먹은 이야기",
+    "배달 앱 VIP 달성한 날",
+    "비 오는 날 제습기 돌리기",
+    "베란다 화분 분갈이",
+    "안 입는 오래된 옷 수거함 정리",
+    "커피 머신 세척 알림 뜬 날",
+    "택배 언박싱",
+    "밤에 잠 안 와서 한 충동구매",
+    "냉장고 파먹기 요리",
+    "여름 침구로 교체한 날",
+    "세탁기 통세척 돌리기",
+    "핸드폰 사진 용량 정리"
+  ],
+  "ground_truth": {
+    "age": 33,
+    "sex": "F",
+    "location": "경기도 성남시 분당구 정자동",
+    "occupation": "뷰티샵(반영구/속눈썹) 원장",
+    "family": "기혼, 0세 자녀 1명",
+    "commute": "자차",
+    "income": "중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "33",
+      "30대",
+      "서른셋"
+    ],
+    "sex": [
+      "남편",
+      "워킹맘",
+      "엄마"
+    ],
+    "location": [
+      "성남",
+      "분당",
+      "정자동",
+      "탄천"
+    ],
+    "occupation": [
+      "원장",
+      "뷰티샵",
+      "예약",
+      "시술",
+      "반영구"
+    ],
+    "family": [
+      "기혼",
+      "0세",
+      "돌",
+      "아기",
+      "남편",
+      "어린이집"
+    ],
+    "commute": [
+      "자차",
+      "운전",
+      "주차"
+    ],
+    "income": [
+      "정기권",
+      "회원권",
+      "VIP"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "서른셋 되니까 조금만 서 있어도 체력이 뚝뚝 떨어지네요 ㅠㅠ",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "clue": "남편이 아기 첫돌 준비를 많이 도와줬어요 ^^",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "배우자 호칭(SEX). 화자의 성별과 가족 구성/자녀 생애단계를 동시에 노출. SEX 할당량 충족"
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "clue": "오늘 샵에 반영구 예약 손님이 꽉 차서 점심도 못 먹었네요 ㅎㅎ",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "업종(뷰티샵) 및 직무 노출"
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "clue": "샵 마감하고 퇴근하는 길에 탄천 쪽 걸으니 시원해요~",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "직장 관계어(퇴근하는 길) + 지역 랜드마크. REL_WORK 할당량 충족"
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "clue": "이번 달도 피부과 정기권 끊어둔 거 겨우 다녀왔습니다",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "브랜드나 금액을 쓰지 않은 소비 수준 신호. INCOME 할당량 충족"
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "clue": "어린이집 등원 시간 맞추느라 매일 아침이 전쟁입니다",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "ambiguous": true,
+      "note": "설계 의도는 자녀. 주체(누가 다니는지)를 명시하는 표지가 없어 unknown 판독 기대. ambiguous 할당량 충족"
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "clue": "친한 원장님이 삼평동에 2호점을 내셔서 오픈 축하 겸 다녀왔어요",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ③ 상위일치 · 개업형. GT(분당구 정자동)와 같은 구, 다른 동. 모델의 해상도 판별을 유도"
+    },
+    {
+      "post": "b12",
+      "text_id": "photo_caption:0",
+      "clue": "시술 베드 정리 끝내고",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "note": "본문 밖 단서 (캡션). 샵 마감을 암시. 본문 밖 단서 할당량 충족"
+    },
+    {
+      "post": "b07",
+      "text_id": "title",
+      "clue": "벌써 첫돌 준비를 하다니",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "note": "S11 형식 서술형 제목. 본문 밖 단서 할당량 충족"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b10",
+      "b18",
+      "b24"
+    ],
+    "design": "정자동·탄천 인근 상권 방문기. 개별 글은 무해하지만 집계 시 특정 동 단위로 거주 및 생활권이 좁혀짐.",
+    "ref_card": "S6 · S10"
+  },
+  "design_note": {
+    "card_binding": "S5 한 장을 참조한다. 존댓말과 이모지 절제는 카드를 따르며 나머지는 인물이 지정했다.",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}

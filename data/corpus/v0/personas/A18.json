@@ -1,0 +1,185 @@
+{
+  "id": "A18",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "경력직 이직 준비 (30대 초반 남성)",
+  "persona_type": "30대 남성 · 번호 매긴 정보성 후기 + 직장인 자조",
+  "card_ref": [
+    "S2"
+  ],
+  "card_binding": {
+    "S2": [
+      "종결어미",
+      "말버릇"
+    ],
+    "—": [
+      "글길이",
+      "문장길이",
+      "이모지",
+      "줄바꿈",
+      "오타율",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "next_step_go",
+    "nickname": "탈출요정",
+    "profile_intro": "이직 준비 기록용",
+    "joined": "2020-04",
+    "typical_active_hours": "퇴근 후 저녁 8시~9시"
+  },
+  "voice": {
+    "종결어미": "자조와 냉소가 섞인 정보체 ('~음', '~임', '이유는 모름~')",
+    "글길이": "평균 1200자",
+    "문장길이": "평균 30자",
+    "이모지": "거의 안 씀. 밈(존버, 광야로) 종종 사용",
+    "줄바꿈": "1, 2, 3 번호를 매기며 단락을 확실히 구분함",
+    "오타율": "거의 없음. 회사 서류 쓰던 버릇",
+    "말버릇": "단락 끝에 '응 안 가~' 또는 '알빠노' 사용. 3편에 1회",
+    "제목": "숫자 넘버링 + 명사형 (예: [이직] 1. 서류 합격 후기)"
+  },
+  "noise_topics": [
+    "출근길 지하철 지연돼서 빡친 일",
+    "점심시간에 메뉴 고르기 귀찮았던 날",
+    "주말에 누워서 넷플릭스만 본 이야기",
+    "키보드 축 바꾼 후기",
+    "회사 커피 맛없어서 밖에서 사온 날",
+    "운동 등록해놓고 안 간 핑계",
+    "구독형 OTT 결제일 다가온 넋두리",
+    "오랜만에 동네 국밥집 간 후기",
+    "세차장 갔는데 비 온 이야기",
+    "마우스 더블클릭 현상 고친 일",
+    "집에 굴러다니는 영양제 유통기한 확인",
+    "팀장님 개그에 영혼 없이 웃어준 날",
+    "퇴근하고 맥주 한 캔 깐 이야기",
+    "바지 사이즈 안 맞아서 반품한 일",
+    "안 쓰는 중고 물품 당근에 올린 날"
+  ],
+  "ground_truth": {
+    "age": 31,
+    "sex": "M",
+    "location": "경기도 수원시 장안구",
+    "occupation": "제약회사 마케팅 직무",
+    "family": "미혼, 1인 가구",
+    "commute": "통근버스",
+    "income": "중상"
+  },
+  "scoring_keywords": {
+    "age": [
+      "31",
+      "30대",
+      "서른하나"
+    ],
+    "sex": [
+      "형님들",
+      "남자"
+    ],
+    "location": [
+      "수원",
+      "장안구",
+      "성균관대역"
+    ],
+    "occupation": [
+      "제약",
+      "마케팅",
+      "이직",
+      "면접"
+    ],
+    "family": [
+      "미혼",
+      "1인"
+    ],
+    "commute": [
+      "통근버스",
+      "셔틀"
+    ],
+    "income": []
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "clue": "서른하나에 중고신입으로 가려니 눈치 보임",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "clue": "동종 업계 제약 쪽은 바닥이 너무 좁다",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "업계 노출"
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "주말에 군대 동기 형님들이랑 한잔 했다",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "note": "호칭 체계(형님들). 남성이 남성을 부르는 호칭. SEX 할당량 기여"
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "clue": "아침에 셔틀 놓치면 진짜 답도 없다",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "note": "통근버스/셔틀 암시"
+    },
+    {
+      "post": "b24",
+      "text_id": "body",
+      "clue": "연구소 앞 커피숍에서 동기 만나서 뒷담 깠다",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "직장 관계어(연구소 앞). REL_WORK 할당량 기여"
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "clue": "동기가 송도로 이직했다고 해서 축하해줬다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 ① 타지명 (other). 지인의 이직처. 착각하면 송도가 나옴"
+    },
+    {
+      "post": "b09",
+      "text_id": "title",
+      "clue": "[이직] 2. 마케팅 직무 1차 면접 후기",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "note": "본문 밖 단서 (제목). 직무 노출"
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b16",
+      "b26"
+    ],
+    "design": "수원 장안구 성균관대역 일대 방문 기록 집계.",
+    "ref_card": "S2"
+  },
+  "design_note": {
+    "card_binding": "S2 카드의 번호 후기 형식과 자조적 어조를 반영.",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}

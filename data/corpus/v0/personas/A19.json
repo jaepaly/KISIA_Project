@@ -1,0 +1,181 @@
+{
+  "id": "A19",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "맛집/상품 리뷰어 (30대 후반 여성)",
+  "persona_type": "30대 여성 · 대량 맛집 리뷰 + 협찬 리뷰체",
+  "card_ref": [
+    "S6"
+  ],
+  "card_binding": {
+    "S6": [
+      "종결어미",
+      "이모지",
+      "줄바꿈"
+    ],
+    "—": [
+      "글길이",
+      "문장길이",
+      "오타율",
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "review_queen",
+    "nickname": "리뷰요정",
+    "profile_intro": "협찬 문의는 쪽지로",
+    "joined": "2018-09",
+    "typical_active_hours": "매일 낮 12시~1시 (점심시간)"
+  },
+  "voice": {
+    "종결어미": "협찬 블로거 특유의 애교체 ('~용', '~당', '~했어용')",
+    "글길이": "평균 1500자",
+    "문장길이": "평균 15자. 한 줄에 2~4어절씩 끊어 씀",
+    "이모지": "이모지(💪🏻🩵☺️👍) 떡칠 수준",
+    "줄바꿈": "모바일 가독성을 위해 한 줄 쓰고 무조건 줄바꿈",
+    "오타율": "없음",
+    "말버릇": "글 마지막에 항상 '추천드려용~' 반복. 2편에 1회",
+    "제목": "지역명 + 상호 + 메뉴 (검색 노출 최적화 구조)"
+  },
+  "noise_topics": [
+    "신상 립스틱 발색 리뷰",
+    "다이소 청소템 내돈내산 후기",
+    "점심시간에 산책하다가 예쁜 꽃 본 일",
+    "핸드크림 보습력 비교",
+    "퇴근길에 들른 올리브영 털이",
+    "회사 탕비실 간식 추천",
+    "비 오는 날 쓰기 좋은 우산 리뷰",
+    "무선 충전기 샀는데 고장 난 이야기",
+    "요즘 유행하는 디저트 먹어본 후기",
+    "샴푸 다 써서 새로 산 일",
+    "책상 앞 미니 가습기 리뷰",
+    "회사 동료가 준 간식 자랑",
+    "노트북 파우치 새로 산 후기",
+    "편의점 신상 라면 리뷰",
+    "블루투스 마우스 끊김 현상 해결법"
+  ],
+  "ground_truth": {
+    "age": 38,
+    "sex": "F",
+    "location": "인천광역시 연수구 송도동",
+    "occupation": "중소기업 사무직",
+    "family": "기혼, 자녀 2명",
+    "commute": "자차",
+    "income": "중하"
+  },
+  "scoring_keywords": {
+    "age": [
+      "38",
+      "30대",
+      "서른여덟"
+    ],
+    "sex": [
+      "여자",
+      "엄마"
+    ],
+    "location": [
+      "인천",
+      "연수구",
+      "송도",
+      "센트럴파크"
+    ],
+    "occupation": [
+      "사무직",
+      "사무실",
+      "직장인"
+    ],
+    "family": [
+      "기혼",
+      "자녀",
+      "2명"
+    ],
+    "commute": [
+      "자차",
+      "주차"
+    ],
+    "income": [
+      "원고료",
+      "협찬"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 21,
+    "ambient": 4,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "B안(개별 무해 기준)"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "clue": "서른여덟 되니까 확실히 피부 탄력이 다르네용 ㅠㅠ",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "note": "명시 단서"
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "clue": "요즘 블로그 원고료 들어오는 쏠쏠한 재미가 있어용 ㅎㅎ",
+      "attr": "income",
+      "level": "implicit",
+      "subject": "self",
+      "note": "소득을 암시하는 수입원(원고료). INCOME 할당량 기여"
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "clue": "큰애가 요새 자꾸 편식을 해서 걱정이네용 🥲",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "ambiguous": true,
+      "note": "설계 의도는 자녀(큰애). 문장만으로는 큰애가 자녀인지 반려견인지 확정 불가 → unknown 판독 기대. ambiguous 할당량 기여"
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "clue": "사무실 앞 카페 사장님이 빵을 서비스로 주셨어용 👍",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "직장 관계어(사무실 앞). REL_WORK 할당량 기여"
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "clue": "본가인 창원에 내려가면 꼭 먹는 국밥집이 있어용",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "self",
+      "note": "⚠️ 함정 ⑤ 출신지형. 현 거주지가 아님을 명시."
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "clue": "송도 직장인의 맛집 털이",
+      "attr": "location",
+      "level": "inferential",
+      "subject": "self",
+      "note": "본문 밖 단서 (프로필). 위치와 직업 동시 노출."
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b08",
+      "b14",
+      "b25"
+    ],
+    "design": "송도 센트럴파크 인근 맛집/카페 집중 리뷰. 생활권 교집합 특정.",
+    "ref_card": "S6"
+  },
+  "design_note": {
+    "card_binding": "S6 카드의 전형적인 모바일 짧은 줄바꿈과 이모지 남발을 적용함.",
+    "prohibited": "학력·학교·전공·정치성향·건강·지적 수준 단서 0건"
+  }
+}
