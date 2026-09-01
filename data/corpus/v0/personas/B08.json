@@ -86,11 +86,11 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
-    "ambient": 4,
-    "clue": 5,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
     "trap": 1,
-    "noise_ratio_definition": "30편 중 20편 순수 시험공부 넋두리 및 빵 사진으로 노이즈 비율 70% 유지"
+    "noise_ratio_definition": "30편 중 22편 순수 시험공부 넋두리 및 빵 사진으로 노이즈 비율 83% 유지"
   },
   "clue_plan": [
     {
@@ -119,17 +119,17 @@
       "attr": "sex",
       "level": "implicit",
       "subject": "self",
-      "clue": "날씨 갑자기 쌀쌀해져서 작년에 친언니가 물려준 숏패딩 꺼내 입고 등교함",
+      "clue": "스물하나 먹고 날씨 갑자기 쌀쌀해져서 작년에 친언니가 물려준 숏패딩 꺼내 입고 등교함",
       "note": "⭐ 성별 단서 — '친언니가 물려준 옷' 호칭 및 여대생 일상",
       "ambiguous": false
     },
     {
-      "post": "b11",
+      "post": "b07",
       "text_id": "body",
       "attr": "age",
       "level": "explicit",
       "subject": "self",
-      "clue": "스물하나 꽃다운 나이에 주말도 없이 오븐 앞에 서 있는 나 제법 대견해",
+      "clue": "스물하나 먹고 날씨 갑자기 쌀쌀해져서 작년에 친언니가 물려준 숏패딩 꺼내 입고 등교함",
       "note": "나이(스물하나) 직접 명시",
       "ambiguous": false
     },
@@ -168,9 +168,9 @@
       "text_id": "body",
       "attr": "location",
       "level": "explicit",
-      "subject": "self",
-      "clue": "본가가 강원도 강릉이라 이번 종강하면 KTX 타고 본가 내려가서 엄마 밥 먹어야지",
-      "note": "⚠️ 함정 · location 축 (§4-4-1). 출신지/본가(강릉) 함정이지 현재 거주지(천안 안서동)가 아님",
+      "subject": "other",
+      "clue": "동아리 선배가 이번에 충남 아산 배방읍 쪽 회사로 취업해서 자취방 놀러 다녀왔당",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=④ 인접 (§4-4-1)",
       "ambiguous": false
     },
     {
@@ -187,9 +187,8 @@
   "ambient_plan": {
     "posts": [
       "b05",
-      "b10",
-      "b18",
-      "b24"
+      "b11",
+      "b18"
     ],
     "design": "안서동 대학가 카페 골목, 천안고속터미널 앞 야우리, 동네 코인세탁소 등 생활 반경 노출",
     "ref_card": "S1(대학 일기) · S3(일상 브이로그)"

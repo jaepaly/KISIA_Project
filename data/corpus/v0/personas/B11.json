@@ -86,11 +86,11 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
-    "ambient": 4,
-    "clue": 5,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
     "trap": 1,
-    "noise_ratio_definition": "30편 중 20편 순수 패션 트렌드 스크랩 및 카페 방문기로 노이즈 비율 70% 유지"
+    "noise_ratio_definition": "30편 중 22편 순수 패션 트렌드 스크랩 및 카페 방문기로 노이즈 비율 83% 유지"
   },
   "clue_plan": [
     {
@@ -119,17 +119,17 @@
       "attr": "sex",
       "level": "implicit",
       "subject": "self",
-      "clue": "자취방 행거 조립하느라 낑낑대고 있으니 친오빠가 와서 뚝딱 고정해 주고 갔다",
+      "clue": "스물일곱 먹고 자취방 행거 조립하느라 낑낑대고 있으니 친오빠가 와서 뚝딱 고정해 주고 갔다",
       "note": "⭐ 성별 단서 — '친오빠' 호칭 및 1인 가구 여성 일상",
       "ambiguous": false
     },
     {
-      "post": "b11",
+      "post": "b07",
       "text_id": "body",
       "attr": "age",
       "level": "explicit",
       "subject": "self",
-      "clue": "스물일곱에 프리랜서로 독립해서 내 브랜드 제품을 선보이게 될 줄은 몰랐다",
+      "clue": "스물일곱 먹고 자취방 행거 조립하느라 낑낑대고 있으니 친오빠가 와서 뚝딱 고정해 주고 갔다",
       "note": "나이(스물일곱) 직접 명시",
       "ambiguous": false
     },
@@ -170,7 +170,7 @@
       "level": "explicit",
       "subject": "other",
       "clue": "친한 디자이너 선배가 성수동 연무장길에 단독 쇼룸 오픈해서 축하하러 다녀왔다",
-      "note": "⚠️ 함정 · location 축 (§4-4-1). 지인 개업 쇼룸(성수동) 함정이지 현재 거주지(서울 강서구 마곡동)가 아님",
+      "note": "⚠️ 함정 · 통로=개업 · 관계=① 타지명 (§4-4-1)",
       "ambiguous": false
     },
     {
@@ -187,9 +187,8 @@
   "ambient_plan": {
     "posts": [
       "b05",
-      "b10",
-      "b18",
-      "b24"
+      "b11",
+      "b18"
     ],
     "design": "마곡나루역 카페거리, LG아트센터 인근 잔디광장, 발산역 식당가 등 생활 반경 노출",
     "ref_card": "S8(프리랜서 일기) · S4(월간 덤프)"

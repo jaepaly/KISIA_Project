@@ -1,0 +1,224 @@
+{
+  "id": "B15",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "순천만 텃밭 가꾸는 시니어 (64세 여성)",
+  "persona_type": "60대 중반 기혼 여성 · 순천 해룡면 거주 · 전업주부 및 텃밭 농사 · 시골 일상 및 계절 나눔 기록",
+  "card_ref": [
+    "S13",
+    "S10"
+  ],
+  "card_binding": {
+    "S10": [
+      "줄바꿈",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "suncheon_garden_64",
+    "nickname": "순천만해룡댁",
+    "profile_intro": "순천만 자락 해룡면에서 텃밭 가꾸는 예순넷 할머니의 시골 일기.",
+    "joined": "2023-03",
+    "typical_active_hours": "06:00~07:30 (텃밭 물주기 전), 20:00~21:30"
+  },
+  "voice": {
+    "종결어미": "~다 / ~었다 평서형과 ~했네요 부드러운 회고체",
+    "이모지": "괄호 · 말줄임(…) · 느낌표(!) 적극 사용 및 ^^ 표정. 글당 1~2개",
+    "문장길이": "평균 35자. 최소 12자 ~ 최대 65자. 차분하고 정감 있는 문체",
+    "줄바꿈": "로컬 텃밭 사진별 단락 구분 및 문단 사이 빈 줄 1개",
+    "오타율": "있음. 연속 공백 2~3칸 및 타자 오타 가끔",
+    "말버릇": "문장 첫머리에 '어느새', '오늘 아침엔'. 문장 끝에 '참 감사한 날들이다'",
+    "제목": "로컬 일상 및 계절 밥상형 12~18자 ('[해룡텃밭] 가을 배추 모종 심기와 열무김치 담근 날')"
+  },
+  "ground_truth": {
+    "age": 64,
+    "sex": "F",
+    "location": "전남광주통합특별시 순천시 해룡면",
+    "occupation": "전업주부",
+    "family": "기혼, 성인 자녀 분가, 남편과 2인 가구",
+    "commute": "도보 및 면내 마을버스",
+    "income": "중간 — 부부 국민연금 및 기초연금"
+  },
+  "scoring_keywords": {
+    "age": [
+      "예순넷",
+      "64",
+      "60대 중반",
+      "할머니"
+    ],
+    "sex": [
+      "친정 언니",
+      "할머니",
+      "시누이",
+      "큰딸"
+    ],
+    "location": [
+      "순천",
+      "해룡면",
+      "순천만",
+      "신대리",
+      "농협"
+    ],
+    "occupation": [
+      "주부",
+      "텃밭",
+      "배추",
+      "모종",
+      "나물"
+    ],
+    "family": [
+      "남편",
+      "큰딸",
+      "손주",
+      "시누이"
+    ],
+    "commute": [
+      "도보",
+      "마을버스",
+      "경운기"
+    ],
+    "income": [
+      "국민연금",
+      "기초연금",
+      "생활비"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 19편 순수 텃밭 채소 사진 및 날씨 일기로 노이즈 비율 77% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "올해로 예순넷이 되고 보니 흙 만지는 시간이 가장 편안하다",
+      "note": "나이(예순넷) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "title",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "예순넷의 가을 텃밭",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "친정 언니가 보내준 들기름으로 겉절이를 맛있게 무쳤다",
+      "note": "⭐ 성별 단서 — '친정 언니' 호칭 사용 여성",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "남편이랑 둘이 매달 나오는 국민연금 140만원으로 소박하게 생활비 쪼개 쓴다",
+      "note": "⭐ 소득 단서 — 부부 합산 국민연금 수령액 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오후에 텃밭에서 갓 뽑은 조선배추 겉잎 다듬어서 솥에 데쳐 놓았다",
+      "note": "텃밭 농사 및 채소 손질을 통한 주부/텃밭 가꾸기 일상 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "해룡면 농협 하나로마트 들러서 비료 두 포대 사서 경운기에 실었다",
+      "note": "거주지 생활권(순천시 해룡면) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "해룡면 들녘의 가을 노을",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b23",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "서울 사는 큰딸네가 손주 데리고 주말에 내려온다 해서 장을 봤다",
+      "note": "분가한 큰딸과 손주 가족 관계 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "시누이가 지난달에 전주 효자동 새 아파트로 이사해서 집들이 겸 다녀왔다",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "순천만 자락 해룡면에서 텃밭 가꾸는 예순넷 할머니의 시골 일기.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b11",
+      "b17",
+      "b25"
+    ],
+    "design": "해룡천 둑방길 산책, 순천만 갯벌 풍경, 동네 복지회관 나들이 등 시골 정경 노출",
+    "ref_card": "S13(시니어 여성 일기) · S10(로컬 음식 블로그)"
+  },
+  "design_note": {
+    "location": "b18 본문(해룡면 농협)과 캡션으로 순천시 해룡면 생활권 도출",
+    "sex": "b08의 '친정 언니' 호칭을 통해 성별 단서 명확히 부여",
+    "income": "b13의 부부 국민연금 140만원을 통해 시니어 연금 소득 수준 제시",
+    "trap": "b28 시누이의 이사처(전주 효자동) 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "S13과 S10 바인딩으로 60대 시니어 여성의 정겨운 일상체 구현"
+  },
+  "noise_topics": [
+    "텃밭 열무 솎아내기",
+    "장독대 된장 항아리 닦기",
+    "아침 이슬 맺힌 호박꽃",
+    "동네 이웃과 나눈 고구마순",
+    "비 온 뒤 순천만 갈대밭",
+    "마을 회관 윷놀이 소회",
+    "마당 평상에서 마시는 냉보리차",
+    "가을 무 파종 준비"
+  ]
+}

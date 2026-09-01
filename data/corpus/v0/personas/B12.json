@@ -86,11 +86,11 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
+    "noise": 19,
     "ambient": 4,
-    "clue": 5,
+    "clue": 6,
     "trap": 1,
-    "noise_ratio_definition": "30편 중 20편 순수 낚시 조과 사진 및 장비 정비 이야기로 노이즈 비율 70% 유지"
+    "noise_ratio_definition": "30편 중 19편 순수 낚시 조과 사진 및 장비 정비 이야기로 노이즈 비율 77% 유지"
   },
   "clue_plan": [
     {
@@ -144,6 +144,16 @@
       "ambiguous": false
     },
     {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 딸아이 내외가 손주 데리고 집에 온다 캐서 방파제에서 감성돔 몇 마리 잡아뒀심더",
+      "note": "기혼 및 사위/손주 가족 구성 단서",
+      "ambiguous": false
+    },
+    {
       "post": "b22",
       "text_id": "body",
       "attr": "location",
@@ -168,9 +178,9 @@
       "text_id": "body",
       "attr": "location",
       "level": "explicit",
-      "subject": "self",
-      "clue": "본가가 포항 구룡포라 주말에 제철 과메기 한 박스 가지러 동해안 국도 타고 댕겨왔네예",
-      "note": "⚠️ 함정 · location 축 (§4-4-1). 출신지/본가(포항 구룡포) 함정이지 현재 거주지(울산 온산읍)가 아님",
+      "subject": "other",
+      "clue": "현장 동료가 부산 기장군 장안읍 공단으로 이직해서 축하 저녁 먹으러 국도 타고 댕겨왔네예",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=④ 인접 (§4-4-1)",
       "ambiguous": false
     },
     {

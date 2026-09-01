@@ -86,11 +86,11 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
+    "noise": 19,
     "ambient": 4,
-    "clue": 5,
+    "clue": 6,
     "trap": 1,
-    "noise_ratio_definition": "30편 중 20편 순수 채용 칼럼 넋두리 및 주말 아이들과의 일상으로 노이즈 비율 70% 유지"
+    "noise_ratio_definition": "30편 중 19편 순수 채용 칼럼 넋두리 및 주말 아이들과의 일상으로 노이즈 비율 77% 유지"
   },
   "clue_plan": [
     {
@@ -168,9 +168,19 @@
       "text_id": "body",
       "attr": "location",
       "level": "explicit",
+      "subject": "other",
+      "clue": "대학 동기가 이번에 용인 기흥구 서농동 연구소로 이직해서 퇴근 후 기흥역 앞에서 만나 저녁을 먹었다",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=④ 인접 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
       "subject": "self",
-      "clue": "이전 직장이 판교 테크노밸리라 옛 동료들 만날 때마다 분당 쪽으로 약속을 잡게 된다",
-      "note": "⚠️ 함정 · location 축 (§4-4-1). 이전 직장 소재지(판교/분당) 함정이지 현재 거주지(수원 영통구)가 아님",
+      "clue": "주말에 아내랑 두 아들 녀석 데리고 광교호수공원 산책 다녀왔다",
+      "note": "기혼 및 두 아들 가족 구성 단서",
       "ambiguous": false
     },
     {

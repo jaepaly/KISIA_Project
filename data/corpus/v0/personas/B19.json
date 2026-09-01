@@ -1,0 +1,218 @@
+{
+  "id": "B19",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "전주 공기업 취준생 청년 (25세 남성)",
+  "persona_type": "20대 중반 미혼 남성 · 전주 덕진 금암동 거주 · 공기업 사무직 취업준비생 · 필기시험 준비 및 스터디 일상 덤프",
+  "card_ref": [
+    "S2"
+  ],
+  "account": {
+    "blog_id": "jeonju_job_25",
+    "nickname": "금암동취준러",
+    "profile_intro": "전주 금암동에서 공기업 취뽀를 노리는 25세 취준생의 기록.",
+    "joined": "2024-02",
+    "typical_active_hours": "00:00~01:00 (독서실 퇴실 후), 12:30~13:30"
+  },
+  "voice": {
+    "종결어미": "~함/~음 냉소적 정보체와 ~다 서술형 혼용. 자조적이고 솔직한 톤",
+    "이모지": "줄표(—)와 느낌표, ㅠㅠ, ㅎㅎ 적절히 사용. 글당 1~2개",
+    "문장길이": "평균 26자. 최소 8자 ~ 최대 55자. 직관적이고 거침없는 문장",
+    "줄바꿈": "번호 매긴 요약(1., 2.) 및 문단 사이 빈 줄 1개",
+    "오타율": "글당 0~1건. 인터넷 취준 밈('서류탈', 'NCS', '인적성', '존버') 혼용",
+    "말버릇": "문장 첫머리에 '솔직히', '오늘 필기시험은'. 문장 끝에 '응 다음 회사 쓰면 됨', '존버 승리'",
+    "제목": "취준 리포트 및 시험 후기형 12~20자 ('[NCS후기] 하반기 전력공기업 필기시험 복기와 오답노트 정리')"
+  },
+  "ground_truth": {
+    "age": 25,
+    "sex": "M",
+    "location": "전북특별자치도 전주시 덕진구 금암동",
+    "occupation": "취업준비생",
+    "family": "미혼, 본가 거주 (부모님과 동거)",
+    "commute": "시내버스 및 도보",
+    "income": "낮음 — 주말 독서실 총무 알바비 및 부모님 지원"
+  },
+  "scoring_keywords": {
+    "age": [
+      "스물다섯",
+      "25",
+      "20대 중반"
+    ],
+    "sex": [
+      "누나",
+      "취준생",
+      "남동생",
+      "형"
+    ],
+    "location": [
+      "전주",
+      "금암동",
+      "덕진구",
+      "시외버스터미널",
+      "전북대 구정문"
+    ],
+    "occupation": [
+      "취업준비생",
+      "NCS",
+      "필기시험",
+      "인적성",
+      "스터디카페",
+      "모의고사",
+      "인강"
+    ],
+    "family": [
+      "부모님",
+      "누나",
+      "본가"
+    ],
+    "commute": [
+      "시내버스",
+      "도보",
+      "터미널"
+    ],
+    "income": [
+      "알바비",
+      "총무",
+      "인강 패스",
+      "용돈"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 19편 순수 독서실 책상, 편의점 간식, 스터디 플레이리스트 사진으로 노이즈 비율 77% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "하반기 공기업 서류 접수 5군데 끝내고 NCS 기본서 2회독 스터디 완료함",
+      "note": "NCS 기본서 및 공기업 서류 접수를 통한 취준생 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "하반기 서류 5승 달성",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "누나가 취준 스트레스 받는다고 치킨 사주면서 힘내라고 용돈 쥐여줌",
+      "note": "⭐ 성별 단서 — '누나' 호칭 사용 남성",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "스물다섯에 먼저 입사하는 친구들 보면서 조급해하지 말고 내 페이스 유지하자",
+      "note": "나이(스물다섯) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "퇴근한 부모님이랑 본가 거실에서 같이 저녁 먹으며 하루 마무리함",
+      "note": "본가 거주 및 부모님 동거 가족 관계 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "주말 독서실 총무 알바비 월 30만원 받은 거로 인강 패스 결제 끝냄",
+      "note": "⭐ 소득 단서 — 독서실 총무 알바비 및 인강 결제 수준 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b23",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "금암동 시외버스터미널 뒤편 스터디카페에서 밤 11시까지 문제 풀고 귀가",
+      "note": "거주지 생활권(전주시 금암동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b23",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "금암동 스터디카페 열람실",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b28",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "필기시험 장소가 전남광주통합특별시 북구 용봉동이라 새벽 기차 타고 시험 치러 다녀옴",
+      "note": "⚠️ 함정 · 통로=행사·모임 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "전주 금암동에서 공기업 취뽀를 노리는 25세 취준생의 기록.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b11",
+      "b17",
+      "b25"
+    ],
+    "design": "금암동 분수대 근처 산책, 덕진공원 연화교 야경, 시외터미널 앞 토스트집 등 생활 반경 노출",
+    "ref_card": "S2(이직·취준 후기)"
+  },
+  "design_note": {
+    "location": "b23 본문(금암동 시외터미널)과 캡션으로 전주시 금암동 생활권 제시",
+    "sex": "b09 누나 호칭을 통해 남성 성별 단서 명확화",
+    "income": "b18 독서실 총무 알바비 30만원 및 인강 결제로 청년 소득 수준 제시",
+    "trap": "b28 필기시험장(광주 북구 용봉동) 행사·모임 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "S2 단일 카드로 20대 중반 취준생의 솔직하고 직관적인 정보 후기체 구현"
+  },
+  "noise_topics": [
+    "독서실 스톱워치 타임랩스 기록",
+    "스터디카페 무료 간식 바 과자 리뷰",
+    "새로 산 무소음 마우스 언박싱",
+    "주말 저녁 본가 집밥 삼겹살 파티",
+    "덕진공원 밤 산책과 힐링 음악",
+    "취준 스트레스 날리는 매운 떡볶이",
+    "오답노트 정리 바인더 색상 추천",
+    "비 오는 날 아침 도서관 창가 자리"
+  ]
+}

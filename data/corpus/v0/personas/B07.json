@@ -33,7 +33,7 @@
   "ground_truth": {
     "age": 48,
     "sex": "M",
-    "location": "광주광역시 광산구 첨단동",
+    "location": "전남광주통합특별시 광산구 첨단동",
     "occupation": "정밀 금형 가공 업체 대표",
     "family": "기혼, 중고생 자녀 2명",
     "commute": "1톤 트럭 자가운전",
@@ -87,11 +87,11 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
+    "noise": 19,
     "ambient": 4,
-    "clue": 5,
+    "clue": 6,
     "trap": 1,
-    "noise_ratio_definition": "30편 중 20편 순수 기계 가공 사진 및 동네 식당 후기로 노이즈 비율 70% 유지"
+    "noise_ratio_definition": "30편 중 19편 순수 기계 가공 사진 및 동네 식당 후기로 노이즈 비율 77% 유지"
   },
   "clue_plan": [
     {
@@ -145,6 +145,16 @@
       "ambiguous": false
     },
     {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "퇴근길에 1톤 포터 트럭 몰고 임방울대로 지나오는데 퇴근 차량이 꽤 밀렸다",
+      "note": "1톤 트럭 통근 및 임방울대로 통근 경로 단서",
+      "ambiguous": false
+    },
+    {
       "post": "b22",
       "text_id": "body",
       "attr": "location",
@@ -171,7 +181,7 @@
       "level": "explicit",
       "subject": "other",
       "clue": "창원 성산구 국가산단 거래처에 시제품 긴급 납품하느라 새벽부터 고속도로 달렸네",
-      "note": "⚠️ 함정 · location 축 (§4-4-1). 거래처 납품 출장지(창원 성산구)이지 본인 거주지(광주 광산구)가 아님",
+      "note": "⚠️ 함정 · 통로=거래·납품 · 관계=① 타지명 (§4-4-1)",
       "ambiguous": false
     },
     {
@@ -189,7 +199,7 @@
     "posts": [
       "b06",
       "b11",
-      "b19",
+      "b15",
       "b25"
     ],
     "design": "첨단종합운동장, 비아동 국밥집, 첨단 과학기술원 인근 카페 등 생활 반경 노출",

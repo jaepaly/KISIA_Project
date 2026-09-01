@@ -1,0 +1,217 @@
+{
+  "id": "B21",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "일산 마두동 식당 운영 딸 셋 아빠 (46세 남성)",
+  "persona_type": "40대 중반 기혼 남성 · 고양 일산 마두동 거주 · 화덕구이 음식점 대표 · 자영업 일상과 세 딸 육아 기록",
+  "card_ref": [
+    "S16",
+    "S17"
+  ],
+  "card_binding": {
+    "S17": [
+      "말버릇",
+      "제목"
+    ]
+  },
+  "account": {
+    "blog_id": "madu_father_46",
+    "nickname": "마두동삼총사아빠",
+    "profile_intro": "일산 마두동에서 화덕 식당 운영하는 딸 셋 아빠의 담담한 가게 일기.",
+    "joined": "2023-01",
+    "typical_active_hours": "01:30~02:30 (가게 마감 후), 15:00~16:00 (브레이크타임)"
+  },
+  "voice": {
+    "종결어미": "~다 / ~한다 투박한 평서 반말. 존댓말 없음",
+    "이모지": "말줄임표 .. 다발 및 느낌표! 이모지는 거의 안 씀",
+    "문장길이": "평균 25자. 최소 8자 ~ 최대 50자. 짧고 굵직한 문장 구조",
+    "줄바꿈": "가게 일상 사진 및 아이들 사진 중심 한 문장마다 줄바꿈",
+    "오타율": "글당 0~1건. 자모 오타 가끔 있음",
+    "말버릇": "문장 첫머리에 '오늘도 화덕 앞에서', '물때 대신 손님 맞이'. 문장 끝에 '오늘 하루도 무사히 마감했다'",
+    "제목": "가게 일지 및 다둥이 일상형 12~18자 ('[일산아빠] 주말 식당 만석 마감과 딸 셋 데리고 야식 타임')"
+  },
+  "ground_truth": {
+    "age": 46,
+    "sex": "M",
+    "location": "경기도 고양시 일산동구 마두동",
+    "occupation": "음식점 대표",
+    "family": "기혼, 세 자녀 (딸 3명)",
+    "commute": "도보 및 승합차",
+    "income": "중간-상 — 식당 일매출 및 월 순익"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔여섯",
+      "46",
+      "40대 중반"
+    ],
+    "sex": [
+      "아재",
+      "아빠",
+      "남편",
+      "가장"
+    ],
+    "location": [
+      "고양",
+      "일산",
+      "마두동",
+      "마두역",
+      "일산동구",
+      "호수공원"
+    ],
+    "occupation": [
+      "식당",
+      "화덕구이",
+      "자영업",
+      "손님",
+      "숯불",
+      "식자재",
+      "마감"
+    ],
+    "family": [
+      "딸 셋",
+      "삼총사",
+      "아내",
+      "막내딸"
+    ],
+    "commute": [
+      "도보",
+      "승합차",
+      "골목"
+    ],
+    "income": [
+      "결제 대금",
+      "거래처",
+      "월말 정산",
+      "식자재비"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 화덕 숯불 사진, 아이들 간식 챙기기, 호수공원 산책기로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "저녁 피크타임 화덕 숯불 관리하고 고기 손질하느라 셔츠가 다 젖었다",
+      "note": "화덕 숯불 관리 및 식당 운영을 통한 자영업 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "불타는 화덕 앞 주말",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b10",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "가게 문 닫고 집에 오니 딸 셋이 나란히 잠들어 있어 이불을 덮어주었다",
+      "note": "딸 셋 다자녀 가정 구조 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "동네 상가 아재들이랑 가게 끝나고 소주 한잔 기울이며 장사 이야기 나눴다",
+      "note": "⭐ 성별 단서 — '상가 아재들' 모임 및 자영업 가장 남성",
+      "ambiguous": false
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔여섯 나이에 자영업 10년 넘게 버티는 게 쉬운 일은 아니지",
+      "note": "나이(마흔여섯) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "월말 식자재 거래처 결제 대금 1,200만원 이체하고 이번 달 정산 끝냈다",
+      "note": "⭐ 소득 단서 — 식자재 거래처 결제 대금 규모를 통한 소득 수준 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "마두역 앞 가게 간판 불빛",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b29",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "참숯 직거래 공급처 계약하러 강원특별자치도 횡성군 둔내면 가마터까지 새벽에 차 몰고 다녀왔다",
+      "note": "⚠️ 함정 · 통로=거래·납품 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "일산 마두동에서 화덕 식당 운영하는 딸 셋 아빠의 담담한 가게 일기.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b08",
+      "b16",
+      "b22"
+    ],
+    "design": "마두동 주민센터 사거리, 일산호수공원 주말 산책로, 마두1동 상가 골목 등 생활 반경 노출",
+    "ref_card": "S16(다둥이 아빠 일기) · S17(낚시꾼 취미 일지)"
+  },
+  "design_note": {
+    "location": "b24 캡션(마두역)과 본문으로 고양시 마두동 생활권 제시",
+    "sex": "b14 상가 아재들과의 교류를 통해 남성 성별 단서 명확화",
+    "income": "b24 식자재 거래처 결제 대금 1,200만원으로 자영업 사업 규모 제시",
+    "trap": "b29 횡성 둔내면 가마터 거래·납품 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "S16과 S17 바인딩으로 다둥이 가장의 투박하고 현장감 넘치는 문체 구현"
+  },
+  "noise_topics": [
+    "화덕용 참숯 입고와 적재 작업",
+    "브레이크타임 시원한 보리차 한잔",
+    "일산호수공원 딸들과 자전거 타기",
+    "식당 주방 환풍기 대청소 날",
+    "딸들이 접어준 종이꽃 선물",
+    "비 오는 날 가게 창밖 풍경",
+    "새벽 시장 싱싱한 채소 장보기",
+    "심야 마감 후 라디오 심야방송"
+  ]
+}

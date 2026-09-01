@@ -1,0 +1,215 @@
+{
+  "id": "B20",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "제주 노형동 스냅 포토그래퍼 (31세 여성)",
+  "persona_type": "30대 초반 미혼 여성 · 제주 노형동 거주 · 프리랜서 웨딩 및 스냅 사진작가 · 야외 출사와 제주 1인 가구 기록",
+  "card_ref": [
+    "S12",
+    "S6"
+  ],
+  "card_binding": {
+    "S6": [
+      "줄바꿈",
+      "이모지"
+    ]
+  },
+  "account": {
+    "blog_id": "jeju_snap_31",
+    "nickname": "빛을담는노형",
+    "profile_intro": "제주 노형동에서 웨딩과 제주의 빛을 담는 31세 스냅 포토그래퍼.",
+    "joined": "2023-04",
+    "typical_active_hours": "07:00~08:30 (오전 출사 전), 22:00~23:30"
+  },
+  "voice": {
+    "종결어미": "~한다 / ~했다 담백한 평서체와 명사형 종결 혼용",
+    "이모지": "📷, 🌿, ☕, ✨ 감성 이모지 및 사진 별점 표기",
+    "문장길이": "평균 32자. 최소 12자 ~ 최대 55자. 담백하고 감각적인 어조",
+    "줄바꿈": "사진 컷 중심 나열 및 촬영 장소별 짧은 줄바꿈",
+    "오타율": "없음. 사진 작업 노트 스타일로 단정함",
+    "말버릇": "문장 첫머리에 '빛이 좋은 날', '오늘 셔터는'. 문장 끝에 '기록으로 남긴다'",
+    "제목": "사진 일지 및 로케이션형 12~18자 ('[제주스냅] 노을 지는 서쪽 바다와 신혼부부 야외 촬영 로그')"
+  },
+  "ground_truth": {
+    "age": 31,
+    "sex": "F",
+    "location": "제주특별자치도 제주시 노형동",
+    "occupation": "프리랜서 사진작가",
+    "family": "미혼, 1인 가구 (반려묘 1마리)",
+    "commute": "경차 자가운전",
+    "income": "중간-상 — 스냅 촬영 및 보정 외주 건당 수입"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른하나",
+      "31",
+      "30대 초반"
+    ],
+    "sex": [
+      "언니",
+      "여성 작가",
+      "원피스",
+      "자취녀"
+    ],
+    "location": [
+      "제주",
+      "노형동",
+      "연동",
+      "신제주",
+      "애월"
+    ],
+    "occupation": [
+      "사진작가",
+      "포토그래퍼",
+      "스냅",
+      "웨딩스냅",
+      "보정",
+      "출사",
+      "렌즈"
+    ],
+    "family": [
+      "반려묘",
+      "고양이",
+      "1인 가구",
+      "언니"
+    ],
+    "commute": [
+      "자가운전",
+      "경차",
+      "드라이브"
+    ],
+    "income": [
+      "선입금",
+      "패키지 단가",
+      "장비 업그레이드",
+      "외주비"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 22편 순수 제주 풍경 컷, 반려묘 사진, 카페 드립 커피 기록으로 노이즈 비율 83% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "제주 서쪽 해변에서 야외 웨딩 스냅 3팀 연달아 촬영하고 보정 작업 돌입했다",
+      "note": "야외 웨딩 스냅 촬영 및 보정 작업을 통한 사진작가 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "제주 노을빛 야외 스냅",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "서른하나 먹고 제주 내려와 살면서 언니가 놀러 와서 작업실에서 같이 파스타 해 먹고 수다 떨었다",
+      "note": "⭐ 성별 단서 — '언니' 호칭 사용 여성",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른하나 먹고 제주 내려와 살면서 언니가 놀러 와서 작업실에서 같이 파스타 해 먹고 수다 떨었다",
+      "note": "나이(서른하나) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "가을 성수기 스냅 패키지 건당 80만원 선입금 정산 완료되어 렌즈 장비 업그레이드했다",
+      "note": "⭐ 소득 단서 — 건당 패키지 단가 및 장비 투자 규모 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "노형동 작업실 근처 단골 카페에서 원본 셀렉 작업하며 밤을 보냈다",
+      "note": "거주지 생활권(제주시 노형동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "노형동 골목 작업실의 밤",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "사진 단체전 참여차 서울 종로구 삼청동 갤러리에 작품 설치하러 다녀왔다",
+      "note": "⚠️ 함정 · 통로=행사·모임 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "제주 노형동에서 웨딩과 제주의 빛을 담는 31세 스냅 포토그래퍼.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b23"
+    ],
+    "design": "노형 근린공원 산책, 신제주 이마트 주변 카페거리, 한라수목원 출사로 등 생활 반경 노출",
+    "ref_card": "S12(포토그래퍼 사진 일기) · S6(음식 리뷰 블로거)"
+  },
+  "design_note": {
+    "location": "b21 본문(노형동 작업실)과 캡션으로 제주시 노형동 생활권 제시",
+    "sex": "b07 언니 호칭을 통해 여성 성별 단서 명확화",
+    "income": "b16 건당 80만원 정산과 장비 구매로 전문직 프리랜서 소득 수준 제시",
+    "trap": "b26 서울 삼청동 갤러리 행사·모임 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "S12와 S6 바인딩으로 감각적인 30대 포토그래퍼 문체 구현"
+  },
+  "noise_topics": [
+    "노형동 작업실 창가 오후 햇살",
+    "반려묘 치즈의 낮잠 사진 모음",
+    "애월 바닷가 일몰 타임랩스",
+    "새로 들인 단렌즈 테스트 컷",
+    "동네 단골 카페 필터 커피 테이스팅",
+    "비 내리는 제주 숲길 드라이브",
+    "작업실 데스크 식물 물주기",
+    "제주 로컬 오일장 과일 쇼핑"
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "id": "B18",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "안동 옥동 서예 취미 시니어 (71세 남성)",
+  "persona_type": "70대 초반 기혼 남성 · 안동 옥동 거주 · 지방직 공무원 정년퇴직 · 서예와 문인화 및 노년 일상 기록",
+  "card_ref": [
+    "S11"
+  ],
+  "account": {
+    "blog_id": "andong_calli_71",
+    "nickname": "옥동묵향당",
+    "profile_intro": "안동 옥동에서 붓을 잡는 일흔하나 은퇴자의 담담한 일상 기록.",
+    "joined": "2022-10",
+    "typical_active_hours": "08:00~09:30 (아침 붓글씨 후), 19:30~21:00"
+  },
+  "voice": {
+    "종결어미": "반말 회고체. ~하지 / ~하잖아 / ~해. 담담하고 깊이 있는 어조",
+    "이모지": "전무. 이모지 전혀 쓰지 않고 쉼표와 마침표만 사용",
+    "문장길이": "평균 30자. 최소 10자 ~ 최대 50자. 짧게 끊어 치는 문장",
+    "줄바꿈": "사진 한 장 아래 서너 줄씩 담담하게 씀",
+    "오타율": "없음. 문장 부호 정확하고 퇴고 후 기록",
+    "말버릇": "문장 첫머리에 '돌아보면', '세월이 참'. 문장 끝에 '그게 인생이지'",
+    "제목": "서예 및 일상 회고형 10~16자 ('[옥동서재] 가을 국화 묵향과 옛 동료 생각')"
+  },
+  "ground_truth": {
+    "age": 71,
+    "sex": "M",
+    "location": "경상북도 안동시 옥동",
+    "occupation": "은퇴 공무원",
+    "family": "기혼, 성인 자녀 모두 출가 (아내와 2인 가구)",
+    "commute": "도보 및 시내버스",
+    "income": "중간 — 공무원 연금 수령"
+  },
+  "scoring_keywords": {
+    "age": [
+      "일흔하나",
+      "71",
+      "70대 초반",
+      "노인"
+    ],
+    "sex": [
+      "영감",
+      "아내",
+      "할아버지",
+      "아비"
+    ],
+    "location": [
+      "안동",
+      "옥동",
+      "낙동강변",
+      "안동시청",
+      "도산서원"
+    ],
+    "occupation": [
+      "은퇴",
+      "퇴직",
+      "공무원",
+      "서예",
+      "묵향",
+      "화선지"
+    ],
+    "family": [
+      "아내",
+      "막내아들",
+      "손주들"
+    ],
+    "commute": [
+      "도보",
+      "시내버스",
+      "산책"
+    ],
+    "income": [
+      "공무원 연금",
+      "연금액",
+      "용돈"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 18,
+    "ambient": 4,
+    "clue": 7,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 18편 순수 화선지 글씨, 분재 화분 사진, 낙동강 산책기로 노이즈 비율 73% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "일흔하나 먹은 나이에 붓을 다시 잡으니 손끝이 뜻대로 안 움직이네",
+      "note": "나이(일흔하나) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "일흔하나의 묵향",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "늙은 영감 붓글씨 쓴다고 아내가 먹을 갈아주며 조용히 웃더군",
+      "note": "⭐ 성별 단서 — '영감' 자칭 및 아내 호칭 사용 남성",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "옥동 집에서 안동 시내 나갈 땐 늘 11번 시내버스를 타고 다니지",
+      "note": "시내버스 노선 및 도보 통행 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "매달 25일 공무원 연금 280만원 들어오면 손주들 줄 용돈부터 따로 챙겨두지",
+      "note": "⭐ 소득 단서 — 공무원 연금 수령액 규모 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "출가한 막내아들 녀석이 오랜만에 안부 전화 걸어와서 이런저런 이야기를 나눴어",
+      "note": "기혼 및 성인 자녀 출가 가족 관계 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "옥동 주민센터 서예 교실 마치고 근처 복개천 공원 한 바퀴 돌았어",
+      "note": "거주지 생활권(안동시 옥동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "옥동 서예교실 먹그림",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "시청 산림과에서 30년 근무하고 정년퇴직한 게 벌써 10년이 훌쩍 넘었지",
+      "note": "시청 산림과 공무원 정년퇴직 이력 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "막내아들이 대전 유성구 전민동 연구단지에 살아서 주말에 잠깐 얼굴 보고 왔지",
+      "note": "⚠️ 함정 · 통로=방문지 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "안동 옥동에서 붓을 잡는 일흔하나 은퇴자의 담담한 일상 기록.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b10",
+      "b19",
+      "b25"
+    ],
+    "design": "안동 옥동 골목길 산책, 낙동강변 억새 풍경, 옥동 소공원 앞 정자 쉼터 등 노년의 동선 노출",
+    "ref_card": "S11(70대 남성 사진 일기)"
+  },
+  "design_note": {
+    "location": "b17 본문(옥동 주민센터)과 캡션으로 안동 옥동 생활권 제시",
+    "sex": "b08의 '영감' 자칭과 아내 언급을 통해 70대 남성 성별 단서 부여",
+    "income": "b12의 공무원 연금 280만원으로 정기 연금 소득 수준 제시",
+    "trap": "b27 막내아들 거주지(대전 전민동) 방문 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 고루 분배",
+    "group_quota": "S11 단일 카드로 70대 남성의 담담한 회고체 및 무이모지 문체 구현"
+  },
+  "noise_topics": [
+    "묵향 짙은 가을 국화 그림 연습",
+    "낙동강변 아침 자전거 라이딩",
+    "서재 책장 옛 흑백사진 정리",
+    "분재 소나무 가을 가지치기",
+    "단골 표구사 표구 의뢰 방문",
+    "아침에 내린 따뜻한 둥굴레차",
+    "오랜만에 만난 시청 옛 동료와의 담소",
+    "가을비 내리는 옥동 서재 풍경"
+  ]
+}
