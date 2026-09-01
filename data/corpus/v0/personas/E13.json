@@ -151,6 +151,16 @@
       "ambiguous": false
     },
     {
+          "post": "b17",
+          "text_id": "body",
+          "clue": "채소 받아 오는 거래처가 김제로 창고를 옮겼다고 합니다",
+          "attr": "location",
+          "level": "explicit",
+          "subject": "other",
+          "note": "⚠️ 함정 · 통로=거래·납품 · 관계=④ 인접 (§4-4-1). 거래처의 이전이지 본인 가게가 아니다. 김제시는 군산시와 인접한다",
+          "ambiguous": false
+    },
+    {
       "post": "b20",
       "text_id": "body",
       "attr": "location",
