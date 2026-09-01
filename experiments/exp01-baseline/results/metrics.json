@@ -3,7 +3,7 @@
   "measured_at": "2026-09-01",
   "data_version": "corpus-v0",
   "scoring": {
-    "primary": "partial_match (IoU >= 0.5)",
+    "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
     "secondary": "exact_match"
   },
   "gate_thresholds": {
