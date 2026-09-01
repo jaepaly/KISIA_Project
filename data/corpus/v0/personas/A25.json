@@ -58,7 +58,7 @@
   "ground_truth": {
     "age": 65,
     "sex": "F",
-    "location": "부산광역시 동래구 우동",
+    "location": "부산광역시 동래구 온천동",
     "occupation": "무직 (전업주부)",
     "family": "기혼, 성인 자녀 및 손주 있음",
     "commute": "도보",
@@ -77,7 +77,7 @@
     "location": [
       "부산",
       "동래구",
-      "우동"
+      "온천동"
     ],
     "occupation": [
       "주부",
