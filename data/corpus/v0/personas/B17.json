@@ -1,0 +1,225 @@
+{
+  "id": "B17",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "율하동 동네 약국 약사 워킹맘 (48세 여성)",
+  "persona_type": "40대 후반 기혼 여성 · 대구 동구 율하동 거주 · 동네 약국 대표 약사 · 약국 운영 및 두 자녀 육아 일상 기록",
+  "card_ref": [
+    "S9",
+    "S5"
+  ],
+  "card_binding": {
+    "S5": [
+      "종결어미",
+      "말버릇"
+    ]
+  },
+  "account": {
+    "blog_id": "yulha_pharm_48",
+    "nickname": "율하비타민약사",
+    "profile_intro": "율하동에서 약국 운영하는 48세 약사 워킹맘. 약국과 일상의 소소한 기록.",
+    "joined": "2023-06",
+    "typical_active_hours": "13:00~14:00 (점심시간 조제실), 21:30~22:30"
+  },
+  "voice": {
+    "종결어미": "~해요/~했어요 다정하고 신뢰감 있는 존댓말",
+    "이모지": "⭐️, 💊, 🌿, ☕ 별표와 이모지 적극 활용. 글당 2~3개",
+    "문장길이": "평균 28자. 최소 10자 ~ 최대 60자. 정돈되고 깔끔한 문체",
+    "줄바꿈": "약국 일상 및 복약 정보별 문단 구분과 빈 줄 1개",
+    "오타율": "0건. 전문직 특유의 꼼꼼함으로 오탈자 없음",
+    "말버릇": "문장 첫머리에 '오늘 약국에서는', '엄마이자 약사로서'. 문장 끝에 '모두 평안한 하루 되세요'",
+    "제목": "전문직 워킹맘형 12~20자 ('[약사일기] 환절기 면역 영양제 상담과 중학생 아이들 학원 픽업')"
+  },
+  "ground_truth": {
+    "age": 48,
+    "sex": "F",
+    "location": "대구광역시 동구 율하동",
+    "occupation": "약사",
+    "family": "기혼, 중고등학생 자녀 2명 (1남 1녀)",
+    "commute": "도보 10분",
+    "income": "높음 — 전문직 약국 사업소득"
+  },
+  "scoring_keywords": {
+    "age": [
+      "마흔여덟",
+      "48",
+      "40대 후반"
+    ],
+    "sex": [
+      "친정 언니",
+      "약사 엄마",
+      "워킹맘",
+      "남편"
+    ],
+    "location": [
+      "대구",
+      "율하동",
+      "율하역",
+      "동구",
+      "혁신도시"
+    ],
+    "occupation": [
+      "약사",
+      "처방전",
+      "조제",
+      "복약지도",
+      "약국",
+      "일반의약품"
+    ],
+    "family": [
+      "남편",
+      "아들",
+      "딸",
+      "친정 언니"
+    ],
+    "commute": [
+      "도보",
+      "상가",
+      "골목"
+    ],
+    "income": [
+      "부가세",
+      "결제 대금",
+      "의약품 도매",
+      "사업소득"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 19편 순수 화초 가꾸기, 티타임, 영양제 정보로 노이즈 비율 77% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b05",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "오전에 처방전 조제 건수 밀려서 복약지도 연속으로 하느라 목이 다 쉬었네요",
+      "note": "처방전 조제 및 복약지도를 통한 약사 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b05",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "약국 조제실의 하루",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "친정 언니가 약국 들러서 과일 건네주고 가서 점심때 같이 나눠 먹었어요",
+      "note": "⭐ 성별 단서 — '친정 언니' 호칭 사용 여성",
+      "ambiguous": false
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "마흔여덟 되니까 아이들 학원비 챙기는 것도 만만치 않네요",
+      "note": "나이(마흔여덟) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "고등학생 아들이랑 중학생 딸아이 학원 끝나는 시간 맞춰서 데리러 갔다 왔어요",
+      "note": "기혼 및 남매 자녀 가족 구성 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b19",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "약국 분기 부가세 정산이랑 도매상 의약품 결제 대금 3천만원 송금 마쳤습니다",
+      "note": "⭐ 소득 단서 — 의약품 도매 결제 대금 규모를 통한 소득 수준 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "율하동 롯데캐슬 상가 앞에서 아이 기다리며 테이크아웃 커피 한잔 마셨어요",
+      "note": "거주지 생활권(대구시 율하동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b24",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "율하역 상가거리 노을",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b29",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "동기 약사가 경북 구미 인동에 대형 약국을 새로 개업해서 개업 화환 보내고 다녀왔어요",
+      "note": "⚠️ 함정 · 통로=개업 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "율하동에서 약국 운영하는 48세 약사 워킹맘. 약국과 일상의 소소한 기록.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b03",
+      "b11",
+      "b17",
+      "b26"
+    ],
+    "design": "율하체육공원 산책, 율하천 산책로, 동네 반찬가게 나들이 등 생활 반경 노출",
+    "ref_card": "S9(프리미엄 육아맘) · S5(워킹맘 비즈블로그)"
+  },
+  "design_note": {
+    "location": "b24 본문(율하동 롯데캐슬)과 캡션(율하역)으로 대구 율하동 생활권 제시",
+    "sex": "b09 친정 언니 호칭을 통해 여성 성별 단서 명확화",
+    "income": "b19 의약품 도매 결제 대금 3천만원으로 사업소득 규모 제시",
+    "trap": "b29 동기의 개업처(구미 인동) 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 골고루 분배",
+    "group_quota": "S9과 S5 바인딩으로 전문직 40대 워킹맘의 정돈된 문체 구현"
+  },
+  "noise_topics": [
+    "약국 카운터 공기정화 화분 분갈이",
+    "환절기 비타민C와 마그네슘 섭취 팁",
+    "주말 가족 브런치 샌드위치 만들기",
+    "퇴근길 단골 베이커리 빵 쇼핑",
+    "아이들과 함께 본 주말 가족 영화",
+    "약국 앞 길고양이 사료 챙겨주기",
+    "가을맞이 거실 커튼 교체",
+    "조제실 클래식 라디오 음악 추천"
+  ]
+}

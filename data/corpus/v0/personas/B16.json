@@ -1,0 +1,208 @@
+{
+  "id": "B16",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "판교 스타트업 백엔드 개발자 (33세 남성)",
+  "persona_type": "30대 초반 미혼 남성 · 성남 수정 고등동 거주 · 판교 테크노밸리 IT 스타트업 백엔드 개발자 · 서버 운영 및 1인 가구 덤프",
+  "card_ref": [
+    "S4"
+  ],
+  "account": {
+    "blog_id": "pangyo_dev_33",
+    "nickname": "서버치는김개발",
+    "profile_intro": "판교 출퇴근하는 33세 백엔드 엔지니어. 커피와 서버 배포의 일상 덤프.",
+    "joined": "2023-11",
+    "typical_active_hours": "01:00~02:30 (배포 후 퇴근), 11:30~12:30"
+  },
+  "voice": {
+    "종결어미": "~함/~음 음슴체와 극단 축약 및 기술 용어 혼용",
+    "이모지": "🪵, 💻, ☕, 🚀 이모지 조합 및 개발자 특수문자 활용",
+    "문장길이": "평균 24자. 최소 6자 ~ 최대 50자. 간결하고 건조한 어조",
+    "줄바꿈": "월간 덤프형 카테고리([DEV], [LIFE]) 구분 및 짧은 행 바꿈",
+    "오타율": "개발 용어 및 영문 약어(PR, CI/CD, AWS) 혼용, 타자 빠름",
+    "말버릇": "문장 첫머리에 '이번 스프린트는', '갑자기 삘받아서'. 문장 끝에 '배포 완료', '퇴근각'",
+    "제목": "월간 덤프 및 개발 일지형 12~18자 ('[10월 덤프] 대규모 트래픽 폭주 대응과 판교 야근 로그')"
+  },
+  "ground_truth": {
+    "age": 33,
+    "sex": "M",
+    "location": "경기도 성남시 수정구 고등동",
+    "occupation": "IT 스타트업 백엔드 개발자",
+    "family": "미혼, 1인 가구 (신축 오피스텔)",
+    "commute": "마을버스 및 자전거 통근",
+    "income": "높음 — 스톡옵션 및 IT 시니어 개발자 연봉"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른셋",
+      "33",
+      "30대 초반"
+    ],
+    "sex": [
+      "풋살",
+      "형들",
+      "남탕",
+      "남자"
+    ],
+    "location": [
+      "성남",
+      "고등동",
+      "판교",
+      "수정구",
+      "대왕판교로"
+    ],
+    "occupation": [
+      "백엔드",
+      "개발자",
+      "엔지니어",
+      "쿠버네티스",
+      "서버",
+      "핫픽스",
+      "스프린트"
+    ],
+    "family": [
+      "자취",
+      "오피스텔",
+      "1인 가구"
+    ],
+    "commute": [
+      "자전거",
+      "따릉이",
+      "마을버스",
+      "판교역"
+    ],
+    "income": [
+      "스톡옵션",
+      "연봉",
+      "실수령액",
+      "인센티브"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 22,
+    "ambient": 3,
+    "clue": 4,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 22편 순수 데스크 셋업, 커피, 배달 음식 사진으로 노이즈 비율 83% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b02",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "새벽에 서버 트래픽 튀어서 쿠버네티스 노드 긴급 증설하고 핫픽스 배포 완료함",
+      "note": "쿠버네티스 및 핫픽스 배포를 통한 백엔드 엔지니어 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b02",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "새벽 3시 핫픽스 배포",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "서른셋 먹고 주말에 형들이랑 풋살 2시간 뛰고 단백질 보충하러 국밥집 감",
+      "note": "⭐ 성별 단서 — 형들과 주말 풋살 활동 남성",
+      "ambiguous": false
+    },
+    {
+      "post": "b06",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른셋 먹고 주말에 형들이랑 풋살 2시간 뛰고 단백질 보충하러 국밥집 감",
+      "note": "나이(서른셋) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "이번에 스톡옵션 행사분 정산되어서 연봉 실수령액 앞자리가 바뀌었네",
+      "note": "⭐ 소득 단서 — 스톡옵션 정산 및 실수령액 수준 제시",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "고등동 오피스텔에서 판교 제2테크노밸리 사무실까지 자전거로 15분 컷",
+      "note": "거주지 생활권(성남시 고등동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b21",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "판교 제2테크노밸리 출근길 자전거도로",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b26",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "이전 직장 동료가 분당 정자동 외국계 기업으로 이직해서 판교역에서 저녁 먹음",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=④ 인접 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "판교 출퇴근하는 33세 백엔드 엔지니어. 커피와 서버 배포의 일상 덤프.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b23"
+    ],
+    "design": "고등지구 수변공원 산책, 판교역 근처 에스프레소 바, 오피스텔 편의점 야식 등 생활 반경 노출",
+    "ref_card": "S4(월간 덤프)"
+  },
+  "design_note": {
+    "location": "b21 본문(고등동)과 캡션(판교 제2테크노밸리)으로 성남시 고등동 거주지 제시",
+    "sex": "b06 형들과 풋살 활동을 통해 남성 성별 단서 부여",
+    "income": "b17 스톡옵션 정산 및 시니어 개발자 연봉 단서 제시",
+    "trap": "b26 동료의 이직처(분당구 정자동) 인접 지명 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 고루 분배",
+    "group_quota": "S4 단일 카드로 30대 IT 엔지니어의 건조하고 실용적인 덤프체 구현"
+  },
+  "noise_topics": [
+    "기계식 키보드 스위치 윤활 후기",
+    "주말 원두 드립 커피 내리기",
+    "오피스텔 베란다 홈트 루틴",
+    "새벽 배포 후 편의점 몬스터 음료",
+    "데스크 셋업 모니터암 교체",
+    "판교 점심시간 샐러드 맛집",
+    "주말 넷플릭스 SF 드라마 정주행",
+    "스마트 플러그를 활용한 홈 IoT 구성"
+  ]
+}

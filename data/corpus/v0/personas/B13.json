@@ -1,0 +1,214 @@
+{
+  "id": "B13",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "공공기관 민원상담 워킹맘 (39세 여성)",
+  "persona_type": "30대 후반 기혼 여성 · 강원 원주 무실동 거주 · 공공기관 민원상담실 근무 · 감정노동과 주말 가족 맛집 탐방 기록",
+  "card_ref": [
+    "S5",
+    "S6"
+  ],
+  "card_binding": {
+    "S6": [
+      "이모지",
+      "줄바꿈"
+    ]
+  },
+  "account": {
+    "blog_id": "wonju_mom_39",
+    "nickname": "원주소소일상",
+    "profile_intro": "원주 혁신도시 공공기관 7년차. 퇴근 후엔 초등 아들 엄마로 복귀.",
+    "joined": "2023-05",
+    "typical_active_hours": "12:30~13:30 (점심시간), 22:00~23:00"
+  },
+  "voice": {
+    "종결어미": "~해요/~했답니다 친절하고 따뜻한 존댓말. 감정노동 후 일상 힐링 서술",
+    "이모지": "☕, 🍰, 🥣, 🌿 글당 2~3개 활발하게 사용. 맛집 별점(★★★★☆) 표기",
+    "문장길이": "평균 26자. 최소 10자 ~ 최대 58자. 편안하고 차분한 어조",
+    "줄바꿈": "맛집/카페 후기 스타일의 사진별 단락 구분 및 문단 사이 빈 줄 1개",
+    "오타율": "0건. 사내 메신저 습관으로 오탈자 없이 깔끔함",
+    "말버릇": "문장 첫머리에 '오늘 점심은', '주말에 남편이랑'. 문장 끝에 '힐링 완료했네요'",
+    "제목": "맛집 및 워킹맘 일상형 12~18자 ('[원주맛집] 무실동 시청 앞 정갈한 쌈밥집과 주말 브런치')"
+  },
+  "ground_truth": {
+    "age": 39,
+    "sex": "F",
+    "location": "강원특별자치도 원주시 무실동",
+    "occupation": "공공기관 민원상담 상담관",
+    "family": "기혼, 초등학생 자녀 1명 (9세)",
+    "commute": "시내버스 및 자가용",
+    "income": "중간 — 공공기관 호봉제 및 복지포인트"
+  },
+  "scoring_keywords": {
+    "age": [
+      "서른아홉",
+      "39",
+      "30대 후반"
+    ],
+    "sex": [
+      "시어머니",
+      "남편",
+      "친언니",
+      "아이 엄마"
+    ],
+    "location": [
+      "원주",
+      "무실",
+      "혁신도시",
+      "원주시청",
+      "백운산"
+    ],
+    "occupation": [
+      "민원상담",
+      "공공기관",
+      "상담실",
+      "심리상담",
+      "민원인",
+      "호봉"
+    ],
+    "family": [
+      "남편",
+      "시어머니",
+      "아들",
+      "초등학생"
+    ],
+    "commute": [
+      "시내버스",
+      "시청로",
+      "무실동"
+    ],
+    "income": [
+      "복지포인트",
+      "호봉",
+      "명절상여"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 20,
+    "ambient": 4,
+    "clue": 5,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 20편 순수 원주 맛집 리뷰 및 주말 가족 나들이로 노이즈 비율 70% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "민원상담실에서 악성 민원 전화 응대하느라 녹초가 되었는데 사내 심리상담실 다녀와서 한결 나아졌다",
+      "note": "민원상담실과 사내 심리상담 지원을 통한 공공기관 상담관 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "민원상담실의 고된 하루",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b08",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 시어머니 생신상 차려드리고 남편이랑 아이 데리고 드라이브 다녀왔네요",
+      "note": "⭐ 성별 단서 — '시어머니 생신상', '남편' 호칭 결합",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "서른아홉이라는 나이의 끝자락에서 일과 육아 사이 균형을 찾아가는 중입니다",
+      "note": "나이(서른아홉) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b16",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "공공기관 명절 복지포인트 들어온 걸로 양가 부모님 명절 선물 세트 넉넉하게 결제 완료했네요",
+      "note": "⭐ 소득 단서 — 브랜드 배제, 공공기관 복지포인트 활용으로 소득 수준 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "점심시간에 원주시청 뒤편 무실동 근린공원 산책로 걸으며 가을 바람 쐬고 왔어요",
+      "note": "거주/생활권(원주시청 무실동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "원주시청 앞 버스정류장 가을 은행나무",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 버스정류장 및 시청 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b25",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "친언니가 춘천 살아서 이번 주말엔 춘천 공지천 유원지로 조카들 보러 다녀왔어요",
+      "note": "⚠️ 함정 · 통로=거주 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "원주 혁신도시 공공기관 7년차. 퇴근 후엔 초등 아들 엄마로 복귀.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b11",
+      "b18",
+      "b24"
+    ],
+    "design": "무실동 먹자골목, 원주 종합체육관 인근, 남원주역 복합환승센터 등 생활 반경 노출",
+    "ref_card": "S5(워킹맘) · S6(로컬 맛집)"
+  },
+  "design_note": {
+    "location": "b20 본문(원주시청 무실동)과 캡션으로 강원 원주시 무실동 도출",
+    "sex": "b08 '시어머니/남편' 호칭을 통해 성별 단서 명확히 부여",
+    "income": "b16 공공기관 복지포인트 및 호봉제를 통해 소득 수준 제시",
+    "trap": "b25 친언니 거주지(춘천) 거주형 대조군 함정 적용 (§4-4-1 6종 함정)",
+    "off_body": "profile_bio, photo_caption:0, title 3채널 골고루 분배",
+    "group_quota": "다중 카드 바인딩 S5(주)+S6(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "무실동 시청 앞 정갈한 곤드레밥 정식 후기",
+    "초등학교 2학년 아들 학예회 발표 준비",
+    "직장인 목 어깨 뭉침 푸는 온열 찜질기",
+    "주말 가족과 함께 구운 홈메이드 와플",
+    "원주 행구수변공원 주말 산책과 커피 한 잔",
+    "환절기 가족 면역력 챙기는 도라지배즙",
+    "도서관에서 빌려온 주말 힐링 에세이",
+    "월요일 출근 전 간단한 옷차림 정리"
+  ]
+}

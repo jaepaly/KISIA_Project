@@ -1,0 +1,225 @@
+{
+  "id": "B12",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "항만 산단 중장비 기사 (51세 남성)",
+  "persona_type": "50대 초반 기혼 남성 · 울산 울주군 온산읍 거주 · 국가산단 중장비 및 지게차 기사 · 현장 작업과 주말 바다낚시 일상",
+  "card_ref": [
+    "S17",
+    "S15"
+  ],
+  "card_binding": {
+    "S15": [
+      "종결어미",
+      "말버릇"
+    ]
+  },
+  "account": {
+    "blog_id": "onsan_driver_51",
+    "nickname": "온산바다사나이",
+    "profile_intro": "온산공단에서 20년째 중장비 핸들 잡습니다. 주말엔 갯바위 찌낚시.",
+    "joined": "2022-08",
+    "typical_active_hours": "05:30~06:30 (새벽 출근 전), 19:30~21:00"
+  },
+  "voice": {
+    "종결어미": "~하네예/~했심더 경상도 어미와 ~다/음 투박한 현장체 혼용",
+    "이모지": "거의 사용 안 함. 느낌표(!)와 땀(^^;) 정도만 가끔. 글당 0~1개",
+    "문장길이": "평균 22자. 최소 6자 ~ 최대 50자. 짧고 굵직한 상남자 어조",
+    "줄바꿈": "작업 사진 및 조과 사진 위주 배치. 2~3줄씩 짧게 끊어 씀",
+    "오타율": "글당 1~2건. 경상도 사투리 표기('단디', '억수로', '단도리') 섞임",
+    "말버릇": "문장 첫머리에 '오늘도 단디', '물때 맞춰서'. 문장 끝에 '안전하게 하루 마감했심더'",
+    "제목": "현장 조업 및 낚시 일지형 10~18자 ('[온산조행기] 주말 물때 맞춰 다녀온 방파제 감성돔 손맛')"
+  },
+  "ground_truth": {
+    "age": 51,
+    "sex": "M",
+    "location": "울산광역시 울주군 온산읍",
+    "occupation": "국가산단 중장비 및 지게차 기사",
+    "family": "기혼, 성인 자녀 1명 (사위 있음)",
+    "commute": "1톤 디젤 화물차 자가운전",
+    "income": "중간 — 작업 일당 및 유류비 정산"
+  },
+  "scoring_keywords": {
+    "age": [
+      "쉰하나",
+      "51",
+      "50대 초반"
+    ],
+    "sex": [
+      "집사람",
+      "사위",
+      "딸내미",
+      "아재"
+    ],
+    "location": [
+      "울산",
+      "울주군",
+      "온산",
+      "덕신",
+      "당월"
+    ],
+    "occupation": [
+      "중장비",
+      "지게차",
+      "온산공단",
+      "야드",
+      "상하차",
+      "안전모"
+    ],
+    "family": [
+      "집사람",
+      "사위",
+      "딸내미",
+      "손주"
+    ],
+    "commute": [
+      "화물차",
+      "온산로",
+      "덕신교"
+    ],
+    "income": [
+      "일당",
+      "경유값",
+      "유류비",
+      "월말 정산"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 19,
+    "ambient": 4,
+    "clue": 6,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 19편 순수 낚시 조과 사진 및 장비 정비 이야기로 노이즈 비율 77% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b04",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야드에 쌓인 대형 컨테이너 지게차로 상하차 작업 단디 마치고 안전 점검 끝냈심더",
+      "note": "야드 컨테이너 지게차 상하차 작업을 통한 중장비 기사 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b04",
+      "text_id": "title",
+      "attr": "occupation",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "야드 지게차 안전 점검",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 집사람이랑 시장 봐오고 사위 녀석이 사 온 영양제 챙겨 먹으니 든든하네예",
+      "note": "⭐ 성별 단서 — '집사람', '사위 녀석' 호칭 결합",
+      "ambiguous": false
+    },
+    {
+      "post": "b13",
+      "text_id": "body",
+      "attr": "age",
+      "level": "explicit",
+      "subject": "self",
+      "clue": "내 나이도 벌써 쉰하나인데 아직 현장에서 지게차 핸들 잡는 힘은 쌩쌩합니더",
+      "note": "나이(쉰하나) 직접 명시",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "요즘 경유값이 올라가 기름값 빼고 나면 이번 달 일당 정산이 생각보다 빠듯하네예",
+      "note": "⭐ 소득 단서 — 브랜드 배제, 경유값 및 현장 일당 정산으로 소득 수준 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "주말에 딸아이 내외가 손주 데리고 집에 온다 캐서 방파제에서 감성돔 몇 마리 잡아뒀심더",
+      "note": "기혼 및 사위/손주 가족 구성 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "퇴근길에 온산 덕신교 건너면서 회야강 물안개 피는 거 보며 하루 마무리합니다",
+      "note": "거주/생활권(온산읍 덕신리 회야강) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "photo_caption:0",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "온산국가산단 입구 퇴근 트럭 행렬",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널. 산단 입구 및 트럭 통근 노출",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "현장 동료가 부산 기장군 장안읍 공단으로 이직해서 축하 저녁 먹으러 국도 타고 댕겨왔네예",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=④ 인접 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "온산공단에서 20년째 중장비 핸들 잡습니다. 주말엔 갯바위 찌낚시.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b06",
+      "b11",
+      "b19",
+      "b25"
+    ],
+    "design": "온산 덕신소공원, 당월 방파제 낚시터, 온산읍 행정복지센터 인근 상가 등 생활 반경 노출",
+    "ref_card": "S17(현장 낚시) · S15(방언 구어체)"
+  },
+  "design_note": {
+    "location": "b22 본문(덕신교/회야강)과 캡션(온산산단)으로 울산 울주군 온산읍 도출",
+    "sex": "b09 '집사람/사위' 호칭을 통해 50대 남성 가장 단서 명시",
+    "income": "b17 경유값/일당 정산으로 현장 노무직 소득 수준 제시",
+    "trap": "b27 출신지/본가(포항 구룡포) 함정 공식 적용 (§4-4-1 6종 함정)",
+    "off_body": "profile_bio, photo_caption:0, title 3채널 골고루 분배",
+    "group_quota": "다중 카드 바인딩 S17(주)+S15(부) 적용 및 30편 체제 준수"
+  },
+  "noise_topics": [
+    "감성돔 찌낚시 채비와 구멍찌 호수 선택법",
+    "주말에 직접 잡은 전갱이 구이와 된장찌개",
+    "디젤 화물차 타이어 공기압 체크",
+    "겨울철 현장 보온 방한화 추천",
+    "동네 단골 돼지국밥집 수육 백반",
+    "바다 낚싯대 릴 세척하고 기름칠하기",
+    "이른 새벽 온산 바닷가 일출 풍경",
+    "퇴근 후 집에서 부치는 파전 한 장"
+  ]
+}

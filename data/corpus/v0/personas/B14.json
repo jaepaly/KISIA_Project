@@ -1,0 +1,228 @@
+{
+  "id": "B14",
+  "schema_version": "0.2",
+  "synthetic": true,
+  "alias": "고3 수험생 남학생 (18세 남성)",
+  "persona_type": "10대 후반 미혼 남성 · 청주 흥덕 복대동 거주 · 고등학교 3학년 수험생 · 모의고사 준비 및 다자녀 가정 일상 기록",
+  "card_ref": [
+    "S18"
+  ],
+  "account": {
+    "blog_id": "bokdae_exam_18",
+    "nickname": "열공모드남고생",
+    "profile_intro": "복대동 사는 18살 남고생. 야자와 자습 사이의 소소한 덤프.",
+    "joined": "2024-03",
+    "typical_active_hours": "23:30~00:30 (야자 및 자습 후)"
+  },
+  "voice": {
+    "종결어미": "~더욤/~다네여 애교체와 ~듬/~함 축약체 및 3인칭 전달체 혼용",
+    "이모지": "ㅋ, ㅎ, ㅇ 단독 자음과 🥺, ㅠ 이모지 및 부호 단독 행 활용",
+    "문장길이": "평균 25자. 최소 8자 ~ 최대 40자. 행과 문장이 분리된 구조",
+    "줄바꿈": "어절·조사 단위 줄바꿈. 한 행 3~15자로 짧게 끊어 씀",
+    "오타율": "많음. 모바일 자모 오타와 'ㅜ' 중간 삽입 무수정",
+    "말버릇": "문장 첫머리에 '냅다', '오늘도'. 문장 끝에 '실화냐', '살려주세욤'",
+    "제목": "포토덤프형 10~16자 ('[고3일상] 모의고사 끝난 날의 마라탕과 독서실 탈출')"
+  },
+  "ground_truth": {
+    "age": 18,
+    "sex": "M",
+    "location": "충청북도 청주시 흥덕구 복대동",
+    "occupation": "고등학생",
+    "family": "부모님, 형 1명, 여동생 1명 (중간 서열)",
+    "commute": "도보 및 시내버스",
+    "income": "낮음 — 부모님 용돈 생활"
+  },
+  "scoring_keywords": {
+    "age": [
+      "열여덟",
+      "18",
+      "10대 후반",
+      "고3"
+    ],
+    "sex": [
+      "누나",
+      "남고생",
+      "남동생",
+      "형"
+    ],
+    "location": [
+      "청주",
+      "복대동",
+      "지웰시티",
+      "흥덕구",
+      "가경동"
+    ],
+    "occupation": [
+      "고등학생",
+      "수험생",
+      "독서실",
+      "야자",
+      "모의고사",
+      "플래너"
+    ],
+    "family": [
+      "형",
+      "여동생",
+      "부모님",
+      "막내"
+    ],
+    "commute": [
+      "시내버스",
+      "도보",
+      "정류장"
+    ],
+    "income": [
+      "용돈",
+      "삼각김밥",
+      "독서실비"
+    ]
+  },
+  "post_plan": {
+    "total": 30,
+    "noise": 18,
+    "ambient": 4,
+    "clue": 7,
+    "trap": 1,
+    "noise_ratio_definition": "30편 중 18편 순수 간식 사진 및 일상 한탄으로 노이즈 비율 73% 유지"
+  },
+  "clue_plan": [
+    {
+      "post": "b03",
+      "text_id": "body",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "D-100 카운트다운 달력 보면서 플래너 정리하는데 시간 진짜 빠르다네여",
+      "note": "대입 카운트다운을 통한 10대 후반 수험생 연령 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b03",
+      "text_id": "title",
+      "attr": "age",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "D-100 독서실에서",
+      "note": "⭐ 본문 밖 단서 — 제목 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b07",
+      "text_id": "body",
+      "attr": "family",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "군대 간 형한테 택배 보내고 막내 여동생 학원 픽업까지 중간 서열은 웁니다ㅜ",
+      "note": "손위 형과 손아래 여동생을 통한 다자녀 중간 서열 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b09",
+      "text_id": "body",
+      "attr": "commute",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "복대동 지웰시티 앞에서 시내버스 832번 타고 독서실로 넘어가는 중",
+      "note": "시내버스 노선 및 통학 경로 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b12",
+      "text_id": "body",
+      "attr": "sex",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "누나가 쓰던 독서대 물려받아서 책상에 세팅 완료했듬",
+      "note": "⭐ 성별 단서 — '누나' 호칭 사용 남성",
+      "ambiguous": false
+    },
+    {
+      "post": "b15",
+      "text_id": "body",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "모의고사 보고 오답노트 정리하는데 야자 시간에 집중 짱 잘 됨",
+      "note": "모의고사 및 야자를 통한 고등학생 수험생 직업 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "attr": "income",
+      "level": "inferential",
+      "subject": "self",
+      "clue": "한 달 용돈 5만원 다 써서 이번 주말엔 편의점 삼각김밥으로 버텨야 함",
+      "note": "⭐ 소득 단서 — 브랜드 대신 학생 용돈 규모 및 소비 수준 표현",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "body",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "야자 끝나고 복대동 지웰시티 앞 사거리에서 버스 기다리는 중",
+      "note": "거주지 생활권(청주시 복대동) 도출 단서",
+      "ambiguous": false
+    },
+    {
+      "post": "b22",
+      "text_id": "photo_caption:0",
+      "attr": "location",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "복대동 사거리 야경 버스정류장",
+      "note": "⭐ 본문 밖 단서 — 캡션 채널",
+      "ambiguous": false
+    },
+    {
+      "post": "b27",
+      "text_id": "body",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "clue": "외삼촌이 이번에 대전 둔산동 지사로 발령받으셔서 주말에 가족들이랑 축하 외식 다녀왔다",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=① 타지명 (§4-4-1)",
+      "ambiguous": false
+    },
+    {
+      "post": null,
+      "text_id": "profile_bio",
+      "attr": "occupation",
+      "level": "implicit",
+      "subject": "self",
+      "clue": "복대동 사는 18살 남고생. 야자와 자습 사이의 소소한 덤프.",
+      "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+      "ambiguous": false
+    }
+  ],
+  "ambient_plan": {
+    "posts": [
+      "b05",
+      "b10",
+      "b18",
+      "b24"
+    ],
+    "design": "복대동 독서실 앞 분식집, 지웰시티 광장, 동네 버스정류장 등 생활 반경 노출",
+    "ref_card": "S18(10대 수험생 일상)"
+  },
+  "design_note": {
+    "location": "b22 본문(지웰시티 사거리)과 캡션으로 청주시 복대동 생활권 제시",
+    "sex": "b12의 '누나' 호칭을 통해 남성 성별 단서 부여",
+    "income": "b17의 용돈 5만원 및 삼각김밥 소비로 학생 소득 수준 표현",
+    "trap": "b27 외삼촌의 발령지(대전 둔산동) 함정 적용",
+    "off_body": "profile_bio, photo_caption:0, title 3개 채널 고루 분배",
+    "group_quota": "S18 단일 카드로 10대 후반 미성년 화자 문체 완벽 구현"
+  },
+  "noise_topics": [
+    "독서실 편의점 야식 컵라면 추천",
+    "스마트폰 배경화면 정리 덤프",
+    "모의고사 오답노트 형광펜 리뷰",
+    "비 오는 날 야자 쉬는 시간",
+    "주말 늦잠과 배달 떡볶이",
+    "동네 버스 정류장 앞 고양이",
+    "새로 산 스톱워치 언박싱",
+    "듣기 좋은 스터디 플레이리스트"
+  ]
+}
