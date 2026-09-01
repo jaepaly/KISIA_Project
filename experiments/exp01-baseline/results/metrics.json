@@ -16,14 +16,14 @@
       "inferential": 0.6
     }
   },
-  "gate_decision": "PASS (미탐 공간 충족 · LLM 대기)",
+  "gate_decision": "PENDING (미탐 공간 충족 · 도달 가능성 미측정)",
   "summary": {
     "total_gold_evaluated": 185,
     "missed_by_all_three_tools_partial": 98,
     "missed_rate_partial": 0.5297,
     "missed_by_all_three_tools_exact": 98,
     "missed_rate_exact": 0.5297,
-    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 53.0%(partial)를 탐지하지 못함 -> 1단 스팬 모델 필요성 입증 및 W3 게이트 판정: PASS (미탐 공간 충족 · LLM 대기)"
+    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 53.0%(partial)를 탐지하지 못함 -> 1단 스팬 모델 필요성 입증 및 W3 게이트 판정: PENDING (미탐 공간 충족 · 도달 가능성 미측정)"
   },
   "by_level": {
     "explicit": {

@@ -246,7 +246,14 @@ def main() -> int:
         else:
             gate_decision = "STOP"
     else:
-        gate_decision = "PASS (미탐 공간 충족 · LLM 대기)" if missed_space_pass else "PENDING"
+        # ⚠️ 도달 가능성이 미측정이면 절대 PASS 를 찍지 않는다.
+        #    #128 판정 규칙이 「둘 다 넘으면 통과 · 하나만 넘으면 보류」이다 —
+        #    반쪽만 재서 나온 판정은 언제나 보류다. metrics.json 의 gate_decision 을
+        #    금요일 판정이 그대로 읽으므로, 여기서 PASS 가 새면 미측정 게이트가
+        #    조용히 통과된 것처럼 남는다.
+        gate_decision = ("PENDING (미탐 공간 충족 · 도달 가능성 미측정)"
+                         if missed_space_pass
+                         else "PENDING (미탐 공간 미달 · 도달 가능성 미측정)")
 
     # 5. 콘솔 출력
     print("=" * 84)
@@ -268,6 +275,8 @@ def main() -> int:
     print(f"   - 미탐 공간 게이트 (implicit >= 45% AND inferential >= 45%): {'✅ 충족' if missed_space_pass else '❌ 미달'}")
     if has_llm:
         print(f"   - 도달 가능성 게이트 (implicit >= 60% AND inferential >= 60%): {'✅ 충족' if reachability_pass else '❌ 미달'}")
+    else:
+        print("   - 도달 가능성 게이트: 미측정 (LLM 결과 파일 없음) — PASS 는 측정 후에만 나온다")
     print("=" * 84)
 
     print("\n🔍 [샘플 20건 관찰표]")
