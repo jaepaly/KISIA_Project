@@ -132,3 +132,6 @@ site/
 *.egg-info/
 build/
 dist/
+
+# 생성 실행 로그·샤드 목록 (scripts/generate_w03.sh)
+.gen-w03/
