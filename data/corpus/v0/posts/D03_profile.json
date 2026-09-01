@@ -1,0 +1,17 @@
+{
+  "persona_id": "D03",
+  "texts": {
+    "profile_bio": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "note": "§9-1 본문 밖. 프로필 소개란에 직업이 명시된다. S12 실측과 같은 구조 — 항상 켜져 있어 글 하나만 봐도 노출되는데 본문 스캔에는 안 잡힌다. family(자녀)도 같이 샌다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

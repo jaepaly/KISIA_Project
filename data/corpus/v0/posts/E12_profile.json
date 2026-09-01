@@ -1,0 +1,17 @@
+{
+  "persona_id": "E12",
+  "texts": {
+    "profile_bio": "둘째 육아 정보 나눔. 프리미엄 위주로 정리해요"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "family",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "둘째 육아 정보 나눔. 프리미엄 위주로 정리해요",
+    "note": "프로필이 자녀 존재와 소비 수준을 함께 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

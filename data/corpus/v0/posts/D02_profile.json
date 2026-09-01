@@ -1,0 +1,17 @@
+{
+  "persona_id": "D02",
+  "texts": {
+    "profile_bio": "야간 뛰고 낮에 자는 사람"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "야간 뛰고 낮에 자는 사람",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "§9-1 본문 밖. 프로필 소개란에만 있다. '야간 뛴다'가 교대 근무를 준다. 본문 스캔으로는 영영 안 잡힌다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

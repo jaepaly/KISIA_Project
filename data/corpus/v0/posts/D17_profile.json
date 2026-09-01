@@ -1,0 +1,17 @@
+{
+  "persona_id": "D17",
+  "texts": {
+    "profile_bio": "수첩 옮겨 적음"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "clue": "수첩 옮겨 적음",
+    "note": "프로필 단서. 직업이 아니라 습관이라 inferential",
+    "ambiguous": true
+  },
+  "persona_schema_version": "0.2"
+}

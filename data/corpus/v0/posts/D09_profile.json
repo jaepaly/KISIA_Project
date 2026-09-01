@@ -1,0 +1,17 @@
+{
+  "persona_id": "D09",
+  "texts": {
+    "profile_bio": "마을 일 적어둡니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "clue": "마을 일 적어둡니다",
+    "note": "프로필 단서. 사용자 단위라 post 가 없다",
+    "ambiguous": true
+  },
+  "persona_schema_version": "0.2"
+}

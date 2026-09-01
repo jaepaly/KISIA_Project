@@ -1,0 +1,17 @@
+{
+  "persona_id": "E17",
+  "texts": {
+    "profile_bio": "먹은 거 다 기록하는 사람💪🏻"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "먹은 거 다 기록하는 사람💪🏻",
+    "note": "프로필이 리뷰 블로그 성격을 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,17 @@
+{
+  "persona_id": "E10",
+  "texts": {
+    "profile_bio": "애 셋 키우는 기록. 공장 다니고 밤엔 육아"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "애 셋 키우는 기록. 공장 다니고 밤엔 육아",
+    "note": "프로필이 직업과 가족 형태를 동시에 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

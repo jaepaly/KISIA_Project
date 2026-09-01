@@ -1,0 +1,17 @@
+{
+  "persona_id": "D06",
+  "texts": {
+    "profile_bio": "읍내까지 이십 분. 그 시간에 생각을 정리한다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "commute",
+    "level": "inferential",
+    "subject": "self",
+    "clue": "읍내까지 이십 분. 그 시간에 생각을 정리한다",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. 전 글에 상시로 걸린다. b02 본문과 같은 표현이라 반복이 확신을 만든다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

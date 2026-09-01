@@ -1,0 +1,16 @@
+{
+  "persona_id": "S01",
+  "texts": {
+    "profile_bio": "매장 마감하고 쓰는 동네 기록"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "매장 마감하고 쓰는 동네 기록",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "프로필 소개란에만 실린다. 항상 켜져 있는 단서라 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힌다. label-schema §5-3 · §9-1"
+  },
+  "persona_schema_version": "0.2"
+}

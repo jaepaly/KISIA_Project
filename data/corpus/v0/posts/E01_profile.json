@@ -1,0 +1,17 @@
+{
+  "persona_id": "E01",
+  "texts": {
+    "profile_bio": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗",
+    "attr": "income",
+    "level": "inferential",
+    "subject": "self",
+    "note": "프로필은 항상 노출됨. 뜨개+자동차 취미 조합 자체가 소비 수준을 암시한다. label-schema §5-3 · §9-1",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

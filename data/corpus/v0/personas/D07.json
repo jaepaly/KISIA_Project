@@ -119,7 +119,7 @@
     },
     {
       "post": "b06",
-      "text_id": "photo_caption:1",
+      "text_id": "photo_caption:0",
       "attr": "location",
       "level": "inferential",
       "subject": "self",

@@ -1,0 +1,17 @@
+{
+  "persona_id": "E11",
+  "texts": {
+    "profile_bio": "주말마다 배타는 사람. 조황 기록용"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "주말마다 배타는 사람. 조황 기록용",
+    "note": "프로필이 취미(낚시)와 자영업 생활 패턴을 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

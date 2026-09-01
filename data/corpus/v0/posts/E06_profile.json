@@ -1,0 +1,17 @@
+{
+  "persona_id": "E06",
+  "texts": {
+    "profile_bio": "고한 촬영실 운영. 산골 빛 담는 중."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "고한 촬영실 운영. 산골 빛 담는 중.",
+    "note": "프로필은 항상 노출된다. 「촬영실 운영」이 직업을, 「산골」이 지역 유형을 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
