@@ -95,13 +95,26 @@ POST_ID_RE = re.compile(r"^b\d{2}$")
 #   ① 타지명     다른 시군구      ┐
 #   ③ 상위일치   같은 시 다른 동  ├ 셋 다 동 이름이 GT 와 다르다.
 #   ④ 인접       인접 시군구      ┘ 서로 구분하려면 사전이 필요하다
-TRAP_RE = re.compile(r"함정\s*([①②③④⑤⑥])")
-TRAP_KIND = {
+# 함정은 축이 둘이다 (§4-4-1). note 에 둘 다 적는다.
+#
+#     ⚠️ 함정 · 통로=근무지 · 관계=④ 인접 (§4-4-1)
+#
+# 한때 번호 하나만 쓰게 되어 있었는데 ①~④ 는 관계, ⑤⑥ 은 통로라 축이 섞여 있었다.
+# 그래서 같은 함정을 사람마다 다르게 불렀다 — 실측 84건이 네 갈래로 갈렸다.
+TRAP_REL_RE = re.compile(r"관계\s*=\s*([①②③④])")
+# ⚠️ 통로 값에 가운뎃점이 들어간다(「이직·발령」·「거래·납품」·「행사·모임」).
+#    구분자로 쓰는 「 · 」(앞뒤 공백)와 값 안의 「·」(공백 없음)를 구별해야 한다.
+TRAP_VIA_RE = re.compile(r"통로\s*=\s*((?:[^\s,)]|·(?=\S))+)")
+TRAP_REL = {
     "①": ("타지명", "다름"), "③": ("상위일치", "다름"), "④": ("인접", "다름"),
     "②": ("동일지명", "겹침"),
-    "⑤": ("출신지", None), "⑥": ("과거 거주", None),   # subject: self 계열
 }
-SELF_TRAPS = ("⑤", "⑥")
+# subject: self 인 통로. 본인 얘기가 맞는데 현 거주지가 아니다.
+SELF_VIA = ("출신지", "과거거주", "방문지")
+# 통로 목록 — 새 값을 쓰려면 §4-4-1 표에 먼저 추가한다
+TRAP_VIA = ("거주", "근무지", "이직·발령", "개업", "이사", "거래·납품",
+            "행사·모임", "방문지", "출신지", "과거거주")
+# ⚠️ 값에 공백을 쓰지 않는다 — 「 · 」 구분자와 겹쳐 파싱이 잘린다
 
 # ── 카드 공유 인물 간 목소리 대조 (persona-design.md §2-⑤) ──────────────
 #
@@ -521,31 +534,45 @@ def validate(persona: dict) -> list[Issue]:
         if c.get("attr") != "location":
             continue                      # attr 이 곧 축이다
         note = str(c.get("note", ""))
-        m = TRAP_RE.search(note)
-        subj = c.get("subject", "self")
-
-        if subj == "other" and not m:
-            warn(f"clue_plan[{i}]",
-                 "subject=other 인데 note 에 함정 종류가 없다. "
-                 "「⚠️ 함정 ① 타지명 (§4-4-1)」 형식으로 적을 것")
-            continue
-        if not m:
-            continue
-
-        kind = m.group(1)
-        name, want = TRAP_KIND[kind]
-
-        # ⑤⑥ 은 subject: self 계열이다 (§4-4-1 B)
-        if kind in SELF_TRAPS:
-            if subj != "self":
+        if "함정" not in note:
+            if c.get("subject") == "other":
                 warn(f"clue_plan[{i}]",
-                     f"함정 {kind} {name} 은 subject 가 self 여야 한다 (현재 {subj})")
-            continue
-        if subj != "other":
-            warn(f"clue_plan[{i}]",
-                 f"함정 {kind} {name} 은 subject 가 other 여야 한다 (현재 {subj})")
+                     "subject=other 인데 note 에 함정 표시가 없다. "
+                     "「⚠️ 함정 · 통로=근무지 · 관계=④ 인접 (§4-4-1)」 형식으로 적을 것")
             continue
 
+        subj = c.get("subject", "self")
+        mv = TRAP_VIA_RE.search(note)
+        mr = TRAP_REL_RE.search(note)
+        FORM = "「⚠️ 함정 · 통로=근무지 · 관계=④ 인접 (§4-4-1)」 형식으로 적을 것"
+
+        if not mv or not mr:
+            missing = " · ".join(x for x, ok in (("통로", mv), ("관계", mr)) if not ok)
+            warn(f"clue_plan[{i}]",
+                 f"함정 note 에 {missing} 가 없다. 축이 둘이라 하나만 적으면 "
+                 f"나머지가 사라진다 (§4-4-1). {FORM}")
+            continue
+
+        via, rel = mv.group(1), mr.group(1)
+        if via not in TRAP_VIA:
+            warn(f"clue_plan[{i}]",
+                 f"통로 「{via}」 는 §4-4-1 표에 없다. 새 통로를 쓰려면 표에 먼저 추가할 것. "
+                 f"지금 있는 것: {' · '.join(TRAP_VIA)}")
+            continue
+
+        # subject 와 통로가 맞는가. 방문지는 양쪽에 걸친다 (내 방문 / 남의 방문)
+        if via in SELF_VIA and via != "방문지" and subj != "self":
+            warn(f"clue_plan[{i}]",
+                 f"통로 「{via}」 는 subject 가 self 여야 한다 (현재 {subj}) — 본인 얘기인데 "
+                 f"현 거주지가 아닌 계열이다 (§4-4-1)")
+            continue
+        if via not in SELF_VIA and subj != "other":
+            warn(f"clue_plan[{i}]",
+                 f"통로 「{via}」 는 subject 가 other 여야 한다 (현재 {subj}). "
+                 f"본인 얘기라면 통로가 출신지·과거 거주·방문지 중 하나일 것이다 (§4-4-1)")
+            continue
+
+        name, want = TRAP_REL[rel]
         clue_txt = str(c.get("clue", ""))
         overlap = [k for k in loc_kw if k in clue_txt and k in gt_loc]
         got = "겹침" if overlap else "다름"
@@ -553,8 +580,30 @@ def validate(persona: dict) -> list[Issue]:
             hint = (f"단서의 「{', '.join(overlap)}」 이(가) GT 「{gt_loc}」 안에 있다"
                     if overlap else f"단서에 GT 「{gt_loc}」 와 겹치는 지명이 없다")
             warn(f"clue_plan[{i}]",
-                 f"함정 {kind} {name} 은 GT 와 「{want}」을 요구하는데 실제는 「{got}」이다. "
+                 f"관계 {rel} {name} 은 GT 와 「{want}」을 요구하는데 실제는 「{got}」이다. "
                  f"{hint} — 선언과 다른 것을 시험하게 된다 (#83)")
+
+    # ── subject: other 함정이 하나 이상 있는가 (§4-4-1 · §8 체크리스트) ──
+    #
+    # ⚠️ post_plan.trap 은 생성기가 읽지 않는다. generate.py 의 classify_posts 는
+    #    clue_plan 만 보고, subject: other 항목이 있어야 함정 글이 나온다. 그래서
+    #    post_plan.trap: 1 을 적어도 clue_plan 에 함정이 없으면 그 자리는 잡담이 되고
+    #    검증기 산술(noise+ambient+clue+trap == total)은 그대로 맞는다 — 조용히 샌다.
+    #
+    #    실측 2026-09-01: 94명 중 16명이 이 상태였다 (A11 A13 A14 A15 A16 A17 A19
+    #    A21 A25 A26 · E07 E09 E13 E15 E21 · D05). §8 에 적어만 두고 여기 안 넣어서다.
+    #
+    #    ⑤⑥ 계열(통로=출신지·과거거주)로는 대체되지 않는다. 그건 「본인 얘기가 맞는데
+    #    현 거주지가 아니다」라 귀속 자체는 self 다. 「남의 것을 내 것으로 착각하는가」를
+    #    시험하는 자리가 비면 그 인물에는 귀속 함정이 없는 것이다.
+    #
+    #    ERROR 가 아니라 WARN 이다 — ERROR 면 기존 16명이 생성 거부되어 더 크게 막힌다.
+    if not any(c.get("subject") == "other" for c in clue_plan):
+        warn("clue_plan",
+             "subject: other 함정이 하나도 없다. 인물마다 하나 이상 있어야 한다 "
+             "(§4-4-1 · §8 체크리스트) — 통로=출신지·과거거주(⑤⑥)로는 대체할 수 없다. "
+             f"post_plan.trap={parts['trap']} 이라고 적혀 있어도 생성기는 clue_plan 만 "
+             "읽으므로 함정 글이 0편 나온다")
 
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []

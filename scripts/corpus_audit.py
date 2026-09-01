@@ -31,8 +31,13 @@ AGE_VALUE = re.compile(
     r"열[한두세네다섯여섯일곱여덟아홉]"
 )
 
-# 함정 문형 분류. 지금은 거주형 하나뿐이라 둘로만 가른다.
+# 함정 문형 분류.
+#
+# ⚠️ 표면형(살아서/산다)으로 세는 것은 **근사**다. persona-design §4-4-1 이
+#    2026-08-31 부터 note 에 「통로=근무지 · 관계=④ 인접」을 구조로 남기므로
+#    그쪽을 먼저 읽고, 없는 것만 표면형으로 떨어진다.
 LIVES_IN = re.compile(r"살아서|살고|산다|살아")
+TRAP_VIA_RE = re.compile(r"통로\s*=\s*((?:[^\s,)]|·(?=\S))+)")
 
 
 def load(personas_dir: Path) -> list[dict]:
@@ -101,19 +106,29 @@ def audit_attr_coverage(ps: list[dict]) -> None:
 def audit_trap_variety(ps: list[dict]) -> None:
     head(3, "함정 문형 다양성 (이슈 #116)")
     forms: collections.Counter = collections.Counter()
+    fallback = 0
     for p in ps:
         for c in p.get("clue_plan") or []:
-            if c.get("subject") != "other":
+            if c.get("attr") != "location" or "함정" not in str(c.get("note", "")):
                 continue
-            forms["거주(...살아서/산다)" if LIVES_IN.search(c.get("clue", ""))
-                  else "그 밖"] += 1
+            m = TRAP_VIA_RE.search(str(c.get("note", "")))
+            if m:
+                forms[m.group(1)] += 1
+            else:
+                # note 에 통로가 없다 — 표면형으로 근사한다
+                fallback += 1
+                forms["(미표기) 거주형" if LIVES_IN.search(c.get("clue", ""))
+                      else "(미표기) 그 밖"] += 1
     tot = sum(forms.values()) or 1
     for f, n in forms.most_common():
-        print(f"    {f:<22} {n:>3}건  {100 * n / tot:>3.0f}%")
+        print(f"    {f:<16} {n:>3}건  {100 * n / tot:>3.0f}%  {'#' * round(40 * n / tot)}")
     top = forms.most_common(1)
     if top and top[0][1] / tot > 0.5:
-        print(f"    [!] 한 문형이 {100 * top[0][1] / tot:.0f}% 다. 표면형을 외우면 "
+        print(f"    [!] 한 통로가 {100 * top[0][1] / tot:.0f}% 다. 표면형을 외우면 "
               "귀속 추론 없이도 점수가 나온다")
+    if fallback:
+        print(f"    [!] note 에 통로가 없는 함정 {fallback}건 — 표면형으로 근사했다. "
+              "§4-4-1 형식으로 적으면 정확해진다")
 
 
 # ── 4. 프로필 단서가 실제 프로필에 들어 있는가 ───────────────────────
