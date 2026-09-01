@@ -4,8 +4,8 @@ W2 단계: 20편 샘플에 대한 도구별 미탐(✗) 현황 표 출력
 W3 단계: 골드셋 대비 등급별(explicit/implicit/inferential) 미탐 공간(missed_rate) 및
         LLM 상한 도달 가능성(reachability) 산출, W3 중단 기준(Gate) 판정 및 metrics.json 갱신
 
-스팬 매칭 규칙 (README 정본 · label-schema §2):
-  - 주 지표: partial match (유형 일치 + IoU >= 0.5)
+스팬 매칭 규칙 (README 정본 · label-schema §2 · b-baselines §7.2):
+  - 주 지표: partial match (IoU >= 0.5, 기존 도구 유리 원칙: type 불문 매칭)
   - 부 지표: exact match (시작/끝 인덱스 완전 일치)
   - 3종 합집합: 3개 도구(regex, presidio, koreanpii) 중 하나라도 탐지하면 탐지 성공
   - W3 게이트:
@@ -291,7 +291,7 @@ def main() -> int:
         "measured_at": datetime.now().strftime("%Y-%m-%d"),
         "data_version": "corpus-v0",
         "scoring": {
-            "primary": "partial_match (IoU >= 0.5)",
+            "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
             "secondary": "exact_match",
         },
         "gate_thresholds": {
