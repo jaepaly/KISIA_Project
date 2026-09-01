@@ -583,6 +583,28 @@ def validate(persona: dict) -> list[Issue]:
                  f"관계 {rel} {name} 은 GT 와 「{want}」을 요구하는데 실제는 「{got}」이다. "
                  f"{hint} — 선언과 다른 것을 시험하게 된다 (#83)")
 
+    # ── subject: other 함정이 하나 이상 있는가 (§4-4-1 · §8 체크리스트) ──
+    #
+    # ⚠️ post_plan.trap 은 생성기가 읽지 않는다. generate.py 의 classify_posts 는
+    #    clue_plan 만 보고, subject: other 항목이 있어야 함정 글이 나온다. 그래서
+    #    post_plan.trap: 1 을 적어도 clue_plan 에 함정이 없으면 그 자리는 잡담이 되고
+    #    검증기 산술(noise+ambient+clue+trap == total)은 그대로 맞는다 — 조용히 샌다.
+    #
+    #    실측 2026-09-01: 94명 중 16명이 이 상태였다 (A11 A13 A14 A15 A16 A17 A19
+    #    A21 A25 A26 · E07 E09 E13 E15 E21 · D05). §8 에 적어만 두고 여기 안 넣어서다.
+    #
+    #    ⑤⑥ 계열(통로=출신지·과거거주)로는 대체되지 않는다. 그건 「본인 얘기가 맞는데
+    #    현 거주지가 아니다」라 귀속 자체는 self 다. 「남의 것을 내 것으로 착각하는가」를
+    #    시험하는 자리가 비면 그 인물에는 귀속 함정이 없는 것이다.
+    #
+    #    ERROR 가 아니라 WARN 이다 — ERROR 면 기존 16명이 생성 거부되어 더 크게 막힌다.
+    if not any(c.get("subject") == "other" for c in clue_plan):
+        warn("clue_plan",
+             "subject: other 함정이 하나도 없다. 인물마다 하나 이상 있어야 한다 "
+             "(§4-4-1 · §8 체크리스트) — 통로=출신지·과거거주(⑤⑥)로는 대체할 수 없다. "
+             f"post_plan.trap={parts['trap']} 이라고 적혀 있어도 생성기는 clue_plan 만 "
+             "읽으므로 함정 글이 0편 나온다")
+
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []
     for post in ambient:

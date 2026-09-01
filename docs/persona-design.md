@@ -847,6 +847,10 @@ python validate.py data/corpus/v0/personas/*.json
 - [ ] **다른 페르소나와 목소리가 확실히 다른가** (카드 공유 시 4축 이상)
 - [ ] 카드를 여러 장 참조한다면 `card_binding` 으로 축별 주 카드를 정했는가
 - [ ] `subject: other` 함정이 하나 이상 있는가 — **`self` 통로로 대체할 수 없다**
+  ⚠️ **`post_plan.trap` 을 적는 것으로는 안 된다.** 생성기(`generate.py`)는 `clue_plan` 만 읽는다.
+  `post_plan.trap: 1` 이라고 써도 `clue_plan` 에 `subject: other` 항목이 없으면 **함정 글이 0편 나오고**
+  그 자리는 잡담이 된다. 검증기 산술(`noise+ambient+clue+trap == total`)은 그대로 맞아서 조용히 샌다.
+  2026-09-01 실측에서 94명 중 16명이 이 상태였다. `validate.py` 가 이제 WARN 으로 잡는다.
 - [ ] 함정 `note` 에 **통로와 관계를 둘 다** 적었는가 — `통로=근무지 · 관계=④ 인접` (§4-4-1)
 - [ ] 비지명 축 함정이면 `note` 에 **축 이름**을 적었는가 — 번호를 붙이지 않는다
 - [ ] 함정 문형이 「X가 Y 살아서」가 아닌가 — §4-4-1 「문형이 겹치면」
