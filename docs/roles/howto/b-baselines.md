@@ -278,15 +278,27 @@ python run_koreanpii.py --in data/corpus/v0/posts/ --out results/koreanpii.jsonl
 ### 7.2 W3 — 수치 (골드셋이 있다)
 
 ```python
-# compare.py — 핵심 로직
-def exact_match(a, b):
-    return a["start"] == b["start"] and a["end"] == b["end"]
+# compare.py — 핵심 로직 (주 지표: partial match IoU >= 0.5)
+def compute_iou(s1, e1, s2, e2):
+    inter = max(0, min(e1, e2) - max(s1, s2))
+    union = (e1 - s1) + (e2 - s2) - inter
+    return inter / union if union > 0 else 0.0
 
-def missed_by_tools(gold_spans, tool_spans_list):
+def partial_match(gold, pred, min_iou=0.5):
+    """유형 일치 + IoU >= 0.5 (label-schema §2 주 지표)"""
+    if gold.get("attr") != pred.get("type"):
+        return False
+    return compute_iou(gold["start"], gold["end"], pred["start"], pred["end"]) >= min_iou
+
+def missed_by_tools(gold_spans, tool_spans_list, mode="partial"):
     """기존 도구 셋 중 아무도 못 잡은 골드 스팬"""
     missed = []
     for g in gold_spans:
-        if not any(exact_match(g, t) for tool in tool_spans_list for t in tool):
+        detected = any(
+            partial_match(g, t) if mode == "partial" else (g["start"] == t["start"] and g["end"] == t["end"])
+            for tool in tool_spans_list for t in tool
+        )
+        if not detected:
             missed.append(g)
     return missed
 ```
@@ -296,7 +308,7 @@ def missed_by_tools(gold_spans, tool_spans_list):
 | 수치 | 계산 | 뜻 |
 |---|---|---|
 | **미탐 공간 크기** | `len(missed) / len(gold)` | 기존 도구가 놓친 비율. **분모가 여기서 나온다** |
-| **도달 가능성** | `LLM이 missed에서 잡은 수 / len(missed)` | 학습으로 도달 가능한지 |
+| **도달 가능성** | `LLM이 missed에서 잡은 수 / len(missed)` | 학습으로 도달 가능한지 (Gemini 기준) |
 | (W7) **추가 탐지율** | `우리 모델이 missed에서 잡은 수 / len(missed)` | 최종 수치 |
 
 **반드시 등급별로 쪼갠다.**
@@ -305,7 +317,15 @@ def missed_by_tools(gold_spans, tool_spans_list):
 {
   "measured_at": "2026-09-03",
   "data_version": "corpus-v0-gold-610",
-  "scoring": "exact_match",
+  "scoring": {
+    "primary": "partial_match (IoU >= 0.5)",
+    "secondary": "exact_match"
+  },
+  "gate_thresholds": {
+    "missed_rate": {"implicit": 0.45, "inferential": 0.45},
+    "reachability": {"implicit": 0.60, "inferential": 0.60}
+  },
+  "gate_decision": "PASS",
   "gold_spans": 610,
   "by_level": {
     "explicit":    {"gold": 180, "missed_by_tools": 22,  "missed_rate": 0.122,
@@ -315,7 +335,7 @@ def missed_by_tools(gold_spans, tool_spans_list):
     "inferential": {"gold": 110, "missed_by_tools": 108, "missed_rate": 0.982,
                     "llm_recovers": 61,  "reachability": 0.565}
   },
-  "tools": {"regex": "...", "presidio": "...", "koreanpii": "..."},
+  "tools": {"regex": "...", "presidio": "...", "koreanpii": "...", "llm": "gemini"},
   "note": "위 숫자는 형식 예시다. 실제 측정치로 덮어쓴다."
 }
 ```
