@@ -605,6 +605,24 @@ def validate(persona: dict) -> list[Issue]:
              f"post_plan.trap={parts['trap']} 이라고 적혀 있어도 생성기는 clue_plan 만 "
              "읽으므로 함정 글이 0편 나온다")
 
+    # ── 캡션 색인은 0부터 연속이어야 한다 ──────────────────────
+    #
+    # ⚠️ prompts.build_user 는 캡션 단서를 모아 0부터 다시 번호를 매긴다.
+    #    그래서 photo_caption:1 만 선언하면 생성물은 photo_caption:0 이 된다 —
+    #    설계와 글이 어긋나고, 골드셋 스팬이 없는 채널을 가리키게 된다.
+    #    label-schema §5-3 은 「색인은 생성 시점에 고정하고 다시 매기지 않는다」이다.
+    #    2026-09-01 생성에서 D07_b06 이 이걸로 한 건 어긋났다.
+    caps_by_post: dict[str, set] = {}
+    for c in clue_plan:
+        t = str(c.get("text_id", ""))
+        if t.startswith("photo_caption:") and c.get("post"):
+            caps_by_post.setdefault(c["post"], set()).add(int(t.split(":")[1]))
+    for post, idxs in sorted(caps_by_post.items()):
+        if idxs != set(range(len(idxs))):
+            warn(f"clue_plan[{post}]",
+                 f"캡션 색인이 {sorted(idxs)} 로 0부터 연속이 아니다. 생성기가 0부터 "
+                 f"다시 매겨서 설계와 글이 어긋난다 (label-schema §5-3)")
+
     # ── ambient / noise 배분 ──────────────────────────────────────────
     ambient = (persona.get("ambient_plan") or {}).get("posts", []) or []
     for post in ambient:
