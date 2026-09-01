@@ -100,10 +100,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -160,6 +160,15 @@
       "level": "explicit",
       "subject": "self",
       "note": "프로필 단서 (본문 밖 단서 할당량)"
+    },
+    {
+      "post": "b18",
+      "text_id": "body",
+      "clue": "부서 선배가 청주 공장으로 파견 나가서 얼굴 보기 힘드네요",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=① 타지명 (§4-4-1). 직장 선배의 파견지."
     }
   ],
   "ambient_plan": {

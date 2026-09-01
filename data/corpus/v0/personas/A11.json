@@ -98,10 +98,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 20,
+    "noise": 19,
     "ambient": 4,
     "clue": 5,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -168,6 +168,15 @@
       "level": "implicit",
       "subject": "self",
       "note": "프로필 단서 (본문 밖 단서 할당량 충족). 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힘"
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "동기가 판교로 취업해서 한턱 쏜다고 불렀다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이직·발령 · 관계=① 타지명 (§4-4-1). 동기의 취업지(판교). 본인 거주지가 아님."
     }
   ],
   "ambient_plan": {

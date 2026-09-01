@@ -95,10 +95,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -155,6 +155,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서 (캡션)"
+    },
+    {
+      "post": "b23",
+      "text_id": "body",
+      "clue": "친구가 분당으로 이사 가서 집들이 다녀옴",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이사간 곳."
     }
   ],
   "ambient_plan": {

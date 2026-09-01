@@ -101,10 +101,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -162,6 +162,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서 (프로필). 위치와 직업 동시 노출."
+    },
+    {
+      "post": "b20",
+      "text_id": "body",
+      "clue": "대학 동기가 부천으로 이사해서 집들이 선물 사서 다녀왔어용",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이사간 곳."
     }
   ],
   "ambient_plan": {

@@ -96,10 +96,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -157,6 +157,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서(캡션). S13 카드의 전형적인 짧은 캡션 채널 활용"
+    },
+    {
+      "post": "b17",
+      "text_id": "body",
+      "clue": "옆집 살던 새댁이 목포로 이사 간다고 인사하러 왔네",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 이사갈 곳."
     }
   ],
   "ambient_plan": {

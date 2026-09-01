@@ -99,10 +99,10 @@
   },
   "post_plan": {
     "total": 30,
-    "noise": 21,
+    "noise": 20,
     "ambient": 4,
     "clue": 4,
-    "trap": 1,
+    "trap": 2,
     "noise_ratio_definition": "B안(개별 무해 기준)"
   },
   "clue_plan": [
@@ -159,6 +159,15 @@
       "level": "inferential",
       "subject": "self",
       "note": "본문 밖 단서 (캡션)"
+    },
+    {
+      "post": "b14",
+      "text_id": "body",
+      "clue": "동기가 송도로 자취방 구해서 집들이 감",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=이사 · 관계=① 타지명 (§4-4-1). 지인의 자취방 위치."
     }
   ],
   "ambient_plan": {
