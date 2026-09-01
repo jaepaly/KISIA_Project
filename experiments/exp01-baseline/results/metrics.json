@@ -1,17 +1,60 @@
 {
   "experiment": "exp01-baseline",
-  "measured_at": "2026-08-28",
+  "measured_at": "2026-09-01",
   "data_version": "corpus-v0",
-  "scoring": "exact_match",
+  "scoring": {
+    "primary": "partial_match (IoU >= 0.5)",
+    "secondary": "exact_match"
+  },
+  "gate_thresholds": {
+    "missed_rate": {
+      "implicit": 0.45,
+      "inferential": 0.45
+    },
+    "reachability": {
+      "implicit": 0.6,
+      "inferential": 0.6
+    }
+  },
+  "gate_decision": "PASS (미탐 공간 충족 · LLM 대기)",
+  "summary": {
+    "total_gold_evaluated": 185,
+    "missed_by_all_three_tools_partial": 98,
+    "missed_rate_partial": 0.5297,
+    "missed_by_all_three_tools_exact": 98,
+    "missed_rate_exact": 0.5297,
+    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 53.0%(partial)를 탐지하지 못함 -> 1단 스팬 모델 필요성 입증 및 W3 게이트 판정: PASS (미탐 공간 충족 · LLM 대기)"
+  },
+  "by_level": {
+    "explicit": {
+      "gold": 45,
+      "missed_by_tools": 27,
+      "missed_rate": 0.6,
+      "missed_rate_exact": 0.6,
+      "llm_recovers": 0,
+      "reachability": 0.0
+    },
+    "implicit": {
+      "gold": 76,
+      "missed_by_tools": 38,
+      "missed_rate": 0.5,
+      "missed_rate_exact": 0.5,
+      "llm_recovers": 0,
+      "reachability": 0.0
+    },
+    "inferential": {
+      "gold": 64,
+      "missed_by_tools": 33,
+      "missed_rate": 0.5156,
+      "missed_rate_exact": 0.5156,
+      "llm_recovers": 0,
+      "reachability": 0.0
+    }
+  },
   "environment": {
     "presidio": "presidio-analyzer + spacy ko_core_news_sm-3.8.0",
     "korean_ner": "spaCy ko_core_news_sm-3.8.0",
-    "regex": "8-pattern baseline"
-  },
-  "summary": {
-    "total_clues_evaluated": 185,
-    "missed_by_all_three_tools": 98,
-    "missed_rate": 0.53,
-    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 53.0%를 탐지하지 못함 확인 -> c1_span 1단 모델 필요성 입증"
+    "regex": "8-pattern baseline",
+    "llm": "pending"
   }
 }
