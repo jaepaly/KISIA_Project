@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}파도풀 — 연결{% endblock %}
+{% block content %}
+
+<div class="guide">
+  <div class="g done"><span class="n">장면 1</span>우리뜰 구경 — 방문자 눈에는 신상이 없다</div>
+  <div class="g on"><span class="n">장면 2</span>파도풀로 스캔</div>
+  <div class="g"><span class="n">장면 3</span>우리뜰에서 조치 3종</div>
+  <div class="g"><span class="n">장면 4</span>재스캔 — 숫자가 내려간다</div>
+</div>
+
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
+
+<div class="card">
+  <h3 class="ct">SNS 계정을 연결하면, 공개 글만 가져옵니다</h3>
+  <p class="lede">파도풀은 우리뜰의 <span class="mono">/api/export/&lt;user_ref&gt;</span> 로 <b>공개 상태의 글·제목·사진 캡션·위치태그·프로필 소개만</b> 봅니다 — 공격자가 볼 수 있는 범위와 정확히 같습니다. 비공개 글, 계정 내부 ID, 이메일은 애초에 넘어오지 않습니다.</p>
+
+  <form method="post" action="/scan" id="scanForm">
+    <div class="chips">
+      {% for a in accounts %}
+        <button type="button" class="chip" onclick="document.getElementById('ref').value='{{ a.user_ref }}'" title="{{ a.alias }}">{{ a.nickname }} <span class="mono">{{ a.user_ref }}</span></button>
+      {% endfor %}
+    </div>
+    <div class="acct">
+      <div class="avatar">🌾</div>
+      <div>
+        <label for="ref" style="font-size:12px;color:var(--ink3)">우리뜰 익명 핸들 (user_ref)</label><br>
+        <input type="text" id="ref" name="user_ref" value="{{ accounts[0].user_ref if accounts else '' }}" placeholder="u_…" required>
+      </div>
+      <div class="actions" style="margin-left:auto"><button class="btn-go" type="submit">스캔 시작</button></div>
+    </div>
+  </form>
+  <p class="lede" style="margin:8px 0 0;font-size:12.5px">스캔은 <b>작성 완료 후 1회</b>입니다. 입력 중 실시간 경고는 응답이 저장 뒤에 도착해 쓸모가 없어서 두지 않았습니다.</p>
+</div>
+
+<div class="card">
+  <h3 class="ct">무엇을 보나</h3>
+  <p class="lede" style="margin:0">이름·전화번호가 하나도 없어도, 나이·사는 곳·가족·소득 같은 <b>준식별자가 여러 글에 흩어져 있다가 결합되면</b> 개인이 특정됩니다. 파도풀은 그 결합을 찾아 <b>「후보가 몇 명까지 좁혀지는가(k)」</b>를 주민등록 인구표로 셉니다 — 정규식·NER 로 이름만 찾는 도구가 「안전」이라 하는 계정에서 숫자가 나옵니다.</p>
+</div>
+
+{% endblock %}

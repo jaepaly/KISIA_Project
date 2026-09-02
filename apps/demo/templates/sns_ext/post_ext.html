@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title or "글" }} — 우리뜰{% endblock %}
+{% block content %}
+
+<p><a href="/u/{{ p.user_ref }}">← {{ p.nickname }} 님의 글</a> · <a href="/">목록</a></p>
+
+{% if flash == 'geo' %}<p style="background:#dfeee3;color:#20713a;padding:8px 12px;border-radius:6px;">✓ 위치태그를 지웠습니다. 다음 내보내기부터 빠집니다 — 파도풀에서 재스캔하세요.</p>{% endif %}
+{% if flash == 'edit' %}<p style="background:#dfeee3;color:#20713a;padding:8px 12px;border-radius:6px;">✓ 글을 고쳤습니다. 글은 계속 공개 상태입니다 — 파도풀에서 재스캔하세요.</p>{% endif %}
+
+<div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
+  <h1>{{ p.title or "(제목 없음)" }}</h1>
+  <div class="post-meta">
+    <a href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
+    · {{ p.created_at[:16].replace('T', ' ') }}
+    {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+    {% if p.visibility == 'private' %}· <span class="badge private">비공개</span>{% endif %}
+  </div>
+
+  <p style="white-space: pre-wrap; margin-top: 16px;">{{ p.body }}</p>
+
+  {% if photos %}
+    <div style="margin-top: 16px;">
+      {% for ph in photos %}
+        <p style="color:#888; font-size:0.9em;">📷 사진 {{ ph.idx + 1 }} — {{ ph.caption }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;border-top:1px solid #eee;padding-top:12px;">
+    <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility">
+      <input type="hidden" name="back" value="/posts/{{ p.post_id }}">
+      <button type="submit" class="ghost">
+        {% if p.visibility == 'public' %}🔒 비공개로 전환{% else %}🌐 공개로 전환{% endif %}
+      </button>
+    </form>
+    {% if p.geo_tag %}
+    <form class="inline" method="post" action="/posts/{{ p.post_id }}/geo_tag">
+      <button type="submit" class="ghost">📍 위치태그 지우기</button>
+    </form>
+    {% endif %}
+    <a href="/posts/{{ p.post_id }}/edit"><button type="button" class="ghost">✎ 본문 고치기</button></a>
+  </div>
+  <p style="font-size:0.8em;color:#999;margin:10px 0 0;">비공개는 삭제가 아닙니다 — 내 서랍에는 그대로 남고 언제든 되돌릴 수 있습니다.</p>
+</div>
+
+{% endblock %}

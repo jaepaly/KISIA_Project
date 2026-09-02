@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}파도풀{% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/static/demo.css">
+</head>
+<body>
+  <div class="disclose">합성 인물·합성 글 · 1단 탐지는 <b>규칙 기반 스탑갭</b>(KoELECTRA v1 은 W6 통합) · 특정성 k 는 <b>실제 주민등록 인구표</b> · 외부 호출 {% if external_on %}<b>리라이트 1건(데모 한정)</b>{% else %}<b>0건</b>{% endif %} · 제품은 로컬 추론</div>
+  <div class="wrap">
+    <div class="pp-head">
+      <a class="pp-logo" href="/">🛟 파도<em>풀</em></a>
+      <span class="pp-sub">내 글이 나를 얼마나 특정하는가 — 재식별 위험 셀프 점검</span>
+      <nav class="pp-nav"><a href="{{ sns_url }}" target="sns">🌱 우리뜰 열기 ↗</a></nav>
+    </div>
+    <div class="pp-body">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  <p class="footnote">{% block foot %}대회 제출용 데모(<span class="mono">apps/demo</span>) — 정본은 팀의 W5 분석 웹앱입니다. 조치 3종 + 예외 1 은 <span class="mono">D-stage2.md §2 · stage2-io.schema.json</span> 계약 그대로이며, 결과 JSON 은 <span class="mono">/api/result/&lt;user_ref&gt;</span> 에서 계약 형식으로 볼 수 있습니다.{% endblock %}</p>
+</body>
+</html>

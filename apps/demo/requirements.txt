@@ -1,0 +1,5 @@
+# 파도풀 데모 (apps/demo). 저장소 루트 requirements 와 별도 — 이 앱만의 의존성.
+# 엔진은 src/kopl (c1_span · c2_specificity) 을 그대로 쓴다 — PYTHONPATH=src 또는 app.py 가 넣는다.
+Flask>=3.0
+requests>=2.31
+jsonschema>=4.20     # 테스트에서 계약 대조

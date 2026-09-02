@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}파도풀 — {{ nickname }} 진단{% endblock %}
+{% block content %}
+{% set k = base.k %}
+{% set acted = prev is not none %}
+
+<div class="guide">
+  <div class="g done"><span class="n">장면 1</span>우리뜰 구경</div>
+  <div class="g done"><span class="n">장면 2</span>파도풀로 스캔</div>
+  <div class="g {{ 'done' if acted else 'on' }}"><span class="n">장면 3</span>우리뜰에서 조치 3종 — 버튼은 SNS 에 있다</div>
+  <div class="g {{ 'on' if acted else '' }}"><span class="n">장면 4</span>재스캔 — 숫자가 내려간다</div>
+</div>
+
+<div class="card">
+  <div class="risk">
+    <div class="gauge g-{{ base.css }}">
+      <div class="lvl">{{ base.label }}</div>
+      <div class="num">{{ base.risk if base.risk is not none else '—' }}</div>
+      <div class="cap">재식별 위험 점수 (후보 수 로그 척도)</div>
+    </div>
+    <div class="riskmeta">
+      <div class="row"><span>이 계정으로 좁혀지는 후보</span><span class="v" style="color:var(--{{ base.css }})">{% if k %}약 {{ '{:,}'.format(k) }}명{% else %}산출 불가{% endif %} <span style="font-weight:400;color:var(--ink3);font-size:11px">k_level {{ base.k_level }}</span></span></div>
+      <div class="row"><span>신호가 잡힌 신상 속성</span><span class="v">7개 중 {{ leaking|length }}개</span></div>
+      <div class="row"><span>이름·주소·전화번호·이메일 노출</span><span class="v" style="color:var(--{{ 'hi' if n_direct else 'low' }})">{{ n_direct }}건</span></div>
+      <div class="row"><span>읽은 글</span><span class="v">공개 {{ n_posts }}편 · {{ nickname }} <span class="mono" style="font-weight:400">{{ user_ref }}</span></span></div>
+    </div>
+  </div>
+  <p class="lede" style="margin-top:12px"><b>직접 식별자는 {{ n_direct }}건인데 후보가 {% if k %}{{ '{:,}'.format(k) }}명{% else %}—{% endif %}까지 좁혀집니다.</b> 글 속 문장들의 <b>결합</b>과 글 밖의 <b>활동 메타</b>(위치태그)·<b>프로필</b>이 함께 좁힙니다. 이름·전화번호만 찾는 검사 도구는 이 계정을 「안전」으로 판정합니다.</p>
+  {% if acted %}
+  <div class="delta-banner">조치 반영 — 후보 <b>{{ '{:,}'.format(prev.k) }}명 → {{ '{:,}'.format(k) }}명</b> · 위험 점수 {{ prev.risk }} → <b>{{ base.risk }}</b>. 글을 다 지우지 않아도 됩니다.</div>
+  {% endif %}
+  <div class="findings">
+    {% for attr, f in st2.findings.items() %}
+      <div class="fd {{ f.verdict }}"><div class="a">{{ attr_ko[attr] }}</div><div class="v">{{ {'specified':'특정됨','narrowed':'좁혀짐','weak_signal':'약한 신호','abstain':'기권'}[f.verdict] }}</div>
+        <div class="a">{{ f.evidence|length }}개 근거{% if f.cross_post %} · 글 결합{% endif %}</div></div>
+    {% endfor %}
+  </div>
+  <p class="lede" style="margin:8px 0 0;font-size:12px">「기권」은 오류가 아니라 설계 동작입니다 — 단서가 없으면 추측하지 않습니다. 판정은 «무엇이 특정 가능한가» 까지이고 실제 값은 산출하지 않습니다.</p>
+</div>
+
+<div class="card">
+  <h3 class="ct">어떻게 좁혀지나</h3>
+  <p class="lede">각 단계는 행정안전부 주민등록 인구통계(읍면동 × 5세 × 성별)에서 실제로 센 수입니다. 예시값이 아닙니다.</p>
+  <ul class="funnel">
+    {% for s in base.steps %}
+      {% set last = loop.last %}
+      <li class="{{ 'abst' if s.method == 'abstain' else '' }} {{ 'final' if loop.index == base.steps|length - 1 and s.method != 'abstain' or (last and s.method != 'abstain') else '' }}">
+        <span>
+          <span class="desc">{% if s.src and s.src.channel == 'geo_tag' %}<span class="metatag">메타</span>{% endif %}{{ s.condition }}</span>
+          <div class="src">
+            {% if s.src and s.src.post_id %}<a href="{{ sns_url }}/posts/{{ s.src.post_id }}" target="sns">{{ s.src.post_id }}</a> · {{ s.src.channel }} · 「{{ s.src.text }}」
+            {% elif s.src and s.src.channel == 'flags.dialect_hits' %}어휘 {{ s.src.text }} — {{ s.src.posts|join(' · ') }} 외
+            {% elif s.method == 'abstain' %}단서 없음 → 추측하지 않음
+            {% else %}{{ s.method }}{% endif %}
+          </div>
+        </span>
+        <span class="k">{{ '{:,}'.format(s.n_after) }}</span>
+      </li>
+    {% endfor %}
+    {% for s in cut %}
+      <li class="cut"><span><span class="desc">{{ s.condition }}</span><div class="src">✂ 조치로 이 경로가 끊겼습니다</div></span><span class="k">—</span></li>
+    {% endfor %}
+  </ul>
+  {% if traps %}
+  <div class="trap"><b>⚠ 헷갈리는 지명·표현은 걸러냈습니다</b> — 지명 사전만 쓰는 도구는 아래를 현 거주지로 잘못 찍습니다.
+    <ul>
+      {% for t in traps %}<li><b>{{ t.kind }}</b> · <a href="{{ sns_url }}/posts/{{ t.post_id }}" target="sns">{{ t.post_id }}</a> 「{{ t.text }}」 <span class="q">— {{ t.why }}</span><br><span class="q" style="font-size:12px">“{{ t.sentence }}”</span></li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3 class="ct">근거 — 긴 잡담 속 어느 문장이 새는가</h3>
+  <p class="lede">글은 원문 그대로입니다. 스위치를 켜면 새는 자리에만 형광이 켜집니다. 점선은 <b>잡았지만 걸러낸</b> 표현입니다.</p>
+  <div class="lens-row"><span>위험 문장 표시</span><button class="sw" id="lensSw" role="switch" aria-checked="false" aria-label="위험 문장 표시" onclick="toggleLens(this)"><i></i></button></div>
+  <div class="legend" id="lensLegend" hidden>
+    <span><i style="background:var(--mark-loc)"></i>사는 곳·장소</span><span><i style="background:var(--mark-age)"></i>나이</span>
+    <span><i style="background:var(--mark-fam)"></i>가족·성별</span><span><i style="background:var(--mark-inc)"></i>소득·직업</span>
+    <span><i style="background:var(--mark-com)"></i>이동·통근</span><span><i style="border-bottom:2px dashed var(--mid);height:6px"></i>걸러낸 표현</span>
+  </div>
+  <div id="evidence" class="lens-off">
+    {% for c in cards %}
+      <div class="evi">
+        <div class="w">{% if c.post_id.startswith('프로필') %}{{ c.post_id }}{% else %}<a href="{{ sns_url }}/posts/{{ c.post_id }}" target="sns">{{ c.post_id }}</a>{% endif %}
+          {% if c.geo_tag %}<span class="geochip">📍 {{ c.geo_tag }}</span>{% endif %}
+          {% for d in c.dialect %}<span class="dchip">{{ d }}</span>{% endfor %}
+          <span style="margin-left:auto">{{ c.n_spans }}개 단서</span></div>
+        {% for ch in c.channels %}
+          {% if ch.text_id == 'title' %}<div class="bd" style="font-weight:700;color:var(--ink)">{{ ch.html }}</div>
+          {% elif ch.text_id.startswith('photo_caption') %}<div class="cap">📷 {{ ch.html }}</div>
+          {% else %}<div class="bd">{{ ch.html }}</div>{% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h3 class="ct">조치 — 부담이 낮은 것부터 권합니다</h3>
+  <p class="lede">전부 할 필요 없습니다. 예상 효과는 그 조치를 적용한 상태로 다시 센 값이고, <b>실행 버튼은 우리뜰에 있습니다.</b> 파도풀은 남의 글을 직접 바꾸지 않습니다 — 그게 이미 침해입니다.</p>
+  {% set names = {'unpublish': '① 부분 비공개', 'activity_meta': '② 활동 메타 관리 — 위치태그 끄기', 'rewrite': '③ 리라이트 — 표현만 바꾸기'} %}
+  {% set sure = {'highest': '가장 확실', 'high': '확실', 'medium': '잔존 단서 가능'} %}
+  {% for a in rec.actions %}
+    <div class="act">
+      <div class="head"><span class="nm">{{ names[a.action_type] }}</span>
+        <span class="pill b-{{ {'low':'low','medium':'mid','high':'hi'}[a.burden] }}">부담 {{ {'low':'낮음','medium':'중간','high':'높음 · 글의 뼈대'}[a.burden] }}</span>
+        <span class="pill sure">{{ sure[a.certainty] }}</span>
+        {% if a.action_type == 'unpublish' %}<span class="no">{{ a._post_id }}</span>{% elif a.action_type == 'activity_meta' %}<span class="no">{{ a._post_id }} · geo_tag</span>{% else %}<span class="no">{{ a._post_id }}</span>{% endif %}
+      </div>
+      <div class="body">{{ a.rationale }}</div>
+      <div class="delta">이 조치만: {{ '{:,}'.format(k) }} → <b>{{ '{:,}'.format(a._k) }}명</b> · 앞 조치까지 누적하면 → <b>{{ '{:,}'.format(a._k_cum) }}명</b> · 위험 점수 {{ a.projected_delta }}</div>
+
+      {% if a.action_type == 'rewrite' and a._span_id in rewrites %}
+        {% set cands = rewrites[a._span_id] %}
+        <div class="diff" style="margin-top:8px"><del>{{ cands[0]._sentence }}</del></div>
+        {% for c in cands %}
+          <form method="post" action="{{ sns_url }}/posts/{{ a._post_id }}/edit" target="sns" class="rwopt">
+            <input type="hidden" name="from" value="padopool">
+            <input type="hidden" name="note" value="{{ names[a.action_type] }} · 후보 {{ loop.index }} 「{{ c.suggestion }}」 ({{ c._note }})">
+            <input type="hidden" name="{{ c.field }}" value="{{ c.new_full }}">
+            <span><span class="cand">「{{ c.suggestion }}」</span> <span class="nt">{{ c._note }}</span><div class="nt" style="color:var(--ink2)">→ {{ c._new_sentence }}</div></span>
+            <span class="sim" title="문자 2-gram Jaccard — 임베딩 유사도가 아닙니다">유사도 {{ '%.2f'|format(c.semantic_similarity) }}</span>
+            <button class="btn-apply" type="submit">이 표현으로 우리뜰에서 고치기 →</button>
+          </form>
+        {% endfor %}
+        <div class="nt" style="font-size:12px;color:var(--ink3);margin-top:4px">말투는 그대로 두고 새는 정보만 바꿉니다. 안전할수록 원문에서 멀어집니다(유사도 ↓). 어느 것도 마음에 안 들면 우리뜰 수정 화면에서 직접 고쳐 쓰면 됩니다. 후보는 {% if st2.provenance.external_llm_used %}데모 한정 외부 API{% else %}캐시·규칙(2단 모델 자리 — 다음 버전){% endif %}가 만들었습니다.</div>
+      {% else %}
+        <div class="go">
+          <a class="btn btn-earth" href="{{ sns_url }}/posts/{{ a._post_id }}" target="sns">🌱 우리뜰에서 {% if a.action_type == 'unpublish' %}비공개하기{% else %}위치태그 끄기{% endif %} →</a>
+          <span style="font-size:12px;color:var(--ink3)">{% if a.action_type == 'unpublish' %}비공개는 삭제가 아닙니다 — 언제든 되돌립니다.{% else %}본문을 안 읽는 채널이라 본문 스캔 도구는 못 봅니다. 선행 측정에서 감소 폭 1위였던 조치입니다.{% endif %}</span>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <div class="except">④ 삭제 권고 <b>{{ rec.exceptional|length }}건</b> — 리라이트로 해결되지 않는 글이 없어 기본 추천에 올리지 않았습니다. 삭제는 되돌릴 수 없어 마지막 예외 경로입니다.</div>
+  <div class="boundary"><b>파도풀은 제안까지만 합니다.</b> 글을 고치고 닫는 결정과 실행은 우리뜰에서, 사용자가 직접 합니다. 전부 적용하면 후보 <b>{{ '{:,}'.format(rec.projected_k) }}명</b> · 위험 점수 {{ rec.projected.current_risk|int }} → <b>{{ rec.projected.projected_risk|int }}</b>.</div>
+  <div class="actions">
+    <a class="btn btn-ghost" href="/api/result/{{ user_ref }}" target="_blank">계약 JSON 보기</a>
+    <form method="post" action="/forget/{{ user_ref }}" style="display:inline"><button class="btn-ghost" type="submit">결과 지우기</button></form>
+    <form method="post" action="/scan" style="display:inline"><input type="hidden" name="user_ref" value="{{ user_ref }}"><button class="btn-go" type="submit">재스캔</button></form>
+  </div>
+</div>
+
+<script>
+function toggleLens(btn){
+  const on = btn.getAttribute('aria-checked') !== 'true';
+  btn.setAttribute('aria-checked', String(on));
+  document.getElementById('evidence').classList.toggle('lens-off', !on);
+  document.getElementById('lensLegend').hidden = !on;
+}
+</script>
+{% endblock %}

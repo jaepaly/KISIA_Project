@@ -138,3 +138,6 @@ dist/
 
 # 샤드끼리 덮어써서 마지막 샤드 것만 남는다 — 합산은 스크립트가 글에서 다시 낸다
 data/corpus/v0/posts/_summary.json
+
+# 가상 SNS 로컬 DB — 시딩 스크립트로 언제든 다시 만든다 (howto/e-sns.md §5)
+/data/interim/
