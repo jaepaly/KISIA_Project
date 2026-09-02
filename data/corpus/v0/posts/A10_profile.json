@@ -1,0 +1,16 @@
+{
+  "persona_id": "A10",
+  "texts": {
+    "profile_bio": "다이어리 꾸미는 게 취미"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "다이어리 꾸미는 게 취미",
+    "attr": "age",
+    "level": "inferential",
+    "subject": "self",
+    "note": "프로필 단서"
+  },
+  "persona_schema_version": "0.2"
+}

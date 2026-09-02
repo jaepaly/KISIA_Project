@@ -1,0 +1,17 @@
+{
+  "persona_id": "D05",
+  "texts": {
+    "profile_bio": "손녀가 맹글어 줬다. 시골서 그냥 소일한다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "손녀가 맹글어 줬다. 시골서 그냥 소일한다",
+    "attr": "age",
+    "level": "inferential",
+    "subject": "self",
+    "note": "§9-1 본문 밖. '손녀가 있다'가 연령 하한을 주고 '시골에서 소일'이 occupation(무직)을 준다 — 유형-속성 1:n. 항상 켜져 있어 글 하나만 봐도 노출되는데 본문 스캔에는 안 잡힌다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,16 @@
+{
+  "persona_id": "A04",
+  "texts": {
+    "profile_bio": "자전거랑 주말 기록"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "자전거랑 주말 기록",
+    "attr": "commute",
+    "level": "implicit",
+    "subject": "self",
+    "note": "프로필 단서"
+  },
+  "persona_schema_version": "0.2"
+}

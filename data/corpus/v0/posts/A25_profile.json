@@ -1,0 +1,16 @@
+{
+  "persona_id": "A25",
+  "texts": {
+    "profile_bio": "부산 할매의 일기장"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "부산 할매의 일기장",
+    "attr": "location",
+    "level": "explicit",
+    "subject": "self",
+    "note": "본문 밖 단서 (프로필). 지명을 직접 언급하여 위치 노출. 본문 밖 단서 할당량 기여"
+  },
+  "persona_schema_version": "0.2"
+}

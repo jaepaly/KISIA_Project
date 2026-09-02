@@ -1,0 +1,16 @@
+{
+  "persona_id": "A19",
+  "texts": {
+    "profile_bio": "송도 직장인의 맛집 털이"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "송도 직장인의 맛집 털이",
+    "attr": "location",
+    "level": "inferential",
+    "subject": "self",
+    "note": "본문 밖 단서 (프로필). 위치와 직업 동시 노출."
+  },
+  "persona_schema_version": "0.2"
+}

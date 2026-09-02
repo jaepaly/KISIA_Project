@@ -1,0 +1,16 @@
+{
+  "persona_id": "A23",
+  "texts": {
+    "profile_bio": "딸셋아빠 1202호 거주기"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "딸셋아빠 1202호 거주기",
+    "attr": "family",
+    "level": "implicit",
+    "subject": "self",
+    "note": "본문 밖 상시 단서 (계정명 구조). 가족 수와 주거 형태 노출. 본문 밖 단서 할당량 기여"
+  },
+  "persona_schema_version": "0.2"
+}
