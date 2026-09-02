@@ -177,7 +177,7 @@ def finalize(spans: list[dict], post_id: str, texts: dict) -> tuple[list[dict], 
         if sp.get("level") not in label_prompts.LEVELS:
             bad.append(f"level={sp.get('level')}"); continue
         if sp.get("subject") not in label_prompts.SUBJECTS:
-                bad.append(f"subject={sp.get('subject')}"); continue
+            bad.append(f"subject={sp.get('subject')}"); continue
         if not TEXT_ID_RE.match(sp["text_id"]):
             bad.append(f"text_id={sp['text_id']}"); continue
         if sp["text"] != texts[sp["text_id"]][sp["start"]:sp["end"]]:
