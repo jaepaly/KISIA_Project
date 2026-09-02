@@ -1,0 +1,643 @@
+{
+  "생성": "scripts/sample_gold.py --seed 20260901 --target 200",
+  "설명": "blind 200 대상 글. 교사 라벨을 보기 전에 매긴다. 등급·속성은 일부러 담지 않았다 — 정답을 보면 blind 가 아니다.",
+  "출력": "data/corpus/v0/gold/blind/<persona_id>_spans.jsonl",
+  "글": [
+    {
+      "persona_id": "A01",
+      "post": "b04"
+    },
+    {
+      "persona_id": "A01",
+      "post": "b06"
+    },
+    {
+      "persona_id": "A02",
+      "post": "b07"
+    },
+    {
+      "persona_id": "A03",
+      "post": "b08"
+    },
+    {
+      "persona_id": "A03",
+      "post": "b10"
+    },
+    {
+      "persona_id": "A03",
+      "post": "b16"
+    },
+    {
+      "persona_id": "A04",
+      "post": "b04"
+    },
+    {
+      "persona_id": "A04",
+      "post": "b07"
+    },
+    {
+      "persona_id": "A05",
+      "post": "b06"
+    },
+    {
+      "persona_id": "A07",
+      "post": "b16"
+    },
+    {
+      "persona_id": "A07",
+      "post": "b19"
+    },
+    {
+      "persona_id": "A08",
+      "post": "b09"
+    },
+    {
+      "persona_id": "A08",
+      "post": "b21"
+    },
+    {
+      "persona_id": "A10",
+      "post": "b08"
+    },
+    {
+      "persona_id": "A11",
+      "post": "b18"
+    },
+    {
+      "persona_id": "A12",
+      "post": "b26"
+    },
+    {
+      "persona_id": "A12",
+      "post": "b28"
+    },
+    {
+      "persona_id": "A13",
+      "post": "b02"
+    },
+    {
+      "persona_id": "A13",
+      "post": "b13"
+    },
+    {
+      "persona_id": "A14",
+      "post": "b04"
+    },
+    {
+      "persona_id": "A14",
+      "post": "b09"
+    },
+    {
+      "persona_id": "A15",
+      "post": "b15"
+    },
+    {
+      "persona_id": "A16",
+      "post": "b07"
+    },
+    {
+      "persona_id": "A18",
+      "post": "b14"
+    },
+    {
+      "persona_id": "A19",
+      "post": "b20"
+    },
+    {
+      "persona_id": "A19",
+      "post": "b22"
+    },
+    {
+      "persona_id": "A20",
+      "post": "b27"
+    },
+    {
+      "persona_id": "A22",
+      "post": "b05"
+    },
+    {
+      "persona_id": "A23",
+      "post": "b20"
+    },
+    {
+      "persona_id": "A24",
+      "post": "b08"
+    },
+    {
+      "persona_id": "A24",
+      "post": "b26"
+    },
+    {
+      "persona_id": "A25",
+      "post": "b10"
+    },
+    {
+      "persona_id": "A25",
+      "post": "b15"
+    },
+    {
+      "persona_id": "A26",
+      "post": "b07"
+    },
+    {
+      "persona_id": "B02",
+      "post": "b06"
+    },
+    {
+      "persona_id": "B02",
+      "post": "b16"
+    },
+    {
+      "persona_id": "B04",
+      "post": "b14"
+    },
+    {
+      "persona_id": "B05",
+      "post": "b14"
+    },
+    {
+      "persona_id": "B06",
+      "post": "b08"
+    },
+    {
+      "persona_id": "B06",
+      "post": "b12"
+    },
+    {
+      "persona_id": "B06",
+      "post": "b16"
+    },
+    {
+      "persona_id": "B07",
+      "post": "b17"
+    },
+    {
+      "persona_id": "B07",
+      "post": "b22"
+    },
+    {
+      "persona_id": "B08",
+      "post": "b26"
+    },
+    {
+      "persona_id": "B09",
+      "post": "b12"
+    },
+    {
+      "persona_id": "B10",
+      "post": "b16"
+    },
+    {
+      "persona_id": "B10",
+      "post": "b20"
+    },
+    {
+      "persona_id": "B11",
+      "post": "b02"
+    },
+    {
+      "persona_id": "B12",
+      "post": "b04"
+    },
+    {
+      "persona_id": "B12",
+      "post": "b22"
+    },
+    {
+      "persona_id": "B13",
+      "post": "b08"
+    },
+    {
+      "persona_id": "B14",
+      "post": "b09"
+    },
+    {
+      "persona_id": "B14",
+      "post": "b17"
+    },
+    {
+      "persona_id": "B15",
+      "post": "b13"
+    },
+    {
+      "persona_id": "B15",
+      "post": "b28"
+    },
+    {
+      "persona_id": "B16",
+      "post": "b21"
+    },
+    {
+      "persona_id": "B16",
+      "post": "b26"
+    },
+    {
+      "persona_id": "B17",
+      "post": "b14"
+    },
+    {
+      "persona_id": "B17",
+      "post": "b16"
+    },
+    {
+      "persona_id": "B17",
+      "post": "b19"
+    },
+    {
+      "persona_id": "B18",
+      "post": "b12"
+    },
+    {
+      "persona_id": "B18",
+      "post": "b27"
+    },
+    {
+      "persona_id": "B19",
+      "post": "b15"
+    },
+    {
+      "persona_id": "B20",
+      "post": "b26"
+    },
+    {
+      "persona_id": "C01",
+      "post": "b15"
+    },
+    {
+      "persona_id": "C02",
+      "post": "b03"
+    },
+    {
+      "persona_id": "C03",
+      "post": "b09"
+    },
+    {
+      "persona_id": "C04",
+      "post": "b09"
+    },
+    {
+      "persona_id": "C04",
+      "post": "b15"
+    },
+    {
+      "persona_id": "C05",
+      "post": "b15"
+    },
+    {
+      "persona_id": "C06",
+      "post": "b06"
+    },
+    {
+      "persona_id": "C06",
+      "post": "b18"
+    },
+    {
+      "persona_id": "C07",
+      "post": "b03"
+    },
+    {
+      "persona_id": "C07",
+      "post": "b09"
+    },
+    {
+      "persona_id": "C08",
+      "post": "b18"
+    },
+    {
+      "persona_id": "C09",
+      "post": "b03"
+    },
+    {
+      "persona_id": "C10",
+      "post": "b15"
+    },
+    {
+      "persona_id": "C11",
+      "post": "b09"
+    },
+    {
+      "persona_id": "C12",
+      "post": "b03"
+    },
+    {
+      "persona_id": "C13",
+      "post": "b15"
+    },
+    {
+      "persona_id": "C14",
+      "post": "b03"
+    },
+    {
+      "persona_id": "C15",
+      "post": "b12"
+    },
+    {
+      "persona_id": "C17",
+      "post": "b12"
+    },
+    {
+      "persona_id": "C18",
+      "post": "b09"
+    },
+    {
+      "persona_id": "C20",
+      "post": "b06"
+    },
+    {
+      "persona_id": "C20",
+      "post": "b18"
+    },
+    {
+      "persona_id": "D01",
+      "post": "b04"
+    },
+    {
+      "persona_id": "D01",
+      "post": "b07"
+    },
+    {
+      "persona_id": "D01",
+      "post": "b18"
+    },
+    {
+      "persona_id": "D03",
+      "post": "b04"
+    },
+    {
+      "persona_id": "D03",
+      "post": "b15"
+    },
+    {
+      "persona_id": "D04",
+      "post": "b12"
+    },
+    {
+      "persona_id": "D04",
+      "post": "b14"
+    },
+    {
+      "persona_id": "D04",
+      "post": "b19"
+    },
+    {
+      "persona_id": "D05",
+      "post": "b12"
+    },
+    {
+      "persona_id": "D06",
+      "post": "b11"
+    },
+    {
+      "persona_id": "D07",
+      "post": "b03"
+    },
+    {
+      "persona_id": "D07",
+      "post": "b06"
+    },
+    {
+      "persona_id": "D07",
+      "post": "b09"
+    },
+    {
+      "persona_id": "D08",
+      "post": "b13"
+    },
+    {
+      "persona_id": "D09",
+      "post": "b12"
+    },
+    {
+      "persona_id": "D09",
+      "post": "b22"
+    },
+    {
+      "persona_id": "D10",
+      "post": "b06"
+    },
+    {
+      "persona_id": "D10",
+      "post": "b11"
+    },
+    {
+      "persona_id": "D10",
+      "post": "b21"
+    },
+    {
+      "persona_id": "D11",
+      "post": "b10"
+    },
+    {
+      "persona_id": "D12",
+      "post": "b13"
+    },
+    {
+      "persona_id": "D12",
+      "post": "b17"
+    },
+    {
+      "persona_id": "D13",
+      "post": "b16"
+    },
+    {
+      "persona_id": "D14",
+      "post": "b11"
+    },
+    {
+      "persona_id": "D15",
+      "post": "b14"
+    },
+    {
+      "persona_id": "D17",
+      "post": "b22"
+    },
+    {
+      "persona_id": "D18",
+      "post": "b17"
+    },
+    {
+      "persona_id": "D19",
+      "post": "b11"
+    },
+    {
+      "persona_id": "D20",
+      "post": "b13"
+    },
+    {
+      "persona_id": "D20",
+      "post": "b28"
+    },
+    {
+      "persona_id": "D21",
+      "post": "b10"
+    },
+    {
+      "persona_id": "D22",
+      "post": "b14"
+    },
+    {
+      "persona_id": "D23",
+      "post": "b25"
+    },
+    {
+      "persona_id": "D24",
+      "post": "b02"
+    },
+    {
+      "persona_id": "D24",
+      "post": "b12"
+    },
+    {
+      "persona_id": "E01",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E01",
+      "post": "b09"
+    },
+    {
+      "persona_id": "E01",
+      "post": "b15"
+    },
+    {
+      "persona_id": "E03",
+      "post": "b08"
+    },
+    {
+      "persona_id": "E03",
+      "post": "b19"
+    },
+    {
+      "persona_id": "E05",
+      "post": "b10"
+    },
+    {
+      "persona_id": "E05",
+      "post": "b17"
+    },
+    {
+      "persona_id": "E06",
+      "post": "b14"
+    },
+    {
+      "persona_id": "E07",
+      "post": "b17"
+    },
+    {
+      "persona_id": "E07",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E08",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E08",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E10",
+      "post": "b14"
+    },
+    {
+      "persona_id": "E11",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E11",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E12",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E12",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E13",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E13",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E14",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E14",
+      "post": "b11"
+    },
+    {
+      "persona_id": "E15",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E15",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E15",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E16",
+      "post": "b14"
+    },
+    {
+      "persona_id": "E16",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E17",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E17",
+      "post": "b08"
+    },
+    {
+      "persona_id": "E18",
+      "post": "b02"
+    },
+    {
+      "persona_id": "E18",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E18",
+      "post": "b17"
+    },
+    {
+      "persona_id": "E19",
+      "post": "b08"
+    },
+    {
+      "persona_id": "E20",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E20",
+      "post": "b14"
+    },
+    {
+      "persona_id": "E21",
+      "post": "b14"
+    },
+    {
+      "persona_id": "S01",
+      "post": "b06"
+    },
+    {
+      "persona_id": "S01",
+      "post": "b17"
+    },
+    {
+      "persona_id": "S01b",
+      "post": "b15"
+    }
+  ]
+}
