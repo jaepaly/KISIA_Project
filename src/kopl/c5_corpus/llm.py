@@ -211,6 +211,16 @@ class LLMClient:
         )
         if r.returncode != 0:
             raise LLMError(f"CLI 실패(rc={r.returncode}): {r.stderr[:300]}")
+        # ⚠️ codex 는 실패해도 rc=0 을 준다. 지원하지 않는 모델을 넘기면
+        #    stderr 에만 ERROR 를 찍고 stdout 은 비운 채 0 으로 끝난다 —
+        #    「The '<model>' model is not supported when using Codex with a
+        #    ChatGPT account.」 (2026-09-02 실측, codex-cli 0.151.0)
+        #    rc 만 보면 성공으로 읽혀 빈 글이 코퍼스에 들어간다.
+        if not r.stdout.strip():
+            tail = (r.stderr or "").strip().splitlines()
+            hint = tail[-1][:300] if tail else "(stderr 도 비어 있다)"
+            raise LLMError(
+                f"CLI 가 rc=0 인데 응답이 비었다. stderr 마지막 줄: {hint}")
         return r.stdout
 
     def _gemini(self, system: str, user: str) -> str:

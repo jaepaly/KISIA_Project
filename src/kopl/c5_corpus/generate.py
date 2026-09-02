@@ -262,6 +262,12 @@ def generate_persona(
                 print(f"  ✗ {item['post']} 실패: {e}")
                 continue
             texts = parse(raw)
+            # 빈 응답을 기록하면 「글은 있는데 본문이 없는」 껍데기가 코퍼스에 남는다.
+            # 검증기도 감사도 편수만 세므로 조용히 통과한다. 여기서 막는다.
+            if not texts.get("body", "").strip():
+                print(f"  ✗ {item['post']} 본문이 비었다 — 저장하지 않는다 "
+                      f"(응답 {len(raw.strip())}자)")
+                continue
             if getattr(client, "last_truncated", False):
                 print(f"  ✗ {item['post']} 잘림 — 저장하지 않는다. --max-tokens 를 올려라")
                 continue
