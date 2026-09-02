@@ -7,7 +7,7 @@ import re
 import unicodedata
 from pathlib import Path
 from typing import Any
-
+from .dicts import PopulationTable, load_population, pop_lookup
 
 DEFAULT_REGIONS_PATH = (
     Path(__file__).resolve().parents[3]
@@ -50,6 +50,19 @@ def classify_k(k: int | float | None) -> str:
         return "HIGH"
     return "ACCEPTABLE"
 
+def age_to_band(age: int) -> str:
+    """만 나이를 주민등록 인구통계의 5세 연령구간으로 변환한다."""
+    if isinstance(age, bool) or not isinstance(age, int):
+        raise TypeError("age는 정수여야 합니다.")
+
+    if age < 0:
+        raise ValueError("age는 0 이상이어야 합니다.")
+
+    if age >= 100:
+        return "100+"
+
+    start = (age // 5) * 5
+    return f"{start}-{start + 4}"
 
 def _normalize_name(value: str) -> str:
     """지명 비교용으로 제·점·공백 표기 차이를 정규화한다."""
@@ -229,3 +242,90 @@ def resolve(
 def specificity(name: str) -> dict[str, Any]:
     """기본 행정구역 사전으로 지명의 특정성을 조회한다."""
     return _get_default_dictionary().specificity(name)
+
+_DEFAULT_POPULATION: PopulationTable | None = None
+
+
+def _get_default_population() -> PopulationTable:
+    """기본 인구 교차표를 최초 한 번만 읽어 재사용한다."""
+    global _DEFAULT_POPULATION
+
+    if _DEFAULT_POPULATION is None:
+        _DEFAULT_POPULATION = load_population()
+
+    return _DEFAULT_POPULATION
+
+
+def specificity_l1(
+    location: str,
+    age: int,
+    sex: str,
+    context: str | None = None,
+) -> dict[str, Any]:
+    """지역·연령·성별 교차표에서 L1 특정성 k를 계산한다."""
+    normalized_sex = sex.strip().upper()
+
+    if normalized_sex not in {"M", "F"}:
+        raise ValueError("sex는 'M' 또는 'F'여야 합니다.")
+
+    age_band = age_to_band(age)
+    candidates = resolve(location, context=context)
+
+    if not candidates:
+        return {
+            "k": None,
+            "k_level": "UNKNOWN",
+            "age_band": age_band,
+            "sex": normalized_sex,
+        }
+
+    if len(candidates) > 1:
+        return {
+            "k": None,
+            "k_level": "UNKNOWN",
+            "age_band": age_band,
+            "sex": normalized_sex,
+            "ambiguous": True,
+            "candidates": candidates,
+        }
+
+    geo_code = candidates[0]
+    population = pop_lookup(
+        _get_default_population(),
+        geo_code=geo_code,
+        sex=normalized_sex,
+        age_bands=[age_band],
+    )
+
+    if population is None:
+        return {
+            "k": None,
+            "k_level": "UNKNOWN",
+            "geo_code": geo_code,
+            "age_band": age_band,
+            "sex": normalized_sex,
+        }
+
+    floor_applied = population < 1
+    k = max(1, population)
+
+    return {
+        "k": k,
+        "k_level": classify_k(k),
+        "geo_code": geo_code,
+        "age_band": age_band,
+        "sex": normalized_sex,
+        "population": population,
+        "floor_applied": floor_applied,
+        "steps": [
+            {
+                "axis": "location+age+sex",
+                "condition": (
+                    f"{location}({geo_code}) / "
+                    f"{age_band} / {normalized_sex}"
+                ),
+                "n_after": population,
+                "method": "crosstab_lookup",
+            }
+        ],
+    }
