@@ -1,0 +1,16 @@
+{
+  "persona_id": "A11",
+  "texts": {
+    "profile_bio": "하반기 취업 목표"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "하반기 취업 목표",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "프로필 단서 (본문 밖 단서 할당량 충족). 글 하나만 봐도 노출되지만 본문 스캔에는 안 잡힘"
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,16 @@
+{
+  "persona_id": "A02",
+  "texts": {
+    "profile_bio": "집에서 원고 보는 사람"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "집에서 원고 보는 사람",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "프로필 단서"
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,16 @@
+{
+  "persona_id": "A15",
+  "texts": {
+    "profile_bio": "생산직 회사원의 맛집 아카이브"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "생산직 회사원의 맛집 아카이브",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "note": "프로필 단서 (본문 밖 단서 할당량)"
+  },
+  "persona_schema_version": "0.2"
+}

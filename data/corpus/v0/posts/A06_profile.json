@@ -1,0 +1,16 @@
+{
+  "persona_id": "A06",
+  "texts": {
+    "profile_bio": "시험 끝나면 놀 사람"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "시험 끝나면 놀 사람",
+    "attr": "age",
+    "level": "inferential",
+    "subject": "self",
+    "note": "b03 과 같은 세기다. 시험 종류도 시점도 없어 단독으로는 연령대가 안 좁혀진다. 한 인물 안에서 등급 기준이 갈리지 않게 같이 내렸다"
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,16 @@
+{
+  "persona_id": "A08",
+  "texts": {
+    "profile_bio": "올해는 다를 거라고 믿는 중"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "올해는 다를 거라고 믿는 중",
+    "attr": "age",
+    "level": "inferential",
+    "subject": "self",
+    "note": "프로필 단서"
+  },
+  "persona_schema_version": "0.2"
+}
