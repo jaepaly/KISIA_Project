@@ -17,10 +17,15 @@ D 몫은 D · E · S 다 (README W3 — E 인물 21명분과 오버플로를 D �
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
-MINE = ("D", "E", "S")          # D 가 도는 몫
+# D 가 도는 몫. GEN_ROLES 로 덮는다 — 흡수 대상은 주마다 달라진다.
+#   2026-09-02: A 추가. A 계정의 ChatGPT 플랜이 codex 에서 gpt-5.6-sol 을
+#   못 써서(「model is not supported when using Codex with a ChatGPT account」)
+#   README 「한도 초과분 → D」 조항으로 흡수했다.
+MINE = tuple(os.environ.get("GEN_ROLES", "A,D,E,S").split(","))
 
 
 def has_other_trap(persona: dict) -> bool:
