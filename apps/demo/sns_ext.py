@@ -97,6 +97,8 @@ def save_body(post_id: str):
 
 
 if __name__ == "__main__":
-    with sns.connect() as c:
-        sns.init(c)
+    # `with` 는 sqlite 연결을 닫지 않는다(커밋만). 열어 두면 Windows 에서 seed --reset 이 파일을 못 지운다
+    c = sns.connect()
+    sns.init(c)
+    c.close()
     app.run(port=int(os.getenv("SNS_PORT", "3000")), debug=os.getenv("DEMO_DEBUG") == "1")

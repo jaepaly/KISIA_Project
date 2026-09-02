@@ -93,10 +93,21 @@ def main() -> None:
 
     p = db_path()
     if args.reset and p.exists():
-        p.unlink()
-    with connect() as c:
+        try:
+            p.unlink()
+        except PermissionError:
+            # 서버가 파일을 잡고 있다(Windows). 파일 대신 테이블을 비운다 — howto 의 「DROP → schema.sql」
+            c = connect()
+            c.executescript("DROP TABLE IF EXISTS photos; DROP TABLE IF EXISTS posts; DROP TABLE IF EXISTS authors;")
+            c.commit()
+            c.close()
+            print("db 파일이 사용 중이라 테이블만 비웠다 (서버가 떠 있다)")
+    c = connect()
+    try:
         init(c)
         counts = seed(c, pids)
+    finally:
+        c.close()
     print(f"db: {p}")
     for pid, n in counts.items():
         print(f"  {pid}  {user_ref(pid)}  posts={n}")
