@@ -1,0 +1,17 @@
+{
+  "persona_id": "B19",
+  "texts": {
+    "profile_bio": "전주 금암동에서 공기업 취뽀를 노리는 25세 취준생의 기록."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "전주 금암동에서 공기업 취뽀를 노리는 25세 취준생의 기록.",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

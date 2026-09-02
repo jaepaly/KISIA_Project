@@ -1,0 +1,17 @@
+{
+  "persona_id": "B10",
+  "texts": {
+    "profile_bio": "인사팀 14년차의 담담한 직장 생활과 두 아들 키우는 이야기."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "family",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "인사팀 14년차의 담담한 직장 생활과 두 아들 키우는 이야기.",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

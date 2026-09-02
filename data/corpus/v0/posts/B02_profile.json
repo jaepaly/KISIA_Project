@@ -1,0 +1,17 @@
+{
+  "persona_id": "B02",
+  "texts": {
+    "profile_bio": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록.",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "note": "프로필 소개란에 직무(엔지니어) 및 지역(울산 석유화학단지) 명시 (본문 밖 단서 §9-1)",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

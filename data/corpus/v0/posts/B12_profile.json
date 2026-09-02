@@ -1,0 +1,17 @@
+{
+  "persona_id": "B12",
+  "texts": {
+    "profile_bio": "온산공단에서 20년째 중장비 핸들 잡습니다. 주말엔 갯바위 찌낚시."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "family",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "온산공단에서 20년째 중장비 핸들 잡습니다. 주말엔 갯바위 찌낚시.",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

@@ -1,0 +1,17 @@
+{
+  "persona_id": "B03",
+  "texts": {
+    "profile_bio": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.",
+    "attr": "location",
+    "level": "implicit",
+    "subject": "self",
+    "note": "프로필 소개란에 활동 지역(서울 마포) 명시 (본문 밖 단서 §9-1)",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

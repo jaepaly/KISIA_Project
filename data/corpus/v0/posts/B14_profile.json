@@ -1,0 +1,17 @@
+{
+  "persona_id": "B14",
+  "texts": {
+    "profile_bio": "복대동 사는 18살 남고생. 야자와 자습 사이의 소소한 덤프."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "복대동 사는 18살 남고생. 야자와 자습 사이의 소소한 덤프.",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
