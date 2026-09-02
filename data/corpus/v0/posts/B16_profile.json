@@ -1,0 +1,17 @@
+{
+  "persona_id": "B16",
+  "texts": {
+    "profile_bio": "판교 출퇴근하는 33세 백엔드 엔지니어. 커피와 서버 배포의 일상 덤프."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "판교 출퇴근하는 33세 백엔드 엔지니어. 커피와 서버 배포의 일상 덤프.",
+    "note": "⭐ 본문 밖 단서 — 프로필 채널. account.profile_intro와 100% 일치",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

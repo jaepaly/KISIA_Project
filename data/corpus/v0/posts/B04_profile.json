@@ -1,0 +1,17 @@
+{
+  "persona_id": "B04",
+  "texts": {
+    "profile_bio": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "note": "프로필 소개란에 직업(상업 사진작가) 명시 (S12 특화 단서, §9-1)",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

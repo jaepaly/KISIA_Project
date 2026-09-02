@@ -1,0 +1,17 @@
+{
+  "persona_id": "B05",
+  "texts": {
+    "profile_bio": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상."
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.",
+    "attr": "location",
+    "level": "explicit",
+    "subject": "self",
+    "note": "프로필 소개란에 거주지 동(신포동) 명시 (본문 밖 단서 §9-1)",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
