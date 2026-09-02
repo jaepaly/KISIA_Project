@@ -1,0 +1,17 @@
+{
+  "persona_id": "C16",
+  "texts": {
+    "profile_bio": "두 아이 키우며 직접 고른 육아용품을 소개해요"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "두 아이 키우며 직접 고른 육아용품을 소개해요",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "육아용품을 지속적으로 선별하고 소개한다는 표현으로 관련 온라인몰 운영을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

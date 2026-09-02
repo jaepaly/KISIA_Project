@@ -1,0 +1,17 @@
+{
+  "persona_id": "C15",
+  "texts": {
+    "profile_bio": "작은 배 손보고 물때 기다리는 날들"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "작은 배 손보고 물때 기다리는 날들",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "작은 배를 반복적으로 손본다는 표현으로 선박 정비 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

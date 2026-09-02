@@ -1,0 +1,17 @@
+{
+  "persona_id": "C19",
+  "texts": {
+    "profile_bio": "제품과 행사를 촬영하며 빛과 장면을 기록하는 사람"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "제품과 행사를 촬영하며 빛과 장면을 기록하는 사람",
+    "attr": "occupation",
+    "level": "explicit",
+    "subject": "self",
+    "note": "촬영 대상과 작업을 프로필에 직접 명시해 포토그래퍼 직업이 항상 노출되는 본문 밖 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

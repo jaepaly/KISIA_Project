@@ -1,0 +1,17 @@
+{
+  "persona_id": "C17",
+  "texts": {
+    "profile_bio": "품질 문서 보다가 이직 과정도 정리함"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "품질 문서 보다가 이직 과정도 정리함",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "품질 문서 검토와 이직 과정을 반복적으로 기록한다는 표현으로 품질관리 경력직을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

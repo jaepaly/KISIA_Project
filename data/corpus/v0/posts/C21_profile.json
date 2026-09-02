@@ -1,0 +1,17 @@
+{
+  "persona_id": "C21",
+  "texts": {
+    "profile_bio": "설비를 살피고 집에 돌아와 두 아이의 하루를 듣는다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "설비를 살피고 집에 돌아와 두 아이의 하루를 듣는다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "설비를 살핀다는 반복 업무로 시설·설비관리 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

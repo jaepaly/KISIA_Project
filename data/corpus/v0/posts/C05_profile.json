@@ -1,0 +1,17 @@
+{
+  "persona_id": "C05",
+  "texts": {
+    "profile_bio": "직접 확인한 것만 천천히 기록해용☺️"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "직접 확인한 것만 천천히 기록해용☺️",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "note": "확인과 기록을 중시하는 계정 소개가 다른 장부·마감 단서와 결합될 때 사무 직무를 보강한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

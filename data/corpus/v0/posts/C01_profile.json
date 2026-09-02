@@ -1,0 +1,17 @@
+{
+  "persona_id": "C01",
+  "texts": {
+    "profile_bio": "퇴근 후와 주말에 남기는 내돈내산 기록"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "퇴근 후와 주말에 남기는 내돈내산 기록",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "note": "퇴근이라는 표현으로 직장 생활을 약하게 암시하는 본문 밖 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

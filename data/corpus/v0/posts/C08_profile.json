@@ -1,0 +1,17 @@
+{
+  "persona_id": "C08",
+  "texts": {
+    "profile_bio": "장날과 반찬거리 사이에서 하루를 적는다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "장날과 반찬거리 사이에서 하루를 적는다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "장날과 반찬거리의 반복 조합으로 시장 음식 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

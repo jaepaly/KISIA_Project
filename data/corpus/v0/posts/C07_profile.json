@@ -1,0 +1,17 @@
+{
+  "persona_id": "C07",
+  "texts": {
+    "profile_bio": "고치고 던지고 돌아오는 길까지 적습니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "고치고 던지고 돌아오는 길까지 적습니다",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "note": "고친다는 반복 행동으로 수리 경험을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

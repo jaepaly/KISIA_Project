@@ -1,0 +1,17 @@
+{
+  "persona_id": "C09",
+  "texts": {
+    "profile_bio": "농산물 싣고 다닌 길을 기록한다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "농산물 싣고 다닌 길을 기록한다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "농산물을 싣고 반복적으로 이동한다는 표현으로 운송 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

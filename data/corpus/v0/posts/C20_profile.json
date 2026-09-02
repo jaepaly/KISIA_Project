@@ -1,0 +1,17 @@
+{
+  "persona_id": "C20",
+  "texts": {
+    "profile_bio": "중국 생활과 수출입 업무 사이에서 취미를 기록함"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "중국 생활과 수출입 업무 사이에서 취미를 기록함",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "중국 생활과 수출입 업무를 함께 언급해 직업 및 해외 생활을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

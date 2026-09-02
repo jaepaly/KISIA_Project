@@ -1,0 +1,17 @@
+{
+  "persona_id": "C02",
+  "texts": {
+    "profile_bio": "운행 사이 직접 들른 곳만 간단히 기록합니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "운행 사이 직접 들른 곳만 간단히 기록합니다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "운행이라는 표현으로 이동 업무를 암시하는 본문 밖 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

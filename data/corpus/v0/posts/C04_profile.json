@@ -1,0 +1,17 @@
+{
+  "persona_id": "C04",
+  "texts": {
+    "profile_bio": "직접 먹고 써본 것만 남겨용. 주차 정보 우선👍"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "직접 먹고 써본 것만 남겨용. 주차 정보 우선👍",
+    "attr": "commute",
+    "level": "inferential",
+    "subject": "self",
+    "note": "주차 정보를 항상 우선한다는 계정 소개로 차량 중심 이동을 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
