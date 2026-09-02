@@ -1,55 +1,47 @@
 name: weekly-reminder
 
 # =============================================================
-#  주간 마감 리마인더 → Discord #공지
+#  리마인더 — 수동 실행 전용 (현황판)
 #
-#  매주 반복되는 일정 넷을 알린다. PM 이 매주 카톡으로 챙기던 것이다.
+#  ⚠️ 고정 일정 알림(월·화·수·목)은 여기 없다.
+#     PC 작업 스케줄러로 옮겼다 — GitHub 의 schedule 이 실행을
+#     통째로 유실했기 때문이다. 실측:
 #
-#    월 14:00  주간 보고회    → 12:23 알림 (예비 12:59)
-#    화 20:00  팀 회의        → 18:23 알림 (예비 18:59)
-#    수 23:59  개별 보고 마감  → 17:23 알림 (예비 17:59)
-#                                 (승인 대기 PR 을 «사람별로» + PR·이슈 목록)
-#    목 20:00  정기 멘토링    → 18:23 알림 (예비 18:59)
+#       08-27(목)  10.1시간 지연 도착 → 행사 후라 자동 생략
+#       08-31(월)  유실 — 실행 기록 0건
+#       09-02(수)  유실 — 실행 기록 0건
+#       같은 저장소 dashboard: 하루 12회 예정 → 5~6회만 도착
 #
-#  ⚠️ 발송 시각이 정시가 아닌 이유 — GitHub schedule 은 best-effort 고,
-#     정각(0분) cron 은 부하 피크라 지연·유실이 가장 잦다(공식 문서).
-#     실측: 목(08-27) 10.1시간 지연 · 월(08-31) 13:00 분은 통째로 유실.
-#     그래서 ① 정각을 피하고 ② 행사보다 넉넉히 앞당기고 ③ 36분 뒤
-#     예비 cron 을 하나 더 둔다. 둘 다 돌면 아래 중복 검사가 두 번째를
-#     막고, 첫 번째가 유실되면 예비가 발송한다.
+#     GitHub 공식 문서가 schedule 을 best-effort 로 명시한다.
+#     고정 문구는 저장소 상태가 필요 없으므로 여기 둘 이유가 없었다.
 #
-#  그리고 일정과 무관한 현황판이 하나 있다 (수동 실행 전용).
+#       ~/.claude/scheduled-tasks/kisia-meeting-reminder/
+#         send.py      본문·발송 (표준 라이브러리만 쓴다)
+#         run.cmd      작업 스케줄러가 부르는 배치
+#         webhook.txt  웹훅 URL (자격증명 — 저장소에 넣지 않는다)
 #
-#    status   PM 이 아무 때나 쏜다. 「지금 무엇이 누구 손에 있는가」만
-#             적는다. 마감·독촉 문구를 넣지 않는다 — 사실만 있어야
-#             읽고 판단한다.
+#       schtasks /query /tn "KISIA-Reminder-*"
+#
+#  여기 남은 것은 «저장소를 봐야 하는» 것뿐이다.
+#
+#    status   PM 이 아무 때나 쏘는 현황판. 「지금 무엇이 누구 손에
+#             있는가」만 적는다. 마감·독촉 문구를 넣지 않는다 —
+#             사실만 있어야 읽고 판단한다.
 #             gh workflow run weekly-reminder.yml -f kind=status
 #
-#  모임 알림은 «누가·언제» 만 남긴다. 안건을 넣으면 길어지고,
-#  길면 안 읽는다. 안건은 docs/mentoring/ 에 있다.
-#  제출 마감(금)은 PM 단독 작업이라 알림을 두지 않는다.
+#  mon/tue/wed/thu 도 수동으로는 여전히 쏠 수 있다. PC 가 꺼져 있어
+#  놓친 날의 예비 수단이다.
 #
 #  ⚠️ #github 채널과 웹훅을 나눈 이유 — 성격이 다르다.
 #     #github  개인 멘션. 처리하면 끝. 흘러가도 된다
-#     #공지    공지. 남아 있어야 한다. 주 3회뿐이라 안 밀린다
+#     #공지    공지. 남아 있어야 한다
 #     섞으면 알림 설정(@멘션만 / 모든 메시지)을 나눌 수 없다.
 #
 #  ⚠️ 전송은 curl 로 한다. Python urllib 는 Cloudflare 가 UA 를 보고
 #     막는다 (HTTP 403 / error 1010). 실측 2026-08-25.
-#
-#  cron 은 UTC 다. KST = UTC+9.
 # =============================================================
 
 on:
-  schedule:
-    - cron: "23 3 * * 1"   # 월 12:23 KST — 주간 보고회(14:00) 97분 전
-    - cron: "59 3 * * 1"   # 월 12:59 KST — 예비 (본편 유실 시)
-    - cron: "23 9 * * 2"   # 화 18:23 KST — 팀 회의(20:00) 97분 전
-    - cron: "59 9 * * 2"   # 화 18:59 KST — 예비
-    - cron: "23 8 * * 3"   # 수 17:23 KST — 개별 보고 마감(23:59) 전
-    - cron: "59 8 * * 3"   # 수 17:59 KST — 예비
-    - cron: "23 9 * * 4"   # 목 18:23 KST — 정기 멘토링(20:00) 97분 전
-    - cron: "59 9 * * 4"   # 목 18:59 KST — 예비
   workflow_dispatch:
     inputs:
       kind:
@@ -72,7 +64,6 @@ jobs:
         env:
           WEBHOOK: ${{ secrets.DISCORD_ANNOUNCE_WEBHOOK_URL }}
           GH_TOKEN: ${{ github.token }}
-          CRON: ${{ github.event.schedule }}
           KIND_IN: ${{ inputs.kind }}
         run: |
           set -uo pipefail
@@ -81,64 +72,12 @@ jobs:
           MAP=.github/discord-map.json
 
           # 어느 리마인더인가
-          # SHOUR:SMIN = 본편 예정 시각(UTC) — 예비 cron 도 본편 기준으로 지연을 잰다
-          # EVH:EVM    = 행사 시각(UTC). 행사가 지났으면 발송하지 않는다
-          case "${CRON:-}" in
-            "23 3 * * 1"|"59 3 * * 1") KIND=mon; SDOW=1; SHOUR=3; SMIN=23; EVH=5;  EVM=0  ;;
-            "23 9 * * 2"|"59 9 * * 2") KIND=tue; SDOW=2; SHOUR=9; SMIN=23; EVH=11; EVM=0  ;;
-            "23 8 * * 3"|"59 8 * * 3") KIND=wed; SDOW=3; SHOUR=8; SMIN=23; EVH=14; EVM=59 ;;
-            "23 9 * * 4"|"59 9 * * 4") KIND=thu; SDOW=4; SHOUR=9; SMIN=23; EVH=11; EVM=0  ;;
-            *)                         KIND="${KIND_IN:-wed}"; SDOW=""; SHOUR=""; SMIN="" ;;
-          esac
+          KIND="${KIND_IN:-status}"
           echo "kind=$KIND"
 
-          # ── 중복 방지 — 오늘 이미 성공한 schedule 발송이 있으면 끝 ──
-          #  본편·예비가 둘 다 돌면 두 번째가 여기서 멈춘다. 수동 실행
-          #  (workflow_dispatch·status)은 세지 않는다.
-          if [ -n "${CRON:-}" ]; then
-            prior=$(gh run list --workflow weekly-reminder.yml -e schedule -s success                       --created "$(date -u +%Y-%m-%d)" --json databaseId --jq 'length' 2>/dev/null || echo 0)
-            if [ "${prior:-0}" -gt 0 ]; then
-              echo "오늘 이미 발송됨(성공한 schedule 실행 ${prior}건) — 중복 방지로 종료"
-              exit 0
-            fi
-          fi
-
-          # ── 지연 감지 ─────────────────────────────────────────
-          #  GitHub 의 schedule 은 best-effort 다. 큐가 밀리면 몇 시간씩
-          #  늦게 돈다. 실측 2026-08-27 — 목 19:00 KST 예정이 10.1시간
-          #  늦어 금 05:07 KST 에 도착했다. 그때 본문의 「오늘 20:00」은
-          #  거짓말이 된다 — 이미 끝난 일정을 오늘 일로 알린다.
-          #  cron 계산 자체는 맞다(KST = UTC+9). 문제는 발송 시각이다.
+          # 지연 감지·중복 방지는 schedule 트리거 전용이었다. 수동 실행만
+          # 남았으므로 뺐다 — 사람이 지금 쏘는 것이라 「늦게 도착」이 없다.
           WHEN="오늘"; LATE=""
-          if [ -n "${SDOW:-}" ]; then
-            now_s=$(date -u +%s); sched_s=""
-            for i in 0 1 2 3 4 5 6 7; do
-              c=$(( now_s - i * 86400 ))
-              [ "$(date -u -d "@$c" +%u)" = "$SDOW" ] || continue
-              s=$(date -u -d "$(date -u -d "@$c" +%Y-%m-%d) $SHOUR:${SMIN:-0}:00" +%s)
-              if [ "$s" -le "$now_s" ]; then sched_s=$s; break; fi
-            done
-            if [ -n "$sched_s" ]; then
-              # 행사가 이미 끝났으면(행사 +30분) 보내지 않는다 — 지각 도착이
-              # 끝난 회의를 알리는 것은 소음이다. 08-27 실측(10.1h 지연)의 교훈.
-              ev_s=$(date -u -d "$(date -u -d "@$sched_s" +%Y-%m-%d) $EVH:$EVM:00" +%s)
-              if [ "$now_s" -gt $(( ev_s + 1800 )) ]; then
-                echo "행사 시각($(date -u -d "@$ev_s" +%H:%M)U +30분)을 지나 도착 — 발송 생략"
-                exit 0
-              fi
-              mins=$(( (now_s - sched_s) / 60 ))
-              echo "지연 ${mins}분"
-              if [ "$mins" -gt 90 ]; then
-                sk=$(( sched_s + 32400 ))
-                case "$(date -u -d "@$sk" +%u)" in
-                  1) w=월 ;; 2) w=화 ;; 3) w=수 ;; 4) w=목 ;;
-                  5) w=금 ;; 6) w=토 ;; 7) w=일 ;;
-                esac
-                WHEN="$(date -u -d "@$sk" "+%-m월 %-d일")($w)"
-                LATE=$(printf "⚠️ 예정보다 **%d시간 %d분** 늦게 도착했습니다 — GitHub 스케줄 지연입니다.\n아래 **%s** 는 도착일이 아니라 **예정일**입니다." $(( mins / 60 )) $(( mins % 60 )) "$WHEN")
-              fi
-            fi
-          fi
 
           # ── 멘션 만들기. ID 미등록자는 이름만 ─────────────────
           mention() {
