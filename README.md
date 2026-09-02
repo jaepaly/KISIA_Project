@@ -194,6 +194,13 @@ python scripts/corpus_audit.py
 
 **C 가 검수를 겸하면 blind 가 무효가 된다.** 축소해도 이 분리는 사수한다.
 
+> ⚠️ **검수분 저장 전 `python scripts/check_gold.py <파일>` 통과 필수.**
+> 사람이 손으로 검수·수정하며 offset 이 밀리거나 스팬이 겹쳐도 눈으로는
+> 못 잡는다. `label-schema.md` §11 의 14개 규칙(type·level·subject enum,
+> offset 일치, 겹침, span_id 유일성 등)을 기계적으로 검사한다.
+> `label.py` 의 `finalize()`는 생성 시점만 보므로, 검수 이후 안전망은
+> 이 도구뿐이다. A·B·D·E 전원 해당.
+
 ### 못 지킬 때 — 발동 조건·시점·주체를 미리 정한다
 
 | 언제 | 무엇을 보고 | 누가 | 발동하면 |
