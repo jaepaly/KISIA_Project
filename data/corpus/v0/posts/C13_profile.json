@@ -1,0 +1,17 @@
+{
+  "persona_id": "C13",
+  "texts": {
+    "profile_bio": "예약 사이에 손끝과 육아 이야기를 나눠요"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "예약 사이에 손끝과 육아 이야기를 나눠요",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "예약과 손끝 관리의 반복 조합으로 네일 관련 자영업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

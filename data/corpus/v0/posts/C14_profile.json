@@ -1,0 +1,17 @@
+{
+  "persona_id": "C14",
+  "texts": {
+    "profile_bio": "방을 정리하고 체크인을 기다리는 하루를 기록합니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "방을 정리하고 체크인을 기다리는 하루를 기록합니다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "객실 정리와 체크인 대기를 반복한다는 표현으로 숙박업 운영을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

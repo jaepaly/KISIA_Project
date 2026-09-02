@@ -1,0 +1,17 @@
+{
+  "persona_id": "C06",
+  "texts": {
+    "profile_bio": "장을 보고 밥을 지으며 하루를 남긴다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "장을 보고 밥을 지으며 하루를 남긴다",
+    "attr": "occupation",
+    "level": "inferential",
+    "subject": "self",
+    "note": "장을 보고 밥을 짓는 반복 일과로 음식 관련 일을 약하게 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

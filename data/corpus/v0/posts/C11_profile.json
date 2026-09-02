@@ -1,0 +1,17 @@
+{
+  "persona_id": "C11",
+  "texts": {
+    "profile_bio": "댕댕이 털 말리면서 보내는 하루들"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "댕댕이 털 말리면서 보내는 하루들",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "반려동물의 털을 반복적으로 말린다는 표현으로 미용 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

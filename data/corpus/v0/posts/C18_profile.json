@@ -1,0 +1,17 @@
+{
+  "persona_id": "C18",
+  "texts": {
+    "profile_bio": "해진 옷을 고치며 하루의 손길을 기록한다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "해진 옷을 고치며 하루의 손길을 기록한다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "해진 옷을 고친다는 반복 작업으로 의류수선 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

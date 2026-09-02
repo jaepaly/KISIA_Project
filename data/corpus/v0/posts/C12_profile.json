@@ -1,0 +1,17 @@
+{
+  "persona_id": "C12",
+  "texts": {
+    "profile_bio": "세 딸 재우고 남기는 영업일지"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "세 딸 재우고 남기는 영업일지",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "영업일지를 반복적으로 작성한다는 표현으로 영업 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

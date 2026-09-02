@@ -1,0 +1,17 @@
+{
+  "persona_id": "C10",
+  "texts": {
+    "profile_bio": "나무 돌보며 지나간 하루를 남긴다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "clue": "나무 돌보며 지나간 하루를 남긴다",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "note": "나무를 지속적으로 돌본다는 표현으로 과수원 관련 직업을 암시하는 프로필 단서",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
