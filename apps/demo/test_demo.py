@@ -162,7 +162,12 @@ def test_analyzer_never_touches_sns_db_or_writes_platform():
 # ── 파도풀 API — 우리뜰이 붙여 쓰는 창구 ─────────────────────────────────
 @pytest.fixture(scope="module")
 def client():
-    from app import app as pado
+    # `from app import app` 은 apps/sns/test_export.py 가 먼저 등록한 SNS 앱과 이름이 겹친다 — 경로로 직접 읽는다
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("padopool_app", HERE / "app.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    pado = mod.app
     pado.config["TESTING"] = True
     with pado.test_client() as c:
         yield c
