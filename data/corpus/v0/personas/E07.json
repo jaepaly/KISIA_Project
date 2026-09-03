@@ -154,14 +154,14 @@
       "ambiguous": false
     },
     {
-          "post": "b17",
-          "text_id": "body",
-          "clue": "큰아들은 정읍 공장에 다니는데 요새 바쁘다 그려",
-          "attr": "location",
-          "level": "explicit",
-          "subject": "other",
-          "note": "⚠️ 함정 · 통로=근무지 · 관계=④ 인접 (§4-4-1). 아들의 근무지이지 본인 거주지가 아니다. 정읍시는 고창군과 인접한다",
-          "ambiguous": false
+      "post": "b17",
+      "text_id": "body",
+      "clue": "큰아들은 정읍 공장에 다니는데 요새 바쁘다 그려",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=근무지 · 관계=④ 인접 (§4-4-1). 아들의 근무지이지 본인 거주지가 아니다. 정읍시는 고창군과 인접한다",
+      "ambiguous": false
     },
     {
       "post": "b20",

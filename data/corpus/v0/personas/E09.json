@@ -111,14 +111,14 @@
       "ambiguous": true
     },
     {
-          "post": "b08",
-          "text_id": "body",
-          "clue": "아들은 구미 공장 댕긴다꼬,\\n요새는 낯 볼 새도 없다카더라",
-          "attr": "location",
-          "level": "explicit",
-          "subject": "other",
-          "note": "⚠️ 함정 · 통로=근무지 · 관계=① 타지명 (§4-4-1). 아들의 근무지이지 본인 거주지가 아니다. 구미시는 안동시와 다른 시군구다",
-          "ambiguous": false
+      "post": "b08",
+      "text_id": "body",
+      "clue": "아들은 구미 공장 댕긴다꼬,\\n요새는 낯 볼 새도 없다카더라",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=근무지 · 관계=① 타지명 (§4-4-1). 아들의 근무지이지 본인 거주지가 아니다. 구미시는 안동시와 다른 시군구다",
+      "ambiguous": false
     },
     {
       "post": "b11",

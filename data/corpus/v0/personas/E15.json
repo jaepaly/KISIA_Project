@@ -140,14 +140,14 @@
       "ambiguous": true
     },
     {
-          "post": "b14",
-          "text_id": "body",
-          "clue": "동호회 번개가 포항에서 있었다는데 결산 때문에 못 갔다",
-          "attr": "location",
-          "level": "explicit",
-          "subject": "other",
-          "note": "⚠️ 함정 · 통로=행사·모임 · 관계=① 타지명 (§4-4-1). 동호회 모임 장소이고 본인은 가지도 않았다. 포항시는 울산과 다른 시군구다",
-          "ambiguous": false
+      "post": "b14",
+      "text_id": "body",
+      "clue": "동호회 번개가 포항에서 있었다는데 결산 때문에 못 갔다",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=행사·모임 · 관계=① 타지명 (§4-4-1). 동호회 모임 장소이고 본인은 가지도 않았다. 포항시는 울산과 다른 시군구다",
+      "ambiguous": false
     },
     {
       "post": "b08",
