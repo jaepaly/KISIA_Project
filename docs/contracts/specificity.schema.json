@@ -186,6 +186,26 @@
           "minimum": 1,
           "description": "조건 조합에 따른 추정 후보 모집단 크기. 산출할 수 없으면 0이 아닌 null"
         },
+                "k_union": {
+          "type": "number",
+          "minimum": 1,
+          "description": "법정동 1:N 확장 시 후보 행정동 인구의 합"
+        },
+        "k_min": {
+          "type": "number",
+          "minimum": 1,
+          "description": "법정동 1:N 확장 시 후보별 인구의 최솟값. k_level 판정 기준"
+        },
+        "codes": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
+          },
+          "description": "법정동 1:N 확장으로 얻은 행정동 geo_code 전체"
+        },
         "k_level": {
           "type": "string",
           "enum": [
@@ -285,6 +305,14 @@
         "as_of"
       ],
       "properties": {
+                "method": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "legal_dong_expansion"
+          ],
+          "description": "지역을 직접 조회했는지 법정동 1:N 확장을 사용했는지 표시"
+        },
         "source": {
           "type": "string",
           "minLength": 1,
@@ -357,6 +385,7 @@
           "enum": [
             "population_lookup",
             "crosstab_lookup",
+            "legal_dong_expansion_min",
             "ratio_damped"
           ]
         },

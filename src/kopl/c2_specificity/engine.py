@@ -17,19 +17,20 @@ DEFAULT_REGIONS_PATH = (
     / "regions.json"
 )
 
-# 법정동 이름 하나가 여러 행정동으로 연결되는 임시 대응이다.
-# 전체 대응표는 KIKmix 기반 후속 작업에서 데이터 파일로 분리한다.
-_HYOJA_ADMIN_CODES = [
-    "5211171100",
-    "5211171200",
-    "5211171300",
-    "5211171400",
-    "5211173000",
-]
+DEFAULT_LEGAL_ADMIN_MAP_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "data"
+    / "dict"
+    / "admin"
+    / "legal_admin_map.json"
+)
 
-_LEGAL_DONG_PATH_CODES: dict[str, list[str]] = {
-    "전북특별자치도 전주시 완산구 효자동": _HYOJA_ADMIN_CODES,
-    "전라북도 전주시 완산구 효자동": _HYOJA_ADMIN_CODES,
+# 과거 전체 경로를 현재 KIKmix 법정동 경로로 연결한다.
+_RENAMED_QUERY_PATHS: dict[str, str] = {
+    "전라북도 전주시 완산구 효자동":
+        "전북특별자치도 전주시 완산구 효자동",
+    "인천광역시 서구 청라동":
+        "인천광역시 서해구 청라동",
 }
 
 # 최근 행정구역 개편 전 전체 경로를 현재 행정코드로 연결한다.
@@ -88,11 +89,40 @@ def _context_tokens(value: str | None) -> list[str]:
 class RegionDictionary:
     """regions.json을 한 번 읽고 지명 조회에 재사용한다."""
 
-    def __init__(self, path: str | Path = DEFAULT_REGIONS_PATH) -> None:
+    def __init__(
+        self,
+        path: str | Path = DEFAULT_REGIONS_PATH,
+        legal_admin_path: str | Path | None = DEFAULT_LEGAL_ADMIN_MAP_PATH,
+    ) -> None:
         self.path = Path(path)
         payload = json.loads(self.path.read_text(encoding="utf-8"))
         self.regions: dict[str, dict[str, Any]] = payload["regions"]
         self.name_index: dict[str, list[str]] = payload["name_index"]
+
+        self.legal_admin_mappings: dict[str, dict[str, Any]] = {}
+        self.legal_name_index: dict[str, list[str]] = {}
+        self.admin_group_index: dict[str, list[str]] = {}
+
+        if legal_admin_path is not None:
+            self.legal_admin_path = Path(legal_admin_path)
+            legal_payload = json.loads(
+                self.legal_admin_path.read_text(encoding="utf-8")
+            )
+
+            if legal_payload["dict_version"] != payload["dict_version"]:
+                raise ValueError(
+                    "regions.json과 legal_admin_map.json의 "
+                    "dict_version이 다릅니다."
+                )
+
+            self.legal_admin_mappings = legal_payload["mappings"]
+
+            for full_name in self.legal_admin_mappings:
+                final_name = full_name.rsplit(" ", 1)[-1]
+                key = _normalize_name(final_name)
+                self.legal_name_index.setdefault(key, []).append(full_name)
+
+        # 이름·별칭을 같은 표기로 정규화한 검색 인덱스다.
 
         # 이름·별칭을 같은 표기로 정규화한 검색 인덱스다.
         self.normalized_index: dict[str, list[str]] = {}
@@ -112,7 +142,64 @@ class RegionDictionary:
 
                 if code not in bucket:
                     bucket.append(code)
+                group_match = re.fullmatch(r"(.+?)\d+동", key)
 
+                if group_match is not None:
+                    group_key = f"{group_match.group(1)}동"
+                    group_bucket = self.admin_group_index.setdefault(
+                        group_key,
+                        [],
+                    )
+
+                    if code not in group_bucket:
+                        group_bucket.append(code)
+
+    def _resolve_legal(
+        self,
+        text: str,
+        context: str | None = None,
+    ) -> tuple[list[str], list[str]]:
+        """KIKmix에서 행정동 코드와 일치한 법정동 경로를 반환한다."""
+        raw_text = unicodedata.normalize("NFC", text).strip()
+        lookup_text = _RENAMED_QUERY_PATHS.get(raw_text, raw_text)
+        parts = lookup_text.split()
+
+        if len(parts) > 1:
+            target = parts[-1]
+            implicit_context = " ".join(parts[:-1])
+        else:
+            target = lookup_text
+            implicit_context = None
+
+        key = _normalize_name(target)
+        tokens = [
+            *_context_tokens(implicit_context),
+            *_context_tokens(context),
+        ]
+        tokens = list(dict.fromkeys(tokens))
+
+        matched_paths: list[str] = []
+
+        for full_name in self.legal_name_index.get(key, []):
+            full_name_tokens = set(_context_tokens(full_name))
+
+            if not tokens or all(
+                token in full_name_tokens for token in tokens
+            ):
+                matched_paths.append(full_name)
+
+        candidates: set[str] = set()
+
+        for full_name in matched_paths:
+            mapping = self.legal_admin_mappings[full_name]
+
+            for code in mapping["admin_codes"]:
+                code = str(code)
+
+                if code in self.regions:
+                    candidates.add(code)
+
+        return sorted(candidates), sorted(matched_paths)
     def resolve(
         self,
         text: str,
@@ -124,18 +211,19 @@ class RegionDictionary:
         전국에서 이름이 같더라도 임의로 한 곳을 고르지 않는다.
         """
         raw_text = unicodedata.normalize("NFC", text).strip()
+        lookup_text = _RENAMED_QUERY_PATHS.get(raw_text, raw_text)
 
-        # 정본 경로와 과거 표기를 모두 법정동→행정동 후보로 연결한다.
-        legal_dong = _LEGAL_DONG_PATH_CODES.get(raw_text)
-        if legal_dong is not None:
-            return [
-                code
-                for code in legal_dong
-                if code in self.regions
-            ]
+        legal_candidates, matched_legal_paths = self._resolve_legal(
+            lookup_text,
+            context=context,
+        )
+
+        if matched_legal_paths:
+            return legal_candidates
 
         # 실제 폐지된 전체 경로는 현재 행정코드에 연결한다.
         renamed = _RENAMED_PATH_CODES.get(raw_text)
+
         if renamed is not None:
             return [
                 code
@@ -145,7 +233,7 @@ class RegionDictionary:
 
         # text 자체가 전체 경로라면 마지막 토큰은 지명,
         # 앞부분은 본문에서 얻은 상위 경로로 사용한다.
-        parts = raw_text.split()
+        parts = lookup_text.split()
 
         if len(parts) > 1:
             target = parts[-1]
@@ -158,10 +246,11 @@ class RegionDictionary:
         candidates = list(self.normalized_index.get(key, []))
 
         if not candidates:
+            candidates = list(self.admin_group_index.get(key, []))
+
+        if not candidates:
             return []
 
-        # 본문 경로와 별도 context를 모두 적용한다.
-        # 둘이 충돌하면 양쪽 조건을 만족하는 후보가 없어 []가 된다.
         tokens = [
             *_context_tokens(implicit_context),
             *_context_tokens(context),
@@ -175,9 +264,6 @@ class RegionDictionary:
 
         for code in candidates:
             region = self.regions[code]
-
-            # 전체 문자열 포함 여부가 아니라 행정구역 세그먼트끼리 비교한다.
-            # 따라서 '남구'가 '강남구'에 포함됐다는 이유로 일치하지 않는다.
             full_name_tokens = set(
                 _context_tokens(str(region.get("full_name", "")))
             )
@@ -185,11 +271,41 @@ class RegionDictionary:
             if all(token in full_name_tokens for token in tokens):
                 filtered.append(code)
 
-        # 맥락이 있는데 일치 후보가 없으면 전국의 다른 동을 반환하지 않는다.
         return filtered
 
     def specificity(self, name: str) -> dict[str, Any]:
         """행정구역 이름 하나의 총인구와 k 등급을 반환한다."""
+        legal_candidates, matched_legal_paths = self._resolve_legal(name)
+
+        # 한 법정동이 여러 행정동에 걸치면 전체 집합과
+        # 가장 작은 후보 집단을 모두 보고한다.
+        if len(matched_legal_paths) == 1 and len(legal_candidates) > 1:
+            populations = [
+                int(self.regions[code]["population"])
+                for code in legal_candidates
+            ]
+            k_union = max(1, sum(populations))
+            k_min = max(1, min(populations))
+
+            return {
+                "k": k_min,
+                "k_level": classify_k(k_min),
+                "ambiguous": True,
+                "codes": legal_candidates,
+                "k_union": k_union,
+                "k_min": k_min,
+                "basis": "legal_dong_expansion",
+            }
+
+        # 같은 법정동명이 전국 여러 경로에 있으면 임의 선택하지 않는다.
+        if len(matched_legal_paths) > 1:
+            return {
+                "k": None,
+                "k_level": "UNKNOWN",
+                "ambiguous": True,
+                "candidates": legal_candidates,
+            }
+
         candidates = self.resolve(name)
 
         if not candidates:
@@ -208,16 +324,12 @@ class RegionDictionary:
 
         region = self.regions[candidates[0]]
         population = int(region["population"])
-
-        # 계약은 k >= 1을 요구한다.
-        # 주민등록 인구가 0명인 지역에는 하한 1을 적용한다.
         k = max(1, population)
 
         return {
             "k": k,
             "k_level": classify_k(k),
         }
-
 
 _DEFAULT_DICTIONARY: RegionDictionary | None = None
 
@@ -269,7 +381,79 @@ def specificity_l1(
         raise ValueError("sex는 'M' 또는 'F'여야 합니다.")
 
     age_band = age_to_band(age)
-    candidates = resolve(location, context=context)
+    dictionary = _get_default_dictionary()
+    legal_candidates, matched_legal_paths = dictionary._resolve_legal(
+        location,
+        context=context,
+    )
+
+    # 하나의 법정동이 여러 행정동에 걸치는 경우에는
+    # 행정동별 교차인구를 모두 보존하고 최소값으로 위험을 판정한다.
+    if len(matched_legal_paths) == 1 and len(legal_candidates) > 1:
+        population_by_code: dict[str, int] = {}
+
+        for code in legal_candidates:
+            population = pop_lookup(
+                _get_default_population(),
+                geo_code=code,
+                sex=normalized_sex,
+                age_bands=[age_band],
+            )
+
+            if population is None:
+                return {
+                    "k": None,
+                    "k_level": "UNKNOWN",
+                    "age_band": age_band,
+                    "sex": normalized_sex,
+                    "codes": legal_candidates,
+                    "basis": "legal_dong_expansion",
+                }
+
+            population_by_code[code] = population
+
+        population_union = sum(population_by_code.values())
+        population_min = min(population_by_code.values())
+        k_union = max(1, population_union)
+        k_min = max(1, population_min)
+
+        return {
+            "k": k_min,
+            "k_level": classify_k(k_min),
+            "age_band": age_band,
+            "sex": normalized_sex,
+            "ambiguous": True,
+            "codes": legal_candidates,
+            "k_union": k_union,
+            "k_min": k_min,
+            "populations": population_by_code,
+            "floor_applied": population_min < 1,
+            "basis": "legal_dong_expansion",
+            "steps": [
+                {
+                    "axis": "location+age+sex",
+                    "condition": (
+                        f"{location}({','.join(legal_candidates)}) / "
+                        f"{age_band} / {normalized_sex}"
+                    ),
+                    "n_after": population_min,
+                    "method": "legal_dong_expansion_min",
+                }
+            ],
+        }
+
+    # 같은 법정동명이 여러 지역에 있으면 임의로 하나를 고르지 않는다.
+    if len(matched_legal_paths) > 1:
+        return {
+            "k": None,
+            "k_level": "UNKNOWN",
+            "age_band": age_band,
+            "sex": normalized_sex,
+            "ambiguous": True,
+            "candidates": legal_candidates,
+        }
+
+    candidates = dictionary.resolve(location, context=context)
 
     if not candidates:
         return {
@@ -289,6 +473,16 @@ def specificity_l1(
             "candidates": candidates,
         }
 
+
+    if len(candidates) > 1:
+        return {
+            "k": None,
+            "k_level": "UNKNOWN",
+            "age_band": age_band,
+            "sex": normalized_sex,
+            "ambiguous": True,
+            "candidates": candidates,
+        }
     geo_code = candidates[0]
     population = pop_lookup(
         _get_default_population(),

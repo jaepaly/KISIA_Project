@@ -59,6 +59,34 @@ def test_d08_population() -> None:
     assert result["k"] == 679
     assert result["k_level"] == "ACCEPTABLE"
 
+def test_legal_dong_expansion() -> None:
+    result = specificity_l1(
+        "전북특별자치도 전주시 완산구 효자동",
+        age=31,
+        sex="F",
+    )
+
+    assert result["codes"] == [
+        "5211171100",
+        "5211171200",
+        "5211171300",
+        "5211171400",
+        "5211173000",
+    ]
+    assert result["age_band"] == "30-34"
+    assert result["populations"] == {
+        "5211171100": 365,
+        "5211171200": 234,
+        "5211171300": 396,
+        "5211171400": 1163,
+        "5211173000": 1666,
+    }
+    assert result["k_union"] == 3824
+    assert result["k_min"] == 234
+    assert result["k"] == 234
+    assert result["k_level"] == "ACCEPTABLE"
+    assert result["ambiguous"] is True
+    assert result["basis"] == "legal_dong_expansion"
 
 def test_unknown_location() -> None:
     result = specificity_l1(
@@ -112,6 +140,9 @@ if __name__ == "__main__":
 
     test_d08_population()
     print("[PASS] D08 경안동 22F → k=679")
+
+    test_legal_dong_expansion()
+    print("[PASS] 법정동 1:N L1 k_union·k_min 계산")
 
     test_unknown_location()
     print("[PASS] 없는 지명 UNKNOWN 처리")
