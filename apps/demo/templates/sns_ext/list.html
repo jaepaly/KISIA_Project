@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}우리뜰 — 동네 기록{% endblock %}
+{% block content %}
+<main class="ut-wrap">
+
+  <div class="ut-h"><h1>이웃들의 기록</h1><span class="sub">{{ posts|length }}편</span></div>
+
+  <div class="ut-filter">
+    <a href="/" class="{{ 'on' if not selected_author }}">전체</a>
+    {% for a in authors %}
+      <a href="/?author={{ a.author_id }}" class="{{ 'on' if a.author_id == selected_author }}">{{ ut_avatar(a.author_id) }} {{ a.nickname }}</a>
+    {% endfor %}
+  </div>
+
+  {% if not posts %}
+    <p class="ut-empty">아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.</p>
+  {% endif %}
+
+  {% for p in posts %}
+    {% set eng = ut_engage(p.post_id) %}
+    <a class="ut-card {{ 'dim' if p.visibility == 'private' }}" href="/posts/{{ p.post_id }}">
+      <div class="ut-byline">
+        <span class="ut-av">{{ ut_avatar(p.author_id) }}</span>
+        <span class="nm">{{ p.nickname }}</span>
+        <span class="dt">{{ p.created_at[:10] }}</span>
+        <span class="ut-chips" style="margin-left:auto">
+          {% if p.geo_tag %}<span class="ut-chip">📍 {{ p.geo_tag }}</span>{% endif %}
+          {% if p.visibility == 'private' %}<span class="ut-chip priv">🔒 비공개</span>{% endif %}
+        </span>
+      </div>
+      <span class="ut-title">{{ p.title or "(제목 없음)" }}</span>
+      <div class="ut-excerpt">{{ p.body }}</div>
+      <div class="ut-engage">
+        <span>♥ 좋아요 <b>{{ eng.likes }}</b></span>
+        <span>💬 댓글 <b>{{ eng.comments }}</b></span>
+        <span>↗ 공유</span>
+      </div>
+    </a>
+  {% endfor %}
+
+</main>
+{% endblock %}

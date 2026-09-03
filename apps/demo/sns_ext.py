@@ -19,6 +19,7 @@ E 의 W4~W6 «메타 관리» · W9 «에디터 경고» 가 나오면 이 파�
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import os
 import sys
@@ -57,6 +58,69 @@ app.jinja_loader = jinja2.ChoiceLoader([
 @app.get("/pado-static/<path:fname>")
 def pado_static(fname: str):
     return send_from_directory(HERE / "static", fname)
+
+
+# ── 화면 장식 — 좋아요·댓글·이웃 수. 글 ID 에서 결정론적으로 만든다 ──────────
+#    시연 때마다 숫자가 흔들리면 어제 캡처와 달라져 설명이 꼬인다. 저장하지 않는다.
+_AVATARS = ["🌾", "🌻", "🌿", "🪴", "🌱", "🍀", "🌷", "🧺", "🪺", "🫖"]
+_CMT_WHO = [("뜰지기", "🪵"), ("이쁜할매", "🌷"), ("감나무집", "🍂"), ("바람꽃", "🌾"),
+            ("옆집총각", "🧢"), ("도시댁", "🧺"), ("산딸기", "🍓")]
+_CMT_TEXT = ["잘 보고 갑니다 ^^", "사진이 참 곱네요", "저도 오늘 그랬어요", "오늘도 잘 읽었습니다",
+             "다음 글도 기다릴게요", "정겹습니다 ~", "읽으니 마음이 놓이네요", "저희 동네도 비슷해요"]
+_CMT_WHEN = ["1일 전", "2일 전", "3일 전", "5일 전", "일주일 전"]
+
+
+def _seed(key: str, salt: str = "") -> int:
+    return int(hashlib.sha1((salt + key).encode()).hexdigest()[:8], 16)
+
+
+def ut_avatar(author_id: str | None) -> str:
+    return _AVATARS[_seed(author_id or "?", "av") % len(_AVATARS)]
+
+
+def ut_engage(post_id: str) -> dict:
+    n = _seed(post_id, "eng")
+    return {"likes": 3 + n % 38, "comments": (n >> 8) % 6, "views": 60 + (n >> 12) % 900}
+
+
+def ut_comments(post_id: str) -> list[dict]:
+    out = []
+    for i in range(ut_engage(post_id)["comments"]):
+        n = _seed(f"{post_id}:{i}", "cmt")
+        who, emoji = _CMT_WHO[n % len(_CMT_WHO)]
+        out.append({"who": who, "emoji": emoji, "text": _CMT_TEXT[(n >> 6) % len(_CMT_TEXT)],
+                    "when": _CMT_WHEN[(n >> 12) % len(_CMT_WHEN)]})
+    return out
+
+
+def ut_stats(author_id: str) -> dict:
+    n = _seed(author_id, "st")
+    return {"neighbors": 12 + n % 60, "visits": 300 + (n >> 8) % 4000}
+
+
+app.jinja_env.globals.update(ut_avatar=ut_avatar, ut_engage=ut_engage, ut_comments=ut_comments,
+                             ut_stats=ut_stats)
+
+
+@app.context_processor
+def _chrome():
+    """헤더가 쓰는 것 — 지금 보고 있는 계정(me)과 활성 메뉴(nav).
+
+    우리뜰에는 로그인이 없다. 데모에서는 «보고 있는 블로그의 주인» 을 내 계정처럼 다룬다.
+    """
+    me = None
+    va = (request.view_args or {})
+    if va.get("user_ref"):
+        me = db().execute("SELECT * FROM authors WHERE user_ref = ?", (va["user_ref"],)).fetchone()
+    elif va.get("post_id"):
+        me = db().execute("SELECT a.* FROM authors a JOIN posts p ON p.author_id = a.author_id"
+                          " WHERE p.post_id = ?", (va["post_id"],)).fetchone()
+    if me is None:
+        first = os.getenv("DEMO_PERSONAS", "D05").split(",")[0].strip()
+        me = (db().execute("SELECT * FROM authors WHERE author_id = ?", (first,)).fetchone()
+              or db().execute("SELECT * FROM authors ORDER BY author_id LIMIT 1").fetchone())
+    nav = {"index": "home", "profile": "blog", "check": "check", "new": "new"}.get(request.endpoint or "")
+    return {"me": me, "nav": nav}
 
 
 # ── 파도풀 호출 — 보내는 것은 export 형식뿐 ─────────────────────────────────

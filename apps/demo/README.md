@@ -68,7 +68,8 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 
 | 부품 | 상태 | 데모에서 |
 |---|---|---|
-| 우리뜰 · `/api/export` · 비공개 → export 반영 | ✅ E 완성 | `apps/sns` 그대로. `sns_ext.py` 가 import 해서 점검 화면·에디터 점검·태그 지우기·본문 수정을 **덧씌운다** |
+| 우리뜰 · `/api/export` · 비공개 → export 반영 | ✅ E 완성 | `apps/sns` 그대로. `sns_ext.py` 가 import 해서 화면·점검·태그 지우기·본문 수정을 **덧씌운다** |
+| 우리뜰 디자인 (피드·프로필·글·에디터) | ✅ 데모용 | 좋아요·댓글·이웃 수는 글 ID 에서 만든 **결정론적 장식**이다 (시연 때마다 흔들리면 안 되므로). 저장하지 않는다 |
 | 특정성 k · 깔때기 | ✅ 실제 | C 의 `kopl.c2_specificity` — `regions.json`(geo-2026-07) + 행안부 주민등록 교차표(읍면동 × 5세 × 성별). 예시값 없음 |
 | 조치 추천 · 예상 효과 · 올리기 전/후 k | ✅ 실제 계산 | 조치(또는 초안)를 반영한 상태로 깔때기를 다시 센다 |
 | 1단 스팬 탐지 | ⚠️ **규칙 기반 스탑갭** | `engine/detect.py`. B 의 v1 은 9/20, 통합 W6~. `C1_MODEL_PATH` 로 교체 가능. 화면에 명시 |
@@ -105,7 +106,8 @@ engine/specificity.py  깔때기 — kopl.c2_specificity 위에서 k
 engine/pipeline.py  export → 뷰 → k (what-if 지원) · findings
 engine/recommend.py 조치 3종 + 예외 · 리라이트 3안 · Stage2Output
 engine/external.py  외부 LLM (기본 꺼짐)
-templates/sns_ext/  우리뜰에 덧씌우는 화면: profile_ext · check · new_ext · post_ext · edit_post
-templates/, static/ 파도풀 단독 화면(개발용) · demo.css (우리뜰 점검 화면도 /pado-static 으로 같이 쓴다)
+templates/sns_ext/  우리뜰 화면 전체를 덧씌운다: base · list · profile_ext · post_ext · new_ext · edit_post · check
+static/urittle.css  우리뜰 디자인 (따뜻한 종이 톤). 파도풀 demo.css 의 바다 톤과 일부러 다르다
+templates/, static/demo.css  파도풀 단독 화면(개발용). 우리뜰 점검 화면도 /pado-static 으로 같이 쓴다
 test_demo.py        숫자 · 함정 · 계약 · 계층 경계 · API 12건
 ```

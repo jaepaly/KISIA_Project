@@ -1,41 +1,62 @@
 {% extends "base.html" %}
 {% block title %}{{ a.nickname }} — 우리뜰{% endblock %}
 {% block content %}
+<main class="ut-wrap">
+  <a class="ut-back" href="/">← 홈으로</a>
 
-<p><a href="/">← 목록으로</a></p>
-
-<h1>{{ a.nickname }}</h1>
-{% if a.bio %}<p style="color:#555;">{{ a.bio }}</p>{% endif %}
-<p class="post-meta">글 {{ posts|length }}편 · {{ a.joined_at[:10] }} 가입 · <span style="font-family:Consolas,monospace">{{ a.user_ref }}</span></p>
-
-<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1.5px solid #0c6d68;background:#dcecea;border-radius:8px;padding:10px 14px;margin:12px 0;">
-  <div style="flex:1;min-width:220px;font-size:0.9em;color:#4e6468;"><b style="color:#17282b">🛟 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>공개 글만 모아 재식별 위험을 점검합니다. 결과와 조치는 이 안에서 바로 합니다.</div>
-  <a href="/u/{{ a.user_ref }}/check"><button type="button" style="background:#0c6d68;">내 글 점검하기 →</button></a>
-</div>
-
-<hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-
-{% if not posts %}
-  <p class="empty">아직 쓴 글이 없습니다.</p>
-{% endif %}
-
-{% for p in posts %}
-  <div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
-    <a class="post-title" href="/posts/{{ p.post_id }}">
-      {{ p.title or "(제목 없음)" }}
-    </a>
-    {% if p.visibility == 'private' %}<span class="badge private">비공개</span>{% endif %}
-    <div class="post-meta">
-      {{ p.created_at[:16].replace('T', ' ') }}
-      {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+  {% set st = ut_stats(a.author_id) %}
+  <div class="ut-card">
+    <div class="ut-cover"></div>
+    <div class="ut-prof">
+      <span class="ut-av lg">{{ ut_avatar(a.author_id) }}</span>
+      <div>
+        <div class="pname">{{ a.nickname }}</div>
+        {% if a.bio %}<div class="pbio">{{ a.bio }}</div>{% endif %}
+        <div class="ut-stats">
+          <span><b>{{ posts|length }}</b>글</span>
+          <span><b>{{ st.neighbors }}</b>이웃</span>
+          <span><b>{{ '{:,}'.format(st.visits) }}</b>방문</span>
+          <span class="mono" style="font-size:11px">{{ a.user_ref }}</span>
+        </div>
+      </div>
+      <button class="ut-follow" type="button">+ 이웃추가</button>
     </div>
-    <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility" style="margin-top:8px;">
-      <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
-      <button type="submit" class="ghost">
-        {% if p.visibility == 'public' %}🔒 비공개로{% else %}🌐 공개로{% endif %}
-      </button>
-    </form>
   </div>
-{% endfor %}
 
+  <div class="ut-pado">
+    <div class="t"><b>🛟 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>
+      공개 글을 모아 재식별 위험을 점검합니다. 이름·전화번호가 없어도, 흩어진 단서가 결합되면 사람이 좁혀집니다.</div>
+    <a class="go" href="/u/{{ a.user_ref }}/check">내 글 점검하기 →</a>
+  </div>
+
+  <div class="ut-h" style="margin-top:22px"><h1 style="font-size:19px">기록</h1><span class="sub">{{ posts|length }}편</span></div>
+
+  {% if not posts %}<p class="ut-empty">아직 쓴 글이 없습니다.</p>{% endif %}
+
+  {% for p in posts %}
+    {% set eng = ut_engage(p.post_id) %}
+    <div class="ut-card {{ 'dim' if p.visibility == 'private' }}">
+      <div class="ut-byline">
+        <span class="dt">{{ p.created_at[:16].replace('T', ' ') }}</span>
+        <span class="ut-chips" style="margin-left:auto">
+          {% if p.geo_tag %}<span class="ut-chip">📍 {{ p.geo_tag }}</span>{% endif %}
+          {% if p.visibility == 'private' %}<span class="ut-chip priv">🔒 비공개</span>{% endif %}
+        </span>
+      </div>
+      <a class="ut-title" href="/posts/{{ p.post_id }}">{{ p.title or "(제목 없음)" }}</a>
+      <div class="ut-excerpt">{{ p.body }}</div>
+      <div class="ut-engage">
+        <span>♥ <b>{{ eng.likes }}</b></span><span>💬 <b>{{ eng.comments }}</b></span>
+        <span style="margin-left:auto">
+          <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility">
+            <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
+            <button type="submit" class="ghost" style="padding:5px 12px;font-size:12.5px">
+              {% if p.visibility == 'public' %}🔒 비공개로{% else %}🌐 공개로{% endif %}</button>
+          </form>
+        </span>
+      </div>
+    </div>
+  {% endfor %}
+
+</main>
 {% endblock %}

@@ -1,77 +1,87 @@
 {% extends "base.html" %}
-{% block title %}글 작성 — 우리뜰{% endblock %}
-{% block content %}
+{% block title %}글쓰기 — 우리뜰{% endblock %}
+{% block head %}
 <link rel="stylesheet" href="/pado-static/demo.css">
-<style>body{max-width:720px}.wrap{max-width:none;padding:0;margin:0}.card{margin:12px 0}</style>
+<style>
+  body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
+  .ut-wrap{max-width:760px;margin:26px auto 0;padding:0 20px}
+  .pado-panel{border:1.5px solid var(--sea);border-radius:var(--ut-radius);background:var(--panel);
+    padding:18px 20px;margin-bottom:16px;box-shadow:var(--ut-shadow)}
+  .pado-panel .card{background:transparent;border:none;padding:0;margin:0}
+  .pado-panel .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:var(--sea-ink);margin-bottom:12px}
+  .editor-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:20px}
+</style>
+{% endblock %}
+{% block content %}
+<main class="ut-wrap">
+  <div class="ut-h"><h1>글쓰기</h1><span class="sub">올리기 전에 한 번 점검할 수 있습니다</span></div>
 
-<h1>글 작성</h1>
+  {% if not authors %}
+    <p class="ut-empty">작성자가 없습니다. <code class="mono">python apps/demo/seed.py --reset</code> 으로 시딩하세요.</p>
+  {% endif %}
+  {% if err %}<div class="err">{{ err }}</div>{% endif %}
 
-{% if not authors %}
-  <p class="empty">작성자가 아직 없습니다. <code>python apps/demo/seed.py --reset</code> 으로 시딩하세요.</p>
-{% endif %}
-
-{% if err %}<div class="err">{{ err }}</div>{% endif %}
-
-{% if check %}
-  {% set b = check.before %}{% set af = check.after %}
-  <div class="card" style="border-color:var(--{{ 'hi' if check.narrows else 'low' }})">
-    <h3 class="ct">🛟 파도풀 점검 — 이 글을 올리면</h3>
-    <div class="risk">
-      <div class="gauge g-{{ af.css }}"><div class="lvl">{{ af.label }}</div><div class="num">{{ af.risk if af.risk is not none else '—' }}</div><div class="cap">올린 뒤 위험 점수</div></div>
-      <div class="riskmeta">
-        <div class="row"><span>지금 후보 (공개 글 {{ b.n_posts }}편)</span><span class="v">{% if b.k %}약 {{ '{:,}'.format(b.k) }}명{% else %}산출 불가{% endif %}</span></div>
-        <div class="row"><span>이 글을 올리면</span><span class="v" style="color:var(--{{ af.css }})">{% if af.k %}약 {{ '{:,}'.format(af.k) }}명{% else %}산출 불가{% endif %}</span></div>
-        <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
+  {% if check %}
+    {% set b = check.before %}{% set af = check.after %}
+    <div class="pado-panel">
+      <div class="mark">🛟 파도풀 점검 — 이 글을 올리면</div>
+      <div class="risk">
+        <div class="gauge g-{{ af.css }}"><div class="lvl">{{ af.label }}</div><div class="num">{{ af.risk if af.risk is not none else '—' }}</div><div class="cap">올린 뒤 위험 점수</div></div>
+        <div class="riskmeta">
+          <div class="row"><span>지금 후보 (공개 글 {{ b.n_posts }}편)</span><span class="v">{% if b.k %}약 {{ '{:,}'.format(b.k) }}명{% else %}산출 불가{% endif %}</span></div>
+          <div class="row"><span>이 글을 올리면</span><span class="v" style="color:var(--{{ af.css }})">{% if af.k %}약 {{ '{:,}'.format(af.k) }}명{% else %}산출 불가{% endif %}</span></div>
+          <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
+        </div>
       </div>
+      {% if check.narrows %}
+        <p class="lede" style="margin-top:12px"><b>이 글 하나가 후보를 {{ '{:,}'.format(b.k) }}명 → {{ '{:,}'.format(af.k) }}명으로 좁힙니다.</b> 아래 형광 자리가 새는 표현입니다. 고쳐 쓰고 다시 점검하거나, 알고도 올릴 수 있습니다.</p>
+      {% elif check.draft.n_spans %}
+        <p class="lede" style="margin-top:12px">단서는 잡혔지만 기존 글이 이미 여기까지 좁혀 두어 후보 수는 그대로입니다. 그래도 이 글은 나중에 다른 글을 지워도 남는 경로가 됩니다.</p>
+      {% else %}
+        <p class="lede" style="margin-top:12px">새는 표현이 없습니다. 올려도 후보 수가 변하지 않습니다.</p>
+      {% endif %}
+      {% for c in check.draft.channels %}
+        <div class="evi"><div class="w">{{ c.text_id }}</div><div class="bd">{{ c.html|safe }}</div></div>
+      {% endfor %}
+      {% if check.contributing %}
+        <ul class="funnel">{% for s in check.contributing %}<li><span><span class="desc">{{ s.condition }}</span><div class="src">「{{ s.src.text }}」 · {{ s.src.channel }}</div></span><span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>{% endfor %}</ul>
+      {% endif %}
+      {% if check.draft.traps %}
+        <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">— {{ t.why }}</span></li>{% endfor %}</ul></div>
+      {% endif %}
+      <p class="lede" style="font-size:12px;margin:10px 0 0">점검은 <b>작성 완료 후 1회</b>입니다. 입력 중 실시간 경고는 응답이 저장 뒤에 도착해 두지 않았습니다. 파도풀은 이 글을 저장하지 않습니다.</p>
     </div>
-    {% if check.narrows %}
-      <p class="lede" style="margin-top:10px"><b>이 글 하나가 후보를 {{ '{:,}'.format(b.k) }}명 → {{ '{:,}'.format(af.k) }}명으로 좁힙니다.</b> 아래 형광 자리가 새는 표현입니다. 고쳐 쓰고 다시 점검하거나, 알고도 올릴 수 있습니다.</p>
-    {% elif check.draft.n_spans %}
-      <p class="lede" style="margin-top:10px">단서는 잡혔지만 기존 글이 이미 여기까지 좁혀 두어 후보 수는 그대로입니다. 그래도 이 글은 나중에 다른 글을 지워도 남는 경로가 됩니다.</p>
-    {% else %}
-      <p class="lede" style="margin-top:10px">새는 표현이 없습니다. 올려도 후보 수가 변하지 않습니다.</p>
-    {% endif %}
-    {% for c in check.draft.channels %}
-      <div class="evi"><div class="w">{{ c.text_id }}</div><div class="bd">{{ c.html|safe }}</div></div>
-    {% endfor %}
-    {% if check.contributing %}
-      <ul class="funnel">{% for s in check.contributing %}<li><span><span class="desc">{{ s.condition }}</span><div class="src">「{{ s.src.text }}」 · {{ s.src.channel }}</div></span><span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>{% endfor %}</ul>
-    {% endif %}
-    {% if check.draft.traps %}
-      <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">— {{ t.why }}</span></li>{% endfor %}</ul></div>
-    {% endif %}
-    <p class="lede" style="font-size:12px;margin:8px 0 0">점검은 <b>작성 완료 후 1회</b>입니다. 입력 중 실시간 경고는 응답이 저장 뒤에 도착해 두지 않았습니다. 파도풀은 이 글을 저장하지 않습니다.</p>
-  </div>
-{% endif %}
+  {% endif %}
 
-<form method="post" action="/posts">
-  <label for="author_id">작성자</label>
-  <select name="author_id" id="author_id" required>
-    {% for a in authors %}
-      <option value="{{ a.author_id }}" {% if draft and draft.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}</option>
-    {% endfor %}
-  </select>
+  <form method="post" action="/posts" class="ut-card">
+    <label for="author_id">작성자</label>
+    <select name="author_id" id="author_id" required>
+      {% for a in authors %}
+        <option value="{{ a.author_id }}" {% if draft and draft.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}</option>
+      {% endfor %}
+    </select>
 
-  <label for="title">제목 (선택)</label>
-  <input type="text" name="title" id="title" value="{{ draft.title if draft else '' }}">
+    <label for="title">제목 <span class="hint">(선택)</span></label>
+    <input type="text" name="title" id="title" value="{{ draft.title if draft else '' }}" placeholder="오늘의 기록">
 
-  <label for="body">본문</label>
-  <textarea name="body" id="body" rows="8" required>{{ draft.body if draft else '' }}</textarea>
+    <label for="body">본문</label>
+    <textarea name="body" id="body" rows="11" required placeholder="오늘 있었던 일을 적어보세요">{{ draft.body if draft else '' }}</textarea>
 
-  <label for="geo_tag">위치 태그 (선택)</label>
-  <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 담양군 창평면" value="{{ draft.geo_tag if draft else '' }}">
+    <label for="geo_tag">위치 태그 <span class="hint">(선택 — 글에 함께 표시됩니다)</span></label>
+    <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 담양군 창평면" value="{{ draft.geo_tag if draft else '' }}">
 
-  <label for="captions">사진 캡션 (선택, 한 줄에 하나씩)</label>
-  <textarea name="captions" id="captions" rows="2">{{ draft.captions if draft else '' }}</textarea>
+    <label for="captions">사진 캡션 <span class="hint">(선택, 한 줄에 하나씩 — 순서대로 사진 1, 2…)</span></label>
+    <textarea name="captions" id="captions" rows="2" placeholder="정류장에서">{{ draft.captions if draft else '' }}</textarea>
 
-  <label for="created_at">작성 시각 — 실제 SNS 엔 없는 기능이지만 여기서는 직접 바꿀 수 있습니다</label>
-  <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
+    <label for="created_at">작성 시각 <span class="hint">— 실제 SNS 엔 없는 기능이지만 여기서는 바꿀 수 있습니다</span></label>
+    <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
 
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-    <button type="submit" formaction="/check-draft" class="ghost" style="background:#dcecea;color:#0c6d68" {% if not authors %}disabled{% endif %}>🛟 파도풀로 점검</button>
-    <button type="submit" {% if not authors %}disabled{% endif %}>{% if check and check.narrows %}알고도 올리기{% else %}올리기{% endif %}</button>
-    <span style="font-size:0.8em;color:#888">점검 뒤에 고쳐 쓰고 다시 점검할 수 있습니다.</span>
-  </div>
-</form>
+    <div class="editor-actions">
+      <button type="submit" formaction="/check-draft" class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>🛟 파도풀로 점검</button>
+      <button type="submit" {% if not authors %}disabled{% endif %}>{% if check and check.narrows %}알고도 올리기{% else %}올리기{% endif %}</button>
+      <span style="font-size:12px;color:var(--ut-ink3)">점검 뒤에 고쳐 쓰고 다시 점검할 수 있습니다.</span>
+    </div>
+  </form>
 
+</main>
 {% endblock %}

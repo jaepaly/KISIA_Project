@@ -1,12 +1,30 @@
 {% extends "base.html" %}
 {% block title %}내 글 점검 — {{ a.nickname }} — 우리뜰{% endblock %}
-{% block content %}
+{% block head %}
 <link rel="stylesheet" href="/pado-static/demo.css">
-<style>body{max-width:760px}.card{margin:12px 0}</style>
+<style>
+  /* demo.css 가 뒤에 오므로 우리뜰 골격을 되돌린다 — 진단 패널만 파도풀 톤을 쓴다 */
+  body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
+  .ut-wrap{max-width:900px;margin:26px auto 0;padding:0 20px}
+  .pado{background:var(--panel);border:1px solid var(--line);border-radius:var(--ut-radius);
+        padding:20px 22px;box-shadow:var(--ut-shadow)}
+  .pado .card{border-radius:12px}
+  .pado h3.ct,.pado .lede,.pado .funnel,.pado .evi,.pado .act{font-family:"IBM Plex Sans KR",sans-serif}
+  .pado-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .pado-hd .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--sea-ink)}
+  .pado-hd .by{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right;line-height:1.5}
+</style>
+{% endblock %}
+{% block content %}
+<main class="ut-wrap">
+  <a class="ut-back" href="/u/{{ a.user_ref }}">← {{ a.nickname }} 님의 블로그</a>
 
-<p><a href="/u/{{ a.user_ref }}">← {{ a.nickname }} 님의 블로그</a></p>
-<h1 style="font-size:1.3em;margin:6px 0 2px">🛟 내 글 점검 <span style="font-size:0.7em;color:#888;font-weight:normal">— 파도풀</span></h1>
-<p style="color:#4e6468;font-size:0.9em;margin:0 0 10px">우리뜰이 <b>공개 글만</b> 파도풀에 보내 진단을 받아 옵니다. 파도풀은 저장하지 않고, 조치는 이 화면에서 당신이 누릅니다.</p>
+  <div class="pado">
+    <div class="pado-hd">
+      <span class="mark">🛟 파도풀 점검</span>
+      <span style="font-size:13px;color:var(--ink2)">{{ ut_avatar(a.author_id) }} {{ a.nickname }} 님의 공개 글</span>
+      <span class="by">우리뜰이 <b>공개 글만</b> 파도풀에 보내 진단을 받아 옵니다<br>파도풀은 글을 저장하지 않습니다 · 조치는 이 화면에서 직접</span>
+    </div>
 
 {% if err %}<div class="err">{{ err }}</div>{% endif %}
 {% if res %}
@@ -118,10 +136,12 @@
   <div class="actions"><a class="btn btn-ghost" href="/u/{{ a.user_ref }}/check">다시 점검</a></div>
 </div>
 
-<p style="font-size:0.78em;color:#999">합성 인물·합성 글 · 1단 탐지는 규칙 기반 스탑갭(KoELECTRA v1 은 W6 통합) · 특정성 k 는 실제 주민등록 인구표 · 외부 호출 {% if res.provenance.external_llm_used %}리라이트 1건(데모 한정){% else %}0건{% endif %} · 제품은 로컬 추론 · 계약 JSON: 파도풀 <span class="mono">/api/scan</span> 응답의 <span class="mono">stage2</span></p>
+<p style="font-size:11.5px;color:var(--ink3);margin:14px 0 0">합성 인물·합성 글 · 1단 탐지는 규칙 기반 스탑갭(KoELECTRA v1 은 W6 통합) · 특정성 k 는 실제 주민등록 인구표 · 외부 호출 {% if res.provenance.external_llm_used %}리라이트 1건(데모 한정){% else %}0건{% endif %} · 제품은 로컬 추론 · 계약 JSON 은 파도풀 <span class="mono">/api/scan</span> 응답의 <span class="mono">stage2</span></p>
+{% endif %}
+  </div>
+</main>
 
 <script>
 function toggleLens(btn){const on=btn.getAttribute('aria-checked')!=='true';btn.setAttribute('aria-checked',String(on));document.getElementById('evidence').classList.toggle('lens-off',!on);document.getElementById('lensLegend').hidden=!on;}
 </script>
-{% endif %}
 {% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}우리뜰{% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Gowun+Dodum&display=swap">
+  <link rel="stylesheet" href="/pado-static/urittle.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="ut-top">
+    <div class="ut-top-in">
+      <a class="ut-logo" href="/">🌱 우리뜰 <small>동네 기록</small></a>
+      <nav class="ut-nav">
+        <a href="/" class="{{ 'on' if nav == 'home' }}">홈</a>
+        {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}">내 블로그</a>
+        <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}">🛟 점검</a>{% endif %}
+        <a href="/new" class="write {{ 'on' if nav == 'new' }}">✏️ 글쓰기</a>
+      </nav>
+    </div>
+  </header>
+
+  {% block content %}{% endblock %}
+
+  <p class="ut-foot">「우리뜰」은 <b>가상의 SNS</b>입니다 — 네이버·인스타그램 자리에 놓인 시뮬레이터이고, 등장하는 인물과 글은 전부 합성입니다.
+  파도풀은 이 플랫폼에 붙어 도는 재식별 위험 점검 서비스이며, 다른 SNS 에도 같은 방식으로 붙습니다.</p>
+</body>
+</html>
