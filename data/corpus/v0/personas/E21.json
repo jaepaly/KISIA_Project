@@ -93,6 +93,16 @@
       "ambiguous": false
     },
     {
+      "post": "b05",
+      "text_id": "body",
+      "clue": "동호회 회장 양반은 창원서 사진관을 하잖아",
+      "attr": "location",
+      "level": "explicit",
+      "subject": "other",
+      "note": "⚠️ 함정 · 통로=근무지 · 관계=① 타지명 (§4-4-1). 회장의 사업장이지 본인 거주지가 아니다. 창원시는 진주시와 다른 시군구다",
+      "ambiguous": false
+    },
+    {
       "post": "b08",
       "text_id": "body",
       "attr": "family",
