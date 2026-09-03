@@ -13,6 +13,7 @@
 {% endif %}
 
 <form method="post" action="/posts/{{ p.post_id }}/body">
+  {% if back %}<input type="hidden" name="back" value="{{ back }}">{% endif %}
   <label for="title">제목</label>
   <input type="text" name="title" id="title" value="{{ (proposal.title if proposal and proposal.title else p.title) or '' }}">
 

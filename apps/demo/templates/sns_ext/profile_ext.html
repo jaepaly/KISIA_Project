@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ a.nickname }} — 우리뜰{% endblock %}
+{% block content %}
+
+<p><a href="/">← 목록으로</a></p>
+
+<h1>{{ a.nickname }}</h1>
+{% if a.bio %}<p style="color:#555;">{{ a.bio }}</p>{% endif %}
+<p class="post-meta">글 {{ posts|length }}편 · {{ a.joined_at[:10] }} 가입 · <span style="font-family:Consolas,monospace">{{ a.user_ref }}</span></p>
+
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1.5px solid #0c6d68;background:#dcecea;border-radius:8px;padding:10px 14px;margin:12px 0;">
+  <div style="flex:1;min-width:220px;font-size:0.9em;color:#4e6468;"><b style="color:#17282b">🛟 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>공개 글만 모아 재식별 위험을 점검합니다. 결과와 조치는 이 안에서 바로 합니다.</div>
+  <a href="/u/{{ a.user_ref }}/check"><button type="button" style="background:#0c6d68;">내 글 점검하기 →</button></a>
+</div>
+
+<hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+{% if not posts %}
+  <p class="empty">아직 쓴 글이 없습니다.</p>
+{% endif %}
+
+{% for p in posts %}
+  <div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
+    <a class="post-title" href="/posts/{{ p.post_id }}">
+      {{ p.title or "(제목 없음)" }}
+    </a>
+    {% if p.visibility == 'private' %}<span class="badge private">비공개</span>{% endif %}
+    <div class="post-meta">
+      {{ p.created_at[:16].replace('T', ' ') }}
+      {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+    </div>
+    <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility" style="margin-top:8px;">
+      <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
+      <button type="submit" class="ghost">
+        {% if p.visibility == 'public' %}🔒 비공개로{% else %}🌐 공개로{% endif %}
+      </button>
+    </form>
+  </div>
+{% endfor %}
+
+{% endblock %}

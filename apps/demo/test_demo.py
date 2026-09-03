@@ -159,6 +159,37 @@ def test_analyzer_never_touches_sns_db_or_writes_platform():
             assert "api.openai.com" not in f.read_text(encoding="utf-8") and "requests.post(" not in _code_only(f.read_text(encoding="utf-8"))
 
 
+# ── 파도풀 API — 우리뜰이 붙여 쓰는 창구 ─────────────────────────────────
+@pytest.fixture(scope="module")
+def client():
+    from app import app as pado
+    pado.config["TESTING"] = True
+    with pado.test_client() as c:
+        yield c
+
+
+def test_api_scan_returns_platform_payload_and_contract(client):
+    r = client.post("/api/scan", json=d05_export())
+    assert r.status_code == 200
+    j = r.get_json()
+    assert j["k"] == 421 and j["actions"][0]["action_type"] == "activity_meta"
+    assert j["evidence"] and "<mark" in "".join(ch["html"] for c in j["evidence"] for ch in c["channels"])
+    assert j["stage2"]["schema_version"] == "0.1.0" and j["rewrites"]
+    assert client.post("/api/scan", json={"nope": 1}).status_code == 400
+
+
+def test_api_check_shows_draft_narrowing(client):
+    ex = d05_export(geo_tag=None)                       # 태그 없는 상태: 111,069
+    leak = {"title": "구월 사흗날", "body": "오늘도 면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대라 그냥 걸어왔다.\n예순여덟인디 아직 걸을 만 하다.",
+            "photos": [], "activity_meta": {"geo_tag": "담양군 창평면"}}
+    j = client.post("/api/check", json={"export": ex, "draft": leak}).get_json()
+    assert j["before"]["k"] == 111_069 and j["after"]["k"] == 421 and j["narrows"] is True
+    assert j["draft"]["n_spans"] >= 2 and any(s["src"]["post_id"] == "draft" for s in j["contributing"])
+    noise = {"title": None, "body": "된장국이 짜서 물을 부었다.\n그래도 먹을 만은 했다^^", "photos": [], "activity_meta": {}}
+    j = client.post("/api/check", json={"export": ex, "draft": noise}).get_json()
+    assert j["after"]["k"] == j["before"]["k"] and j["draft"]["n_spans"] == 0 and j["narrows"] is False
+
+
 def test_external_llm_is_off_by_default(monkeypatch):
     from engine import external
     monkeypatch.delenv("DEMO_EXTERNAL_REWRITE", raising=False)

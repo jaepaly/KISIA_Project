@@ -150,6 +150,79 @@ def cut_steps(prev: dict | None, cur: dict) -> list[dict]:
     return [s for s in prev["base"]["steps"] if s["condition"] not in now and s["axis"] != "sex"]
 
 
+def summary(res: dict) -> dict:
+    b = res["base"]
+    return {"k": b["k"], "k_level": b["k_level"], "risk": b["risk"], "label": b["label"], "css": b["css"],
+            "steps": b["steps"], "n_posts": res["n_posts"]}
+
+
+def api_payload(res: dict) -> dict:
+    """우리뜰(플랫폼)이 자기 화면에 그릴 수 있는 형태. 계약 Stage2Output 은 `stage2` 에 그대로 담는다."""
+    view, base, rec, st2 = res["view"], res["base"], res["rec"], res["stage2"]
+    cards = [{**c, "channels": [{**ch, "html": str(ch["html"])} for ch in c["channels"]]} for c in evidence_cards(view)]
+    rws: dict[str, list] = {}
+    for sid, items in rewrite_forms(res).items():
+        rws[sid] = [{"suggestion": r["suggestion"], "note": r["_note"], "similarity": r["semantic_similarity"],
+                     "sentence": r["_sentence"], "new_sentence": r["_new_sentence"], "field": r["field"],
+                     "new_full": r["new_full"], "text_id": r["_text_id"]} for r in items]
+    acts = [{"action_type": a["action_type"], "burden": a["burden"], "certainty": a["certainty"],
+             "rationale": a["rationale"], "projected_delta": a["projected_delta"], "post_id": a["_post_id"],
+             "span_id": a.get("_span_id"), "k": a["_k"], "k_cum": a["_k_cum"]} for a in rec["actions"]]
+    return {
+        **summary(res), "user_ref": view["user_ref"], "nickname": view["nickname"],
+        "findings": {a: {**f, "ko": _ATTR_KO[a]} for a, f in st2["findings"].items()},
+        "leaking": [_ATTR_KO[a] for a, f in st2["findings"].items() if f["verdict"] != "abstain"],
+        "n_direct": len(view["direct_identifiers"]),
+        "traps": traps(view), "evidence": cards, "actions": acts, "rewrites": rws,
+        "projected": rec["projected"], "projected_k": rec["projected_k"], "exceptional": rec["exceptional"],
+        "provenance": st2["provenance"], "stage2": st2,
+    }
+
+
+@app.post("/api/scan")
+def api_scan():
+    """플랫폼(우리뜰)이 export 형식 그대로 보내면 진단을 돌려준다. 저장하지 않는다."""
+    export = request.get_json(silent=True)
+    if not export or "user_ref" not in export or "posts" not in export:
+        abort(400)
+    return jsonify(api_payload(run_scan(export)))
+
+
+@app.post("/api/check")
+def api_check():
+    """에디터 점검 — 작성 완료 후 1회 [MF-015]. {export, draft} → 올리기 전/후 k 와 초안의 새는 문장.
+
+    draft = {title, body, photos:[{caption}], activity_meta:{geo_tag}}. 기존 공개 글과 합쳐 세므로
+    「이 글 하나가 후보를 얼마나 좁히나」 가 실제 계산으로 나온다.
+    """
+    j = request.get_json(silent=True) or {}
+    export, draft = j.get("export"), j.get("draft")
+    if not export or draft is None:
+        abort(400)
+    before = run_scan(export)
+    d = {"post_id": "draft", "user_ref": export["user_ref"], "title": draft.get("title") or None,
+         "body": draft.get("body") or "", "photos": draft.get("photos") or [],
+         "activity_meta": {"nickname": export.get("nickname"), "geo_tag": (draft.get("activity_meta") or {}).get("geo_tag"),
+                           "post_time": None}}
+    after = run_scan({**export, "posts": [*export["posts"], d]})
+    dv = [p for p in after["view"]["posts"] if p["post_id"] == "draft"][0]
+    chans = [{"text_id": tid, "html": str(mark_text(txt, [s for s in dv["spans"] if s["text_id"] == tid], dv["notes"]))}
+             for tid, txt in dv["texts"].items()]
+    self_spans = [s for s in dv["spans"] if s["subject"] == "self" and not dv["notes"].get(s["span_id"], {}).get("exclude")]
+    contributing = [s for s in after["base"]["steps"] if s.get("src") and s["src"].get("post_id") == "draft"]
+    return jsonify({
+        "before": summary(before), "after": summary(after),
+        "draft": {"channels": chans, "n_spans": len(self_spans),
+                  "spans": [{"text": s["text"], "type": _TYPE_KO.get(s["type"], s["type"]), "level": s["level"], "text_id": s["text_id"]} for s in self_spans],
+                  "dialect": [h.split(":", 1)[1] for h in dv["flags"].get("dialect_hits") or []][:6],
+                  "traps": [t for t in traps(after["view"]) if t["post_id"] == "draft"],
+                  "geo_tag": d["activity_meta"]["geo_tag"]},
+        "contributing": contributing,
+        "narrows": after["base"]["k"] < before["base"]["k"] if before["base"]["k"] and after["base"]["k"] else False,
+        "provenance": after["stage2"]["provenance"],
+    })
+
+
 # ── 라우트 ────────────────────────────────────────────────────────────────
 @app.get("/")
 def index():
