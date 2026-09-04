@@ -7,6 +7,13 @@
 from kopl.c2_specificity import age_to_band, specificity_l1
 
 
+LEGAL_BASIS = {
+    "method": "legal_dong_expansion",
+    "source": "행정안전부 주민등록 인구통계",
+    "as_of": "2026-07",
+}
+
+
 def test_age_to_band() -> None:
     assert age_to_band(0) == "0-4"
     assert age_to_band(4) == "0-4"
@@ -85,8 +92,9 @@ def test_legal_dong_expansion() -> None:
     assert result["k_min"] == 234
     assert result["k"] == 234
     assert result["k_level"] == "ACCEPTABLE"
-    assert result["ambiguous"] is True
-    assert result["basis"] == "legal_dong_expansion"
+    assert "ambiguous" not in result
+    assert result["resolution"] == "legal_expansion"
+    assert result["basis"] == LEGAL_BASIS
 
 def test_unknown_location() -> None:
     result = specificity_l1(

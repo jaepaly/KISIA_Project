@@ -62,7 +62,7 @@ def audit_geo(ps: list[dict]) -> None:
         if region.get("level") == "sido"
     }
 
-    ok, miss, outside = [], [], []
+    ok, miss, wrong, outside = [], [], [], []
 
     for persona in ps:
         location = (
@@ -86,20 +86,38 @@ def audit_geo(ps: list[dict]) -> None:
             ))
             continue
 
-        codes = dictionary.resolve(location)
+        info = dictionary.resolve_info(location)
+        codes = list(info["codes"])
 
-        if codes:
-            ok.append(persona["id"])
-        else:
+        if not codes or info["resolution"] == "homonym_unresolved":
             miss.append((
                 persona["id"],
                 location,
                 "상위 경로와 일치하는 행정동 후보가 없다",
             ))
+            continue
+
+        # 정확한 행정동 후보가 있는데 다른 조회 경로가 반환되면
+        # 집현동→반곡동과 같은 조용한 오조회를 별도로 드러낸다.
+        direct_codes = dictionary._resolve_admin(location)
+
+        if direct_codes and codes != direct_codes:
+            got = ", ".join(
+                str(regions[code]["full_name"])
+                for code in codes
+            )
+            wrong.append((
+                persona["id"],
+                location,
+                f"정확한 행정동 대신 {got}",
+            ))
+            continue
+
+        ok.append(persona["id"])
 
     print(
         f"  풀림 {len(ok)} · 못 풀림 {len(miss)} · "
-        f"사전 밖 {len(outside)}   / {len(ps)}명"
+        f"오조회 {len(wrong)} · 사전 밖 {len(outside)}   / {len(ps)}명"
     )
 
     for pid, location, reason in outside:
@@ -107,6 +125,9 @@ def audit_geo(ps: list[dict]) -> None:
 
     for pid, location, reason in miss:
         print(f"    [x] {pid:<5} {location:<27} {reason}")
+
+    for pid, location, reason in wrong:
+        print(f"    [!] {pid:<5} {location:<27} {reason}")
 
 # ── 2. 속성별 단서 커버리지 ──────────────────────────────────────────
 def audit_attr_coverage(ps: list[dict]) -> None:

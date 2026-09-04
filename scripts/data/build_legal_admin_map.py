@@ -206,6 +206,8 @@ def main() -> None:
         "schema_version": "1.0",
         "dict_version": dict_version,
         "source": "행정안전부 KIKmix.20260701",
+        "source_as_of": "2026-07-01",
+        "source_url": "https://www.code.go.kr/",
         "mappings": mappings,
     }
 

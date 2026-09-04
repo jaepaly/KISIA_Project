@@ -95,9 +95,15 @@ regions.json / population.csv
 `legal_dong_expansion`으로 기록한다.
 
 특정성 계산에서는 전체 후보 인구의 합인 `k_union`과 후보별 인구의
-최솟값인 `k_min`을 함께 반환하며, 위험 등급은 보수적으로 `k_min`을
-기준으로 판정한다. 서로 다른 지역의 동명이 지명이 상위 경로로도
+최솟값인 `k_min`을 함께 반환한다. KIKmix는 관할 관계만 제공하므로
+두 값은 법정동의 실제 인구나 수학적 하한·상한이 아니다. 위험 등급은
+공격자가 후보 하나까지 좁힐 가능성을 반영한 방어적 휴리스틱으로
+`k_min`을 사용한다. 서로 다른 지역의 동명이 지명이 상위 경로로도
 좁혀지지 않는 경우에는 기존처럼 `UNKNOWN`으로 처리한다.
+
+`regions.json`에서 현재 행정동이 이름과 상위 경로로 정확히 풀리면 직접
+조회가 우선한다. `KIKmix.20260701`과 월간 인구 사전의 기준 시점 차이로
+과거 법정동 관할 관계가 현재 행정동을 덮어쓰는 것을 막기 위한 규칙이다.
 
 세부 규칙은 `docs/contracts/geo-dictionary.md`를 따른다.
 
@@ -404,3 +410,8 @@ PowerShell:
 ```powershell
 python -X utf8 scripts/data/build_legal_admin_map.py `
   --source "$env:USERPROFILE\Downloads\jscode20260701\jscode20260701\KIKmix.20260701"
+```
+
+`legal_admin_map.json`의 구조 기준일은 `2026-07-01`이고 인구 사전의
+기준월은 `2026-07`이다. 원본 배포처는 행정표준코드관리시스템
+<https://www.code.go.kr/>이다.
