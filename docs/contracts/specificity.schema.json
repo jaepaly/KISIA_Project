@@ -158,7 +158,7 @@
                   "60-64", "65-69", "70-74", "75-79", "80-84", "85-89",
                   "90-94", "95-99", "100+"
                 ]
-}
+              }
             }
           }
         }
@@ -185,6 +185,62 @@
           ],
           "minimum": 1,
           "description": "조건 조합에 따른 추정 후보 모집단 크기. 산출할 수 없으면 0이 아닌 null"
+        },
+        "k_union": {
+          "type": "number",
+          "minimum": 1,
+          "description": "법정동 1:N 확장 시 관련 행정동 인구의 단순 합. 법정동 경계 인구의 상한으로 보장되는 값은 아니다."
+        },
+        "k_min": {
+          "type": "number",
+          "minimum": 1,
+          "description": "법정동 1:N 확장 시 관련 행정동 인구의 최솟값. 법정동의 실제 인구나 수학적 하한은 아니며, 공격자가 후보 하나까지 좁힐 가능성을 반영한 방어적 휴리스틱으로 k_level 판정에 사용한다."
+        },
+        "codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
+          },
+          "description": "법정동 1:N 확장으로 얻은 행정동 geo_code 전체"
+        },
+        "populations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "propertyNames": {
+            "pattern": "^[0-9]{10}$"
+          },
+          "description": "법정동 확장 후보별 교차표 인구. 키는 행정동 geo_code다."
+        },
+        "resolution": {
+          "type": "string",
+          "enum": [
+            "unique",
+            "homonym_unresolved",
+            "legal_expansion",
+            "admin_group_expansion",
+            "not_found"
+          ],
+          "description": "지명 해소 결과. ambiguous는 homonym_unresolved일 때만 true다."
+        },
+        "ambiguous": {
+          "type": "boolean",
+          "description": "상위 경로로도 동명 지명을 하나로 좁히지 못했는지 여부"
+        },
+        "candidates": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
+          },
+          "description": "homonym_unresolved일 때 남은 후보 행정동 코드"
         },
         "k_level": {
           "type": "string",
@@ -229,6 +285,56 @@
           "description": "독립성 가정, 감쇠계수 등 결과 해석에 필요한 계산 가정"
         }
       },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "resolution": {
+                "const": "homonym_unresolved"
+              }
+            },
+            "required": [
+              "resolution"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ambiguous": {
+                "const": true
+              }
+            },
+            "required": [
+              "ambiguous",
+              "candidates"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "resolution": {
+                "enum": [
+                  "legal_expansion",
+                  "admin_group_expansion"
+                ]
+              }
+            },
+            "required": [
+              "resolution"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "ambiguous"
+              ]
+            },
+            "required": [
+              "codes"
+            ]
+          }
+        }
+      ],
       "oneOf": [
         {
           "properties": {
@@ -285,6 +391,16 @@
         "as_of"
       ],
       "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "direct",
+            "legal_dong_expansion",
+            "admin_group_expansion",
+            "unresolved"
+          ],
+          "description": "지역 직접 조회, 법정동 대응표 확장, 번호 행정동 통칭 확장 중 실제 계산 경로"
+        },
         "source": {
           "type": "string",
           "minLength": 1,
@@ -357,6 +473,7 @@
           "enum": [
             "population_lookup",
             "crosstab_lookup",
+            "legal_dong_expansion_min",
             "ratio_damped"
           ]
         },

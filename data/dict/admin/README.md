@@ -20,11 +20,13 @@
 data/dict/admin/
 ├── README.md
 ├── regions.json
-└── population.csv
+├── population.csv
+└── legal_admin_map.json
 ```
 
 - `regions.json`: 행정구역 코드·이름·계층·총인구
 - `population.csv`: 읍면동 × 5세 연령구간 × 성별 인구
+- `legal_admin_map.json`: KIKmix 기반 법정동 → 행정동 1:N 대응표
 
 원본 데이터와 재현 스크립트의 저장 위치는 실제 구축 단계에서 정리한다.
 
@@ -88,8 +90,20 @@ data/dict/admin/
 regions.json / population.csv
 ```
 
-하나로 확정할 수 없는 경우에는 임의로 하나를 선택하지 않고
-`ambiguous=true`와 `candidates`를 사용한다.
+하나의 법정동이 여러 행정동에 걸치는 경우에는 임의로 하나를 선택하지 않는다.
+관련 행정동 코드를 `codes`에 모두 보존하고 `basis`를
+`legal_dong_expansion`으로 기록한다.
+
+특정성 계산에서는 전체 후보 인구의 합인 `k_union`과 후보별 인구의
+최솟값인 `k_min`을 함께 반환한다. KIKmix는 관할 관계만 제공하므로
+두 값은 법정동의 실제 인구나 수학적 하한·상한이 아니다. 위험 등급은
+공격자가 후보 하나까지 좁힐 가능성을 반영한 방어적 휴리스틱으로
+`k_min`을 사용한다. 서로 다른 지역의 동명이 지명이 상위 경로로도
+좁혀지지 않는 경우에는 기존처럼 `UNKNOWN`으로 처리한다.
+
+`regions.json`에서 현재 행정동이 이름과 상위 경로로 정확히 풀리면 직접
+조회가 우선한다. `KIKmix.20260701`과 월간 인구 사전의 기준 시점 차이로
+과거 법정동 관할 관계가 현재 행정동을 덮어쓰는 것을 막기 위한 규칙이다.
 
 세부 규칙은 `docs/contracts/geo-dictionary.md`를 따른다.
 
@@ -385,3 +399,19 @@ python scripts/data/build_admin_population.py \
 2026-07 자료에서 연령별 원본에 없는 0명 읍면동 5개는 `regions.json`에는
 포함하고 `population.csv`에서는 제외한다. 해당 지역의 총인구가 0이 아니면
 스크립트가 실패한다.
+
+### 법정동 → 행정동 대응표 생성
+
+행정안전부 `jscode20260701.zip`의 `KIKmix.20260701`을 사용한다.
+원본 CP949 파일과 ZIP은 저장소에 커밋하지 않고, 파생 대응표만 저장한다.
+
+PowerShell:
+
+```powershell
+python -X utf8 scripts/data/build_legal_admin_map.py `
+  --source "$env:USERPROFILE\Downloads\jscode20260701\jscode20260701\KIKmix.20260701"
+```
+
+`legal_admin_map.json`의 구조 기준일은 `2026-07-01`이고 인구 사전의
+기준월은 `2026-07`이다. 원본 배포처는 행정표준코드관리시스템
+<https://www.code.go.kr/>이다.

@@ -20,6 +20,7 @@ import collections
 import json
 import re
 from pathlib import Path
+from kopl.c2_specificity.engine import RegionDictionary
 
 ROOT = Path(__file__).resolve().parents[1]
 ATTRS = ["age", "sex", "location", "occupation", "family", "commute", "income"]
@@ -52,39 +53,81 @@ def head(n: int, title: str) -> None:
 # ── 1. 거주지가 지명 사전으로 풀리는가 ───────────────────────────────
 def audit_geo(ps: list[dict]) -> None:
     head(1, "거주지 조회 (이슈 #115)")
-    d = json.loads((ROOT / "data/dict/admin/regions.json").read_text(encoding="utf-8"))
-    R, NI = d["regions"], d["name_index"]
-    full = {v["full_name"] for v in R.values()}
-    sido = {v["name"] for v in R.values() if v.get("level") == "sido"}
 
-    ok, miss, wrong = [], [], []
-    for p in ps:
-        loc = (p.get("ground_truth", {}).get("location") or "").strip()
-        if not loc:
+    dictionary = RegionDictionary()
+    regions = dictionary.regions
+    sido = {
+        str(region["name"])
+        for region in regions.values()
+        if region.get("level") == "sido"
+    }
+
+    ok, miss, wrong, outside = [], [], [], []
+
+    for persona in ps:
+        location = (
+            persona.get("ground_truth", {}).get("location") or ""
+        ).strip()
+
+        if not location:
             continue
-        if loc in full:
-            ok.append(p["id"])
-        elif loc.split()[0] not in sido:
-            wrong.append((p["id"], loc, "시도명이 사전에 없다 — 행정구역 개편"))
-        else:
-            codes = NI.get(loc.split()[-1])
-            if not codes:
-                miss.append((p["id"], loc, "이름이 사전에 없다 — 법정동일 수 있다"))
-            elif len(codes) > 1:
-                miss.append((p["id"], loc, f"후보 {len(codes)}개 — 맥락으로 좁혀야 한다"))
-            else:
-                got = R[codes[0]]["full_name"]
-                # 시도까지 같으면 그 사이(시군구) 이름이 어긋난 것이다. 개편이 흔한 자리다.
-                same_sido = got.startswith(loc.split()[0])
-                label = "구 이름이 다르다 -> " if same_sido else "조용히 "
-                wrong.append((p["id"], loc, label + got))
 
-    print(f"  풀림 {len(ok)} · 못 풀림 {len(miss)} · 엉뚱한 곳 {len(wrong)}   / {len(ps)}명")
-    for pid, loc, why in wrong:
-        print(f"    [!] {pid:<5} {loc:<27} {why}")
-    for pid, loc, why in miss:
-        print(f"    [x] {pid:<5} {loc:<27} {why}")
+        parts = location.split()
 
+        if not parts:
+            continue
+
+        # 해외 지역처럼 국내 행정구역 사전 범위 밖인 값은 따로 드러낸다.
+        if parts[0] not in sido:
+            outside.append((
+                persona["id"],
+                location,
+                "국내 행정구역 사전 밖 — 해외 또는 미지원 시도명",
+            ))
+            continue
+
+        info = dictionary.resolve_info(location)
+        codes = list(info["codes"])
+
+        if not codes or info["resolution"] == "homonym_unresolved":
+            miss.append((
+                persona["id"],
+                location,
+                "상위 경로와 일치하는 행정동 후보가 없다",
+            ))
+            continue
+
+        # 정확한 행정동 후보가 있는데 다른 조회 경로가 반환되면
+        # 집현동→반곡동과 같은 조용한 오조회를 별도로 드러낸다.
+        direct_codes = dictionary._resolve_admin(location)
+
+        if direct_codes and codes != direct_codes:
+            got = ", ".join(
+                str(regions[code]["full_name"])
+                for code in codes
+            )
+            wrong.append((
+                persona["id"],
+                location,
+                f"정확한 행정동 대신 {got}",
+            ))
+            continue
+
+        ok.append(persona["id"])
+
+    print(
+        f"  풀림 {len(ok)} · 못 풀림 {len(miss)} · "
+        f"오조회 {len(wrong)} · 사전 밖 {len(outside)}   / {len(ps)}명"
+    )
+
+    for pid, location, reason in outside:
+        print(f"    [!] {pid:<5} {location:<27} {reason}")
+
+    for pid, location, reason in miss:
+        print(f"    [x] {pid:<5} {location:<27} {reason}")
+
+    for pid, location, reason in wrong:
+        print(f"    [!] {pid:<5} {location:<27} {reason}")
 
 # ── 2. 속성별 단서 커버리지 ──────────────────────────────────────────
 def audit_attr_coverage(ps: list[dict]) -> None:
