@@ -68,7 +68,10 @@ check-jsonschema --schemafile docs/contracts/<해당>.schema.json <파일>
 ## 절대 금지 (전문: docs/RULES-DO-NOT.md)
 
 - `data/raw/` · `data/consented/` 접근 금지. **실데이터(실제 블로그·SNS 글) 커밋 금지** — 지인 글도, 공개 글도
-- 키·토큰을 커밋하지 않는다
+- **키·토큰을 커밋하지 않는다.** ⚠️ Claude Code 게이트웨이 키는 **KISIA 가 관리하는 팀 공유 키 하나**다 — 하나가 새면 다섯 명이 전부 멈추고 재발급을 요청해야 한다. 이 저장소는 public 이고 git 히스토리는 지워도 남는다.
+  - 자격증명은 `.claude/settings.local.json`(gitignore 가 막는다) 또는 `~/.claude/settings.json` 에만 둔다
+  - `.claude/settings.json`(공용, 커밋됨)에는 **모델 별칭만** 넣는다. `ANTHROPIC_AUTH_TOKEN`·`ANTHROPIC_BASE_URL` 을 넣지 않는다
+  - 키 값을 이슈·PR·채널·커밋 메시지에 붙여넣지 않는다. 전달은 남지 않는 경로로
 - 인물·글에 학력·학교·전공·정치성향·건강·지적 수준 단서 금지 (검증기가 잡는다)
 - k≤2 인 인구 칸에 가상 인물을 두지 않는다 — 실존 2명 중 하나로 오인될 수 있다
 
