@@ -1,0 +1,8 @@
+{
+  "_주석": "이 파일을 settings.local.json 으로 복사하고 값을 채운다. settings.local.json 은 .gitignore 가 막는다 — 절대 커밋하지 않는다.",
+  "_토큰받는법": "게이트웨이(monogpt) 에서 개인 토큰을 발급받는다. 팀원끼리 토큰을 공유하지 않는다 — 사용량이 섞이고 하나가 새면 전부 막아야 한다.",
+  "env": {
+    "ANTHROPIC_BASE_URL": "PUT_GATEWAY_URL_HERE",
+    "ANTHROPIC_AUTH_TOKEN": "PUT_YOUR_OWN_TOKEN_HERE"
+  }
+}
