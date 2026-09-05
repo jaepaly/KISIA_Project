@@ -1,0 +1,17 @@
+{
+  "persona_id": "E21",
+  "texts": {
+    "profile_bio": "은퇴하고 사진 찍으러 다니는 낙"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "income",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "은퇴하고 사진 찍으러 다니는 낙",
+    "note": "프로필이 은퇴 상태와 취미 지출을 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
