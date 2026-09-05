@@ -1,0 +1,2 @@
+{"schema_version": "1.0", "corpus_version": "v0", "created": "2026-09-05"}
+{"post_id": "C09_b03", "persona_id": "C09", "texts": {"title": "비 냄새 남은 아침날씨 기록", "photo_caption:0": "읍내 장터를 지나 창고로 들어가는 아침길", "body": "밤새 비가 조금 왔는지 공기가 눅눅했다.  \n바람은 차지 않았다.\n\n새벽 경매가 끝날 무렵 읍내를 지나 강변 창고 쪽으로 첫 짐을 옮겼다.  \n젖은 길에 불빛이 길게 비쳤고, 창문에는 습기가 조금씩 맺혔다.\n\n아 맞다, 어제 남겨둔 찐감자가 생각났다.  \n소금 없이 먹어도 괜찮았는데 한개가 덜 익어 가운데가 단단했다.  \n그래도 따뜻할 때 다 먹음.\n\n해가 올라오자 구름 사이가 잠깐 밝아졌다.  \n비 냄새는 한동안 그대로 남았다."}, "spans": [], "flags": {"gen_signal": false, "meme_hits": [], "negative_control": false}, "reviewed": true}
