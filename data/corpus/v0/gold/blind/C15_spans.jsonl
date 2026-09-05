@@ -1,0 +1,2 @@
+{"schema_version": "1.0", "corpus_version": "v0", "created": "2026-09-05"}
+{"post_id": "C15_b12", "persona_id": "C15", "texts": {"title": "바람 부는 오후", "body": "아침부터 바람이 거셌다.\n\n창문이 덜컹거림ㅎ  \n따뜻한 국물 한 그릇 먹고  \n한참 멍하니 앉아 있었음.\n\n국물이 좀 짯네요.\n\n아 맞다, 예순하나 됐음.  \n그래도 공구 잡으면 시간 잘 감!!\n\n해 질 무렵엔 바람이 잦았다.  \n남은 국물은 그대로 식었음ㅎ"}, "spans": [], "flags": {"gen_signal": false, "meme_hits": [], "negative_control": false}, "reviewed": true}
