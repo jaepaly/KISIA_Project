@@ -1,5 +1,5 @@
 {
-  "생성": "scripts/sample_gold.py --seed 20260908 --target 20",
+  "생성": "scripts/sample_gold.py --seed 20260908 --target 20 --assignment data/corpus/v0/gold/blind/_assignment.json",
   "설명": "blind 200 대상 글. 교사 라벨을 보기 전에 매긴다. 등급·속성은 일부러 담지 않았다 — 정답을 보면 blind 가 아니다.",
   "출력": "data/corpus/v0/gold/blind/<persona_id>_spans.jsonl",
   "글": [
