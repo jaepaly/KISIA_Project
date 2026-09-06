@@ -282,7 +282,7 @@ def generate_persona(
                 "kind": item["kind"],
                 # label-schema §8-3 — 단서를 의도적으로 넣지 않은 글인가
                 "negative_control": item["kind"] == "noise",
-                "clue": item.get("clue"),
+                "clue": item.get("clues"),
                 # 재현 메타 — 없으면 10주 뒤에 이 글이 뭐였는지 복원 못 한다
                 # 재현 메타 (이슈 4-② / RULES-DO-NOT #9)
                 "gen_model": client.version,

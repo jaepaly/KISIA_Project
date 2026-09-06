@@ -1,0 +1,17 @@
+{
+  "persona_id": "E07",
+  "texts": {
+    "profile_bio": "밭일 하다 심심하면 몇 자 적음"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "밭일 하다 심심하면 몇 자 적음",
+    "note": "프로필이 텃밭 농사(은퇴 후 소일)를 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}

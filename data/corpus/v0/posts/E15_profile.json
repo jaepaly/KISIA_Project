@@ -1,0 +1,17 @@
+{
+  "persona_id": "E15",
+  "texts": {
+    "profile_bio": "차 만지는 거 좋아하는 사무직입니다"
+  },
+  "clue": {
+    "post": null,
+    "text_id": "profile_bio",
+    "attr": "occupation",
+    "level": "implicit",
+    "subject": "self",
+    "clue": "차 만지는 거 좋아하는 사무직입니다",
+    "note": "프로필이 직업과 취미(정비)를 함께 상시 암시한다",
+    "ambiguous": false
+  },
+  "persona_schema_version": "0.2"
+}
