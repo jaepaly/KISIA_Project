@@ -72,6 +72,8 @@ check-jsonschema --schemafile docs/contracts/<해당>.schema.json <파일>
   - 자격증명은 `.claude/settings.local.json`(gitignore 가 막는다) 또는 `~/.claude/settings.json` 에만 둔다
   - `.claude/settings.json`(공용, 커밋됨)에는 **모델 별칭만** 넣는다. `ANTHROPIC_AUTH_TOKEN`·`ANTHROPIC_BASE_URL` 을 넣지 않는다
   - 키 값을 이슈·PR·채널·커밋 메시지에 붙여넣지 않는다. 전달은 남지 않는 경로로
+  - 설정법: `.claude/settings.local.json.example` 을 `.claude/settings.local.json` 으로 복사하고 값을 채운다. 키는 PM(박재현)에게 받는다
+  - ⚠️ 설정 파일에 `_주석` 같은 **최상위 주석 키를 넣지 않는다.** 넣으면 Claude Code 가 그 파일을 통째로 무시한다 — 에러도 안 뜨고 키가 조용히 안 붙는다 (실측 2026-09-05). 설명은 JSON 밖에 쓴다
 - 인물·글에 학력·학교·전공·정치성향·건강·지적 수준 단서 금지 (검증기가 잡는다)
 - k≤2 인 인구 칸에 가상 인물을 두지 않는다 — 실존 2명 중 하나로 오인될 수 있다
 
