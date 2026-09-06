@@ -75,12 +75,12 @@ def load_designs(d: str) -> list[dict]:
 def load_excluded(gold_dir: str) -> set[tuple[str, str]]:
     """이미 검수 골드셋에 들어간 글. blind 와 겹치면 안 된다.
 
-    ⚠️ 골드 스팬 레코드에는 persona_id·post_id 가 없다.
-    span.schema.json 이 additionalProperties: false 로 8개 필드만 허용하기 때문이다.
-    label-schema §8-1 대로 **파일명에서 인물을, span_id 앞부분에서 글**을 뗀다.
+    label-schema §8-3 형식(post_id 를 최상위에 갖는 글 레코드)을 읽는다.
+    spans 가 비어있어도(단서 없다고 판정된 글) "이미 검토됐다"는 사실
+    자체는 제외 대상이다 — 안 그러면 검토 완료된 글이 다시 배정된다.
 
-        data/corpus/v0/gold/S01_spans.jsonl   → 인물 S01
-        span_id "S01_b07_s02"                 → 글 b07
+    프로필 레코드(post_id 없음, persona_id + profile_bio)는 글이 아니라
+    건너뛴다.
     """
     out: set[tuple[str, str]] = set()
     for f in glob.glob(str(Path(gold_dir) / "*_spans.jsonl")):
@@ -92,11 +92,11 @@ def load_excluded(gold_dir: str) -> set[tuple[str, str]]:
                 r = json.loads(line)
             except Exception:  # noqa: BLE001
                 continue
-            sid = str(r.get("span_id", ""))
-            parts = sid.split("_")
-            # <persona>_<post>_s<NN> 에서 가운데를 뗀다. 프로필 스팬(<persona>_bio_sNN)은 글이 아니다
-            if len(parts) >= 3 and parts[-2] != "bio":
-                out.add((pid, parts[-2]))
+            post_id = r.get("post_id", "")
+            if not post_id:
+                continue  # 프로필 레코드(post_id 없음)는 건너뛴다
+            post = post_id.split("_")[-1]
+            out.add((pid, post))
     return out
 
 
@@ -192,6 +192,8 @@ def main() -> int:
     ap.add_argument("--posts", default=DEF_POSTS)
     ap.add_argument("--gold", default="data/corpus/v0/gold",
                     help="검수 골드셋. 여기 든 글은 blind 에서 제외한다")
+    ap.add_argument("--assignment", default="",
+                help="이미 배정된 blind 목록. 검수/IAA 배정이 이걸 피한다 (비우면 안 봄)")
     ap.add_argument("--out", default=DEF_OUT)
     ap.add_argument("--audit", default=DEF_AUDIT)
     ap.add_argument("--target", type=int, default=DEF_TARGET)
@@ -212,7 +214,9 @@ def main() -> int:
         print(f"인물 JSON 을 못 찾았다: {a.personas}")
         return 1
     excluded = load_excluded(a.gold)
-
+    if a.assignment:
+        excluded |= load_blind(a.assignment)
+        
     picked, plan = stratified(designs, a.target, a.seed, excluded)
     if not picked:
         print("뽑을 글이 없다")
