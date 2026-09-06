@@ -536,6 +536,103 @@ exp(c1): KoELECTRA-base 파인튜닝 1차 — 스팬 F1 명시 .84 / 암묵 .58 
 
 ---
 
+## W4 실무 (9/7~9/13)
+
+### 1. LLM 도달 가능성 측정 — 월요일 착수
+
+W3에 측정한 미탐 공간(기존 도구 3종이 모두 놓친 스팬) 안에서 LLM이 잡는 비율을 잰다.
+
+**대상**: `experiments/exp01-baseline/results/` 에서 기존 도구 3종이 전부 놓친 스팬만 추출한다.
+
+```python
+# 미탐 스팬 추출
+missed = [s for s in gold_spans
+          if not any(tool_covers(s, t) for t in [presidio, korean_pii, regex])]
+# 현재 metrics.json: llm_recovers: 0, reachability: 0.0 → 이걸 채운다
+```
+
+**LLM 선택**: Gemini를 쓴다. 생성 모델(Qwen) · 교사 모델과 겹치지 않는 계열이어야 한다.
+
+```bash
+# 실험 결과를 같은 exp01 폴더에 추가
+# 별도 exp를 만들지 않고 metrics.json을 갱신한다
+```
+
+등급별로 쪼개서 낸다:
+
+| 등급 | 미탐 스팬 수 | LLM 회수 수 | 도달 가능성 |
+|---|---|---|---|
+| explicit | ? | ? | ?% |
+| implicit | ? | ? | ?% |
+| inferential | ? | ? | ?% |
+
+---
+
+### 2. 중단 기준 판정 기록 — 화요일
+
+W3 확정값과 W4 측정값을 합쳐 판정한다:
+
+```json
+// experiments/exp01-baseline/results/metrics.json
+{
+  "implicit_missed_rate":   0.5000,   // W3 확정
+  "inferential_missed_rate": 0.5156,  // W3 확정
+  "llm_recovers_implicit":  ??,       // W4 측정
+  "llm_recovers_inferential": ??,     // W4 측정
+  "gate_decision":          "??",     // PASS | HOLD | STOP
+  "decision_rationale":     "..."
+}
+```
+
+판정 기준:
+
+| 조건 | 판정 |
+|---|---|
+| implicit ≥ 60% **AND** inferential ≥ 60% | `PASS` — 학습으로 도달 가능 |
+| 하나만 충족 | `HOLD` — 멘토 상의 후 결정 |
+| 둘 다 미달 | `STOP` — 팀에 즉시 알린다 |
+
+> ⚠️ 결과를 숨기지 않는다. STOP이 나와도 그 자체가 프로젝트의 정직한 데이터다.
+
+---
+
+### 3. 파인튜닝 데이터 준비 — 화~수요일
+
+```bash
+# 학습 입력 확인
+ls data/corpus/v0/gold/
+# *_spans.jsonl (검수분)이 학습 대상
+
+# blind + IAA 배정은 test 전용 → A의 split_train_test.py 결과를 쓴다
+cat data/corpus/v0/splits/train.jsonl | head -1   # 형식 확인
+```
+
+gold 스팬 → BIO 변환 파이프라인을 만든다. `howto/b-finetune.md §2`에 서브워드 정렬 절차가 있다.
+
+---
+
+### 4. 파인튜닝 환경 세팅 + 첫 학습 잡 — 수~금요일
+
+```bash
+# 환경 확인
+python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+pip show transformers seqeval   # 버전 확인 후 requirements.txt에 고정
+
+# 100건 과적합 테스트 — 전체 학습 전 필수 (§10.2)
+# train[:100]으로 학습, 같은 100건으로 평가 → F1 ≥ 0.9여야 파이프라인이 정상
+```
+
+**이번 주 목표**: epoch 1 끝까지 돌고 exit code 0 + checkpoint 저장. 성능은 W5에서 본다.
+
+```bash
+# 체크포인트 저장 확인
+ls experiments/exp06-finetune/checkpoint-*/   # 디렉터리가 있으면 성공
+```
+
+> ⚠️ exp 채점이 현재 `type-agnostic`이다. 설계서에 「주 지표는 type 일치 + IoU ≥ 0.5 기준으로 재채점 예정」을 명시한다.
+
+---
+
 ## 14. 참고
 
 ### 실무 문서 (이 매뉴얼에서 분리한 것)

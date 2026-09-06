@@ -259,6 +259,156 @@
 
 ---
 
+## W4 실무 (9/7~9/13)
+
+### 1. IAA 파일럿 라벨링 — 화요일까지 완료
+
+**독립적으로** 진행한다. C의 결과를 보기 전에 끝내야 IAA가 성립한다.
+
+```bash
+# 배정 목록 확인
+cat data/corpus/v0/gold/iaa/_assignment.json
+# → post_id 16개가 리스트로 있다
+```
+
+각 포스트의 본문을 `data/corpus/v0/posts/*.jsonl`에서 찾아 읽고, 라벨을 직접 붙인다.
+
+**저장 형식** — `data/corpus/v0/gold/iaa/A_spans.jsonl`
+
+```jsonc
+// 한 줄 = 한 스팬, label-schema §8-1의 8필드
+{
+  "post_id":   "E07_b03",
+  "span_id":   "E07_b03_s01",        // post_id + _s + 일련번호
+  "text_id":   "body",               // "body" | "title" | "photo_captions"
+  "start":     12,                   // 포함, 문자 offset
+  "end":       17,                   // 미포함
+  "text":      "신갈저수지",
+  "type":      "LOC_FACILITY",       // label-schema §5 유형 목록 참고
+  "level":     "inferential",        // explicit | implicit | inferential
+  "subject":   "self"                // self | other | ambiguous
+}
+```
+
+> ⚠️ **유형과 수준은 label-schema.md가 정본이다.** "마흔여덟"은 `explicit`이다(한글 수사도 explicit — W2 팀 합의). "무릎이 예전 같지 않네요"는 스팬이 아니다 — `flags.gen_signal` 글 단위 플래그(§7).
+
+---
+
+### 2. 코퍼스 v1 동결 — 수요일
+
+**validate ERROR 0건이 합격선이다.** audit은 판정하지 않으므로 참고용이다.
+
+```bash
+# 동결 확인 — ERROR가 한 건도 없어야 한다
+python -m kopl.c5_corpus.validate \
+  --cards data/realism/cards \
+  data/corpus/v0/personas/*.json
+
+# 참고용 감사 (판정 아님)
+python scripts/corpus_audit.py > docs/evidence/W4_코퍼스동결.txt
+git add docs/evidence/W4_코퍼스동결.txt
+git commit -m "docs: W4 코퍼스 v1 동결 선언"
+```
+
+#### D17·B16 처리 (킥오프 결정에 따라)
+
+resume 재생성이 결정됐다면:
+
+```bash
+# 해당 인물 post_id 목록 확인 후 재실행
+python -m kopl.c5_corpus.generate --resume --persona D17
+python -m kopl.c5_corpus.generate --resume --persona B16
+# 기존 파일에 덮어쓴 뒤 커밋
+```
+
+재생성 없이 문서화로 처리한다면 `docs/evidence/W4_코퍼스동결.txt`에 D17·B16의 구조적 반복을 「설계 수용」 또는 「배포 전 재생성 예정」으로 명시한다.
+
+#### created_at 처리 (킥오프 결정에 따라)
+
+②-가(패치) 선택 시 — `scripts/patch_created_at.py`를 작성해 전체 포스트에 적용한다:
+
+```python
+# patch_created_at.py 핵심 로직
+# 인물 JSON의 generated_at에서 역산
+# post_count × 평균 5일 앞에서 시작해 마지막 글이 ~8~9월에 닿도록
+base = generated_at - timedelta(days=post_count * 5)
+for i, post in enumerate(posts):
+    post["created_at"] = (base + timedelta(days=i * randint(2,6))).isoformat()
+```
+
+②-나(현상 유지 + 문서화) 선택 시 — 동결 텍스트에 「created_at은 생성 일자 기준이며 본문 시제와 약간 어긋날 수 있다」고 적는다.
+
+---
+
+### 3. 파인튜닝 train/test 분리 — 수요일
+
+**새 스크립트를 만든다.** `scripts/gen_partition.py`는 인물 분류기라 용도가 다르다.
+
+```bash
+# 출력 위치
+data/corpus/v0/splits/train.jsonl
+data/corpus/v0/splits/test.jsonl
+```
+
+**격리 규칙** (이걸 어기면 리크다):
+
+| 포스트 | 어느 쪽 |
+|---|---|
+| `gold/blind/_assignment.json` 배정 글 | **test 전용** |
+| `gold/iaa/_assignment.json` 배정 글 (16편) | **test 전용** |
+| 나머지 | train 가능 |
+
+```python
+# split_train_test.py 핵심 로직 (예시)
+import json, random
+
+# 제외 대상 수집
+excluded = set()
+for path in ["data/corpus/v0/gold/blind/_assignment.json",
+             "data/corpus/v0/gold/iaa/_assignment.json"]:
+    excluded.update(json.load(open(path)))
+
+# seed 고정 필수 — 재현성 증빙
+rng = random.Random(20260908)
+
+all_posts = [...]  # posts/*.jsonl 전체
+test_forced = [p for p in all_posts if p["post_id"] in excluded]
+rest = [p for p in all_posts if p["post_id"] not in excluded]
+rng.shuffle(rest)
+test_ratio = 0.1
+split_idx = int(len(rest) * (1 - test_ratio))
+train = rest[:split_idx]
+test = rest[split_idx:] + test_forced
+```
+
+**누수 검사** — 커밋 전에 확인한다:
+
+```bash
+python -c "
+import json
+train_ids = {json.loads(l)['post_id'] for l in open('data/corpus/v0/splits/train.jsonl')}
+test_ids  = {json.loads(l)['post_id'] for l in open('data/corpus/v0/splits/test.jsonl')}
+leaked = train_ids & test_ids
+print('누수:', len(leaked), leaked)
+"
+```
+
+---
+
+### 4. IAA 계산 — 목요일 (C와 함께)
+
+C가 PR #188 `scripts/iaa.py`를 Ready 전환하면 함께 실행한다.
+
+```bash
+python scripts/iaa.py \
+  data/corpus/v0/gold/iaa/A_spans.jsonl \
+  data/corpus/v0/gold/iaa/C_spans.jsonl
+```
+
+결과로 나온 **등급별 F1을 README G2 지표 갱신 칸에 기록**한다. B의 암묵 F1 목표치 상한이 이 수치에서 결정된다.
+
+---
+
 ## 11. 참고
 
 - [persona-design.md](../persona-design.md) — 인물 설계 양식, 단서 카탈로그, 제작 워크플로, 체크리스트

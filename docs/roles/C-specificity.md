@@ -751,6 +751,114 @@ data/README.md                            라이선스 표에 출처 추가
 
 ---
 
+## W4 실무 (9/7~9/13)
+
+### 1. PR #181 수정 재제출 — 월요일
+
+PR이 CHANGES_REQUESTED 상태다. 리뷰 코멘트 내용을 확인하고 수정한다.
+
+```bash
+gh pr view 181 --comments   # 리뷰 코멘트 확인
+# 수정 후
+git add <수정 파일>
+git commit -m "fix(c3): PR #181 리뷰 반영 — ..."
+git push origin <브랜치명>
+```
+
+### 2. PR #191 Draft → Ready 전환 — 월요일 오후
+
+jhyun114 계정으로 작업한 blind 110스팬 PR이 Draft 상태다.
+
+```bash
+gh pr ready 191
+# 또는 GitHub 웹에서 "Ready for review" 버튼 클릭
+```
+
+PR이 머지되면 `data/corpus/v0/gold/blind/` 에 스팬 파일들이 들어온다.
+
+---
+
+### 3. IAA 파일럿 라벨링 — 화요일까지 완료
+
+**A의 결과를 보기 전에** 끝내야 한다.
+
+배정 목록 확인:
+
+```bash
+cat data/corpus/v0/gold/iaa/_assignment.json
+# → post_id 16개 리스트
+```
+
+각 포스트 본문을 `data/corpus/v0/posts/*.jsonl`에서 읽고 직접 라벨을 붙인다.
+
+**저장 형식** — `data/corpus/v0/gold/iaa/C_spans.jsonl`
+
+```jsonc
+{
+  "post_id":   "E07_b03",
+  "span_id":   "E07_b03_s01",
+  "text_id":   "body",
+  "start":     12,
+  "end":       17,
+  "text":      "신갈저수지",
+  "type":      "LOC_FACILITY",
+  "level":     "inferential",
+  "subject":   "self"
+}
+```
+
+**blind와 IAA의 차이** — IAA는 교사 라벨을 봐도 된다. blind와 달리 동일 글에 대해 A·C 두 라벨러의 일치도를 재는 것이 목적이다.
+
+---
+
+### 4. 행정구역 픽스처 완성 — 화~수요일
+
+W3에서 3/18 + ①②④ 일부까지 완성됐다. 이번 주 목표: **18/18 완성 또는 미해결 UNKNOWN 격리**.
+
+```python
+# tests/fixtures/specificity_l1.py 구조 (예시)
+FIXTURES = [
+    # (조건 딕셔너리, 기대 k값, 기대 등급)
+    ({"region": "성수1가1동", "age_range": "40s"}, (800, 1200), "HIGH"),
+    ...
+]
+```
+
+③ 법정동→행정동 픽스처 10건은 PR #181이 머지되면 같이 해소될 수 있다. 아직 미해결인 경우만 수동으로 추가한다.
+
+해소가 안 되는 지명은 UNKNOWN으로 격리하고 제외 인물 수를 기록한다:
+
+```bash
+grep -c '"level": "UNKNOWN"' data/dict/admin/regions.json
+```
+
+---
+
+### 5. IAA 계산 — 목요일 (A와 함께)
+
+PR #188 `scripts/iaa.py`를 Draft → Ready 전환하고 A와 함께 실행한다.
+
+```bash
+python scripts/iaa.py \
+  data/corpus/v0/gold/iaa/A_spans.jsonl \
+  data/corpus/v0/gold/iaa/C_spans.jsonl
+# → 등급별 pairwise 스팬 F1 출력
+```
+
+결과를 G2 지표에 반영한다. 이 수치가 B의 암묵 F1 목표치 상한이 된다.
+
+---
+
+### 6. 특정성 L1 픽스처 테스트 확인 — 목~금요일
+
+```bash
+python -m kopl.c2_specificity.test_l1
+# R1~R6 기대값(지역·k·등급)과 일치하는지 확인
+# 「오류 없이 실행」이 아니라 「기대값 일치」가 기준이다
+```
+
+---
+
 ## 13. 참고
 
 - [`howto/c-public-data.md`](howto/c-public-data.md) — 공공데이터 확보·사전 구축 실무, 지명 사전 계약 템플릿

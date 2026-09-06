@@ -246,6 +246,164 @@ C가 계산한 글별 기여도를 받아서, **가장 적은 부담으로 목�
 
 ---
 
+## W4 실무 (9/7~9/13)
+
+### 1. 월 10:00 킥오프 — 5개 결정 진행
+
+45분, 전원 참석. PM이 진행한다.
+
+| 번호 | 결정 사항 | 현재 상태 |
+|---|---|---|
+| ① Qwen3 크기 | **4B 이미 확정** (DEC-004) — 재확인만 | 결정 완료 |
+| ② created_at 처리 | 패치(②-가) vs 현상유지+문서화(②-나) | A가 결정 |
+| ③ D17·B16 처리 | 재생성 vs 설계수용 문서화 | A가 결정 |
+| ④ 골드셋 현황 | PR #191·#192 머지 타임라인 확인 | — |
+| ⑤ 2단 라벨 형식 | B의 파인튜닝 데이터와 겹치는 포맷 확인 | B와 협의 |
+
+결정 사항은 `docs/decisions.md`에 DEC-번호로 기록한다.
+
+---
+
+### 2. QLoRA 환경 세팅 — 화~수요일
+
+```bash
+# 환경 확인
+pip show peft bitsandbytes trl transformers
+python -c "import torch; print(torch.cuda.is_available())"
+
+# 없으면 설치
+pip install peft bitsandbytes trl accelerate
+```
+
+**Qwen3-4B 로드 테스트**:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.bfloat16,
+)
+model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen3-4B",
+    quantization_config=bnb_config,
+    device_map="auto",
+)
+print("로드 성공, VRAM:", torch.cuda.memory_allocated() / 1e9, "GB")
+```
+
+**LoRA 어댑터 붙이기**:
+
+```python
+from peft import LoraConfig, get_peft_model
+
+lora_config = LoraConfig(
+    r=16,                    # rank — VRAM 부족 시 8로 내린다
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.05,
+    task_type="CAUSAL_LM",
+)
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()   # 전체의 ~1% 만 학습되면 정상
+```
+
+---
+
+### 3. 첫 학습 잡 — 수~금요일
+
+**이번 주 목표**: epoch 1 완료 + exit code 0 + checkpoint 저장. 성능은 W5에서 본다.
+
+```bash
+# 실험 폴더 만들기 (_template 복사)
+cp -r experiments/_template experiments/exp07-qwen3-finetune
+# README.md에 설정 기록 후 학습 시작
+```
+
+VRAM 부족 시 순서대로 시도한다:
+
+| 시도 순서 | 조치 | 효과 |
+|---|---|---|
+| 1 | `max_new_tokens` 512 → 256 | 즉시 |
+| 2 | `per_device_train_batch_size` 1 | 즉시 |
+| 3 | `gradient_accumulation_steps` 4 | 유효 배치 유지 |
+| 4 | 클라우드(AWS·Kaggle) | 학습 데이터가 합성이라 외부 가능 |
+
+체크포인트 저장 확인:
+
+```bash
+ls experiments/exp07-qwen3-finetune/checkpoint-*/
+# 디렉터리가 있으면 성공
+```
+
+> ⚠️ 어댑터 가중치는 repo에 커밋하지 않는다(`.gitignore`가 막는다). `models/registry.md`에 로컬 경로·학습일·설정만 적는다.
+
+---
+
+### 4. 설계서 취합 — 수요일 초안, 금요일 완성
+
+```bash
+# 새 파일 생성
+touch docs/design/W04-모델서비스설계서.md
+```
+
+뼈대 구성:
+
+```
+1. 시스템 개요 (E 파트)
+2. 1단 탐지 모델 (B 파트) — exp01 수치 포함
+3. 특정성·기여도 엔진 (C 파트)
+4. 2단 추론·조치 (D 파트) — Qwen3-4B 확정 근거
+5. 가상 SNS·인프라 (E 파트)
+6. G2 지표 현황
+7. 한계 및 향후 계획
+```
+
+각 역할이 금요일까지 자기 파트를 PR로 올리면 D가 취합해 머지한다.
+
+---
+
+### 5. 개별 보고 취합 — 수요일 23:59
+
+팀원 4명에게 아래 형식으로 수 23:59까지 제출을 요청한다:
+
+```
+1. 이번 주 내 목표:
+2. 실제로 한 일:
+3. 달라진 것 (before → after, 숫자):
+4. 증빙 링크 (PR/커밋/파일):
+5. 막힌 것 + 필요한 지원:
+```
+
+---
+
+### 6. 목 20:00 멘토링 준비 — 수요일까지
+
+```bash
+touch docs/mentoring/W04-보고-포인트.md
+```
+
+주요 안건 3건:
+
+1. **G2 지표 갱신 승인** — exp01 미탐 공간 수치 + IAA F1 결과를 가져간다
+2. **중단 기준 판정 결과** — B가 화요일에 결정한 PASS/HOLD/STOP
+3. **AWS 크레딧 조건** — 학습 잡 규모 vs 잔여 크레딧 확인
+
+---
+
+### 7. w04 태그 + 설계서 최종 제출 — 금요일
+
+```bash
+# 설계서 최종 확인 후
+git add docs/design/W04-모델서비스설계서.md
+git commit -m "docs: W04 모델·서비스 설계서 최종"
+bash scripts/tag_week.sh w04   # 없으면: git tag w04 && git push origin w04
+```
+
+---
+
 ## 11. 참고
 
 - [plan.md §3](../plan.md) — 왜 로컬 모델이 필요한가, 증류 구조

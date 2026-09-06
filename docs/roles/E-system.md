@@ -571,6 +571,140 @@ ENGINE_MODE=real   # 실제 모델. 한 번에 하나씩 교체
 
 ---
 
+## W4 실무 (9/7~9/13)
+
+### 1. 시딩 스크립트 작성 — 월~화요일
+
+**코퍼스 v1이 동결된 후에 실행한다.** 동결 전에 실행하면 데이터가 바뀔 때 다시 해야 한다.
+
+```bash
+# A의 동결 선언을 확인한 후
+ls docs/evidence/W4_코퍼스동결.txt   # 있으면 동결 완료
+```
+
+**`scripts/seed_sns.py` 골격**:
+
+```python
+#!/usr/bin/env python3
+"""합성 코퍼스 → SNS DB 시딩 (멱등 — 두 번 돌려도 글 수 동일)"""
+import json, sqlite3, hashlib
+from pathlib import Path
+
+DB_PATH = Path("apps/sns/db/sns.db")
+POSTS_DIR = Path("data/corpus/v0/posts")
+PERSONAS_DIR = Path("data/corpus/v0/personas")
+
+def make_user_ref(persona_id: str) -> str:
+    """persona_id → u_[0-9a-f]{8,} 형식 (sns-minimal-spec.md 계약)"""
+    h = hashlib.sha256(persona_id.encode()).hexdigest()
+    return f"u_{h[:8]}"
+
+def seed():
+    conn = sqlite3.connect(DB_PATH)
+    for persona_file in PERSONAS_DIR.glob("*.json"):
+        persona_id = persona_file.stem
+        user_ref = make_user_ref(persona_id)
+        posts_file = POSTS_DIR / f"{persona_id}.jsonl"
+        if not posts_file.exists():
+            continue
+        for line in posts_file.read_text(encoding="utf-8").splitlines():
+            post = json.loads(line)
+            # INSERT OR IGNORE → 멱등성 보장
+            conn.execute("""
+                INSERT OR IGNORE INTO posts
+                  (post_id, user_ref, title, body, created_at, visibility)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                post["post_id"], user_ref,
+                post.get("title", ""), post.get("post_text", ""),
+                post.get("created_at"), "public",
+            ))
+    conn.commit()
+    conn.close()
+
+if __name__ == "__main__":
+    seed()
+    print("시딩 완료")
+```
+
+> ⚠️ **`user_ref`는 `persona_id` 그대로가 아니다.** `sns-minimal-spec.md` 계약이 `u_[0-9a-f]{8,}` 형식을 요구한다. `make_user_ref()` 처럼 해시로 생성한다.
+
+**멱등성 확인** — 두 번 돌려도 글 수가 늘지 않아야 한다:
+
+```bash
+python scripts/seed_sns.py
+python scripts/seed_sns.py   # 한 번 더
+sqlite3 apps/sns/db/sns.db "SELECT COUNT(*) FROM posts;"
+# 두 실행 후 같은 수여야 정상
+```
+
+---
+
+### 2. apps/sns 점검 — 화~수요일
+
+```bash
+cd apps/sns
+python -m pytest test_export.py -v
+# GET /api/export/<user_ref> 가 통과해야 한다
+```
+
+실패 시 체크리스트:
+
+| 증상 | 확인 사항 |
+|---|---|
+| `ImportError` | `pip install -r requirements.txt` 실행 여부 |
+| `404 Not Found` | `user_ref` 형식이 `u_[0-9a-f]{8,}` 인지 확인 |
+| `500 Internal Server Error` | DB 경로(`apps/sns/db/sns.db`)가 존재하는지 확인 |
+| 빈 응답 | 시딩이 완료됐는지 확인 (`SELECT COUNT(*) FROM posts`) |
+
+활동 메타 필드 확인 — `schema.sql` 에 이미 있는 것들:
+
+```bash
+sqlite3 apps/sns/db/sns.db ".schema posts"
+# created_at, visibility, nickname 이 있으면 정상
+# is_public 은 없다 — 계약상 visibility 를 쓴다
+```
+
+---
+
+### 3. 설계서 시스템 파트 — 수요일 초안
+
+D가 만드는 `docs/design/W04-모델서비스설계서.md`에 아래 파트를 기여한다:
+
+```markdown
+## 5. 시스템 아키텍처
+
+### SNS ↔ 분석기 경계
+- 사용자 글 흐름: 입력 → 1단 탐지 → 2단 추론 → 결과 표시
+- 외부 전송 없음: 모든 처리 로컬 (RULES-DO-NOT #2)
+- E 인터페이스: GET /api/export/<user_ref> → 스팬 분석 입력
+
+### 배포 계획
+- 로컬 실행 (기본): apps/sns + 분석기 동일 머신
+- AWS 크레딧 범위: 학습 전용 (사용자 데이터 외부 불가)
+- 대회 제출: 로컬 데모 또는 EC2 단기 인스턴스 (크레딧 조건 확인 필요)
+
+### 수동 업로드 경로 (W5 구현 예정)
+- 사용자가 직접 글 파일 업로드 → 분석 → 결과 표시
+- W4 에서는 경로만 설계, 구현은 W5
+```
+
+---
+
+### 4. AWS 크레딧 조건 확인 — 목~금요일
+
+멘토링(목 20:00) 후속으로 확인한다:
+
+| 확인 항목 | 이유 |
+|---|---|
+| 무료 티어 vs 크레딧 적용 범위 | 대회 제출 요건에 따라 배포 방식이 결정된다 |
+| 인스턴스 상시 기동 금지 정책 | RULES-DO-NOT #7 — 버짓 알림 설정 필수 |
+| 학습 vs 추론 인스턴스 구분 | 학습(GPU)은 크레딧, 추론(데모)은 무료 티어로 분리 가능 여부 |
+
+결과를 `docs/design/W04-모델서비스설계서.md` 배포 계획 항목에 반영한다.
+
+---
+
 ## 14. 참고
 
 - [`howto/e-contracts.md`](howto/e-contracts.md) — 계약 실무: JSON Schema 문법 · 4종 초안 · 1:1 질문 목록 · 게이트
