@@ -1,0 +1,2 @@
+{"schema_version": "1.0", "corpus_version": "v0", "created": "2026-09-05"}
+{"post_id": "D22_b14", "persona_id": "D22", "texts": {"title": "바람 부는 날엔 국물이 자꾸 당긴다.", "body": "바람이 창문을 종일 긁었다.\n\n매운 국을 한 냄비 끓엿다.  \n처음엔 싱거웠는데 소금을 더 넣으니 이번엔 짰수다.\n\n참, 시세가 내려가면 선과장에 넘기는 값이 반 토막이우다.  \n생각하면 뭐하쿠과.\n\n국은 식어도 매운 냄새가 오래 남았수다.  \n비는 올락말락 한다."}, "spans": [], "flags": {"gen_signal": false, "meme_hits": [], "negative_control": false}, "reviewed": true}
