@@ -287,14 +287,16 @@ import torch
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_quant_type="nf4",
+    bnb_4bit_use_double_quant=True,
     bnb_4bit_compute_dtype=torch.bfloat16,
 )
 model = AutoModelForCausalLM.from_pretrained(
     "Qwen/Qwen3-4B",
     quantization_config=bnb_config,
-    device_map="auto",
+    device_map={"": 0},
+    dtype=torch.bfloat16,
 )
-print("로드 성공, VRAM:", torch.cuda.memory_allocated() / 1e9, "GB")
+print("로드 성공, VRAM:", torch.cuda.memory_allocated() / 1e9, "GB")   # 실측 2.68GB
 ```
 
 **LoRA 어댑터 붙이기**:
@@ -302,16 +304,25 @@ print("로드 성공, VRAM:", torch.cuda.memory_allocated() / 1e9, "GB")
 ```python
 from peft import LoraConfig, get_peft_model
 
+model.config.use_cache = False
+model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+model.enable_input_require_grads()
+
 lora_config = LoraConfig(
     r=16,                    # rank — VRAM 부족 시 8로 내린다
     lora_alpha=32,
-    target_modules=["q_proj", "v_proj"],
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
     lora_dropout=0.05,
     task_type="CAUSAL_LM",
 )
 model = get_peft_model(model, lora_config)
-model.print_trainable_parameters()   # 전체의 ~1% 만 학습되면 정상
+model.print_trainable_parameters()   # 0.29% (11.8M) 이면 정상
+model.train()                        # ⚠️ 이게 없으면 checkpointing 이 적용되지 않아 seq 1024 에서 OOM
 ```
+
+> ⚠️ **`prepare_model_for_kbit_training` 을 쓰지 않는다.** 임베딩 389M 을 fp32 로 올려 +0.8GB — 8GB 카드에서는 그만큼이 seq 길이다.
+>
+> **실측 (2026-09-07 · 3060 8GB · [exp07](../../experiments/exp07-qwen3-finetune/))**: seq 512 → 피크 3.9GB · **seq 1024 → 5.1GB** · seq 2048 → 넘침. **1024·batch 1 이 상한**이고 유효 배치는 accumulation 으로 채운다.
 
 ---
 
