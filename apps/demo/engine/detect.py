@@ -145,6 +145,35 @@ def _place_candidates(text: str) -> list[tuple[int, int, str]]:
     return out
 
 
+_GAP = re.compile(r"[  ]{0,2}")
+
+
+def _merge_adjacent_places(text: str, cands: list[tuple[int, int, str]]) -> list[tuple[int, int, str]]:
+    """「김해시 진영읍」「서울 강남구 역삼동」처럼 공백만 사이에 둔 연속 지명을 스팬 하나로.
+
+    합치는 조건은 «앞 지명을 맥락으로 뒤 지명이 유일하게 풀린다» 뿐이다 — 「부산 서울 왕복」은 안 합친다.
+    덤으로 「중앙동」처럼 전국에 여럿인 이름이 앞 시군구로 확정되고, 「경기 광주시」의 동명 문제도 풀린다.
+    """
+    from kopl.c2_specificity.engine import _get_default_dictionary, resolve
+
+    R = _get_default_dictionary().regions
+    cands = sorted(cands)
+    out: list[tuple[int, int, str]] = []
+    ctx: list[str] = []            # 지금 합치고 있는 덩어리의 앞 지명 정본들
+    for s, e, canon in cands:
+        if out and _GAP.fullmatch(text[out[-1][1]:s]):
+            ps, _pe, pcanon = out[-1]
+            pieces = [c for c in (ctx or [pcanon]) if not c.startswith("광주 (")]
+            codes = resolve(text[s:e], context=" ".join(pieces) or None)
+            if len(codes) == 1:
+                out[-1] = (ps, e, R[codes[0]]["full_name"])
+                ctx = [*(ctx or [pcanon]), canon]
+                continue
+        out.append((s, e, canon))
+        ctx = [canon]
+    return out
+
+
 def _dedupe_longest(cands: list[dict[str, Any]]) -> list[dict[str, Any]]:
     cands = sorted(cands, key=lambda c: (-(c["end"] - c["start"]), c["start"]))
     kept: list[dict[str, Any]] = []
@@ -161,7 +190,7 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
     cands: list[dict[str, Any]] = []
     notes: dict[str, dict[str, Any]] = {}   # "start:end" → note (같은 start 의 짧은 규칙이 긴 규칙 메모를 덮지 않게)
 
-    for s, e, canonical in _place_candidates(t):
+    for s, e, canonical in _merge_adjacent_places(t, _place_candidates(t)):
         before, after = t[:s], t[e:]
         subject, level, note = "self", "explicit", {"place": canonical}
         if _OTHER_BEFORE.search(before) or _OTHER_AFTER.search(after):

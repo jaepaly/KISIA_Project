@@ -108,6 +108,12 @@ def place_lexicon() -> tuple[tuple[str, str], ...]:
     """
     ix = _index()
     out: dict[str, str] = {}
+    # 같은 이름이 전국에 여럿인 시군구·읍면동(중앙동 31곳 · 고성군 2곳)은 맥락 없이는 못 정한다 —
+    # 정본 대신 이름만 두어 resolve 가 여러 후보를 내게 하고, 앞에 상위 지명이 붙어야(detect 의 합치기) 확정된다.
+    dup: dict[str, int] = {}
+    for r in ix["R"].values():
+        if r["level"] != "sido":
+            dup[r["name"]] = dup.get(r["name"], 0) + 1
     sido_short = {"서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천",
                   "대전광역시": "대전", "울산광역시": "울산", "세종특별자치시": "세종", "경기도": "경기",
                   "강원특별자치도": "강원", "충청북도": "충북", "충청남도": "충남",
@@ -120,13 +126,14 @@ def place_lexicon() -> tuple[tuple[str, str], ...]:
             if name in sido_short and sido_short[name] not in _PLACE_STOPLIST:
                 out[sido_short[name]] = name
         elif r["level"] == "sigungu":
-            out[name] = r["full_name"]
+            canon = r["full_name"] if dup[name] == 1 else name
+            out[name] = canon
             short = name[:-1] if name[-1] in "시군구" and len(name) >= 3 else None
             if short and len(short) >= 2 and short not in _PLACE_STOPLIST and short not in out:
-                out[short] = r["full_name"]
+                out[short] = canon
         else:
             if len(name) >= 3 and name not in out:
-                out[name] = r["full_name"]
+                out[name] = r["full_name"] if dup[name] == 1 else name
     # 광주 — 경기 광주시와 전남광주통합특별시(옛 광주광역시)의 동명 지명. 사전이 한쪽으로 못 박지 않게
     # 정본 이름 대신 «동명» 표기를 두어 resolve 가 빈 목록을 내게 한다 (계약의 ambiguous 경로와 같은 뜻).
     out["광주"] = "광주 (동명 지명 — 경기 광주시 / 전남광주통합특별시)"
