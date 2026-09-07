@@ -174,6 +174,10 @@ def parse(raw: str) -> dict:
     return texts
 
 
+def first_sentence(body: str) -> str:
+    return re.split(r"[.\n!?]", body.strip(), 1)[0].strip()
+
+
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
 def generate_persona(
     persona: dict, client: LLMClient, out_dir: Path, cards_dir: Path | None,
@@ -185,11 +189,16 @@ def generate_persona(
 
     # resume: 이미 뽑은 post_id는 건너뛴다. 150편째에 끊겨도 처음부터 안 돈다.
     done: set[str] = set()
+    done_titles: dict[str, str] = {}
     if out_path.exists():
         for line in out_path.read_text(encoding="utf-8-sig").splitlines():
             if line.strip():
+                rec_old = json.loads(line)
                 # 저장된 post_id는 "S01_b03" 형태다. 루프는 "b03"로 비교하므로 접두어를 뗀다.
-                done.add(json.loads(line)["post_id"].rsplit("_", 1)[-1])
+                post = rec_old["post_id"].rsplit("_", 1)[-1]
+                done.add(post)
+                t_old = rec_old.get("texts") or {}
+                done_titles[post] = f"「{t_old.get('title', '')}」 / {first_sentence(t_old.get('body', ''))}"
         if done:
             print(f"  resume — {len(done)}편 건너뜀")
 
@@ -242,17 +251,23 @@ def generate_persona(
     # 설계상 노이즈 비율은 항상 전체 계획 기준으로 감사한다 (시범 표본으로 판정하지 않는다)
     counts = {k: sum(1 for i in full_plan if i["kind"] == k) for k in ("clue", "ambient", "noise")}
     written = 0
+    # 소재별로 이미 쓴 제목. 소재가 글 수보다 적어 순환하면 같은 프롬프트가 다시 가서
+    # 앞 글이 재탕된다 (#184). 건너뛴 글도 여기 넣어야 resume 가 순환을 되감지 않는다.
+    titles_by_topic: dict[str, list[str]] = {}
 
     with out_path.open("a", encoding="utf-8") as fh:
         for idx, item in enumerate(plan):
-            if item["post"] in done:
-                continue
             topic = ""
             if item["kind"] == "noise":
                 topic = topics[(noise_seen + topic_offset) % len(topics)]
                 noise_seen += 1
+            if item["post"] in done:
+                if topic and done_titles.get(item["post"]):
+                    titles_by_topic.setdefault(topic, []).append(done_titles[item["post"]])
+                continue
             user = prompts.build_user(
-                item["kind"], item.get("clues"), item.get("design", ""), topic
+                item["kind"], item.get("clues"), item.get("design", ""), topic,
+                prior_titles=titles_by_topic.get(topic) if topic else None,
             )
             if sleep and written:
                 time.sleep(sleep)
@@ -296,6 +311,9 @@ def generate_persona(
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
             fh.flush()  # 중간에 끊겨도 여기까지는 남는다
             written += 1
+            if topic:
+                titles_by_topic.setdefault(topic, []).append(
+                    f"「{texts.get('title', '')}」 / {first_sentence(texts.get('body', ''))}")
             ch = "".join("T" if k == "title" else "C" if k.startswith("photo") else "B"
                          for k in texts)
             print(f"  {item['post']} [{item['kind']:7}] "
