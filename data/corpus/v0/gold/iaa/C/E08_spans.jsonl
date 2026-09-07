@@ -1,0 +1,2 @@
+{"schema_version": "1.0", "corpus_version": "v0", "created": "2026-09-06"}
+{"post_id": "E08_b14", "persona_id": "E08", "texts": {"title": "흐린 날엔 따뜻한 국", "body": "아침부터 하늘이 잔뜩 흐렸다. 괜히 손도 차고 마음도 축축했다. 무를 숭덩숭덩 썰어 국을 끓였는데, 간을 두번이나 봐도 영 심심했다(소금이 눅눅했나^^).\n\n한참 김 오르는 냄비를 보고 있는데 전화가 왔다. 도련님이 명절 앞두고 뭐 필요한 거 없냐고 물었다. 됐다고 하고 다시 뚜껑을 열었다. 아 맞다, 파를 안 넣었다! 넣고 나니 좀 낫다. 밥 한술 말아 먹으니 금세 그릇 바닥이 보였다."}, "spans": [], "flags": {"gen_signal": false, "meme_hits": [], "negative_control": false}, "reviewed": true}

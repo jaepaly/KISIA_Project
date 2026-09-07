@@ -1,0 +1,11 @@
+IAA — 공통 reviewed 글 16편
+기준: partial=type 일치 + 문자 IoU>=0.5, 1:1 최대 매칭
+
+level            A    C   TP        P        R  partial F1   exact F1
+explicit         7    6    3    42.9%    50.0%       46.2%       0.0%
+implicit        12    0    0     0.0%     0.0%        0.0%       0.0%
+inferential      2    8    0     0.0%     0.0%        0.0%       0.0%
+overall         21   14    4    19.0%    28.6%       22.9%       0.0%
+
+matched span level 일치:   3/4 (75.0%)
+matched span subject 일치: 4/4 (100.0%)
