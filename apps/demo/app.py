@@ -231,7 +231,8 @@ def api_check():
                           "type": _TYPE_KO.get(s["type"], s["type"]), "level": s["level"], "text_id": s["text_id"],
                           "start": s["start"], "end": s["end"] + len(particle), "k_without": k_without,
                           "candidates": [{"text": c["text"] + (fit_particle(c["text"], particle) if c["text"] else ""),
-                                          "note": c["note"], "k": c["k"], "kind": c["kind"], "bound": c.get("bound")}
+                                          "note": c["note"], "k": c["k"], "kind": c["kind"], "bound": c.get("bound"),
+                                          "bound_k": c.get("bound_k"), "bound_fix": c.get("bound_fix")}
                                          for c in merged]})
     return jsonify({
         "before": summary(before), "after": summary(after),

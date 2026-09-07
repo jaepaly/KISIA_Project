@@ -111,17 +111,29 @@ def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[st
     """
     posts = [({**p, "notes": {**p["notes"], span_id: {**p["notes"].get(span_id, {}), **patch}}}
               if p["post_id"] == post_id else p) for p in view["posts"]]
-    f = compute({**view, "posts": posts})
-    bound = None
+    v2 = {**view, "posts": posts}
+    f = compute(v2)
+    out: dict[str, Any] = {"k": f["k"], "bound": None, "bound_k": None, "bound_fix": None}
     last = [s for s in f["steps"] if s["axis"] == axis and s.get("src")]
-    if last:
-        src = last[-1]["src"]
-        if src.get("span_id") != span_id and src.get("post_id") not in (None, post_id):
-            where = f"📍{src['text']} 위치태그" if src.get("channel") == "geo_tag" else f"「{src['text']}」"
-            bound = f"다른 글({src['post_id']})의 {where}가 남아 여기까지"
-        elif src.get("span_id") != span_id and src.get("post_id") == post_id:
-            bound = f"이 글의 다른 표현 「{src['text']}」가 남아 여기까지"
-    return {"k": f["k"], "bound": bound}
+    if not last:
+        return out
+    src = last[-1]["src"]
+    if src.get("span_id") == span_id or src.get("post_id") is None:
+        return out
+    is_geo = src.get("channel") == "geo_tag"
+    if src["post_id"] != post_id:
+        where = f"📍{src['text']} 위치태그" if is_geo else f"「{src['text']}」"
+        out["bound"] = f"다른 글({src['post_id']})의 {where}가 남아 여기까지"
+    else:
+        out["bound"] = f"이 글의 다른 표현 「{src['text']}」가 남아 여기까지"
+    # 그 근거까지 치우면 — 위치태그는 글 단위로 끄고, 표현은 그 스팬만 뺀다
+    if is_geo:
+        out["bound_k"] = compute(v2, exclude_meta=frozenset({src["post_id"]}))["k"]
+        out["bound_fix"] = {"kind": "geo_tag", "post_id": src["post_id"], "text": src["text"]}
+    elif src.get("span_id"):
+        out["bound_k"] = compute(v2, exclude_spans=frozenset({src["span_id"]}))["k"]
+        out["bound_fix"] = {"kind": "span", "post_id": src["post_id"], "span_id": src["span_id"], "text": src["text"]}
+    return out
 
 
 def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, Any],
@@ -137,12 +149,12 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     if sp["type"] == "LOC_ADMIN" and note.get("place"):
         for a in ancestors(note["place"]):
             r = k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]}, "location")
-            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘", "k": r["k"], "bound": r["bound"]})
+            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘", **r})
     elif sp["type"] == "AGE" and note.get("age") is not None:
         d = int(note["age"]) // 10 * 10
         if d >= 10:
             r = k_with_note(view, post_id, sp["span_id"], {"age": None, "age_decade": d}, "age")
-            out.append({"text": f"{d}대", "note": "10년 단위로 뭉갬", "k": r["k"], "bound": r["bound"]})
+            out.append({"text": f"{d}대", "note": "10년 단위로 뭉갬", **r})
     return out
 
 

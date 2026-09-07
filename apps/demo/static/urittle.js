@@ -13,7 +13,7 @@
     opts = opts || {};
     const from = opts.from != null ? opts.from : (parseFloat(String(el.dataset.from || "").replace(/,/g, "")) || 0);
     const dur = opts.dur || (Math.abs(to - from) > 1e5 ? 1500 : 1100);
-    if (RM || !isFinite(to)) { el.textContent = fmt(to); return; }
+    if (RM || document.hidden || !isFinite(to)) { el.textContent = fmt(to); return; }   // 숨긴 탭은 rAF 가 멈춘다 — 최종값으로
     const t0 = performance.now();
     el.classList.add("counting");
     (function step(now) {
