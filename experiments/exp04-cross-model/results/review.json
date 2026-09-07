@@ -7,7 +7,7 @@
     },
     "model_b": {
       "id": "gpt-5.5",
-      "via": "codex CLI"
+      "via": "ChatGPT web UI"
     }
   },
   "review_rule": "두 값이 의미상 같은 범위를 가리키면 true, 다르거나 한쪽만 기권하면 false",

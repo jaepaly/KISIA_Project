@@ -352,7 +352,7 @@ def main() -> int:
     parser.add_argument("--name-a", default="claude-sonnet-4-6", help="model-a 식별자")
     parser.add_argument("--name-b", default="gpt-5.5", help="model-b 식별자")
     parser.add_argument("--via-a", default="claude CLI", help="model-a 실행 경로")
-    parser.add_argument("--via-b", default="codex CLI", help="model-b 실행 경로")
+    parser.add_argument("--via-b", default="ChatGPT web UI", help="model-b 실행 경로")
     parser.add_argument("--score", action="store_true", help="review.json을 metrics.json으로 집계")
     parser.add_argument("--review", default=str(HERE / "results" / "review.json"))
     parser.add_argument("--metrics", default=str(HERE / "metrics.json"))

@@ -10,7 +10,7 @@
     },
     "model_b": {
       "id": "gpt-5.5",
-      "via": "codex CLI"
+      "via": "ChatGPT web UI"
     }
   },
   "reviewed_slots": 42,
