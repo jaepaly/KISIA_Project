@@ -179,9 +179,35 @@ def first_sentence(body: str) -> str:
 
 
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
+MARKERS = ["아 근데", "말 나온 김에", "그건 그렇고", "아 맞다", "그래서 그런가", "그러고 보니",
+           "참,", "암튼", "갑자기 생각났는데", "아 그리고"]
+
+
+def catchphrase_rate(voice: dict) -> float:
+    """voice.말버릇 의 빈도 서술을 확률로. 「없음」→0 · 「N편에 1회」→1/N · 「회당」→0.6 · 그 외 0.35."""
+    txt = str((voice or {}).get("말버릇", "") or "")
+    if not txt or "없음" in txt:
+        return 0.0
+    m = re.search(r"(\d+)\s*편에\s*1", txt)
+    if m:
+        return 1.0 / int(m.group(1))
+    if "회당" in txt or "매" in txt:
+        return 0.6
+    return 0.35
+
+
+def place_for_ambient(persona: dict) -> str:
+    """ambient 글에 주는 동네 — 시군구까지. 읍면동은 그 자체가 명시 단서라 주지 않는다."""
+    loc = (persona.get("ground_truth") or {}).get("location", "") or ""
+    toks = loc.split()
+    keep = [t for t in toks if not re.search(r"(읍|면|동|리|가)$", t)] or toks[:2]
+    return " ".join(keep) + " (읍·면·동 이름은 쓰지 마라)"
+
+
 def generate_persona(
     persona: dict, client: LLMClient, out_dir: Path, cards_dir: Path | None,
-    seed: int, sample: int = 0, sleep: float = 0.0, inject_cards: bool = False
+    seed: int, sample: int = 0, sleep: float = 0.0, inject_cards: bool = False,
+    threads: list[str] | None = None,
 ) -> dict:
     pid = persona.get("id") or persona["persona_id"]
     rng = random.Random(f"{pid}:{seed}")
@@ -233,7 +259,11 @@ def generate_persona(
         "persona_schema_version": persona.get("schema_version", "?"),
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    system = prompts.build_system(persona, card_text)
+    system = prompts.build_system(persona, card_text, threads=threads)
+    voice = persona.get("voice") or {}
+    cp_rate = catchphrase_rate(voice)
+    cp_text = str(voice.get("말버릇", "") or "")
+    place = place_for_ambient(persona)
     # persona-design.md §2-⑤ 소재 축. 인물이 지정하지 않으면 전역 폴백을 쓰되 경고한다.
     topics = persona.get("noise_topics") or (persona.get("voice", {}) or {}).get("소재")
     if isinstance(topics, str):
@@ -243,6 +273,7 @@ def generate_persona(
         print("  ⚠ noise_topics 없음 — 전역 폴백 사용. 인물 간 잡담 소재가 겹친다 (§2-⑤ 소재 축)")
     topic_offset = rng.randrange(len(topics))
     noise_seen = 0
+    clue_seen = 0
     full_plan = classify_posts(persona)
     plan = stratified_sample(full_plan, sample, rng) if sample else full_plan
     if sample and len(plan) < len(full_plan):
@@ -261,13 +292,27 @@ def generate_persona(
             if item["kind"] == "noise":
                 topic = topics[(noise_seen + topic_offset) % len(topics)]
                 noise_seen += 1
+            elif item["kind"] == "clue":
+                # 단서 글의 잡담부도 소재를 받는다 — 안 주면 「비+부침개+드라마」 한 장면으로 접힌다 (p2.0)
+                topic = topics[(clue_seen + topic_offset + len(topics) // 2) % len(topics)]
+                clue_seen += 1
+            hint_key = topic if item["kind"] != "ambient" else "__ambient__"
             if item["post"] in done:
-                if topic and done_titles.get(item["post"]):
-                    titles_by_topic.setdefault(topic, []).append(done_titles[item["post"]])
+                if done_titles.get(item["post"]):
+                    titles_by_topic.setdefault(hint_key, []).append(done_titles[item["post"]])
                 continue
+            # 글마다 코드가 정한다 — 규칙으로 두면 모델이 매 글 100% 적용해 틀이 된다 (p2.0)
+            post_rng = random.Random(f"{pid}:{item['post']}:{seed}")
+            created = sample_time(persona, rng, idx)
+            month = int(created[5:7])
+            cp = cp_text if (cp_rate and post_rng.random() < cp_rate) else None
+            marker = post_rng.choice(MARKERS) if post_rng.random() < 0.4 else None
+            ending = post_rng.choice(prompts.ENDINGS)
             user = prompts.build_user(
                 item["kind"], item.get("clues"), item.get("design", ""), topic,
-                prior_titles=titles_by_topic.get(topic) if topic else None,
+                prior_titles=titles_by_topic.get(hint_key),
+                month=month, catchphrase=cp, marker=marker, place=place,
+                relation="단서 문장 속 호칭 그대로 (딸·막내·동창처럼)", ending=ending,
             )
             if sleep and written:
                 time.sleep(sleep)
@@ -292,7 +337,7 @@ def generate_persona(
                 # label-schema §8-3. 없는 채널은 키를 넣지 않는다
                 "texts": texts,
                 "n_chars": {k: len(v) for k, v in texts.items()},
-                "created_at": sample_time(persona, rng, idx),
+                "created_at": created,
                 "nickname": (persona.get("account") or {}).get("nickname", ""),
                 "kind": item["kind"],
                 # label-schema §8-3 — 단서를 의도적으로 넣지 않은 글인가
@@ -311,9 +356,8 @@ def generate_persona(
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
             fh.flush()  # 중간에 끊겨도 여기까지는 남는다
             written += 1
-            if topic:
-                titles_by_topic.setdefault(topic, []).append(
-                    f"「{texts.get('title', '')}」 / {first_sentence(texts.get('body', ''))}")
+            titles_by_topic.setdefault(hint_key, []).append(
+                f"「{texts.get('title', '')}」 / {first_sentence(texts.get('body', ''))}")
             ch = "".join("T" if k == "title" else "C" if k.startswith("photo") else "B"
                          for k in texts)
             print(f"  {item['post']} [{item['kind']:7}] "
@@ -355,7 +399,11 @@ def main() -> int:
                     help="출력 토큰 상한. 사고 토큰을 쓰는 모델은 넉넉히 줘야 본문이 안 잘린다")
     ap.add_argument("--seed", type=int, default=20260824)
     ap.add_argument("--skip-invalid", action="store_true", help="ERROR 인물을 건너뛰고 계속")
+    ap.add_argument("--threads", default="", help="JSON {persona_id: [되풀이 요소…]} — 시범용")
     args = ap.parse_args()
+    threads_map: dict = {}
+    if args.threads:
+        threads_map = json.loads(Path(args.threads).read_text(encoding="utf-8-sig"))
 
     if args.list_models:
         try:
@@ -422,10 +470,11 @@ def main() -> int:
                 return 1
             continue
         persona = json.loads(path.read_text(encoding="utf-8-sig"))
+        pid_ = persona.get("id") or persona.get("persona_id")
         summaries.append(
             generate_persona(
                 persona, client, out_dir, cards_dir, args.seed, args.sample, args.sleep,
-                args.inject_cards
+                args.inject_cards, threads=threads_map.get(pid_),
             )
         )
         print()
