@@ -215,9 +215,10 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
                           "condition": f"{'·'.join(suffixes)} 단위 지역(행정 시설 언급)",
                           "n_after": n, "method": "name_suffix_filter", "src": au["src"]})
 
-    # 명시 지명·위치태그 — 가장 좁은 것 하나를 택한다 (해석 불가·중의는 건너뛴다)
+    # 명시 지명·위치태그 — 가장 좁은 것 하나를 택한다 (해석 불가·중의는 건너뛴다).
+    # 크기가 같으면 이미 올라간 글의 것을 초안(draft)보다 먼저 — «올리기 전/후» 비교가 순서에 흔들리지 않게
     best: tuple[int, list[str], dict[str, Any]] | None = None
-    for p in signals.get("places") or []:
+    for p in sorted(signals.get("places") or [], key=lambda x: (x.get("src") or {}).get("post_id") == "draft"):
         cands = resolve_place(p["canonical"])
         if len(cands) != 1:
             continue

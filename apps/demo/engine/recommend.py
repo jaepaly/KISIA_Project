@@ -103,11 +103,25 @@ _BY_TEXT: list[tuple[re.Pattern, list[dict[str, str]]]] = [
 ]
 
 
-def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[str, Any]) -> int:
-    """스팬 하나의 메모만 바꿔 놓고 k 를 다시 센다 — «이 지명을 시군구로 넓히면» «나이를 60대로 뭉개면» 의 실제 값."""
+def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[str, Any], axis: str) -> dict[str, Any]:
+    """스팬 하나의 메모만 바꿔 놓고 k 를 다시 센다 — «이 지명을 시군구로 넓히면» «나이를 60대로 뭉개면» 의 실제 값.
+
+    반환 {"k", "bound"}. bound 는 그 축의 최종 단계가 «이 스팬이 아닌 다른 근거» 로 결정됐을 때의 설명이다 —
+    「다른 글의 📍신갈동 위치태그가 남아서」. 이게 없으면 넓혀도 숫자가 안 변하는 이유를 심사위원이 오해한다.
+    """
     posts = [({**p, "notes": {**p["notes"], span_id: {**p["notes"].get(span_id, {}), **patch}}}
               if p["post_id"] == post_id else p) for p in view["posts"]]
-    return compute({**view, "posts": posts})["k"]
+    f = compute({**view, "posts": posts})
+    bound = None
+    last = [s for s in f["steps"] if s["axis"] == axis and s.get("src")]
+    if last:
+        src = last[-1]["src"]
+        if src.get("span_id") != span_id and src.get("post_id") not in (None, post_id):
+            where = f"📍{src['text']} 위치태그" if src.get("channel") == "geo_tag" else f"「{src['text']}」"
+            bound = f"다른 글({src['post_id']})의 {where}가 남아 여기까지"
+        elif src.get("span_id") != span_id and src.get("post_id") == post_id:
+            bound = f"이 글의 다른 표현 「{src['text']}」가 남아 여기까지"
+    return {"k": f["k"], "bound": bound}
 
 
 def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, Any],
@@ -122,13 +136,13 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     out: list[dict[str, Any]] = []
     if sp["type"] == "LOC_ADMIN" and note.get("place"):
         for a in ancestors(note["place"]):
-            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘",
-                        "k": k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]})})
+            r = k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]}, "location")
+            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘", "k": r["k"], "bound": r["bound"]})
     elif sp["type"] == "AGE" and note.get("age") is not None:
         d = int(note["age"]) // 10 * 10
         if d >= 10:
-            out.append({"text": f"{d}대", "note": "10년 단위로 뭉갬",
-                        "k": k_with_note(view, post_id, sp["span_id"], {"age": None, "age_decade": d})})
+            r = k_with_note(view, post_id, sp["span_id"], {"age": None, "age_decade": d}, "age")
+            out.append({"text": f"{d}대", "note": "10년 단위로 뭉갬", "k": r["k"], "bound": r["bound"]})
     return out
 
 
