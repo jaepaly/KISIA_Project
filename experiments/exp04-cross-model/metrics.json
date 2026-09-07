@@ -4,8 +4,14 @@
   "input_status": "reconstructed_summary",
   "directly_comparable_to_prior_poc": false,
   "models": {
-    "model_a": "Claude Sonnet 4.6",
-    "model_b": "GPT-5.5"
+    "model_a": {
+      "id": "claude-sonnet-4-6",
+      "via": "claude CLI"
+    },
+    "model_b": {
+      "id": "gpt-5.5",
+      "via": "codex CLI"
+    }
   },
   "reviewed_slots": 42,
   "pending_slots": 0,

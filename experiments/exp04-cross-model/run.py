@@ -238,7 +238,14 @@ def load_or_run(output_path: str, command: str, prompt: str, label: str) -> dict
     return run_command(command, prompt, label)
 
 
-def make_review(model_a: dict[str, Any], model_b: dict[str, Any], name_a: str, name_b: str) -> dict[str, Any]:
+def make_review(
+    model_a: dict[str, Any],
+    model_b: dict[str, Any],
+    name_a: str,
+    name_b: str,
+    via_a: str,
+    via_b: str,
+) -> dict[str, Any]:
     rows = []
     for persona_id in (f"R{i}" for i in range(1, 7)):
         for attr in ATTRIBUTES:
@@ -254,7 +261,10 @@ def make_review(model_a: dict[str, Any], model_b: dict[str, Any], name_a: str, n
             )
     return {
         "experiment": "exp04-cross-model",
-        "models": {"model_a": name_a, "model_b": name_b},
+        "models": {
+            "model_a": {"id": name_a, "via": via_a},
+            "model_b": {"id": name_b, "via": via_b},
+        },
         "review_rule": "두 값이 의미상 같은 범위를 가리키면 true, 다르거나 한쪽만 기권하면 false",
         "rows": rows,
     }
@@ -339,10 +349,12 @@ def main() -> int:
     parser.add_argument("--command-b", default="", help="모델 B 실행 명령")
     parser.add_argument("--output-a", default="", help="이미 받은 모델 A JSON")
     parser.add_argument("--output-b", default="", help="이미 받은 모델 B JSON")
-    parser.add_argument("--name-a", default="Claude Sonnet 4.6")
-    parser.add_argument("--name-b", default="GPT-5.5")
+    parser.add_argument("--name-a", default="claude-sonnet-4-6", help="model-a 식별자")
+    parser.add_argument("--name-b", default="gpt-5.5", help="model-b 식별자")
+    parser.add_argument("--via-a", default="claude CLI", help="model-a 실행 경로")
+    parser.add_argument("--via-b", default="codex CLI", help="model-b 실행 경로")
     parser.add_argument("--score", action="store_true", help="review.json을 metrics.json으로 집계")
-    parser.add_argument("--review", default=str(HERE / "review.json"))
+    parser.add_argument("--review", default=str(HERE / "results" / "review.json"))
     parser.add_argument("--metrics", default=str(HERE / "metrics.json"))
     args = parser.parse_args()
 
@@ -374,7 +386,10 @@ def main() -> int:
         results_dir = HERE / "results"
         write_json(results_dir / "model_a.json", model_a)
         write_json(results_dir / "model_b.json", model_b)
-        write_json(Path(args.review), make_review(model_a, model_b, args.name_a, args.name_b))
+        write_json(
+            Path(args.review),
+            make_review(model_a, model_b, args.name_a, args.name_b, args.via_a, args.via_b),
+        )
         print(f"두 모델 출력 저장: {results_dir}")
         print(f"사람 검토 필요: {args.review}의 agree 42개를 true/false로 채운 뒤 --score")
         return 0

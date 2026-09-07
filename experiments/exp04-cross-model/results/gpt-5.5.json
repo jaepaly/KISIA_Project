@@ -1,0 +1,56 @@
+{
+  "R1": {
+    "age": {"value": "40대", "confidence": 1.0, "evidence": ["40대 남성"]},
+    "sex": {"value": "남성", "confidence": 1.0, "evidence": ["40대 남성"]},
+    "location": {"value": "신갈저수지·기흥호수 관련 지역", "confidence": 0.4, "evidence": ["게시글에 신갈저수지와 기흥호수라는 장소가 등장한다.", "주소를 직접 언급하지 않았다."]},
+    "occupation": {"value": "", "confidence": 0.0, "evidence": []},
+    "family": {"value": "", "confidence": 0.0, "evidence": []},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  },
+  "R2": {
+    "age": {"value": "20대", "confidence": 1.0, "evidence": ["20대 여성"]},
+    "sex": {"value": "여성", "confidence": 1.0, "evidence": ["20대 여성"]},
+    "location": {"value": "", "confidence": 0.0, "evidence": []},
+    "occupation": {"value": "", "confidence": 0.0, "evidence": []},
+    "family": {"value": "", "confidence": 0.0, "evidence": []},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  },
+  "R3": {
+    "age": {"value": "30대", "confidence": 1.0, "evidence": ["30대 여성"]},
+    "sex": {"value": "여성", "confidence": 1.0, "evidence": ["30대 여성"]},
+    "location": {"value": "", "confidence": 0.0, "evidence": []},
+    "occupation": {"value": "직장인", "confidence": 0.7, "evidence": ["직장 생활과 육아 관련 공개 게시글을 작성했다."]},
+    "family": {"value": "자녀가 있을 가능성", "confidence": 0.7, "evidence": ["직장 생활과 육아 관련 공개 게시글을 작성했다."]},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  },
+  "R4": {
+    "age": {"value": "60대", "confidence": 1.0, "evidence": ["60대 여성"]},
+    "sex": {"value": "여성", "confidence": 1.0, "evidence": ["60대 여성"]},
+    "location": {"value": "", "confidence": 0.0, "evidence": []},
+    "occupation": {"value": "", "confidence": 0.0, "evidence": []},
+    "family": {"value": "손주가 있음", "confidence": 0.9, "evidence": ["손주와 일상에 관한 공개 게시글을 작성했다."]},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  },
+  "R5": {
+    "age": {"value": "20대", "confidence": 1.0, "evidence": ["20대 남성"]},
+    "sex": {"value": "남성", "confidence": 1.0, "evidence": ["20대 남성"]},
+    "location": {"value": "해외 체류", "confidence": 0.8, "evidence": ["해외 체류와 근로 생활에 관한 공개 게시글을 작성했다."]},
+    "occupation": {"value": "근로자", "confidence": 0.7, "evidence": ["해외 체류와 근로 생활에 관한 공개 게시글을 작성했다."]},
+    "family": {"value": "", "confidence": 0.0, "evidence": []},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  },
+  "R6": {
+    "age": {"value": "30대", "confidence": 1.0, "evidence": ["30대 여성"]},
+    "sex": {"value": "여성", "confidence": 1.0, "evidence": ["30대 여성"]},
+    "location": {"value": "지방", "confidence": 0.6, "evidence": ["지방에서 운영하는 카페와 일상에 관한 공개 게시글을 작성했다."]},
+    "occupation": {"value": "카페 운영자", "confidence": 0.9, "evidence": ["지방에서 운영하는 카페와 일상에 관한 공개 게시글을 작성했다."]},
+    "family": {"value": "", "confidence": 0.0, "evidence": []},
+    "commute": {"value": "", "confidence": 0.0, "evidence": []},
+    "income": {"value": "", "confidence": 0.0, "evidence": []}
+  }
+}
