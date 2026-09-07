@@ -127,7 +127,7 @@ def traps(view: dict) -> list[dict]:
                 le = line.find("\n", sp["end"])
                 out.append({"post_id": p["post_id"], "text": sp["text"], "why": n.get("why", ""),
                             "sentence": line[ls: len(line) if le < 0 else le].strip(),
-                            "kind": "타인" if sp["subject"] == "other" else {"past_residence": "과거 거주", "transit": "이동 경로"}.get(n.get("exclude"), "제외")})
+                            "kind": "타인" if sp["subject"] == "other" else {"past_residence": "과거 거주", "transit": "이동 경로", "travel": "여행지"}.get(n.get("exclude"), "제외")})
     return out
 
 

@@ -88,10 +88,11 @@ RULES: list[Rule] = [
     Rule(r"회사 앞|사무실 근처|공장에서|직장 근처|퇴근하고 바로", "REL_WORK", "inferential", ""),
     Rule(r"달마다 나오는 돈|연금|보조금|월세|시급|월급|정산|성과급|연봉", "INCOME", "implicit", ""),
     Rule(r"방학이라고 [^\n]{0,14}?간다길래|방학이라고 [^\n]{0,10}?온다", "FAM", "implicit", "ambiguous"),
-    Rule(r"손녀|손주|손자|며느리|사위|큰딸|작은딸|막내|첫째|둘째|우리 애|애들이|딸네|아들네",
+    # 첫째·둘째 뒤에 「날」이 오면 여행 일차다 (둘째날 성산일출봉)
+    Rule(r"손녀|손주|손자|며느리|사위|큰딸|작은딸|막내|첫째(?!\s?날)|둘째(?!\s?날)|우리 애|애들이|딸네|아들네",
          "FAM", "implicit", ""),
     Rule(r"남편|아내|집사람|와이프|우리 영감|할매|아짐|임신|출산|군대 갔", "SEX", "implicit", ""),
-    Rule(r"시골서 그냥 소일|소일한다|텃밭|밭일|출근|퇴근|교대 근무|야간 근무|알바|가게 문|손님이",
+    Rule(r"시골서 그냥 소일|소일한다|텃밭|밭일|출근|퇴근|교대 근무|야간 근무|알바|가게 문|손님",
          "JOB", "inferential", ""),
     Rule(r"\d호선|지하철|출퇴근|통근|자차로", "COMMUTE", "inferential", ""),
 ]
@@ -146,6 +147,11 @@ def _place_candidates(text: str) -> list[tuple[int, int, str]]:
 
 
 _GAP = re.compile(r"[  ]{0,2}")
+
+
+# 여행·출장 글 표지 — 글 안 지명을 방문지로 돌린다
+_TRAVEL = re.compile(r"\d\s*박\s*\d\s*일|당일치기|여행|출장|관광|휴가|답사|숙소|호텔|펜션|게스트하우스|공항|기차표|비행기")
+_LIVES_AFTER = re.compile(r"^\s*(?:에|에서|서)?\s*(?:사는|살|집|이사|거주|살아)")
 
 
 def _merge_adjacent_places(text: str, cands: list[tuple[int, int, str]]) -> list[tuple[int, int, str]]:
@@ -210,6 +216,8 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
     for m in _AGE_KO.finditer(t):
         age = parse_age(m.group(0))
         if age is None or age < 10:
+            continue
+        if m.group(0) == "열" and not re.match(r"\s*살", t[m.end():]):   # 「열이 나서」 — 열은 「열 살」 일 때만 나이다
             continue
         cands.append({"text_id": text_id, "start": m.start(), "end": m.end(), "text": m.group(0),
                       "type": "AGE", "level": "explicit", "subject": "self", "score": 0.9})
@@ -290,13 +298,19 @@ def detect_post(post: dict[str, Any]) -> dict[str, Any]:
         raw.extend(spans)
         notes_by_key.update(notes)
 
+    # 여행·출장 글의 지명은 방문지다 — 「사는·살·집」이 바로 뒤에 붙은 것만 거주지로 남긴다 (글 단위 판단, 2단 몫의 근사)
+    travel = any(_TRAVEL.search(t) for t in texts.values())
     spans_out: list[dict[str, Any]] = []
     notes_out: dict[str, dict[str, Any]] = {}
     for i, sp in enumerate(sort_spans(raw), start=1):
         sid = format_span_id(pid, i, text_id=sp["text_id"])
         item = {"span_id": sid, **sp}
         spans_out.append(item)
-        n = notes_by_key.get(f"{sp['text_id']}:{sp['start']}")
+        n = dict(notes_by_key.get(f"{sp['text_id']}:{sp['start']}") or {})
+        if travel and sp["type"] == "LOC_ADMIN" and sp["subject"] == "self" and not n.get("exclude") \
+                and not _LIVES_AFTER.match(texts[sp["text_id"]][sp["end"]:]):
+            n["exclude"] = "travel"
+            n["why"] = "여행·출장 표지가 있는 글 — 방문지로 보고 거주지 추정에서 제외 (결합 판단은 2단 몫)"
         if n:
             notes_out[sid] = n
 

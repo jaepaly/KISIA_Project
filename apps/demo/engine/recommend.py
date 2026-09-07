@@ -96,12 +96,24 @@ def fit_particle(cand: str, particle: str) -> str:
     return _TO_CONS.get(particle, particle) if bat else _TO_VOW.get(particle, particle)
 
 
+# 표면형으로 갈리는 일반 후보 — 유형별 후보보다 먼저 본다 (9호선에 시골버스 후보를 주지 않게)
+_BY_TEXT: list[tuple[re.Pattern, list[dict[str, str]]]] = [
+    (re.compile(r"\d호선|지하철|전철"), [{"text": "지하철", "note": "노선 지움 — 추천"}, {"text": "전철", "note": "노선 지움"},
+                                     {"text": "차", "note": "수단 자체를 흐림"}]),
+]
+
+
 def candidates_for(sentence: str, sp: dict[str, Any]) -> tuple[list[dict[str, str]], bool]:
-    """스팬 하나의 리라이트 후보 3안 — (후보, 외부 LLM 사용 여부). 외부가 꺼져 있으면 캐시 → 유형별 일반 후보."""
+    """스팬 하나의 리라이트 후보 3안 — (후보, 외부 LLM 사용 여부). 외부가 꺼져 있으면 캐시 → 표면형 → 유형별 일반 후보."""
     cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지")
     if cands:
         return cands, True
-    return (_CACHE.get(sp["text"]) or _GENERIC.get(sp["type"]) or [{"text": "", "note": "삭제"}] * 3), False
+    if sp["text"] in _CACHE:
+        return _CACHE[sp["text"]], False
+    for rx, c in _BY_TEXT:
+        if rx.search(sp["text"]):
+            return c, False
+    return (_GENERIC.get(sp["type"]) or [{"text": "", "note": "삭제"}] * 3), False
 
 
 def _is_backbone(text_all: dict[str, str], sp: dict[str, Any]) -> bool:
