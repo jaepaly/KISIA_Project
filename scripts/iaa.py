@@ -164,7 +164,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("annotator_a", type=Path)
     parser.add_argument("annotator_c", type=Path)
-    parser.add_argument("--expect-posts", type=int, default=20)
+    parser.add_argument("--expect-posts", type=int, default=None,
+                        help="공통 reviewed 글 수가 이 값과 다르면 오류. 생략하면 검사하지 않는다")
     args = parser.parse_args()
 
     a_records = load_records(args.annotator_a)
@@ -179,7 +180,7 @@ def main() -> int:
         if c_only:
             print("C에만 있는 글:", ", ".join(c_only))
         print()
-    if len(common) != args.expect_posts:
+    if args.expect_posts is not None and len(common) != args.expect_posts:
         print(f"오류: 공통 reviewed 글 {len(common)}편 (기대 {args.expect_posts}편)")
         return 2
 
