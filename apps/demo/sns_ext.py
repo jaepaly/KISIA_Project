@@ -120,7 +120,7 @@ def _chrome():
         me = (db().execute("SELECT * FROM authors WHERE author_id = ?", (first,)).fetchone()
               or db().execute("SELECT * FROM authors ORDER BY author_id LIMIT 1").fetchone())
     nav = {"index": "home", "profile": "blog", "check": "check", "new": "new"}.get(request.endpoint or "")
-    neighbors = db().execute("SELECT * FROM authors ORDER BY author_id").fetchall()
+    neighbors = db().execute("SELECT * FROM authors WHERE author_id != 'GUEST' ORDER BY author_id").fetchall()
     n_posts = {r["author_id"]: r["n"] for r in
                db().execute("SELECT author_id, COUNT(*) n FROM posts WHERE visibility = 'public' GROUP BY author_id")}
     return {"me": me, "nav": nav, "neighbors": neighbors, "n_posts_by": n_posts}
@@ -211,9 +211,16 @@ def check_json(user_ref: str):
 
 
 # ── 에디터 점검 — 올리기 전 1회 ──────────────────────────────────────────────
+def _editor_authors():
+    """글쓰기 드롭다운 — 체험 계정(글 0편)이 맨 앞. 나머지는 공개 글 수를 붙여 «이미 드러난 계정» 임을 알고 고르게."""
+    rows = db().execute(
+        "SELECT a.*, (SELECT COUNT(*) FROM posts p WHERE p.author_id = a.author_id AND p.visibility='public') n_posts"
+        " FROM authors a ORDER BY (a.author_id != 'GUEST'), a.nickname").fetchall()
+    return rows
+
+
 def new_ext():
-    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
-    return render_template("new_ext.html", authors=authors, now=datetime.now(KST).strftime("%Y-%m-%dT%H:%M"),
+    return render_template("new_ext.html", authors=_editor_authors(), now=datetime.now(KST).strftime("%Y-%m-%dT%H:%M"),
                            draft=None, check=None, err=None)
 
 
@@ -223,7 +230,7 @@ app.view_functions["new"] = new_ext
 @app.post("/check-draft")
 def check_draft():
     f = request.form
-    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+    authors = _editor_authors()
     a = db().execute("SELECT * FROM authors WHERE author_id = ?", (f["author_id"],)).fetchone()
     if a is None:
         abort(400)
@@ -237,7 +244,7 @@ def check_draft():
         "activity_meta": {"geo_tag": draft["geo_tag"] or None}}}
     res, err = pado("/api/check", payload)
     return render_template("new_ext.html", authors=authors, now=draft["created_at"] or datetime.now(KST).strftime("%Y-%m-%dT%H:%M"),
-                           draft=draft, check=res, err=err)
+                           draft=draft, check=res, err=err, author=a)
 
 
 # ── 조치 ②③ — 플랫폼에서 실행한다 ──────────────────────────────────────────

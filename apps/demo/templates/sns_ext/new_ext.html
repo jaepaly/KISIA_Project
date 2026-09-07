@@ -16,6 +16,10 @@
   .before-after .b.after{border-color:var(--sea);background:var(--sea-soft)}
   .before-after .arrow{font-size:22px;color:var(--ink3)}
   .before-after .narrow .n{color:var(--hi)}
+  .floor{margin-top:10px;padding:9px 12px;border-radius:9px;background:var(--earth-soft);border-left:3px solid var(--earth);font-size:12.5px;color:var(--ink2);line-height:1.55}
+  .floor b{color:var(--earth-ink)}
+  .floor a{color:var(--earth-ink);font-weight:700;margin-left:4px}
+  .floor .alt{display:block;margin-top:3px;color:var(--ink3)}
   .editor-tip{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink3);margin-top:8px}
   .editor-tip .cnt{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace}
   @media (max-width:640px){.before-after{grid-template-columns:1fr}.before-after .arrow{text-align:center;transform:rotate(90deg)}}
@@ -95,6 +99,12 @@
       <div class="riskmeta">
         <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
       </div>
+      {% if b.n_posts and b.k and b.k < check.after.steps[0].n_after %}
+      <div class="floor"><b>지금 후보 {{ '{:,}'.format(b.k) }}명은 이미 올린 글 {{ b.n_posts }}편이 만든 값입니다.</b>
+        이 글을 어떻게 고쳐도 그 아래로는 못 넓어집니다 — 후보 옆 「⤷ 다른 글의 …이 남아」가 그 뜻입니다.
+        {% if author %}<a href="/u/{{ author.user_ref }}/check" target="_blank" rel="noopener">내 글 점검에서 그 글들 보기 ↗</a>{% endif %}
+        <span class="alt">이 글 하나만으로 보고 싶으면 작성자를 <b>🧪 체험 계정</b>으로.</span></div>
+      {% endif %}
       {% if check.narrows %}
         <p class="lede" style="margin-top:12px"><b>이 글 하나가 후보를 {{ '{:,}'.format(b.k) }}명 → {{ '{:,}'.format(af.k) }}명으로 좁힙니다.</b> 아래 형광 자리가 새는 표현입니다. 고쳐 쓰고 다시 점검하거나, 알고도 올릴 수 있습니다.</p>
       {% elif check.draft.n_spans %}
@@ -122,10 +132,11 @@
   {% endif %}
 
   <form method="post" action="/posts" class="ut-card">
-    <label for="author_id">작성자</label>
+    <label for="author_id">작성자 <span class="hint">— 글이 있는 계정은 그 글들이 만든 바닥 위에 얹힙니다. 처음이면 체험 계정으로</span></label>
     <select name="author_id" id="author_id" required>
       {% for a in authors %}
-        <option value="{{ a.author_id }}" {% if draft and draft.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}</option>
+        <option value="{{ a.author_id }}" {% if (draft and draft.author_id == a.author_id) or (not draft and loop.first) %}selected{% endif %}>
+          {% if a.author_id == 'GUEST' %}🧪 체험 계정 — 글 0편 · 아무 문장이나 써 보세요{% else %}{{ ut_avatar(a.author_id) }} {{ a.nickname }} — 글 {{ a.n_posts }}편 · 이미 드러난 계정{% endif %}</option>
       {% endfor %}
     </select>
 

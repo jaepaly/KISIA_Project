@@ -28,6 +28,7 @@ from db import connect, db_path, init  # noqa: E402  (apps/sns/db.py)
 
 # 시연 인물 — k 가 산출되는(UNKNOWN 이 아닌) 인물만. 첫째가 메인 시연.
 DEFAULT_PERSONAS = ["D05", "D01", "D11", "D17", "D06"]
+GUEST_ID = "GUEST"   # 체험 계정 — 코퍼스 인물이 아니다. 글 0편
 
 
 def user_ref(persona_id: str) -> str:
@@ -54,6 +55,11 @@ def geo_tag_for(persona: dict) -> str | None:
 
 def seed(conn, pids: list[str]) -> dict[str, int]:
     counts: dict[str, int] = {}
+    # 체험 계정 — 글 0편. 심사위원이 아무 문장이나 써 봐도 그 글만으로 k 가 서게 (기존 글이 바닥을 만들지 않게)
+    conn.execute(
+        "INSERT OR IGNORE INTO authors(author_id,user_ref,nickname,bio,joined_at) VALUES(?,?,?,?,?)",
+        (GUEST_ID, user_ref(GUEST_ID), "체험 계정", None, "2026-09-01T09:00:00+09:00"))
+    counts[GUEST_ID] = 0
     for pid in pids:
         persona = load_persona(pid)
         acct = persona.get("account") or {}
