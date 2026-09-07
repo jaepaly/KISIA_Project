@@ -15,6 +15,7 @@ import os
 import re
 import unicodedata
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Any
 
 from .dialect import dialect_hits
@@ -114,6 +115,15 @@ _LOC_NEXT = re.compile(
 )
 
 
+@lru_cache(maxsize=1)
+def _place_rx() -> tuple[re.Pattern, dict[str, str]]:
+    """사전 전체를 정규식 하나로 — 긴 표면형이 앞에 오게 정렬돼 있어 같은 자리에서는 긴 것이 이긴다.
+    (표면형마다 finditer 를 돌리면 3,700개 × 채널 수만큼 컴파일 캐시가 밀려 스캔 한 번에 4초가 걸렸다)"""
+    lex = dict(place_lexicon())
+    rx = re.compile("|".join(re.escape(s) for s in lex))
+    return rx, lex
+
+
 def _place_candidates(text: str) -> list[tuple[int, int, str]]:
     """지명 사전(시도·시군구·읍면동)으로 명시 지명을 찾는다. (start, end, canonical)
 
@@ -121,16 +131,17 @@ def _place_candidates(text: str) -> list[tuple[int, int, str]]:
       · 바로 앞에 한글이 붙어 있으면 지명이 아니다 (단어 안쪽 부분 일치)
       · 행정 접미사가 없는 약칭은 뒤에 접미사·역·장소 조사 중 하나가 와야 한다
     """
+    rx, lex = _place_rx()
     out: list[tuple[int, int, str]] = []
-    for surface, canonical in place_lexicon():
+    for m in rx.finditer(text):
+        s, e = m.start(), m.end()
+        surface = m.group(0)
+        if s > 0 and _HANGUL.match(text[s - 1]):
+            continue
         bare = surface[-1] not in _ADMIN_SUFFIX + "도"   # 시도 전체 이름은 시·도로 끝난다
-        for m in re.finditer(re.escape(surface), text):
-            s, e = m.start(), m.end()
-            if s > 0 and _HANGUL.match(text[s - 1]):
-                continue
-            if bare and e < len(text) and _HANGUL.match(text[e]) and not _LOC_NEXT.match(text[e:e + 3]):
-                continue
-            out.append((s, e, canonical))
+        if bare and e < len(text) and _HANGUL.match(text[e]) and not _LOC_NEXT.match(text[e:e + 3]):
+            continue
+        out.append((s, e, lex[surface]))
     return out
 
 
