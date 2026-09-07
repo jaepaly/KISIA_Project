@@ -413,7 +413,7 @@ Qwen3 크기는 **4B 로 이미 확정** (DEC-004 · decisions.md:96). QLoRA 학
 각 역할 파트를 취합하는 뼈대를 먼저 만들어둔다.
 
 ```
-docs/design/W04-모델서비스설계서.md    ← 이번 주 신규
+(설계서 원고는 드라이브 · 제출물/4주차 — DEC-003. 각자 절은 PM 이 직접 받는다)
 ```
 
 ### 화~수 — QLoRA 환경 세팅
@@ -469,7 +469,7 @@ bash scripts/tag_week.sh w04
 ### 만들 것
 
 ```
-docs/design/W04-모델서비스설계서.md
+(설계서 원고 — 드라이브 · 제출물/4주차. 자기 절은 PM 에게 직접 보낸다)
 docs/mentoring/W04-보고-포인트.md
 experiments/exp07-qwen3-finetune/      QLoRA 첫 잡 결과 (디렉터리만이라도)
 models/registry.md                    Qwen3 크기 확정 기록
@@ -530,7 +530,7 @@ cd apps/sns && python -m pytest test_export.py -v
 
 ```
 scripts/seed_sns.py                    코퍼스 → SNS 시딩
-docs/design/W04-모델서비스설계서.md     시스템 파트 (D 취합본에 합류)
+(설계서 시스템 파트 — PM 에게 직접 보낸다. 원고는 드라이브 · DEC-003)
 ```
 
 ### 완료 기준
@@ -591,7 +591,7 @@ D17·B16 재생성 여부가 train 분포에 영향을 준다. 수요일 동결 
 | QLoRA 메모리 부족 | 배치 사이즈 절반으로, 그래도 안 되면 D 에게 |
 | IAA 스크립트 오류 | PR #188 이슈에 로그 붙여 C(jhyun114) 에게 |
 | PR 머지가 안 된다 | nuewsun 에게 리뷰 요청 — 재촉하지 말고 한 번만 |
-| 설계서 양식이 없다 | `docs/design/` 에 없으면 D 가 빈 파일 만들어 공유 |
+| 설계서 양식이 없다 | D 가 드라이브 `제출물/4주차/W04_설계서_원고.md` 뼈대를 공유한다 (저장소엔 두지 않는다 · DEC-003) |
 | 앞사람 산출물이 안 온다 | 사슬 위 작업이면 PM 에게 즉시. 사슬 밖이면 가짜 데이터로 먼저 |
 | 명령이 Windows 에서 안 된다 | Git Bash 쓰거나 각 절의 PowerShell 대안 |
 

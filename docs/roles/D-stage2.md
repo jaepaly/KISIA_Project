@@ -359,8 +359,8 @@ ls experiments/exp07-qwen3-finetune/checkpoint-*/
 ### 4. 설계서 취합 — 수요일 초안, 금요일 완성
 
 ```bash
-# 새 파일 생성
-touch docs/design/W04-모델서비스설계서.md
+# 저장소가 아니라 드라이브다 (DEC-003 — 제출 원고는 docs/ 의 렌더링)
+#   제출물/4주차/W04_설계서_원고.md
 ```
 
 뼈대 구성:
@@ -375,7 +375,7 @@ touch docs/design/W04-모델서비스설계서.md
 7. 한계 및 향후 계획
 ```
 
-각 역할이 금요일까지 자기 파트를 PR로 올리면 D가 취합해 머지한다.
+각 역할의 파트는 **PM 이 직접 받아** 원고에 넣는다 — 주간보고서와 같은 방식이다. 저장소 PR 이 아니다. 원고를 쓰다 새로 생긴 설계 내용만 `docs/` 에 옮겨 커밋한다.
 
 ---
 
@@ -411,8 +411,7 @@ touch docs/mentoring/W04-보고-포인트.md
 
 ```bash
 # 설계서 최종 확인 후
-git add docs/design/W04-모델서비스설계서.md
-git commit -m "docs: W04 모델·서비스 설계서 최종"
+# 설계서 원고는 드라이브에 있다 — 커밋 대상이 아니다. 새로 생긴 내용만 docs/ 에 옮겨 커밋한다
 bash scripts/tag_week.sh w04   # 없으면: git tag w04 && git push origin w04
 ```
 
