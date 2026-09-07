@@ -3,3 +3,4 @@
 Flask>=3.0
 requests>=2.31
 jsonschema>=4.20     # 테스트에서 계약 대조
+anthropic>=0.30      # 리라이트 외부 LLM (DEMO_EXTERNAL_REWRITE=true 일 때만)

@@ -1,7 +1,7 @@
 """외부 LLM 호출은 이 파일에서만 한다 (E-system.md §2 「한 파일에서만 · 게이트를 통과」).
 
 기본값은 **꺼짐**이다. 켜려면 두 조건이 모두 필요하다 —
-    DEMO_EXTERNAL_REWRITE=true   AND   OPENAI_API_KEY 가 있다.
+    DEMO_EXTERNAL_REWRITE=true   AND   ANTHROPIC_API_KEY 가 있다.
 
 켜지면 리라이트 후보 3안을 API 로 만들고, provenance.external_llm_used 가 true 가 된다.
 꺼져 있으면 `recommend.py` 의 캐시·규칙 후보를 쓴다. 데모 페이지는 어느 쪽을 썼는지 표시한다.
@@ -16,18 +16,18 @@ import json
 import os
 from typing import Any
 
-MODEL = os.getenv("DEMO_EXTERNAL_MODEL", "gpt-4o-mini")
+MODEL = os.getenv("DEMO_EXTERNAL_MODEL", "claude-haiku-4-5-20251001")
 
 
 def enabled() -> bool:
-    return os.getenv("DEMO_EXTERNAL_REWRITE", "").lower() == "true" and bool(os.getenv("OPENAI_API_KEY"))
+    return os.getenv("DEMO_EXTERNAL_REWRITE", "").lower() == "true" and bool(os.getenv("ANTHROPIC_API_KEY"))
 
 
 def rewrite_candidates(sentence: str, span_text: str, voice_hint: str) -> list[dict[str, Any]] | None:
     """[{"text": 대체 표현, "note": 한 줄 설명}] ×3, 실패·비활성이면 None."""
     if not enabled():
         return None
-    import requests
+    import anthropic
 
     system = ("너는 한국어 글의 프라이버시 리라이터다. 주어진 문장에서 표시된 구간만 바꾼다. "
               "말투·어미·방언은 그대로 두고, 신상(지명·행정단위·배차 간격·나이·소득 주기)이 새는 정보만 지운다. "
@@ -35,15 +35,14 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str) -> list[d
               'JSON 배열만 출력한다: [{"text": "...", "note": "..."}]')
     user = f"문장: {sentence}\n바꿀 구간: {span_text}\n말투 힌트: {voice_hint}"
     try:
-        r = requests.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}"},
-            json={"model": MODEL, "temperature": 0.7,
-                  "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]},
-            timeout=30,
+        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+        msg = client.messages.create(
+            model=MODEL,
+            max_tokens=512,
+            system=system,
+            messages=[{"role": "user", "content": user}],
         )
-        r.raise_for_status()
-        content = r.json()["choices"][0]["message"]["content"].strip()
+        content = msg.content[0].text.strip()
         if content.startswith("```"):
             content = content.strip("`").split("\n", 1)[1] if "\n" in content else content.strip("`")
         arr = json.loads(content)
