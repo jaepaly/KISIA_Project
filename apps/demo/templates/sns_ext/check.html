@@ -13,12 +13,16 @@
   .pado-hd .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--sea-ink)}
   .pado-hd .by{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right;line-height:1.5}
   .act{scroll-margin-top:84px}
+  abbr.q{text-decoration:none;border-bottom:1px dotted var(--ink3);cursor:help}
+  .hero .lab abbr.q{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid var(--ink3);border-radius:50%;font-size:10px;margin-left:4px;vertical-align:1px}
   @media (max-width:640px){.pado{padding:14px 14px}.pado-hd .by{margin-left:0;text-align:left}}
 </style>
 {% endblock %}
 
 {% block rail %}
 {% if res %}
+<div class="rail-card rail-tour rv">지금 보는 것 — <b>{{ a.nickname }}</b> 님 계정을 파도풀에 보낸 결과. 읽는 순서는 요약 → 어떻게 좁혀지나 → 근거 → 조치.
+  <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
 <div class="rail-card rail-sum rv">
   <div class="rail-h"><span class="mark">🌊 파도풀 요약</span><span class="tag nosave">저장 안 함</span></div>
   <div class="rail-sum-top">
@@ -81,9 +85,9 @@
       <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>0</text>
     </svg>
     <div>
-      <div class="lab">전 국민 {{ '{:,}'.format(nation) }}명 중, 이 계정으로 좁혀지는 후보</div>
+      <div class="lab">전 국민 {{ '{:,}'.format(nation) }}명 중, 이 계정으로 좁혀지는 후보 <abbr class="q" title="후보 = 이 글들이 드러낸 조건(사는 곳·나이·성별)을 전부 만족하는 주민등록 인구 수. 작을수록 특정되기 쉽습니다. 이름이 아니라 «몇 명 중 하나인가»를 셉니다.">?</abbr></div>
       <div class="big" style="color:var(--{{ res.css }})">{% if k %}<span data-count="{{ k }}">0</span><span class="u">명</span>{% else %}—{% endif %}</div>
-      <span class="lvl {{ res.css }}">{{ res.label }}</span> <span style="font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace">k_level {{ res.k_level }} · 위험 점수 {{ res.risk }} (후보 수 로그 척도)</span>
+      <span class="lvl {{ res.css }}">{{ res.label }}</span> <span style="font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace"><abbr class="q" title="k_level — C 파트 계약의 등급. k≤2 VERY_HIGH · k<5 HIGH · k≥5 ACCEPTABLE. 화면의 «위험 높음/보통/낮음»은 데모 표시용으로 더 잘게 나눈 것입니다.">k_level {{ res.k_level }}</abbr> · <abbr class="q" title="위험 점수 — 후보 수의 로그 척도를 0~100으로 옮긴 화면용 값. k=1이면 100, 전 국민이면 0. 정식 위험도 모델이 아닙니다.">위험 점수 {{ res.risk }}</abbr></span>
     </div>
   </div>
 
@@ -135,11 +139,11 @@
 <div class="card" id="evidence-card">
   <h3 class="ct">근거 — 긴 잡담 속 어느 문장이 새는가</h3>
   <p class="lede">글은 원문 그대로입니다. 스위치를 켜면 새는 자리에만 형광이 켜집니다. 점선은 <b>잡았지만 걸러낸</b> 표현입니다.</p>
-  <div class="lens-row"><span>위험 문장 표시</span><button id="lensSwitch" class="sw" role="switch" aria-checked="false" aria-label="위험 문장 표시" onclick="toggleLens(this)" style="padding:0"><i></i></button></div>
-  <div class="legend" id="lensLegend" hidden>
+  <div class="lens-row"><span>위험 문장 표시</span><button id="lensSwitch" class="sw" role="switch" aria-checked="true" aria-label="위험 문장 표시" onclick="toggleLens(this)" style="padding:0"><i></i></button></div>
+  <div class="legend" id="lensLegend">
     <span><i style="background:var(--mark-loc)"></i>사는 곳·장소</span><span><i style="background:var(--mark-age)"></i>나이</span><span><i style="background:var(--mark-fam)"></i>가족·성별</span><span><i style="background:var(--mark-inc)"></i>소득·직업</span><span><i style="background:var(--mark-com)"></i>이동·통근</span><span><i style="border-bottom:2px dashed var(--mid);height:6px"></i>걸러낸 표현</span>
   </div>
-  <div id="evidence" class="lens-off">
+  <div id="evidence">
     {% for c in res.evidence %}
       <div class="evi">
         <div class="w">{% if c.post_id.startswith('프로필') %}{{ c.post_id }}{% else %}<a href="/posts/{{ c.post_id }}?back={{ back }}">{{ c.post_id }}</a>{% endif %}

@@ -174,6 +174,107 @@
     }));
   }
 
+  // ── 투어 — 처음 온 사람을 시연 순서대로 데려간다. 상태는 localStorage, 페이지가 바뀌어도 이어진다 ──
+  const TOUR_KEY = "pado_tour";
+  const TOUR = [
+    { page: (p) => p === "/", target: '.rail-nb a[href="/u/u_1a2e7dcc"]',
+      title: "① 마당일기 님의 블로그로", text: "68세 할머니의 글 18편 — 이름도 지명도 한 번 안 나옵니다. 그런데도 사람이 좁혀지는지 봅니다.",
+      advance: "click" },
+    { page: (p) => p === "/u/u_1a2e7dcc", target: ".ut-pado a.go",
+      title: "② 내 글 점검", text: "우리뜰이 이 계정의 공개 글만 파도풀에 보냅니다. 파도풀은 저장하지 않고 진단만 돌려줍니다.",
+      advance: "click" },
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#sum .hero", when: () => !$(".delta-banner"),
+      title: "③ 직접 식별자 0건, 후보 421명", text: "이름·전화번호 검사기라면 «안전»입니다. 파도풀은 글들의 결합을 세서 전 국민 5,100만 중 421명까지 좁힙니다.",
+      advance: "next" },
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#funnel ul.funnel", when: () => !$(".delta-banner"),
+      title: "④ 어떻게 좁혀지나", text: "방언 → 면사무소 → 위치태그 → 「예순여덟」. 단계마다 실제 주민등록 인구입니다. 줄을 누르면 그 문장으로 갑니다.",
+      advance: "next" },
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: '#actions form[action$="/geo_tag"] button', when: () => !$(".delta-banner"),
+      title: "⑤ 가장 가벼운 조치 하나", text: "글을 지우지 않고 위치태그만 끕니다. 눌러 보세요 — 화면이 다시 계산됩니다.",
+      advance: "click" },
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".delta-banner", when: () => !!$(".delta-banner"),
+      title: "⑥ 421 → 111,069", text: "글은 하나도 안 지웠습니다. 끊긴 경로는 깔때기에 취소선으로 남습니다.",
+      advance: "next" },
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".ut-nav a.write, .ut-tabs a[href='/new']",
+      title: "⑦ 이번엔 올리기 전에", text: "체험 계정으로 아무 글이나 써 봅니다. 올리기 전에 한 번 점검합니다.",
+      advance: "click" },
+    { page: (p) => p === "/new", target: "#body", when: () => !$("#draftSpans"),
+      title: "⑧ 예문을 넣고 점검", text: "예: 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 — 넣어 드릴게요. 그다음 「🌊 파도풀로 점검」을 누르세요.",
+      advance: "click", clickTarget: 'button[formaction="/check-draft"]',
+      onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
+    { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span]", when: () => !!$("#draftSpans"),
+      title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 후보 수, 그리고 「그대로 두기」. 고르는 건 글쓴이입니다.",
+      advance: "done" },
+  ];
+  function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
+  function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
+  window.padoTourStart = function () { tourSave({ step: 0 }); if (location.pathname !== "/") location.href = "/"; else renderTour(); };
+  window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); };
+  function updateTourLinks() {
+    const s = tourState();
+    $$("[data-tour-welcome]").forEach((el) => { el.hidden = !!(s && (s.done || s.step != null)); });
+    $$("[data-tour-restart]").forEach((el) => { el.hidden = !(s && s.done); });
+  }
+  function renderTour() {
+    const s = tourState();
+    updateTourLinks();
+    if (!s || s.done || s.step == null) return;
+    const p = location.pathname;
+    let i = s.step;
+    // 현재 페이지에 맞는 단계로 — 앞 단계를 건너뛰었으면 따라잡고, 조건(when)이 안 맞으면 기다린다
+    while (i < TOUR.length && !(TOUR[i].page(p) && (!TOUR[i].when || TOUR[i].when()))) {
+      if (TOUR[i].page(p)) { i++; continue; }
+      const later = TOUR.slice(i).findIndex((t) => t.page(p) && (!t.when || t.when()));
+      if (later < 0) return;   // 이 페이지엔 할 일이 없다 — 사용자가 딴 데로 갔다. 원래 단계로 돌아오면 이어진다
+      i += later;
+    }
+    if (i >= TOUR.length) { window.padoTourStop(); return; }
+    if (i !== s.step) tourSave({ step: i });
+    const st = TOUR[i];
+    const visible = (el) => el && el.offsetParent !== null;
+    const target = $$(st.target).find(visible) || null;
+    st.onShow && st.onShow();
+    const old = $(".tour-mark"); old && old.remove();
+    $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot"));
+    const card = document.createElement("div");
+    card.className = "tour-mark";
+    card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
+      + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
+      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>' : '<span class="hint">👆 위 버튼을 누르면 이어집니다</span>') + "</div>";
+    document.body.appendChild(card);
+    card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
+    const nextBtn = card.querySelector("[data-next]");
+    nextBtn && nextBtn.addEventListener("click", () => { if (st.advance === "done") { window.padoTourStop(); finishTour(); } else { tourSave({ step: i + 1 }); renderTour(); } });
+    if (target) {
+      target.classList.add("tour-spot");
+      const clickEl = st.clickTarget ? ($$(st.clickTarget).find(visible) || null) : target;
+      if (st.advance === "click" && clickEl) {
+        clickEl.classList.add("tour-spot");
+        clickEl.addEventListener("click", () => tourSave({ step: i + 1 }), { once: true });
+      }
+      place(card, target);
+      target.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
+      setTimeout(() => place(card, target), RM ? 0 : 500);
+    } else {
+      card.classList.add("floating");
+    }
+  }
+  function place(card, target) {
+    const r = target.getBoundingClientRect();
+    const w = card.offsetWidth, h = card.offsetHeight;
+    let top = scrollY + r.bottom + 12, left = scrollX + r.left;
+    if (r.bottom + 12 + h > innerHeight && r.top - 12 - h > 0) { top = scrollY + r.top - 12 - h; card.classList.add("above"); } else card.classList.remove("above");
+    left = Math.max(8, Math.min(left, scrollX + innerWidth - w - 8));
+    card.style.top = top + "px"; card.style.left = left + "px";
+  }
+  function finishTour() {
+    const d = document.createElement("div");
+    d.className = "tour-mark floating done";
+    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요 — 다른 인물(느린 기록은 위치태그 하나가 20만 → 5명), 리라이트 후보 골라 저장, 비공개 토글. 파도풀은 권고까지, 누르는 건 우리뜰입니다.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
+    document.body.appendChild(d);
+    d.querySelector("[data-x]").addEventListener("click", () => d.remove());
+  }
+
   function boot() {
     initFunnels(document);
     initReveal();
@@ -182,6 +283,8 @@
     initRailWidget();
     initDecor();
     initActRail();
+    renderTour();
+    addEventListener("resize", () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); c && t && place(c, t); });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();

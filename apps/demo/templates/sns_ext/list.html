@@ -3,11 +3,26 @@
 {% block content %}
 <main class="ut-wrap">
 
+  <section class="welcome rv" data-tour-welcome>
+    <h2>우리뜰은 가상 SNS, <b>🌊 파도풀</b>은 거기 붙어 도는 재식별 위험 점검 서비스입니다</h2>
+    <p>이름·전화번호가 한 번도 안 나와도, 흩어진 글이 결합되면 사람이 좁혀집니다. 파도풀은 그 결합을 찾아 <b>후보가 몇 명까지 좁혀지는지</b>를 실제 주민등록 인구로 세고, 글을 지우지 않는 조치부터 권합니다. 로그인은 없습니다 — 보고 있는 블로그의 주인이 «나»입니다.</p>
+    <ol>
+      <li><b>① 마당일기 님의 글 18편</b>지명이 한 번도 안 나오는데 후보 <span class="k">421명</span>. 이름·전화번호 검사기라면 «안전»</li>
+      <li><b>② 조치 버튼 하나</b>위치태그만 끄면 <span class="k">421 → 111,069명</span>. 글은 하나도 안 지웁니다</li>
+      <li><b>③ 올리기 전 점검</b>체험 계정으로 아무 글이나 써 보세요. 색칠된 표현을 누르면 넓히기·지우기·그대로 두기</li>
+    </ol>
+    <div class="bt">
+      <button type="button" class="start" onclick="padoTourStart()">▶ 3분 체험 시작</button>
+      <button type="button" class="dismiss" onclick="padoTourStop()">그냥 둘러볼게요</button>
+      <span class="note">합성 인물 · 합성 글 · 파도풀은 저장하지 않습니다</span>
+    </div>
+  </section>
+
   <div class="ut-h"><h1>이웃들의 기록</h1><span class="sub">{{ posts|length }}편</span></div>
 
   <div class="ut-filter">
     <a href="/" class="{{ 'on' if not selected_author }}">전체</a>
-    {% for a in authors %}
+    {% for a in authors if a.author_id != 'GUEST' %}
       <a href="/?author={{ a.author_id }}" class="{{ 'on' if a.author_id == selected_author }}">{{ ut_avatar(a.author_id) }} {{ a.nickname }}</a>
     {% endfor %}
   </div>

@@ -1,4 +1,6 @@
 {# 오른쪽 레일 — 피드·프로필·글·에디터 화면 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
+<div class="rail-card rail-tour rv">로그인 없는 데모 — <b>보고 있는 블로그의 주인이 «나»</b>입니다. 헤더의 「내 블로그」「점검」이 그 계정으로 갑니다.
+  <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
 {% if me %}
 {% set st = ut_stats(me.author_id) %}
 <div class="rail-card rail-me rv">

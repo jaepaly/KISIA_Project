@@ -235,6 +235,44 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 .tick{display:inline-block;animation:tick .5s var(--ease)}
 @keyframes tick{from{opacity:0;transform:translateY(6px)}}
 
+/* ── 첫 방문 카드 · 투어 ── */
+.welcome{position:relative;overflow:hidden;background:linear-gradient(135deg,#fffdf8,#eef5f3 70%,#f3ecdd);border:1.5px solid var(--ut-sea);
+  border-radius:var(--ut-radius);padding:20px 22px;margin-bottom:18px;box-shadow:var(--ut-shadow-hi)}
+.welcome::after{content:"";position:absolute;right:-60px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:rgba(12,109,104,.07)}
+.welcome h2{margin:0 0 6px;font-size:21px;color:var(--ut-ink)}
+.welcome h2 b{color:var(--ut-sea);font-weight:400}
+.welcome p{margin:0 0 12px;font-size:13.5px;color:var(--ut-ink2);line-height:1.65;max-width:60em}
+.welcome ol{margin:0 0 14px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.welcome li{background:rgba(255,253,248,.85);border:1px solid var(--ut-line);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--ut-ink2);line-height:1.5}
+.welcome li b{display:block;color:var(--ut-ink);font-size:13.5px;margin-bottom:2px}
+.welcome li .k{font-family:"IBM Plex Mono",Consolas,monospace;color:var(--ut-sea);font-weight:600}
+.welcome .bt{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative}
+.welcome .bt .start{background:var(--ut-sea);color:#fff;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700;box-shadow:0 8px 18px -10px rgba(12,109,104,.8);transition:transform .15s}
+.welcome .bt .start:hover{transform:translateY(-1px);text-decoration:none}
+.welcome .bt .dismiss{background:transparent;color:var(--ut-ink3);font-weight:400;padding:8px 6px;font-size:12.5px}
+.welcome .bt .note{font-size:11.5px;color:var(--ut-ink3);margin-left:auto}
+.rail-tour{font-size:12px;color:var(--ut-ink3)}
+.rail-tour button{background:transparent;color:var(--ut-sea);padding:0;font-size:12px;font-weight:700}
+
+.tour-spot{position:relative;z-index:31;box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-sea),0 0 0 14px rgba(12,109,104,.16)!important;border-radius:10px;animation:spot 1.6s ease-in-out infinite}
+@keyframes spot{50%{box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-sea),0 0 0 22px rgba(12,109,104,0)}}
+.tour-mark{position:absolute;z-index:32;width:min(340px,calc(100vw - 24px));background:var(--ut-ink);color:#fff;border-radius:14px;padding:13px 15px 11px;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.5);animation:popin .22s var(--ease);font-size:13px;line-height:1.55}
+.tour-mark::before{content:"";position:absolute;left:22px;top:-7px;width:14px;height:14px;background:var(--ut-ink);transform:rotate(45deg);border-radius:2px}
+.tour-mark.above::before{top:auto;bottom:-7px}
+.tour-mark.floating{position:fixed;left:50%!important;top:auto!important;bottom:90px;transform:translateX(-50%)}
+.tour-mark.floating::before{display:none}
+.tour-mark .tt{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.tour-mark .tt .n{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.14);border-radius:99px;padding:1px 8px}
+.tour-mark .tx{color:rgba(255,255,255,.85)}
+.tour-mark .bt{display:flex;gap:8px;align-items:center;margin-top:10px}
+.tour-mark .bt .go{margin-left:auto;background:#fff;color:var(--ut-ink);border-radius:8px;padding:6px 14px;font-size:12.5px;font-weight:700}
+.tour-mark .bt .skip{background:transparent;color:rgba(255,255,255,.6);padding:6px 4px;font-size:12px;font-weight:400}
+.tour-mark .bt .hint{margin-left:auto;font-size:12px;color:#ffe9a8}
+.tour-mark.done{background:var(--ut-sea)}
+@keyframes popin{from{opacity:0;transform:translateY(-6px)}}
+.tour-mark.floating{animation:none}
+
 /* ── 하단 탭바 (모바일) ── */
 .ut-tabs{display:none}
 
@@ -258,6 +296,9 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
   .ut-follow{margin-left:0;width:100%}
   .ut-pado a.go{width:100%;text-align:center}
   .ut-bg i{opacity:.4}
+  .welcome ol{grid-template-columns:1fr}
+  .welcome h2{font-size:18px}
+  .tour-mark.floating{bottom:96px}
   .ut-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,253,248,.94);backdrop-filter:blur(10px);
     border-top:1px solid var(--ut-line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
   .ut-tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ut-ink3);padding:4px 10px;border-radius:12px;min-width:64px;transition:color .15s,background .15s}
