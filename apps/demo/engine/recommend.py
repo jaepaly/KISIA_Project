@@ -120,20 +120,48 @@ def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[st
     src = last[-1]["src"]
     if src.get("span_id") == span_id or src.get("post_id") is None:
         return out
-    is_geo = src.get("channel") == "geo_tag"
-    if src["post_id"] != post_id:
-        where = f"📍{src['text']} 위치태그" if is_geo else f"「{src['text']}」"
-        out["bound"] = f"다른 글({src['post_id']})의 {where}가 남아 여기까지"
-    else:
+
+    # 바닥 근거는 하나가 아니라 «같은 값을 가리키는 묶음» 이다 — 「기흥」이 4개 글에 있으면 하나 고쳐서는 안 바뀐다.
+    same_value = _same_value_key(v2, src, axis)
+    group_spans, group_meta, posts_of = set(), set(), []
+    for p in v2["posts"]:
+        if p["post_id"] == post_id:
+            continue
+        for s in p["spans"]:
+            n = p["notes"].get(s["span_id"], {})
+            if s["subject"] == "self" and not n.get("exclude") and _same_value_key(v2, {"post_id": p["post_id"], "span_id": s["span_id"]}, axis) == same_value:
+                group_spans.add(s["span_id"]); posts_of.append(p["post_id"])
+        if axis == "location" and p["activity_meta"].get("geo_tag"):
+            from .pipeline import _canonical_geo
+            if _canonical_geo(p["activity_meta"]["geo_tag"]) == same_value:
+                group_meta.add(p["post_id"])
+    posts_of = list(dict.fromkeys(posts_of))
+    n_posts = len(set(posts_of) | group_meta)
+    if src["post_id"] == post_id:
         out["bound"] = f"이 글의 다른 표현 「{src['text']}」가 남아 여기까지"
-    # 그 근거까지 치우면 — 위치태그는 글 단위로 끄고, 표현은 그 스팬만 뺀다
-    if is_geo:
-        out["bound_k"] = compute(v2, exclude_meta=frozenset({src["post_id"]}))["k"]
-        out["bound_fix"] = {"kind": "geo_tag", "post_id": src["post_id"], "text": src["text"]}
-    elif src.get("span_id"):
-        out["bound_k"] = compute(v2, exclude_spans=frozenset({src["span_id"]}))["k"]
-        out["bound_fix"] = {"kind": "span", "post_id": src["post_id"], "span_id": src["span_id"], "text": src["text"]}
+        return out
+    where = f"📍{src['text']} 위치태그" if src.get("channel") == "geo_tag" else f"「{src['text']}」"
+    out["bound"] = (f"다른 글 {n_posts}편({'·'.join(sorted(set(posts_of) | group_meta))})의 {where}가 남아 여기까지"
+                    if n_posts > 1 else f"다른 글({src['post_id']})의 {where}가 남아 여기까지")
+    bk = compute(v2, exclude_spans=frozenset(group_spans), exclude_meta=frozenset(group_meta))["k"]
+    if bk != f["k"]:      # 치워도 안 바뀌면(또 다른 바닥이 있으면) 상자를 내지 않는다
+        out["bound_k"] = bk
+        out["bound_fix"] = {"text": src["text"], "geo_posts": sorted(group_meta), "span_posts": sorted(set(posts_of))}
     return out
+
+
+def _same_value_key(view: dict[str, Any], src: dict[str, Any], axis: str) -> Any:
+    """근거 하나가 가리키는 값 — 지명은 정본 이름, 나이는 값. 같은 값이면 같은 묶음."""
+    if src.get("channel") == "geo_tag":
+        from .pipeline import _canonical_geo
+        return _canonical_geo(src["text"])
+    for p in view["posts"]:
+        if p["post_id"] == src.get("post_id"):
+            n = p["notes"].get(src.get("span_id"), {})
+            if axis == "location":
+                return n.get("place") or n.get("admin_unit")
+            return n.get("age") if n.get("age") is not None else (n.get("age_decade"), n.get("age_min"))
+    return None
 
 
 def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, Any],
