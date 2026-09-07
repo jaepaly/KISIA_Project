@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-PROMPT_VERSION = "p1.2"
+PROMPT_VERSION = "p1.3"
 
 # 인물 JSON 에 noise_topics 가 없을 때만 쓰는 폴백.
 # persona-design.md §2-⑤ 는 "소재"를 목소리 차별화 축으로 명시한다
@@ -143,8 +143,12 @@ def build_system(persona: dict, card_text: str = "") -> str:
 
 
 def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
-               topic: str = "") -> str:
-    """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다."""
+               topic: str = "", prior_titles: list[str] | None = None) -> str:
+    """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다.
+
+    prior_titles — 같은 소재로 이미 쓴 글의 제목. 잡담 소재가 글 수보다 적어 순환하면
+    같은 프롬프트가 다시 가서 앞 글이 재탕된다 (#184 D17 b19~b30 = b01~b12). p1.3.
+    """
     if kind == "clue":
         assert clues
         body = [c for c in clues if c.get("text_id", "body") == "body"]
@@ -191,10 +195,20 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
             "거주지를 말하지 말고, 어디 다녀왔다는 후기만 써라.\n"
             "제목에는 지명을 쓰지 마라. 본문에서도 지명은 한 번만 스치듯 언급한다."
         )
+    repeat = ""
+    if prior_titles:
+        # 제목만 주면 부족하다 — 제목이 날짜인 인물(D17)은 힌트가 0이다. 첫 문장을 같이 준다
+        listed = "\n".join(f"  - {t}" for t in prior_titles[-3:])
+        repeat = (
+            f"[이 소재로 이미 쓴 글 — 제목 / 첫 문장]\n{listed}\n"
+            "같은 장면·같은 사건을 되풀이하지 마라. 다른 날, 다른 일, 다른 결말로 써라. "
+            "위 첫 문장들과 같은 문장으로 시작하지 마라.\n\n"
+        )
     return (
         "블로그 글 한 편을 써라.\n\n"
         f"[이 글의 소재] {topic}\n"
         "이 소재로만 써라. 다른 소재로 새지 마라.\n\n"
+        + repeat +
         "지명·직업·나이·가족·통근 수단을 암시하는 표현을 단 하나도 쓰지 마라. "
         "이 글에서는 나에 대해 아무것도 알아낼 수 없어야 한다."
     )
