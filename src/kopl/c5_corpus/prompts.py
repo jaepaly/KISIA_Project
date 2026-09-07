@@ -144,13 +144,14 @@ ENDINGS = [
 
 
 def per_post_block(month: int | None, catchphrase: str | None, marker: str | None,
-                   ending: str | None = None) -> str:
+                   ending: str | None = None, date_str: str | None = None) -> str:
     """글마다 코드가 정하는 것 — 시점 · 말버릇 사용 여부 · 전환 표지. 프롬프트에 규칙으로 두면
     모델이 매 글 100% 적용해 틀이 된다 (D03 22편 중 20편이 셋째 문단을 「아 근데」로 열었다)."""
     lines = ["[이 글에서]"]
     if month:
-        lines.append(f"- 시점: {month}월. 날씨·농작물·행사는 이 계절에 맞는 것만 쓴다. "
-                     "달 이름(「3월」「삼월」)을 글에 쓰지 마라 — 계절감으로만 드러낸다.")
+        lines.append(f"- 시점: {date_str or str(month) + '월'}. 날씨·농작물·행사는 이 계절에 맞는 것만 쓴다. "
+                     "제목이나 첫 줄에 날짜를 적는 문체라면 **이 날짜를 그대로** 쓴다. "
+                     "그런 문체가 아니면 달 이름(「3월」「삼월」)을 글에 쓰지 마라 — 계절감으로만 드러낸다.")
     if ending:
         lines.append(f"- 끝맺음: {ending}")
     lines.append(f"- 말버릇: {catchphrase} — 이 글에서 한 번. 위치는 매번 다르게(첫머리·중간·끝 아무 데나)."
@@ -165,7 +166,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                topic: str = "", prior_titles: list[str] | None = None,
                month: int | None = None, catchphrase: str | None = None, marker: str | None = None,
                place: str = "", relation: str = "", ending: str | None = None,
-               name_ok: bool = False) -> str:
+               name_ok: bool = False, date_str: str | None = None) -> str:
     """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다.
 
     prior_titles — 같은 소재로 이미 쓴 글의 제목. 잡담 소재가 글 수보다 적어 순환하면
@@ -178,7 +179,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
         caps = sorted([c for c in clues if str(c.get("text_id", "")).startswith("photo_caption")],
                       key=lambda c: c["text_id"])
 
-        parts = ["블로그 글 한 편을 써라.\n", per_post_block(month, catchphrase, marker, ending)]
+        parts = ["블로그 글 한 편을 써라.\n", per_post_block(month, catchphrase, marker, ending, date_str)]
         for c in body:
             who = (
                 f"이 단서 문장의 주인공은 내가 아니라 **{relation or '가까운 사람'}**이다. 그 사람을 관계로 부른다 "
@@ -224,7 +225,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                      "같은 장소를 같은 장면으로 되풀이하지 마라. 다른 시설, 다른 용무로.\n\n")
         return (
             "블로그 글 한 편을 써라.\n\n"
-            + per_post_block(month, catchphrase, marker, ending) + "\n"
+            + per_post_block(month, catchphrase, marker, ending, date_str) + "\n"
             f"[이 글의 성격] 지역 생활 기록. {ambient_design}\n"
             f"[내 동네] {place}\n"
             + ("이 동네 밖의 지명·시설을 쓰지 마라. 동네 이름을 쓰려면 사람들이 부르는 대로 한 번만 "
@@ -249,7 +250,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
         )
     return (
         "블로그 글 한 편을 써라.\n\n"
-        + per_post_block(month, catchphrase, marker, ending) + "\n"
+        + per_post_block(month, catchphrase, marker, ending, date_str) + "\n"
         f"[이 글의 소재] {topic}\n"
         "이 소재로만 써라. 다른 소재로 새지 마라.\n\n"
         + repeat +

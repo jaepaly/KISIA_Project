@@ -126,7 +126,7 @@
       "attr": "age",
       "level": "explicit",
       "subject": "self",
-      "clue": "마흔일곱에 부업을 시작한 게 벌써 삼 년째예요",
+      "clue": "마흔넷에 시작한 부업이 마흔일곱인 올해로 삼 년째예요",
       "note": "한글 수사 explicit. 시작 시점 + 경과라 시간축 역산이 된다",
       "ambiguous": false
     },

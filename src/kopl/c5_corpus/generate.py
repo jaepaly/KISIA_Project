@@ -306,6 +306,7 @@ def generate_persona(
             post_rng = random.Random(f"{pid}:{item['post']}:{seed}")
             created = sample_time(persona, rng, idx)
             month = int(created[5:7])
+            date_str = f"{month}월 {int(created[8:10])}일"
             cp = cp_text if (cp_rate and post_rng.random() < cp_rate) else None
             marker = post_rng.choice(MARKERS) if post_rng.random() < 0.4 else None
             ending = post_rng.choice(prompts.ENDINGS)
@@ -313,7 +314,7 @@ def generate_persona(
             user = prompts.build_user(
                 item["kind"], item.get("clues"), item.get("design", ""), topic,
                 prior_titles=titles_by_topic.get(hint_key),
-                month=month, catchphrase=cp, marker=marker, place=place,
+                month=month, date_str=date_str, catchphrase=cp, marker=marker, place=place,
                 relation="단서 문장 속 호칭 그대로 (딸·막내·동창처럼)", ending=ending, name_ok=name_ok,
             )
             if sleep and written:
