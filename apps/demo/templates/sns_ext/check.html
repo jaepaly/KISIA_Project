@@ -5,23 +5,66 @@
 <style>
   /* demo.css 가 뒤에 오므로 우리뜰 골격을 되돌린다 — 진단 패널만 파도풀 톤을 쓴다 */
   body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
-  .ut-wrap{max-width:900px;margin:26px auto 0;padding:0 20px}
   .pado{background:var(--panel);border:1px solid var(--line);border-radius:var(--ut-radius);
         padding:20px 22px;box-shadow:var(--ut-shadow)}
-  .pado .card{border-radius:12px}
+  .pado .card{border-radius:12px;scroll-margin-top:84px}
   .pado h3.ct,.pado .lede,.pado .funnel,.pado .evi,.pado .act{font-family:"IBM Plex Sans KR",sans-serif}
   .pado-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .pado-hd .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--sea-ink)}
   .pado-hd .by{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right;line-height:1.5}
+  .act{scroll-margin-top:84px}
+  @media (max-width:640px){.pado{padding:14px 14px}.pado-hd .by{margin-left:0;text-align:left}}
 </style>
 {% endblock %}
+
+{% block rail %}
+{% if res %}
+<div class="rail-card rail-sum rv">
+  <div class="rail-h"><span class="mark">🌊 파도풀 요약</span><span class="tag nosave">저장 안 함</span></div>
+  <div class="rail-sum-top">
+    <svg class="ring {{ res.css }}" viewBox="0 0 84 84" data-risk="{{ res.risk if res.risk is not none else '' }}" data-css="{{ res.css }}" aria-label="위험 점수 {{ res.risk }}">
+      <circle class="tr" cx="42" cy="42" r="36"/><circle class="pr" cx="42" cy="42" r="36" data-ring/>
+      <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>0</text>
+    </svg>
+    <div>
+      <div class="lab">좁혀지는 후보</div>
+      <div class="k"><span data-count="{{ res.k }}">0</span><small>명</small></div>
+      <div class="lab" style="color:var(--{{ res.css }});font-weight:700">{{ res.label }}</div>
+    </div>
+  </div>
+  {% if res.actions %}
+  <ul class="rail-acts">
+    {% for act in res.actions %}
+      <li><a href="#act-{{ loop.index }}" data-goto="#act-{{ loop.index }}">
+        <span class="n">{{ {'unpublish':'①','activity_meta':'②','rewrite':'③'}[act.action_type] }}</span>
+        <span class="nm">{{ {'unpublish':'비공개','activity_meta':'위치태그 끄기','rewrite':'리라이트'}[act.action_type] }} · {{ act.post_id }}</span>
+        <span class="kk">→ {{ '{:,}'.format(act.k) }}</span></a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <ul class="rail-toc">
+    <li><a href="#sum" data-goto="#sum">요약</a></li>
+    <li><a href="#funnel" data-goto="#funnel">어떻게 좁혀지나</a></li>
+    <li><a href="#evidence-card" data-goto="#evidence-card">근거 문장</a></li>
+    <li><a href="#actions" data-goto="#actions">조치</a></li>
+  </ul>
+</div>
+<div class="rail-card rail-note rv d1">
+  <b>파도풀이 받는 것</b>
+  <p>우리뜰의 <b>공개 글 내보내기</b>(제목·본문·캡션·위치태그·프로필)뿐입니다. DB 도 파일도 없이 응답하고 잊습니다. 조치는 전부 우리뜰 버튼입니다.</p>
+</div>
+{% else %}
+{% include "_rail.html" %}
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <main class="ut-wrap">
   <a class="ut-back" href="/u/{{ a.user_ref }}">← {{ a.nickname }} 님의 블로그</a>
 
   <div class="pado">
     <div class="pado-hd">
-      <span class="mark">🛟 파도풀 점검</span>
+      <span class="mark">🌊 파도풀 점검</span>
       <span style="font-size:13px;color:var(--ink2)">{{ ut_avatar(a.author_id) }} {{ a.nickname }} 님의 공개 글</span>
       <span class="by">우리뜰이 <b>공개 글만</b> 파도풀에 보내 진단을 받아 옵니다<br>파도풀은 글을 저장하지 않습니다 · 조치는 이 화면에서 직접</span>
     </div>
@@ -29,20 +72,37 @@
 {% if err %}<div class="err">{{ err }}</div>{% endif %}
 {% if res %}
 {% set k = res.k %}
+{% set nation = res.steps[0].n_after %}
 
-<div class="card">
-  <div class="risk">
-    <div class="gauge g-{{ res.css }}"><div class="lvl">{{ res.label }}</div><div class="num">{{ res.risk if res.risk is not none else '—' }}</div><div class="cap">재식별 위험 점수 (후보 수 로그 척도)</div></div>
-    <div class="riskmeta">
-      <div class="row"><span>이 계정으로 좁혀지는 후보</span><span class="v" style="color:var(--{{ res.css }})">{% if k %}약 {{ '{:,}'.format(k) }}명{% else %}산출 불가{% endif %} <span style="font-weight:400;color:var(--ink3);font-size:11px">k_level {{ res.k_level }}</span></span></div>
-      <div class="row"><span>신호가 잡힌 신상 속성</span><span class="v">7개 중 {{ res.leaking|length }}개</span></div>
-      <div class="row"><span>이름·주소·전화번호·이메일 노출</span><span class="v" style="color:var(--{{ 'hi' if res.n_direct else 'low' }})">{{ res.n_direct }}건</span></div>
-      <div class="row"><span>읽은 글</span><span class="v">공개 {{ res.n_posts }}편</span></div>
+<div class="card" id="sum">
+  <div class="hero">
+    <svg class="ring big {{ res.css }}" viewBox="0 0 84 84" data-risk="{{ res.risk if res.risk is not none else '' }}" data-css="{{ res.css }}" aria-label="재식별 위험 점수 {{ res.risk }}">
+      <circle class="tr" cx="42" cy="42" r="36"/><circle class="pr" cx="42" cy="42" r="36" data-ring/>
+      <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>0</text>
+    </svg>
+    <div>
+      <div class="lab">전 국민 {{ '{:,}'.format(nation) }}명 중, 이 계정으로 좁혀지는 후보</div>
+      <div class="big" style="color:var(--{{ res.css }})">{% if k %}<span data-count="{{ k }}">0</span><span class="u">명</span>{% else %}—{% endif %}</div>
+      <span class="lvl {{ res.css }}">{{ res.label }}</span> <span style="font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace">k_level {{ res.k_level }} · 위험 점수 {{ res.risk }} (후보 수 로그 척도)</span>
     </div>
   </div>
+
+  <div class="compare">
+    <div class="c ok"><div class="t">이름·전화번호만 찾는 검사기</div><div class="v">✓ 안전 — 직접 식별자 {{ res.n_direct }}건</div></div>
+    <div class="vs">vs</div>
+    <div class="c pado"><div class="t">🌊 파도풀 — 글들의 결합을 센다</div><div class="v">후보 {% if k %}{{ '{:,}'.format(k) }}명{% else %}—{% endif %} · {{ res.label }}</div></div>
+  </div>
+
+  <div class="kv">
+    <div class="i">신호가 잡힌 신상 속성<b>7개 중 {{ res.leaking|length }}개</b></div>
+    <div class="i">읽은 글<b>공개 {{ res.n_posts }}편</b></div>
+    <div class="i">직접 식별자<b>{{ res.n_direct }}건</b></div>
+    <div class="i">조치 후 후보<b>{{ '{:,}'.format(res.projected_k) }}명</b></div>
+  </div>
+
   <p class="lede" style="margin-top:12px"><b>직접 식별자는 {{ res.n_direct }}건인데 후보가 {% if k %}{{ '{:,}'.format(k) }}명{% else %}—{% endif %}까지 좁혀집니다.</b> 글 속 문장들의 <b>결합</b>과 글 밖의 <b>활동 메타</b>(위치태그)·<b>프로필</b>이 함께 좁힙니다. 이름·전화번호만 찾는 검사 도구는 이 계정을 「안전」으로 판정합니다.</p>
   {% if delta %}
-  <div class="delta-banner">조치 반영 — 후보 <b>{{ '{:,}'.format(delta.k) }}명 → {{ '{:,}'.format(k) }}명</b> · 위험 점수 {{ delta.risk }} → <b>{{ res.risk }}</b>. 글을 다 지우지 않아도 됩니다.</div>
+  <div class="delta-banner">조치 반영 — 후보 <b><span data-count="{{ delta.k }}" data-from="{{ delta.k }}">{{ '{:,}'.format(delta.k) }}</span>명 → <span data-count="{{ k }}" data-from="{{ delta.k }}">{{ '{:,}'.format(k) }}</span>명</b> · 위험 점수 {{ delta.risk }} → <b><span data-count="{{ res.risk }}" data-from="{{ delta.risk }}">{{ res.risk }}</span></b>. 글을 다 지우지 않아도 됩니다.</div>
   {% endif %}
   <div class="findings">
     {% for attr, f in res.findings.items() %}
@@ -52,12 +112,13 @@
   <p class="lede" style="margin:8px 0 0;font-size:12px">「기권」은 오류가 아니라 설계 동작입니다 — 단서가 없으면 추측하지 않습니다. 판정은 «무엇이 특정 가능한가» 까지이고 실제 값은 산출하지 않습니다.</p>
 </div>
 
-<div class="card">
+<div class="card" id="funnel">
   <h3 class="ct">어떻게 좁혀지나</h3>
-  <p class="lede">각 단계는 행정안전부 주민등록 인구통계(읍면동 × 5세 × 성별)에서 실제로 센 수입니다.</p>
-  <ul class="funnel">
+  <p class="lede">각 단계는 행정안전부 주민등록 인구통계(읍면동 × 5세 × 성별)에서 실제로 센 수입니다. 막대는 후보 수의 로그 척도 — 줄을 누르면 그 문장으로 갑니다.</p>
+  <ul class="funnel" data-nation="{{ nation }}">
     {% for s in res.steps %}
-      <li class="{{ 'abst' if s.method == 'abstain' else '' }} {{ 'final' if (loop.last and s.method != 'abstain') or (loop.index == res.steps|length - 1 and res.steps[-1].method == 'abstain') else '' }}">
+      <li class="{{ 'abst' if s.method == 'abstain' else '' }} {{ 'final' if (loop.last and s.method != 'abstain') or (loop.index == res.steps|length - 1 and res.steps[-1].method == 'abstain') else '' }}"
+          data-n="{{ s.n_after }}" {% if s.src and s.src.span_id %}data-span-link="{{ s.src.span_id }}"{% endif %}>
         <span><span class="desc">{% if s.src and s.src.channel == 'geo_tag' %}<span class="metatag">메타</span>{% endif %}{{ s.condition }}</span>
           <div class="src">{% if s.src and s.src.post_id %}<a href="/posts/{{ s.src.post_id }}?back={{ back }}">{{ s.src.post_id }}</a> · {{ s.src.channel }} · 「{{ s.src.text }}」{% elif s.src and s.src.channel == 'flags.dialect_hits' %}어휘 {{ s.src.text }} — {{ s.src.posts|join(' · ') }} 외{% elif s.method == 'abstain' %}단서 없음 → 추측하지 않음{% else %}{{ s.method }}{% endif %}</div></span>
         <span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>
@@ -71,10 +132,10 @@
   {% endif %}
 </div>
 
-<div class="card">
+<div class="card" id="evidence-card">
   <h3 class="ct">근거 — 긴 잡담 속 어느 문장이 새는가</h3>
   <p class="lede">글은 원문 그대로입니다. 스위치를 켜면 새는 자리에만 형광이 켜집니다. 점선은 <b>잡았지만 걸러낸</b> 표현입니다.</p>
-  <div class="lens-row"><span>위험 문장 표시</span><button class="sw" role="switch" aria-checked="false" aria-label="위험 문장 표시" onclick="toggleLens(this)" style="padding:0"><i></i></button></div>
+  <div class="lens-row"><span>위험 문장 표시</span><button id="lensSwitch" class="sw" role="switch" aria-checked="false" aria-label="위험 문장 표시" onclick="toggleLens(this)" style="padding:0"><i></i></button></div>
   <div class="legend" id="lensLegend" hidden>
     <span><i style="background:var(--mark-loc)"></i>사는 곳·장소</span><span><i style="background:var(--mark-age)"></i>나이</span><span><i style="background:var(--mark-fam)"></i>가족·성별</span><span><i style="background:var(--mark-inc)"></i>소득·직업</span><span><i style="background:var(--mark-com)"></i>이동·통근</span><span><i style="border-bottom:2px dashed var(--mid);height:6px"></i>걸러낸 표현</span>
   </div>
@@ -94,19 +155,19 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card" id="actions">
   <h3 class="ct">조치 — 부담이 낮은 것부터 권합니다</h3>
   <p class="lede">전부 할 필요 없습니다. 예상 효과는 그 조치를 적용한 상태로 다시 센 값입니다. 파도풀은 권고까지, <b>누르는 건 여기 우리뜰에서 당신</b>입니다.</p>
   {% set names = {'unpublish': '① 부분 비공개', 'activity_meta': '② 활동 메타 관리 — 위치태그 끄기', 'rewrite': '③ 리라이트 — 표현만 바꾸기'} %}
   {% set sure = {'highest': '가장 확실', 'high': '확실', 'medium': '잔존 단서 가능'} %}
   {% for act in res.actions %}
-    <div class="act">
+    <div class="act" id="act-{{ loop.index }}">
       <div class="head"><span class="nm">{{ names[act.action_type] }}</span>
         <span class="pill b-{{ {'low':'low','medium':'mid','high':'hi'}[act.burden] }}">부담 {{ {'low':'낮음','medium':'중간','high':'높음 · 글의 뼈대'}[act.burden] }}</span>
         <span class="pill sure">{{ sure[act.certainty] }}</span>
         <span class="no"><a href="/posts/{{ act.post_id }}?back={{ back }}">{{ act.post_id }}</a>{% if act.action_type == 'activity_meta' %} · geo_tag{% endif %}</span></div>
       <div class="body">{{ act.rationale }}</div>
-      <div class="delta">이 조치만: {{ '{:,}'.format(k) }} → <b>{{ '{:,}'.format(act.k) }}명</b> · 앞 조치까지 누적하면 → <b>{{ '{:,}'.format(act.k_cum) }}명</b></div>
+      <div class="delta">이 조치만: {{ '{:,}'.format(k) }} → <b><span data-count="{{ act.k }}" data-from="{{ k }}">{{ '{:,}'.format(act.k) }}</span>명</b> · 앞 조치까지 누적하면 → <b>{{ '{:,}'.format(act.k_cum) }}명</b></div>
 
       {% if act.action_type == 'rewrite' and act.span_id in res.rewrites %}
         {% set cands = res.rewrites[act.span_id] %}
@@ -140,8 +201,4 @@
 {% endif %}
   </div>
 </main>
-
-<script>
-function toggleLens(btn){const on=btn.getAttribute('aria-checked')!=='true';btn.setAttribute('aria-checked',String(on));document.getElementById('evidence').classList.toggle('lens-off',!on);document.getElementById('lensLegend').hidden=!on;}
-</script>
 {% endblock %}

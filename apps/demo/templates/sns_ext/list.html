@@ -18,7 +18,7 @@
 
   {% for p in posts %}
     {% set eng = ut_engage(p.post_id) %}
-    <a class="ut-card {{ 'dim' if p.visibility == 'private' }}" href="/posts/{{ p.post_id }}">
+    <a class="ut-card rv {{ 'dim' if p.visibility == 'private' }}" href="/posts/{{ p.post_id }}">
       <div class="ut-byline">
         <span class="ut-av">{{ ut_avatar(p.author_id) }}</span>
         <span class="nm">{{ p.nickname }}</span>
@@ -31,7 +31,7 @@
       <span class="ut-title">{{ p.title or "(제목 없음)" }}</span>
       <div class="ut-excerpt">{{ p.body }}</div>
       <div class="ut-engage">
-        <span>♥ 좋아요 <b>{{ eng.likes }}</b></span>
+        <span class="like"><i>♥</i> 좋아요 <b>{{ eng.likes }}</b></span>
         <span>💬 댓글 <b>{{ eng.comments }}</b></span>
         <span>↗ 공유</span>
       </div>

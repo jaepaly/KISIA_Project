@@ -24,7 +24,7 @@
   </div>
 
   <div class="ut-pado">
-    <div class="t"><b>🛟 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>
+    <div class="t"><b>🌊 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>
       공개 글을 모아 재식별 위험을 점검합니다. 이름·전화번호가 없어도, 흩어진 단서가 결합되면 사람이 좁혀집니다.</div>
     <a class="go" href="/u/{{ a.user_ref }}/check">내 글 점검하기 →</a>
   </div>
@@ -46,7 +46,7 @@
       <a class="ut-title" href="/posts/{{ p.post_id }}">{{ p.title or "(제목 없음)" }}</a>
       <div class="ut-excerpt">{{ p.body }}</div>
       <div class="ut-engage">
-        <span>♥ <b>{{ eng.likes }}</b></span><span>💬 <b>{{ eng.comments }}</b></span>
+        <span class="like"><i>♥</i> <b>{{ eng.likes }}</b></span><span>💬 <b>{{ eng.comments }}</b></span>
         <span style="margin-left:auto">
           <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility">
             <input type="hidden" name="back" value="/u/{{ a.user_ref }}">

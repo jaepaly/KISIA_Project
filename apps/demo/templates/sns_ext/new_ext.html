@@ -4,12 +4,21 @@
 <link rel="stylesheet" href="/pado-static/demo.css">
 <style>
   body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
-  .ut-wrap{max-width:760px;margin:26px auto 0;padding:0 20px}
   .pado-panel{border:1.5px solid var(--sea);border-radius:var(--ut-radius);background:var(--panel);
     padding:18px 20px;margin-bottom:16px;box-shadow:var(--ut-shadow)}
   .pado-panel .card{background:transparent;border:none;padding:0;margin:0}
   .pado-panel .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:var(--sea-ink);margin-bottom:12px}
   .editor-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:20px}
+  .before-after{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:4px 0 12px}
+  .before-after .b{text-align:center;padding:12px 10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
+  .before-after .b .n{font-family:"IBM Plex Mono",Consolas,monospace;font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+  .before-after .b .l{font-size:11.5px;color:var(--ink3);margin-top:3px}
+  .before-after .b.after{border-color:var(--sea);background:var(--sea-soft)}
+  .before-after .arrow{font-size:22px;color:var(--ink3)}
+  .before-after .narrow .n{color:var(--hi)}
+  .editor-tip{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink3);margin-top:8px}
+  .editor-tip .cnt{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace}
+  @media (max-width:640px){.before-after{grid-template-columns:1fr}.before-after .arrow{text-align:center;transform:rotate(90deg)}}
 </style>
 {% endblock %}
 {% block content %}
@@ -24,14 +33,14 @@
   {% if check %}
     {% set b = check.before %}{% set af = check.after %}
     <div class="pado-panel">
-      <div class="mark">🛟 파도풀 점검 — 이 글을 올리면</div>
-      <div class="risk">
-        <div class="gauge g-{{ af.css }}"><div class="lvl">{{ af.label }}</div><div class="num">{{ af.risk if af.risk is not none else '—' }}</div><div class="cap">올린 뒤 위험 점수</div></div>
-        <div class="riskmeta">
-          <div class="row"><span>지금 후보 (공개 글 {{ b.n_posts }}편)</span><span class="v">{% if b.k %}약 {{ '{:,}'.format(b.k) }}명{% else %}산출 불가{% endif %}</span></div>
-          <div class="row"><span>이 글을 올리면</span><span class="v" style="color:var(--{{ af.css }})">{% if af.k %}약 {{ '{:,}'.format(af.k) }}명{% else %}산출 불가{% endif %}</span></div>
-          <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
-        </div>
+      <div class="mark">🌊 파도풀 점검 — 이 글을 올리면</div>
+      <div class="before-after">
+        <div class="b"><div class="n">{% if b.k %}<span data-count="{{ b.k }}" data-from="{{ b.k }}">{{ '{:,}'.format(b.k) }}</span>{% else %}—{% endif %}</div><div class="l">지금 후보 · 공개 글 {{ b.n_posts }}편</div></div>
+        <div class="arrow">→</div>
+        <div class="b after {{ 'narrow' if check.narrows }}"><div class="n">{% if af.k %}<span data-count="{{ af.k }}" data-from="{{ b.k or af.k }}">{{ '{:,}'.format(af.k) }}</span>{% else %}—{% endif %}</div><div class="l">이 글을 올리면 · {{ af.label }} · 위험 {{ af.risk if af.risk is not none else '—' }}</div></div>
+      </div>
+      <div class="riskmeta">
+        <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
       </div>
       {% if check.narrows %}
         <p class="lede" style="margin-top:12px"><b>이 글 하나가 후보를 {{ '{:,}'.format(b.k) }}명 → {{ '{:,}'.format(af.k) }}명으로 좁힙니다.</b> 아래 형광 자리가 새는 표현입니다. 고쳐 쓰고 다시 점검하거나, 알고도 올릴 수 있습니다.</p>
@@ -66,6 +75,7 @@
 
     <label for="body">본문</label>
     <textarea name="body" id="body" rows="11" required placeholder="오늘 있었던 일을 적어보세요">{{ draft.body if draft else '' }}</textarea>
+    <div class="editor-tip"><span>올리기 전에 「🌊 파도풀로 점검」을 누르면 이 글이 후보를 얼마나 좁히는지 먼저 봅니다.</span><span class="cnt" id="bodyCount">0자</span></div>
 
     <label for="geo_tag">위치 태그 <span class="hint">(선택 — 글에 함께 표시됩니다)</span></label>
     <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 담양군 창평면" value="{{ draft.geo_tag if draft else '' }}">
@@ -77,11 +87,17 @@
     <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
 
     <div class="editor-actions">
-      <button type="submit" formaction="/check-draft" class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>🛟 파도풀로 점검</button>
+      <button type="submit" formaction="/check-draft" class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>🌊 파도풀로 점검</button>
       <button type="submit" {% if not authors %}disabled{% endif %}>{% if check and check.narrows %}알고도 올리기{% else %}올리기{% endif %}</button>
       <span style="font-size:12px;color:var(--ut-ink3)">점검 뒤에 고쳐 쓰고 다시 점검할 수 있습니다.</span>
     </div>
   </form>
 
 </main>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){const t=document.getElementById('body'),c=document.getElementById('bodyCount');if(!t||!c)return;
+const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEventListener('input',u);u();})();
+</script>
 {% endblock %}

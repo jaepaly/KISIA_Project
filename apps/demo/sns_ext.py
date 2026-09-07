@@ -9,7 +9,7 @@
 
 apps/sns/app.py 는 E 소유라 손대지 않는다. 그 Flask 앱을 import 해서
   - GET  /u/<user_ref>/check    「내 글 점검」 — 파도풀 /api/scan 결과를 우리뜰 화면에 그린다. 조치 버튼도 여기
-  - GET  /new  · POST /check-draft   글쓰기 에디터에 「🛟 점검」 — 올리기 전 1회 [MF-015]
+  - GET  /new  · POST /check-draft   글쓰기 에디터에 「🌊 점검」 — 올리기 전 1회 [MF-015]
   - GET  /u/<user_ref>  · /posts/<id>   프로필·글 화면 덮어쓰기 (진입 버튼 · 태그 지우기 · 본문 고치기)
   - POST /posts/<id>/geo_tag · /edit · /body   조치 ②③
 를 더한다. 비공개 토글(조치 ①)과 /api/export 는 원본 그대로다.
@@ -120,7 +120,10 @@ def _chrome():
         me = (db().execute("SELECT * FROM authors WHERE author_id = ?", (first,)).fetchone()
               or db().execute("SELECT * FROM authors ORDER BY author_id LIMIT 1").fetchone())
     nav = {"index": "home", "profile": "blog", "check": "check", "new": "new"}.get(request.endpoint or "")
-    return {"me": me, "nav": nav}
+    neighbors = db().execute("SELECT * FROM authors ORDER BY author_id").fetchall()
+    n_posts = {r["author_id"]: r["n"] for r in
+               db().execute("SELECT author_id, COUNT(*) n FROM posts WHERE visibility = 'public' GROUP BY author_id")}
+    return {"me": me, "nav": nav, "neighbors": neighbors, "n_posts_by": n_posts}
 
 
 # ── 파도풀 호출 — 보내는 것은 export 형식뿐 ─────────────────────────────────
@@ -190,6 +193,21 @@ def check(user_ref: str):
         session[key] = {"k": res["k"], "risk": res["risk"],
                         "steps": [s["condition"] for s in res["steps"] if s["axis"] != "sex"]}
     return render_template("check.html", a=a, res=res, err=err, delta=delta, back=f"/u/{user_ref}/check")
+
+
+@app.get("/u/<user_ref>/check.json")
+def check_json(user_ref: str):
+    """레일 위젯용 요약 — 프로필·글 화면이 비동기로 부른다. 파도풀 응답에서 숫자만 추린다."""
+    from flask import jsonify
+    _author(user_ref)
+    export = export_json(user_ref)
+    res, err = pado("/api/scan", export) if export else (None, "내보낼 글이 없습니다")
+    if not res:
+        return jsonify({"error": err}), 502
+    return jsonify({"k": res["k"], "risk": res["risk"], "label": res["label"], "css": res["css"],
+                    "k_level": res["k_level"], "n_posts": res["n_posts"], "n_direct": res["n_direct"],
+                    "n_leaking": len(res["leaking"]), "nation": res["steps"][0]["n_after"],
+                    "n_actions": len(res["actions"]), "projected_k": res["projected_k"]})
 
 
 # ── 에디터 점검 — 올리기 전 1회 ──────────────────────────────────────────────

@@ -91,7 +91,8 @@ def mark_text(text: str, spans: list[dict], notes: dict) -> Markup:
         title = f"{_TYPE_KO.get(sp['type'], sp['type'])} · {sp['level']} · {sp['subject']}"
         if n.get("why"):
             title += " — " + n["why"]
-        out.append(f'<mark class="{cls}" title="{html.escape(title)}">{html.escape(text[sp["start"]:sp["end"]])}</mark>')
+        out.append(f'<mark class="{cls}" data-span="{html.escape(sp["span_id"])}" title="{html.escape(title)}">'
+                   f'{html.escape(text[sp["start"]:sp["end"]])}</mark>')
         pos = sp["end"]
     out.append(html.escape(text[pos:]))
     return Markup("".join(out))

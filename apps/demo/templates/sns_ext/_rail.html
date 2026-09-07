@@ -1,0 +1,58 @@
+{# 오른쪽 레일 — 피드·프로필·글·에디터 화면 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
+{% if me %}
+{% set st = ut_stats(me.author_id) %}
+<div class="rail-card rail-me rv">
+  <div class="rail-cover"></div>
+  <div class="rail-who">
+    <span class="ut-av lg">{{ ut_avatar(me.author_id) }}</span>
+    <div>
+      <a class="nm" href="/u/{{ me.user_ref }}">{{ me.nickname }}</a>
+      {% if me.bio %}<div class="bio">{{ me.bio }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="rail-stats">
+    <span><b>{{ n_posts_by.get(me.author_id, 0) }}</b>글</span>
+    <span><b>{{ st.neighbors }}</b>이웃</span>
+    <span><b>{{ '{:,}'.format(st.visits) }}</b>방문</span>
+  </div>
+</div>
+
+<div class="rail-card rail-pado rv" data-pado-widget="{{ me.user_ref }}">
+  <div class="rail-h"><span class="mark">🌊 파도풀</span><span class="tag nosave">저장 안 함</span></div>
+  <div class="rail-pado-body">
+    <svg class="ring" viewBox="0 0 84 84" aria-hidden="true">
+      <circle class="tr" cx="42" cy="42" r="36"/><circle class="pr" cx="42" cy="42" r="36" data-ring/>
+      <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>·</text>
+    </svg>
+    <div class="rail-k">
+      <div class="lab">내 글로 좁혀지는 후보</div>
+      <div class="val"><span class="num" data-k>—</span><span class="unit">명</span></div>
+      <div class="lvl" data-lvl>공개 글을 모아 세는 중…</div>
+    </div>
+  </div>
+  <div class="rail-pado-foot">
+    <span class="sk" data-sub>이름·전화번호 없이도 흩어진 단서가 결합되면 사람이 좁혀집니다.</span>
+    <a class="go" href="/u/{{ me.user_ref }}/check">내 글 점검 →</a>
+  </div>
+</div>
+{% endif %}
+
+<div class="rail-card rv">
+  <div class="rail-h"><span>이웃</span><span class="cnt">{{ neighbors|length }}</span></div>
+  <ul class="rail-nb">
+    {% for n in neighbors %}
+      <li class="{{ 'me' if me and n.author_id == me.author_id }}">
+        <a href="/u/{{ n.user_ref }}">
+          <span class="ut-av">{{ ut_avatar(n.author_id) }}</span>
+          <span class="t"><span class="nm">{{ n.nickname }}</span><span class="sub">{{ n_posts_by.get(n.author_id, 0) }}편{% if n.bio %} · {{ n.bio|truncate(18, True, '…') }}{% endif %}</span></span>
+          {% if me and n.author_id == me.author_id %}<span class="you">나</span>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="rail-card rail-note rv">
+  <b>이 화면은 어디까지가 우리뜰인가</b>
+  <p>글·계정·사진은 <b>우리뜰</b>(플랫폼)에 있고, 파도풀은 <b>공개 글의 내보내기 형식</b>만 받아 진단합니다. 비공개·위치태그·본문 수정 버튼은 전부 우리뜰에 있습니다.</p>
+</div>

@@ -23,12 +23,12 @@
     <div class="ut-body">{{ p.body }}</div>
 
     {% for ph in photos %}
-      <div class="ut-photo">🖼 사진 {{ ph.idx + 1 }}</div>
+      <div class="ut-photo"><span>🖼 사진 {{ ph.idx + 1 }}</span></div>
       {% if ph.caption %}<p class="ut-cap">{{ ph.caption }}</p>{% endif %}
     {% endfor %}
 
     <div class="ut-engage">
-      <span>♥ 좋아요 <b>{{ eng.likes }}</b></span>
+      <span class="like"><i>♥</i> 좋아요 <b>{{ eng.likes }}</b></span>
       <span>💬 댓글 <b>{{ eng.comments }}</b></span>
       <span>↗ 공유</span>
       <span style="margin-left:auto">👁 <b>{{ eng.views }}</b></span>
