@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
 from typing import Any
 
 from . import external
@@ -41,7 +42,7 @@ _GENERIC: dict[str, list[dict[str, str]]] = {
                      {"text": "그 앞", "note": "가장 짧게"}],
     # 명사형으로 둔다 — 나이 스팬 뒤에 「인디·인데·이다」 가 붙어 있어서 그대로 이어져야 한다
     "AGE": [{"text": "이 나이", "note": "숫자 지움 — 추천"}, {"text": "이만한 나이", "note": "세대 느낌만"},
-            {"text": "나이가 나이", "note": "나이 언급 자체를 흐림"}],
+            {"text": "나이", "note": "가장 짧게"}],
     "COMMUTE": [{"text": "차가 뜸해서", "note": "배차 지움"}, {"text": "차 시간이 안 맞아서", "note": "교통수단 남음"},
                 {"text": "걷기 좋은 날이라", "note": "이유가 바뀜"}],
     "INCOME": [{"text": "돈 들어오는 날에", "note": "수입 종류 지움"}, {"text": "형편 봐서", "note": "주기 지움"},
@@ -72,6 +73,35 @@ def _line_of(text: str, start: int, end: int) -> tuple[int, int]:
     ls = text.rfind("\n", 0, start) + 1
     le = text.find("\n", end)
     return ls, (len(text) if le < 0 else le)
+
+
+_PARTICLE = re.compile(r"^(으로|이|가|을|를|은|는|과|와)(?=[\s,.!?~…)」』]|$)")
+_TO_CONS = {"가": "이", "를": "을", "는": "은", "와": "과"}
+_TO_VOW = {v: k for k, v in _TO_CONS.items()}
+
+
+def leading_particle(after: str) -> str:
+    """after 가 조사(이/가·을/를·은/는·과/와·으로/로)로 시작하면 그 조사, 아니면 빈 문자열."""
+    m = _PARTICLE.match(after)
+    return m.group(1) if m else ""
+
+
+def fit_particle(cand: str, particle: str) -> str:
+    """cand 뒤에 붙을 조사를 cand 끝 글자의 받침에 맞춘다 — 규칙 후보가 「이 나이이 되니」가 되지 않게."""
+    if not cand or not particle or not ("가" <= cand[-1] <= "힣"):
+        return particle
+    bat = (ord(cand[-1]) - 0xAC00) % 28
+    if particle in ("으로", "로"):
+        return "로" if bat in (0, 8) else "으로"
+    return _TO_CONS.get(particle, particle) if bat else _TO_VOW.get(particle, particle)
+
+
+def candidates_for(sentence: str, sp: dict[str, Any]) -> tuple[list[dict[str, str]], bool]:
+    """스팬 하나의 리라이트 후보 3안 — (후보, 외부 LLM 사용 여부). 외부가 꺼져 있으면 캐시 → 유형별 일반 후보."""
+    cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지")
+    if cands:
+        return cands, True
+    return (_CACHE.get(sp["text"]) or _GENERIC.get(sp["type"]) or [{"text": "", "note": "삭제"}] * 3), False
 
 
 def _is_backbone(text_all: dict[str, str], sp: dict[str, Any]) -> bool:
@@ -147,13 +177,12 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         text = p["texts"][sp["text_id"]]
         ls, le = _line_of(text, sp["start"], sp["end"])
         sentence = text[ls:le]
-        cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지")
-        if cands:
-            ext_used = True
-        else:
-            cands = _CACHE.get(sp["text"]) or _GENERIC.get(sp["type"]) or [{"text": "", "note": "삭제"}] * 3
+        cands, used = candidates_for(sentence, sp)
+        ext_used = ext_used or used
         for c in cands:
-            new_sentence = sentence[: sp["start"] - ls] + c["text"] + sentence[sp["end"] - ls:]
+            tail = sentence[sp["end"] - ls:]
+            josa = leading_particle(tail)
+            new_sentence = sentence[: sp["start"] - ls] + c["text"] + fit_particle(c["text"], josa) + tail[len(josa):]
             rewrites.append({"post_id": p["post_id"], "span_id": sp["span_id"], "suggestion": c["text"][:200],
                              "semantic_similarity": similarity(sentence, new_sentence),
                              "residual_risk": "partial" if f["k"] < 100_000 else "none",

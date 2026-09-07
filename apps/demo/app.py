@@ -30,7 +30,7 @@ from markupsafe import Markup  # noqa: E402
 
 from engine import external  # noqa: E402
 from engine.pipeline import analyze, compute, evidence_posts  # noqa: E402
-from engine.recommend import recommend, stage2_output  # noqa: E402
+from engine.recommend import _line_of, candidates_for, fit_particle, leading_particle, recommend, stage2_output  # noqa: E402
 
 SNS_URL = os.getenv("SNS_URL", "http://localhost:3000").rstrip("/")
 DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,D11,D17,D06").split(",") if p]
@@ -211,16 +211,31 @@ def api_check():
              for tid, txt in dv["texts"].items()]
     self_spans = [s for s in dv["spans"] if s["subject"] == "self" and not dv["notes"].get(s["span_id"], {}).get("exclude")]
     contributing = [s for s in after["base"]["steps"] if s.get("src") and s["src"].get("post_id") == "draft"]
+    # 초안 스팬마다 — 에디터에서 그 자리를 누르면 바로 고를 수 있게 후보 3안과 «이 표현을 빼면 k» 를 붙인다
+    spans_out = []
+    ext_used = after["stage2"]["provenance"]["external_llm_used"]
+    for s in self_spans:
+        text = dv["texts"][s["text_id"]]
+        ls, le = _line_of(text, s["start"], s["end"])
+        cands, used = candidates_for(text[ls:le], s)
+        ext_used = ext_used or used
+        k_without = compute(after["view"], exclude_spans=frozenset({s["span_id"]}))["k"]
+        # 뒤에 조사가 붙어 있으면 치환 범위에 넣고 후보마다 받침에 맞는 조사를 붙여 준다 (「이 나이이 되니」 방지)
+        particle = leading_particle(text[s["end"]:])
+        spans_out.append({"span_id": s["span_id"], "text": s["text"] + particle, "particle": particle,
+                          "type": _TYPE_KO.get(s["type"], s["type"]), "level": s["level"], "text_id": s["text_id"],
+                          "start": s["start"], "end": s["end"] + len(particle), "k_without": k_without,
+                          "candidates": [{"text": c["text"] + (fit_particle(c["text"], particle) if c["text"] else ""),
+                                          "note": c["note"]} for c in cands]})
     return jsonify({
         "before": summary(before), "after": summary(after),
-        "draft": {"channels": chans, "n_spans": len(self_spans),
-                  "spans": [{"text": s["text"], "type": _TYPE_KO.get(s["type"], s["type"]), "level": s["level"], "text_id": s["text_id"]} for s in self_spans],
+        "draft": {"channels": chans, "n_spans": len(self_spans), "spans": spans_out,
                   "dialect": [h.split(":", 1)[1] for h in dv["flags"].get("dialect_hits") or []][:6],
                   "traps": [t for t in traps(after["view"]) if t["post_id"] == "draft"],
                   "geo_tag": d["activity_meta"]["geo_tag"]},
         "contributing": contributing,
         "narrows": after["base"]["k"] < before["base"]["k"] if before["base"]["k"] and after["base"]["k"] else False,
-        "provenance": after["stage2"]["provenance"],
+        "provenance": {**after["stage2"]["provenance"], "external_llm_used": ext_used},
     })
 
 
