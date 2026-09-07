@@ -78,14 +78,13 @@ pip install -e .
 
 ### 월요일에 정할 것 다섯
 
-#### ① 1단 학습 포맷 결정 — 담당 A·B
+#### ① 1단 학습 포맷 결정 — 담당 A·B ✅
 
 ```
-선택지 (가) BIO 태깅 — token classification (HuggingFace Trainer 직결)
-선택지 (나) span extraction — 시작/끝 인덱스 예측
+결정: (가) BIO 태깅 — token classification (HuggingFace Trainer 직결)
 ```
 
-**결정해야 B 가 화~수 파인튜닝 데이터를 만들 수 있다.** A 와 B 가 합의.
+**A·B 합의 완료.** B 는 화~수 골드셋 스팬을 BIO 학습 포맷으로 변환한다.
 
 #### ② created_at 버그 처리 방향 ([#182](../../issues/182)) — 담당 A
 
@@ -289,7 +288,7 @@ LLM:  Gemini (생성/교사 어느 쪽과도 겹치지 않는 유일한 자리)
 ```python
 # 입력 형식 (검토):
 # {text: "...", spans: [{start, end, type, level}...]}
-# 학습 포맷: token classification (BIO) 또는 span extraction
+# 학습 포맷: token classification (BIO) — A·B 합의
 ```
 
 - `data/corpus/v0/gold/*_spans.jsonl` (검수분) 을 학습 입력으로
