@@ -101,6 +101,29 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 > 9/7 이전에는 D05 를 뺀 넷이 모두 k=1 이었다. 원인은 데모 엔진 버그 둘 — 구가 있는 시의 하위 읍면동이 0개로 세어지던 것,
 > 그리고 2글자 지명 약칭의 경계 없는 부분 일치(한「동안」·「고양」이·휴대「전화」→대전·사「진도」). `detect.py` 경계 규칙과 스톱리스트로 잡았다.
 
+## 본 프로젝트 자원이 나올 때마다 갈아끼운다 — 통합 계획
+
+> 이 데모는 **9/18 에 링크로 낼 수 있는 기준선**이지 완성이 아니다. 팀 로드맵([roadmap.md](../../docs/roadmap.md))에서 자원이
+> 나오는 순서대로 스탑갭을 빼고 실물을 넣는다. 데모데이(10/17)까지 두 번은 갈아끼울 수 있다.
+
+| 언제 | 누가 | 무엇이 나오나 | 데모에서 빼는 것 | 넣는 법 | 확인 |
+|---|---|---|---|---|---|
+| W4 (9/13) | A | 코퍼스 v1 동결 | `data/corpus/v0` 경로 | `seed.py`·`probe.py` 의 `v0` → `v1`, `--reset` 재시딩 | `probe.py --diff` — 5명 k 가 왜 바뀌었는지 설명 가능해야 |
+| W4~5 | E | 정식 시딩 스크립트 `scripts/seed_sns.py` | `seed.py` | 체험 계정(GUEST)만 옮겨 심고 `seed.py` 삭제 | 5명 + GUEST 가 `authors` 에 |
+| W5~W7 | **B** | **KoELECTRA 1단 v1** (`kopl.c1_span.predict`) | `engine/detect.py` 규칙 전체 | `C1_MODEL_PATH=<가중치>` 환경변수만 — `detect_post` 가 자동 분기 | `probe.py --diff` · 8 문장 훑기(`LOG 9/7`) 재실행 · `notes`(exclude·place) 는 규칙이 내던 것이라 **모델 출력엔 없다 → 합치기·여행·시제 후처리를 `detect_post` 의 모델 경로에도 붙여야 한다** |
+| W5 | C | 기여도 엔진 v1 | `recommend.k_with_note`·`ladder_candidates` 의 바닥 계산, `_same_value_key` 묶음 | C 의 기여도 API 로 «어느 근거가 바닥인가» 를 받는다 | 「⤷ 다른 글 4편의 「기흥」」 설명이 C 값과 일치 |
+| W6 | E | 활동 메타 관리 화면 | `sns_ext.py` 의 geo_tag 라우트·프로필 덮어쓰기 | E 화면으로 링크만 | 투어 5단계가 E 버튼을 가리키게 `TOUR` 셀렉터 수정 |
+| W7 | **D** | **Qwen3 2단 v1** (결합 추론·리라이트) | `engine/external.py`(Claude) · `_CACHE`·`_GENERIC` 후보 | 로컬 2단 호출을 `candidates_for` 의 첫 분기로. 「넓히기 사다리」 는 프롬프트의 후보 유형으로 | 리라이트 문장이 말투를 지키는지 · provenance.external_llm_used=false |
+| W9 | E·D | 에디터 실시간 경고 | `new_ext.html` 의 «작성 완료 후 1회» 안내 | 입력 중 경고로 교체, 팝오버는 그대로 | 투어 8단계 문구 |
+| 배포 시 | PM | KISIA AWS | — | `DEMO_EXTERNAL_REWRITE=true` + `ANTHROPIC_API_KEY`(D 2단 전까지) · `PADOPOOL_URL` | 접수 링크 |
+
+**동기화 루틴** — 주 1회 `git merge main` 을 이 브랜치에 (엔진이 `src/kopl` 을 직접 import 하므로 C·B 코드 변화가 바로 들어온다).
+머지 직후 `PYTHONPATH=src python apps/demo/probe.py --diff` 와 `pytest apps/demo` 를 돌리고, 바뀐 숫자는 README 표·LOG 에 적는다.
+`probe.baseline.json` 이 «지금 화면에 찍히는 숫자» 의 정본이다.
+
+**빼지 않는 것** — 규칙 탐지기의 후처리(연속 지명 합치기 · 여행 글 · 시제 · 타인 귀속 · 스톱리스트)는 모델이 와도 그대로 필요하다.
+B 모델은 스팬을 내고, 그 스팬을 k 에 넣을지 말지는 여기 후처리가 정한다. → LOG 9/7 「발견 → 본 프로젝트」.
+
 ## 미결
 
 1. **리라이트 3안과 계약.** 현행 `Rewrite.suggestion` 은 단수라 같은 span_id 로 Rewrite 레코드 3개를 낸다. `suggestions` 배열로 갈지는 D·E 논점.
@@ -125,6 +148,8 @@ static/urittle.css  우리뜰 디자인 (따뜻한 종이 톤). 파도풀 demo.c
 static/urittle.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json)
 templates/, static/demo.css  파도풀 단독 화면(개발용). 우리뜰 점검 화면도 /pado-static 으로 같이 쓴다
 test_demo.py        숫자 · 함정 · 계약 · 계층 경계 · API 12건
+probe.py            시딩 인물 5명 k 회귀 — --save 로 baseline, --diff 로 본 프로젝트 자원 교체 뒤 변화 확인
+LOG.md              대회 작업 일지 — 결정·발견(→ 본 프로젝트)·남은 것
 ```
 
 ## 화면 — 어디에 무엇이 있나
