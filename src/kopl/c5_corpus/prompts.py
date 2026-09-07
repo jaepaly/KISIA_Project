@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-PROMPT_VERSION = "p2.0"
+PROMPT_VERSION = "p2.1"
 
 # 인물 JSON 에 noise_topics 가 없을 때만 쓰는 폴백.
 # persona-design.md §2-⑤ 는 "소재"를 목소리 차별화 축으로 명시한다
@@ -46,6 +46,7 @@ REALISM = """[사람이 쓴 글처럼 — 이걸 어기면 검수에서 걸린�
   이 사람은 남에게 말을 거는 게 아니라 혼자 기록하는 중이다. (문체 지시에 적힌 고정 맺음 표현 —
   「끗」「그뿐이다」 같은 혼잣말 — 은 인사가 아니다. 그건 지시대로 쓴다.)
 - 「한참」「괜히」「제법」「금세」「자꾸」 같은 부사는 글당 한 번 이하. 없는 편이 낫다.
+- 한자 병기 습관이 문체에 있으면 **거기 적힌 글자만** 쓴다. 다른 낱말에 한자를 새로 달지 마라.
 - 오타를 넣을 때 문체 지시에 적힌 예시를 그대로 베끼지 마라. 예시는 종류를 보여줄 뿐이다.
   같은 실수를 매번 반복하는 사람은 없다.
 
@@ -132,13 +133,13 @@ def build_system(persona: dict, card_text: str = "", threads: list[str] | None =
 
 ENDINGS = [
     "딴소리 한 줄로 끝낸다 — 앞 내용과 상관없는 말.",
-    "한 단어나 두세 글자로 끝낸다.",
-    "하려던 얘기를 다 안 하고 끝낸다 — 문장은 맺되 내용은 미완인 채로.",
+    "한 단어나 두세 글자로 끝낸다 (내 종결어미 그대로 — 존댓말 인물이 「됐어」로 끝내지 않는다).",
+    "하려던 얘기를 다 안 하고 끝낸다 — 문장은 맺되 내용은 미완인 채로. 「그건 나중에」 같은 여운 문구는 쓰지 않는다.",
     "다음에 할 일이나 내일 얘기로 끝낸다.",
     "방금 일어난 사실 하나를 그냥 적고 끝낸다. 감상 없이.",
     "질문 하나로 끝낸다. 답은 안 한다.",
-    "앞에서 한 말을 짧게 되풀이하며 끝낸다.",
     "정리하는 말 없이, 마지막 장면의 한 동작을 적은 문장으로 끝낸다.",
+    "평범하게 끝낸다. 특별한 장치 없이.",
 ]
 
 
@@ -154,7 +155,8 @@ def per_post_block(month: int | None, catchphrase: str | None, marker: str | Non
         lines.append(f"- 끝맺음: {ending}")
     lines.append(f"- 말버릇: {catchphrase} — 이 글에서 한 번. 위치는 매번 다르게(첫머리·중간·끝 아무 데나)."
                  if catchphrase else "- 말버릇: 이 글에서는 쓰지 않는다.")
-    lines.append(f"- 화제가 바뀌는 자리에서만 「{marker}」를 한 번 쓸 수 있다. 문장 끝이나 글의 마무리로 쓰지 마라."
+    lines.append(f"- 화제가 바뀌는 자리에서만 「{marker}」를 한 번 쓸 수 있다. 다음 문장 앞에 붙여 쓴다 — "
+                 "한 줄에 따로 두거나 문장 끝·글의 마무리로 쓰지 마라."
                  if marker else "- 전환 표지는 쓰지 않는다. 줄만 바꾼다.")
     return "\n".join(lines) + "\n"
 
@@ -162,7 +164,8 @@ def per_post_block(month: int | None, catchphrase: str | None, marker: str | Non
 def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                topic: str = "", prior_titles: list[str] | None = None,
                month: int | None = None, catchphrase: str | None = None, marker: str | None = None,
-               place: str = "", relation: str = "", ending: str | None = None) -> str:
+               place: str = "", relation: str = "", ending: str | None = None,
+               name_ok: bool = False) -> str:
     """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다.
 
     prior_titles — 같은 소재로 이미 쓴 글의 제목. 잡담 소재가 글 수보다 적어 순환하면
@@ -224,8 +227,12 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
             + per_post_block(month, catchphrase, marker, ending) + "\n"
             f"[이 글의 성격] 지역 생활 기록. {ambient_design}\n"
             f"[내 동네] {place}\n"
-            "이 동네 밖의 지명·시설을 쓰지 마라. 동네 이름 자체는 안 써도 되고, 시설은 「면 우체국」「호수공원」처럼 "
-            "이름 없이 불러도 된다. 「임실군 우체국」처럼 행정구역명을 시설에 붙이지 마라.\n\n"
+            + ("이 동네 밖의 지명·시설을 쓰지 마라. 동네 이름을 쓰려면 사람들이 부르는 대로 한 번만 "
+               "(「임실 장」「일산 호수공원」처럼). 「임실군 쪽」「일산동구 쪽」처럼 행정단위를 붙이지 마라.\n"
+               if name_ok else
+               "이 동네 밖의 지명·시설을 쓰지 마라. **이 글에서는 동네 이름을 쓰지 않는다** — 「면 우체국」「호수공원」"
+               "「반찬가게」처럼 시설과 동선으로만 드러낸다.\n")
+            + "지역 말고 다른 신상 — 직업·일·나이·가족 구성 — 은 [이 글의 성격]에 적힌 것 외에는 흘리지 마라.\n\n"
             + prior +
             "이 글 하나만 보면 아무것도 알 수 없어야 한다. "
             "거주지를 말하지 말고, 어디 다녀왔다는 후기만 써라.\n"

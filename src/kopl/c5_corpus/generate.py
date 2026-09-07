@@ -294,8 +294,9 @@ def generate_persona(
                 noise_seen += 1
             elif item["kind"] == "clue":
                 # 단서 글의 잡담부도 소재를 받는다 — 안 주면 「비+부침개+드라마」 한 장면으로 접힌다 (p2.0)
-                topic = topics[(clue_seen + topic_offset + len(topics) // 2) % len(topics)]
-                clue_seen += 1
+                # 잡담과 같은 순환을 이어 쓴다 — 따로 세면 같은 소재가 두 글에 간다 (D03 짠 국 2편)
+                topic = topics[(noise_seen + topic_offset) % len(topics)]
+                noise_seen += 1
             hint_key = topic if item["kind"] != "ambient" else "__ambient__"
             if item["post"] in done:
                 if done_titles.get(item["post"]):
@@ -308,11 +309,12 @@ def generate_persona(
             cp = cp_text if (cp_rate and post_rng.random() < cp_rate) else None
             marker = post_rng.choice(MARKERS) if post_rng.random() < 0.4 else None
             ending = post_rng.choice(prompts.ENDINGS)
+            name_ok = post_rng.random() < 0.4
             user = prompts.build_user(
                 item["kind"], item.get("clues"), item.get("design", ""), topic,
                 prior_titles=titles_by_topic.get(hint_key),
                 month=month, catchphrase=cp, marker=marker, place=place,
-                relation="단서 문장 속 호칭 그대로 (딸·막내·동창처럼)", ending=ending,
+                relation="단서 문장 속 호칭 그대로 (딸·막내·동창처럼)", ending=ending, name_ok=name_ok,
             )
             if sleep and written:
                 time.sleep(sleep)
