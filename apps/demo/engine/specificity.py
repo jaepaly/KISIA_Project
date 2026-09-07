@@ -30,10 +30,13 @@ _ALL_BANDS = ["0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39"
               "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84",
               "85-89", "90-94", "95-99", "100+"]
 
-# 흔한 일반명사와 겹치는 시군구 약칭 — 사전 매칭에서 뺀다
+# 흔한 일반명사와 겹치는 시군구 약칭 — 사전 매칭에서 뺀다.
+# 둘째 줄부터는 코퍼스 2,942편 실측 오탐 (한동안·경기 구경·수정·예산·사진도·이천 원·기장·상당히·진해서·거창한·영양제·유연제·인사하·보여주·저수지·출구로·옆구리·연남동·접은 양산).
 _PLACE_STOPLIST = {"영광", "장수", "동해", "광명", "화성", "안성", "정선", "청도", "의성", "성주",
                    "고성", "남양", "동구", "서구", "남구", "북구", "중구", "강남", "강서", "강동",
-                   "강북", "중랑", "동작", "서초", "송파", "마포", "광산", "달성", "수성"}
+                   "강북", "중랑", "동작", "서초", "송파", "마포", "광산", "달성", "수성",
+                   "동안", "경기", "수정", "예산", "진도", "이천", "기장", "상당", "진해", "거창",
+                   "영양", "연제", "사하", "여주", "수지", "구로", "구리", "남동", "양산"}
 
 
 @lru_cache(maxsize=1)
@@ -41,19 +44,21 @@ def _index() -> dict[str, Any]:
     d = _get_default_dictionary()
     R = d.regions
     emd_by_sido: dict[str, list[str]] = {}
-    emd_by_parent: dict[str, list[str]] = {}
+    emd_by_ancestor: dict[str, list[str]] = {}
     for code, r in R.items():
         if r["level"] != "emd":
             continue
-        emd_by_parent.setdefault(r["parent"], []).append(code)
-        # 부모를 따라 올라가 시도를 찾는다 (세종은 읍면동의 부모가 시도다)
+        # 부모 사슬 전부에 등록한다 — 구가 있는 시(고양·용인·수원…)는 읍면동의 직계 부모가 구라서
+        # 직계만 보면 시 코드 아래 읍면동이 0개가 된다 (세종은 읍면동의 부모가 시도다)
         p = r["parent"]
-        while p and R[p]["level"] != "sido":
+        while p:
+            emd_by_ancestor.setdefault(p, []).append(code)
+            if R[p]["level"] == "sido":
+                emd_by_sido.setdefault(p, []).append(code)
+                break
             p = R[p]["parent"]
-        if p:
-            emd_by_sido.setdefault(p, []).append(code)
     sido_by_name = {r["name"]: code for code, r in R.items() if r["level"] == "sido"}
-    return {"R": R, "emd_by_sido": emd_by_sido, "emd_by_parent": emd_by_parent,
+    return {"R": R, "emd_by_sido": emd_by_sido, "emd_by_ancestor": emd_by_ancestor,
             "sido_by_name": sido_by_name, "dict_version": _dict_version()}
 
 
@@ -75,12 +80,9 @@ def dict_version() -> str:
 def descendants(code: str) -> list[str]:
     """코드(시도·시군구·읍면동) 아래 읍면동 코드 전부."""
     ix = _index()
-    r = ix["R"][code]
-    if r["level"] == "emd":
+    if ix["R"][code]["level"] == "emd":
         return [code]
-    if r["level"] == "sido":
-        return list(ix["emd_by_sido"].get(code, []))
-    return list(ix["emd_by_parent"].get(code, []))
+    return list(ix["emd_by_ancestor"].get(code, []))
 
 
 def nation_codes() -> list[str]:
@@ -115,7 +117,7 @@ def place_lexicon() -> tuple[tuple[str, str], ...]:
         name = r["name"]
         if r["level"] == "sido":
             out[name] = name
-            if name in sido_short:
+            if name in sido_short and sido_short[name] not in _PLACE_STOPLIST:
                 out[sido_short[name]] = name
         elif r["level"] == "sigungu":
             out[name] = r["full_name"]
@@ -191,6 +193,8 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
         if len(cands) != 1:
             continue
         sub = [c for c in descendants(cands[0]) if c in set(codes)] or descendants(cands[0])
+        if not sub:
+            continue
         if best is None or len(sub) < len(best[1]):
             best = (len(sub), sub, p)
     if best:

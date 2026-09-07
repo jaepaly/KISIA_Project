@@ -34,7 +34,10 @@ _OTHER_AFTER = re.compile(
 _PAST_BEFORE = re.compile(r"(예전에|옛날에|전에|한때)[^\n]{0,10}$")
 _PAST_AFTER = re.compile(r"^[^\n]{0,4}(살 때|살았|살던|살 적)")
 # 이동 경로 언급 — 「X 쪽에서 온다는 버스」 「X 가는 버스」 「X행」
-_TRANSIT_AFTER = re.compile(r"^[^\n]{0,6}?(쪽에서 온다는|에서 온다는|에서 오는|가는 버스|가는 차|행 버스|행 열차|행)")
+_TRANSIT_AFTER = re.compile(
+    r"^[^\n]{0,6}?(쪽에서 온다는|에서 온다는|에서 오는|에서 왔다는|에서 온 |쪽으로 지나|쪽으로 가는|쪽으로 향하"
+    r"|가는 버스|가는 차|행 버스|행 열차|행)"
+)
 
 # ── 한글 수사 나이 ───────────────────────────────────────────────────────
 _TENS = {"열": 10, "스물": 20, "서른": 30, "마흔": 40, "쉰": 50, "예순": 60, "일흔": 70, "여든": 80, "아흔": 90}
@@ -100,12 +103,34 @@ def normalize(text: str) -> str:
     return unicodedata.normalize("NFC", text)
 
 
+_HANGUL = re.compile(r"[가-힣]")
+_ADMIN_SUFFIX = "시군구읍면동리"
+# 접미사 없는 약칭(고양·부산·전주) 뒤에 올 수 있는 것 — 행정 접미사·역, 장소 조사, 또는 시설·지형 이름
+# (기흥**호수공원**·순천**만**·동탄**신도시** — R1 사례처럼 낚시터·공원 이름이 곧 거주지 단서다).
+# 「이·가」는 일부러 뺐다: 「고양이가」「전주가(노래 전주)」 가 지명이 되기 때문이다.
+_LOC_NEXT = re.compile(
+    r"^(?:[시군구읍면동리역]|에서|에|서|로|으로|까지|부터|쪽|행|발|은|는|도|의|랑|하고|만|과|와|살|사는"
+    r"|호수|공원|저수지|시장|터미널|병원|대교|휴게소|해수욕장|항|산|천|강|성당|교회|학교|공단|산업단지|경기장|신도시|시내|읍내|장날)"
+)
+
+
 def _place_candidates(text: str) -> list[tuple[int, int, str]]:
-    """지명 사전(시도·시군구·읍면동)으로 명시 지명을 찾는다. (start, end, canonical)"""
+    """지명 사전(시도·시군구·읍면동)으로 명시 지명을 찾는다. (start, end, canonical)
+
+    경계 규칙 — 코퍼스 실측 오탐(휴대**전화**·사**진도**·저**수지**·**고양**이)을 막는다:
+      · 바로 앞에 한글이 붙어 있으면 지명이 아니다 (단어 안쪽 부분 일치)
+      · 행정 접미사가 없는 약칭은 뒤에 접미사·역·장소 조사 중 하나가 와야 한다
+    """
     out: list[tuple[int, int, str]] = []
     for surface, canonical in place_lexicon():
+        bare = surface[-1] not in _ADMIN_SUFFIX + "도"   # 시도 전체 이름은 시·도로 끝난다
         for m in re.finditer(re.escape(surface), text):
-            out.append((m.start(), m.end(), canonical))
+            s, e = m.start(), m.end()
+            if s > 0 and _HANGUL.match(text[s - 1]):
+                continue
+            if bare and e < len(text) and _HANGUL.match(text[e]) and not _LOC_NEXT.match(text[e:e + 3]):
+                continue
+            out.append((s, e, canonical))
     return out
 
 
