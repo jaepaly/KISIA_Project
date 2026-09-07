@@ -238,7 +238,14 @@ def load_or_run(output_path: str, command: str, prompt: str, label: str) -> dict
     return run_command(command, prompt, label)
 
 
-def make_review(model_a: dict[str, Any], model_b: dict[str, Any], name_a: str, name_b: str) -> dict[str, Any]:
+def make_review(
+    model_a: dict[str, Any],
+    model_b: dict[str, Any],
+    name_a: str,
+    name_b: str,
+    via_a: str,
+    via_b: str,
+) -> dict[str, Any]:
     rows = []
     for persona_id in (f"R{i}" for i in range(1, 7)):
         for attr in ATTRIBUTES:
@@ -254,7 +261,10 @@ def make_review(model_a: dict[str, Any], model_b: dict[str, Any], name_a: str, n
             )
     return {
         "experiment": "exp04-cross-model",
-        "models": {"model_a": name_a, "model_b": name_b},
+        "models": {
+            "model_a": {"id": name_a, "via": via_a},
+            "model_b": {"id": name_b, "via": via_b},
+        },
         "review_rule": "두 값이 의미상 같은 범위를 가리키면 true, 다르거나 한쪽만 기권하면 false",
         "rows": rows,
     }
@@ -269,6 +279,11 @@ def score_review(review: Any, input_data: dict[str, Any]) -> dict[str, Any]:
     seen: set[tuple[str, str]] = set()
     by_attribute = {attr: {"agreed": 0, "total": 0} for attr in ATTRIBUTES}
     by_persona = {f"R{i}": {"agreed": 0, "total": 0} for i in range(1, 7)}
+    by_response_presence = {
+        "both_valued": {"slots": 0, "reviewed": 0, "agreed": 0},
+        "both_empty": {"slots": 0, "reviewed": 0, "agreed": 0},
+        "one_sided": {"slots": 0, "reviewed": 0, "agreed": 0},
+    }
     pending = 0
     agreed = 0
     for row in rows:
@@ -276,33 +291,50 @@ def score_review(review: Any, input_data: dict[str, Any]) -> dict[str, Any]:
         if key in seen or key[0] not in by_persona or key[1] not in by_attribute:
             raise ExperimentError(f"review.json의 잘못되거나 중복된 행: {key}")
         seen.add(key)
+        value_a = row.get("model_a_value")
+        value_b = row.get("model_b_value")
+        if not isinstance(value_a, str) or not isinstance(value_b, str):
+            raise ExperimentError(f"{key}: 두 모델의 value는 문자열이어야 한다")
+        has_a = bool(value_a.strip())
+        has_b = bool(value_b.strip())
+        if has_a and has_b:
+            presence = "both_valued"
+        elif not has_a and not has_b:
+            presence = "both_empty"
+        else:
+            presence = "one_sided"
+        by_response_presence[presence]["slots"] += 1
         verdict = row.get("agree")
         if verdict is None:
             pending += 1
             continue
         if not isinstance(verdict, bool):
             raise ExperimentError(f"{key}: agree는 true/false/null 중 하나여야 한다")
+        by_response_presence[presence]["reviewed"] += 1
         by_attribute[key[1]]["total"] += 1
         by_persona[key[0]]["total"] += 1
         if verdict:
             agreed += 1
+            by_response_presence[presence]["agreed"] += 1
             by_attribute[key[1]]["agreed"] += 1
             by_persona[key[0]]["agreed"] += 1
     reviewed = 42 - pending
     rate = agreed / reviewed if reviewed else None
-    complete = pending == 0
+    for group in by_response_presence.values():
+        group["agreement_rate"] = (
+            round(group["agreed"] / group["reviewed"], 4) if group["reviewed"] else None
+        )
     return {
         "experiment": "exp04-cross-model",
         "measured_at": date.today().isoformat(),
         "input_status": input_data["input_status"],
         "directly_comparable_to_prior_poc": False,
         "models": review.get("models", {}),
-        "gate_threshold": 0.85,
         "reviewed_slots": reviewed,
         "pending_slots": pending,
         "agreed_slots": agreed,
         "agreement_rate": round(rate, 4) if rate is not None else None,
-        "gate_status": "PENDING" if not complete else ("PASS" if rate is not None and rate >= 0.85 else "FAIL"),
+        "by_response_presence": by_response_presence,
         "by_attribute": by_attribute,
         "by_persona": by_persona,
         "limitations": input_data.get("limitations", []),
@@ -317,10 +349,12 @@ def main() -> int:
     parser.add_argument("--command-b", default="", help="모델 B 실행 명령")
     parser.add_argument("--output-a", default="", help="이미 받은 모델 A JSON")
     parser.add_argument("--output-b", default="", help="이미 받은 모델 B JSON")
-    parser.add_argument("--name-a", default="Claude")
-    parser.add_argument("--name-b", default="GPT-5.5")
+    parser.add_argument("--name-a", default="claude-sonnet-4-6", help="model-a 식별자")
+    parser.add_argument("--name-b", default="gpt-5.5", help="model-b 식별자")
+    parser.add_argument("--via-a", default="claude CLI", help="model-a 실행 경로")
+    parser.add_argument("--via-b", default="ChatGPT web UI", help="model-b 실행 경로")
     parser.add_argument("--score", action="store_true", help="review.json을 metrics.json으로 집계")
-    parser.add_argument("--review", default=str(HERE / "review.json"))
+    parser.add_argument("--review", default=str(HERE / "results" / "review.json"))
     parser.add_argument("--metrics", default=str(HERE / "metrics.json"))
     args = parser.parse_args()
 
@@ -336,8 +370,12 @@ def main() -> int:
         if args.score:
             metrics = score_review(read_json(Path(args.review)), input_data)
             write_json(Path(args.metrics), metrics)
+            both_valued = metrics["by_response_presence"]["both_valued"]
             print(
-                f"{metrics['gate_status']}: {metrics['agreed_slots']}/{metrics['reviewed_slots']} "
+                f"둘 다 값 일치율: {both_valued['agreed']}/{both_valued['reviewed']} "
+                f"= {both_valued['agreement_rate']}; "
+                f"전체: {metrics['agreed_slots']}/{metrics['reviewed_slots']} "
+                f"= {metrics['agreement_rate']} "
                 f"(pending={metrics['pending_slots']}) -> {args.metrics}"
             )
             return 0
@@ -348,7 +386,10 @@ def main() -> int:
         results_dir = HERE / "results"
         write_json(results_dir / "model_a.json", model_a)
         write_json(results_dir / "model_b.json", model_b)
-        write_json(Path(args.review), make_review(model_a, model_b, args.name_a, args.name_b))
+        write_json(
+            Path(args.review),
+            make_review(model_a, model_b, args.name_a, args.name_b, args.via_a, args.via_b),
+        )
         print(f"두 모델 출력 저장: {results_dir}")
         print(f"사람 검토 필요: {args.review}의 agree 42개를 true/false로 채운 뒤 --score")
         return 0
