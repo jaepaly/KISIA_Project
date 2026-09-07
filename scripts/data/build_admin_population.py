@@ -94,6 +94,7 @@ def build_regions(total_rows: list[dict[str, str]], output: Path) -> dict[str, i
         "schema_version": "1.0",
         "dict_version": "geo-2026-07",
         "source": "행정안전부 주민등록 인구통계 2026-07",
+        "source_as_of": "2026-07",
         "regions": regions,
         "name_index": dict(sorted(name_index.items())),
     }
