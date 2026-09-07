@@ -100,6 +100,32 @@ def count(codes: list[str], sex: str | None = None, bands: list[str] | None = No
     return total
 
 
+_SIDO_SHORT = {"서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천",
+               "대전광역시": "대전", "울산광역시": "울산", "세종특별자치시": "세종", "경기도": "경기",
+               "강원특별자치도": "강원", "충청북도": "충북", "충청남도": "충남",
+               "전북특별자치도": "전북", "경상북도": "경북", "경상남도": "경남",
+               "제주특별자치도": "제주", "전남광주통합특별시": "전남"}
+_LEVEL_KO = {"emd": "읍면동", "sigungu": "시군구", "sido": "시도"}
+
+
+def ancestors(canonical: str) -> list[dict[str, str]]:
+    """정본 지명의 상위 행정구역을 가까운 것부터 — [{"text": 「김해시」, "canonical": 정본, "level": "시군구"}, …].
+    구가 있는 시는 구 → 시 → 도 순으로 나온다. 풀리지 않는 이름이면 빈 목록."""
+    ix = _index()
+    codes = resolve_place(canonical)
+    if len(codes) != 1:
+        return []
+    out = []
+    p = ix["R"][codes[0]]["parent"]
+    while p:
+        r = ix["R"][p]
+        text = _SIDO_SHORT.get(r["name"], r["name"]) if r["level"] == "sido" else r["name"]
+        out.append({"text": text, "canonical": r["full_name"] if r["level"] != "sido" else r["name"],
+                    "level": _LEVEL_KO.get(r["level"], r["level"])})
+        p = r["parent"]
+    return out
+
+
 @lru_cache(maxsize=1)
 def place_lexicon() -> tuple[tuple[str, str], ...]:
     """(표면형, 정본 이름) — 탐지기가 본문에서 찾을 지명 목록.
@@ -114,11 +140,7 @@ def place_lexicon() -> tuple[tuple[str, str], ...]:
     for r in ix["R"].values():
         if r["level"] != "sido":
             dup[r["name"]] = dup.get(r["name"], 0) + 1
-    sido_short = {"서울특별시": "서울", "부산광역시": "부산", "대구광역시": "대구", "인천광역시": "인천",
-                  "대전광역시": "대전", "울산광역시": "울산", "세종특별자치시": "세종", "경기도": "경기",
-                  "강원특별자치도": "강원", "충청북도": "충북", "충청남도": "충남",
-                  "전북특별자치도": "전북", "경상북도": "경북", "경상남도": "경남",
-                  "제주특별자치도": "제주", "전남광주통합특별시": "전남"}
+    sido_short = _SIDO_SHORT
     for code, r in ix["R"].items():
         name = r["name"]
         if r["level"] == "sido":

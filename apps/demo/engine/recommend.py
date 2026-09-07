@@ -17,7 +17,7 @@ from typing import Any
 
 from . import external
 from .pipeline import compute, findings
-from .specificity import dict_version
+from .specificity import ancestors, dict_version
 
 MODEL_VERSION = "demo-rules-0.1.0"
 
@@ -101,6 +101,35 @@ _BY_TEXT: list[tuple[re.Pattern, list[dict[str, str]]]] = [
     (re.compile(r"\d호선|지하철|전철"), [{"text": "지하철", "note": "노선 지움 — 추천"}, {"text": "전철", "note": "노선 지움"},
                                      {"text": "차", "note": "수단 자체를 흐림"}]),
 ]
+
+
+def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[str, Any]) -> int:
+    """스팬 하나의 메모만 바꿔 놓고 k 를 다시 센다 — «이 지명을 시군구로 넓히면» «나이를 60대로 뭉개면» 의 실제 값."""
+    posts = [({**p, "notes": {**p["notes"], span_id: {**p["notes"].get(span_id, {}), **patch}}}
+              if p["post_id"] == post_id else p) for p in view["posts"]]
+    return compute({**view, "posts": posts})["k"]
+
+
+def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, Any],
+                      note: dict[str, Any]) -> list[dict[str, Any]]:
+    """지우지 말고 넓히기 — 지명은 상위 행정구역으로, 나이는 10년 단위로. 각 단에 실제 k 를 붙인다.
+
+    필자가 「경남 산다」 까지는 말하고 싶다면 그 단을 고르면 된다. 의도가 살고, 특정성이 눈에 보인다.
+    사다리가 없는 유형(직업·가족·소득)이나 프로필 스팬은 빈 목록 → 호출자가 일반 후보로 간다.
+    """
+    if post_id is None:
+        return []
+    out: list[dict[str, Any]] = []
+    if sp["type"] == "LOC_ADMIN" and note.get("place"):
+        for a in ancestors(note["place"]):
+            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘",
+                        "k": k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]})})
+    elif sp["type"] == "AGE" and note.get("age") is not None:
+        d = int(note["age"]) // 10 * 10
+        if d >= 10:
+            out.append({"text": f"{d}대", "note": "10년 단위로 뭉갬",
+                        "k": k_with_note(view, post_id, sp["span_id"], {"age": None, "age_decade": d})})
+    return out
 
 
 def candidates_for(sentence: str, sp: dict[str, Any]) -> tuple[list[dict[str, str]], bool]:
@@ -191,6 +220,8 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         sentence = text[ls:le]
         cands, used = candidates_for(sentence, sp)
         ext_used = ext_used or used
+        widen = ladder_candidates(view, p["post_id"], sp, p["notes"].get(sp["span_id"], {}))
+        cands = ([{"text": w["text"], "note": w["note"]} for w in widen] + cands)[:3]
         for c in cands:
             tail = sentence[sp["end"] - ls:]
             josa = leading_particle(tail)

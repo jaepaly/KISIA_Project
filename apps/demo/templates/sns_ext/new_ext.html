@@ -44,6 +44,20 @@
   .rw-pop li button .t{font-weight:700;font-size:13.5px}
   .rw-pop li button .t.del{color:var(--ink3);font-style:italic;font-weight:400}
   .rw-pop li button .nt{grid-column:2;font-size:11.5px;color:var(--ink3)}
+  .rw-pop .grp{font-size:11px;color:var(--ink3);letter-spacing:.02em;padding:8px 6px 2px}
+  .rw-pop li.widen button .n{color:var(--low)}
+  .rw-pop li.widen button:hover{background:var(--low-soft);border-color:#bfe0c8}
+  .rw-pop li.erase button .n{color:var(--ink3)}
+  .rw-pop li button{grid-template-columns:auto 1fr auto}
+  .rw-pop li button .kv{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11.5px;color:var(--low);font-weight:600;white-space:nowrap;padding-top:2px}
+  .rw-pop li button .nt{grid-column:2/4}
+  .rw-pop .keep{display:flex;gap:10px;align-items:flex-start;margin-top:8px;padding:8px 8px;border-radius:8px;background:var(--mid-soft);font-size:11.5px;color:var(--ink2);line-height:1.5}
+  .rw-pop .keep button{flex:0 0 auto;background:var(--panel);color:var(--mid);border:1px solid var(--mid);border-radius:7px;padding:4px 10px;font-size:12px}
+  .rw-pop .keep button:hover{background:var(--mid);color:#fff}
+  .rw-pop .keep b{color:var(--mid)}
+  .pado-panel .evi mark.ack{background:transparent!important;border-bottom:2px dotted var(--mid);color:var(--ink2)}
+  .pado-panel .evi mark.ack::after{content:" 감수";font-size:10.5px;color:var(--mid);font-weight:700}
+  .rw-hint .keptn{font-family:"IBM Plex Mono",Consolas,monospace;color:var(--mid);font-weight:600}
   .rw-pop .ft{display:flex;gap:8px;align-items:center;margin-top:6px;padding:6px 6px 0;border-top:1px dashed var(--line);font-size:11.5px;color:var(--ink3)}
   .rw-pop .ft button{background:transparent;color:var(--sea-ink);padding:2px 6px;font-size:12px;border:1px solid var(--line);border-radius:6px}
   .rw-pop .ft .x{margin-left:auto;border:none;color:var(--ink3);font-size:15px;line-height:1;padding:0 4px}
@@ -81,7 +95,7 @@
         <p class="lede" style="margin-top:12px">새는 표현이 없습니다. 올려도 후보 수가 변하지 않습니다.</p>
       {% endif %}
       {% if check.draft.n_spans %}
-      <div class="rw-hint"><span class="tap">👆 색칠된 표현을 누르면</span> 말투를 살린 대체 표현 3안과 «그 표현을 빼면 후보가 몇 명이 되는지»가 뜹니다. 고르면 본문이 바로 바뀝니다. <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
+      <div class="rw-hint"><span class="tap">👆 색칠된 표현을 누르면</span> 지명·나이는 <b>지우지 않고 넓히는</b> 안(김해시 진영읍 → 김해시 → 경남)부터, 그 뒤에 바꾸거나 지우는 안. 각각 후보가 몇 명이 되는지 실제로 셉니다. 마음에 안 들면 <b>그대로 두기</b>도 됩니다. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
       {% endif %}
       <div id="draftPreview">
       {% for c in check.draft.channels %}
@@ -173,15 +187,31 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
     const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 다시 점검 — 고친 글로';}
     close();
   }
+  let kept=0;
+  function keep(mark,s){
+    mark.classList.add('ack'); mark.title='그대로 두기로 했습니다 — 「'+s.text+'」 는 그대로 올라갑니다';
+    kept++; const kc=document.getElementById('keptCount'); if(kc){kc.hidden=false; kc.textContent='그대로 두기 '+kept+'개';}
+    const btn=document.querySelector('button[type=submit]:not([formaction])'); if(btn) btn.textContent='알고도 올리기';
+    close();
+  }
   function open(mark){
     close(); const s=byId[mark.dataset.span]; if(!s) return;
     mark.classList.add('open');
     pop=document.createElement('div'); pop.className='rw-pop'; pop.setAttribute('role','dialog');
-    const kk=(afterK&&s.k_without)?'<span class="kk">'+fmt(afterK)+' → '+fmt(s.k_without)+'명</span>':'';
-    pop.innerHTML='<div class="hd"><b>「'+s.text+'」</b><span>'+s.type+' · '+s.level+'</span>'+kk+'</div>'
-      +'<ul>'+s.candidates.map((c,i)=>'<li><button type="button" data-i="'+i+'"><span class="n">'+['①','②','③'][i]+'</span><span class="t'+(c.text?'':' del')+'">'+(c.text||'지운다')+'</span>'+(c.note?'<span class="nt">'+c.note+'</span>':'')+'</button></li>').join('')+'</ul>'
+    const hasWiden=s.candidates.some(c=>c.kind==='widen');
+    const row=(c,i)=>'<li class="'+(c.kind||'')+'"><button type="button" data-i="'+i+'">'
+      +'<span class="n">'+(c.kind==='widen'?'↗':'✕')+'</span>'
+      +'<span class="t'+(c.text?'':' del')+'">'+(c.text||'지운다')+'</span>'
+      +'<span class="kv">'+(c.k!=null?'→ '+fmt(c.k)+'명':'')+'</span>'
+      +(c.note?'<span class="nt">'+c.note+'</span>':'')+'</button></li>';
+    const widen=s.candidates.filter(c=>c.kind==='widen'), erase=s.candidates.filter(c=>c.kind!=='widen');
+    pop.innerHTML='<div class="hd"><b>「'+s.text+'」</b><span>'+s.type+' · '+s.level+'</span>'+(afterK?'<span class="kk">지금 '+fmt(afterK)+'명</span>':'')+'</div>'
+      +(hasWiden?'<div class="grp">↗ 지우지 말고 넓히기 — 뜻은 남기고 후보만 늘립니다</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
+      +'<div class="grp">✕ '+(hasWiden?'아예 지우기':'표현 바꾸기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>'
+      +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 두어도 됩니다 — 대신 후보가 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 좁혀지는 건 감수하는 선택입니다.</span></div>'
       +'<div class="ft"><span>말투는 두고 새는 정보만 바꿉니다</span><button type="button" data-self>직접 고치기</button><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
     pop.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>pick(mark,s,s.candidates[+b.dataset.i])));
+    pop.querySelector('[data-keep]').addEventListener('click',()=>keep(mark,s));
     pop.querySelector('[data-x]').addEventListener('click',close);
     pop.querySelector('[data-self]').addEventListener('click',()=>{ const el=fields[s.text_id==='body'?'body':(s.text_id==='title'?'title':'captions')](); close(); if(!el) return; el.focus(); const i=el.value.indexOf(s.text); if(i>=0) el.setSelectionRange(i,i+s.text.length); el.scrollIntoView({block:'center',behavior:'smooth'}); });
     document.body.appendChild(pop);

@@ -30,7 +30,8 @@ from markupsafe import Markup  # noqa: E402
 
 from engine import external  # noqa: E402
 from engine.pipeline import analyze, compute, evidence_posts  # noqa: E402
-from engine.recommend import _line_of, candidates_for, fit_particle, leading_particle, recommend, stage2_output  # noqa: E402
+from engine.recommend import (_line_of, candidates_for, fit_particle, ladder_candidates,  # noqa: E402
+                              leading_particle, recommend, stage2_output)
 
 SNS_URL = os.getenv("SNS_URL", "http://localhost:3000").rstrip("/")
 DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,D11,D17,D06").split(",") if p]
@@ -220,13 +221,17 @@ def api_check():
         cands, used = candidates_for(text[ls:le], s)
         ext_used = ext_used or used
         k_without = compute(after["view"], exclude_spans=frozenset({s["span_id"]}))["k"]
+        # 지우지 말고 넓히기 — 지명은 상위 행정구역, 나이는 10년 단위. 각 단에 실제 k. 그 뒤에 일반 후보(지우기)
+        ladder = ladder_candidates(after["view"], "draft", s, dv["notes"].get(s["span_id"], {}))
+        merged = [{**c, "kind": "widen"} for c in ladder] + \
+                 [{**c, "k": k_without, "kind": "erase"} for c in cands][: (2 if ladder else 3)]
         # 뒤에 조사가 붙어 있으면 치환 범위에 넣고 후보마다 받침에 맞는 조사를 붙여 준다 (「이 나이이 되니」 방지)
         particle = leading_particle(text[s["end"]:])
         spans_out.append({"span_id": s["span_id"], "text": s["text"] + particle, "particle": particle,
                           "type": _TYPE_KO.get(s["type"], s["type"]), "level": s["level"], "text_id": s["text_id"],
                           "start": s["start"], "end": s["end"] + len(particle), "k_without": k_without,
                           "candidates": [{"text": c["text"] + (fit_particle(c["text"], particle) if c["text"] else ""),
-                                          "note": c["note"]} for c in cands]})
+                                          "note": c["note"], "k": c["k"], "kind": c["kind"]} for c in merged]})
     return jsonify({
         "before": summary(before), "after": summary(after),
         "draft": {"channels": chans, "n_spans": len(self_spans), "spans": spans_out,
