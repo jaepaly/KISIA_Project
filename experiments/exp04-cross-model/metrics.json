@@ -1,0 +1,95 @@
+{
+  "experiment": "exp04-cross-model",
+  "measured_at": "2026-09-07",
+  "input_status": "reconstructed_summary",
+  "directly_comparable_to_prior_poc": false,
+  "models": {
+    "model_a": "Claude Sonnet 4.6",
+    "model_b": "GPT-5.5"
+  },
+  "reviewed_slots": 42,
+  "pending_slots": 0,
+  "agreed_slots": 41,
+  "agreement_rate": 0.9762,
+  "by_response_presence": {
+    "both_valued": {
+      "slots": 20,
+      "reviewed": 20,
+      "agreed": 19,
+      "agreement_rate": 0.95
+    },
+    "both_empty": {
+      "slots": 22,
+      "reviewed": 22,
+      "agreed": 22,
+      "agreement_rate": 1.0
+    },
+    "one_sided": {
+      "slots": 0,
+      "reviewed": 0,
+      "agreed": 0,
+      "agreement_rate": null
+    }
+  },
+  "by_attribute": {
+    "age": {
+      "agreed": 6,
+      "total": 6
+    },
+    "sex": {
+      "agreed": 6,
+      "total": 6
+    },
+    "location": {
+      "agreed": 5,
+      "total": 6
+    },
+    "occupation": {
+      "agreed": 6,
+      "total": 6
+    },
+    "family": {
+      "agreed": 6,
+      "total": 6
+    },
+    "commute": {
+      "agreed": 6,
+      "total": 6
+    },
+    "income": {
+      "agreed": 6,
+      "total": 6
+    }
+  },
+  "by_persona": {
+    "R1": {
+      "agreed": 6,
+      "total": 7
+    },
+    "R2": {
+      "agreed": 7,
+      "total": 7
+    },
+    "R3": {
+      "agreed": 7,
+      "total": 7
+    },
+    "R4": {
+      "agreed": 7,
+      "total": 7
+    },
+    "R5": {
+      "agreed": 7,
+      "total": 7
+    },
+    "R6": {
+      "agreed": 7,
+      "total": 7
+    }
+  },
+  "limitations": [
+    "선행 PoC의 R1~R6 원문 게시글과 원 조건은 저장소에 없다.",
+    "정본 문서에 남은 요약만 사용하므로 선행 PoC 수치의 직접 재현은 아니다.",
+    "문서에 없는 거주지·직업·가족·통근·소득 값은 추가하지 않았다."
+  ]
+}

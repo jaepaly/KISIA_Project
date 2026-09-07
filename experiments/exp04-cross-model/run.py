@@ -269,6 +269,11 @@ def score_review(review: Any, input_data: dict[str, Any]) -> dict[str, Any]:
     seen: set[tuple[str, str]] = set()
     by_attribute = {attr: {"agreed": 0, "total": 0} for attr in ATTRIBUTES}
     by_persona = {f"R{i}": {"agreed": 0, "total": 0} for i in range(1, 7)}
+    by_response_presence = {
+        "both_valued": {"slots": 0, "reviewed": 0, "agreed": 0},
+        "both_empty": {"slots": 0, "reviewed": 0, "agreed": 0},
+        "one_sided": {"slots": 0, "reviewed": 0, "agreed": 0},
+    }
     pending = 0
     agreed = 0
     for row in rows:
@@ -276,33 +281,50 @@ def score_review(review: Any, input_data: dict[str, Any]) -> dict[str, Any]:
         if key in seen or key[0] not in by_persona or key[1] not in by_attribute:
             raise ExperimentError(f"review.json의 잘못되거나 중복된 행: {key}")
         seen.add(key)
+        value_a = row.get("model_a_value")
+        value_b = row.get("model_b_value")
+        if not isinstance(value_a, str) or not isinstance(value_b, str):
+            raise ExperimentError(f"{key}: 두 모델의 value는 문자열이어야 한다")
+        has_a = bool(value_a.strip())
+        has_b = bool(value_b.strip())
+        if has_a and has_b:
+            presence = "both_valued"
+        elif not has_a and not has_b:
+            presence = "both_empty"
+        else:
+            presence = "one_sided"
+        by_response_presence[presence]["slots"] += 1
         verdict = row.get("agree")
         if verdict is None:
             pending += 1
             continue
         if not isinstance(verdict, bool):
             raise ExperimentError(f"{key}: agree는 true/false/null 중 하나여야 한다")
+        by_response_presence[presence]["reviewed"] += 1
         by_attribute[key[1]]["total"] += 1
         by_persona[key[0]]["total"] += 1
         if verdict:
             agreed += 1
+            by_response_presence[presence]["agreed"] += 1
             by_attribute[key[1]]["agreed"] += 1
             by_persona[key[0]]["agreed"] += 1
     reviewed = 42 - pending
     rate = agreed / reviewed if reviewed else None
-    complete = pending == 0
+    for group in by_response_presence.values():
+        group["agreement_rate"] = (
+            round(group["agreed"] / group["reviewed"], 4) if group["reviewed"] else None
+        )
     return {
         "experiment": "exp04-cross-model",
         "measured_at": date.today().isoformat(),
         "input_status": input_data["input_status"],
         "directly_comparable_to_prior_poc": False,
         "models": review.get("models", {}),
-        "gate_threshold": 0.85,
         "reviewed_slots": reviewed,
         "pending_slots": pending,
         "agreed_slots": agreed,
         "agreement_rate": round(rate, 4) if rate is not None else None,
-        "gate_status": "PENDING" if not complete else ("PASS" if rate is not None and rate >= 0.85 else "FAIL"),
+        "by_response_presence": by_response_presence,
         "by_attribute": by_attribute,
         "by_persona": by_persona,
         "limitations": input_data.get("limitations", []),
@@ -317,7 +339,7 @@ def main() -> int:
     parser.add_argument("--command-b", default="", help="모델 B 실행 명령")
     parser.add_argument("--output-a", default="", help="이미 받은 모델 A JSON")
     parser.add_argument("--output-b", default="", help="이미 받은 모델 B JSON")
-    parser.add_argument("--name-a", default="Claude")
+    parser.add_argument("--name-a", default="Claude Sonnet 4.6")
     parser.add_argument("--name-b", default="GPT-5.5")
     parser.add_argument("--score", action="store_true", help="review.json을 metrics.json으로 집계")
     parser.add_argument("--review", default=str(HERE / "review.json"))
@@ -336,8 +358,12 @@ def main() -> int:
         if args.score:
             metrics = score_review(read_json(Path(args.review)), input_data)
             write_json(Path(args.metrics), metrics)
+            both_valued = metrics["by_response_presence"]["both_valued"]
             print(
-                f"{metrics['gate_status']}: {metrics['agreed_slots']}/{metrics['reviewed_slots']} "
+                f"둘 다 값 일치율: {both_valued['agreed']}/{both_valued['reviewed']} "
+                f"= {both_valued['agreement_rate']}; "
+                f"전체: {metrics['agreed_slots']}/{metrics['reviewed_slots']} "
+                f"= {metrics['agreement_rate']} "
                 f"(pending={metrics['pending_slots']}) -> {args.metrics}"
             )
             return 0
