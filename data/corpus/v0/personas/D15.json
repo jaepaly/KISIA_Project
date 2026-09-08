@@ -127,7 +127,7 @@
       "attr": "age",
       "level": "explicit",
       "subject": "self",
-      "clue": "쉰여덟에 귀농했다고 하면 다들 늦었다고 해요",
+      "clue": "쉰셋에 귀농했다고 하면 다들 늦었다고 했는데, 쉰여덟인 지금은 그 말이 안 나와요",
       "note": "한글 수사 explicit. 귀농 시점이 age 와 겹쳐 시간축 역산도 가능하다",
       "ambiguous": false
     },
