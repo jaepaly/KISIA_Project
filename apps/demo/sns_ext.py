@@ -106,7 +106,7 @@ app.jinja_env.globals.update(ut_avatar=ut_avatar, ut_engage=ut_engage, ut_commen
 def _chrome():
     """헤더가 쓰는 것 — 지금 보고 있는 계정(me)과 활성 메뉴(nav).
 
-    우리뜰에는 로그인이 없다. 데모에서는 «보고 있는 블로그의 주인» 을 내 계정처럼 다룬다.
+    우리뜰에는 로그인이 없다. 데모에서는 «보고 있는 블로그의 주인» 을 내 계정처럼 다룬다. 홈에서는 없다.
     """
     me = None
     va = (request.view_args or {})
@@ -115,10 +115,7 @@ def _chrome():
     elif va.get("post_id"):
         me = db().execute("SELECT a.* FROM authors a JOIN posts p ON p.author_id = a.author_id"
                           " WHERE p.post_id = ?", (va["post_id"],)).fetchone()
-    if me is None:
-        first = os.getenv("DEMO_PERSONAS", "D05").split(",")[0].strip()
-        me = (db().execute("SELECT * FROM authors WHERE author_id = ?", (first,)).fetchone()
-              or db().execute("SELECT * FROM authors ORDER BY author_id LIMIT 1").fetchone())
+    # 홈·글쓰기처럼 아무 블로그도 안 보고 있으면 «나» 는 없다 — 마당일기를 기본값으로 두면 심사자가 헷갈린다
     nav = {"index": "home", "profile": "blog", "check": "check", "new": "new"}.get(request.endpoint or "")
     neighbors = db().execute("SELECT * FROM authors WHERE author_id != 'GUEST' ORDER BY author_id").fetchall()
     n_posts = {r["author_id"]: r["n"] for r in

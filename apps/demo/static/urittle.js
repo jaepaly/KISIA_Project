@@ -209,10 +209,11 @@
   function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
   function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
   window.padoTourStart = function () { tourSave({ step: 0 }); if (location.pathname !== "/") location.href = "/"; else renderTour(); };
+  window.padoTourReset = function () { tourSave({ step: 0 }); location.href = "/"; };
   window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); };
   function updateTourLinks() {
     const s = tourState();
-    $$("[data-tour-welcome]").forEach((el) => { el.hidden = !!(s && (s.done || s.step != null)); });
+    $$("[data-tour-welcome]").forEach((el) => { el.hidden = !!(s && s.done); });   // 투어 중에도 첫 화면 카드는 남긴다 — «처음부터» 가 첫 화면이어야 한다
     $$("[data-tour-restart]").forEach((el) => { el.hidden = !(s && s.done); });
   }
   function renderTour() {

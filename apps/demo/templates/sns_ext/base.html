@@ -16,6 +16,7 @@
   <header class="ut-top">
     <div class="ut-top-in">
       <a class="ut-logo" href="/">🌱 우리뜰 <small>동네 기록</small></a>
+      <a class="ut-restart" href="/" onclick="padoTourReset(); return false;" title="첫 화면으로 돌아가고 3분 체험을 처음부터">⟲ 처음부터</a>
       <nav class="ut-nav">
         <a href="/" class="{{ 'on' if nav == 'home' }}">홈</a>
         {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}">내 블로그</a>
@@ -40,6 +41,7 @@
     {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}"><span class="ic">{{ ut_avatar(me.author_id) }}</span>내 블로그</a>
     <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}"><span class="ic">🌊</span>점검</a>{% endif %}
     <a href="/new" class="{{ 'on' if nav == 'new' }}"><span class="ic">✏️</span>글쓰기</a>
+    <a href="/" onclick="padoTourReset(); return false;"><span class="ic">⟲</span>처음부터</a>
   </nav>
 
   <script src="/pado-static/urittle.js" defer></script>
