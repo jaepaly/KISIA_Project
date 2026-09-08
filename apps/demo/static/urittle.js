@@ -198,9 +198,9 @@
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".ut-nav a.write, .ut-tabs a[href='/new']",
       title: "⑦ 이번엔 올리기 전에", text: "체험 계정으로 아무 글이나 써 봅니다. 올리기 전에 한 번 점검합니다.",
       advance: "click" },
-    { page: (p) => p === "/new", target: "#body", when: () => !$("#draftSpans"),
-      title: "⑧ 예문을 넣고 점검", text: "예: 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 — 넣어 드릴게요. 그다음 「🌊 파도풀로 점검」을 누르세요.",
-      advance: "click", clickTarget: 'button[formaction="/check-draft"]',
+    { page: (p) => p === "/new", target: 'button[formaction="/check-draft"]', when: () => !$("#draftSpans"),
+      title: "⑧ 예문을 넣고 점검", text: "본문에 예문을 넣어 뒀습니다 — 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 작성자는 체험 계정. 이 버튼을 누르면 올리기 전에 점검합니다.",
+      advance: "click", hint: "👆 이 버튼을 누르면 이어집니다",
       onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
     { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span]", when: () => !!$("#draftSpans"),
       title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 후보 수, 그리고 「그대로 두기」. 고르는 건 글쓴이입니다.",
@@ -241,7 +241,7 @@
     card.className = "tour-mark";
     card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
-      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>' : '<span class="hint">👆 위 버튼을 누르면 이어집니다</span>') + "</div>";
+      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>' : '<span class="hint">' + (st.hint || "👆 위 버튼을 누르면 이어집니다") + "</span>") + "</div>";
     document.body.appendChild(card);
     card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
     const nextBtn = card.querySelector("[data-next]");
