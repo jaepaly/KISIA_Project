@@ -504,7 +504,8 @@ RULES-DO-NOT #9다. 예외 없다.
 ```
 experiments/exp01-baseline/
 ├─ README.md              무엇을 왜 재는가 · 설정 · 결과 · 해석 · 한계
-└─ results/metrics.json   수치만 커밋 (원문·중간산출물은 커밋하지 않는다)
+└─ results/               metrics.json + 도구·모델 출력 JSONL 을 커밋한다 — 남이 compare.py 를 돌려 같은 수가 나와야 한다.
+                          커밋하지 않는 것은 실데이터 원문(data/raw·consented)뿐이다
 ```
 
 커밋 타입은 **`exp`** 를 쓴다. `git log --grep='^exp'` 한 줄이 8주차 「학습·테스트 진행 내용」이 되기 때문이다.
