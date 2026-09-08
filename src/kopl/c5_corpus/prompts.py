@@ -7,7 +7,9 @@
 
 from __future__ import annotations
 
-PROMPT_VERSION = "p2.1"
+import re
+
+PROMPT_VERSION = "p2.3"
 
 # 인물 JSON 에 noise_topics 가 없을 때만 쓰는 폴백.
 # persona-design.md §2-⑤ 는 "소재"를 목소리 차별화 축으로 명시한다
@@ -74,7 +76,9 @@ OUTPUT_FORMAT = """\
 def render_voice(voice: dict) -> str:
     if not voice:
         return "(문체 지정 없음)"
-    return "\n".join(f"- {k}: {v}" for k, v in voice.items())
+    # 말버릇은 시스템에 두지 않는다 — 원문이 남아 있으면 per-post 로 한 구절만 줘도 모델이 나머지를 알아서
+    # 붙인다 (B16 「삘받아서」 12/30 · B18 「돌아보면」 10/30, p2.3). 글마다 [이 글에서] 가 준다.
+    return "\n".join(f"- {k}: {v}" for k, v in voice.items() if k != "말버릇")
 
 
 def build_system(persona: dict, card_text: str = "", threads: list[str] | None = None) -> str:
@@ -94,10 +98,12 @@ def build_system(persona: dict, card_text: str = "", threads: list[str] | None =
         "[내 문체 — 반드시 지킨다]",
         voice,
         "",]
+    # threads 는 여기 목록으로 두지 않는다 — 「하나쯤」이 「매 편 하나 이상」으로 읽혀 D17 수첩 25/30 (p2.3).
+    # 글마다 코드가 0~1개를 골라 [이 글에서] 에 준다. 여기서는 존재만 알린다.
     if threads:
         parts += [
-            "[내 생활에서 되풀이되는 것 — 글마다 이 중 하나쯤은 자연스럽게 스친다. 매번 다 쓰지는 마라]",
-            *[f"- {t}" for t in threads],
+            "[내 생활에는 되풀이되는 물건·사람·진행 중인 일이 있다. 어느 글에 무엇이 나올지는 글마다 따로 정해 준다. "
+            "정해 주지 않은 글에서는 꺼내지 마라.]",
             "",]
     parts += [
         REALISM,
@@ -131,42 +137,90 @@ def build_system(persona: dict, card_text: str = "", threads: list[str] | None =
     return "\n".join(parts)
 
 
+# 「딴소리」를 열어 두면 모델의 딴소리는 하나뿐이다 — 「양말 한 짝은 어디 갔나」가 코퍼스 전체 5% (p2.2).
+# 글마다 코드가 딴소리의 소재를 정해 준다. 잃어버린 물건류는 뺐다.
+ASIDES = [
+    "내일 먹을 것", "안 읽은 문자", "충전기 위치", "TV 소리", "옆집 소리", "냉장고 소리", "손톱", "머리 감을지 말지",
+    "창문을 열지 말지", "물 마시기", "불 끄기", "시계", "휴대폰 배터리", "화분", "이 닦기", "커튼", "쓰레기 버리는 날",
+    "알람 시간", "다 쓴 치약", "리모컨 건전지", "의자 삐걱 소리", "빨래 걷기", "볼펜 잉크", "달력 넘기기",
+    "슬리퍼", "베개 위치", "선반 위 먼지", "수돗물 소리", "전기요금", "우유 유통기한", "문 잠갔는지", "가스 잠갔는지",
+    "손목", "어깨", "안경 닦기", "라면 몇 개 남았는지", "쌀 떨어져 가는 것", "휴지", "다음 주 약속", "택배 올 것",
+    "머리카락 자를 때", "신발 끈", "우산 어디 뒀는지", "밥솥 보온", "창밖 소리", "냄비 뚜껑", "귀 가려움", "하품",
+]
 ENDINGS = [
-    "딴소리 한 줄로 끝낸다 — 앞 내용과 상관없는 말.",
+    "딴소리 한 줄로 끝낸다 — 앞 내용과 상관없는 말. 소재는 「{aside}」쯤. 잃어버린 물건 얘기는 하지 마라.",
     "한 단어나 두세 글자로 끝낸다 (내 종결어미 그대로 — 존댓말 인물이 「됐어」로 끝내지 않는다).",
     "하려던 얘기를 다 안 하고 끝낸다 — 문장은 맺되 내용은 미완인 채로. 「그건 나중에」 같은 여운 문구는 쓰지 않는다.",
     "다음에 할 일이나 내일 얘기로 끝낸다.",
-    "방금 일어난 사실 하나를 그냥 적고 끝낸다. 감상 없이.",
+    "마지막 장면에서 내가 한 동작 하나로 끝낸다. 감상 없이. 「방금」으로 시작하지 말고, "
+    "「~에 있다」「~라고 적혀 있다」「~은 아직 ~임」 같은 상태 보고 문장으로 끝내지 마라.",
     "질문 하나로 끝낸다. 답은 안 한다.",
-    "정리하는 말 없이, 마지막 장면의 한 동작을 적은 문장으로 끝낸다.",
+    "혼잣말 한 마디로 끝낸다 — 내 종결어미로, 누구에게 하는 말이 아니다.",
     "평범하게 끝낸다. 특별한 장치 없이.",
+    "이유 없이 그냥 끝낸다. 마지막 문장이 특별할 필요가 없다 — 하던 얘기의 다음 문장이 마지막이다.",
 ]
 
 
 def per_post_block(month: int | None, catchphrase: str | None, marker: str | None,
-                   ending: str | None = None, date_str: str | None = None) -> str:
+                   ending: str | None = None, date_str: str | None = None,
+                   weather: bool = True, prior_endings: list[str] | None = None,
+                   thread: str | None = None) -> str:
     """글마다 코드가 정하는 것 — 시점 · 말버릇 사용 여부 · 전환 표지. 프롬프트에 규칙으로 두면
     모델이 매 글 100% 적용해 틀이 된다 (D03 22편 중 20편이 셋째 문단을 「아 근데」로 열었다)."""
     lines = ["[이 글에서]"]
     if month:
-        lines.append(f"- 시점: {date_str or str(month) + '월'}. 날씨·농작물·행사는 이 계절에 맞는 것만 쓴다. "
+        lines.append(f"- 시점: {date_str or str(month) + '월'}. 농작물·행사·옷차림은 이 계절에 맞는 것만 쓴다. "
                      "제목이나 첫 줄에 날짜를 적는 문체라면 **이 날짜를 그대로** 쓴다. "
                      "그런 문체가 아니면 달 이름(「3월」「삼월」)을 글에 쓰지 마라 — 계절감으로만 드러낸다.")
+        # 날씨를 매 글 열면 「바람은 아직 찬데 볕은 따뜻」이 3~4월 글 절반에 붙는다 (p2.2)
+        lines.append("- 날씨: 이 계절의 날씨를 한 번 스쳐도 된다. 첫 문장에서는 하지 마라."
+                     if weather else "- 날씨: 이 글에서는 날씨·바람·볕 얘기를 하지 않는다.")
     if ending:
         lines.append(f"- 끝맺음: {ending}")
+        if prior_endings:
+            listed = " / ".join(f"「{e}」" for e in prior_endings if e)
+            lines.append(f"  최근 글은 이렇게 끝났다: {listed} — 같은 식으로(같은 소품·같은 구문) 끝내지 마라.")
     lines.append(f"- 말버릇: {catchphrase} — 이 글에서 한 번. 위치는 매번 다르게(첫머리·중간·끝 아무 데나)."
                  if catchphrase else "- 말버릇: 이 글에서는 쓰지 않는다.")
+    lines.append(f"- 되풀이 요소: 「{thread}」 — 이 글에 곁가지로 한 번 스친다. 주제로 삼지는 마라."
+                 if thread else "- 되풀이 요소: 이 글에서는 꺼내지 않는다.")
     lines.append(f"- 화제가 바뀌는 자리에서만 「{marker}」를 한 번 쓸 수 있다. 다음 문장 앞에 붙여 쓴다 — "
                  "한 줄에 따로 두거나 문장 끝·글의 마무리로 쓰지 마라."
                  if marker else "- 전환 표지는 쓰지 않는다. 줄만 바꾼다.")
     return "\n".join(lines) + "\n"
 
 
+_META_RE = re.compile(r"(집계|노출|교집합|특정|좁혀|좁아|개별 글|도출|반경|후보가 적|통계)")
+
+
+def clean_ambient_design(design: str) -> str:
+    """ambient_plan.design 에서 설계자 메모를 뗀다.
+
+    「집계 시 생활권 노출」「4편의 반경을 모으면 좁혀진다」는 라벨 파이프라인을 위한 말인데
+    프롬프트에 그대로 들어가니 모델이 「요즘 생활 반경이 좁아진다」를 글로 썼다 (64/89 인물).
+    장소 목록이 든 앞 문장만 남긴다.
+    """
+    parts = re.split(r"(?<=[.。])\s+|\s+[—-]\s+", design.strip())
+    kept = []
+    for s in parts:
+        # 장소 목록이 있는 문장은 메타 꼬리만 떼고 살린다 (「…산책 등 생활 반경 노출」)
+        s = re.sub(r"\s*(등|및)?\s*(시골 정경|노년의 동선|생활\s*반경|생활권|거주 반경|동선)\s*(통계\s*)?(노출|집계|특정)\.?$", "", s)
+        s = re.sub(r"\s*(집계|방문 기록 집계)\s*$", "", s)
+        s = s.replace("생활 반경", "생활권").replace("근무 반경", "근무 생활권")
+        if s.strip() and not _META_RE.search(s):
+            kept.append(s.strip())
+    if not kept:
+        return "동네에서 다녀온 곳의 기록 — 가게·공원·정류장·마트 같은 시설과 동선"
+    return " ".join(kept).strip(" .")
+
+
 def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                topic: str = "", prior_titles: list[str] | None = None,
                month: int | None = None, catchphrase: str | None = None, marker: str | None = None,
                place: str = "", relation: str = "", ending: str | None = None,
-               name_ok: bool = False, date_str: str | None = None) -> str:
+               name_ok: bool = False, date_str: str | None = None,
+               weather: bool = True, prior_endings: list[str] | None = None,
+               thread: str | None = None) -> str:
     """글 1편마다 바뀌는 부분. kind에 따라 지시가 갈린다.
 
     prior_titles — 같은 소재로 이미 쓴 글의 제목. 잡담 소재가 글 수보다 적어 순환하면
@@ -179,7 +233,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
         caps = sorted([c for c in clues if str(c.get("text_id", "")).startswith("photo_caption")],
                       key=lambda c: c["text_id"])
 
-        parts = ["블로그 글 한 편을 써라.\n", per_post_block(month, catchphrase, marker, ending, date_str)]
+        parts = ["블로그 글 한 편을 써라.\n", per_post_block(month, catchphrase, marker, ending, date_str, weather, prior_endings, thread)]
         for c in body:
             who = (
                 f"이 단서 문장의 주인공은 내가 아니라 **{relation or '가까운 사람'}**이다. 그 사람을 관계로 부른다 "
@@ -218,6 +272,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
         return "\n".join(parts)
 
     if kind == "ambient":
+        ambient_design = clean_ambient_design(ambient_design)
         prior = ""
         if prior_titles:
             listed = "\n".join(f"  - {t}" for t in prior_titles[-3:])
@@ -225,7 +280,7 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
                      "같은 장소를 같은 장면으로 되풀이하지 마라. 다른 시설, 다른 용무로.\n\n")
         return (
             "블로그 글 한 편을 써라.\n\n"
-            + per_post_block(month, catchphrase, marker, ending, date_str) + "\n"
+            + per_post_block(month, catchphrase, marker, ending, date_str, weather, prior_endings, thread) + "\n"
             f"[이 글의 성격] 지역 생활 기록. {ambient_design}\n"
             f"[내 동네] {place}\n"
             + ("이 동네 밖의 지명·시설을 쓰지 마라. 동네 이름을 쓰려면 사람들이 부르는 대로 한 번만 "
@@ -250,9 +305,9 @@ def build_user(kind: str, clues: list | None = None, ambient_design: str = "",
         )
     return (
         "블로그 글 한 편을 써라.\n\n"
-        + per_post_block(month, catchphrase, marker, ending, date_str) + "\n"
+        + per_post_block(month, catchphrase, marker, ending, date_str, weather, prior_endings, thread) + "\n"
         f"[이 글의 소재] {topic}\n"
-        "이 소재로만 써라. 다른 소재로 새지 마라.\n\n"
+        "이 소재가 중심이다. 다른 소재로 새지 마라 — 위에 되풀이 요소가 지정됐으면 그것만 곁가지로 스친다.\n\n"
         + repeat +
         "지명·직업·나이·가족·통근 수단을 암시하는 표현을 단 하나도 쓰지 마라. "
         "이 글에서는 나에 대해 아무것도 알아낼 수 없어야 한다."

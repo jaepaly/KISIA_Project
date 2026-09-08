@@ -178,9 +178,31 @@ def first_sentence(body: str) -> str:
     return re.split(r"[.\n!?]", body.strip(), 1)[0].strip()
 
 
+def last_sentence(body: str) -> str:
+    lines = [ln.strip() for ln in body.strip().splitlines() if ln.strip()]
+    return lines[-1][-60:] if lines else ""
+
+
+def catchphrase_pick(text: str, rng: random.Random) -> str:
+    """voice.말버릇이 구절 여러 개를 담고 있으면 하나만 뽑는다.
+
+    통째로 주면 모델이 전부를 세트로 넣는다 (B16 「이번 스프린트는/삘받아서/배포 완료/퇴근각」이
+    매 편 네 개). 따옴표로 묶인 구절이 있으면 그중 하나, 없으면 원문 그대로.
+    """
+    phrases = re.findall(r"[「'‘\"]([^」'’\"]{2,30})[」'’\"]", text)
+    if len(phrases) >= 2:
+        return rng.choice(phrases)
+    return text
+
+
 # ── 인물 1명 생성 ────────────────────────────────────────────────────
-MARKERS = ["아 근데", "말 나온 김에", "그건 그렇고", "아 맞다", "그래서 그런가", "그러고 보니",
+# 「그래서 그런가」는 인과 없는 자리에 억지로 들어가 뺐다 (p2.2)
+MARKERS = ["아 근데", "말 나온 김에", "그건 그렇고", "아 맞다", "그러고 보니",
            "참,", "암튼", "갑자기 생각났는데", "아 그리고"]
+
+
+WEATHER_TOPIC = re.compile(r"날씨|비 오|비가|바람|더위|더운|추위|추운|장마|폭염|눈 오|안개|황사|미세먼지|햇빛|볕")
+REFUSAL = re.compile(r"(조건이 서로 충돌|요청 조건|작성 조건|조건을 바꿔|쓸 수 없어|어느 쪽을 우선)")
 
 
 def catchphrase_rate(voice: dict) -> float:
@@ -197,7 +219,14 @@ def catchphrase_rate(voice: dict) -> float:
 
 
 def place_for_ambient(persona: dict) -> str:
-    """ambient 글에 주는 동네 — 시군구까지. 읍면동은 그 자체가 명시 단서라 주지 않는다."""
+    """ambient 글에 주는 동네 — 시군구까지. 읍면동은 그 자체가 명시 단서라 주지 않는다.
+
+    해외 거주 인물(E01~E05)은 GT location 이 한국 본가라 ambient 동네가 아니다 —
+    ambient_plan.place 가 있으면 그것을 쓴다.
+    """
+    override = (persona.get("ambient_plan") or {}).get("place")
+    if override:
+        return str(override)
     loc = (persona.get("ground_truth") or {}).get("location", "") or ""
     toks = loc.split()
     keep = [t for t in toks if not re.search(r"(읍|면|동|리|가)$", t)] or toks[:2]
@@ -216,6 +245,7 @@ def generate_persona(
     # resume: 이미 뽑은 post_id는 건너뛴다. 150편째에 끊겨도 처음부터 안 돈다.
     done: set[str] = set()
     done_titles: dict[str, str] = {}
+    done_endings: dict[str, str] = {}
     if out_path.exists():
         for line in out_path.read_text(encoding="utf-8-sig").splitlines():
             if line.strip():
@@ -225,6 +255,7 @@ def generate_persona(
                 done.add(post)
                 t_old = rec_old.get("texts") or {}
                 done_titles[post] = f"「{t_old.get('title', '')}」 / {first_sentence(t_old.get('body', ''))}"
+                done_endings[post] = last_sentence(t_old.get("body", ""))
         if done:
             print(f"  resume — {len(done)}편 건너뜀")
 
@@ -285,6 +316,8 @@ def generate_persona(
     # 소재별로 이미 쓴 제목. 소재가 글 수보다 적어 순환하면 같은 프롬프트가 다시 가서
     # 앞 글이 재탕된다 (#184). 건너뛴 글도 여기 넣어야 resume 가 순환을 되감지 않는다.
     titles_by_topic: dict[str, list[str]] = {}
+    # 최근 글의 마지막 문장 — 끝맺음이 인물 경계를 넘어 「양말 한 짝」「방금 ~했다」로 수렴했다 (p2.2)
+    recent_endings: list[str] = []
 
     with out_path.open("a", encoding="utf-8") as fh:
         for idx, item in enumerate(plan):
@@ -301,21 +334,33 @@ def generate_persona(
             if item["post"] in done:
                 if done_titles.get(item["post"]):
                     titles_by_topic.setdefault(hint_key, []).append(done_titles[item["post"]])
+                if done_endings.get(item["post"]):
+                    recent_endings.append(done_endings[item["post"]])
                 continue
             # 글마다 코드가 정한다 — 규칙으로 두면 모델이 매 글 100% 적용해 틀이 된다 (p2.0)
             post_rng = random.Random(f"{pid}:{item['post']}:{seed}")
             created = sample_time(persona, rng, idx)
             month = int(created[5:7])
-            date_str = f"{month}월 {int(created[8:10])}일"
-            cp = cp_text if (cp_rate and post_rng.random() < cp_rate) else None
+            # 요일·주차까지 준다 — 제목 규칙이 「요일+명사」(A10·A25)·「N주차」(E02·A13)인 인물은 날짜만으론 못 맞춘다
+            dt = datetime.fromisoformat(created)
+            week_no = (dt - datetime(2026, 3, 2, tzinfo=KST)).days // 7 + 1
+            date_str = f"{month}월 {dt.day}일 {'월화수목금토일'[dt.weekday()]}요일 (블로그 시작 {week_no}주차)"
+            cp = catchphrase_pick(cp_text, post_rng) if (cp_rate and post_rng.random() < cp_rate) else None
             marker = post_rng.choice(MARKERS) if post_rng.random() < 0.4 else None
-            ending = post_rng.choice(prompts.ENDINGS)
+            ending = post_rng.choice(prompts.ENDINGS).replace("{aside}", post_rng.choice(prompts.ASIDES))
             name_ok = post_rng.random() < 0.4
+            weather = post_rng.random() < 0.4
+            # 소재가 날씨면 금지를 걸 수 없다 — 「조건이 충돌해 쓸 수 없다」 거부문이 본문으로 온다 (E07_b01, p2.3)
+            if WEATHER_TOPIC.search(topic or ""):
+                weather = True
+            # 되풀이 요소는 글마다 0~1개 — 목록째 주면 매 편 다 나온다 (D17 수첩 25/30, p2.3)
+            thread = post_rng.choice(threads) if threads and post_rng.random() < 0.55 else None
             user = prompts.build_user(
                 item["kind"], item.get("clues"), item.get("design", ""), topic,
                 prior_titles=titles_by_topic.get(hint_key),
                 month=month, date_str=date_str, catchphrase=cp, marker=marker, place=place,
                 relation="단서 문장 속 호칭 그대로 (딸·막내·동창처럼)", ending=ending, name_ok=name_ok,
+                weather=weather, prior_endings=recent_endings[-3:], thread=thread,
             )
             if sleep and written:
                 time.sleep(sleep)
@@ -330,6 +375,9 @@ def generate_persona(
             if not texts.get("body", "").strip():
                 print(f"  ✗ {item['post']} 본문이 비었다 — 저장하지 않는다 "
                       f"(응답 {len(raw.strip())}자)")
+                continue
+            if REFUSAL.search(texts.get("body", "")[:200]):
+                print(f"  ✗ {item['post']} 거부문 — 저장하지 않는다: {texts['body'][:60]!r}")
                 continue
             if getattr(client, "last_truncated", False):
                 print(f"  ✗ {item['post']} 잘림 — 저장하지 않는다. --max-tokens 를 올려라")
@@ -361,6 +409,7 @@ def generate_persona(
             written += 1
             titles_by_topic.setdefault(hint_key, []).append(
                 f"「{texts.get('title', '')}」 / {first_sentence(texts.get('body', ''))}")
+            recent_endings.append(last_sentence(texts.get("body", "")))
             ch = "".join("T" if k == "title" else "C" if k.startswith("photo") else "B"
                          for k in texts)
             print(f"  {item['post']} [{item['kind']:7}] "
