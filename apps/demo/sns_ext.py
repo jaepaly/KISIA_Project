@@ -78,14 +78,34 @@ def ut_avatar(author_id: str | None) -> str:
     return _AVATARS[_seed(author_id or "?", "av") % len(_AVATARS)]
 
 
+def _load_comments() -> dict[str, list[dict]] | None:
+    """gen_comments.py 가 만든 글별 댓글. 파일이 없으면 None → 옛 장식 문구로 떨어진다."""
+    f = HERE / "data" / "comments.json"
+    if not f.exists():
+        return None
+    import json
+    return json.loads(f.read_text(encoding="utf-8"))
+
+
+_COMMENTS = _load_comments()
+
+
+def _n_comments_seed(post_id: str) -> int:
+    return (_seed(post_id, "eng") >> 8) % 6
+
+
 def ut_engage(post_id: str) -> dict:
     n = _seed(post_id, "eng")
-    return {"likes": 3 + n % 38, "comments": (n >> 8) % 6, "views": 60 + (n >> 12) % 900}
+    # 댓글 수 — 생성된 댓글이 있으면 그 수(심사자가 새로 쓴 글은 0), 없으면 글 ID 에서
+    n_cmt = len(_COMMENTS.get(post_id, [])) if _COMMENTS is not None else _n_comments_seed(post_id)
+    return {"likes": 3 + n % 38, "comments": n_cmt, "views": 60 + (n >> 12) % 900}
 
 
 def ut_comments(post_id: str) -> list[dict]:
+    if _COMMENTS is not None:
+        return _COMMENTS.get(post_id, [])
     out = []
-    for i in range(ut_engage(post_id)["comments"]):
+    for i in range(_n_comments_seed(post_id)):
         n = _seed(f"{post_id}:{i}", "cmt")
         who, emoji = _CMT_WHO[n % len(_CMT_WHO)]
         out.append({"who": who, "emoji": emoji, "text": _CMT_TEXT[(n >> 6) % len(_CMT_TEXT)],
