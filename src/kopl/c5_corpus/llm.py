@@ -298,9 +298,13 @@ class LLMClient:
         return data["choices"][0]["message"]["content"]
 
     def _anthropic(self, system: str, user: str) -> str:
-        key = os.environ.get("ANTHROPIC_API_KEY")
+        key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
         if not key:
             raise LLMError("ANTHROPIC_API_KEY 없음")
+        base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+        url = base_url.rstrip("/")
+        if not url.endswith("/v1/messages"):
+            url = url + "/v1/messages"
         body = {
             "model": self.model,
             "max_tokens": self.max_tokens,
@@ -308,10 +312,19 @@ class LLMClient:
             "system": system,
             "messages": [{"role": "user", "content": user}],
         }
+        # 커스텀 라우터(예: monogpt.kr)는 Authorization: Bearer 를 쓰고,
+        # 표준 Anthropic API는 x-api-key 를 쓴다. 둘 다 실어 보낸다 —
+        # 라우터는 자기가 쓰는 헤더만 읽고 나머지는 무시하는 게 보통이다.
         data = self._post(
-            "https://api.anthropic.com/v1/messages",
+            url,
             body,
-            {"x-api-key": key, "anthropic-version": "2023-06-01"},
+            {
+                "x-api-key": key,
+                "Authorization": f"Bearer {key}",
+                "anthropic-version": "2023-06-01",
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0 (compatible; kopl-c5-corpus/1.0)",
+            },
         )
         u = data.get("usage", {})
         self.usage["input_tokens"] += u.get("input_tokens", 0)
