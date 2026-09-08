@@ -276,7 +276,20 @@
     d.querySelector("[data-x]").addEventListener("click", () => d.remove());
   }
 
+  // ── 「더 보기」 — 미리보기가 실제로 잘린 글에만 붙인다 (… 만으로는 글이 거기서 끝나는지 알 수 없다) ──
+  function initMore() {
+    $$(".ut-excerpt").forEach((el) => {
+      if (el.nextElementSibling && el.nextElementSibling.classList.contains("ut-more")) return;
+      if (el.scrollHeight > el.clientHeight + 2) {
+        const m = document.createElement("span");
+        m.className = "ut-more"; m.textContent = "더 보기 →";
+        el.insertAdjacentElement("afterend", m);
+      }
+    });
+  }
+
   function boot() {
+    initMore();
     initFunnels(document);
     initReveal();
     initRings(document);
@@ -286,6 +299,7 @@
     initActRail();
     renderTour();
     addEventListener("resize", () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); c && t && place(c, t); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(initMore);   // 웹폰트가 늦게 오면 줄 높이가 바뀐다
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
