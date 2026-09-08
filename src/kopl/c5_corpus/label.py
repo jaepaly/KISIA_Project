@@ -209,6 +209,7 @@ def main() -> int:
     ap.add_argument("--out", default="data/corpus/v0/gold")
     ap.add_argument("--provider", default="anthropic")
     ap.add_argument("--model", default=None)
+    ap.add_argument("--cli-cmd", default="", help="--provider cli 일 때 (예: 'claude -p --model claude-sonnet-4-6')")
     ap.add_argument("--design", action="store_true",
                     help="clue_plan 을 힌트로 준다. 기본은 탐지본이다")
     ap.add_argument("--limit", type=int, default=0, help="인물당 n편만")
@@ -216,7 +217,7 @@ def main() -> int:
     a = ap.parse_args()
 
     load_dotenv()
-    client = LLMClient(a.provider, a.model)
+    client = LLMClient(a.provider, a.model, temperature=0.0, cli_cmd=a.cli_cmd)
     teacher_fam = family(client.model)
 
     out_dir = Path(a.out) / ("design" if a.design else "detect")
