@@ -1,4 +1,4 @@
-"""시딩 글마다 어울리는 댓글을 Claude 로 한 번 만들어 apps/demo/data/comments.json 에 고정한다.
+"""시딩 글마다 어울리는 댓글을 만들어 apps/demo/data/comments.json 에 고정한다 — 9/8 현재 파일은 PM 이 직접 썼다(256개). 이 스크립트는 인물이 바뀔 때 Claude 로 초안을 뽑는 용도.
 
     ANTHROPIC_API_KEY=... PYTHONPATH=src python apps/demo/gen_comments.py            # 시딩 인물 전부 (없는 글만)
     ANTHROPIC_API_KEY=... PYTHONPATH=src python apps/demo/gen_comments.py D05 --force # 다시 만들기
