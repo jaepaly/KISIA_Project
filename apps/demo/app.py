@@ -34,7 +34,7 @@ from engine.recommend import (_line_of, candidates_for, fit_particle, ladder_can
                               leading_particle, recommend, stage2_output)
 
 SNS_URL = os.getenv("SNS_URL", "http://localhost:3000").rstrip("/")
-DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,D11,D06").split(",") if p]
+DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,E20,C02,D06").split(",") if p]
 
 app = Flask(__name__)
 SESSIONS: dict[str, dict] = {}   # user_ref → {"prev": 결과|None, "cur": 결과}. 메모리뿐이다.

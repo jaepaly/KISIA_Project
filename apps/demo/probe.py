@@ -1,6 +1,6 @@
 """시딩 인물별 k 회귀 — 본 프로젝트 자원(src/kopl · 코퍼스 · 모델)을 갈아끼운 뒤 숫자가 어디서 바뀌는지 본다.
 
-    PYTHONPATH=src python apps/demo/probe.py            # 4명 · 위치태그 ON/OFF · 깔때기 경로
+    PYTHONPATH=src python apps/demo/probe.py            # 5명 · 위치태그 ON/OFF · 깔때기 경로
     PYTHONPATH=src python apps/demo/probe.py D05 D06    # 인물 지정
     PYTHONPATH=src python apps/demo/probe.py --save     # apps/demo/probe.baseline.json 갱신
     PYTHONPATH=src python apps/demo/probe.py --diff     # baseline 과 비교 — 바뀐 인물만 출력, 바뀌면 exit 1
@@ -23,7 +23,7 @@ sys.path.insert(0, str(HERE))
 from engine.pipeline import analyze, compute  # noqa: E402
 
 BASELINE = HERE / "probe.baseline.json"
-DEFAULT = ["D05", "D01", "D11", "D06"]
+DEFAULT = ["D05", "D01", "E20", "C02", "D06"]
 
 
 def export_for(pid: str, geo: bool) -> dict:

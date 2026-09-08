@@ -19,17 +19,17 @@
 ```bash
 pip install -r apps/sns/requirements.txt -r apps/demo/requirements.txt
 export PYTHONIOENCODING=utf-8 PYTHONPATH=src
-python apps/demo/seed.py --reset       # 4명 + 체험 계정(GUEST)
+python apps/demo/seed.py --reset       # 5명 + 체험 계정(GUEST)
 python apps/demo/app.py                # 파도풀 API  :8000
 python apps/demo/sns_ext.py            # 우리뜰      :3000  ← 심사위원이 여는 곳
 python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -q    # 22 passed
-python apps/demo/probe.py --diff       # 4명 k 회귀 — 「변화 없음」이어야 정상
+python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」이어야 정상
 ```
 
 - 첫 화면(`/`)에 **첫 방문 카드** + 「▶ 3분 체험 시작」 → **9단계 투어**가 시연 순서대로 데려간다 (마당일기 → 내 글 점검 → 421 →
   깔때기 → 위치태그 끄기 → 421→111,069 → 글쓰기 → 예문·체험 계정·점검 → 색칠된 표현). 발표 대본이 곧 이 9단계.
-- 정본 수치(`probe.baseline.json`, 위치태그 ON/OFF): **D05 421/111,069** · D01 36,061/434,408 · D11 1,374/11,651 ·
-  **D06 5/199,109**. (D17 오수양반은 9/8 에 뺐다 — 태그 ON/OFF 가 244 로 같아 시연 가치 없음.) D05 가 메인, D06 이 두 번째 시연감.
+- 정본 수치(`probe.baseline.json`, 위치태그 ON/OFF): **D05 421/111,069** · D01 36,061/434,408 · E20 1,231/17,433 · C02 899/14,574 ·
+  **D06 5/199,109**. (D11·D17 은 9/8 에 E20·C02 로 교체 — 시골 노년 중복·태그 효과 약함.) D05 가 메인, D06 이 두 번째 시연감.
 - 리라이트: 색칠된 표현 클릭 → 팝오버 — **넓히기 사다리**(진영읍 → 김해시 → 경남, 단마다 실제 k) → 지우기 → **그대로 두기**.
   바닥이 다른 글이면 「⤷ 다른 글 N편의 「기흥」이 남아」 + 「그것까지 치우면 → k」 + 태그 끄기 버튼.
 - 외부 LLM 은 Claude API, 기본 꺼짐. 켜면 리라이트 후보가 실제 생성으로 바뀐다 (`DEMO_EXTERNAL_REWRITE=true` + `ANTHROPIC_API_KEY`).

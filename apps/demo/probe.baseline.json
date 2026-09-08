@@ -40,25 +40,43 @@
    ]
   }
  },
- "D11": {
+ "E20": {
   "on": {
-   "k": 1374,
+   "k": 1231,
    "path": [
     "nation:sum=51088284",
-    "location:admin_unit=9234300",
-    "location:admin_code=4114",
-    "age:crosstab_lookup=1374",
-    "sex:abstain=1374"
+    "location:admin_code=24467",
+    "age:crosstab_lookup=1231",
+    "sex:abstain=1231"
    ]
   },
   "off": {
-   "k": 11651,
+   "k": 17433,
    "path": [
     "nation:sum=51088284",
-    "location:admin_unit=9234300",
-    "location:admin_code=27663",
-    "age:crosstab_lookup=11651",
-    "sex:abstain=11651"
+    "location:admin_code=390972",
+    "age:crosstab_lookup=17433",
+    "sex:abstain=17433"
+   ]
+  }
+ },
+ "C02": {
+  "on": {
+   "k": 899,
+   "path": [
+    "nation:sum=51088284",
+    "location:admin_code=20507",
+    "age:crosstab_lookup=1945",
+    "sex:crosstab_lookup=899"
+   ]
+  },
+  "off": {
+   "k": 14574,
+   "path": [
+    "nation:sum=51088284",
+    "location:admin_code=371855",
+    "age:crosstab_lookup=29717",
+    "sex:crosstab_lookup=14574"
    ]
   }
  },
