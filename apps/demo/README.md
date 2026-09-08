@@ -18,7 +18,7 @@
 pip install -r apps/sns/requirements.txt -r apps/demo/requirements.txt
 export PYTHONIOENCODING=utf-8 PYTHONPATH=src            # Windows git-bash 기준
 
-python apps/demo/seed.py --reset          # 코퍼스 인물 5명 → data/interim/sns.db (리허설 전 항상. 서버가 떠 있어도 됨)
+python apps/demo/seed.py --reset          # 코퍼스 인물 4명 + 체험 계정 → data/interim/sns.db (리허설 전 항상. 서버가 떠 있어도 됨)
 python apps/demo/app.py                   # 파도풀 API      http://localhost:8000
 python apps/demo/sns_ext.py               # 우리뜰(플랫폼)  http://localhost:3000  ← 심사위원이 보는 곳
 
@@ -30,8 +30,8 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 | `PADOPOOL_URL` | `http://localhost:8000` | 우리뜰이 부르는 파도풀 API |
 | `SNS_URL` | `http://localhost:3000` | 파도풀 단독 화면(개발용)이 읽는 우리뜰 |
 | `DEMO_PORT` · `SNS_PORT` | 8000 · 3000 | 포트 |
-| `DEMO_PERSONAS` | `D05,D01,D11,D17,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
-| `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` + `OPENAI_API_KEY` 가 있을 때만 리라이트 후보를 외부 API 로 만든다. provenance 에 표시된다 |
+| `DEMO_PERSONAS` | `D05,D01,D11,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
+| `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` + `ANTHROPIC_API_KEY` 가 있을 때만 (Claude) 리라이트 후보를 외부 API 로 만든다. provenance 에 표시된다 |
 | `C1_MODEL_PATH` | 없음 | B 의 KoELECTRA 가중치 경로. 있으면 규칙 탐지기 대신 실제 모델 |
 
 ## 시연 — 전부 우리뜰 안에서
@@ -46,7 +46,7 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 | 4 | 조치를 누르면 자동 재계산 | 421 → 111,069 → 407,969 → 1,259,354명. 끊긴 경로가 취소선으로 남는다 |
 | 5 | **글쓰기** `/new` → 「🛟 파도풀로 점검」 | 올리기 전 1회 [MF-015]. 「이 글 하나가 후보를 1,259,354명 → 421명으로 좁힙니다」 + 새는 문장 형광. 고쳐 쓰고 다시 점검하거나 「알고도 올리기」 |
 
-근거 카드의 **「위험 문장 표시」 스위치**를 켜야 형광이 켜진다(기본 OFF). 점선은 잡았지만 **걸러낸** 표현이다 —
+근거 카드의 형광은 **기본 ON** — 「위험 문장 표시」 스위치로 끌 수 있다. 점선은 잡았지만 **걸러낸** 표현이다 —
 b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 있는 여수로」(타인), b18 「해남서 왔다는 아주머니」(타인).
 
 ## 경계 — 어디가 플랫폼이고 어디가 파도풀인가
@@ -94,7 +94,6 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 | **D06** 「느린 기록」 `/u/u_5ebca0cc` | 의령군 궁류면 · 38세 · 여 · 연구직 | **5** / 199,109 | 「면사무소」→읍면 9,234,300 → 궁류면(태그) 1,006 → 35~39세 9 → 여성(「남편」) 5 | 영월·정읍·광주(이동 경로) · 창원(타인) |
 | D01 「새벽두시간」 `/u/u_b627b6c8` | 용인시 기흥구 신갈동 · 47세 · 남 | 36,061 / 434,408 | 「기흥호수공원」×4 → 기흥구 → 신갈동(태그). 나이·성별 단서 없음 | 「처남이 광교 살아서 저수지」(타인) |
 | D11 「옥과할매」 `/u/u_2aecefe6` | 곡성군 옥과면 · 71세 · 여 | 1,374 / 11,651 | 읍면 → 옥과면(태그) → 65세 이상(「경로당」) | 「곡성」(이동 경로) |
-| D17 「오수양반」 `/u/u_850b2ca2` | 임실군 오수면 · 73세 · 남 | 244 / 244 | 본문에 「오수면」이 직접 나와 태그가 보태는 게 없다 → 70~74세 | 「임실」(이동 경로) |
 
 **D06 이 두 번째 시연감이다** — D05 가 「지명 0회인데 421명」이라면 D06 은 「위치태그 하나가 20만 명을 5명으로」다. 조치 ② 의 효과가 가장 극적으로 보인다.
 
@@ -108,8 +107,8 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 
 | 언제 | 누가 | 무엇이 나오나 | 데모에서 빼는 것 | 넣는 법 | 확인 |
 |---|---|---|---|---|---|
-| W4 (9/13) | A | 코퍼스 v1 동결 | `data/corpus/v0` 경로 | `seed.py`·`probe.py` 의 `v0` → `v1`, `--reset` 재시딩 | `probe.py --diff` — 5명 k 가 왜 바뀌었는지 설명 가능해야 |
-| W4~5 | E | 정식 시딩 스크립트 `scripts/seed_sns.py` | `seed.py` | 체험 계정(GUEST)만 옮겨 심고 `seed.py` 삭제 | 5명 + GUEST 가 `authors` 에 |
+| W4 (9/13) | A | 코퍼스 v1 동결 | `data/corpus/v0` 경로 | `seed.py`·`probe.py` 의 `v0` → `v1`, `--reset` 재시딩 | `probe.py --diff` — 4명 k 가 왜 바뀌었는지 설명 가능해야 |
+| W4~5 | E | 정식 시딩 스크립트 `scripts/seed_sns.py` | `seed.py` | 체험 계정(GUEST)만 옮겨 심고 `seed.py` 삭제 | 4명 + GUEST 가 `authors` 에 |
 | W5~W7 | **B** | **KoELECTRA 1단 v1** (`kopl.c1_span.predict`) | `engine/detect.py` 규칙 전체 | `C1_MODEL_PATH=<가중치>` 환경변수만 — `detect_post` 가 자동 분기 | `probe.py --diff` · 8 문장 훑기(`LOG 9/7`) 재실행 · `notes`(exclude·place) 는 규칙이 내던 것이라 **모델 출력엔 없다 → 합치기·여행·시제 후처리를 `detect_post` 의 모델 경로에도 붙여야 한다** |
 | W5 | C | 기여도 엔진 v1 | `recommend.k_with_note`·`ladder_candidates` 의 바닥 계산, `_same_value_key` 묶음 | C 의 기여도 API 로 «어느 근거가 바닥인가» 를 받는다 | 「⤷ 다른 글 4편의 「기흥」」 설명이 C 값과 일치 |
 | W6 | E | 활동 메타 관리 화면 | `sns_ext.py` 의 geo_tag 라우트·프로필 덮어쓰기 | E 화면으로 링크만 | 투어 5단계가 E 버튼을 가리키게 `TOUR` 셀렉터 수정 |
@@ -129,7 +128,7 @@ B 모델은 스팬을 내고, 그 스팬을 k 에 넣을지 말지는 여기 후
 1. **리라이트 3안과 계약.** 현행 `Rewrite.suggestion` 은 단수라 같은 span_id 로 Rewrite 레코드 3개를 낸다. `suggestions` 배열로 갈지는 D·E 논점.
 2. **`sns_ext.py`** 는 E 의 W4~W6 「메타 관리」· W9 「에디터 경고」 화면이 나오면 지운다.
 3. **배포는 AWS** [MF-013] — 크레딧 조건 확인 후. 두 프로세스를 한 인스턴스에 두고 `PADOPOOL_URL` 만 맞추면 된다.
-4. 시딩 인물 5명은 `specificity_l1` 이 UNKNOWN 을 내지 않는 인물이다 (115명 중 63명 산출 가능, #115 법정동 문제).
+4. 시딩 인물 4명은 `specificity_l1` 이 UNKNOWN 을 내지 않는 인물이다 (115명 중 63명 산출 가능, #115 법정동 문제).
 
 ## 파일
 
@@ -148,14 +147,14 @@ static/urittle.css  우리뜰 디자인 (따뜻한 종이 톤). 파도풀 demo.c
 static/urittle.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json)
 templates/, static/demo.css  파도풀 단독 화면(개발용). 우리뜰 점검 화면도 /pado-static 으로 같이 쓴다
 test_demo.py        숫자 · 함정 · 계약 · 계층 경계 · API 12건
-probe.py            시딩 인물 5명 k 회귀 — --save 로 baseline, --diff 로 본 프로젝트 자원 교체 뒤 변화 확인
+probe.py            시딩 인물 4명 k 회귀 — --save 로 baseline, --diff 로 본 프로젝트 자원 교체 뒤 변화 확인
 LOG.md              대회 작업 일지 — 결정·발견(→ 본 프로젝트)·남은 것
 ```
 
 ## 화면 — 어디에 무엇이 있나
 
 - **레이아웃**: 1024px 이상은 본문 + 오른쪽 레일(sticky 300px), 그 아래는 1단, 640px 이하는 헤더에 로고만 두고 **하단 탭바**(홈·내 블로그·점검·글쓰기).
-- **레일**: 피드·프로필·글·에디터에서는 프로필 미니카드 · **파도풀 위젯**(`/u/<ref>/check.json` 을 비동기로 받아 링 게이지·k 카운트업) · 이웃 5명 · 계층 경계 안내. 점검 화면에서는 **요약이 따라다닌다** — 링·k·조치 체크리스트(누르면 그 카드로)·목차.
+- **레일**: 피드·프로필·글·에디터에서는 프로필 미니카드 · **파도풀 위젯**(`/u/<ref>/check.json` 을 비동기로 받아 링 게이지·k 카운트업) · 이웃 4명 · 계층 경계 안내. 점검 화면에서는 **요약이 따라다닌다** — 링·k·조치 체크리스트(누르면 그 카드로)·목차.
 - **점검 화면 요약**: 「이름·전화번호 검사기: 안전 ✓ vs 파도풀: 421명」 비교 스트립이 서비스의 존재 이유를 한 줄로 보인다. 깔때기는 로그 척도 막대가 단계마다 줄어들고, 줄에 마우스를 올리면 근거 문장의 형광이 켜지고 누르면 그 문장으로 간다. 조치 뒤에는 「421 → 111,069」 가 카운트업으로 뜬다.
 - **이모지**: 🛟(U+1F6DF, 유니코드 14)는 Windows 10 에서 □ 로 깨져 화면에서는 🌊 를 쓴다. 문서에서만 🛟.
 - `prefers-reduced-motion` 이면 애니메이션 없이 최종 상태로 간다. 리빌은 관찰자가 늦어도 2.5초 뒤 전부 표시된다 — 내용이 숨겨진 채 남지 않는다.

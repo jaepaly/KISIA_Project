@@ -27,7 +27,7 @@ sys.path.insert(0, str(SNS))
 from db import connect, db_path, init  # noqa: E402  (apps/sns/db.py)
 
 # 시연 인물 — k 가 산출되는(UNKNOWN 이 아닌) 인물만. 첫째가 메인 시연.
-DEFAULT_PERSONAS = ["D05", "D01", "D11", "D17", "D06"]
+DEFAULT_PERSONAS = ["D05", "D01", "D11", "D06"]
 GUEST_ID = "GUEST"   # 체험 계정 — 코퍼스 인물이 아니다. 글 0편
 
 

@@ -62,26 +62,6 @@
    ]
   }
  },
- "D17": {
-  "on": {
-   "k": 244,
-   "path": [
-    "nation:sum=51088284",
-    "location:admin_code=1858",
-    "age:crosstab_lookup=244",
-    "sex:abstain=244"
-   ]
-  },
-  "off": {
-   "k": 244,
-   "path": [
-    "nation:sum=51088284",
-    "location:admin_code=1858",
-    "age:crosstab_lookup=244",
-    "sex:abstain=244"
-   ]
-  }
- },
  "D06": {
   "on": {
    "k": 5,
