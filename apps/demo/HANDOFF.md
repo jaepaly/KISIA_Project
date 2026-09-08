@@ -26,6 +26,9 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -q    # 22 passe
 python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」이어야 정상
 ```
 
+> Claude Code 안에서 백그라운드로 띄우면 메모리 여유가 적을 때(≈3GB 이하) 감시가 서버를 죽인다. 그럴 땐 독립 프로세스로:
+> `Start-Process python -ArgumentList 'apps/demo/app.py' -WindowStyle Hidden` (sns_ext.py 도 같이). 내릴 땐 PID 로 Stop-Process.
+
 - 첫 화면(`/`)에 **첫 방문 카드** + 「▶ 3분 체험 시작」 → **9단계 투어**가 시연 순서대로 데려간다 (마당일기 → 내 글 점검 → 421 →
   깔때기 → 위치태그 끄기 → 421→111,069 → 글쓰기 → 예문·체험 계정·점검 → 색칠된 표현). 발표 대본이 곧 이 9단계.
 - 정본 수치(`probe.baseline.json`, 위치태그 ON/OFF): **D05 421/111,069** · D01 36,061/434,408 · E20 1,231/17,433 · C02 899/14,574 ·
