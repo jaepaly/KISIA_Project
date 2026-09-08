@@ -59,9 +59,10 @@ python experiments/exp01-baseline/compare.py
 > - 추론 모드: High
 > - 실행: Gemini CLI via Antigravity
 > - 측정일: 2026-09-08
-> - 채점: 골드와 `attr`·`subject`가 모두 일치할 때만 회수로 인정
-> - 제외: 골드 `subject`가 없는 `S01_b12_03`, `S01_b17_04` 2건은 unscorable로 분리
-> - 로컬 중간산출물: `reachability_inputs.jsonl`, `results/gemini_labeled.jsonl` (커밋하지 않음)
+> - 채점: exp01 설계 라벨과 `attr`·`subject`가 모두 일치할 때만 회수로 인정
+> - 비교 보수성: 기존 도구 3종은 type-agnostic any-span 기준인 반면 Gemini는 `attr`·`subject` 엄격 일치로 채점하므로, LLM에 더 불리한 기준을 적용한 보수적 비교다.
+> - 제외: exp01 설계 라벨의 `subject`가 없는 `S01_b12_03`, `S01_b17_04` 2건은 unscorable로 분리
+> - 재현 자료: 합성 코퍼스에서 파생한 `reachability_inputs.jsonl`과 `results/gemini_labeled.jsonl`을 함께 기록
 >
 > ⭐ **판정 결론**: `implicit`과 `inferential` 모두 미탐 공간 게이트를 충족했으나, 도달 가능성에서 `implicit`(86.5%)만 충족하고 `inferential`(42.4%)이 60%에 미달했습니다. 두 축 중 하나만 충족했으므로 #128 규칙에 따라 최종 판정은 **HOLD**입니다.
 > `explicit`(60.0%)의 높은 미탐율은 한글 수사("마흔여덟") 등 기존 도구의 구조적 한계(`label-schema` §4-1)에 기인함을 확인했습니다.
