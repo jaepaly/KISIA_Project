@@ -66,8 +66,15 @@ def parse_active_hour(raw: str, rng: random.Random) -> int:
     return rng.randint(0, 23)
 
 
-def recompute(posts_path: Path, persona: dict, seed: int, write: bool = True) -> tuple[int, int, str | None, str | None]:
-    """한 인물의 posts jsonl에서 created_at만 다시 찍는다.
+def recompute(posts_path: Path, persona: dict, seed: int, write: bool = True,
+              time_only: bool = False) -> tuple[int, int, str | None, str | None]:
+    """한 인물의 posts jsonl에서 created_at을 다시 찍는다.
+
+    time_only=True 면 날짜(년월일)는 기존 값을 그대로 두고 시각(시·분·초)만
+    다시 뽑는다. #201이 created_at의 날짜를 프롬프트에 넣어 본문·제목을
+    그 날짜에 맞춰 썼으므로(냉이=3월, 수국=6월, 매미=7월), 날짜를 건드리면
+    본문과 어긋난다 — 재현님 지적(#212)을 반영한다. 시각만 바꾸는 건
+    본문에 영향이 없다(시각까지 본문에 반영하는 인물은 없다고 확인됨).
 
     write=False 면 파일을 안 건드리고 계산만 한다 (--dry-run 용).
     반환: (수정건수, 전체건수, 첫편_이전값, 첫편_이후값)
@@ -93,15 +100,24 @@ def recompute(posts_path: Path, persona: dict, seed: int, write: bool = True) ->
 
     for i, rec in enumerate(recs):
         old = rec.get("created_at")
-        days_from_end = (total - 1 - i) * avg_gap
-        base = anchor.replace(hour=0, minute=0, second=0, microsecond=0) \
-            - timedelta(days=days_from_end)
         if windows:
             w = rng.choice(windows)
             hour = rng.randint(w.get("start_hour", 20), w.get("end_hour", 23))
         else:
             hour = parse_active_hour(typical, rng)
-        new_dt = base.replace(hour=hour % 24, minute=rng.randint(0, 59), second=rng.randint(0, 59))
+
+        if time_only and old:
+            # 날짜는 기존 값 그대로, 시각만 새로 찍는다
+            old_dt = datetime.fromisoformat(old)
+            new_dt = old_dt.replace(hour=hour % 24, minute=rng.randint(0, 59),
+                                     second=rng.randint(0, 59))
+        else:
+            days_from_end = (total - 1 - i) * avg_gap
+            base = anchor.replace(hour=0, minute=0, second=0, microsecond=0) \
+                - timedelta(days=days_from_end)
+            new_dt = base.replace(hour=hour % 24, minute=rng.randint(0, 59),
+                                   second=rng.randint(0, 59))
+
         new_val = new_dt.isoformat()
         if new_val != old:
             rec["created_at"] = new_val
@@ -124,11 +140,16 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=20260909)
     ap.add_argument("--dry-run", action="store_true",
                      help="파일을 안 쓰고 앞 3명만 미리보기로 계산 결과를 보여준다")
+    ap.add_argument("--full-redate", action="store_true",
+                     help="⚠️ 날짜(년월일)까지 다시 뽑는다. #201 이후 본문·제목이 "
+                          "created_at 날짜에 맞춰 쓰였으므로(냉이=3월·수국=6월·매미=7월), "
+                          "이 옵션을 쓰면 본문과 날짜가 어긋난다. 기본은 시각만 바꾼다.")
     a = ap.parse_args()
 
     posts_dir = Path(a.posts)
     personas_dir = Path(a.personas)
     write = not a.dry_run
+    time_only = not a.full_redate
 
     persona_files = sorted(f for f in personas_dir.glob("*.json") if not f.stem.startswith("_"))
     if a.dry_run:
@@ -147,7 +168,7 @@ def main() -> int:
             continue
 
         changed, total, before, after = recompute(
-            posts_path, persona, stable_seed(a.seed, pid), write=write
+            posts_path, persona, stable_seed(a.seed, pid), write=write, time_only=time_only
         )
         if a.dry_run:
             print(f"  {pid}: {before} → {after}  ({changed}/{total}건 변경 예정, 파일 미저장)")
@@ -158,6 +179,7 @@ def main() -> int:
         total_posts += total
 
     print(f"\n합계: {total_changed}/{total_posts}건")
+    print(f"모드: {'날짜+시각 전체 재계산 (--full-redate)' if a.full_redate else '시각만 재계산 (날짜는 기존 값 유지)'}")
     if a.dry_run:
         print("(--dry-run — 파일을 저장하지 않았다. 실제 적용은 --dry-run 없이 재실행)")
     return 0
