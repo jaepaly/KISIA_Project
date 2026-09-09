@@ -1,0 +1,170 @@
+{
+  "persona_id": "A02",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_b23280c9",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A02_profile_s01",
+          "text_id": "profile_bio",
+          "text": "집에서 원고 보는 사람",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A02_b03",
+        "spans": [
+          {
+            "span_id": "A02_b03_s01",
+            "text_id": "body",
+            "text": "쉰둘에 다시 일을 구했다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A02_b03_s02",
+            "text_id": "title",
+            "text": "다시 이력서를 쓴 날",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A02_b07",
+        "spans": [
+          {
+            "span_id": "A02_b07_s01",
+            "text_id": "body",
+            "text": "이십 년 하던 걸 접고",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A02_b09",
+        "spans": [
+          {
+            "span_id": "A02_b09_s01",
+            "text_id": "body",
+            "text": "동생이 해운대 살아서 거기서 만났다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A02_b12",
+        "spans": [
+          {
+            "span_id": "A02_b12_s01",
+            "text_id": "body",
+            "text": "아들이 독립한 뒤로 방이 비었다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A02_b13",
+        "spans": [
+          {
+            "span_id": "A02_b13_s01",
+            "text_id": "body",
+            "text": "아줌마 셋이 모이면 말이 길어진다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A02_b03",
+            "span_id": "A02_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A02_b13",
+            "span_id": "A02_b13_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A02_b07",
+            "span_id": "A02_b07_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A02_profile_s01"
+          },
+          {
+            "post_id": "A02_b03",
+            "span_id": "A02_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A02_b12",
+            "span_id": "A02_b12_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

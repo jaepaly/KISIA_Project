@@ -1,0 +1,201 @@
+{
+  "persona_id": "E05",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_26e2b663",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E05_profile_s01",
+          "text_id": "profile_bio",
+          "text": "타버린 숲이 다시 자라는 거 보는 게 일. 다이빙이랑 화분 키우기 덕질 중🌿",
+          "type": "INCOME",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E05_b03",
+        "spans": [
+          {
+            "span_id": "E05_b03_s01",
+            "text_id": "body",
+            "text": "오랜만에 쉬는 날이라 동백섬 한 바퀴 돌고 왔다,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "E05_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "저 멀리 광안대교 불빛,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E05_b06",
+        "spans": [
+          {
+            "span_id": "E05_b06_s01",
+            "text_id": "body",
+            "text": "이번 주는 산불 났던 자리 답사 때문에 계속 밖이었다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E05_b06_s02",
+            "text_id": "title",
+            "text": "타버린 숲 다시 걷다",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E05_b10",
+        "spans": [
+          {
+            "span_id": "E05_b10_s01",
+            "text_id": "body",
+            "text": "오늘도 부지 왔다갔다 하느라 하루종일 차 안에 있었다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E05_b13",
+        "spans": [
+          {
+            "span_id": "E05_b13_s01",
+            "text_id": "body",
+            "text": "연휴라 오랜만에 한국 나왔다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E05_b15",
+        "spans": [
+          {
+            "span_id": "E05_b15_s01",
+            "text_id": "body",
+            "text": "친구가 기장 살아서 오랜만에 거기서 캠핑했다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E05_b17",
+        "spans": [
+          {
+            "span_id": "E05_b17_s01",
+            "text_id": "body",
+            "text": "서른다섯인데 요즘 체력이 확실히 다르게 느껴짐,,",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E05_b17",
+            "span_id": "E05_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E05_b03",
+            "span_id": "E05_b03_s01"
+          },
+          {
+            "post_id": "E05_b03",
+            "span_id": "E05_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E05_b06",
+            "span_id": "E05_b06_s01"
+          },
+          {
+            "post_id": "E05_b06",
+            "span_id": "E05_b06_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E05_b13",
+            "span_id": "E05_b13_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E05_b10",
+            "span_id": "E05_b10_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E05_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

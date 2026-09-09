@@ -1,0 +1,156 @@
+{
+  "persona_id": "D20",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_422446d7",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D20_b03",
+        "spans": [
+          {
+            "span_id": "D20_b03_s01",
+            "text_id": "body",
+            "text": "새벽에 나가면 사십 분, 출근 시간엔 배로 걸림",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D20_b08",
+        "spans": [
+          {
+            "span_id": "D20_b08_s01",
+            "text_id": "body",
+            "text": "누나가 물려준 릴을 아직 씀",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D20_b13",
+        "spans": [
+          {
+            "span_id": "D20_b13_s01",
+            "text_id": "body",
+            "text": "딸 등록금 나가는 학기엔 실적 압박이 다르게 느껴짐",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D20_b18",
+        "spans": [
+          {
+            "span_id": "D20_b18_s01",
+            "text_id": "body",
+            "text": "쉰둘인데 새벽 낚시는 아직 됨",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D20_b22",
+        "spans": [
+          {
+            "span_id": "D20_b22_s01",
+            "text_id": "body",
+            "text": "거래처가 사하구 쪽으로 공장을 옮겨서 요즘 그쪽으로 자주 감",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D20_b28",
+        "spans": [
+          {
+            "span_id": "D20_b28_s01",
+            "text_id": "body",
+            "text": "예전에 해운대 살 때는 이 시간에 못 나왔음",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D20_b18",
+            "span_id": "D20_b18_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D20_b08",
+            "span_id": "D20_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D20_b03",
+            "span_id": "D20_b03_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D20_b13",
+            "span_id": "D20_b13_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "persona_id": "C14",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_fafc2212",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C14_profile_s01",
+          "text_id": "profile_bio",
+          "text": "방을 정리하고 체크인을 기다리는 하루를 기록합니다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C14_b03",
+        "spans": [
+          {
+            "span_id": "C14_b03_s01",
+            "text_id": "body",
+            "text": "오일장 입구에서 장을 본 뒤 항구 방향 시내버스를 타고 돌아왔습니다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "C14_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "오일장에서 항구 방향으로 돌아오는 오후 길",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C14_b06",
+        "spans": [
+          {
+            "span_id": "C14_b06_s01",
+            "text_id": "body",
+            "text": "퇴실한 방의 침구를 걷고 다음 체크인 시간을 다시 확인했습니다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C14_b06_s02",
+            "text_id": "title",
+            "text": "체크인 전에 확인한 주변 식당",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C14_b09",
+        "spans": [
+          {
+            "span_id": "C14_b09_s01",
+            "text_id": "body",
+            "text": "아들이 어머니인 제게 혼자 무거운 침구를 옮기지 말라고 말했습니다",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C14_b12",
+        "spans": [
+          {
+            "span_id": "C14_b12_s01",
+            "text_id": "body",
+            "text": "예순셋이 되고 나니 하루 일정을 서두르지 않고 나누어 처리하게 됩니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C14_b15",
+        "spans": [
+          {
+            "span_id": "C14_b15_s01",
+            "text_id": "body",
+            "text": "예약 취소가 이어진 달에는 침구 세탁비와 관리비를 빼고 얼마나 남을지 알기 어렵습니다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C14_b18",
+        "spans": [
+          {
+            "span_id": "C14_b18_s01",
+            "text_id": "body",
+            "text": "아들이 애월읍의 새 근무지 근처로 이사해 필요한 침구를 보내달라고 했습니다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C14_b12",
+            "span_id": "C14_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C14_b09",
+            "span_id": "C14_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C14_b03",
+            "span_id": "C14_b03_s01"
+          },
+          {
+            "post_id": "C14_b03",
+            "span_id": "C14_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C14_b06",
+            "span_id": "C14_b06_s01"
+          },
+          {
+            "post_id": "C14_b06",
+            "span_id": "C14_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C14_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C14_b15",
+            "span_id": "C14_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

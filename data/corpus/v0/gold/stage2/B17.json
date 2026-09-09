@@ -1,0 +1,218 @@
+{
+  "persona_id": "B17",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_ee29b54b",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B17_profile_s01",
+          "text_id": "profile_bio",
+          "text": "율하동에서 약국 운영하는 48세 약사 워킹맘. 약국과 일상의 소소한 기록.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B17_b05",
+        "spans": [
+          {
+            "span_id": "B17_b05_s01",
+            "text_id": "body",
+            "text": "오전에 처방전 조제 건수 밀려서 복약지도 연속으로 하느라 목이 다 쉬었네요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B17_b05_s02",
+            "text_id": "title",
+            "text": "약국 조제실의 하루",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b09",
+        "spans": [
+          {
+            "span_id": "B17_b09_s01",
+            "text_id": "body",
+            "text": "친정 언니가 약국 들러서 과일 건네주고 가서 점심때 같이 나눠 먹었어요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b14",
+        "spans": [
+          {
+            "span_id": "B17_b14_s01",
+            "text_id": "body",
+            "text": "마흔여덟 되니까 아이들 학원비 챙기는 것도 만만치 않네요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b16",
+        "spans": [
+          {
+            "span_id": "B17_b16_s01",
+            "text_id": "body",
+            "text": "고등학생 아들이랑 중학생 딸아이 학원 끝나는 시간 맞춰서 데리러 갔다 왔어요",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b19",
+        "spans": [
+          {
+            "span_id": "B17_b19_s01",
+            "text_id": "body",
+            "text": "약국 분기 부가세 정산이랑 도매상 의약품 결제 대금 3천만원 송금 마쳤습니다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b24",
+        "spans": [
+          {
+            "span_id": "B17_b24_s01",
+            "text_id": "body",
+            "text": "율하동 롯데캐슬 상가 앞에서 아이 기다리며 테이크아웃 커피 한잔 마셨어요",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B17_b24_s02",
+            "text_id": "photo_caption:0",
+            "text": "율하역 상가거리 노을",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B17_b29",
+        "spans": [
+          {
+            "span_id": "B17_b29_s01",
+            "text_id": "body",
+            "text": "동기 약사가 경북 구미 인동에 대형 약국을 새로 개업해서 개업 화환 보내고 다녀왔어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b14",
+            "span_id": "B17_b14_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b09",
+            "span_id": "B17_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b24",
+            "span_id": "B17_b24_s01"
+          },
+          {
+            "post_id": "B17_b24",
+            "span_id": "B17_b24_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b05",
+            "span_id": "B17_b05_s01"
+          },
+          {
+            "post_id": "B17_b05",
+            "span_id": "B17_b05_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "B17_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b16",
+            "span_id": "B17_b16_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B17_b19",
+            "span_id": "B17_b19_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

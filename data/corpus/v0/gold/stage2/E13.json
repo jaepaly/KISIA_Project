@@ -1,0 +1,227 @@
+{
+  "persona_id": "E13",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_cf44d525",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E13_profile_s01",
+          "text_id": "profile_bio",
+          "text": "혼자 하는 백반집. 오늘 반찬 기록",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E13_b02",
+        "spans": [
+          {
+            "span_id": "E13_b02_s01",
+            "text_id": "body",
+            "text": "은파호수 산책로까지 걸어갔다 왔습니다. 저녁에 걷기 딱 좋습니다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E13_b02_s02",
+            "text_id": "title",
+            "text": "은파 저녁 산책",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b05",
+        "spans": [
+          {
+            "span_id": "E13_b05_s01",
+            "text_id": "body",
+            "text": "혼자 하는 백반집이라 반찬 가짓수 맞추는 게 늘 숙제입니다",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E13_b05_s02",
+            "text_id": "body",
+            "text": "쉰다섯인데 아직은 혼자서 반찬 다 해냅니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b08",
+        "spans": [
+          {
+            "span_id": "E13_b08_s01",
+            "text_id": "body",
+            "text": "자식들 다 출가시키고 이제 영감이랑 둘이 가게 봅니다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b11",
+        "spans": [
+          {
+            "span_id": "E13_b11_s01",
+            "text_id": "body",
+            "text": "가게 2층이 집이라 출퇴근이랄 게 없습니다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b14",
+        "spans": [
+          {
+            "span_id": "E13_b14_s01",
+            "text_id": "body",
+            "text": "이 아줌마도 요새 손목이 예전 같지 않습니다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b17",
+        "spans": [
+          {
+            "span_id": "E13_b17_s01",
+            "text_id": "body",
+            "text": "요즘 재료비가 올라서 반찬 가짓수 줄일까 고민입니다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E13_b17_s02",
+            "text_id": "body",
+            "text": "채소 받아 오는 거래처가 김제로 창고를 옮겼다고 합니다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E13_b20",
+        "spans": [
+          {
+            "span_id": "E13_b20_s01",
+            "text_id": "body",
+            "text": "이 장사 시작하기 전에는 익산에서 시장 장사를 오래 했습니다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b05",
+            "span_id": "E13_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b14",
+            "span_id": "E13_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b02",
+            "span_id": "E13_b02_s01"
+          },
+          {
+            "post_id": "E13_b02",
+            "span_id": "E13_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b05",
+            "span_id": "E13_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E13_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b08",
+            "span_id": "E13_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b11",
+            "span_id": "E13_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E13_b17",
+            "span_id": "E13_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

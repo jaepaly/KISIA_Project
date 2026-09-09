@@ -1,0 +1,169 @@
+{
+  "persona_id": "D10",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d322de08",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D10_b02",
+        "spans": [
+          {
+            "span_id": "D10_b02_s01",
+            "text_id": "body",
+            "text": "이십 년째 같은 자리에서 인삼 떼다 파는데 올해가 제일 어렵네요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D10_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "비수기 월세 내려고 적금 깼어요",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D10_b06",
+        "spans": [
+          {
+            "span_id": "D10_b06_s01",
+            "text_id": "body",
+            "text": "언니가 준 앞치마를 아직도 두르고 있어요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D10_b11",
+        "spans": [
+          {
+            "span_id": "D10_b11_s01",
+            "text_id": "body",
+            "text": "쉰넷인데 무릎이 먼저 늙네요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D10_b16",
+        "spans": [
+          {
+            "span_id": "D10_b16_s01",
+            "text_id": "body",
+            "text": "시장 뒷골목이라 아침 여섯 시부터 트럭 소리에 깬다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D10_b21",
+        "spans": [
+          {
+            "span_id": "D10_b21_s01",
+            "text_id": "body",
+            "text": "본가가 안동이라 제사 때만 갑니다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D10_b26",
+        "spans": [
+          {
+            "span_id": "D10_b26_s01",
+            "text_id": "body",
+            "text": "옆 가게 새댁이 대구 서문시장 쪽으로 점포를 옮긴다고 해서 한참 얘기했네요",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D10_b11",
+            "span_id": "D10_b11_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D10_b06",
+            "span_id": "D10_b06_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D10_b16",
+            "span_id": "D10_b16_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D10_b02",
+            "span_id": "D10_b02_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D10_b02",
+            "span_id": "D10_b02_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

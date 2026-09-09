@@ -1,0 +1,219 @@
+{
+  "persona_id": "B10",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_54bef1cc",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B10_profile_s01",
+          "text_id": "profile_bio",
+          "text": "인사팀 14년차의 담담한 직장 생활과 두 아들 키우는 이야기.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B10_b03",
+        "spans": [
+          {
+            "span_id": "B10_b03_s01",
+            "text_id": "body",
+            "text": "상반기 대졸 신입 공채 서류전형 평가 기준표 확정하고 실무 면접관 교육까지 마쳤다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B10_b03_s02",
+            "text_id": "title",
+            "text": "상반기 신입 공채 면접관 교육",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b08",
+        "spans": [
+          {
+            "span_id": "B10_b08_s01",
+            "text_id": "body",
+            "text": "주말에 처남 결혼식 참석하느라 양복 꺼내 입고 두 아들 녀석 데리고 예식장 다녀왔다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b12",
+        "spans": [
+          {
+            "span_id": "B10_b12_s01",
+            "text_id": "body",
+            "text": "서른에 첫 직장 입사해서 앞만 보고 달렸는데 벌써 마흔둘 차장 직급을 달고 있네요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b16",
+        "spans": [
+          {
+            "span_id": "B10_b16_s01",
+            "text_id": "body",
+            "text": "급여 통장에 월급 들어오기 무섭게 아파트 주담대 원리금 빠져나가는 걸 보니 가장의 무게를 실감한다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b20",
+        "spans": [
+          {
+            "span_id": "B10_b20_s01",
+            "text_id": "body",
+            "text": "퇴근 후 원천리천 산책로 따라서 매탄동 아파트 단지까지 가볍게 러닝하고 들어왔다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B10_b20_s02",
+            "text_id": "photo_caption:0",
+            "text": "수인분당선 매탄권선역 1번 출구 퇴근길 풍경",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b25",
+        "spans": [
+          {
+            "span_id": "B10_b25_s01",
+            "text_id": "body",
+            "text": "대학 동기가 이번에 용인 기흥구 서농동 연구소로 이직해서 퇴근 후 기흥역 앞에서 만나 저녁을 먹었다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "B10_b28",
+        "spans": [
+          {
+            "span_id": "B10_b28_s01",
+            "text_id": "body",
+            "text": "주말에 아내랑 두 아들 녀석 데리고 광교호수공원 산책 다녀왔다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b12",
+            "span_id": "B10_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b08",
+            "span_id": "B10_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b20",
+            "span_id": "B10_b20_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b03",
+            "span_id": "B10_b03_s01"
+          },
+          {
+            "post_id": "B10_b03",
+            "span_id": "B10_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b28",
+            "span_id": "B10_b28_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "B10_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b20",
+            "span_id": "B10_b20_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B10_b16",
+            "span_id": "B10_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

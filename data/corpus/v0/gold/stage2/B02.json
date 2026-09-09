@@ -1,0 +1,177 @@
+{
+  "persona_id": "B02",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_744d1ff0",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B02_profile_s01",
+          "text_id": "profile_bio",
+          "text": "울산 석유화학단지 5년 차 엔지니어. 수도권 이직 준비 및 기술 기록.",
+          "type": "JOB",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B02_b02",
+        "spans": [
+          {
+            "span_id": "B02_b02_s01",
+            "text_id": "body",
+            "text": "서른하나에 첫 직장 나와서 이직하려니 생각이 많아진다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b06",
+        "spans": [
+          {
+            "span_id": "B02_b06_s01",
+            "text_id": "title",
+            "text": "[후기] 신정동에서 KTX 타고 서울 2차 임원 면접 다녀온 날",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b09",
+        "spans": [
+          {
+            "span_id": "B02_b09_s01",
+            "text_id": "body",
+            "text": "아침 6시 40분에 사택 앞 통근버스 정류장으로 나서는 길",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b13",
+        "spans": [
+          {
+            "span_id": "B02_b13_s01",
+            "text_id": "body",
+            "text": "주말에 아내랑 울산대공원 한 바퀴 돌며 면접 피드백 나눔",
+            "type": "FAM",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b16",
+        "spans": [
+          {
+            "span_id": "B02_b16_s01",
+            "text_id": "body",
+            "text": "친형이 여수 산단 정유사로 작년에 먼저 이직해서 조언을 많이 해줬다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b20",
+        "spans": [
+          {
+            "span_id": "B02_b20_s01",
+            "text_id": "body",
+            "text": "지방 대기업 제조업 성과급 영끌하던 시절 연봉을 수도권에서 맞추기가 쉽지 않다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B02_b02",
+            "span_id": "B02_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B02_b06",
+            "span_id": "B02_b06_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B02_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B02_b13",
+            "span_id": "B02_b13_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B02_b09",
+            "span_id": "B02_b09_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B02_b20",
+            "span_id": "B02_b20_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

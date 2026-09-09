@@ -1,0 +1,173 @@
+{
+  "persona_id": "D04",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_f727adc9",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D04_b03",
+        "spans": [
+          {
+            "span_id": "D04_b03_s01",
+            "text_id": "body",
+            "text": "사무실 아래층 복사기가 또 멈췄다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D04_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "아래층 복도 끝",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D04_b07",
+        "spans": [
+          {
+            "span_id": "D04_b07_s01",
+            "text_id": "body",
+            "text": "집사람이 아침에 우산을 챙겨줬다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D04_b12",
+        "spans": [
+          {
+            "span_id": "D04_b12_s01",
+            "text_id": "body",
+            "text": "정류장 두 정거장 전에 내려서 걸었다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D04_b14",
+        "spans": [
+          {
+            "span_id": "D04_b14_s01",
+            "text_id": "body",
+            "text": "큰애가 세종 산다고 해서 주말에 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D04_b16",
+        "spans": [
+          {
+            "span_id": "D04_b16_s01",
+            "text_id": "body",
+            "text": "정년까지 삼 년 남았다는 말을 들었다",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D04_b19",
+        "spans": [
+          {
+            "span_id": "D04_b19_s01",
+            "text_id": "body",
+            "text": "물가에서 오리 세는 사람이 나 말고도 있었다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D04_b16",
+            "span_id": "D04_b16_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D04_b07",
+            "span_id": "D04_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D04_b19",
+            "span_id": "D04_b19_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D04_b03",
+            "span_id": "D04_b03_s01"
+          },
+          {
+            "post_id": "D04_b03",
+            "span_id": "D04_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D04_b12",
+            "span_id": "D04_b12_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "persona_id": "D17",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_1d3a071a",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D17_profile_s01",
+          "text_id": "profile_bio",
+          "text": "수첩 옮겨 적음",
+          "type": "JOB",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D17_b05",
+        "spans": [
+          {
+            "span_id": "D17_b05_s01",
+            "text_id": "body",
+            "text": "일흔셋. 아직 걸어서 정류장까지 간다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D17_b05_s02",
+            "text_id": "title",
+            "text": "8월 3일 첫차",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b12",
+        "spans": [
+          {
+            "span_id": "D17_b12_s01",
+            "text_id": "body",
+            "text": "영감이 혼자 밥해 먹는 게 뭐 대수냐고 한다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b15",
+        "spans": [
+          {
+            "span_id": "D17_b15_s01",
+            "text_id": "body",
+            "text": "연금 나온 날 버스표를 한 달치 끊어 둔다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b20",
+        "spans": [
+          {
+            "span_id": "D17_b20_s01",
+            "text_id": "body",
+            "text": "막내가 전주 시내에 가게를 얻어 나가 있다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b22",
+        "spans": [
+          {
+            "span_id": "D17_b22_s01",
+            "text_id": "body",
+            "text": "제사 지낼 사람이 나뿐이라 상은 늘 내가 본다",
+            "type": "FAM",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D17_b05",
+            "span_id": "D17_b05_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D17_b12",
+            "span_id": "D17_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D17_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D17_b22",
+            "span_id": "D17_b22_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D17_b05",
+            "span_id": "D17_b05_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D17_b15",
+            "span_id": "D17_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

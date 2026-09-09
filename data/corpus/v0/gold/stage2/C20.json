@@ -1,0 +1,208 @@
+{
+  "persona_id": "C20",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_c9c1dd0d",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C20_profile_s01",
+          "text_id": "profile_bio",
+          "text": "중국 생활과 수출입 업무 사이에서 취미를 기록함",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C20_b03",
+        "spans": [
+          {
+            "span_id": "C20_b03_s01",
+            "text_id": "body",
+            "text": "중국 청두에서 지하철로 출근한 지도 벌써 몇 해째구,,, 이제 환승 안내도 익숙함ㅋ",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C20_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "청두 집 근처에서 본 퇴근길 하늘 🐾",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C20_b06",
+        "spans": [
+          {
+            "span_id": "C20_b06_s01",
+            "text_id": "body",
+            "text": "오전엔 선적 서류 맞추고 오후엔 거래처가 보낸 인보이스랑 통관 일정을 다시 확인함",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C20_b06_s02",
+            "text_id": "title",
+            "text": "통관 일정 또 바뀐 날",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C20_b09",
+        "spans": [
+          {
+            "span_id": "C20_b09_s01",
+            "text_id": "body",
+            "text": "엄마가 딸인 나한테 여동생 선물까지 챙겨 보내라고 메시지함",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C20_b09_s02",
+            "text_id": "body",
+            "text": "대학 동기가 대구 수성구에서 열리는 모임에 간다며 사진을 보내왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "C20_b12",
+        "spans": [
+          {
+            "span_id": "C20_b12_s01",
+            "text_id": "body",
+            "text": "서른여덟이 되니까 한국 들어갈 때 챙길 목록부터 길어지는구,,,",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C20_b15",
+        "spans": [
+          {
+            "span_id": "C20_b15_s01",
+            "text_id": "body",
+            "text": "월급은 그대로인데 환율이랑 집세가 같이 움직여서 실제 생활비가 줄었는지는 잘 모르겠음",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C20_b18",
+        "spans": [
+          {
+            "span_id": "C20_b18_s01",
+            "text_id": "body",
+            "text": "한국에 잠깐 갔을 때 전주 효자동 전시장에서 새 차를 시승했구,,, 다시 집으로 돌아옴",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C20_b12",
+            "span_id": "C20_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C20_b09",
+            "span_id": "C20_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C20_b03",
+            "span_id": "C20_b03_s01"
+          },
+          {
+            "post_id": "C20_b03",
+            "span_id": "C20_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C20_b06",
+            "span_id": "C20_b06_s01"
+          },
+          {
+            "post_id": "C20_b06",
+            "span_id": "C20_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C20_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C20_b15",
+            "span_id": "C20_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "persona_id": "E21",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_231b2f8e",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E21_profile_s01",
+          "text_id": "profile_bio",
+          "text": "은퇴하고 사진 찍으러 다니는 낙",
+          "type": "INCOME",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E21_b02",
+        "spans": [
+          {
+            "span_id": "E21_b02_s01",
+            "text_id": "body",
+            "text": "촉석루 야경 찍으러 나갔다가 사람 너무 많아서 그냥 왔어",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b05",
+        "spans": [
+          {
+            "span_id": "E21_b05_s01",
+            "text_id": "body",
+            "text": "동호회 사람들이랑 출사 나갔다가 하루 종일 걸었지",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E21_b05_s02",
+            "text_id": "body",
+            "text": "동호회 회장 양반은 창원서 사진관을 하잖아",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b08",
+        "spans": [
+          {
+            "span_id": "E21_b08_s01",
+            "text_id": "body",
+            "text": "할멈이랑 남강 산책로 걷고 왔지",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b11",
+        "spans": [
+          {
+            "span_id": "E21_b11_s01",
+            "text_id": "body",
+            "text": "출사 때는 차 끌고 나가고 평소엔 그냥 걸어 다녀",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b14",
+        "spans": [
+          {
+            "span_id": "E21_b14_s01",
+            "text_id": "body",
+            "text": "처남이 렌즈 하나 새로 사라고 자꾸 부추기네",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b17",
+        "spans": [
+          {
+            "span_id": "E21_b17_s01",
+            "text_id": "body",
+            "text": "예순다섯인데 아직도 카메라 들고 다니는 게 낙이야",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E21_b20",
+        "spans": [
+          {
+            "span_id": "E21_b20_s01",
+            "text_id": "body",
+            "text": "젊었을 땐 사천에서 오래 일했었지",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b17",
+            "span_id": "E21_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b14",
+            "span_id": "E21_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b02",
+            "span_id": "E21_b02_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b05",
+            "span_id": "E21_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b08",
+            "span_id": "E21_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E21_b11",
+            "span_id": "E21_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E21_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "persona_id": "E14",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_b7f456e6",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E14_profile_s01",
+          "text_id": "profile_bio",
+          "text": "육아하며 부업으로 공방 운영해요. 소소한 정보 나눔",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E14_b02",
+        "spans": [
+          {
+            "span_id": "E14_b02_s01",
+            "text_id": "body",
+            "text": "작전역 근처 우체국까지 유모차 끌고 다녀왔어요ㅎㅎ",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E14_b02_s02",
+            "text_id": "title",
+            "text": "작전역 우체국 나들이",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b05",
+        "spans": [
+          {
+            "span_id": "E14_b05_s01",
+            "text_id": "body",
+            "text": "이번 주문 제작 건이 몰려서 새벽까지 재봉틀 돌렸어요ㅜㅜ",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b08",
+        "spans": [
+          {
+            "span_id": "E14_b08_s01",
+            "text_id": "body",
+            "text": "어린이집 등원 준비만 한 시간 걸려요ㅋㅋ",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b11",
+        "spans": [
+          {
+            "span_id": "E14_b11_s01",
+            "text_id": "body",
+            "text": "택배 부치러 일주일에 두 번은 꼭 우체국에 가요",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b14",
+        "spans": [
+          {
+            "span_id": "E14_b14_s01",
+            "text_id": "body",
+            "text": "언니가 육아템 추천해달라고 연락 왔어요^^",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b17",
+        "spans": [
+          {
+            "span_id": "E14_b17_s01",
+            "text_id": "body",
+            "text": "서른아홉 되니까 밤새 작업하고 나면 다음 날이 힘들어요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E14_b20",
+        "spans": [
+          {
+            "span_id": "E14_b20_s01",
+            "text_id": "body",
+            "text": "형부가 부평 쪽으로 회사를 옮겼다고 하더라고요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b17",
+            "span_id": "E14_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b14",
+            "span_id": "E14_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b02",
+            "span_id": "E14_b02_s01"
+          },
+          {
+            "post_id": "E14_b02",
+            "span_id": "E14_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b05",
+            "span_id": "E14_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E14_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b08",
+            "span_id": "E14_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E14_b11",
+            "span_id": "E14_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

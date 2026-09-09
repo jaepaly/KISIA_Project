@@ -1,0 +1,236 @@
+{
+  "persona_id": "B14",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_b6e084c5",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B14_profile_s01",
+          "text_id": "profile_bio",
+          "text": "복대동 사는 18살 남고생. 야자와 자습 사이의 소소한 덤프.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B14_b03",
+        "spans": [
+          {
+            "span_id": "B14_b03_s01",
+            "text_id": "body",
+            "text": "D-250 카운트다운 달력 보면서 플래너 정리하는데 시간 진짜 빠르다네여",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "B14_b03_s02",
+            "text_id": "title",
+            "text": "D-250 독서실에서",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b07",
+        "spans": [
+          {
+            "span_id": "B14_b07_s01",
+            "text_id": "body",
+            "text": "군대 간 형한테 택배 보내고 막내 여동생 학원 픽업까지 중간 서열은 웁니다ㅜ",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b09",
+        "spans": [
+          {
+            "span_id": "B14_b09_s01",
+            "text_id": "body",
+            "text": "복대동 지웰시티 앞에서 시내버스 832번 타고 독서실로 넘어가는 중",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b12",
+        "spans": [
+          {
+            "span_id": "B14_b12_s01",
+            "text_id": "body",
+            "text": "누나가 쓰던 독서대 물려받아서 책상에 세팅 완료했듬",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b15",
+        "spans": [
+          {
+            "span_id": "B14_b15_s01",
+            "text_id": "body",
+            "text": "모의고사 보고 오답노트 정리하는데 야자 시간에 집중 짱 잘 됨",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b17",
+        "spans": [
+          {
+            "span_id": "B14_b17_s01",
+            "text_id": "body",
+            "text": "한 달 용돈 5만원 다 써서 이번 주말엔 편의점 삼각김밥으로 버텨야 함",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b22",
+        "spans": [
+          {
+            "span_id": "B14_b22_s01",
+            "text_id": "body",
+            "text": "야자 끝나고 복대동 지웰시티 앞 사거리에서 버스 기다리는 중",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B14_b22_s02",
+            "text_id": "photo_caption:0",
+            "text": "복대동 사거리 야경 버스정류장",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B14_b27",
+        "spans": [
+          {
+            "span_id": "B14_b27_s01",
+            "text_id": "body",
+            "text": "외삼촌이 이번에 대전 둔산동 지사로 발령받으셔서 주말에 가족들이랑 축하 외식 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b03",
+            "span_id": "B14_b03_s01"
+          },
+          {
+            "post_id": "B14_b03",
+            "span_id": "B14_b03_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b12",
+            "span_id": "B14_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b22",
+            "span_id": "B14_b22_s01"
+          },
+          {
+            "post_id": "B14_b22",
+            "span_id": "B14_b22_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b15",
+            "span_id": "B14_b15_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "B14_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b07",
+            "span_id": "B14_b07_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b09",
+            "span_id": "B14_b09_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B14_b17",
+            "span_id": "B14_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

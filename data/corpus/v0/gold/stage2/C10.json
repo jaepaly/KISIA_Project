@@ -1,0 +1,200 @@
+{
+  "persona_id": "C10",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_908d7290",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C10_profile_s01",
+          "text_id": "profile_bio",
+          "text": "나무 돌보며 지나간 하루를 남긴다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C10_b03",
+        "spans": [
+          {
+            "span_id": "C10_b03_s01",
+            "text_id": "body",
+            "text": "면사무소 앞을 지나 과수원길로 들어가니 아침 안개가 아직 남아 있더라",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "C10_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "군내버스 지나간 뒤 조용해진 과수원 입구",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C10_b06",
+        "spans": [
+          {
+            "span_id": "C10_b06_s01",
+            "text_id": "body",
+            "text": "마른 가지를 걷어내고 수확 상자를 세어 놓으니 오전이 다 갔지",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C10_b06_s02",
+            "text_id": "title",
+            "text": "마른 가지 걷어낸 날",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C10_b09",
+        "spans": [
+          {
+            "span_id": "C10_b09_s01",
+            "text_id": "body",
+            "text": "큰딸이 아버지인 나한테 무거운 상자는 혼자 들지 말라고 하더라",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C10_b12",
+        "spans": [
+          {
+            "span_id": "C10_b12_s01",
+            "text_id": "body",
+            "text": "일흔넷이 됐어도 나무에 새순이 올라오면 한참을 들여다보게 되지",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C10_b15",
+        "spans": [
+          {
+            "span_id": "C10_b15_s01",
+            "text_id": "body",
+            "text": "농자재값하고 상자값을 빼면 올해 농사에서 얼마나 남을지는 아직 모르겠어",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C10_b18",
+        "spans": [
+          {
+            "span_id": "C10_b18_s01",
+            "text_id": "body",
+            "text": "아들이 청주 작업장으로 과일 상자를 보내 달라며 새 배송지를 알려줬지",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C10_b12",
+            "span_id": "C10_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C10_b09",
+            "span_id": "C10_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C10_b03",
+            "span_id": "C10_b03_s01"
+          },
+          {
+            "post_id": "C10_b03",
+            "span_id": "C10_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C10_b06",
+            "span_id": "C10_b06_s01"
+          },
+          {
+            "post_id": "C10_b06",
+            "span_id": "C10_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C10_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C10_b15",
+            "span_id": "C10_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

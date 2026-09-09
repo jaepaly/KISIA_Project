@@ -1,0 +1,171 @@
+{
+  "persona_id": "D14",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_0683c2bb",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D14_profile_s01",
+          "text_id": "profile_bio",
+          "text": "주말에만 씁니다",
+          "type": "COMMUTE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D14_b02",
+        "spans": [
+          {
+            "span_id": "D14_b02_s01",
+            "text_id": "body",
+            "text": "편도 백 분이라 광역버스에서 자는 게 습관이 됐어요",
+            "type": "COMMUTE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b06",
+        "spans": [
+          {
+            "span_id": "D14_b06_s01",
+            "text_id": "body",
+            "text": "이모가 물때표를 붙여줬는데 아직도 그거 봐요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D14_b06_s02",
+            "text_id": "photo_caption:0",
+            "text": "집 앞 갯벌, 물 빠진 날",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b11",
+        "spans": [
+          {
+            "span_id": "D14_b11_s01",
+            "text_id": "body",
+            "text": "사고 접수 서류를 주말까지 들고 오면 안 되는데 또 그랬어요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b15",
+        "spans": [
+          {
+            "span_id": "D14_b15_s01",
+            "text_id": "body",
+            "text": "적금 하나 깨면 차를 살 수 있는데 버스가 더 싸서 미루고 있어요",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b25",
+        "spans": [
+          {
+            "span_id": "D14_b25_s01",
+            "text_id": "body",
+            "text": "친구 회사가 송도로 옮겨서 이번엔 거기서 봤어요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D14_b06",
+            "span_id": "D14_b06_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D14_b06",
+            "span_id": "D14_b06_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D14_b11",
+            "span_id": "D14_b11_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D14_b02",
+            "span_id": "D14_b02_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D14_profile_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D14_b15",
+            "span_id": "D14_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

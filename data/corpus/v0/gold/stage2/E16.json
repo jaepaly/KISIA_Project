@@ -1,0 +1,219 @@
+{
+  "persona_id": "E16",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_506b14dd",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E16_profile_s01",
+          "text_id": "profile_bio",
+          "text": "이직 두 번째. 후기 남기는 중",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E16_b02",
+        "spans": [
+          {
+            "span_id": "E16_b02_s01",
+            "text_id": "body",
+            "text": "송정역 근처로 이사하고 나서야 출근이 편해졌다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E16_b02_s02",
+            "text_id": "title",
+            "text": "송정역 근처 자취 후기",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b05",
+        "spans": [
+          {
+            "span_id": "E16_b05_s01",
+            "text_id": "body",
+            "text": "인수인계 받는 게 생각보다 오래 걸려서 아직도 헤맨다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E16_b05_s02",
+            "text_id": "body",
+            "text": "스물아홉인데 인수인계 받는 것도 벌써 벅차다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b08",
+        "spans": [
+          {
+            "span_id": "E16_b08_s01",
+            "text_id": "body",
+            "text": "자취방 정리를 이제야 끝냈다. 혼자 사니까 미루게 된다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b11",
+        "spans": [
+          {
+            "span_id": "E16_b11_s01",
+            "text_id": "body",
+            "text": "하남산단 들어가는 길이 아침마다 막힌다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b14",
+        "spans": [
+          {
+            "span_id": "E16_b14_s01",
+            "text_id": "body",
+            "text": "매형이 이직 축하한다고 밥 사줬다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b17",
+        "spans": [
+          {
+            "span_id": "E16_b17_s01",
+            "text_id": "body",
+            "text": "연봉이 소폭 올랐다고는 하는데 체감이 아직 안 된다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E16_b20",
+        "spans": [
+          {
+            "span_id": "E16_b20_s01",
+            "text_id": "body",
+            "text": "누나가 나주 혁신도시 쪽으로 발령났다고 이사 준비 중이다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b05",
+            "span_id": "E16_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b14",
+            "span_id": "E16_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b02",
+            "span_id": "E16_b02_s01"
+          },
+          {
+            "post_id": "E16_b02",
+            "span_id": "E16_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b05",
+            "span_id": "E16_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E16_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b08",
+            "span_id": "E16_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b11",
+            "span_id": "E16_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E16_b17",
+            "span_id": "E16_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

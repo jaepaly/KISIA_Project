@@ -1,0 +1,8 @@
+{
+  "train": 744,
+  "dev": 91,
+  "test_only_posts": 175,
+  "dropped_posts": 172,
+  "k": 8,
+  "seed": 20260907
+}

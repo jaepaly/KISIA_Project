@@ -1,0 +1,155 @@
+{
+  "persona_id": "A07",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_489cbf5e",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A07_b04",
+        "spans": [
+          {
+            "span_id": "A07_b04_s01",
+            "text_id": "body",
+            "text": "열일곱인데 벌써 지친다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A07_b08",
+        "spans": [
+          {
+            "span_id": "A07_b08_s01",
+            "text_id": "body",
+            "text": "자전거로 학교까지 십오 분",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A07_b08_s02",
+            "text_id": "title",
+            "text": "체인 빠진 날은 그냥 걷는다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A07_b12",
+        "spans": [
+          {
+            "span_id": "A07_b12_s01",
+            "text_id": "body",
+            "text": "형이랑 티비 채널로 싸웠다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A07_b16",
+        "spans": [
+          {
+            "span_id": "A07_b16_s01",
+            "text_id": "body",
+            "text": "용돈으로는 못 산다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A07_b19",
+        "spans": [
+          {
+            "span_id": "A07_b19_s01",
+            "text_id": "body",
+            "text": "사촌이 중동 살아서 거기서 놀았다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A07_b04",
+            "span_id": "A07_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A07_b12",
+            "span_id": "A07_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A07_b08",
+            "span_id": "A07_b08_s01"
+          },
+          {
+            "post_id": "A07_b08",
+            "span_id": "A07_b08_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A07_b16",
+            "span_id": "A07_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "persona_id": "B09",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_b7721cb9",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B09_profile_s01",
+          "text_id": "profile_bio",
+          "text": "노은동 작은 공방에서 천을 짓고 수를 놓습니다. 차 한 잔의 쉼표.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B09_b03",
+        "spans": [
+          {
+            "span_id": "B09_b03_s01",
+            "text_id": "body",
+            "text": "오후에 수강생분들 오시기 전에 천연 염색 원단 재단해두고 자수 도안 정리 마쳤습니다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B09_b03_s02",
+            "text_id": "title",
+            "text": "봄 들꽃 자수 수업 준비",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B09_b08",
+        "spans": [
+          {
+            "span_id": "B09_b08_s01",
+            "text_id": "body",
+            "text": "주말에 시누이가 예쁜 찻잔 세트를 들고 공방에 놀러 와서 오랜만에 두런두런 이야기 나눴네요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B09_b12",
+        "spans": [
+          {
+            "span_id": "B09_b12_s01",
+            "text_id": "body",
+            "text": "쉰여섯이라는 나이가 무색하게 여전히 바늘귀 꿸 때마다 돋보기를 찾는 제 모습에 웃음이 납니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B09_b16",
+        "spans": [
+          {
+            "span_id": "B09_b16_s01",
+            "text_id": "body",
+            "text": "이번 달은 단체 원데이 클래스 수강료 덕분에 공방 월세 걱정 없이 새 실과 린넨 원단 넉넉히 주문했네요",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B09_b22",
+        "spans": [
+          {
+            "span_id": "B09_b22_s01",
+            "text_id": "body",
+            "text": "수업 마치고 은구비공원 둘레길 천천히 걸으며 노은동 저녁 노을을 바라봅니다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B09_b22_s02",
+            "text_id": "photo_caption:0",
+            "text": "대전 1호선 노은역 3번 출구 앞 은행나무",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B09_b27",
+        "spans": [
+          {
+            "span_id": "B09_b27_s01",
+            "text_id": "body",
+            "text": "수예 작가 후배가 충남 공주시 금학동에 공방을 새로 오픈해서 개업 축하차 다녀왔네요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b12",
+            "span_id": "B09_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b08",
+            "span_id": "B09_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b22",
+            "span_id": "B09_b22_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b03",
+            "span_id": "B09_b03_s01"
+          },
+          {
+            "post_id": "B09_b03",
+            "span_id": "B09_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B09_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b22",
+            "span_id": "B09_b22_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B09_b16",
+            "span_id": "B09_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

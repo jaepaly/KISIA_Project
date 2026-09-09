@@ -1,0 +1,219 @@
+{
+  "persona_id": "E17",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_036d4960",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E17_profile_s01",
+          "text_id": "profile_bio",
+          "text": "먹은 거 다 기록하는 사람💪🏻",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E17_b02",
+        "spans": [
+          {
+            "span_id": "E17_b02_s01",
+            "text_id": "body",
+            "text": "치악산 자락 카페까지 드라이브 갔다 왔어용💪🏻",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E17_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "여기 뷰 미쳤당🩵",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b05",
+        "spans": [
+          {
+            "span_id": "E17_b05_s01",
+            "text_id": "body",
+            "text": "거래처 세 군데 돌고 나니 하루가 끝나 있었당",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E17_b05_s02",
+            "text_id": "body",
+            "text": "마흔넷인데 거래처 세 군데 도는 것도 예전 같지 않당",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b08",
+        "spans": [
+          {
+            "span_id": "E17_b08_s01",
+            "text_id": "body",
+            "text": "아내랑 둘이 이 집 진짜 자주 와용☺️",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b11",
+        "spans": [
+          {
+            "span_id": "E17_b11_s01",
+            "text_id": "body",
+            "text": "오늘도 거래처 돌다가 점심시간 완전 놓쳤어용",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b14",
+        "spans": [
+          {
+            "span_id": "E17_b14_s01",
+            "text_id": "body",
+            "text": "처남이 이 집 맛집이라고 알려줬는데 진짜였당👍",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b17",
+        "spans": [
+          {
+            "span_id": "E17_b17_s01",
+            "text_id": "body",
+            "text": "이번 달 매출이 좀 아쉬워서 외식은 여기까지만 하려구용",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E17_b20",
+        "spans": [
+          {
+            "span_id": "E17_b20_s01",
+            "text_id": "body",
+            "text": "형수가 횡성 쪽 카페 예쁜 데 찾았다고 사진 보내줬당",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b05",
+            "span_id": "E17_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b14",
+            "span_id": "E17_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b02",
+            "span_id": "E17_b02_s01"
+          },
+          {
+            "post_id": "E17_b02",
+            "span_id": "E17_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b05",
+            "span_id": "E17_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E17_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b08",
+            "span_id": "E17_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b11",
+            "span_id": "E17_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E17_b17",
+            "span_id": "E17_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

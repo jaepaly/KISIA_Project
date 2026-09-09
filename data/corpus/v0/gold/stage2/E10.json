@@ -1,0 +1,219 @@
+{
+  "persona_id": "E10",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_334908ef",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E10_profile_s01",
+          "text_id": "profile_bio",
+          "text": "애 셋 키우는 기록. 공장 다니고 밤엔 육아",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E10_b02",
+        "spans": [
+          {
+            "span_id": "E10_b02_s01",
+            "text_id": "body",
+            "text": "화원 유원지 산책로에 애들 데리고 나갔다 왔다... 사람 진짜 많더라",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b05",
+        "spans": [
+          {
+            "span_id": "E10_b05_s01",
+            "text_id": "body",
+            "text": "이번 주 야간조라 애들 얼굴을 아침에만 본다...",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E10_b05_s02",
+            "text_id": "body",
+            "text": "마흔셋인데 야간조 뛰고 나면 다음 날까지 몸이 무겁다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b08",
+        "spans": [
+          {
+            "span_id": "E10_b08_s01",
+            "text_id": "body",
+            "text": "셋째 어린이집 첫 등원날이라 아침부터 난리였다...",
+            "type": "FAM",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b11",
+        "spans": [
+          {
+            "span_id": "E10_b11_s01",
+            "text_id": "body",
+            "text": "공단 들어가는 길이 항상 막혀서 이십 분 잡고 나간다...",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E10_b11_s02",
+            "text_id": "title",
+            "text": "출근길 단상",
+            "type": "COMMUTE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b14",
+        "spans": [
+          {
+            "span_id": "E10_b14_s01",
+            "text_id": "body",
+            "text": "처형이 애들 봐주러 왔다가 오늘도 나보고 눈치 없다고 했다...",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b17",
+        "spans": [
+          {
+            "span_id": "E10_b17_s01",
+            "text_id": "body",
+            "text": "애들 학원비 셋 합치니까 적금 하나 또 깼다...",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b20",
+        "spans": [
+          {
+            "span_id": "E10_b20_s01",
+            "text_id": "body",
+            "text": "매형이 성서 공단 쪽 회사로 이번에 옮겼다더라",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b05",
+            "span_id": "E10_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b14",
+            "span_id": "E10_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b02",
+            "span_id": "E10_b02_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b05",
+            "span_id": "E10_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E10_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b08",
+            "span_id": "E10_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b11",
+            "span_id": "E10_b11_s01"
+          },
+          {
+            "post_id": "E10_b11",
+            "span_id": "E10_b11_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E10_b17",
+            "span_id": "E10_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

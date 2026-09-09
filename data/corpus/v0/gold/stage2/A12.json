@@ -1,0 +1,203 @@
+{
+  "persona_id": "A12",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_91bec90d",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A12_b03",
+        "spans": [
+          {
+            "span_id": "A12_b03_s01",
+            "text_id": "body",
+            "text": "서른셋 되니까 조금만 서 있어도 체력이 뚝뚝 떨어지네요 ㅠㅠ",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b07",
+        "spans": [
+          {
+            "span_id": "A12_b07_s01",
+            "text_id": "body",
+            "text": "남편이 아기 첫돌 준비를 많이 도와줬어요 ^^",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A12_b07_s02",
+            "text_id": "title",
+            "text": "벌써 첫돌 준비를 하다니",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b12",
+        "spans": [
+          {
+            "span_id": "A12_b12_s01",
+            "text_id": "body",
+            "text": "오늘 샵에 반영구 예약 손님이 꽉 차서 점심도 못 먹었네요 ㅎㅎ",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A12_b12_s02",
+            "text_id": "photo_caption:0",
+            "text": "시술 베드 정리 끝내고",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b15",
+        "spans": [
+          {
+            "span_id": "A12_b15_s01",
+            "text_id": "body",
+            "text": "샵 마감하고 퇴근하는 길에 탄천 쪽 걸으니 시원해요~",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b21",
+        "spans": [
+          {
+            "span_id": "A12_b21_s01",
+            "text_id": "body",
+            "text": "이번 달도 피부과 정기권 끊어둔 거 겨우 다녀왔습니다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b26",
+        "spans": [
+          {
+            "span_id": "A12_b26_s01",
+            "text_id": "body",
+            "text": "어린이집 등원 시간 맞추느라 매일 아침이 전쟁입니다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A12_b28",
+        "spans": [
+          {
+            "span_id": "A12_b28_s01",
+            "text_id": "body",
+            "text": "친한 원장님이 삼평동에 2호점을 내셔서 오픈 축하 겸 다녀왔어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A12_b03",
+            "span_id": "A12_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A12_b07",
+            "span_id": "A12_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A12_b15",
+            "span_id": "A12_b15_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A12_b12",
+            "span_id": "A12_b12_s01"
+          },
+          {
+            "post_id": "A12_b12",
+            "span_id": "A12_b12_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A12_b26",
+            "span_id": "A12_b26_s01"
+          },
+          {
+            "post_id": "A12_b07",
+            "span_id": "A12_b07_s02"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A12_b21",
+            "span_id": "A12_b21_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

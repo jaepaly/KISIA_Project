@@ -1,0 +1,174 @@
+{
+  "persona_id": "B01",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_83aa0205",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "B01_b02",
+        "spans": [
+          {
+            "span_id": "B01_b02_s01",
+            "text_id": "title",
+            "text": "[후기] 야탑역 자취방에서 판교 면접 다녀온 날",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B01_b05",
+        "spans": [
+          {
+            "span_id": "B01_b05_s01",
+            "text_id": "body",
+            "text": "서버 개발 3년 4개월차인데 코테 실버 문제에서 뇌정지 옴",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B01_b09",
+        "spans": [
+          {
+            "span_id": "B01_b09_s01",
+            "text_id": "body",
+            "text": "스물아홉 먹고 야근 끝나고 코테 풀려니 현타 오네",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B01_b09_s02",
+            "text_id": "photo_caption:0",
+            "text": "수인분당선 막차 플랫폼 사람 꽉 참",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B01_b13",
+        "spans": [
+          {
+            "span_id": "B01_b13_s01",
+            "text_id": "body",
+            "text": "원룸 보증금 대출 이자 내고 나면 남는 것도 없다",
+            "type": "FAM",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B01_b16",
+        "spans": [
+          {
+            "span_id": "B01_b16_s01",
+            "text_id": "body",
+            "text": "동네 친구가 군대 동기 모임에서 판교 개발자 연봉 7천 찍었다고 자랑함",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "B01_b18",
+        "spans": [
+          {
+            "span_id": "B01_b18_s01",
+            "text_id": "body",
+            "text": "이번에 이직 성공하면 희망연봉 앞자리 바꿀 수 있으려나",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b09",
+            "span_id": "B01_b09_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b02",
+            "span_id": "B01_b02_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b05",
+            "span_id": "B01_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b13",
+            "span_id": "B01_b13_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b09",
+            "span_id": "B01_b09_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B01_b18",
+            "span_id": "B01_b18_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}
