@@ -451,10 +451,11 @@ def main() -> int:
                     help="출력 토큰 상한. 사고 토큰을 쓰는 모델은 넉넉히 줘야 본문이 안 잘린다")
     ap.add_argument("--seed", type=int, default=20260824)
     ap.add_argument("--skip-invalid", action="store_true", help="ERROR 인물을 건너뛰고 계속")
-    ap.add_argument("--threads", default="", help="JSON {persona_id: [되풀이 요소…]} — 시범용")
+    ap.add_argument("--threads", default="data/corpus/v0/threads.json",
+                    help="JSON {persona_id: [되풀이 요소…]}. personas/ 밖에 둔다 — 그 안에 있으면 validate·정렬에 걸린다 (#212)")
     args = ap.parse_args()
     threads_map: dict = {}
-    if args.threads:
+    if args.threads and Path(args.threads).is_file():
         threads_map = json.loads(Path(args.threads).read_text(encoding="utf-8-sig"))
 
     if args.list_models:

@@ -3,7 +3,8 @@
 **W3 산출.** 600~700 스팬. **blind 200 은 C 단독이고 나머지 넷이 검수를 나눈다.**
 
 ```
-data/corpus/v0/gold/<persona_id>_spans.jsonl          검수분      예: A11_spans.jsonl
+data/corpus/v0/gold/detect/<persona_id>_spans.jsonl   교사 원본   label.py 탐지본. 검수 전. C 는 열지 않는다
+data/corpus/v0/gold/<persona_id>_spans.jsonl          검수분(정본) 교사 원본을 사람이 고친 것. B 의 BIO 변환·D 의 2단이 읽는 유일한 입력  예: A11_spans.jsonl
 data/corpus/v0/gold/blind/<persona_id>_spans.jsonl    blind 분    C 만
 ```
 
