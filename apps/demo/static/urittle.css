@@ -240,8 +240,13 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 @keyframes tick{from{opacity:0;transform:translateY(6px)}}
 
 /* ── 첫 방문 카드 · 투어 ── */
+.welcome-overlay{position:fixed;inset:0;z-index:40;background:rgba(43,38,32,.55);display:flex;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:fadein .25s}
+.welcome-overlay[hidden]{display:none}
+body.welcome-open{overflow:hidden}
+@keyframes fadein{from{opacity:0}}
 .welcome{position:relative;overflow:hidden;background:linear-gradient(135deg,#fffdf8,#eef5f3 70%,#f3ecdd);border:1.5px solid var(--ut-sea);
-  border-radius:var(--ut-radius);padding:20px 22px;margin-bottom:18px;box-shadow:var(--ut-shadow-hi)}
+  border-radius:20px;padding:26px 28px;width:min(760px,100%);max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 30px 80px -30px rgba(0,0,0,.5);animation:popin .3s var(--ease)}
 .welcome::after{content:"";position:absolute;right:-60px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:rgba(12,109,104,.07)}
 .welcome h2{margin:0 0 6px;font-size:21px;color:var(--ut-ink)}
 .welcome h2 b{color:var(--ut-sea);font-weight:400}
@@ -261,9 +266,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 .tour-hole{position:fixed;z-index:29;pointer-events:none;border-radius:12px;opacity:0;transition:top .35s var(--ease),left .35s var(--ease),width .35s var(--ease),height .35s var(--ease),opacity .3s;
   box-shadow:0 0 0 9999px rgba(43,38,32,.42)}
 .tour-hole.on{opacity:1}
-.welcome.tour-on > :not(.welcome-bar){display:none}
-.welcome.tour-on{padding:12px 18px}
-.welcome-bar{display:flex;align-items:center;gap:12px;font-size:13.5px;position:relative}
+.welcome-bar{display:flex;align-items:center;gap:12px;font-size:13.5px;background:var(--ut-panel);border:1.5px solid var(--ut-sea);border-radius:14px;padding:10px 16px;margin-bottom:16px;box-shadow:var(--ut-shadow)}
 .welcome-bar .n{font-weight:700;color:var(--ut-sea)}
 .welcome-bar .p{font-family:"IBM Plex Mono",Consolas,monospace;background:var(--ut-sea);color:#fff;border-radius:99px;padding:1px 10px;font-size:12px}
 .welcome-bar .t{color:var(--ut-ink2)}
