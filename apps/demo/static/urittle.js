@@ -189,7 +189,8 @@
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#funnel ul.funnel", when: () => !$(".delta-banner"),
       title: "④ 어떻게 좁혀지나", text: "방언 → 면사무소 → 위치태그 → 「예순여덟」. 단계마다 실제 주민등록 인구입니다. 줄을 누르면 그 문장으로 갑니다.",
       advance: "next" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: '#actions form[action$="/geo_tag"] button', when: () => !$(".delta-banner"),
+    { page: (p) => p === "/u/u_1a2e7dcc/check", target: '#actions form[action$="/geo_tag"] button',
+      when: () => !$(".delta-banner") && !!$('#actions form[action$="/geo_tag"] button'),   // 태그를 이미 지웠으면 건너뛴다
       title: "⑤ 가장 가벼운 조치 하나", text: "글을 지우지 않고 위치태그만 끕니다. 눌러 보세요 — 화면이 다시 계산됩니다.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".delta-banner", when: () => !!$(".delta-banner"),
@@ -219,6 +220,8 @@
   function renderTour() {
     const s = tourState();
     updateTourLinks();
+    const stale = $(".tour-mark"); stale && stale.remove();
+    $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot"));
     if (!s || s.done || s.step == null) return;
     const p = location.pathname;
     let i = s.step;
@@ -235,13 +238,12 @@
     const visible = (el) => el && el.offsetParent !== null;
     const target = $$(st.target).find(visible) || null;
     st.onShow && st.onShow();
-    const old = $(".tour-mark"); old && old.remove();
-    $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot"));
     const card = document.createElement("div");
     card.className = "tour-mark";
     card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
-      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>' : '<span class="hint">' + (st.hint || "👆 위 버튼을 누르면 이어집니다") + "</span>") + "</div>";
+      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
+         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어집니다") : "이 화면에 그 버튼이 없어요") + '</span><button type="button" class="skip1" data-next>이 단계 건너뛰기 →</button>') + "</div>";
     document.body.appendChild(card);
     card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
     const nextBtn = card.querySelector("[data-next]");
