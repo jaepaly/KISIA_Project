@@ -1,0 +1,155 @@
+{
+  "persona_id": "A24",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_3b0312e6",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A24_b02",
+        "spans": [
+          {
+            "span_id": "A24_b02_s01",
+            "text_id": "body",
+            "text": "서른둘에 둘째맘 되니까 체력 관리가 필수예요 ⭐️",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A24_b08",
+        "spans": [
+          {
+            "span_id": "A24_b08_s01",
+            "text_id": "body",
+            "text": "강남권 프리미엄 산후조리원 투어 다녀왔습니다 💖",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A24_b08_s02",
+            "text_id": "title",
+            "text": "둘째맘의 산후조리원 솔직 비교 후기",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A24_b13",
+        "spans": [
+          {
+            "span_id": "A24_b13_s01",
+            "text_id": "body",
+            "text": "우리 집 막내가 밥 안 먹는다고 떼를 써서 한참 달랬네요 ㅠㅠ",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A24_b18",
+        "spans": [
+          {
+            "span_id": "A24_b18_s01",
+            "text_id": "body",
+            "text": "집 근처 백화점 라운지에서 커피 한잔 여유 부렸어요~",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A24_b26",
+        "spans": [
+          {
+            "span_id": "A24_b26_s01",
+            "text_id": "body",
+            "text": "조리원 동기가 삼성동으로 이사 갔다고 해서 집들이 가요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A24_b02",
+            "span_id": "A24_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A24_b18",
+            "span_id": "A24_b18_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A24_b13",
+            "span_id": "A24_b13_s01"
+          },
+          {
+            "post_id": "A24_b08",
+            "span_id": "A24_b08_s02"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A24_b08",
+            "span_id": "A24_b08_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

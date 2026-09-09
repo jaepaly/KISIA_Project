@@ -1,0 +1,172 @@
+{
+  "persona_id": "A09",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_45351625",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A09_b06",
+        "spans": [
+          {
+            "span_id": "A09_b06_s01",
+            "text_id": "body",
+            "text": "열여덟에 실기를 시작한 건 늦은 편",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A09_b06_s02",
+            "text_id": "title",
+            "text": "18살에 시작하면 늦은 걸까",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A09_b10",
+        "spans": [
+          {
+            "span_id": "A09_b10_s01",
+            "text_id": "body",
+            "text": "시내버스로 사십 분 걸린다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A09_b13",
+        "spans": [
+          {
+            "span_id": "A09_b13_s01",
+            "text_id": "body",
+            "text": "남자애치고 손이 작다는 말을 자주 듣는다",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A09_b14",
+        "spans": [
+          {
+            "span_id": "A09_b14_s01",
+            "text_id": "body",
+            "text": "혼자라 방을 넓게 쓴다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A09_b15",
+        "spans": [
+          {
+            "span_id": "A09_b15_s01",
+            "text_id": "body",
+            "text": "혼자 크면 눈치가 없다고들 한다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A09_b18",
+        "spans": [
+          {
+            "span_id": "A09_b18_s01",
+            "text_id": "body",
+            "text": "선배가 성서 살아서 거기서 연습했다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A09_b06",
+            "span_id": "A09_b06_s01"
+          },
+          {
+            "post_id": "A09_b06",
+            "span_id": "A09_b06_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A09_b13",
+            "span_id": "A09_b13_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A09_b14",
+            "span_id": "A09_b14_s01"
+          },
+          {
+            "post_id": "A09_b15",
+            "span_id": "A09_b15_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A09_b10",
+            "span_id": "A09_b10_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

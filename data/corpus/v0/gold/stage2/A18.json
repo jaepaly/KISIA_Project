@@ -1,0 +1,173 @@
+{
+  "persona_id": "A18",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_5985f6f8",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A18_b03",
+        "spans": [
+          {
+            "span_id": "A18_b03_s01",
+            "text_id": "body",
+            "text": "서른하나에 중고신입으로 가려니 눈치 보임",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A18_b09",
+        "spans": [
+          {
+            "span_id": "A18_b09_s01",
+            "text_id": "body",
+            "text": "동종 업계 제약 쪽은 바닥이 너무 좁다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A18_b09_s02",
+            "text_id": "title",
+            "text": "[이직] 2. 마케팅 직무 1차 면접 후기",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A18_b14",
+        "spans": [
+          {
+            "span_id": "A18_b14_s01",
+            "text_id": "body",
+            "text": "주말에 군대 동기 형님들이랑 한잔 했다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A18_b19",
+        "spans": [
+          {
+            "span_id": "A18_b19_s01",
+            "text_id": "body",
+            "text": "아침에 셔틀 놓치면 진짜 답도 없다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A18_b24",
+        "spans": [
+          {
+            "span_id": "A18_b24_s01",
+            "text_id": "body",
+            "text": "연구소 앞 커피숍에서 동기 만나서 뒷담 깠다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A18_b28",
+        "spans": [
+          {
+            "span_id": "A18_b28_s01",
+            "text_id": "body",
+            "text": "동기가 송도로 이직했다고 해서 축하해줬다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A18_b03",
+            "span_id": "A18_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A18_b14",
+            "span_id": "A18_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A18_b24",
+            "span_id": "A18_b24_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A18_b09",
+            "span_id": "A18_b09_s01"
+          },
+          {
+            "post_id": "A18_b09",
+            "span_id": "A18_b09_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A18_b19",
+            "span_id": "A18_b19_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

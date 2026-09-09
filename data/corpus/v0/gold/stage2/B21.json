@@ -1,0 +1,201 @@
+{
+  "persona_id": "B21",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_802ef7db",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B21_profile_s01",
+          "text_id": "profile_bio",
+          "text": "일산 마두동에서 화덕 식당 운영하는 딸 셋 아빠의 담담한 가게 일기.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B21_b05",
+        "spans": [
+          {
+            "span_id": "B21_b05_s01",
+            "text_id": "body",
+            "text": "저녁 피크타임 화덕 숯불 관리하고 고기 손질하느라 셔츠가 다 젖었다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B21_b05_s02",
+            "text_id": "title",
+            "text": "불타는 화덕 앞 주말",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B21_b10",
+        "spans": [
+          {
+            "span_id": "B21_b10_s01",
+            "text_id": "body",
+            "text": "가게 문 닫고 집에 오니 딸 셋이 나란히 잠들어 있어 이불을 덮어주었다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B21_b14",
+        "spans": [
+          {
+            "span_id": "B21_b14_s01",
+            "text_id": "body",
+            "text": "동네 상가 아재들이랑 가게 끝나고 소주 한잔 기울이며 장사 이야기 나눴다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B21_b19",
+        "spans": [
+          {
+            "span_id": "B21_b19_s01",
+            "text_id": "body",
+            "text": "마흔여섯 나이에 자영업 10년 넘게 버티는 게 쉬운 일은 아니지",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B21_b24",
+        "spans": [
+          {
+            "span_id": "B21_b24_s01",
+            "text_id": "body",
+            "text": "월말 식자재 거래처 결제 대금 1,200만원 이체하고 이번 달 정산 끝냈다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "B21_b24_s02",
+            "text_id": "photo_caption:0",
+            "text": "마두역 앞 가게 간판 불빛",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B21_b29",
+        "spans": [
+          {
+            "span_id": "B21_b29_s01",
+            "text_id": "body",
+            "text": "참숯 직거래 공급처 계약하러 강원특별자치도 횡성군 둔내면 가마터까지 새벽에 차 몰고 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b19",
+            "span_id": "B21_b19_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b14",
+            "span_id": "B21_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b24",
+            "span_id": "B21_b24_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b05",
+            "span_id": "B21_b05_s01"
+          },
+          {
+            "post_id": "B21_b05",
+            "span_id": "B21_b05_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "B21_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b10",
+            "span_id": "B21_b10_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B21_b24",
+            "span_id": "B21_b24_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

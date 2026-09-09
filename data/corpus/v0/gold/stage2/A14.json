@@ -1,0 +1,169 @@
+{
+  "persona_id": "A14",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_cc1e2214",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A14_b04",
+        "spans": [
+          {
+            "span_id": "A14_b04_s01",
+            "text_id": "body",
+            "text": "이십일년 인생 제일 맛있는 마카롱 찾음 ☆⌒(ゝ。∂)",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A14_b06",
+        "spans": [
+          {
+            "span_id": "A14_b06_s01",
+            "text_id": "body",
+            "text": "고등학교 친구가 춘천으로 대학 가서 오랜만에 놀러감",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A14_b09",
+        "spans": [
+          {
+            "span_id": "A14_b09_s01",
+            "text_id": "body",
+            "text": "핵심 교양 과제 때메 진짜 스트레스 됫음 ㅠㅠ",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A14_b15",
+        "spans": [
+          {
+            "span_id": "A14_b15_s01",
+            "text_id": "body",
+            "text": "여고 동창들 오랜만에 만나서 폭풍 수다 떨앗웅",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A14_b15_s02",
+            "text_id": "photo_caption:0",
+            "text": "신촌역 3번 출구 근처",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A14_b21",
+        "spans": [
+          {
+            "span_id": "A14_b21_s01",
+            "text_id": "body",
+            "text": "본가인 대전은 성심당 말고는 갈 데가 없다 진심",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A14_b27",
+        "spans": [
+          {
+            "span_id": "A14_b27_s01",
+            "text_id": "body",
+            "text": "자취방 에어컨 고장나서 쪄 죽는 줄 ㄷㄷ",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A14_b04",
+            "span_id": "A14_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A14_b15",
+            "span_id": "A14_b15_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A14_b15",
+            "span_id": "A14_b15_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A14_b09",
+            "span_id": "A14_b09_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A14_b27",
+            "span_id": "A14_b27_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

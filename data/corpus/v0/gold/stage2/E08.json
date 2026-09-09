@@ -1,0 +1,206 @@
+{
+  "persona_id": "E08",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d6f62ec0",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E08_profile_s01",
+          "text_id": "profile_bio",
+          "text": "손주 오면 바빠지는 일상 기록",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E08_b02",
+        "spans": [
+          {
+            "span_id": "E08_b02_s01",
+            "text_id": "body",
+            "text": "해수욕장 앞으로 산책 나갔다가 사람 너무 많아서 그냥 돌아왔다(^^;)",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E08_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "저녁노을 진짜 예뻤음",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b05",
+        "spans": [
+          {
+            "span_id": "E08_b05_s01",
+            "text_id": "body",
+            "text": "오늘도 주방에서 설거지만 세 시간 했다(ㅠㅠ)",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b08",
+        "spans": [
+          {
+            "span_id": "E08_b08_s01",
+            "text_id": "body",
+            "text": "손주 온다고 해서 아침부터 반찬 만들었다(!)",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b11",
+        "spans": [
+          {
+            "span_id": "E08_b11_s01",
+            "text_id": "body",
+            "text": "식당까지 걸어서 십 분이라 운동 삼아 다닌다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b14",
+        "spans": [
+          {
+            "span_id": "E08_b14_s01",
+            "text_id": "body",
+            "text": "도련님이 어머님 생신 앞두고 뭐 필요한 거 없냐고 전화 왔다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b17",
+        "spans": [
+          {
+            "span_id": "E08_b17_s01",
+            "text_id": "body",
+            "text": "예순셋 되니 오래 서 있는 게 제일 힘들다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b20",
+        "spans": [
+          {
+            "span_id": "E08_b20_s01",
+            "text_id": "body",
+            "text": "언니가 서산 딸네 집에 놀러갔다가 사진 보내줬다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b17",
+            "span_id": "E08_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b14",
+            "span_id": "E08_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b02",
+            "span_id": "E08_b02_s01"
+          },
+          {
+            "post_id": "E08_b02",
+            "span_id": "E08_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b05",
+            "span_id": "E08_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b08",
+            "span_id": "E08_b08_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E08_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E08_b11",
+            "span_id": "E08_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "persona_id": "B03",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_3f572aaf",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B03_profile_s01",
+          "text_id": "profile_bio",
+          "text": "ROAS와 야근에 치인 4년 차 마케터의 인하우스 이직 도전기. 서울 마포.",
+          "type": "LOC_ADMIN",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B03_b02",
+        "spans": [
+          {
+            "span_id": "B03_b02_s01",
+            "text_id": "body",
+            "text": "스물여덟에 대행사 2년 구르니 체력 바닥남",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B03_b09",
+        "spans": [
+          {
+            "span_id": "B03_b09_s01",
+            "text_id": "body",
+            "text": "중소 대행사 퍼포먼스 마케터 포괄임금제 탈출 준비 중",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B03_b09_s02",
+            "text_id": "photo_caption:0",
+            "text": "망원역 6호선 퇴근길 플랫폼",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B03_b14",
+        "spans": [
+          {
+            "span_id": "B03_b14_s01",
+            "text_id": "body",
+            "text": "이전 직장 동료가 금융권 인하우스 마케팅으로 이직했다고 연락 옴",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "B03_b17",
+        "spans": [
+          {
+            "span_id": "B03_b17_s01",
+            "text_id": "body",
+            "text": "청년 전세대출 이자랑 공과금 내면 남는 월급이 없다",
+            "type": "FAM",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B03_b20",
+        "spans": [
+          {
+            "span_id": "B03_b20_s01",
+            "text_id": "body",
+            "text": "포괄에 묶여서 야근수당 한 푼도 못 받는 거 이번엔 끝낸다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B03_b02",
+            "span_id": "B03_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B03_profile_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B03_b09",
+            "span_id": "B03_b09_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B03_b17",
+            "span_id": "B03_b17_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B03_b09",
+            "span_id": "B03_b09_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B03_b20",
+            "span_id": "B03_b20_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

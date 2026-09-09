@@ -1,0 +1,201 @@
+{
+  "persona_id": "E01",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_e7e7dd24",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E01_profile_s01",
+          "text_id": "profile_bio",
+          "text": "뜨개랑 신차 소식 좋아함. 중국에서 지내는 중🧶🚗",
+          "type": "INCOME",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E01_b03",
+        "spans": [
+          {
+            "span_id": "E01_b03_s01",
+            "text_id": "body",
+            "text": "신차 시승하러 수성못 쪽으로 갔다왔다,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "E01_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "저 멀리 보이는 못,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E01_b05",
+        "spans": [
+          {
+            "span_id": "E01_b05_s01",
+            "text_id": "body",
+            "text": "이번 시즌 오더 마감 때문에 야근했다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E01_b05_s02",
+            "text_id": "title",
+            "text": "오더 마감 전쟁",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E01_b09",
+        "spans": [
+          {
+            "span_id": "E01_b09_s01",
+            "text_id": "body",
+            "text": "통근버스 놓쳐서 지각할 뻔",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E01_b12",
+        "spans": [
+          {
+            "span_id": "E01_b12_s01",
+            "text_id": "body",
+            "text": "연휴라 부모님 뵈러 한국 나왔다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E01_b15",
+        "spans": [
+          {
+            "span_id": "E01_b15_s01",
+            "text_id": "body",
+            "text": "친구가 부산 살아서 지난번에 거기서 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E01_b17",
+        "spans": [
+          {
+            "span_id": "E01_b17_s01",
+            "text_id": "body",
+            "text": "스물다섯인데 벌써 이렇게 됐네,,",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b17",
+            "span_id": "E01_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b03",
+            "span_id": "E01_b03_s01"
+          },
+          {
+            "post_id": "E01_b03",
+            "span_id": "E01_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b05",
+            "span_id": "E01_b05_s01"
+          },
+          {
+            "post_id": "E01_b05",
+            "span_id": "E01_b05_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b12",
+            "span_id": "E01_b12_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b09",
+            "span_id": "E01_b09_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E01_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

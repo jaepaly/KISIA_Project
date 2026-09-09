@@ -1,0 +1,201 @@
+{
+  "persona_id": "D06",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_22e0d443",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D06_profile_s01",
+          "text_id": "profile_bio",
+          "text": "읍내까지 이십 분. 그 시간에 생각을 정리한다",
+          "type": "COMMUTE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D06_b02",
+        "spans": [
+          {
+            "span_id": "D06_b02_s01",
+            "text_id": "body",
+            "text": "읍내까지 이십 분. 그 시간이 아까워 라디오를 끄고 생각을 정리한다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D06_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "아침마다 지나는 둑길",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D06_b05",
+        "spans": [
+          {
+            "span_id": "D06_b05_s01",
+            "text_id": "body",
+            "text": "올해 과제 보고서를 넘기고 나서야 시험포에 심어둔 걸 한 번도 못 봤다는 걸 알았다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D06_b05_s02",
+            "text_id": "title",
+            "text": "보고서를 넘기고 남은 것",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D06_b07",
+        "spans": [
+          {
+            "span_id": "D06_b07_s01",
+            "text_id": "body",
+            "text": "호봉이 오른 것보다 관사 나오는 게 컸다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D06_b09",
+        "spans": [
+          {
+            "span_id": "D06_b09_s01",
+            "text_id": "body",
+            "text": "서른여덟. 이 나이에 다시 배운다는 말을 이렇게 자주 하게 될 줄은 몰랐다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D06_b11",
+        "spans": [
+          {
+            "span_id": "D06_b11_s01",
+            "text_id": "body",
+            "text": "어린이집 차가 오는 시간에 맞추느라 아침 회의를 한 번도 못 지켰다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D06_b13",
+        "spans": [
+          {
+            "span_id": "D06_b13_s01",
+            "text_id": "body",
+            "text": "언니가 창원 살아서 아이 옷은 늘 거기서 얻어 온다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D06_b09",
+            "span_id": "D06_b09_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D06_b02",
+            "span_id": "D06_b02_s01"
+          },
+          {
+            "post_id": "D06_b02",
+            "span_id": "D06_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D06_b05",
+            "span_id": "D06_b05_s01"
+          },
+          {
+            "post_id": "D06_b05",
+            "span_id": "D06_b05_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D06_b11",
+            "span_id": "D06_b11_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D06_profile_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D06_b07",
+            "span_id": "D06_b07_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

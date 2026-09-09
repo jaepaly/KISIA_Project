@@ -1,0 +1,158 @@
+{
+  "persona_id": "A23",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_f717e70e",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A23_profile_s01",
+          "text_id": "profile_bio",
+          "text": "딸셋아빠 1202호 거주기",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A23_b03",
+        "spans": [
+          {
+            "span_id": "A23_b03_s01",
+            "text_id": "body",
+            "text": "마흔둘 되니 주말에 애들 데리고 나가는 것도 체력전이다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A23_b08",
+        "spans": [
+          {
+            "span_id": "A23_b08_s01",
+            "text_id": "body",
+            "text": "아빠가 돈 많이 벌어올게 하는 말이 절로 나온다",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A23_b13",
+        "spans": [
+          {
+            "span_id": "A23_b13_s01",
+            "text_id": "body",
+            "text": "사무실 근처 식당에서 점심을 대충 해결하는 것",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A23_b20",
+        "spans": [
+          {
+            "span_id": "A23_b20_s01",
+            "text_id": "body",
+            "text": "첫째 딸내미가 이제 내년이면 학교에 간다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A23_b26",
+        "spans": [
+          {
+            "span_id": "A23_b26_s01",
+            "text_id": "body",
+            "text": "부장님이 김포 쪽으로 발령나서 송별회를 했다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A23_b03",
+            "span_id": "A23_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A23_b08",
+            "span_id": "A23_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A23_b13",
+            "span_id": "A23_b13_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A23_b20",
+            "span_id": "A23_b20_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A23_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

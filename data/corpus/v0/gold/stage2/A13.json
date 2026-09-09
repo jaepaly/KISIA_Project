@@ -1,0 +1,169 @@
+{
+  "persona_id": "A13",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_899af38b",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A13_b02",
+        "spans": [
+          {
+            "span_id": "A13_b02_s01",
+            "text_id": "body",
+            "text": "스물넷에 타지 나와서 고생이 많다 진짜 🥲",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A13_b08",
+        "spans": [
+          {
+            "span_id": "A13_b08_s01",
+            "text_id": "body",
+            "text": "해외송금 앱 수수료 싼 곳 추천 좀요",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A13_b08_s02",
+            "text_id": "title",
+            "text": "시드니 8주차 카페 알바생의 하루",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A13_b13",
+        "spans": [
+          {
+            "span_id": "A13_b13_s01",
+            "text_id": "body",
+            "text": "같이 일하는 언니들이 커피 머신 마감법 알려줬다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A13_b14",
+        "spans": [
+          {
+            "span_id": "A13_b14_s01",
+            "text_id": "body",
+            "text": "친한 워홀러 동생이 멜버른으로 지역 이동해서 송별회 했다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A13_b17",
+        "spans": [
+          {
+            "span_id": "A13_b17_s01",
+            "text_id": "body",
+            "text": "같이 사는 룸메가 오늘 하루 종일 아파서 누워있네요",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A13_b24",
+        "spans": [
+          {
+            "span_id": "A13_b24_s01",
+            "text_id": "body",
+            "text": "예전에 한국에서 대구 살 때는 겨울이 진짜 추웠는데",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A13_b02",
+            "span_id": "A13_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A13_b13",
+            "span_id": "A13_b13_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A13_b08",
+            "span_id": "A13_b08_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A13_b08",
+            "span_id": "A13_b08_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A13_b17",
+            "span_id": "A13_b17_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

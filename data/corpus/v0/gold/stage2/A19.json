@@ -1,0 +1,171 @@
+{
+  "persona_id": "A19",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_9f426250",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A19_profile_s01",
+          "text_id": "profile_bio",
+          "text": "송도 직장인의 맛집 털이",
+          "type": "LOC_ADMIN",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A19_b04",
+        "spans": [
+          {
+            "span_id": "A19_b04_s01",
+            "text_id": "body",
+            "text": "서른여덟 되니까 확실히 피부 탄력이 다르네용 ㅠㅠ",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A19_b10",
+        "spans": [
+          {
+            "span_id": "A19_b10_s01",
+            "text_id": "body",
+            "text": "요즘 블로그 원고료 들어오는 쏠쏠한 재미가 있어용 ㅎㅎ",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A19_b16",
+        "spans": [
+          {
+            "span_id": "A19_b16_s01",
+            "text_id": "body",
+            "text": "큰애가 요새 자꾸 편식을 해서 걱정이네용 🥲",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A19_b20",
+        "spans": [
+          {
+            "span_id": "A19_b20_s01",
+            "text_id": "body",
+            "text": "대학 동기가 부천으로 이사해서 집들이 선물 사서 다녀왔어용",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A19_b22",
+        "spans": [
+          {
+            "span_id": "A19_b22_s01",
+            "text_id": "body",
+            "text": "사무실 앞 카페 사장님이 빵을 서비스로 주셨어용 👍",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A19_b26",
+        "spans": [
+          {
+            "span_id": "A19_b26_s01",
+            "text_id": "body",
+            "text": "본가인 창원에 내려가면 꼭 먹는 국밥집이 있어용",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A19_b04",
+            "span_id": "A19_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.6,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A19_b22",
+            "span_id": "A19_b22_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A19_profile_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A19_b16",
+            "span_id": "A19_b16_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A19_b10",
+            "span_id": "A19_b10_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

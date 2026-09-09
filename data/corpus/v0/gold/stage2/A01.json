@@ -1,0 +1,207 @@
+{
+  "persona_id": "A01",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_e98ed805",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A01_profile_s01",
+          "text_id": "profile_bio",
+          "text": "단체 일 하는 사람의 기록",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A01_b02",
+        "spans": [
+          {
+            "span_id": "A01_b02_s01",
+            "text_id": "body",
+            "text": "단체 사무실이 집에서 자전거로 십 분",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "A01_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "집 앞 하천길에서",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b04",
+        "spans": [
+          {
+            "span_id": "A01_b04_s01",
+            "text_id": "body",
+            "text": "서른여덟에 이 일을 시작했다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b06",
+        "spans": [
+          {
+            "span_id": "A01_b06_s01",
+            "text_id": "body",
+            "text": "활동비로는 빠듯해서",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b07",
+        "spans": [
+          {
+            "span_id": "A01_b07_s01",
+            "text_id": "body",
+            "text": "아줌마라고 부르길래 나도 모르게 돌아봤다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b09",
+        "spans": [
+          {
+            "span_id": "A01_b09_s01",
+            "text_id": "body",
+            "text": "같이 사는 사람이 늦게 들어오는 날",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b11",
+        "spans": [
+          {
+            "span_id": "A01_b11_s01",
+            "text_id": "body",
+            "text": "자전거로 다니니 비 오면 곤란하다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A01_b13",
+        "spans": [
+          {
+            "span_id": "A01_b13_s01",
+            "text_id": "body",
+            "text": "선배 작업실이 연남이라 거기서 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b04",
+            "span_id": "A01_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b07",
+            "span_id": "A01_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b02",
+            "span_id": "A01_b02_s01"
+          },
+          {
+            "post_id": "A01_b02",
+            "span_id": "A01_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "A01_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b09",
+            "span_id": "A01_b09_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b11",
+            "span_id": "A01_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A01_b06",
+            "span_id": "A01_b06_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

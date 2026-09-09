@@ -1,0 +1,239 @@
+{
+  "persona_id": "E15",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_6dc97c07",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E15_profile_s01",
+          "text_id": "profile_bio",
+          "text": "차 만지는 거 좋아하는 사무직입니다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E15_b02",
+        "spans": [
+          {
+            "span_id": "E15_b02_s01",
+            "text_id": "body",
+            "text": "매곡산업단지 초입 카페에서 커피 한 잔 하고 출근길에 올랐다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E15_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "효문 사거리 지날 때 찍음",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b05",
+        "spans": [
+          {
+            "span_id": "E15_b05_s01",
+            "text_id": "body",
+            "text": "이번 달 결산 자료 정리하느라 사무실에 늦게까지 남았다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E15_b05_s02",
+            "text_id": "body",
+            "text": "서른일곱인데 결산 시즌마다 체력이 눈에 띄게 달린다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b08",
+        "spans": [
+          {
+            "span_id": "E15_b08_s01",
+            "text_id": "body",
+            "text": "혼자 사는 집에 들어오면 늘 제일 먼저 불부터 켠다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E15_b08_s02",
+            "text_id": "body",
+            "text": "오빠가 부품 골라주는 거 도와줘서 그나마 수월했다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b11",
+        "spans": [
+          {
+            "span_id": "E15_b11_s01",
+            "text_id": "body",
+            "text": "공단 출근길에 신호가 많아서 늘 십오 분은 잡고 나간다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b14",
+        "spans": [
+          {
+            "span_id": "E15_b14_s01",
+            "text_id": "body",
+            "text": "오일 교환은 늘 내가 직접 한다. 정비소 가는 것보다 마음이 편하다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E15_b14_s02",
+            "text_id": "body",
+            "text": "동호회 번개가 포항에서 있었다는데 결산 때문에 못 갔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b17",
+        "spans": [
+          {
+            "span_id": "E15_b17_s01",
+            "text_id": "body",
+            "text": "이번 달도 부품값으로 월급의 한 자락이 그냥 나갔다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E15_b20",
+        "spans": [
+          {
+            "span_id": "E15_b20_s01",
+            "text_id": "body",
+            "text": "몇 해 전까지는 남구 쪽에서 자취했었다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b05",
+            "span_id": "E15_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "E15_b14",
+            "span_id": "E15_b14_s01"
+          },
+          {
+            "post_id": "E15_b08",
+            "span_id": "E15_b08_s02"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b02",
+            "span_id": "E15_b02_s01"
+          },
+          {
+            "post_id": "E15_b02",
+            "span_id": "E15_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b05",
+            "span_id": "E15_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E15_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b08",
+            "span_id": "E15_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b11",
+            "span_id": "E15_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E15_b17",
+            "span_id": "E15_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

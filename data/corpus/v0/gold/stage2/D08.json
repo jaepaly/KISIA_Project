@@ -1,0 +1,197 @@
+{
+  "persona_id": "D08",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_9fc2e5da",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D08_profile_s01",
+          "text_id": "profile_bio",
+          "text": "방학 기록용 🥲 운전 배우는 중 ^◡^",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D08_b04",
+        "spans": [
+          {
+            "span_id": "D08_b04_s01",
+            "text_id": "body",
+            "text": "운전학원 위치 지도로 올려둠 — 경기도 광주시 경안동",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D08_b04_s02",
+            "text_id": "photo_caption:0",
+            "text": "집에서 걸어서 십 분 🥲",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D08_b07",
+        "spans": [
+          {
+            "span_id": "D08_b07_s01",
+            "text_id": "body",
+            "text": "언니가 안 입는 원피스 준다고 해서 냉큼 받아왔졍 ^◡^",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D08_b09",
+        "spans": [
+          {
+            "span_id": "D08_b09_s01",
+            "text_id": "body",
+            "text": "셔틀 놓쳐서 다음 거 기다리는데 배차가 사십 분이라 그냥 버스 타고 환승했졍",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D08_b13",
+        "spans": [
+          {
+            "span_id": "D08_b13_s01",
+            "text_id": "body",
+            "text": "외할아버지 팔순이라 주말에 온 가족이 모였다",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "other"
+          },
+          {
+            "span_id": "D08_b13_s02",
+            "text_id": "body",
+            "text": "필라테스 한 달에 그만큼 나가는 거 알고 엄마가 잠깐 조용해짐 ^◡^",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D08_b16",
+        "spans": [
+          {
+            "span_id": "D08_b16_s01",
+            "text_id": "body",
+            "text": "늦으면 아빠가 데리러 온다 그래서 그냥 기다렸졍 🥲",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D08_b20",
+        "spans": [
+          {
+            "span_id": "D08_b20_s01",
+            "text_id": "body",
+            "text": "주말에 다녀온 카페 주소도 지도로 박아둠 — 서울 성동구",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D08_b07",
+            "span_id": "D08_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D08_b04",
+            "span_id": "D08_b04_s01"
+          },
+          {
+            "post_id": "D08_b04",
+            "span_id": "D08_b04_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D08_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D08_b16",
+            "span_id": "D08_b16_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D08_b09",
+            "span_id": "D08_b09_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D08_b13",
+            "span_id": "D08_b13_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

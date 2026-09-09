@@ -1,0 +1,4 @@
+results/adapter/
+results/*.log
+data/train.jsonl
+data/dev.jsonl

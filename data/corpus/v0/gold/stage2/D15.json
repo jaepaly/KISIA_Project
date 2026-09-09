@@ -1,0 +1,151 @@
+{
+  "persona_id": "D15",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d91f856d",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D15_b03",
+        "spans": [
+          {
+            "span_id": "D15_b03_s01",
+            "text_id": "body",
+            "text": "마늘 종구 값이 올라서 올해는 심는 면적을 줄였네요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D15_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "수매가가 작년만 못해서 계산기만 두드렸어요",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D15_b08",
+        "spans": [
+          {
+            "span_id": "D15_b08_s01",
+            "text_id": "body",
+            "text": "새언니가 알려준 대로 절였더니 훨씬 낫네요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D15_b14",
+        "spans": [
+          {
+            "span_id": "D15_b14_s01",
+            "text_id": "body",
+            "text": "쉰셋에 귀농했다고 하면 다들 늦었다고 했는데, 쉰여덟인 지금은 그 말이 안 나와요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D15_b19",
+        "spans": [
+          {
+            "span_id": "D15_b19_s01",
+            "text_id": "body",
+            "text": "본가가 창원이라 김장 때만 올라가요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D15_b27",
+        "spans": [
+          {
+            "span_id": "D15_b27_s01",
+            "text_id": "body",
+            "text": "거래처 사장이 진주 도매시장 쪽으로 창고를 옮겨서 실어다 주는 길이 길어졌어요",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D15_b14",
+            "span_id": "D15_b14_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D15_b08",
+            "span_id": "D15_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D15_b03",
+            "span_id": "D15_b03_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D15_b03",
+            "span_id": "D15_b03_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

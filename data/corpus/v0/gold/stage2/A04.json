@@ -1,0 +1,171 @@
+{
+  "persona_id": "A04",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_e394e5e8",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A04_profile_s01",
+          "text_id": "profile_bio",
+          "text": "자전거랑 주말 기록",
+          "type": "COMMUTE",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A04_b04",
+        "spans": [
+          {
+            "span_id": "A04_b04_s01",
+            "text_id": "body",
+            "text": "마흔다섯에 부서를 옮겼다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A04_b07",
+        "spans": [
+          {
+            "span_id": "A04_b07_s01",
+            "text_id": "body",
+            "text": "민원 창구에 있다 보면",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A04_b08",
+        "spans": [
+          {
+            "span_id": "A04_b08_s01",
+            "text_id": "body",
+            "text": "애들 도시락은 내가 싼다",
+            "type": "SEX",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A04_b10",
+        "spans": [
+          {
+            "span_id": "A04_b10_s01",
+            "text_id": "body",
+            "text": "처남이 동탄 살아서 거기서 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A04_b13",
+        "spans": [
+          {
+            "span_id": "A04_b13_s01",
+            "text_id": "body",
+            "text": "집 근처 저수지까지 자전거로 이십 분",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "A04_b13_s02",
+            "text_id": "photo_caption:0",
+            "text": "집 근처 저수지에서",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A04_b04",
+            "span_id": "A04_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A04_b08",
+            "span_id": "A04_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A04_b13",
+            "span_id": "A04_b13_s01"
+          },
+          {
+            "post_id": "A04_b13",
+            "span_id": "A04_b13_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A04_b07",
+            "span_id": "A04_b07_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "A04_profile_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

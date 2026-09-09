@@ -1,0 +1,168 @@
+{
+  "persona_id": "A26",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_9b5f0e69",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A26_b02",
+        "spans": [
+          {
+            "span_id": "A26_b02_s01",
+            "text_id": "body",
+            "text": "대입 시험 D-250 깨지니까 진짜 멘탈 나간담ㅜ스",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A26_b07",
+        "spans": [
+          {
+            "span_id": "A26_b07_s01",
+            "text_id": "body",
+            "text": "친한 언니가 대입 시험 화이팅하라고 깊티 보내쥼ㅜㅜ",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A26_b11",
+        "spans": [
+          {
+            "span_id": "A26_b11_s01",
+            "text_id": "body",
+            "text": "학원버스 놓쳐서 집까지 걸어가야 됨 에바야진짜",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A26_b11_s02",
+            "text_id": "photo_caption:0",
+            "text": "집앞 버스정류장",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A26_b18",
+        "spans": [
+          {
+            "span_id": "A26_b18_s01",
+            "text_id": "body",
+            "text": "동네 석촌호수 쪽 걷다가 더워서 포기함다네여",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A26_b23",
+        "spans": [
+          {
+            "span_id": "A26_b23_s01",
+            "text_id": "body",
+            "text": "친구가 분당으로 이사 가서 집들이 다녀옴",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A26_b24",
+        "spans": [
+          {
+            "span_id": "A26_b24_s01",
+            "text_id": "body",
+            "text": "광주 내려가서 엄마 밥 먹구싶당",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A26_b02",
+            "span_id": "A26_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A26_b07",
+            "span_id": "A26_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.6,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A26_b18",
+            "span_id": "A26_b18_s01"
+          },
+          {
+            "post_id": "A26_b11",
+            "span_id": "A26_b11_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A26_b11",
+            "span_id": "A26_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

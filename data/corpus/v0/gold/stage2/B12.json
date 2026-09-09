@@ -1,0 +1,219 @@
+{
+  "persona_id": "B12",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_1701d060",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B12_profile_s01",
+          "text_id": "profile_bio",
+          "text": "온산공단에서 20년째 중장비 핸들 잡습니다. 주말엔 갯바위 찌낚시.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B12_b04",
+        "spans": [
+          {
+            "span_id": "B12_b04_s01",
+            "text_id": "body",
+            "text": "야드에 쌓인 대형 컨테이너 지게차로 상하차 작업 단디 마치고 안전 점검 끝냈심더",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B12_b04_s02",
+            "text_id": "title",
+            "text": "야드 지게차 안전 점검",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b09",
+        "spans": [
+          {
+            "span_id": "B12_b09_s01",
+            "text_id": "body",
+            "text": "주말에 집사람이랑 시장 봐오고 사위 녀석이 사 온 영양제 챙겨 먹으니 든든하네예",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b13",
+        "spans": [
+          {
+            "span_id": "B12_b13_s01",
+            "text_id": "body",
+            "text": "내 나이도 벌써 쉰하나인데 아직 현장에서 지게차 핸들 잡는 힘은 쌩쌩합니더",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b17",
+        "spans": [
+          {
+            "span_id": "B12_b17_s01",
+            "text_id": "body",
+            "text": "요즘 경유값이 올라가 기름값 빼고 나면 이번 달 일당 정산이 생각보다 빠듯하네예",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b20",
+        "spans": [
+          {
+            "span_id": "B12_b20_s01",
+            "text_id": "body",
+            "text": "주말에 딸아이 내외가 손주 데리고 집에 온다 캐서 방파제에서 감성돔 몇 마리 잡아뒀심더",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b22",
+        "spans": [
+          {
+            "span_id": "B12_b22_s01",
+            "text_id": "body",
+            "text": "퇴근길에 온산 덕신교 건너면서 회야강 물안개 피는 거 보며 하루 마무리합니다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B12_b22_s02",
+            "text_id": "photo_caption:0",
+            "text": "온산국가산단 입구 퇴근 트럭 행렬",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B12_b27",
+        "spans": [
+          {
+            "span_id": "B12_b27_s01",
+            "text_id": "body",
+            "text": "현장 동료가 부산 기장군 장안읍 공단으로 이직해서 축하 저녁 먹으러 국도 타고 댕겨왔네예",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b13",
+            "span_id": "B12_b13_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b09",
+            "span_id": "B12_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b22",
+            "span_id": "B12_b22_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b04",
+            "span_id": "B12_b04_s01"
+          },
+          {
+            "post_id": "B12_b04",
+            "span_id": "B12_b04_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b20",
+            "span_id": "B12_b20_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "B12_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b22",
+            "span_id": "B12_b22_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B12_b17",
+            "span_id": "B12_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

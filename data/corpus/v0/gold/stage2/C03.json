@@ -1,0 +1,201 @@
+{
+  "persona_id": "C03",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_0dfab5ac",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C03_profile_s01",
+          "text_id": "profile_bio",
+          "text": "퇴근하면 먹고 써용🩵 직접 써본 것만 기록",
+          "type": "JOB",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C03_b03",
+        "spans": [
+          {
+            "span_id": "C03_b03_s01",
+            "text_id": "body",
+            "text": "퇴근 버스 내려서 용봉동 골목 신상집 들렀어용",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C03_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "버스 정류장 바로 뒤🩵",
+            "type": "COMMUTE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C03_b06",
+        "spans": [
+          {
+            "span_id": "C03_b06_s01",
+            "text_id": "body",
+            "text": "오늘은 교환 문의 채팅창이 계속 밀렸어용",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C03_b06_s02",
+            "text_id": "title",
+            "text": "문의 폭주한 날!",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C03_b09",
+        "spans": [
+          {
+            "span_id": "C03_b09_s01",
+            "text_id": "body",
+            "text": "언니랑 둘이 나눠먹기 딱 좋은 양이었당",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C03_b12",
+        "spans": [
+          {
+            "span_id": "C03_b12_s01",
+            "text_id": "body",
+            "text": "스물일곱 기념으로 쿠폰 다 털었어용☺️",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C03_b15",
+        "spans": [
+          {
+            "span_id": "C03_b15_s01",
+            "text_id": "body",
+            "text": "배송비 붙으면 고민하고 할인쿠폰 있을 때만 재구매해용",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C03_b18",
+        "spans": [
+          {
+            "span_id": "C03_b18_s01",
+            "text_id": "body",
+            "text": "친구가 상무지구에서 일해서 오늘은 그쪽에서 만났당",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b12",
+            "span_id": "C03_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b03",
+            "span_id": "C03_b03_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b06",
+            "span_id": "C03_b06_s01"
+          },
+          {
+            "post_id": "C03_b06",
+            "span_id": "C03_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C03_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b09",
+            "span_id": "C03_b09_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b03",
+            "span_id": "C03_b03_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C03_b15",
+            "span_id": "C03_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

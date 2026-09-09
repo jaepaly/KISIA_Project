@@ -1,0 +1,177 @@
+{
+  "persona_id": "B04",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_2d12e99e",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B04_profile_s01",
+          "text_id": "profile_bio",
+          "text": "공간과 건축을 기록하는 상업 사진작가. 경기 일산 작업실.",
+          "type": "JOB",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B04_b02",
+        "spans": [
+          {
+            "span_id": "B04_b02_s01",
+            "text_id": "title",
+            "text": "마흔다섯의 시선으로 담아낸 정발산 단독주택 리모델링 현장",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b06",
+        "spans": [
+          {
+            "span_id": "B04_b06_s01",
+            "text_id": "body",
+            "text": "서울 도심 촬영을 마치고 해 질 무렵 자유로를 타고 일산 작업실로 향했다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b10",
+        "spans": [
+          {
+            "span_id": "B04_b10_s01",
+            "text_id": "body",
+            "text": "조명 장비와 대형 삼각대를 SUV 트렁크에 싣고 아침 일찍 나섰다",
+            "type": "COMMUTE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b14",
+        "spans": [
+          {
+            "span_id": "B04_b14_s01",
+            "text_id": "body",
+            "text": "중학생 아들이 주말에도 아빠 따라 작업실에 나와 책을 읽는다",
+            "type": "FAM",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b16",
+        "spans": [
+          {
+            "span_id": "B04_b16_s01",
+            "text_id": "body",
+            "text": "후배 작가가 성수동에 대형 스튜디오를 새로 열어 오픈 축하차 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b20",
+        "spans": [
+          {
+            "span_id": "B04_b20_s01",
+            "text_id": "body",
+            "text": "외주 촬영료 세금계산서 발행하고 나니 이번 달 매출도 대략 정리된다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B04_b02",
+            "span_id": "B04_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B04_b06",
+            "span_id": "B04_b06_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B04_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B04_b14",
+            "span_id": "B04_b14_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B04_b10",
+            "span_id": "B04_b10_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B04_b20",
+            "span_id": "B04_b20_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

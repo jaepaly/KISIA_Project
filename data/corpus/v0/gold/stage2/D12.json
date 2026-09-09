@@ -1,0 +1,192 @@
+{
+  "persona_id": "D12",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_8c53e7b8",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D12_b01",
+        "spans": [
+          {
+            "span_id": "D12_b01_s01",
+            "text_id": "body",
+            "text": "야간 들어가기 전에 설비 점검표 훑는 게 습관됨",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D12_b01_s02",
+            "text_id": "title",
+            "text": "야간 3일차 퇴근길",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b04",
+        "spans": [
+          {
+            "span_id": "D12_b04_s01",
+            "text_id": "body",
+            "text": "마흔다섯인데 야간 회복이 예전 같지 않음",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b09",
+        "spans": [
+          {
+            "span_id": "D12_b09_s01",
+            "text_id": "body",
+            "text": "형이랑 둘이 차 얻어 타고 다니던 때가 생각남",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b13",
+        "spans": [
+          {
+            "span_id": "D12_b13_s01",
+            "text_id": "body",
+            "text": "야간수당 붙는 달이랑 안 붙는 달이 통장에서 티가 남",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b17",
+        "spans": [
+          {
+            "span_id": "D12_b17_s01",
+            "text_id": "body",
+            "text": "공단 정문까지 차로 십오 분이라 집을 못 옮김",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b23",
+        "spans": [
+          {
+            "span_id": "D12_b23_s01",
+            "text_id": "body",
+            "text": "아들 중간고사라 새벽에 들어와도 조용히 다님",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D12_b28",
+        "spans": [
+          {
+            "span_id": "D12_b28_s01",
+            "text_id": "body",
+            "text": "같이 일하던 반장이 울산 남구 쪽으로 이사 가서 카풀이 깨짐",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b04",
+            "span_id": "D12_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b09",
+            "span_id": "D12_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b17",
+            "span_id": "D12_b17_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b01",
+            "span_id": "D12_b01_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b23",
+            "span_id": "D12_b23_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b01",
+            "span_id": "D12_b01_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D12_b13",
+            "span_id": "D12_b13_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

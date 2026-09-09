@@ -1,0 +1,200 @@
+{
+  "persona_id": "C08",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_acade632",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C08_profile_s01",
+          "text_id": "profile_bio",
+          "text": "장날과 반찬거리 사이에서 하루를 적는다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C08_b03",
+        "spans": [
+          {
+            "span_id": "C08_b03_s01",
+            "text_id": "body",
+            "text": "첫 군내버스가 들어올 무렵이면 시장 골목도 하나둘 문을 연다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "C08_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "장날 아침 시장 입구에서",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C08_b06",
+        "spans": [
+          {
+            "span_id": "C08_b06_s01",
+            "text_id": "body",
+            "text": "나물 세 가지를 무치고 외상 장부까지 덮으니 점심 단골들이 들어왔다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C08_b06_s02",
+            "text_id": "title",
+            "text": "나물 세 가지 내놓은 날",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C08_b09",
+        "spans": [
+          {
+            "span_id": "C08_b09_s01",
+            "text_id": "body",
+            "text": "딸이 엄마인 나보다 반찬 간을 더 잘 본다고 웃었다",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C08_b12",
+        "spans": [
+          {
+            "span_id": "C08_b12_s01",
+            "text_id": "body",
+            "text": "예순여섯이 되어도 장날 전날에는 준비할 것이 자꾸 눈에 밟힌다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C08_b15",
+        "spans": [
+          {
+            "span_id": "C08_b15_s01",
+            "text_id": "body",
+            "text": "재료값을 치르고 나면 오늘 장사가 괜찮았는지는 아직 잘 모르겠다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C08_b18",
+        "spans": [
+          {
+            "span_id": "C08_b18_s01",
+            "text_id": "body",
+            "text": "조카가 창원 공단 협력업체로 옮겼다며 작업복 수선을 부탁해왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C08_b12",
+            "span_id": "C08_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C08_b09",
+            "span_id": "C08_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C08_b03",
+            "span_id": "C08_b03_s01"
+          },
+          {
+            "post_id": "C08_b03",
+            "span_id": "C08_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C08_b06",
+            "span_id": "C08_b06_s01"
+          },
+          {
+            "post_id": "C08_b06",
+            "span_id": "C08_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C08_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C08_b15",
+            "span_id": "C08_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

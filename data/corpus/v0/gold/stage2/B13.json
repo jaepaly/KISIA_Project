@@ -1,0 +1,202 @@
+{
+  "persona_id": "B13",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_7f4ad165",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B13_profile_s01",
+          "text_id": "profile_bio",
+          "text": "원주 혁신도시 공공기관 7년차. 퇴근 후엔 초등 아들 엄마로 복귀.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B13_b03",
+        "spans": [
+          {
+            "span_id": "B13_b03_s01",
+            "text_id": "body",
+            "text": "민원상담실에서 악성 민원 전화 응대하느라 녹초가 되었는데 사내 심리상담실 다녀와서 한결 나아졌다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B13_b03_s02",
+            "text_id": "title",
+            "text": "민원상담실의 고된 하루",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B13_b08",
+        "spans": [
+          {
+            "span_id": "B13_b08_s01",
+            "text_id": "body",
+            "text": "주말에 시어머니 생신상 차려드리고 남편이랑 아이 데리고 드라이브 다녀왔네요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B13_b12",
+        "spans": [
+          {
+            "span_id": "B13_b12_s01",
+            "text_id": "body",
+            "text": "서른아홉이라는 나이의 끝자락에서 일과 육아 사이 균형을 찾아가는 중입니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B13_b16",
+        "spans": [
+          {
+            "span_id": "B13_b16_s01",
+            "text_id": "body",
+            "text": "공공기관 복지포인트 들어온 걸로 양가 부모님 어버이날 선물 세트 넉넉하게 결제 완료했네요",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B13_b20",
+        "spans": [
+          {
+            "span_id": "B13_b20_s01",
+            "text_id": "body",
+            "text": "점심시간에 원주시청 뒤편 무실동 근린공원 산책로 걸으며 바람 쐬고 왔어요",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B13_b20_s02",
+            "text_id": "photo_caption:0",
+            "text": "원주시청 앞 버스정류장 은행나무",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B13_b25",
+        "spans": [
+          {
+            "span_id": "B13_b25_s01",
+            "text_id": "body",
+            "text": "친언니가 춘천 살아서 이번 주말엔 춘천 공지천 유원지로 조카들 보러 다녀왔어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b12",
+            "span_id": "B13_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b08",
+            "span_id": "B13_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b20",
+            "span_id": "B13_b20_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b03",
+            "span_id": "B13_b03_s01"
+          },
+          {
+            "post_id": "B13_b03",
+            "span_id": "B13_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B13_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b20",
+            "span_id": "B13_b20_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B13_b16",
+            "span_id": "B13_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

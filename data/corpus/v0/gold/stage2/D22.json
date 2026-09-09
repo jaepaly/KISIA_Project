@@ -1,0 +1,153 @@
+{
+  "persona_id": "D22",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_8d5cae7d",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D22_profile_s01",
+          "text_id": "profile_bio",
+          "text": "감귤 키웁니다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D22_b03",
+        "spans": [
+          {
+            "span_id": "D22_b03_s01",
+            "text_id": "body",
+            "text": "비상품 골라내는 게 제일 손이 가는 일이우다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D22_b09",
+        "spans": [
+          {
+            "span_id": "D22_b09_s01",
+            "text_id": "body",
+            "text": "며느리가 할망 소리 하지 말랜 허는디 나는 그게 편허우다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D22_b14",
+        "spans": [
+          {
+            "span_id": "D22_b14_s01",
+            "text_id": "body",
+            "text": "시세가 내려가면 선과장에 넘기는 값이 반 토막이우다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D22_b19",
+        "spans": [
+          {
+            "span_id": "D22_b19_s01",
+            "text_id": "body",
+            "text": "예전엔 한림 살았수다. 바람 방향이 아주 달라마씀",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D22_b25",
+        "spans": [
+          {
+            "span_id": "D22_b25_s01",
+            "text_id": "body",
+            "text": "아들이 표선 쪽 농협으로 발령 나서 요샌 자주 못 옵니다",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D22_b09",
+            "span_id": "D22_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D22_b03",
+            "span_id": "D22_b03_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D22_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D22_b14",
+            "span_id": "D22_b14_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

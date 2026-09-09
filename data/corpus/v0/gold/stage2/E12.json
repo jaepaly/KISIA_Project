@@ -1,0 +1,219 @@
+{
+  "persona_id": "E12",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_0bc066aa",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E12_profile_s01",
+          "text_id": "profile_bio",
+          "text": "둘째 육아 정보 나눔. 프리미엄 위주로 정리해요",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E12_b02",
+        "spans": [
+          {
+            "span_id": "E12_b02_s01",
+            "text_id": "body",
+            "text": "동천역 근처 새로 생긴 카페 다녀왔어요⭐️ 학원 끝나는 시간 맞춰서요",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E12_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "학원가 바로 앞이라 편해요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b05",
+        "spans": [
+          {
+            "span_id": "E12_b05_s01",
+            "text_id": "body",
+            "text": "요즘 다시 일 시작할까 이력서 만지작거리는 중이에요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E12_b05_s02",
+            "text_id": "body",
+            "text": "마흔여섯인데 이력서 사진부터 다시 찍어야 하나 싶었어요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b08",
+        "spans": [
+          {
+            "span_id": "E12_b08_s01",
+            "text_id": "body",
+            "text": "큰애는 중등 올라가고 작은애는 아직 초등이라 시간표가 하루종일 안 맞아요",
+            "type": "FAM",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b11",
+        "spans": [
+          {
+            "span_id": "E12_b11_s01",
+            "text_id": "body",
+            "text": "학원 셋 다 픽업하고 나면 하루가 다 가요",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b14",
+        "spans": [
+          {
+            "span_id": "E12_b14_s01",
+            "text_id": "body",
+            "text": "형부가 이번에 승진했다고 언니가 자랑 전화 왔어요⭐️",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b17",
+        "spans": [
+          {
+            "span_id": "E12_b17_s01",
+            "text_id": "body",
+            "text": "이번 달 학원비 정산하다가 또 카드값 놀랐어요⭐️",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E12_b20",
+        "spans": [
+          {
+            "span_id": "E12_b20_s01",
+            "text_id": "body",
+            "text": "언니가 판교 쪽으로 이사 간다고 집 보러 다닌대요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b05",
+            "span_id": "E12_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b14",
+            "span_id": "E12_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b02",
+            "span_id": "E12_b02_s01"
+          },
+          {
+            "post_id": "E12_b02",
+            "span_id": "E12_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b05",
+            "span_id": "E12_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b08",
+            "span_id": "E12_b08_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E12_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b11",
+            "span_id": "E12_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E12_b17",
+            "span_id": "E12_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

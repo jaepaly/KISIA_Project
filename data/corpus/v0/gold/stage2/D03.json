@@ -1,0 +1,200 @@
+{
+  "persona_id": "D03",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_51b1b5c0",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D03_profile_s01",
+          "text_id": "profile_bio",
+          "text": "작은 공방 하며 아이 키웁니다. 수업 문의는 댓글로",
+          "type": "JOB",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D03_b04",
+        "spans": [
+          {
+            "span_id": "D03_b04_s01",
+            "text_id": "body",
+            "text": "임대료 오르고 재료비도 올라서 이번 달은 정산이 마이너스였습니다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D03_b04_s02",
+            "text_id": "title",
+            "text": "이번 달 정산을 미뤄둔 이유",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D03_b09",
+        "spans": [
+          {
+            "span_id": "D03_b09_s01",
+            "text_id": "body",
+            "text": "작업실 건너편 카페 사장님이 커피를 내려다 주셨어요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D03_b09_s02",
+            "text_id": "photo_caption:0",
+            "text": "작업대 위 오늘 몫",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D03_b13",
+        "spans": [
+          {
+            "span_id": "D03_b13_s01",
+            "text_id": "body",
+            "text": "엄마들 단톡방에서 하원 시간 얘기가 나왔는데",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D03_b15",
+        "spans": [
+          {
+            "span_id": "D03_b15_s01",
+            "text_id": "body",
+            "text": "친구가 화정에서 공방 한다고 해서 구경 갔어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D03_b17",
+        "spans": [
+          {
+            "span_id": "D03_b17_s01",
+            "text_id": "body",
+            "text": "걸어서 십오 분이라 비 오면 그냥 쉽니다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D03_b20",
+        "spans": [
+          {
+            "span_id": "D03_b20_s01",
+            "text_id": "body",
+            "text": "밥상에 반찬이 자꾸 늘어나요",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D03_b13",
+            "span_id": "D03_b13_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D03_b09",
+            "span_id": "D03_b09_s01"
+          },
+          {
+            "post_id": "D03_b09",
+            "span_id": "D03_b09_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "D03_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D03_b20",
+            "span_id": "D03_b20_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D03_b17",
+            "span_id": "D03_b17_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D03_b04",
+            "span_id": "D03_b04_s01"
+          },
+          {
+            "post_id": "D03_b04",
+            "span_id": "D03_b04_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}
