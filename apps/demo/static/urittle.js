@@ -243,7 +243,7 @@
     card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
       + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
-         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어집니다") : "이 화면에 그 버튼이 없어요") + '</span><button type="button" class="skip1" data-next>이 단계 건너뛰기 →</button>') + "</div>";
+         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어집니다") : "이 화면에 그 버튼이 없어요 — 건너뛰기") + "</span>") + "</div>";
     document.body.appendChild(card);
     card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
     const nextBtn = card.querySelector("[data-next]");
