@@ -217,6 +217,11 @@
           },
           "description": "법정동 확장 후보별 교차표 인구. 키는 행정동 geo_code다."
         },
+        "aggregated_from": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "resolution 이 sigungu_aggregate 일 때 합산한 읍면동 geo_code 목록. 시·군·구까지만 있는 지명은 인구표(읍면동 단위)를 직접 못 읽어 하위 동을 합산한다 (#115)."
+        },
         "resolution": {
           "type": "string",
           "enum": [
@@ -224,6 +229,7 @@
             "homonym_unresolved",
             "legal_expansion",
             "admin_group_expansion",
+            "sigungu_aggregate",
             "not_found"
           ],
           "description": "지명 해소 결과. ambiguous는 homonym_unresolved일 때만 true다."
@@ -397,6 +403,7 @@
             "direct",
             "legal_dong_expansion",
             "admin_group_expansion",
+            "sigungu_aggregate",
             "unresolved"
           ],
           "description": "지역 직접 조회, 법정동 대응표 확장, 번호 행정동 통칭 확장 중 실제 계산 경로"
@@ -474,6 +481,7 @@
             "population_lookup",
             "crosstab_lookup",
             "legal_dong_expansion_min",
+            "sigungu_aggregate",
             "ratio_damped"
           ]
         },

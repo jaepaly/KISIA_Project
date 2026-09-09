@@ -482,6 +482,32 @@ def _get_default_population() -> PopulationTable:
     return _DEFAULT_POPULATION
 
 
+_CHILDREN_INDEX: dict[int, dict[str, list[str]]] = {}
+
+
+def _emd_descendants(dictionary: "RegionDictionary", code: str) -> list[str]:
+    """code 아래의 읍면동(emd) 코드 전부. 시도면 시군구를 거쳐 내려간다. 부모→자식 인덱스는 사전당 한 번만 만든다."""
+    key = id(dictionary)
+    index = _CHILDREN_INDEX.get(key)
+    if index is None:
+        index = {}
+        for c, r in dictionary.regions.items():
+            parent = r.get("parent")
+            if parent:
+                index.setdefault(parent, []).append(c)
+        _CHILDREN_INDEX[key] = index
+    out: list[str] = []
+    stack = [code]
+    while stack:
+        cur = stack.pop()
+        for child in index.get(cur, []):
+            if dictionary.regions.get(child, {}).get("level") == "emd":
+                out.append(child)
+            else:
+                stack.append(child)
+    return sorted(out)
+
+
 def specificity_l1(
     location: str,
     age: int,
@@ -606,6 +632,32 @@ def specificity_l1(
         age_bands=[age_band],
     )
 
+    # 시·군·구까지만 있는 지명(E 인물 대부분·A18)은 인구표가 동 단위라 조회가 비어
+    # UNKNOWN 이 됐다 (9/9 실측 115명 중 16명). 하위 동 인구를 합산해 그 단위의 k 를 낸다 —
+    # 해상도가 낮은 만큼 k 는 커지고, basis 에 합산임을 남긴다 (#115).
+    aggregated_from: list[str] = []
+    if population is None:
+        region = dictionary.regions.get(geo_code, {})
+        if region.get("level") in {"sigungu", "sido"}:
+            leaves = _emd_descendants(dictionary, geo_code)
+            total = 0
+            complete = bool(leaves)
+            for code in leaves:
+                child_pop = pop_lookup(
+                    _get_default_population(), geo_code=code,
+                    sex=normalized_sex, age_bands=[age_band],
+                )
+                if child_pop is None:
+                    # legal_expansion 과 같은 원칙 — 하나라도 비면 불완전한 합계를 확정하지 않는다
+                    complete = False
+                    break
+                total += child_pop
+                aggregated_from.append(code)
+            if complete:
+                population = total
+            else:
+                aggregated_from = []
+
     if population is None:
         return {
             "k": None,
@@ -619,6 +671,30 @@ def specificity_l1(
 
     floor_applied = population < 1
     k = max(1, population)
+    if aggregated_from:
+        return {
+            "k": k,
+            "k_level": classify_k(k),
+            "geo_code": geo_code,
+            "age_band": age_band,
+            "sex": normalized_sex,
+            "resolution": "sigungu_aggregate",
+            "population": population,
+            "aggregated_from": aggregated_from,
+            "floor_applied": floor_applied,
+            "basis": _basis("sigungu_aggregate"),
+            "steps": [
+                {
+                    "axis": "location+age+sex",
+                    "condition": (
+                        f"{location}({geo_code} 하위 {len(aggregated_from)}개 동 합산) / "
+                        f"{age_band} / {normalized_sex}"
+                    ),
+                    "n_after": population,
+                    "method": "sigungu_aggregate",
+                }
+            ],
+        }
 
     return {
         "k": k,

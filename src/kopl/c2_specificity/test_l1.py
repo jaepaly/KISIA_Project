@@ -155,6 +155,17 @@ if __name__ == "__main__":
     test_unknown_location()
     print("[PASS] 없는 지명 UNKNOWN 처리")
 
+    # 시·군·구까지만 있는 지명 — 하위 동 인구 합산 (#115, 9/9)
+    r = specificity_l1("경상남도 통영시", 41, "F")
+    assert r["k_level"] != "UNKNOWN", r
+    assert r["resolution"] == "sigungu_aggregate" and len(r["aggregated_from"]) >= 10, r
+    assert r["basis"]["method"] == "sigungu_aggregate"
+    print(f"[PASS] 시군구 단위 하위 동 합산 — 통영시 41F k={r['k']} ({len(r['aggregated_from'])}개 동)")
+    s = specificity_l1("제주특별자치도", 21, "F")
+    assert s["k_level"] != "UNKNOWN" and s["resolution"] == "sigungu_aggregate", s
+    print(f"[PASS] 시도 단위(제주) 재귀 합산 k={s['k']} ({len(s['aggregated_from'])}개 동)")
+
+
     test_ambiguous_location()
     print("[PASS] 동명이 지명 임의 선택 차단")
 
