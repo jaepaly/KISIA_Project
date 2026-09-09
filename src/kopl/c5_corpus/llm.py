@@ -300,8 +300,9 @@ class LLMClient:
     def _anthropic(self, system: str, user: str) -> str:
         key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
         if not key:
-            raise LLMError("ANTHROPIC_API_KEY 없음")
+            raise LLMError("ANTHROPIC_API_KEY 또는 ANTHROPIC_AUTH_TOKEN 없음 (.env 확인)")
         base_url = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com")
+        custom_router = "api.anthropic.com" not in base_url
         url = base_url.rstrip("/")
         if not url.endswith("/v1/messages"):
             url = url + "/v1/messages"
@@ -320,10 +321,11 @@ class LLMClient:
             body,
             {
                 "x-api-key": key,
-                "Authorization": f"Bearer {key}",
                 "anthropic-version": "2023-06-01",
                 "Content-Type": "application/json",
                 "User-Agent": "Mozilla/5.0 (compatible; kopl-c5-corpus/1.0)",
+                # Bearer 는 커스텀 라우터에만 — 기본 엔드포인트에 팀 토큰을 같이 실어 보낼 이유가 없다
+                **({"Authorization": f"Bearer {key}"} if custom_router else {}),
             },
         )
         u = data.get("usage", {})
