@@ -280,6 +280,13 @@ body.welcome-open{overflow:hidden}
 .tour-mark.floating{position:fixed;left:50%!important;top:auto!important;bottom:90px;transform:translateX(-50%)}
 .tour-mark.floating::before{display:none}
 .tour-mark .tt{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.tour-mark .tt .ti{flex:1;min-width:0}
+.tour-mark .fold{background:rgba(255,255,255,.12);color:#fff;border-radius:6px;width:24px;height:24px;padding:0;font-size:13px;line-height:1;flex:0 0 24px}
+.tour-mark .fold:hover{background:rgba(255,255,255,.24)}
+.tour-mark.folded{width:auto;max-width:min(340px,calc(100vw - 24px));padding:7px 10px 7px 12px}
+.tour-mark.folded .tt{margin:0;font-size:13px}
+.tour-mark.folded .tt .ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tour-mark.folded .tx,.tour-mark.folded .bt{display:none}
 .tour-mark .tt .n{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;font-weight:500;background:rgba(255,255,255,.14);border-radius:99px;padding:1px 8px}
 .tour-mark .tx{color:rgba(255,255,255,.85)}
 .tour-mark .bt{display:flex;gap:8px;align-items:center;margin-top:10px}

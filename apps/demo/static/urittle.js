@@ -249,11 +249,15 @@
     st.onShow && st.onShow();
     const card = document.createElement("div");
     card.className = "tour-mark";
-    card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
+    card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span><span class=\"ti\">" + st.title + '</span><button type="button" class="fold" data-fold title="접기 / 펼치기" aria-label="접기">▾</button></div><div class="tx">' + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
       + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
          : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어져요") : "이 화면에는 그 버튼이 없어요. 건너뛰기를 눌러 주세요") + "</span>") + "</div>";
     document.body.appendChild(card);
+    card.querySelector("[data-fold]").addEventListener("click", () => {      // 뒤가 안 보이면 접는다 — 링은 그대로라 뭘 누를지는 안 잃는다
+      const f = card.classList.toggle("folded"); card.querySelector("[data-fold]").textContent = f ? "▸" : "▾";
+      const t = $(".tour-spot"); t && place(card, t);
+    });
     card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
     const nextBtn = card.querySelector("[data-next]");
     nextBtn && nextBtn.addEventListener("click", () => { if (st.advance === "done") { window.padoTourStop(); finishTour(); } else { tourSave({ step: i + 1 }); renderTour(); } });
