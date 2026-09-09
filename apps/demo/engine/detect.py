@@ -201,14 +201,14 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
         subject, level, note = "self", "explicit", {"place": canonical}
         if _OTHER_BEFORE.search(before) or _OTHER_AFTER.search(after):
             subject = "other"
-            note["why"] = "타인의 장소 — §4-2 귀속으로 제외"
+            note["why"] = "다른 사람의 장소예요. 글쓴이 정보로 세지 않아요"
         elif _PAST_BEFORE.search(before) and _PAST_AFTER.search(after):
             note["exclude"] = "past_residence"
-            note["why"] = "「예전에 … 살 때」 — 시제 표지로 과거 거주지 판정, 현 거주지 추정에서 제외"
+            note["why"] = "「예전에 … 살 때」처럼 과거 이야기예요. 지금 사는 곳으로 세지 않아요"
         elif _TRANSIT_AFTER.search(after):
             level = "inferential"
             note["exclude"] = "transit"
-            note["why"] = "이동 경로 언급 — 거주지가 아니라 생활권 힌트. k 계산에 안 넣는다(결합 추론은 2단 몫)"
+            note["why"] = "지나가는 길이나 오가는 버스 이야기예요. 사는 곳으로 세지 않아요"
         cands.append({"text_id": text_id, "start": s, "end": e, "text": t[s:e],
                       "type": "LOC_ADMIN", "level": level, "subject": subject, "score": 0.8})
         notes[f"{s}:{e}"] = note
@@ -250,7 +250,7 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
                     if k in c["text"]:
                         note["sex"] = v
             if subject == "other":
-                note["why"] = "타인에 관한 표현 — §4-2 귀속으로 제외"
+                note["why"] = "다른 사람 이야기예요. 글쓴이 정보로 세지 않아요"
             if note:
                 notes.setdefault(f"{s}:{e}", {}).update(note)
 
@@ -310,7 +310,7 @@ def detect_post(post: dict[str, Any]) -> dict[str, Any]:
         if travel and sp["type"] == "LOC_ADMIN" and sp["subject"] == "self" and not n.get("exclude") \
                 and not _LIVES_AFTER.match(texts[sp["text_id"]][sp["end"]:]):
             n["exclude"] = "travel"
-            n["why"] = "여행·출장 표지가 있는 글 — 방문지로 보고 거주지 추정에서 제외 (결합 판단은 2단 몫)"
+            n["why"] = "여행이나 출장 글이라 다녀온 곳으로 봐요. 사는 곳으로 세지 않아요"
         if n:
             notes_out[sid] = n
 

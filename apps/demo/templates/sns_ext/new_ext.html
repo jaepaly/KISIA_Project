@@ -80,7 +80,7 @@
 {% endblock %}
 {% block content %}
 <main class="ut-wrap">
-  <div class="ut-h"><h1>글쓰기</h1><span class="sub">올리기 전에 한 번 점검할 수 있습니다</span></div>
+  <div class="ut-h"><h1>글쓰기</h1><span class="sub">올리기 전에 한 번 점검해 볼 수 있어요</span></div>
 
   {% if not authors %}
     <p class="ut-empty">작성자가 없습니다. <code class="mono">python apps/demo/seed.py --reset</code> 으로 시딩하세요.</p>
@@ -88,55 +88,55 @@
   {% if err %}<div class="err">{{ err }}</div>{% endif %}
 
   {% if check %}
-    {% set b = check.before %}{% set af = check.after %}
+    {% set b = check.before %}{% set af = check.after %}{% set ch = {'body':'본문','title':'제목','geo_tag':'위치태그','profile_bio':'프로필 소개'} %}
     <div class="pado-panel">
-      <div class="mark">🌊 파도풀 점검 — 이 글을 올리면</div>
+      <div class="mark">🌊 이 글을 올리면</div>
       <div class="before-after">
-        <div class="b"><div class="n">{% if b.k %}<span data-count="{{ b.k }}" data-from="{{ b.k }}">{{ '{:,}'.format(b.k) }}</span>{% else %}—{% endif %}</div><div class="l">지금 후보 · 공개 글 {{ b.n_posts }}편</div></div>
+        <div class="b"><div class="n">{% if b.k %}<span data-count="{{ b.k }}" data-from="{{ b.k }}">{{ '{:,}'.format(b.k) }}</span>{% else %}—{% endif %}</div><div class="l">지금, 공개 글 {{ b.n_posts }}편으로</div></div>
         <div class="arrow">→</div>
-        <div class="b after {{ 'narrow' if check.narrows }}"><div class="n">{% if af.k %}<span data-count="{{ af.k }}" data-from="{{ b.k or af.k }}">{{ '{:,}'.format(af.k) }}</span>{% else %}—{% endif %}</div><div class="l">이 글을 올리면 · {{ af.label }} · 위험 {{ af.risk if af.risk is not none else '—' }}</div></div>
+        <div class="b after {{ 'narrow' if check.narrows }}"><div class="n">{% if af.k %}<span data-count="{{ af.k }}" data-from="{{ b.k or af.k }}">{{ '{:,}'.format(af.k) }}</span>{% else %}—{% endif %}</div><div class="l">이 글을 올리면, {{ af.label }}</div></div>
       </div>
       <div class="riskmeta">
-        <div class="row"><span>이 글에서 잡힌 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
+        <div class="row"><span>이 글에서 찾은 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
       </div>
       {% if b.n_posts and b.k and b.k < check.after.steps[0].n_after %}
-      <div class="floor"><b>지금 후보 {{ '{:,}'.format(b.k) }}명은 이미 올린 글 {{ b.n_posts }}편이 만든 값입니다.</b>
-        이 글을 어떻게 고쳐도 그 아래로는 못 넓어집니다 — 후보 옆 「⤷ 다른 글의 …이 남아」가 그 뜻입니다.
+      <div class="floor"><b>지금 숫자 {{ '{:,}'.format(b.k) }}명은 이미 올린 글 {{ b.n_posts }}편이 만든 값이에요.</b>
+        이 글을 아무리 고쳐도 그보다 넓어지진 않아요. 후보 옆의 「⤷ 다른 글에 …가 남아 있어서」가 그 뜻이에요.
         {% if author %}<a href="/u/{{ author.user_ref }}/check" target="_blank" rel="noopener">내 글 점검에서 그 글들 보기 ↗</a>{% endif %}
-        <span class="alt">이 글 하나만으로 보고 싶으면 작성자를 <b>🧪 체험 계정</b>으로.</span></div>
+        <span class="alt">이 글 하나만 놓고 보고 싶으면 작성자를 <b>🧪 체험 계정</b>으로 바꿔 보세요.</span></div>
       {% endif %}
       {% if check.narrows %}
-        <p class="lede" style="margin-top:12px"><b>이 글 하나가 후보를 {{ '{:,}'.format(b.k) }}명 → {{ '{:,}'.format(af.k) }}명으로 좁힙니다.</b> 아래 형광 자리가 새는 표현입니다. 고쳐 쓰고 다시 점검하거나, 알고도 올릴 수 있습니다.</p>
+        <p class="lede" style="margin-top:12px"><b>이 글 하나로 나일 수 있는 사람이 {{ '{:,}'.format(b.k) }}명에서 {{ '{:,}'.format(af.k) }}명으로 줄어요.</b> 아래에 색을 칠한 부분이 신상이 드러나는 표현이에요. 고쳐 쓰고 다시 점검해도 되고, 알고도 올릴 수 있어요.</p>
       {% elif check.draft.n_spans %}
-        <p class="lede" style="margin-top:12px">단서는 잡혔지만 기존 글이 이미 여기까지 좁혀 두어 후보 수는 그대로입니다. 그래도 이 글은 나중에 다른 글을 지워도 남는 경로가 됩니다.</p>
+        <p class="lede" style="margin-top:12px">단서는 있지만 이미 올린 글이 여기까지 좁혀 둬서 숫자는 그대로예요. 다만 나중에 다른 글을 지워도 이 글의 단서는 남아요.</p>
       {% else %}
-        <p class="lede" style="margin-top:12px">새는 표현이 없습니다. 올려도 후보 수가 변하지 않습니다.</p>
+        <p class="lede" style="margin-top:12px">신상이 드러나는 표현이 없어요. 올려도 숫자가 변하지 않아요.</p>
       {% endif %}
       {% if check.draft.n_spans %}
-      <div class="rw-hint"><span class="tap">👆 색칠된 표현을 누르면</span> 지명·나이는 <b>지우지 않고 넓히는</b> 안(김해시 진영읍 → 김해시 → 경남)부터, 그 뒤에 바꾸거나 지우는 안. 각각 후보가 몇 명이 되는지 실제로 셉니다. 마음에 안 들면 <b>그대로 두기</b>도 됩니다. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
+      <div class="rw-hint"><span class="tap">👆 색칠한 부분을 누르면</span> 지명과 나이는 <b>지우지 않고 넓히는 안</b>(김해시 진영읍 → 김해시 → 경남)부터 보여주고, 그다음에 바꾸거나 지우는 안이 나와요. 각각 몇 명이 되는지 실제로 세요. 마음에 안 들면 <b>그대로 두기</b>도 돼요. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
       {% endif %}
       <div id="draftPreview">
       {% for c in check.draft.channels %}
-        <div class="evi" data-text-id="{{ c.text_id }}"><div class="w">{{ c.text_id }}</div><div class="bd">{{ c.html|safe }}</div></div>
+        <div class="evi" data-text-id="{{ c.text_id }}"><div class="w">{{ ch.get(c.text_id, '사진 설명' if c.text_id.startswith('photo') else c.text_id) }}</div><div class="bd">{{ c.html|safe }}</div></div>
       {% endfor %}
       </div>
       <script type="application/json" id="draftSpans">{{ check.draft.spans|tojson }}</script>
       {% if check.contributing %}
-        <ul class="funnel">{% for s in check.contributing %}<li><span><span class="desc">{{ s.condition }}</span><div class="src">「{{ s.src.text }}」 · {{ s.src.channel }}</div></span><span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>{% endfor %}</ul>
+        <ul class="funnel">{% for s in check.contributing %}<li><span><span class="desc">{{ s.condition }}</span><div class="src">{{ ch.get(s.src.channel, '사진 설명' if s.src.channel.startswith('photo') else s.src.channel) }}의 「{{ s.src.text }}」</div></span><span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>{% endfor %}</ul>
       {% endif %}
       {% if check.draft.traps %}
-        <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">— {{ t.why }}</span></li>{% endfor %}</ul></div>
+        <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">{{ t.why }}</span></li>{% endfor %}</ul></div>
       {% endif %}
-      <p class="lede" style="font-size:12px;margin:10px 0 0">점검은 <b>작성 완료 후 1회</b>입니다. 입력 중 실시간 경고는 응답이 저장 뒤에 도착해 두지 않았습니다. 파도풀은 이 글을 저장하지 않습니다.</p>
+      <p class="lede" style="font-size:12px;margin:10px 0 0">점검은 <b>다 쓴 뒤에 한 번</b> 해요. 파도풀은 이 글을 저장하지 않아요.</p>
     </div>
   {% endif %}
 
   <form method="post" action="/posts" class="ut-card">
-    <label for="author_id">작성자 <span class="hint">— 글이 있는 계정은 그 글들이 만든 바닥 위에 얹힙니다. 처음이면 체험 계정으로</span></label>
+    <label for="author_id">작성자 <span class="hint">글이 있는 계정은 그 글들 위에 얹혀서 계산돼요. 처음이면 체험 계정으로 해 보세요</span></label>
     <select name="author_id" id="author_id" required>
       {% for a in authors %}
         <option value="{{ a.author_id }}" {% if (draft and draft.author_id == a.author_id) or (not draft and loop.first) %}selected{% endif %}>
-          {% if a.author_id == 'GUEST' %}🧪 체험 계정 — 글 0편 · 아무 문장이나 써 보세요{% else %}{{ ut_avatar(a.author_id) }} {{ a.nickname }} — 글 {{ a.n_posts }}편 · 이미 드러난 계정{% endif %}</option>
+          {% if a.author_id == 'GUEST' %}🧪 체험 계정 (글 0편, 아무 문장이나 써 보세요){% else %}{{ ut_avatar(a.author_id) }} {{ a.nickname }} (글 {{ a.n_posts }}편, 이미 드러난 계정){% endif %}</option>
       {% endfor %}
     </select>
 
@@ -144,22 +144,22 @@
     <input type="text" name="title" id="title" value="{{ draft.title if draft else '' }}" placeholder="오늘의 기록">
 
     <label for="body">본문</label>
-    <textarea name="body" id="body" rows="11" required placeholder="오늘 있었던 일을 적어보세요">{{ draft.body if draft else '' }}</textarea>
-    <div class="editor-tip"><span>올리기 전에 「🌊 파도풀로 점검」을 누르면 이 글이 후보를 얼마나 좁히는지 먼저 봅니다.</span><span class="cnt" id="bodyCount">0자</span></div>
+    <textarea name="body" id="body" rows="11" required placeholder="오늘 있었던 일을 적어 보세요">{{ draft.body if draft else '' }}</textarea>
+    <div class="editor-tip"><span>올리기 전에 「🌊 파도풀로 점검」을 누르면 이 글이 나를 얼마나 드러내는지 먼저 볼 수 있어요.</span><span class="cnt" id="bodyCount">0자</span></div>
 
-    <label for="geo_tag">위치 태그 <span class="hint">(선택 — 글에 함께 표시됩니다)</span></label>
+    <label for="geo_tag">위치 태그 <span class="hint">(선택, 글에 함께 표시돼요)</span></label>
     <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 담양군 창평면" value="{{ draft.geo_tag if draft else '' }}">
 
-    <label for="captions">사진 캡션 <span class="hint">(선택, 한 줄에 하나씩 — 순서대로 사진 1, 2…)</span></label>
+    <label for="captions">사진 캡션 <span class="hint">(선택, 한 줄에 하나씩 사진 1, 2… 순서로)</span></label>
     <textarea name="captions" id="captions" rows="2" placeholder="정류장에서">{{ draft.captions if draft else '' }}</textarea>
 
-    <label for="created_at">작성 시각 <span class="hint">— 실제 SNS 엔 없는 기능이지만 여기서는 바꿀 수 있습니다</span></label>
+    <label for="created_at">작성 시각 <span class="hint">실제 SNS에는 없지만 여기서는 바꿔 볼 수 있어요</span></label>
     <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
 
     <div class="editor-actions">
       <button type="submit" formaction="/check-draft" class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>🌊 파도풀로 점검</button>
       <button type="submit" {% if not authors %}disabled{% endif %}>{% if check and check.narrows %}알고도 올리기{% else %}올리기{% endif %}</button>
-      <span style="font-size:12px;color:var(--ut-ink3)">점검 뒤에 고쳐 쓰고 다시 점검할 수 있습니다.</span>
+      <span style="font-size:12px;color:var(--ut-ink3)">점검한 뒤에 고쳐 쓰고 다시 점검할 수 있어요.</span>
     </div>
   </form>
 
@@ -199,11 +199,11 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
   function pick(mark,s,c){
     const field=s.text_id==='body'?'body':(s.text_id==='title'?'title':'captions');
     if(!replaceIn(field,s,c.text)) return;
-    const f=document.createElement('span'); f.className='fixed'; f.textContent=c.text||'(삭제)'; f.title='원문 「'+s.text+'」';
+    const f=document.createElement('span'); f.className='fixed'; f.textContent=c.text||'(삭제)'; f.title='원래 표현: 「'+s.text+'」';
     if(s.particle){ const nx=mark.nextSibling; if(nx&&nx.nodeType===3&&nx.textContent.startsWith(s.particle)) nx.textContent=nx.textContent.slice(s.particle.length); }
     mark.replaceWith(f);
     fixed++; const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=false; fc.textContent='고친 표현 '+fixed+'개';}
-    const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 다시 점검 — 고친 글로';}
+    const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 고친 글로 다시 점검';}
     close();
   }
   /* 다른 글의 위치태그 끄기 — 우리뜰 라우트(플랫폼)로 보내고, 끝나면 지금 초안으로 점검을 다시 돌린다 */
@@ -216,7 +216,7 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
   }
   let kept=0;
   function keep(mark,s){
-    mark.classList.add('ack'); mark.title='그대로 두기로 했습니다 — 「'+s.text+'」 는 그대로 올라갑니다';
+    mark.classList.add('ack'); mark.title='그대로 두기로 했어요. 「'+s.text+'」는 그대로 올라가요';
     kept++; const kc=document.getElementById('keptCount'); if(kc){kc.hidden=false; kc.textContent='그대로 두기 '+kept+'개';}
     const btn=document.querySelector('button[type=submit]:not([formaction])'); if(btn) btn.textContent='알고도 올리기';
     close();
@@ -232,19 +232,19 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
       +'<span class="kv'+(c.bound?' bound':'')+'">'+(c.k!=null?'→ '+fmt(c.k)+'명':'')+'</span>'
       +(c.note?'<span class="nt">'+c.note+'</span>':'')
       +(c.bound?'<span class="nt why">⤷ '+c.bound+'</span>':'')+'</button>'
-      +(c.bound_fix?'<div class="fix"><span>그것까지 치우면 <b>→ '+fmt(c.bound_k)+'명</b></span><span class="acts">'
+      +(c.bound_fix?'<div class="fix"><span>그것까지 지우면 <b>→ '+fmt(c.bound_k)+'명</b></span><span class="acts">'
           +(c.bound_fix.geo_posts||[]).map(p=>'<button type="button" data-untag="'+p+'">📍 '+p+' 태그 끄기</button>').join('')
           +((c.bound_fix.span_posts||[]).length
-              ?'<a href="'+c.bound_fix.check_url+'#actions" target="_blank" rel="noopener">✎ 「'+c.bound_fix.text+'」 '+c.bound_fix.span_posts.length+'편 — 내 글 점검에서 ↗</a>'
+              ?'<a href="'+c.bound_fix.check_url+'#actions" target="_blank" rel="noopener">✎ 「'+c.bound_fix.text+'」 '+c.bound_fix.span_posts.length+'편, 내 글 점검에서 ↗</a>'
               :'')
           +'</span></div>':'')
       +'</li>';
     const widen=s.candidates.filter(c=>c.kind==='widen'), erase=s.candidates.filter(c=>c.kind!=='widen');
     pop.innerHTML='<div class="hd"><b>「'+s.text+'」</b><span>'+s.type+' · '+s.level+'</span>'+(afterK?'<span class="kk">지금 '+fmt(afterK)+'명</span>':'')+'</div>'
-      +(hasWiden?'<div class="grp">↗ 지우지 말고 넓히기 — 뜻은 남기고 후보만 늘립니다</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
-      +'<div class="grp">✕ '+(hasWiden?'아예 지우기':'표현 바꾸기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>'
-      +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 두어도 됩니다 — 대신 후보가 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 좁혀지는 건 감수하는 선택입니다.</span></div>'
-      +'<div class="ft"><span>말투는 두고 새는 정보만 바꿉니다</span><button type="button" data-self>직접 고치기</button><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
+      +(hasWiden?'<div class="grp">↗ 지우지 않고 넓히기 (뜻은 남기고 숫자만 늘려요)</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
+      +'<div class="grp">✕ '+(hasWiden?'아예 지우기':'다르게 쓰기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>'
+      +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 그대로 둬도 돼요. 대신 나일 수 있는 사람이 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 줄어드는 건 감수하는 선택이에요.</span></div>'
+      +'<div class="ft"><span>말투는 두고 드러나는 정보만 바꿔요</span><button type="button" data-self>직접 고치기</button><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
     pop.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>pick(mark,s,s.candidates[+b.dataset.i])));
     pop.querySelectorAll('button[data-untag]').forEach(b=>b.addEventListener('click',()=>untag(b)));
     pop.querySelector('[data-keep]').addEventListener('click',()=>keep(mark,s));

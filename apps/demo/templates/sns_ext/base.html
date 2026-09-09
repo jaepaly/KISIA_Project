@@ -16,7 +16,7 @@
   <header class="ut-top">
     <div class="ut-top-in">
       <a class="ut-logo" href="/">🌱 우리뜰 <small>동네 기록</small></a>
-      <a class="ut-restart" href="/" onclick="padoTourReset(); return false;" title="첫 화면으로 돌아가고 3분 체험을 처음부터">⟲ 처음부터</a>
+      <a class="ut-restart" href="/" onclick="padoTourReset(); return false;" title="첫 화면으로 돌아가서 3분 체험을 처음부터 시작해요">⟲ 처음부터</a>
       <nav class="ut-nav">
         <a href="/" class="{{ 'on' if nav == 'home' }}">홈</a>
         {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}">내 블로그</a>
@@ -33,8 +33,8 @@
     </aside>
   </div>
 
-  <p class="ut-foot">「우리뜰」은 <b>가상의 SNS</b>입니다 — 네이버·인스타그램 자리에 놓인 시뮬레이터이고, 등장하는 인물과 글은 전부 합성입니다.
-  파도풀은 이 플랫폼에 붙어 도는 재식별 위험 점검 서비스이며, 다른 SNS 에도 같은 방식으로 붙습니다.</p>
+  <p class="ut-foot">「우리뜰」은 <b>가상의 SNS</b>예요. 네이버나 인스타그램 자리에 놓인 시뮬레이터이고, 인물과 글은 전부 합성이에요.
+  파도풀은 이 플랫폼에 붙어서 도는 점검 서비스이고, 다른 SNS에도 같은 방식으로 붙일 수 있어요.</p>
 
   <nav class="ut-tabs" aria-label="하단 메뉴">
     <a href="/" class="{{ 'on' if nav == 'home' }}"><span class="ic">🏠</span>홈</a>

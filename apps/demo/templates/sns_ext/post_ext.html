@@ -4,8 +4,8 @@
 <main class="ut-wrap">
   <a class="ut-back" href="{{ back or ('/u/' ~ p.user_ref) }}">← {% if back %}점검 화면으로{% else %}{{ p.nickname }} 님의 블로그{% endif %}</a>
 
-  {% if flash == 'geo' %}<div class="ut-flash">✓ 위치태그를 지웠습니다. 다음 내보내기부터 빠집니다. <a href="/u/{{ p.user_ref }}/check">다시 점검 →</a></div>{% endif %}
-  {% if flash == 'edit' %}<div class="ut-flash">✓ 글을 고쳤습니다. 글은 계속 공개 상태입니다. <a href="/u/{{ p.user_ref }}/check">다시 점검 →</a></div>{% endif %}
+  {% if flash == 'geo' %}<div class="ut-flash">✓ 위치태그를 지웠어요. 이제 파도풀에도 안 넘어가요. <a href="/u/{{ p.user_ref }}/check">다시 점검 →</a></div>{% endif %}
+  {% if flash == 'edit' %}<div class="ut-flash">✓ 글을 고쳤어요. 글은 계속 공개예요. <a href="/u/{{ p.user_ref }}/check">다시 점검 →</a></div>{% endif %}
 
   {% set eng = ut_engage(p.post_id) %}
   <article class="ut-card {{ 'dim' if p.visibility == 'private' }}">
@@ -43,7 +43,7 @@
           <span><span class="who">{{ c.who }}</span> <span class="dt mono" style="font-size:11px;color:var(--ut-ink3)">{{ c.when }}</span><br>
           <span class="txt">{{ c.text }}</span></span></div>
       {% endfor %}
-      <div class="ut-cmt-form"><input type="text" placeholder="댓글 남기기 (데모에서는 저장되지 않습니다)" disabled><button class="ghost" type="button" disabled>등록</button></div>
+      <div class="ut-cmt-form"><input type="text" placeholder="댓글 남기기 (데모라 저장되지 않아요)" disabled><button class="ghost" type="button" disabled>등록</button></div>
     </div>
     {% endif %}
 
@@ -62,7 +62,7 @@
         {% endif %}
         <a class="ut-btn ghost" href="/posts/{{ p.post_id }}/edit{% if back %}?back={{ back }}{% endif %}">✎ 본문 고치기</a>
       </div>
-      <p style="font-size:12px;color:var(--ut-ink3);margin:10px 0 0">비공개는 삭제가 아닙니다 — 내 서랍에는 그대로 남고 언제든 되돌릴 수 있습니다.</p>
+      <p style="font-size:12px;color:var(--ut-ink3);margin:10px 0 0">비공개는 삭제가 아니에요. 내 서랍에는 그대로 남고 언제든 되돌릴 수 있어요.</p>
     </div>
   </article>
 

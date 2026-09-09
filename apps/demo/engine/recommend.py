@@ -25,9 +25,9 @@ MODEL_VERSION = "demo-rules-0.1.0"
 # 키는 스팬 원문. 없으면 유형별 일반 후보로 떨어진다.
 _CACHE: dict[str, list[dict[str, str]]] = {
     "면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대라": [
-        {"text": "버스가 하도 안 와서", "note": "배차 정보만 지움 — 추천"},
+        {"text": "버스가 하도 안 와서", "note": "배차 정보만 지움 (추천)"},
         {"text": "차 시간이 영 안 맞아서", "note": "교통수단 언급은 남음"},
-        {"text": "볕도 좋고 다리도 풀 겸", "note": "이유 자체가 바뀜 — 의미 손실 큼"},
+        {"text": "볕도 좋고 다리도 풀 겸", "note": "이유 자체가 바뀜, 뜻이 많이 달라짐"},
     ],
     "한 대 놓치면 두 시간": [
         {"text": "오늘도 걸었다", "note": "배차 간격 지움"},
@@ -41,7 +41,7 @@ _GENERIC: dict[str, list[dict[str, str]]] = {
     "LOC_FACILITY": [{"text": "근처", "note": "시설 이름 지움"}, {"text": "동네 어귀", "note": "장소 느낌만"},
                      {"text": "그 앞", "note": "가장 짧게"}],
     # 명사형으로 둔다 — 나이 스팬 뒤에 「인디·인데·이다」 가 붙어 있어서 그대로 이어져야 한다
-    "AGE": [{"text": "이 나이", "note": "숫자 지움 — 추천"}, {"text": "이만한 나이", "note": "세대 느낌만"},
+    "AGE": [{"text": "이 나이", "note": "숫자 지움 (추천)"}, {"text": "이만한 나이", "note": "세대 느낌만"},
             {"text": "나이", "note": "가장 짧게"}],
     "COMMUTE": [{"text": "차가 뜸해서", "note": "배차 지움"}, {"text": "차 시간이 안 맞아서", "note": "교통수단 남음"},
                 {"text": "걷기 좋은 날이라", "note": "이유가 바뀜"}],
@@ -51,7 +51,7 @@ _GENERIC: dict[str, list[dict[str, str]]] = {
             {"text": "누가", "note": "가장 짧게"}],
     "JOB": [{"text": "일 나가는", "note": "직종 지움"}, {"text": "바쁜", "note": "일 언급 최소"},
             {"text": "그냥 지내는", "note": "직업 언급 자체를 뺌"}],
-    "SEX": [{"text": "식구", "note": "관계 지움"}, {"text": "집사람·바깥사람 대신 «우리»", "note": ""},
+    "SEX": [{"text": "식구", "note": "관계 지움"}, {"text": "우리", "note": "집사람·바깥사람 대신"},
             {"text": "그이", "note": ""}],
     "REL_HOME": [{"text": "가끔 가는", "note": "거리 지움"}, {"text": "근처", "note": ""}, {"text": "", "note": "삭제"}],
     "REL_WORK": [{"text": "일 끝나고", "note": "직장 위치 지움"}, {"text": "저녁에", "note": ""}, {"text": "", "note": "삭제"}],
@@ -98,7 +98,7 @@ def fit_particle(cand: str, particle: str) -> str:
 
 # 표면형으로 갈리는 일반 후보 — 유형별 후보보다 먼저 본다 (9호선에 시골버스 후보를 주지 않게)
 _BY_TEXT: list[tuple[re.Pattern, list[dict[str, str]]]] = [
-    (re.compile(r"\d호선|지하철|전철"), [{"text": "지하철", "note": "노선 지움 — 추천"}, {"text": "전철", "note": "노선 지움"},
+    (re.compile(r"\d호선|지하철|전철"), [{"text": "지하철", "note": "노선 지움 (추천)"}, {"text": "전철", "note": "노선 지움"},
                                      {"text": "차", "note": "수단 자체를 흐림"}]),
 ]
 
@@ -138,11 +138,11 @@ def k_with_note(view: dict[str, Any], post_id: str, span_id: str, patch: dict[st
     posts_of = list(dict.fromkeys(posts_of))
     n_posts = len(set(posts_of) | group_meta)
     if src["post_id"] == post_id:
-        out["bound"] = f"이 글의 다른 표현 「{src['text']}」가 남아 여기까지"
+        out["bound"] = f"이 글의 다른 표현 「{src['text']}」가 남아 있어서 여기까지예요"
         return out
     where = f"📍{src['text']} 위치태그" if src.get("channel") == "geo_tag" else f"「{src['text']}」"
-    out["bound"] = (f"다른 글 {n_posts}편({'·'.join(sorted(set(posts_of) | group_meta))})의 {where}가 남아 여기까지"
-                    if n_posts > 1 else f"다른 글({src['post_id']})의 {where}가 남아 여기까지")
+    out["bound"] = (f"다른 글 {n_posts}편({', '.join(sorted(set(posts_of) | group_meta))})에 {where}가 남아 있어서 여기까지예요"
+                    if n_posts > 1 else f"다른 글({src['post_id']})에 {where}가 남아 있어서 여기까지예요")
     bk = compute(v2, exclude_spans=frozenset(group_spans), exclude_meta=frozenset(group_meta))["k"]
     if bk != f["k"]:      # 치워도 안 바뀌면(또 다른 바닥이 있으면) 상자를 내지 않는다
         out["bound_k"] = bk
@@ -177,7 +177,7 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     if sp["type"] == "LOC_ADMIN" and note.get("place"):
         for a in ancestors(note["place"]):
             r = k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]}, "location")
-            out.append({"text": a["text"], "note": f"{a['level']}까지만 — 넓힘", **r})
+            out.append({"text": a["text"], "note": f"{a['level']}까지만 남김", **r})
     elif sp["type"] == "AGE" and note.get("age") is not None:
         d = int(note["age"]) // 10 * 10
         if d >= 10:
@@ -235,7 +235,7 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         k1, d = delta(f)
         actions.append({"action_type": "activity_meta", "burden": "low", "certainty": "high",
                         "targets": [{"kind": "meta_field", "ref": "geo_tag"}], "projected_delta": min(d, 0.0),
-                        "rationale": "글 본문에 지명이 없어도 위치태그 하나가 읍·면을 확정한다. 본문을 안 읽는 채널이라 본문 스캔 도구는 못 본다.",
+                        "rationale": "본문에 지명이 없어도 위치태그 하나가 읍·면을 알려줘요. 글만 읽는 검사기는 놓치는 부분이에요.",
                         "_k": k1, "_post_id": pid})
 
     # ① 부분 비공개 — (태그 끈 뒤) k 에 기여한 글 중 빼면 가장 넓어지는 글 하나
@@ -249,7 +249,7 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         k1, d = delta(compute(view, exclude_posts=frozenset({pid})))
         actions.append({"action_type": "unpublish", "burden": "low", "certainty": "highest",
                         "targets": [{"kind": "post", "ref": pid}], "projected_delta": min(d, 0.0),
-                        "rationale": "이 글 한 편만 비공개하면 명시 단서 경로가 끊긴다. 삭제가 아니라 되돌릴 수 있다.",
+                        "rationale": "이 글 한 편만 비공개해도 단서 하나가 사라져요. 삭제가 아니라서 되돌릴 수 있어요.",
                         "_k": k1, "_post_id": pid})
 
     # ③ 리라이트 — (태그 끈 뒤) k 단계에 쓰인 본문 스팬 중 효과가 큰 순서로 최대 2건
@@ -267,7 +267,7 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         _, d = delta(compute(view, exclude_spans=frozenset({sp["span_id"]})))
         actions.append({"action_type": "rewrite", "burden": burden, "certainty": "medium",
                         "targets": [{"kind": "post", "ref": p["post_id"]}], "projected_delta": min(d, 0.0),
-                        "rationale": f"「{sp['text']}」 만 바꾸면 글을 내리지 않고 경로가 끊긴다. 잔존 단서는 남을 수 있다.",
+                        "rationale": f"「{sp['text']}」만 바꾸면 글을 내리지 않고도 단서 하나가 사라져요. 다른 단서는 남을 수 있어요.",
                         "_k": k1, "_post_id": p["post_id"], "_span_id": sp["span_id"]})
         text = p["texts"][sp["text_id"]]
         ls, le = _line_of(text, sp["start"], sp["end"])

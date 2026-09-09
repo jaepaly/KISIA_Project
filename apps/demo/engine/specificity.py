@@ -200,7 +200,7 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
         if sub:
             codes = sub
             n = count(codes)
-            steps.append({"axis": "location", "kind": "dialect_region", "condition": f"방언 권역 «{region}»",
+            steps.append({"axis": "location", "kind": "dialect_region", "condition": f"말투로 보아 {region} 지역",
                           "n_after": n, "method": "dialect_lexicon", "src": signals.get("dialect_src")})
 
     au = signals.get("admin_unit")
@@ -212,7 +212,7 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
             codes = sub
             n = count(codes)
             steps.append({"axis": "location", "kind": "admin_unit",
-                          "condition": f"{'·'.join(suffixes)} 단위 지역(행정 시설 언급)",
+                          "condition": f"{'·'.join(suffixes)} 단위 지역 (면사무소 같은 시설 언급)",
                           "n_after": n, "method": "name_suffix_filter", "src": au["src"]})
 
     # 명시 지명·위치태그 — 가장 좁은 것 하나를 택한다 (해석 불가·중의는 건너뛴다).
@@ -232,7 +232,7 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
         n = count(codes)
         p = best[2]
         steps.append({"axis": "location", "kind": "admin_code",
-                      "condition": f"지명 «{p['canonical']}»" + (" — 위치태그" if p["src"].get("channel") == "geo_tag" else ""),
+                      "condition": f"지명 «{p['canonical']}»" + (" (위치태그)" if p["src"].get("channel") == "geo_tag" else ""),
                       "n_after": n, "method": "regions.json resolve", "src": p["src"]})
 
     bands: list[str] | None = None
@@ -259,7 +259,7 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
         steps.append({"axis": "sex", "condition": "성별 " + ("여성" if sex["value"] == "F" else "남성"),
                       "n_after": n, "method": "crosstab_lookup", "src": sex["src"]})
     else:
-        steps.append({"axis": "sex", "condition": "성별 — 기권(단서 없음, 남녀 합산 유지)",
+        steps.append({"axis": "sex", "condition": "성별은 단서가 없어 남녀 합산",
                       "n_after": n, "method": "abstain", "src": None})
 
     k = max(1, n)

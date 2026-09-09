@@ -24,14 +24,14 @@
   </div>
 
   <div class="ut-pado">
-    <div class="t"><b>🌊 파도풀 — 내 글이 나를 얼마나 특정하는가</b><br>
-      공개 글을 모아 재식별 위험을 점검합니다. 이름·전화번호가 없어도, 흩어진 단서가 결합되면 사람이 좁혀집니다.</div>
+    <div class="t"><b>🌊 내 글이 나를 얼마나 드러낼까요</b><br>
+      공개 글을 모아서 파도풀이 살펴봐요. 이름이나 전화번호가 없어도 흩어진 단서가 합쳐지면 사람이 특정돼요.</div>
     <a class="go" href="/u/{{ a.user_ref }}/check">내 글 점검하기 →</a>
   </div>
 
   <div class="ut-h" style="margin-top:22px"><h1 style="font-size:19px">기록</h1><span class="sub">{{ posts|length }}편</span></div>
 
-  {% if not posts %}<p class="ut-empty">아직 쓴 글이 없습니다.</p>{% endif %}
+  {% if not posts %}<p class="ut-empty">아직 쓴 글이 없어요.</p>{% endif %}
 
   {% for p in posts %}
     {% set eng = ut_engage(p.post_id) %}

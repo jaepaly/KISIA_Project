@@ -132,14 +132,14 @@
         .then((d) => {
           w.classList.remove("loading"); sub && sub.classList.remove("shimmer");
           if (num) { num.dataset.from = "0"; countTo(num, d.k, { from: 0, dur: 1400 }); }
-          if (lvl) { lvl.textContent = d.label + " · 공개 " + d.n_posts + "편"; lvl.className = "lvl " + d.css; }
-          if (sub) sub.innerHTML = "직접 식별자 <b>" + d.n_direct + "건</b>인데 후보가 <b>" + fmt(d.k) + "명</b>까지 좁혀집니다. 조치 " + d.n_actions + "개를 다 하면 <b>" + fmt(d.projected_k) + "명</b>.";
+          if (lvl) { lvl.textContent = d.label + ", 공개 글 " + d.n_posts + "편"; lvl.className = "lvl " + d.css; }
+          if (sub) sub.innerHTML = "이름·전화번호 <b>" + d.n_direct + "건</b>인데 나일 수 있는 사람이 <b>" + fmt(d.k) + "명</b>까지 줄어요. 조치 " + d.n_actions + "개를 다 하면 <b>" + fmt(d.projected_k) + "명</b>이 돼요.";
           if (ring) drawRing(ring, d.risk, d.css);
         })
         .catch(() => {
           w.classList.remove("loading"); sub && sub.classList.remove("shimmer");
           if (num) num.textContent = "—";
-          if (lvl) { lvl.textContent = "파도풀에 연결하지 못했습니다"; lvl.className = "lvl"; }
+          if (lvl) { lvl.textContent = "파도풀에 연결하지 못했어요"; lvl.className = "lvl"; }
         });
     });
   }
@@ -178,33 +178,33 @@
   const TOUR_KEY = "pado_tour";
   const TOUR = [
     { page: (p) => p === "/", target: '.rail-nb a[href="/u/u_1a2e7dcc"]',
-      title: "① 마당일기 님의 블로그로", text: "68세 할머니의 글 18편 — 이름도 지명도 한 번 안 나옵니다. 그런데도 사람이 좁혀지는지 봅니다.",
+      title: "① 마당일기 님의 블로그로", text: "68세 할머니의 글 18편이에요. 이름도 지명도 한 번 안 나와요. 그런데도 사람이 좁혀지는지 볼게요.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc", target: ".ut-pado a.go",
-      title: "② 내 글 점검", text: "우리뜰이 이 계정의 공개 글만 파도풀에 보냅니다. 파도풀은 저장하지 않고 진단만 돌려줍니다.",
+      title: "② 내 글 점검", text: "우리뜰이 이 계정의 공개 글만 파도풀에 보내요. 파도풀은 저장하지 않고 결과만 돌려줘요.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#sum .hero", when: () => !$(".delta-banner"),
-      title: "③ 직접 식별자 0건, 후보 421명", text: "이름·전화번호 검사기라면 «안전»입니다. 파도풀은 글들의 결합을 세서 전 국민 5,100만 중 421명까지 좁힙니다.",
+      title: "③ 이름도 전화번호도 없는데 421명", text: "이름과 전화번호만 찾는 검사기라면 «안전»이에요. 파도풀은 글들을 합쳐서 봐서 전 국민 5,100만 명 중 421명까지 좁혀요.",
       advance: "next" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#funnel ul.funnel", when: () => !$(".delta-banner"),
-      title: "④ 어떻게 좁혀지나", text: "방언 → 면사무소 → 위치태그 → 「예순여덟」. 단계마다 실제 주민등록 인구입니다. 줄을 누르면 그 문장으로 갑니다.",
+      title: "④ 어떻게 좁혀지나", text: "말투 → 면사무소 → 위치태그 → 「예순여덟」. 단계마다 실제 주민등록 인구예요. 줄을 누르면 그 문장으로 가요.",
       advance: "next" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: '#actions form[action$="/geo_tag"] button',
       when: () => !$(".delta-banner") && !!$('#actions form[action$="/geo_tag"] button'),   // 태그를 이미 지웠으면 건너뛴다
-      title: "⑤ 가장 가벼운 조치 하나", text: "글을 지우지 않고 위치태그만 끕니다. 눌러 보세요 — 화면이 다시 계산됩니다.",
+      title: "⑤ 가장 가벼운 조치 하나", text: "글을 지우지 않고 위치태그만 꺼요. 눌러 보세요. 화면이 다시 계산돼요.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".delta-banner", when: () => !!$(".delta-banner"),
-      title: "⑥ 421 → 111,069", text: "글은 하나도 안 지웠습니다. 끊긴 경로는 깔때기에 취소선으로 남습니다.",
+      title: "⑥ 421 → 111,069", text: "글은 하나도 안 지웠어요. 사라진 단서는 아래 표에 취소선으로 남아요.",
       advance: "next" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".ut-nav a.write, .ut-tabs a[href='/new']",
-      title: "⑦ 이번엔 올리기 전에", text: "체험 계정으로 아무 글이나 써 봅니다. 올리기 전에 한 번 점검합니다.",
+      title: "⑦ 이번엔 올리기 전에", text: "체험 계정으로 아무 글이나 써 볼게요. 올리기 전에 한 번 점검해요.",
       advance: "click" },
     { page: (p) => p === "/new", target: 'button[formaction="/check-draft"]', when: () => !$("#draftSpans"),
-      title: "⑧ 예문을 넣고 점검", text: "본문에 예문을 넣어 뒀습니다 — 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 작성자는 체험 계정. 이 버튼을 누르면 올리기 전에 점검합니다.",
-      advance: "click", hint: "👆 이 버튼을 누르면 이어집니다",
+      title: "⑧ 예문을 넣고 점검", text: "본문에 예문을 넣어 뒀어요. 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 작성자는 체험 계정이에요. 이 버튼을 누르면 올리기 전에 점검해요.",
+      advance: "click", hint: "👆 이 버튼을 누르면 이어져요",
       onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
     { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span]", when: () => !!$("#draftSpans"),
-      title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 후보 수, 그리고 「그대로 두기」. 고르는 건 글쓴이입니다.",
+      title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 숫자, 그리고 「그대로 두기」가 나와요. 고르는 건 글쓴이예요.",
       advance: "done" },
   ];
   function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
@@ -243,7 +243,7 @@
     card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span>" + st.title + "</div><div class=\"tx\">" + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
       + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
-         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어집니다") : "이 화면에 그 버튼이 없어요 — 건너뛰기") + "</span>") + "</div>";
+         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어져요") : "이 화면에는 그 버튼이 없어요. 건너뛰기를 눌러 주세요") + "</span>") + "</div>";
     document.body.appendChild(card);
     card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
     const nextBtn = card.querySelector("[data-next]");
@@ -273,7 +273,7 @@
   function finishTour() {
     const d = document.createElement("div");
     d.className = "tour-mark floating done";
-    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요 — 다른 인물(느린 기록은 위치태그 하나가 20만 → 5명), 리라이트 후보 골라 저장, 비공개 토글. 파도풀은 권고까지, 누르는 건 우리뜰입니다.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
+    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요. 다른 인물도 보고(느린 기록은 위치태그 하나가 20만 → 5명), 고친 표현을 골라 저장해 보고, 비공개도 눌러 보세요. 파도풀은 권하기만 하고, 누르는 건 우리뜰이에요.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
     document.body.appendChild(d);
     d.querySelector("[data-x]").addEventListener("click", () => d.remove());
   }

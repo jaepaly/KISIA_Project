@@ -1,5 +1,5 @@
 {# 오른쪽 레일 — 피드·프로필·글·에디터 화면 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
-<div class="rail-card rail-tour rv">{% if me %}로그인 없는 데모 — 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»입니다. 헤더의 「내 블로그」「점검」이 여기로 갑니다.{% else %}로그인 없는 데모 — 아직 아무 블로그도 열지 않았습니다. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」이 생깁니다.{% endif %}
+<div class="rail-card rail-tour rv">{% if me %}로그인이 없는 데모예요. 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»예요. 위의 「내 블로그」「점검」이 여기로 가요.{% else %}로그인이 없는 데모예요. 아직 아무 블로그도 열지 않았어요. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」 메뉴가 생겨요.{% endif %}
   <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
 {% if me %}
 {% set st = ut_stats(me.author_id) %}
@@ -20,20 +20,20 @@
 </div>
 
 <div class="rail-card rail-pado rv" data-pado-widget="{{ me.user_ref }}">
-  <div class="rail-h"><span class="mark">🌊 파도풀</span><span class="tag nosave">저장 안 함</span></div>
+  <div class="rail-h"><span class="mark">🌊 파도풀</span><span class="tag nosave">저장하지 않아요</span></div>
   <div class="rail-pado-body">
     <svg class="ring" viewBox="0 0 84 84" aria-hidden="true">
       <circle class="tr" cx="42" cy="42" r="36"/><circle class="pr" cx="42" cy="42" r="36" data-ring/>
       <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>·</text>
     </svg>
     <div class="rail-k">
-      <div class="lab">내 글로 좁혀지는 후보</div>
+      <div class="lab">나일 수 있는 사람</div>
       <div class="val"><span class="num" data-k>—</span><span class="unit">명</span></div>
-      <div class="lvl" data-lvl>공개 글을 모아 세는 중…</div>
+      <div class="lvl" data-lvl>공개 글을 모아 세고 있어요…</div>
     </div>
   </div>
   <div class="rail-pado-foot">
-    <span class="sk" data-sub>이름·전화번호 없이도 흩어진 단서가 결합되면 사람이 좁혀집니다.</span>
+    <span class="sk" data-sub>이름이나 전화번호가 없어도 흩어진 단서가 합쳐지면 사람이 특정돼요.</span>
     <a class="go" href="/u/{{ me.user_ref }}/check">내 글 점검 →</a>
   </div>
 </div>
@@ -55,6 +55,6 @@
 </div>
 
 <div class="rail-card rail-note rv">
-  <b>이 화면은 어디까지가 우리뜰인가</b>
-  <p>글·계정·사진은 <b>우리뜰</b>(플랫폼)에 있고, 파도풀은 <b>공개 글의 내보내기 형식</b>만 받아 진단합니다. 비공개·위치태그·본문 수정 버튼은 전부 우리뜰에 있습니다.</p>
+  <b>어디까지가 우리뜰이고 어디부터 파도풀인가요</b>
+  <p>글, 계정, 사진은 <b>우리뜰</b>에 있어요. 파도풀은 우리뜰이 넘겨주는 <b>공개 글</b>만 받아서 봐요. 비공개, 위치태그, 본문 수정 버튼은 전부 우리뜰에 있어요.</p>
 </div>
