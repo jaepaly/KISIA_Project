@@ -1,0 +1,201 @@
+{
+  "persona_id": "E04",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_bf3d2191",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E04_profile_s01",
+          "text_id": "profile_bio",
+          "text": "놀러왔다가 눌러앉음.. 코드 치는 워홀러💻",
+          "type": "INCOME",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E04_b01",
+        "spans": [
+          {
+            "span_id": "E04_b01_s01",
+            "text_id": "body",
+            "text": "본가 근처 갑천 산책하던 게 은근 그립다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "E04_b01_s02",
+            "text_id": "photo_caption:0",
+            "text": "그 다리 야경 진짜 좋았는데",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E04_b07",
+        "spans": [
+          {
+            "span_id": "E04_b07_s01",
+            "text_id": "body",
+            "text": "배포하다가 새벽까지 버그 잡음 ㅋㅋㅋ",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E04_b07_s02",
+            "text_id": "title",
+            "text": "여행 왔는데요 취업했습니다",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E04_b10",
+        "spans": [
+          {
+            "span_id": "E04_b10_s01",
+            "text_id": "body",
+            "text": "형이 청주 살아서 그쪽 구경시켜준 적 있음",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E04_b12",
+        "spans": [
+          {
+            "span_id": "E04_b12_s01",
+            "text_id": "body",
+            "text": "재택 각 나와서 카풀 취소함",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E04_b15",
+        "spans": [
+          {
+            "span_id": "E04_b15_s01",
+            "text_id": "body",
+            "text": "연휴인데 이번에도 못 감,, 다음엔 꼭",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E04_b18",
+        "spans": [
+          {
+            "span_id": "E04_b18_s01",
+            "text_id": "body",
+            "text": "스물여덟인데 아직도 정신 못 차림 ㅋㅋㅋ",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E04_b18",
+            "span_id": "E04_b18_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E04_b01",
+            "span_id": "E04_b01_s01"
+          },
+          {
+            "post_id": "E04_b01",
+            "span_id": "E04_b01_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E04_b07",
+            "span_id": "E04_b07_s01"
+          },
+          {
+            "post_id": "E04_b07",
+            "span_id": "E04_b07_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E04_b15",
+            "span_id": "E04_b15_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E04_b12",
+            "span_id": "E04_b12_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E04_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

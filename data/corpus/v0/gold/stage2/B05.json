@@ -1,0 +1,167 @@
+{
+  "persona_id": "B05",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_ec2cb38a",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B05_profile_s01",
+          "text_id": "profile_bio",
+          "text": "신포동 골목 어귀 흑백 현상소. 필름 카메라 들고 걷는 일상.",
+          "type": "LOC_ADMIN",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B05_b04",
+        "spans": [
+          {
+            "span_id": "B05_b04_s01",
+            "text_id": "body",
+            "text": "쉰둘 나이에 무거운 기계식 수동 카메라를 메고 골목을 걷는다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B05_b08",
+        "spans": [
+          {
+            "span_id": "B05_b08_s01",
+            "text_id": "body",
+            "text": "흑백 필름 수동 현상소 운영 15년 차인데 신포시장 집에서 도보 5분 거리라 다행이다",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B05_b08_s02",
+            "text_id": "photo_caption:0",
+            "text": "개항장 거리 신포시장 뒷골목 걸어서 5분 출근길",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B05_b14",
+        "spans": [
+          {
+            "span_id": "B05_b14_s01",
+            "text_id": "body",
+            "text": "군 복무 중인 작은아들이 첫 휴가 나와서 흑백 사진 한 장 남겨줬다",
+            "type": "FAM",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B05_b14_s02",
+            "text_id": "photo_caption:0",
+            "text": "필름 한 롤 가격이 또 올라서 현상소 유지비가 빠듯하다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B05_b18",
+        "spans": [
+          {
+            "span_id": "B05_b18_s01",
+            "text_id": "body",
+            "text": "친한 선배가 군산 구도심에 사진 갤러리 카페를냈다고 해서 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B05_b04",
+            "span_id": "B05_b04_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B05_profile_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B05_b08",
+            "span_id": "B05_b08_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B05_b14",
+            "span_id": "B05_b14_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B05_b08",
+            "span_id": "B05_b08_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B05_b14",
+            "span_id": "B05_b14_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

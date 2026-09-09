@@ -1,0 +1,14 @@
+{
+  "model": "Qwen/Qwen3-4B",
+  "seq_len": 1536,
+  "rank": 16,
+  "batch": 1,
+  "load_sec": 12.1,
+  "vram_after_load_gb": 2.68,
+  "trainable_params": 11796480,
+  "trainable_pct": 0.292,
+  "step_sec": 5.9,
+  "vram_peak_step_gb": 6.3,
+  "vram_total_gb": 8.59,
+  "loss": 13.155
+}

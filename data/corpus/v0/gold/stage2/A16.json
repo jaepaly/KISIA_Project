@@ -1,0 +1,168 @@
+{
+  "persona_id": "A16",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_14a839c6",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A16_b03",
+        "spans": [
+          {
+            "span_id": "A16_b03_s01",
+            "text_id": "body",
+            "text": "내 나이가 예순여덟인데 아직도 나물이 어렵다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A16_b07",
+        "spans": [
+          {
+            "span_id": "A16_b07_s01",
+            "text_id": "body",
+            "text": "손주들이 온다고 해서 아침부터 고기 핏물을 뺐다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A16_b13",
+        "spans": [
+          {
+            "span_id": "A16_b13_s01",
+            "text_id": "body",
+            "text": "할미가 해준 밥이 제일 맛있단다 ^^",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A16_b13_s02",
+            "text_id": "photo_caption:0",
+            "text": "동네 마트 다녀오는 길",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A16_b17",
+        "spans": [
+          {
+            "span_id": "A16_b17_s01",
+            "text_id": "body",
+            "text": "옆집 살던 새댁이 목포로 이사 간다고 인사하러 왔네",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A16_b19",
+        "spans": [
+          {
+            "span_id": "A16_b19_s01",
+            "text_id": "body",
+            "text": "식구들이 다 모이니 밥상이 너무 좁네...",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A16_b24",
+        "spans": [
+          {
+            "span_id": "A16_b24_s01",
+            "text_id": "body",
+            "text": "내 고향 나주에는 아직도 옛날 집들이 많았는데",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A16_b03",
+            "span_id": "A16_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A16_b13",
+            "span_id": "A16_b13_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A16_b13",
+            "span_id": "A16_b13_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "A16_b07",
+            "span_id": "A16_b07_s01"
+          },
+          {
+            "post_id": "A16_b19",
+            "span_id": "A16_b19_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

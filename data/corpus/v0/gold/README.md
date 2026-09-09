@@ -3,7 +3,8 @@
 **W3 산출.** 600~700 스팬. **blind 200 은 C 단독이고 나머지 넷이 검수를 나눈다.**
 
 ```
-data/corpus/v0/gold/<persona_id>_spans.jsonl          검수분      예: A11_spans.jsonl
+data/corpus/v0/gold/detect/<persona_id>_spans.jsonl   교사 원본   label.py 탐지본. 검수 전. C 는 열지 않는다
+data/corpus/v0/gold/<persona_id>_spans.jsonl          검수분(정본) 교사 원본을 사람이 고친 것. B 의 BIO 변환·D 의 2단이 읽는 유일한 입력  예: A11_spans.jsonl
 data/corpus/v0/gold/blind/<persona_id>_spans.jsonl    blind 분    C 만
 ```
 
@@ -120,3 +121,14 @@ data(c5): blind 200 스팬 (C)
 ```
 
 ⚠️ **실데이터 금지.** 여기 들어가는 글은 전부 `data/corpus/v0/posts/` 의 합성 글이다. 실제 블로그에서 가져온 문장은 한 줄도 넣지 않는다.
+
+## 검수 절차 (A·B·D·E) — #216
+
+1. `gold/detect/<pid>_spans.jsonl`(교사 원본) 을 복사해 `gold/<pid>_spans.jsonl`(검수 정본) 로
+2. 스팬을 고친다 — 경계(label-schema §5-2) · 유형(§3-3) · 등급(§4-1) · subject. 놓친 것 추가, 오탐 삭제. 애매하면 나눈다(§6). 8필드 유지
+3. 고친 글은 `"reviewed": true`
+4. `python scripts/check_gold.py data/corpus/v0/gold/<pid>_spans.jsonl` 통과 → PR
+
+우선순위: ① 단서 글인데 스팬 0 (교사가 놓침) ② 잡담 글인데 스팬 있음 (오탐 또는 누출 — `flags.negative_control` 은 그대로) ③ 나머지.
+함정 스팬(과거거주·출신지·방문지)은 스팬으로 남긴다 — 현 거주지 아님은 2단이 가린다.
+C 는 `detect/` 를 열지 않는다 (blind 조건).

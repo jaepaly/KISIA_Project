@@ -1,0 +1,219 @@
+{
+  "persona_id": "D05",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_40ef4266",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D05_profile_s01",
+          "text_id": "profile_bio",
+          "text": "손녀가 맹글어 줬다. 시골서 그냥 소일한다",
+          "type": "AGE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D05_b03",
+        "spans": [
+          {
+            "span_id": "D05_b03_s01",
+            "text_id": "body",
+            "text": "면사무소 앞에서 기다렸는디 버스가 한 시간에 한 대 라 그냥 걸어왔다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "D05_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "한 대 놓치면 두 시간",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "D05_b03_s03",
+            "text_id": "photo_caption:1",
+            "text": "정류장에서",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D05_b08",
+        "spans": [
+          {
+            "span_id": "D05_b08_s01",
+            "text_id": "body",
+            "text": "올해부텀 경로당 총무를 맡게 됐다",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "D05_b08_s02",
+            "text_id": "body",
+            "text": "같이 화투 치던 양반이 딸네 있는 여수로 살림을 옮겨 갔는디 요샌 셋뿐이다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D05_b12",
+        "spans": [
+          {
+            "span_id": "D05_b12_s01",
+            "text_id": "body",
+            "text": "방학 이라고 며칠 있다 간다길래 이불을 꺼내 놨다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D05_b14",
+        "spans": [
+          {
+            "span_id": "D05_b14_s01",
+            "text_id": "body",
+            "text": "내 나이가  예순여덟인디 아직 이만하면 다닐 만 하다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D05_b15",
+        "spans": [
+          {
+            "span_id": "D05_b15_s01",
+            "text_id": "body",
+            "text": "연금 나오는 날 맞차서 장 을 본다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D05_b15_s02",
+            "text_id": "title",
+            "text": "어매가 늘 그러셨는디",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D05_b17",
+        "spans": [
+          {
+            "span_id": "D05_b17_s01",
+            "text_id": "body",
+            "text": "예전에 광주 살 때는 이런 거 흔 했는디 여기 와서는 못 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "D05_b08",
+            "span_id": "D05_b08_s01"
+          },
+          {
+            "post_id": "D05_b14",
+            "span_id": "D05_b14_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D05_profile_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.6,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "D05_b03",
+            "span_id": "D05_b03_s01"
+          },
+          {
+            "post_id": "D05_b03",
+            "span_id": "D05_b03_s02"
+          },
+          {
+            "post_id": "D05_b03",
+            "span_id": "D05_b03_s03"
+          },
+          {
+            "post_id": "D05_b15",
+            "span_id": "D05_b15_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D05_b12",
+            "span_id": "D05_b12_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D05_b15",
+            "span_id": "D05_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

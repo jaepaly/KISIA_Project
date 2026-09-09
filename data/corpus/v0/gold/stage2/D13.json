@@ -1,0 +1,184 @@
+{
+  "persona_id": "D13",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_72ce8771",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D13_profile_s01",
+          "text_id": "profile_bio",
+          "text": "옛 사진 정리 중",
+          "type": "AGE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D13_b03",
+        "spans": [
+          {
+            "span_id": "D13_b03_s01",
+            "text_id": "photo_caption:0",
+            "text": "집 뒤 폐선길, 오늘도 여기서 돌아왔다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D13_b07",
+        "spans": [
+          {
+            "span_id": "D13_b07_s01",
+            "text_id": "body",
+            "text": "예순둘이 되고 나서야 이 길을 매일 걷는다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D13_b07_s02",
+            "text_id": "photo_caption:0",
+            "text": "갱 입구였던 자리. 삼십 년 여기 드나들었다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D13_b12",
+        "spans": [
+          {
+            "span_id": "D13_b12_s01",
+            "text_id": "body",
+            "text": "아버지 제사상은 늘 내가 차렸다",
+            "type": "SEX",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D13_b16",
+        "spans": [
+          {
+            "span_id": "D13_b16_s01",
+            "text_id": "body",
+            "text": "연금 들어오는 날에 맞춰 창고 세를 낸다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D13_b19",
+        "spans": [
+          {
+            "span_id": "D13_b19_s01",
+            "text_id": "body",
+            "text": "예전에 태백 살 때는 눈이 이만큼 안 왔다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D13_b24",
+        "spans": [
+          {
+            "span_id": "D13_b24_s01",
+            "text_id": "body",
+            "text": "같이 일하던 형님이 동해 쪽 발전소로 옮겨 가서 그 뒤로 못 봤다",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D13_b07",
+            "span_id": "D13_b07_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D13_profile_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D13_b12",
+            "span_id": "D13_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D13_b03",
+            "span_id": "D13_b03_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D13_b07",
+            "span_id": "D13_b07_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D13_b16",
+            "span_id": "D13_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "persona_id": "A11",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_37b5be61",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A11_profile_s01",
+          "text_id": "profile_bio",
+          "text": "하반기 취업 목표",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A11_b03",
+        "spans": [
+          {
+            "span_id": "A11_b03_s01",
+            "text_id": "body",
+            "text": "스물일곱이나 먹고 부모님께 손 벌리기 죄송하다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b07",
+        "spans": [
+          {
+            "span_id": "A11_b07_s01",
+            "text_id": "body",
+            "text": "누나가 용돈 하라며 이체해 줬다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b12",
+        "spans": [
+          {
+            "span_id": "A11_b12_s01",
+            "text_id": "body",
+            "text": "핸드폰 요금제 제일 싼 걸로 바꿨다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b18",
+        "spans": [
+          {
+            "span_id": "A11_b18_s01",
+            "text_id": "body",
+            "text": "학원 앞 고시식당에서 대충 때웠다",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b20",
+        "spans": [
+          {
+            "span_id": "A11_b20_s01",
+            "text_id": "body",
+            "text": "동기가 판교로 취업해서 한턱 쏜다고 불렀다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b22",
+        "spans": [
+          {
+            "span_id": "A11_b22_s01",
+            "text_id": "body",
+            "text": "막내가 또 사고를 쳤다고 연락이 왔다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A11_b27",
+        "spans": [
+          {
+            "span_id": "A11_b27_s01",
+            "text_id": "body",
+            "text": "본가가 있는 강릉은 벌써 장마가 시작됐다더라",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A11_b03",
+            "span_id": "A11_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A11_b07",
+            "span_id": "A11_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A11_b18",
+            "span_id": "A11_b18_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A11_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A11_b22",
+            "span_id": "A11_b22_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A11_b12",
+            "span_id": "A11_b12_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "persona_id": "D16",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_3a7d0915",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D16_profile_s01",
+          "text_id": "profile_bio",
+          "text": "묘목 키웁니다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D16_b04",
+        "spans": [
+          {
+            "span_id": "D16_b04_s01",
+            "text_id": "body",
+            "text": "접목 붙인 게 살았는지 보려고 새벽부터 나갔음",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D16_b09",
+        "spans": [
+          {
+            "span_id": "D16_b09_s01",
+            "text_id": "body",
+            "text": "매형이 트럭 좀 빌려 달라고 해서 하루 놀렸음",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D16_b13",
+        "spans": [
+          {
+            "span_id": "D16_b13_s01",
+            "text_id": "body",
+            "text": "봄에 선금 받아 겨울까지 버티는 구조라 계산이 늘 빠듯함",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D16_b17",
+        "spans": [
+          {
+            "span_id": "D16_b17_s01",
+            "text_id": "body",
+            "text": "딸 야자 끝나는 시간에 맞춰 데리러 감",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D16_b23",
+        "spans": [
+          {
+            "span_id": "D16_b23_s01",
+            "text_id": "body",
+            "text": "동생이 옥천 읍내에 가게를 내서 주말마다 거기서 봄",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D16_b09",
+            "span_id": "D16_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D16_b04",
+            "span_id": "D16_b04_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D16_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D16_b17",
+            "span_id": "D16_b17_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D16_b13",
+            "span_id": "D16_b13_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

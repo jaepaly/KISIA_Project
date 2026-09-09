@@ -1,0 +1,201 @@
+{
+  "persona_id": "E02",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d134709e",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E02_profile_s01",
+          "text_id": "profile_bio",
+          "text": "호주에서 라떼 내리는 중.. 언제 한국 감?☕🇦🇺",
+          "type": "INCOME",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E02_b02",
+        "spans": [
+          {
+            "span_id": "E02_b02_s01",
+            "text_id": "body",
+            "text": "본가 근처 오름 산책하던 게 그립다,, 여긴 그런 게 없음",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "E02_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "귤밭 옆 그 길",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E02_b06",
+        "spans": [
+          {
+            "span_id": "E02_b06_s01",
+            "text_id": "body",
+            "text": "오늘도 라떼아트 망해서 사장님한테 혼남 ㅋㅋ",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E02_b06_s02",
+            "text_id": "title",
+            "text": "7주차: 손목 나감",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E02_b10",
+        "spans": [
+          {
+            "span_id": "E02_b10_s01",
+            "text_id": "body",
+            "text": "플랫메이트 차 얻어타서 겨우 지각 면함",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E02_b13",
+        "spans": [
+          {
+            "span_id": "E02_b13_s01",
+            "text_id": "body",
+            "text": "귤 철이라 집 걱정되네,, 올해도 잘 될지",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E02_b16",
+        "spans": [
+          {
+            "span_id": "E02_b16_s01",
+            "text_id": "body",
+            "text": "친구가 애월 살아서 귤 농장 도와준 적 있다곸ㅋ",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E02_b19",
+        "spans": [
+          {
+            "span_id": "E02_b19_s01",
+            "text_id": "body",
+            "text": "스물둘인데 여기 오니까 애 됨 ㅋㅋ",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E02_b19",
+            "span_id": "E02_b19_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E02_b02",
+            "span_id": "E02_b02_s01"
+          },
+          {
+            "post_id": "E02_b02",
+            "span_id": "E02_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E02_b06",
+            "span_id": "E02_b06_s01"
+          },
+          {
+            "post_id": "E02_b06",
+            "span_id": "E02_b06_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E02_b13",
+            "span_id": "E02_b13_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E02_b10",
+            "span_id": "E02_b10_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E02_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

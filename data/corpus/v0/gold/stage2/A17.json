@@ -1,0 +1,168 @@
+{
+  "persona_id": "A17",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_74be0689",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A17_b02",
+        "spans": [
+          {
+            "span_id": "A17_b02_s01",
+            "text_id": "body",
+            "text": "스물둘 먹고 이러고 사는 게 맞나,,,,,",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A17_b08",
+        "spans": [
+          {
+            "span_id": "A17_b08_s01",
+            "text_id": "body",
+            "text": "알바비 들어온 거 다 어디 갔냐고!!!!!!!",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A17_b11",
+        "spans": [
+          {
+            "span_id": "A17_b11_s01",
+            "text_id": "body",
+            "text": "여대 특) 시험기간에 다들 폐인됨ㅋㅋㅋㅋ",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A17_b14",
+        "spans": [
+          {
+            "span_id": "A17_b14_s01",
+            "text_id": "body",
+            "text": "동기가 송도로 자취방 구해서 집들이 감",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A17_b15",
+        "spans": [
+          {
+            "span_id": "A17_b15_s01",
+            "text_id": "body",
+            "text": "자취방에서 걸어서 5분 거리라 다행임,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "A17_b15_s02",
+            "text_id": "photo_caption:0",
+            "text": "외대앞역 근처 카페",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A17_b22",
+        "spans": [
+          {
+            "span_id": "A17_b22_s01",
+            "text_id": "body",
+            "text": "예전에 수원 살 때가 교통은 더 편했음 진심,,",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A17_b02",
+            "span_id": "A17_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A17_b11",
+            "span_id": "A17_b11_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A17_b15",
+            "span_id": "A17_b15_s01"
+          },
+          {
+            "post_id": "A17_b15",
+            "span_id": "A17_b15_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A17_b08",
+            "span_id": "A17_b08_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

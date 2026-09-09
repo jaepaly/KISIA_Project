@@ -1,0 +1,200 @@
+{
+  "persona_id": "D01",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_779c533a",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D01_profile_s01",
+          "text_id": "profile_bio",
+          "text": "새벽에 두 시간. 물가 아니면 산.",
+          "type": "COMMUTE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D01_b04",
+        "spans": [
+          {
+            "span_id": "D01_b04_s01",
+            "text_id": "body",
+            "text": "집에서 십 분이면 닿는 물가라 새벽에 자주 간다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "D01_b04_s02",
+            "text_id": "photo_caption:0",
+            "text": "물안개 걷히기 전",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D01_b07",
+        "spans": [
+          {
+            "span_id": "D01_b07_s01",
+            "text_id": "body",
+            "text": "새벽에 차 빼려는데 서리가 껴서 한참 긁었다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D01_b11",
+        "spans": [
+          {
+            "span_id": "D01_b11_s01",
+            "text_id": "body",
+            "text": "라인 세워놓고 원인 찾느라 점심을 걸렀다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D01_b11_s02",
+            "text_id": "title",
+            "text": "점심 건너뛴 날",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D01_b14",
+        "spans": [
+          {
+            "span_id": "D01_b14_s01",
+            "text_id": "body",
+            "text": "야자 끝나는 시간에 맞춰 데리러 갔다 왓다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D01_b16",
+        "spans": [
+          {
+            "span_id": "D01_b16_s01",
+            "text_id": "body",
+            "text": "처남이 광교 살아서 거기 저수지에서 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D01_b18",
+        "spans": [
+          {
+            "span_id": "D01_b18_s01",
+            "text_id": "body",
+            "text": "마흔일곱에 새벽 산행은 확실히 다르다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D01_b18",
+            "span_id": "D01_b18_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D01_b04",
+            "span_id": "D01_b04_s01"
+          },
+          {
+            "post_id": "D01_b04",
+            "span_id": "D01_b04_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D01_b11",
+            "span_id": "D01_b11_s01"
+          },
+          {
+            "post_id": "D01_b11",
+            "span_id": "D01_b11_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D01_b14",
+            "span_id": "D01_b14_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D01_b07",
+            "span_id": "D01_b07_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D01_profile_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

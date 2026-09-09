@@ -1,0 +1,227 @@
+{
+  "persona_id": "E07",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_99e3940e",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E07_profile_s01",
+          "text_id": "profile_bio",
+          "text": "밭일 하다 심심하면 몇 자 적음",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E07_b02",
+        "spans": [
+          {
+            "span_id": "E07_b02_s01",
+            "text_id": "body",
+            "text": "읍성 돌담 밑에 앉아서 좀 쉬었어",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b05",
+        "spans": [
+          {
+            "span_id": "E07_b05_s01",
+            "text_id": "body",
+            "text": "고추 모종 심고 오니 허리가 아프네",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E07_b05_s02",
+            "text_id": "body",
+            "text": "일흔셋 되니 웬만한 밭일도 하루 넘게 힘이 간다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E07_b05_s03",
+            "text_id": "title",
+            "text": "고추 모종 심은 날",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b08",
+        "spans": [
+          {
+            "span_id": "E07_b08_s01",
+            "text_id": "body",
+            "text": "할멈이랑 둘이 저녁 먹었지",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b11",
+        "spans": [
+          {
+            "span_id": "E07_b11_s01",
+            "text_id": "body",
+            "text": "장 보러 읍내까지 버스 타고 나갔다 왔어",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b14",
+        "spans": [
+          {
+            "span_id": "E07_b14_s01",
+            "text_id": "body",
+            "text": "영감이 다 늙어서 이런 것도 배우네 그려",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b17",
+        "spans": [
+          {
+            "span_id": "E07_b17_s01",
+            "text_id": "body",
+            "text": "연금 나오는 날이라 손주들 용돈 좀 부쳐줬지",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E07_b17_s02",
+            "text_id": "body",
+            "text": "큰아들은 정읍 공장에 다니는데 요새 바쁘다 그려",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E07_b20",
+        "spans": [
+          {
+            "span_id": "E07_b20_s01",
+            "text_id": "body",
+            "text": "예전에는 부안 쪽에서 오래 살았었지",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b05",
+            "span_id": "E07_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b14",
+            "span_id": "E07_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b02",
+            "span_id": "E07_b02_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b05",
+            "span_id": "E07_b05_s01"
+          },
+          {
+            "post_id": "E07_b05",
+            "span_id": "E07_b05_s03"
+          },
+          {
+            "post_id": null,
+            "span_id": "E07_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b08",
+            "span_id": "E07_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b11",
+            "span_id": "E07_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E07_b17",
+            "span_id": "E07_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

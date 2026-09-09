@@ -1,0 +1,196 @@
+{
+  "persona_id": "B16",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_bc215963",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B16_profile_s01",
+          "text_id": "profile_bio",
+          "text": "판교 출퇴근하는 33세 백엔드 엔지니어. 커피와 서버 배포의 일상 덤프.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B16_b02",
+        "spans": [
+          {
+            "span_id": "B16_b02_s01",
+            "text_id": "body",
+            "text": "새벽에 서버 트래픽 튀어서 쿠버네티스 노드 긴급 증설하고 핫픽스 배포 완료함",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B16_b02_s02",
+            "text_id": "title",
+            "text": "새벽 3시 핫픽스 배포",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B16_b06",
+        "spans": [
+          {
+            "span_id": "B16_b06_s01",
+            "text_id": "body",
+            "text": "서른셋 먹고 주말에 형들이랑 풋살 2시간 뛰고 단백질 보충하러 국밥집 감",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B16_b06_s02",
+            "text_id": "body",
+            "text": "서른셋 먹고 주말에 형들이랑 풋살 2시간 뛰고 단백질 보충하러 국밥집 감",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B16_b17",
+        "spans": [
+          {
+            "span_id": "B16_b17_s01",
+            "text_id": "body",
+            "text": "이번에 스톡옵션 행사분 정산되어서 연봉 실수령액 앞자리가 바뀌었네",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B16_b21",
+        "spans": [
+          {
+            "span_id": "B16_b21_s01",
+            "text_id": "body",
+            "text": "고등동 오피스텔에서 판교 제2테크노밸리 사무실까지 자전거로 15분 컷",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B16_b21_s02",
+            "text_id": "photo_caption:0",
+            "text": "판교 제2테크노밸리 출근길 자전거도로",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B16_b26",
+        "spans": [
+          {
+            "span_id": "B16_b26_s01",
+            "text_id": "body",
+            "text": "이전 직장 동료가 분당 정자동 외국계 기업으로 이직해서 판교역에서 저녁 먹음",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b06",
+            "span_id": "B16_b06_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b06",
+            "span_id": "B16_b06_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b21",
+            "span_id": "B16_b21_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b02",
+            "span_id": "B16_b02_s01"
+          },
+          {
+            "post_id": "B16_b02",
+            "span_id": "B16_b02_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "B16_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b21",
+            "span_id": "B16_b21_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B16_b17",
+            "span_id": "B16_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

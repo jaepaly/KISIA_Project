@@ -1,0 +1,172 @@
+{
+  "persona_id": "D11",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_a7dc9aa6",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D11_profile_s01",
+          "text_id": "profile_bio",
+          "text": "밭 사진 올립니다",
+          "type": "JOB",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D11_b05",
+        "spans": [
+          {
+            "span_id": "D11_b05_s01",
+            "text_id": "photo_caption:0",
+            "text": "일흔한 살에 심은 상추여",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D11_b05_s02",
+            "text_id": "photo_caption:1",
+            "text": "손주가 뽑아준 거라 아까워서 못 먹겄네",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D11_b10",
+        "spans": [
+          {
+            "span_id": "D11_b10_s01",
+            "text_id": "body",
+            "text": "딸이 나보고 엄마 소리 좀 그만하라고 웃더라",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D11_b15",
+        "spans": [
+          {
+            "span_id": "D11_b15_s01",
+            "text_id": "body",
+            "text": "연금 나오는 날에 맞춰 약을 타러 간다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D11_b20",
+        "spans": [
+          {
+            "span_id": "D11_b20_s01",
+            "text_id": "body",
+            "text": "딸이 순천에 반찬가게를 새로 열어서 개업날 다녀왔당께",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D11_b24",
+        "spans": [
+          {
+            "span_id": "D11_b24_s01",
+            "text_id": "body",
+            "text": "마을버스가 하루 두 번뿐이라 아침 걸 놓치면 그날은 못 나간당께",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D11_b05",
+            "span_id": "D11_b05_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D11_b10",
+            "span_id": "D11_b10_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D11_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D11_b05",
+            "span_id": "D11_b05_s02"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D11_b24",
+            "span_id": "D11_b24_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D11_b15",
+            "span_id": "D11_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

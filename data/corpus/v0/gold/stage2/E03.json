@@ -1,0 +1,201 @@
+{
+  "persona_id": "E03",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_1454eab0",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E03_profile_s01",
+          "text_id": "profile_bio",
+          "text": "상하이 살이 6년차. 뜨개 도안 팔아요, 시승기도 씀🧶🚙",
+          "type": "INCOME",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E03_b04",
+        "spans": [
+          {
+            "span_id": "E03_b04_s01",
+            "text_id": "body",
+            "text": "본가 갈 때마다 경포 들르는 게 국룰이지",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "E03_b04_s02",
+            "text_id": "photo_caption:0",
+            "text": "호수 앞에서 한 컷",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E03_b08",
+        "spans": [
+          {
+            "span_id": "E03_b08_s01",
+            "text_id": "body",
+            "text": "이번 출장 가서 트림 비교하느라 정신없었다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E03_b08_s02",
+            "text_id": "title",
+            "text": "협력사 미팅 후기",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E03_b11",
+        "spans": [
+          {
+            "span_id": "E03_b11_s01",
+            "text_id": "body",
+            "text": "이번 연휴엔 시댁이랑 본가 둘 다 못 갔다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E03_b14",
+        "spans": [
+          {
+            "span_id": "E03_b14_s01",
+            "text_id": "body",
+            "text": "2호선 환승 줄이 길어서 지각할 뻔",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E03_b16",
+        "spans": [
+          {
+            "span_id": "E03_b16_s01",
+            "text_id": "body",
+            "text": "언니가 속초 살아서 여름마다 놀러갔었다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E03_b19",
+        "spans": [
+          {
+            "span_id": "E03_b19_s01",
+            "text_id": "body",
+            "text": "서른하나 되니까 확실히 체력이 다르네요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E03_b19",
+            "span_id": "E03_b19_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E03_b04",
+            "span_id": "E03_b04_s01"
+          },
+          {
+            "post_id": "E03_b04",
+            "span_id": "E03_b04_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E03_b08",
+            "span_id": "E03_b08_s01"
+          },
+          {
+            "post_id": "E03_b08",
+            "span_id": "E03_b08_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E03_b11",
+            "span_id": "E03_b11_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E03_b14",
+            "span_id": "E03_b14_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E03_profile_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

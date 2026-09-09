@@ -1,0 +1,173 @@
+{
+  "persona_id": "A05",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_f6a9ad20",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A05_b03",
+        "spans": [
+          {
+            "span_id": "A05_b03_s01",
+            "text_id": "body",
+            "text": "스물아홉이 되니 결정을 미루기 어렵다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A05_b06",
+        "spans": [
+          {
+            "span_id": "A05_b06_s01",
+            "text_id": "body",
+            "text": "성수기에는 예약 전화가 끊이지 않는다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A05_b06_s02",
+            "text_id": "title",
+            "text": "성수기가 끝나야 숨이 쉬어진다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A05_b09",
+        "spans": [
+          {
+            "span_id": "A05_b09_s01",
+            "text_id": "body",
+            "text": "혼자 사니 밥이 제일 귀찮다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A05_b10",
+        "spans": [
+          {
+            "span_id": "A05_b10_s01",
+            "text_id": "body",
+            "text": "여자 혼자 산다고 하면 다들 한마디씩 한다",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A05_b12",
+        "spans": [
+          {
+            "span_id": "A05_b12_s01",
+            "text_id": "body",
+            "text": "본가가 서귀포라 명절에만 간다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A05_b14",
+        "spans": [
+          {
+            "span_id": "A05_b14_s01",
+            "text_id": "body",
+            "text": "동기가 성산에 게스트하우스를 냈다고 해서 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A05_b03",
+            "span_id": "A05_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A05_b10",
+            "span_id": "A05_b10_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A05_b12",
+            "span_id": "A05_b12_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A05_b06",
+            "span_id": "A05_b06_s01"
+          },
+          {
+            "post_id": "A05_b06",
+            "span_id": "A05_b06_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A05_b09",
+            "span_id": "A05_b09_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

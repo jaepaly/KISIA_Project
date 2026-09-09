@@ -1,0 +1,170 @@
+{
+  "persona_id": "D02",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_f29bc501",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D02_profile_s01",
+          "text_id": "profile_bio",
+          "text": "야간 뛰고 낮에 자는 사람",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D02_b05",
+        "spans": [
+          {
+            "span_id": "D02_b05_s01",
+            "text_id": "body",
+            "text": "시급 올랐다고 좋아했는데 월세가 더 올랐음",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D02_b08",
+        "spans": [
+          {
+            "span_id": "D02_b08_s01",
+            "text_id": "body",
+            "text": "언니가 이거 바르면 낫다고 보내줬는데",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D02_b11",
+        "spans": [
+          {
+            "span_id": "D02_b11_s01",
+            "text_id": "body",
+            "text": "가게 뒤편에서 폐기 정리하다가 손을 베였다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D02_b11_s02",
+            "text_id": "title",
+            "text": "폐기 정리하다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D02_b14",
+        "spans": [
+          {
+            "span_id": "D02_b14_s01",
+            "text_id": "body",
+            "text": "걸어서 십 분이라 이 동네 못 떠남",
+            "type": "COMMUTE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D02_b16",
+        "spans": [
+          {
+            "span_id": "D02_b16_s01",
+            "text_id": "body",
+            "text": "동생이 신림 쪽에 자취해서 가끔 거기서 만난다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b08",
+            "span_id": "D02_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b11",
+            "span_id": "D02_b11_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D02_profile_s01"
+          },
+          {
+            "post_id": "D02_b11",
+            "span_id": "D02_b11_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b05",
+            "span_id": "D02_b05_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

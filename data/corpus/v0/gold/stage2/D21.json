@@ -1,0 +1,156 @@
+{
+  "persona_id": "D21",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_fa267bb0",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D21_b04",
+        "spans": [
+          {
+            "span_id": "D21_b04_s01",
+            "text_id": "body",
+            "text": "분류 라인 서는 자리가 바뀌어서 허리가 더 아픔",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D21_b04_s02",
+            "text_id": "photo_caption:0",
+            "text": "야간 끝나고 차 빼는데 십 분이면 집임",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D21_b10",
+        "spans": [
+          {
+            "span_id": "D21_b10_s01",
+            "text_id": "body",
+            "text": "형수가 반찬 싸줘서 한 주 버팀 🥲",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D21_b15",
+        "spans": [
+          {
+            "span_id": "D21_b15_s01",
+            "text_id": "body",
+            "text": "주휴 붙는 주랑 아닌 주랑 시급 체감이 다름",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D21_b20",
+        "spans": [
+          {
+            "span_id": "D21_b20_s01",
+            "text_id": "title",
+            "text": "서른다섯 되고 야간 3년차",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D21_b24",
+        "spans": [
+          {
+            "span_id": "D21_b24_s01",
+            "text_id": "body",
+            "text": "형이 판교 쪽으로 옮기고 연봉 얘기하는데 나는 그냥 웃었음",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D21_b20",
+            "span_id": "D21_b20_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D21_b10",
+            "span_id": "D21_b10_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D21_b04",
+            "span_id": "D21_b04_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D21_b04",
+            "span_id": "D21_b04_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D21_b15",
+            "span_id": "D21_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

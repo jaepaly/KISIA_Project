@@ -1,0 +1,151 @@
+{
+  "persona_id": "D19",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_039d35a3",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D19_b02",
+        "spans": [
+          {
+            "span_id": "D19_b02_s01",
+            "text_id": "body",
+            "text": "오일장 서는 날만 좌판 펴는데 요새 사람이 없어",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D19_b02_s02",
+            "text_id": "title",
+            "text": "전곡장 오늘 파리만 날림",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D19_b07",
+        "spans": [
+          {
+            "span_id": "D19_b07_s01",
+            "text_id": "body",
+            "text": "옆 좌판 새댁이 나보고 이모라 부르는 게 영 어색햐",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D19_b11",
+        "spans": [
+          {
+            "span_id": "D19_b11_s01",
+            "text_id": "body",
+            "text": "떼 온 값도 안 나오는 날은 그냥 넘기고 만다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D19_b16",
+        "spans": [
+          {
+            "span_id": "D19_b16_s01",
+            "text_id": "body",
+            "text": "본가가 파주라 어릴 적엔 거기 장을 따라다녔지 뭐",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D19_b26",
+        "spans": [
+          {
+            "span_id": "D19_b26_s01",
+            "text_id": "body",
+            "text": "앞자리 아저씨가 동두천 상설시장으로 자리를 옮겼어",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D19_b07",
+            "span_id": "D19_b07_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D19_b02",
+            "span_id": "D19_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D19_b02",
+            "span_id": "D19_b02_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D19_b11",
+            "span_id": "D19_b11_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

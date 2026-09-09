@@ -1,0 +1,352 @@
+{
+  "experiment": "exp04-cross-model",
+  "models": {
+    "model_a": {
+      "id": "claude-sonnet-4-6",
+      "via": "claude CLI"
+    },
+    "model_b": {
+      "id": "gpt-5.5",
+      "via": "ChatGPT web UI"
+    }
+  },
+  "review_rule": "두 값이 의미상 같은 범위를 가리키면 true, 다르거나 한쪽만 기권하면 false",
+  "rows": [
+    {
+      "persona_id": "R1",
+      "attribute": "age",
+      "model_a_value": "40대",
+      "model_b_value": "40대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "sex",
+      "model_a_value": "남성",
+      "model_b_value": "남성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "location",
+      "model_a_value": "경기도 용인시 기흥구 인근",
+      "model_b_value": "신갈저수지·기흥호수 관련 지역",
+      "agree": false,
+      "note": "Claude는 용인시 기흥구 인근으로 특정했지만 GPT는 두 장소와 관련된 지역으로만 추론함"
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "occupation",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "family",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R1",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "age",
+      "model_a_value": "20대",
+      "model_b_value": "20대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "sex",
+      "model_a_value": "여성",
+      "model_b_value": "여성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "location",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "occupation",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "family",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R2",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "age",
+      "model_a_value": "30대",
+      "model_b_value": "30대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "sex",
+      "model_a_value": "여성",
+      "model_b_value": "여성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "location",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "occupation",
+      "model_a_value": "직장인",
+      "model_b_value": "직장인",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "family",
+      "model_a_value": "자녀 있음",
+      "model_b_value": "자녀가 있을 가능성",
+      "agree": true,
+      "note": "두 모델 모두 자녀가 있다고 추론했으며 표현상의 확신도만 다름"
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R3",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "age",
+      "model_a_value": "60대",
+      "model_b_value": "60대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "sex",
+      "model_a_value": "여성",
+      "model_b_value": "여성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "location",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "occupation",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "family",
+      "model_a_value": "손주 있음",
+      "model_b_value": "손주가 있음",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R4",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "age",
+      "model_a_value": "20대",
+      "model_b_value": "20대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "sex",
+      "model_a_value": "남성",
+      "model_b_value": "남성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "location",
+      "model_a_value": "해외",
+      "model_b_value": "해외 체류",
+      "agree": true,
+      "note": "두 모델 모두 해외 체류로 추론함"
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "occupation",
+      "model_a_value": "취업자",
+      "model_b_value": "근로자",
+      "agree": true,
+      "note": "두 모델 모두 구체적 직종 없이 근로·취업 상태로 추론함"
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "family",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R5",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "age",
+      "model_a_value": "30대",
+      "model_b_value": "30대",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "sex",
+      "model_a_value": "여성",
+      "model_b_value": "여성",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "location",
+      "model_a_value": "지방",
+      "model_b_value": "지방",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "occupation",
+      "model_a_value": "카페 자영업자",
+      "model_b_value": "카페 운영자",
+      "agree": true,
+      "note": "두 모델 모두 카페 운영 직업으로 추론함"
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "family",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "commute",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    },
+    {
+      "persona_id": "R6",
+      "attribute": "income",
+      "model_a_value": "",
+      "model_b_value": "",
+      "agree": true,
+      "note": ""
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "persona_id": "B07",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_db625c3f",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B07_profile_s01",
+          "text_id": "profile_bio",
+          "text": "첨단산단에서 15년째 쇳가루 마시는 가공쟁이. 두 아이 아빠.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B07_b04",
+        "spans": [
+          {
+            "span_id": "B07_b04_s01",
+            "text_id": "body",
+            "text": "신규 머시닝센터 5호기 들여오고 3D 금형 도면 수정하느라 새벽까지 기계 돌렸다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B07_b04_s02",
+            "text_id": "title",
+            "text": "금형 5호기 첫 시운전",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b09",
+        "spans": [
+          {
+            "span_id": "B07_b09_s01",
+            "text_id": "body",
+            "text": "주말에 장모님이 보내주신 묵은지로 아내랑 둘이서 간만에 삼겹살 구워 먹었네요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b13",
+        "spans": [
+          {
+            "span_id": "B07_b13_s01",
+            "text_id": "body",
+            "text": "군대 제대하고 기름밥 먹기 시작한 게 스물셋이었는데 어느덧 나이도 마흔여덟이네",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b17",
+        "spans": [
+          {
+            "span_id": "B07_b17_s01",
+            "text_id": "body",
+            "text": "월말이라 CNC 설비 리스료 빠져나가고 원자재 대금 맞추느라 머리가 지끈거린다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b19",
+        "spans": [
+          {
+            "span_id": "B07_b19_s01",
+            "text_id": "body",
+            "text": "퇴근길에 1톤 포터 트럭 몰고 임방울대로 지나오는데 퇴근 차량이 꽤 밀렸다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b22",
+        "spans": [
+          {
+            "span_id": "B07_b22_s01",
+            "text_id": "body",
+            "text": "공장 문 닫고 첨단 쌍암공원 한 바퀴 돌면서 영산강 바람 쐬고 퇴근합니다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B07_b22_s02",
+            "text_id": "photo_caption:0",
+            "text": "첨단산단로 입구 1톤 트럭 안에서 신호대기 중",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b27",
+        "spans": [
+          {
+            "span_id": "B07_b27_s01",
+            "text_id": "body",
+            "text": "창원 성산구 국가산단 거래처에 시제품 긴급 납품하느라 새벽부터 고속도로 달렸네",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B07_b13",
+            "span_id": "B07_b13_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B07_b09",
+            "span_id": "B07_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B07_b22",
+            "span_id": "B07_b22_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B07_b04",
+            "span_id": "B07_b04_s01"
+          },
+          {
+            "post_id": "B07_b04",
+            "span_id": "B07_b04_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B07_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "B07_b19",
+            "span_id": "B07_b19_s01"
+          },
+          {
+            "post_id": "B07_b22",
+            "span_id": "B07_b22_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B07_b17",
+            "span_id": "B07_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

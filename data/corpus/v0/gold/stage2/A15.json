@@ -1,0 +1,171 @@
+{
+  "persona_id": "A15",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_483b1a88",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A15_profile_s01",
+          "text_id": "profile_bio",
+          "text": "생산직 회사원의 맛집 아카이브",
+          "type": "JOB",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A15_b02",
+        "spans": [
+          {
+            "span_id": "A15_b02_s01",
+            "text_id": "body",
+            "text": "서른둘 먹고도 매운 건 적응이 안 됩니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A15_b08",
+        "spans": [
+          {
+            "span_id": "A15_b08_s01",
+            "text_id": "body",
+            "text": "공장 라인 멈출까 봐 점심도 마시듯 먹었네요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A15_b15",
+        "spans": [
+          {
+            "span_id": "A15_b15_s01",
+            "text_id": "body",
+            "text": "동네 형들이랑 술 한잔하고 들어갑니다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A15_b18",
+        "spans": [
+          {
+            "span_id": "A15_b18_s01",
+            "text_id": "body",
+            "text": "부서 선배가 청주 공장으로 파견 나가서 얼굴 보기 힘드네요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A15_b21",
+        "spans": [
+          {
+            "span_id": "A15_b21_s01",
+            "text_id": "body",
+            "text": "집 앞에 24시간 식당이 있어서 다행입니다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A15_b27",
+        "spans": [
+          {
+            "span_id": "A15_b27_s01",
+            "text_id": "body",
+            "text": "예전에 천안 살 때 자주 먹던 체인점인데 여기도 생겼군요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A15_b02",
+            "span_id": "A15_b02_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A15_b15",
+            "span_id": "A15_b15_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A15_b21",
+            "span_id": "A15_b21_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A15_b08",
+            "span_id": "A15_b08_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A15_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

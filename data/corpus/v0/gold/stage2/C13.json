@@ -1,0 +1,200 @@
+{
+  "persona_id": "C13",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_6645ca87",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C13_profile_s01",
+          "text_id": "profile_bio",
+          "text": "예약 사이에 손끝과 육아 이야기를 나눠요",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C13_b03",
+        "spans": [
+          {
+            "span_id": "C13_b03_s01",
+            "text_id": "body",
+            "text": "호수공원 쪽 아침 정체를 지나 신도시 중심 상가 주차장에 도착했어요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "C13_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "호수공원 산책 뒤 시내버스를 기다리며",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C13_b06",
+        "spans": [
+          {
+            "span_id": "C13_b06_s01",
+            "text_id": "body",
+            "text": "첫 예약 전에 컬러판을 닦고 사용한 도구를 소독함에 차례대로 넣었어요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C13_b06_s02",
+            "text_id": "title",
+            "text": "새 컬러판 정리 방법을 공유해요",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C13_b09",
+        "spans": [
+          {
+            "span_id": "C13_b09_s01",
+            "text_id": "body",
+            "text": "아이를 재운 뒤 엄마인 저는 다음 날 예약표를 다시 확인했어요",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C13_b12",
+        "spans": [
+          {
+            "span_id": "C13_b12_s01",
+            "text_id": "body",
+            "text": "마흔하나가 되니 일과 육아 사이에서 제 시간을 챙기는 것도 중요하더라고요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C13_b15",
+        "spans": [
+          {
+            "span_id": "C13_b15_s01",
+            "text_id": "body",
+            "text": "예약 취소가 겹친 달에는 재료비와 월세를 빼고 얼마나 남을지 잘 모르겠어요",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C13_b18",
+        "spans": [
+          {
+            "span_id": "C13_b18_s01",
+            "text_id": "body",
+            "text": "고객님이 송도에서 예식을 하신다고 해서 출장용 도구를 따로 챙겨드렸어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C13_b12",
+            "span_id": "C13_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C13_b09",
+            "span_id": "C13_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C13_b03",
+            "span_id": "C13_b03_s01"
+          },
+          {
+            "post_id": "C13_b03",
+            "span_id": "C13_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C13_b06",
+            "span_id": "C13_b06_s01"
+          },
+          {
+            "post_id": "C13_b06",
+            "span_id": "C13_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C13_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C13_b15",
+            "span_id": "C13_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

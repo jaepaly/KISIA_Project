@@ -1,0 +1,24 @@
+{
+  "n": 30,
+  "json_ok": 30,
+  "verdict_acc": 0.9286,
+  "per_attr_acc": {
+    "age": 0.967,
+    "sex": 0.967,
+    "location": 0.9,
+    "occupation": 0.867,
+    "family": 0.867,
+    "commute": 1.0,
+    "income": 0.933
+  },
+  "evidence_P": 0.9618,
+  "evidence_R": 0.9921,
+  "evidence_F1": 0.9767,
+  "trap_total": 18,
+  "trap_leaked": 3,
+  "trap_exclusion": 0.8333,
+  "sec_per_example": 36.0,
+  "json_fail_samples": [],
+  "measured_at": "2026-09-09",
+  "adapter": "results/adapter (epoch 1, seq 1408, r16)"
+}

@@ -1,0 +1,215 @@
+{
+  "persona_id": "E09",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_5f6a4a66",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E09_profile_s01",
+          "text_id": "profile_bio",
+          "text": "이제 다 늙었는데 손으로 몇 자 씀",
+          "type": "AGE",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E09_b02",
+        "spans": [
+          {
+            "span_id": "E09_b02_s01",
+            "text_id": "body",
+            "text": "하회 구경 온 사람들이 우리 동네까정 오가꼬,\n밭일하다 말고 구경했다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E09_b02_s02",
+            "text_id": "title",
+            "text": "하회 구경꾼 많던 날",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b05",
+        "spans": [
+          {
+            "span_id": "E09_b05_s01",
+            "text_id": "body",
+            "text": "콩밭 매다가 허리 한번 펴는데,\n하루가 다 갔다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b08",
+        "spans": [
+          {
+            "span_id": "E09_b08_s01",
+            "text_id": "body",
+            "text": "며느리한테서 전화 왔는데,\n도시는 벌써 덥다카더라",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E09_b08_s02",
+            "text_id": "body",
+            "text": "아들은 구미 공장 댕긴다꼬,\\n요새는 낯 볼 새도 없다카더라",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b11",
+        "spans": [
+          {
+            "span_id": "E09_b11_s01",
+            "text_id": "body",
+            "text": "장날이라 마을버스 타고 나갔다 왔다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b14",
+        "spans": [
+          {
+            "span_id": "E09_b14_s01",
+            "text_id": "body",
+            "text": "이 할매도 요새 핸드폰 배와가꼬,\n이래 몇 자 적는다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b17",
+        "spans": [
+          {
+            "span_id": "E09_b17_s01",
+            "text_id": "body",
+            "text": "연금 나온 날이라 농협에 좀 다녀왔다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E09_b20",
+        "spans": [
+          {
+            "span_id": "E09_b20_s01",
+            "text_id": "body",
+            "text": "옛날에는 시집오기 전에 영주서 살았다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "E09_profile_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b14",
+            "span_id": "E09_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b02",
+            "span_id": "E09_b02_s01"
+          },
+          {
+            "post_id": "E09_b02",
+            "span_id": "E09_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b05",
+            "span_id": "E09_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b08",
+            "span_id": "E09_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b11",
+            "span_id": "E09_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E09_b17",
+            "span_id": "E09_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "persona_id": "D09",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d4118045",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D09_profile_s01",
+          "text_id": "profile_bio",
+          "text": "마을 일 적어둡니다",
+          "type": "JOB",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D09_b03",
+        "spans": [
+          {
+            "span_id": "D09_b03_s01",
+            "text_id": "body",
+            "text": "노인회에서 예순일곱이면 아직 젊은 축이라고 하네",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D09_b03_s02",
+            "text_id": "title",
+            "text": "홀아비 밥상 십 년째",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b07",
+        "spans": [
+          {
+            "span_id": "D09_b07_s01",
+            "text_id": "body",
+            "text": "농협 앞에서 회의하고 걸어서 왔네",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b12",
+        "spans": [
+          {
+            "span_id": "D09_b12_s01",
+            "text_id": "body",
+            "text": "이장님 대신 마을회관 열쇠를 맡고 있어서 아침마다 먼저 나가네",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b18",
+        "spans": [
+          {
+            "span_id": "D09_b18_s01",
+            "text_id": "body",
+            "text": "논 두 마지기 임대료가 일 년에 얼마 안 되어서 겨울에는 아껴 쓴다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b22",
+        "spans": [
+          {
+            "span_id": "D09_b22_s01",
+            "text_id": "body",
+            "text": "며느리가 김치를 보내왔는데 올해는 내가 담가 볼까 싶네",
+            "type": "FAM",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b25",
+        "spans": [
+          {
+            "span_id": "D09_b25_s01",
+            "text_id": "body",
+            "text": "아들이 아산 공단 쪽으로 작년에 옮겨서 명절에나 얼굴을 보네",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b03",
+            "span_id": "D09_b03_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b03",
+            "span_id": "D09_b03_s02"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b07",
+            "span_id": "D09_b07_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b12",
+            "span_id": "D09_b12_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "D09_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b22",
+            "span_id": "D09_b22_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D09_b18",
+            "span_id": "D09_b18_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

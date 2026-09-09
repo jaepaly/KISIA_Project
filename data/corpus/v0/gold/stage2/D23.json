@@ -1,0 +1,171 @@
+{
+  "persona_id": "D23",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_903479e1",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D23_profile_s01",
+          "text_id": "profile_bio",
+          "text": "낮에는 사무실 · 밤에는 작업대",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D23_b05",
+        "spans": [
+          {
+            "span_id": "D23_b05_s01",
+            "text_id": "body",
+            "text": "낮에 서류 넘기고 밤엔 가죽 재단해요",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D23_b11",
+        "spans": [
+          {
+            "span_id": "D23_b11_s01",
+            "text_id": "body",
+            "text": "작업실 언니들이랑 재료 공동구매를 해요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D23_b16",
+        "spans": [
+          {
+            "span_id": "D23_b16_s01",
+            "text_id": "body",
+            "text": "마흔넷에 시작한 부업이 마흔일곱인 올해로 삼 년째예요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D23_b16_s02",
+            "text_id": "photo_caption:0",
+            "text": "재료비 빼면 남는 게 얼마 안 돼요",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D23_b22",
+        "spans": [
+          {
+            "span_id": "D23_b22_s01",
+            "text_id": "body",
+            "text": "대학 간 아들이 경산에 방을 얻어서 주말마다 짐을 나릅니다",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "D23_b25",
+        "spans": [
+          {
+            "span_id": "D23_b25_s01",
+            "text_id": "body",
+            "text": "걸어서 십오 분이라 점심에 집에 들렀다 가요",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D23_b16",
+            "span_id": "D23_b16_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D23_b11",
+            "span_id": "D23_b11_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D23_profile_s01"
+          },
+          {
+            "post_id": "D23_b05",
+            "span_id": "D23_b05_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D23_b25",
+            "span_id": "D23_b25_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D23_b16",
+            "span_id": "D23_b16_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

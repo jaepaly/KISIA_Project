@@ -202,6 +202,23 @@ def dedupe_input(spans: list[dict]) -> list[dict]:
     return out
 
 
+# CLI 경로는 사용량 한도에 걸리면 rc=1 만 준다 (2026-09-08 23:45 Opus 8병렬 · 666건 연속 실패).
+# 한도는 시간이 지나면 풀리므로 건너뛰지 말고 기다렸다 다시 한다.
+RETRY_DELAYS = (30, 60, 120, 300, 600, 900, 900, 900)
+
+
+def call_with_retry(fn, what: str):
+    last: Exception | None = None
+    for i, delay in enumerate(RETRY_DELAYS):
+        try:
+            return fn()
+        except LLMError as e:
+            last = e
+            print(f"  … {what} 실패 {i + 1}/{len(RETRY_DELAYS)} — {delay}s 뒤 재시도", flush=True)
+            time.sleep(delay)
+    raise last  # type: ignore[misc]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--posts", default="data/corpus/v0/posts")
@@ -209,6 +226,7 @@ def main() -> int:
     ap.add_argument("--out", default="data/corpus/v0/gold")
     ap.add_argument("--provider", default="anthropic")
     ap.add_argument("--model", default=None)
+    ap.add_argument("--cli-cmd", default="", help="--provider cli 일 때 (예: 'claude -p --model claude-sonnet-4-6')")
     ap.add_argument("--design", action="store_true",
                     help="clue_plan 을 힌트로 준다. 기본은 탐지본이다")
     ap.add_argument("--limit", type=int, default=0, help="인물당 n편만")
@@ -216,7 +234,7 @@ def main() -> int:
     a = ap.parse_args()
 
     load_dotenv()
-    client = LLMClient(a.provider, a.model)
+    client = LLMClient(a.provider, a.model, temperature=0.0, cli_cmd=a.cli_cmd)
     teacher_fam = family(client.model)
 
     out_dir = Path(a.out) / ("design" if a.design else "detect")
@@ -266,7 +284,22 @@ def main() -> int:
         if a.limit:
             recs = recs[:a.limit]
         rows: list[dict] = []
-        print(f"■ {pid}  {len(recs)}편")
+        # resume — 이미 라벨된 글은 건너뛴다. 실패로 빠진 글만 다시 한다.
+        prev_rows: dict[str, dict] = {}
+        user_rec = None
+        prev_path = out_dir / f"{pid}_spans.jsonl"
+        if prev_path.is_file():
+            for line in prev_path.read_text(encoding="utf-8-sig").splitlines():
+                if not line.strip():
+                    continue
+                o = json.loads(line)
+                if "post_id" in o:
+                    prev_rows[o["post_id"]] = o
+                elif "profile_bio" in o:
+                    user_rec = o
+        todo = [r for r in recs if r["post_id"] not in prev_rows]
+        print(f"■ {pid}  {len(recs)}편" + (f" (resume — {len(prev_rows)}편 건너뜀)" if prev_rows else ""))
+        recs = todo
 
         for n, r in enumerate(recs):
             texts = texts_of(r)
@@ -276,7 +309,7 @@ def main() -> int:
                 time.sleep(a.sleep)
             post = str(r["post_id"]).rsplit("_", 1)[-1]
             try:
-                found, dropped = label_one(client, texts, hints.get(post))
+                found, dropped = call_with_retry(lambda: label_one(client, texts, hints.get(post)), r["post_id"])
             except LLMError as e:
                 print(f"  ✗ {r['post_id']} 실패: {e}")
                 continue
@@ -295,15 +328,14 @@ def main() -> int:
 
         # profile_bio 는 사용자 단위다 (§8-4). 글 레코드에 넣지 않는다
         prof = Path(a.posts) / f"{pid}_profile.json"
-        user_rec = None
-        if prof.is_file():
+        if prof.is_file() and user_rec is None:
             pj = json.loads(prof.read_text(encoding="utf-8-sig"))
             ptexts = {k: unicodedata.normalize("NFC", v)
                       for k, v in (pj.get("texts") or {}).items() if v}
             if ptexts:
                 try:
-                    found, _ = label_one(client, ptexts,
-                                         [pj["clue"]] if a.design and pj.get("clue") else None)
+                    found, _ = call_with_retry(lambda: label_one(
+                        client, ptexts, [pj["clue"]] if a.design and pj.get("clue") else None), f"{pid}_bio")
                     kept, _ = dedupe(found)
                     sp, _ = finalize(kept, f"{pid}_bio", ptexts)
                     user_rec = {"persona_id": pid, "profile_bio": ptexts["profile_bio"],
@@ -320,7 +352,9 @@ def main() -> int:
         lines = [json.dumps(header, ensure_ascii=False)]
         if user_rec:
             lines.append(json.dumps(user_rec, ensure_ascii=False))
-        lines += [json.dumps(r, ensure_ascii=False) for r in rows]
+        merged = list(prev_rows.values()) + rows
+        merged.sort(key=lambda r: r["post_id"])
+        lines += [json.dumps(r, ensure_ascii=False) for r in merged]
         (out_dir / f"{pid}_spans.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
         tot_posts += len(rows)
 

@@ -1,0 +1,219 @@
+{
+  "persona_id": "E19",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_393086f4",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E19_profile_s01",
+          "text_id": "profile_bio",
+          "text": "충주에서 사진관 오래 했습니다",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E19_b02",
+        "spans": [
+          {
+            "span_id": "E19_b02_s01",
+            "text_id": "body",
+            "text": "탄금대 산책로까지 걸어갔다 왔다.. 벚꽃이 슬슬 핀다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E19_b02_s02",
+            "text_id": "title",
+            "text": "탄금대 봄",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b05",
+        "spans": [
+          {
+            "span_id": "E19_b05_s01",
+            "text_id": "body",
+            "text": "2호점 오픈하고 나서 하루가 두 배로 빡빡해졌다..",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E19_b05_s02",
+            "text_id": "body",
+            "text": "쉰일곱인데 2호점까지 뛰는 게 하루가 벅차다..",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b08",
+        "spans": [
+          {
+            "span_id": "E19_b08_s01",
+            "text_id": "body",
+            "text": "손주 사진 찍어달란 전화 받고 마음이 좋았다",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b11",
+        "spans": [
+          {
+            "span_id": "E19_b11_s01",
+            "text_id": "body",
+            "text": "본점 마감하고 2호점 재고 확인하러 넘어갔다 왔다..",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b14",
+        "spans": [
+          {
+            "span_id": "E19_b14_s01",
+            "text_id": "body",
+            "text": "처형이 2호점 축하한다고 화분을 보내왔다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b17",
+        "spans": [
+          {
+            "span_id": "E19_b17_s01",
+            "text_id": "body",
+            "text": "이달도 대출 상환하고 나니 손에 남는 게 별로 없다..",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E19_b20",
+        "spans": [
+          {
+            "span_id": "E19_b20_s01",
+            "text_id": "body",
+            "text": "동서가 제천 쪽으로 발령 나서 얼마 전에 이사했다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b05",
+            "span_id": "E19_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b14",
+            "span_id": "E19_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b02",
+            "span_id": "E19_b02_s01"
+          },
+          {
+            "post_id": "E19_b02",
+            "span_id": "E19_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b05",
+            "span_id": "E19_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E19_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b08",
+            "span_id": "E19_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b11",
+            "span_id": "E19_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E19_b17",
+            "span_id": "E19_b17_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "persona_id": "A10",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_ad060872",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "A10_profile_s01",
+          "text_id": "profile_bio",
+          "text": "다이어리 꾸미는 게 취미",
+          "type": "AGE",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "A10_b04",
+        "spans": [
+          {
+            "span_id": "A10_b04_s01",
+            "text_id": "body",
+            "text": "열일곱 되니 시간이 빨리 간다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A10_b04_s02",
+            "text_id": "photo_caption:0",
+            "text": "집 앞 문구점에서",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A10_b08",
+        "spans": [
+          {
+            "span_id": "A10_b08_s01",
+            "text_id": "body",
+            "text": "시내버스 한 번에 간다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A10_b12",
+        "spans": [
+          {
+            "span_id": "A10_b12_s01",
+            "text_id": "body",
+            "text": "쌍둥이 오빠랑 옷이 자꾸 섞인다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A10_b16",
+        "spans": [
+          {
+            "span_id": "A10_b16_s01",
+            "text_id": "body",
+            "text": "용돈 모아서 샀다",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A10_b20",
+        "spans": [
+          {
+            "span_id": "A10_b20_s01",
+            "text_id": "body",
+            "text": "친구 학원이 덕진이라 끝나고 거기서 봤다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A10_b04",
+            "span_id": "A10_b04_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "A10_profile_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A10_b12",
+            "span_id": "A10_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A10_b04",
+            "span_id": "A10_b04_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A10_b08",
+            "span_id": "A10_b08_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A10_b16",
+            "span_id": "A10_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

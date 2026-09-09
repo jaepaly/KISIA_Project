@@ -1,0 +1,202 @@
+{
+  "persona_id": "B06",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d24063d7",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B06_profile_s01",
+          "text_id": "profile_bio",
+          "text": "교단 9년차 초등교사. 퇴근 후엔 세 살 아이 엄마로 출근.",
+          "type": "FAM",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B06_b03",
+        "spans": [
+          {
+            "span_id": "B06_b03_s01",
+            "text_id": "body",
+            "text": "개학 첫 주 끝나고 교실 환경 정리 마친 뒤 교원 연수 보고서까지 제출 완료",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B06_b03_s02",
+            "text_id": "title",
+            "text": "개학 첫 주 방과 후 텅 빈 교실",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b08",
+        "spans": [
+          {
+            "span_id": "B06_b08_s01",
+            "text_id": "body",
+            "text": "야근하는 날이라 친정 엄마가 어린이집 하원 도맡아 봐주셔서 겨우 한숨 돌렸다",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b12",
+        "spans": [
+          {
+            "span_id": "B06_b12_s01",
+            "text_id": "body",
+            "text": "스물여섯에 처음 발령받아 출근하던 게 엊그제 같은데 벌써 서른넷이 되었네요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b16",
+        "spans": [
+          {
+            "span_id": "B06_b16_s01",
+            "text_id": "body",
+            "text": "이번 달 정근수당이랑 호봉 승급분 합쳐서 아이 적금 통장에 고스란히 넣었다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b20",
+        "spans": [
+          {
+            "span_id": "B06_b20_s01",
+            "text_id": "body",
+            "text": "퇴근길에 굴포천 산책로 따라서 집까지 천천히 걸어왔다",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B06_b20_s02",
+            "text_id": "photo_caption:0",
+            "text": "인천 1호선 갈산역 2번 출구 앞 노을",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b25",
+        "spans": [
+          {
+            "span_id": "B06_b25_s01",
+            "text_id": "body",
+            "text": "임용 동기가 이번에 송도 신도시 연구소로 이직해서 축하 저녁 모임 다녀왔다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b12",
+            "span_id": "B06_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b08",
+            "span_id": "B06_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b20",
+            "span_id": "B06_b20_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b03",
+            "span_id": "B06_b03_s01"
+          },
+          {
+            "post_id": "B06_b03",
+            "span_id": "B06_b03_s02"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "B06_profile_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b20",
+            "span_id": "B06_b20_s02"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B06_b16",
+            "span_id": "B06_b16_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

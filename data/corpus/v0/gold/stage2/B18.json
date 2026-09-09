@@ -1,0 +1,236 @@
+{
+  "persona_id": "B18",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_00ceeab4",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B18_profile_s01",
+          "text_id": "profile_bio",
+          "text": "안동 옥동에서 붓을 잡는 일흔하나 은퇴자의 담담한 일상 기록.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B18_b03",
+        "spans": [
+          {
+            "span_id": "B18_b03_s01",
+            "text_id": "body",
+            "text": "일흔하나 먹은 나이에 붓을 다시 잡으니 손끝이 뜻대로 안 움직이네",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B18_b03_s02",
+            "text_id": "title",
+            "text": "일흔하나의 묵향",
+            "type": "AGE",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b08",
+        "spans": [
+          {
+            "span_id": "B18_b08_s01",
+            "text_id": "body",
+            "text": "늙은 영감 붓글씨 쓴다고 아내가 먹을 갈아주며 조용히 웃더군",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b09",
+        "spans": [
+          {
+            "span_id": "B18_b09_s01",
+            "text_id": "body",
+            "text": "옥동 집에서 안동 시내 나갈 땐 늘 11번 시내버스를 타고 다니지",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b12",
+        "spans": [
+          {
+            "span_id": "B18_b12_s01",
+            "text_id": "body",
+            "text": "매달 25일 공무원 연금 280만원 들어오면 손주들 줄 용돈부터 따로 챙겨두지",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b14",
+        "spans": [
+          {
+            "span_id": "B18_b14_s01",
+            "text_id": "body",
+            "text": "출가한 막내아들 녀석이 오랜만에 안부 전화 걸어와서 이런저런 이야기를 나눴어",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b17",
+        "spans": [
+          {
+            "span_id": "B18_b17_s01",
+            "text_id": "body",
+            "text": "옥동 주민센터 서예 교실 마치고 근처 복개천 공원 한 바퀴 돌았어",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B18_b17_s02",
+            "text_id": "photo_caption:0",
+            "text": "옥동 서예교실 먹그림",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b22",
+        "spans": [
+          {
+            "span_id": "B18_b22_s01",
+            "text_id": "body",
+            "text": "시청 산림과에서 30년 근무하고 정년퇴직한 게 벌써 10년이 훌쩍 넘었지",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B18_b27",
+        "spans": [
+          {
+            "span_id": "B18_b27_s01",
+            "text_id": "body",
+            "text": "막내아들이 대전 유성구 전민동 연구단지에 살아서 주말에 잠깐 얼굴 보고 왔지",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b03",
+            "span_id": "B18_b03_s01"
+          },
+          {
+            "post_id": "B18_b03",
+            "span_id": "B18_b03_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b08",
+            "span_id": "B18_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b17",
+            "span_id": "B18_b17_s01"
+          },
+          {
+            "post_id": "B18_b17",
+            "span_id": "B18_b17_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b22",
+            "span_id": "B18_b22_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "B18_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b14",
+            "span_id": "B18_b14_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b09",
+            "span_id": "B18_b09_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B18_b12",
+            "span_id": "B18_b12_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "persona_id": "A22",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_0536e7ec",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A22_b05",
+        "spans": [
+          {
+            "span_id": "A22_b05_s01",
+            "text_id": "body",
+            "text": "스물여덟 먹구 이런 귀여운 거 좋아해두 되나ㅋ",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A22_b09",
+        "spans": [
+          {
+            "span_id": "A22_b09_s01",
+            "text_id": "body",
+            "text": "차량 하체 튜닝 부품 직구한 거 도착함 🚗",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A22_b09_s02",
+            "text_id": "photo_caption:0",
+            "text": "대연동 단골 공업사",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A22_b14",
+        "spans": [
+          {
+            "span_id": "A22_b14_s01",
+            "text_id": "body",
+            "text": "디자인 시안 넘기고 나니까 진 다 빠지구,,,",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A22_b20",
+        "spans": [
+          {
+            "span_id": "A22_b20_s01",
+            "text_id": "body",
+            "text": "친한 동생이 김해로 발령받아서 퇴근하구 넘어갔다 옴",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      },
+      {
+        "post_id": "A22_b27",
+        "spans": [
+          {
+            "span_id": "A22_b27_s01",
+            "text_id": "body",
+            "text": "본가는 너무 더워서 여름에 가기 무서움ㅋ",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A22_b05",
+            "span_id": "A22_b05_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A22_b09",
+            "span_id": "A22_b09_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A22_b14",
+            "span_id": "A22_b14_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A22_b09",
+            "span_id": "A22_b09_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

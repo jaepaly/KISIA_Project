@@ -1,0 +1,218 @@
+{
+  "persona_id": "B19",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_d614cbb6",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "B19_profile_s01",
+          "text_id": "profile_bio",
+          "text": "전주 금암동에서 공기업 취뽀를 노리는 25세 취준생의 기록.",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "B19_b04",
+        "spans": [
+          {
+            "span_id": "B19_b04_s01",
+            "text_id": "body",
+            "text": "상반기 공기업 서류 접수 5군데 끝내고 NCS 기본서 2회독 스터디 완료함",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B19_b04_s02",
+            "text_id": "title",
+            "text": "상반기 서류 5승 달성",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b09",
+        "spans": [
+          {
+            "span_id": "B19_b09_s01",
+            "text_id": "body",
+            "text": "누나가 취준 스트레스 받는다고 치킨 사주면서 힘내라고 용돈 쥐여줌",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b13",
+        "spans": [
+          {
+            "span_id": "B19_b13_s01",
+            "text_id": "body",
+            "text": "스물다섯에 먼저 입사하는 친구들 보면서 조급해하지 말고 내 페이스 유지하자",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b15",
+        "spans": [
+          {
+            "span_id": "B19_b15_s01",
+            "text_id": "body",
+            "text": "퇴근한 부모님이랑 본가 거실에서 같이 저녁 먹으며 하루 마무리함",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b18",
+        "spans": [
+          {
+            "span_id": "B19_b18_s01",
+            "text_id": "body",
+            "text": "주말 독서실 총무 알바비 월 30만원 받은 거로 인강 패스 결제 끝냄",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b23",
+        "spans": [
+          {
+            "span_id": "B19_b23_s01",
+            "text_id": "body",
+            "text": "금암동 시외버스터미널 뒤편 스터디카페에서 밤 11시까지 문제 풀고 귀가",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "B19_b23_s02",
+            "text_id": "photo_caption:0",
+            "text": "금암동 스터디카페 열람실",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "B19_b28",
+        "spans": [
+          {
+            "span_id": "B19_b28_s01",
+            "text_id": "body",
+            "text": "필기시험 장소가 전남광주통합특별시 북구 용봉동이라 새벽 기차 타고 시험 치러 다녀옴",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b13",
+            "span_id": "B19_b13_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b09",
+            "span_id": "B19_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b23",
+            "span_id": "B19_b23_s01"
+          },
+          {
+            "post_id": "B19_b23",
+            "span_id": "B19_b23_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b04",
+            "span_id": "B19_b04_s01"
+          },
+          {
+            "post_id": "B19_b04",
+            "span_id": "B19_b04_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "B19_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b15",
+            "span_id": "B19_b15_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "B19_b18",
+            "span_id": "B19_b18_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

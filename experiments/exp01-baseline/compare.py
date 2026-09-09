@@ -11,7 +11,7 @@ W3 단계: 골드셋 대비 등급별(explicit/implicit/inferential) 미탐 공�
   - W3 게이트:
       미탐 공간:   implicit >= 45% AND inferential >= 45%
       도달 가능성: implicit >= 60% AND inferential >= 60%
-      판정: 둘 다 충족시 PASS · 하나만 충족시 PENDING · 둘 다 미달시 STOP
+      판정: 둘 다 충족시 PASS · 하나만 충족시 HOLD · 둘 다 미달시 STOP
 """
 
 from __future__ import annotations
@@ -109,7 +109,7 @@ def main() -> int:
     parser.add_argument("--regex", default="experiments/exp01-baseline/results/regex.jsonl", help="Regex 결과 JSONL")
     parser.add_argument("--presidio", default="experiments/exp01-baseline/results/presidio.jsonl", help="Presidio 결과 JSONL")
     parser.add_argument("--koreanpii", default="experiments/exp01-baseline/results/koreanpii.jsonl", help="Korean PII 결과 JSONL")
-    parser.add_argument("--llm", default="experiments/exp01-baseline/results/gemini.jsonl", help="LLM 상한선 결과 JSONL (선택사항)")
+    parser.add_argument("--llm", default="experiments/exp01-baseline/results/gemini_labeled.jsonl", help="LLM 상한선 결과 JSONL (로컬 중간산출물, 선택사항)")
     parser.add_argument("--out", default="experiments/exp01-baseline/results/metrics.json", help="출력 metrics.json 경로")
     parser.add_argument("--scoring", default="partial_match", choices=["partial_match", "exact_match"], help="주 채점 방식")
     args = parser.parse_args()
@@ -119,6 +119,7 @@ def main() -> int:
     presidio_res = load_jsonl(Path(args.presidio))
     koreanpii_res = load_jsonl(Path(args.koreanpii))
     llm_res = load_jsonl(Path(args.llm))
+    has_llm = bool(llm_res)
 
     # 1. 합집합 키 수집 (버그 수정: or 단축평가 제거, set union 적용)
     all_keys = set(regex_res.keys()) | set(presidio_res.keys()) | set(koreanpii_res.keys())
@@ -150,6 +151,8 @@ def main() -> int:
     missed_counts_partial = collections.Counter()
     missed_counts_exact = collections.Counter()
     llm_recovers_counts = collections.Counter()
+    llm_scorable_counts = collections.Counter()
+    llm_unscorable_counts = collections.Counter()
 
     sample_rows = []
 
@@ -163,7 +166,11 @@ def main() -> int:
         r_rec = regex_res.get(key) or regex_res.get(item.get("text", ""))
         p_rec = presidio_res.get(key) or presidio_res.get(item.get("text", ""))
         k_rec = koreanpii_res.get(key) or koreanpii_res.get(item.get("text", ""))
-        l_rec = llm_res.get(key) or llm_res.get(item.get("text", ""))
+        l_rec = (
+            llm_res.get(item.get("id", ""))
+            or llm_res.get(key)
+            or llm_res.get(item.get("text", ""))
+        )
 
         # Partial Match (IoU >= 0.5) 판정
         r_det_p = is_detected_span(item, r_rec, mode="partial")
@@ -177,11 +184,23 @@ def main() -> int:
         k_det_e = is_detected_span(item, k_rec, mode="exact")
         missed_exact = not (r_det_e or p_det_e or k_det_e)
 
+        llm_recovered = False
         if missed_partial:
             missed_counts_partial[level] += 1
-            # LLM이 미탐된 단서를 복구(탐지)했는지 확인
-            if l_rec and is_detected_span(item, l_rec, mode="partial"):
-                llm_recovers_counts[level] += 1
+            # 같은 문장의 아무 스팬이 아니라 골드 attr·subject를 모두 맞힌
+            # 경우에만 회수로 인정한다. subject가 없는 과거 골드는 분리한다.
+            gold_subject = item.get("subject")
+            if gold_subject not in {"self", "other", "unknown"}:
+                llm_unscorable_counts[level] += 1
+            else:
+                llm_scorable_counts[level] += 1
+                if l_rec and any(
+                    span.get("attr") == item.get("attr")
+                    and span.get("subject") == gold_subject
+                    for span in l_rec.get("spans", [])
+                ):
+                    llm_recovers_counts[level] += 1
+                    llm_recovered = True
 
         if missed_exact:
             missed_counts_exact[level] += 1
@@ -195,13 +214,14 @@ def main() -> int:
                 "regex": "○" if r_det_p else "✗",
                 "presidio": "○" if p_det_p else "✗",
                 "koreanpii": "○" if k_det_p else "✗",
-                "llm": ("○" if is_detected_span(item, l_rec, mode="partial") else "✗") if l_rec else "-",
+                "llm": ("○" if llm_recovered else "✗") if has_llm else "-",
             })
 
     total_gold = sum(gold_counts.values())
     total_missed_partial = sum(missed_counts_partial.values())
     total_missed_exact = sum(missed_counts_exact.values())
     total_llm_recovers = sum(llm_recovers_counts.values())
+    total_llm_scorable = sum(llm_scorable_counts.values())
 
     # 3. 등급별 지표 계산
     by_level = {}
@@ -210,9 +230,10 @@ def main() -> int:
         m_p = missed_counts_partial[lv]
         m_e = missed_counts_exact[lv]
         rec = llm_recovers_counts[lv]
+        scorable = llm_scorable_counts[lv]
         m_rate_p = round(m_p / g, 4) if g > 0 else 0.0
         m_rate_e = round(m_e / g, 4) if g > 0 else 0.0
-        reach = round(rec / m_p, 4) if m_p > 0 else (0.0 if not llm_res else 1.0)
+        reach = round(rec / scorable, 4) if scorable > 0 else (0.0 if not llm_res else 1.0)
 
         by_level[lv] = {
             "gold": g,
@@ -221,6 +242,8 @@ def main() -> int:
             "missed_by_tools_exact": m_e,
             "missed_rate_exact": m_rate_e,
             "llm_recovers": rec,
+            "llm_scorable": scorable,
+            "llm_unscorable": llm_unscorable_counts[lv],
             "reachability": reach,
         }
 
@@ -233,7 +256,6 @@ def main() -> int:
     inf_miss_ok = by_level["inferential"]["missed_rate_partial"] >= 0.45
     missed_space_pass = imp_miss_ok and inf_miss_ok
 
-    has_llm = bool(llm_res)
     imp_reach_ok = by_level["implicit"]["reachability"] >= 0.60 if has_llm else True
     inf_reach_ok = by_level["inferential"]["reachability"] >= 0.60 if has_llm else True
     reachability_pass = imp_reach_ok and inf_reach_ok
@@ -242,7 +264,7 @@ def main() -> int:
         if missed_space_pass and reachability_pass:
             gate_decision = "PASS"
         elif missed_space_pass or reachability_pass:
-            gate_decision = "PENDING"
+            gate_decision = "HOLD"
         else:
             gate_decision = "STOP"
     else:
@@ -268,7 +290,7 @@ def main() -> int:
         reach_str = f"{info['reachability'] * 100:.1f}%" if has_llm else "-"
         print(f"{lv:<14} | {info['gold']:>6} | {info['missed_by_tools_partial']:>16} | {info['missed_rate_partial'] * 100:>9.1f}% | {info['missed_rate_exact'] * 100:>11.1f}% | {reach_str:>10}")
     print("-" * 84)
-    tot_reach_str = f"{total_llm_recovers / total_missed_partial * 100:.1f}%" if (has_llm and total_missed_partial > 0) else "-"
+    tot_reach_str = f"{total_llm_recovers / total_llm_scorable * 100:.1f}%" if (has_llm and total_llm_scorable > 0) else "-"
     print(f"{'합계':<14} | {total_gold:>6} | {total_missed_partial:>16} | {total_missed_rate * 100:>9.1f}% | {total_missed_exact / total_gold * 100:>11.1f}% | {tot_reach_str:>10}")
     print("=" * 84)
     print(f"🚩 [W3 게이트 판정]: {gate_decision}")
@@ -293,6 +315,7 @@ def main() -> int:
         "scoring": {
             "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
             "secondary": "exact_match",
+            "llm_reachability": "gold attr+subject strict match; missing gold subject excluded",
         },
         "gate_thresholds": {
             "missed_rate": {"implicit": 0.45, "inferential": 0.45},
@@ -314,6 +337,8 @@ def main() -> int:
                 "missed_rate": by_level[lv]["missed_rate_partial"],
                 "missed_rate_exact": by_level[lv]["missed_rate_exact"],
                 "llm_recovers": by_level[lv]["llm_recovers"],
+                "llm_scorable": by_level[lv]["llm_scorable"],
+                "llm_unscorable": by_level[lv]["llm_unscorable"],
                 "reachability": by_level[lv]["reachability"],
             }
             for lv in levels
@@ -322,7 +347,14 @@ def main() -> int:
             "presidio": "presidio-analyzer + spacy ko_core_news_sm-3.8.0",
             "korean_ner": "spaCy ko_core_news_sm-3.8.0",
             "regex": "8-pattern baseline",
-            "llm": "gemini" if has_llm else "pending",
+            "llm": {
+                "id": "gemini-3.1-pro",
+                "reasoning_mode": "high",
+                "via": "Gemini CLI via Antigravity",
+                "measured_at": "2026-09-08",
+                "evaluation": "attr+subject strict match",
+                "unscorable_ids": ["S01_b12_03", "S01_b17_04"]
+            } if has_llm else "pending",
         },
     }
 

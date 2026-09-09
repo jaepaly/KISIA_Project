@@ -1,0 +1,155 @@
+{
+  "persona_id": "A20",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_084835c6",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "A20_b05",
+        "spans": [
+          {
+            "span_id": "A20_b05_s01",
+            "text_id": "body",
+            "text": "반오십 되니까 무지성으로 밤새는 건 못하겠다 🥲",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "A20_b05_s02",
+            "text_id": "title",
+            "text": "반오십의 잉여로운 7.5 일상",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A20_b12",
+        "spans": [
+          {
+            "span_id": "A20_b12_s01",
+            "text_id": "body",
+            "text": "아는 언니가 옷 물려준다고 해서 다녀옴 ^◡^",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A20_b18",
+        "spans": [
+          {
+            "span_id": "A20_b18_s01",
+            "text_id": "body",
+            "text": "같이 사는 룸메가 문을 안 열어줘서 밖에서 덜덜 떰 🥺",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A20_b23",
+        "spans": [
+          {
+            "span_id": "A20_b23_s01",
+            "text_id": "body",
+            "text": "요즘 휴학하니까 백수가 따로 없네",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "A20_b27",
+        "spans": [
+          {
+            "span_id": "A20_b27_s01",
+            "text_id": "body",
+            "text": "친구가 성산동으로 이사 가서 집들이 다녀옴",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A20_b05",
+            "span_id": "A20_b05_s01"
+          },
+          {
+            "post_id": "A20_b05",
+            "span_id": "A20_b05_s02"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A20_b12",
+            "span_id": "A20_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A20_b23",
+            "span_id": "A20_b23_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "A20_b18",
+            "span_id": "A20_b18_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

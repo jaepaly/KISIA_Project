@@ -1,0 +1,206 @@
+{
+  "persona_id": "E20",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_51e6a0c3",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "E20_profile_s01",
+          "text_id": "profile_bio",
+          "text": "드디어 방학 ㅠㅠ 기록용",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "E20_b02",
+        "spans": [
+          {
+            "span_id": "E20_b02_s01",
+            "text_id": "body",
+            "text": "정부청사 앞 호수공원 산책하고 왔다,,, 사람 완전 많더라!!",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "E20_b02_s02",
+            "text_id": "photo_caption:0",
+            "text": "해질 때 진짜 예쁨,,,",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b05",
+        "spans": [
+          {
+            "span_id": "E20_b05_s01",
+            "text_id": "body",
+            "text": "드디어 개강했다!!! 이번 학기 시간표가 진짜 미쳤음,,,",
+            "type": "JOB",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b08",
+        "spans": [
+          {
+            "span_id": "E20_b08_s01",
+            "text_id": "body",
+            "text": "엄마가 개강했다고 밥부터 챙기라고 잔소리함,,,",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b11",
+        "spans": [
+          {
+            "span_id": "E20_b11_s01",
+            "text_id": "body",
+            "text": "버스 놓쳐서 이십 분 넘게 정류장에서 떨었다,,,",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b14",
+        "spans": [
+          {
+            "span_id": "E20_b14_s01",
+            "text_id": "body",
+            "text": "오빠가 중간고사 끝난 기념으로 밥 사준다고 함,,, 완전 럭키비키",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b17",
+        "spans": [
+          {
+            "span_id": "E20_b17_s01",
+            "text_id": "body",
+            "text": "스물하나인데 벌써 해가 반이나 갔다니 실화냐,,,",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "E20_b20",
+        "spans": [
+          {
+            "span_id": "E20_b20_s01",
+            "text_id": "body",
+            "text": "언니가 대전 놀러갔다가 성심당 사진 보내줬다!!",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b17",
+            "span_id": "E20_b17_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b14",
+            "span_id": "E20_b14_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b02",
+            "span_id": "E20_b02_s01"
+          },
+          {
+            "post_id": "E20_b02",
+            "span_id": "E20_b02_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b05",
+            "span_id": "E20_b05_s01"
+          },
+          {
+            "post_id": null,
+            "span_id": "E20_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b08",
+            "span_id": "E20_b08_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E20_b11",
+            "span_id": "E20_b11_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "rewrites": []
+  }
+}

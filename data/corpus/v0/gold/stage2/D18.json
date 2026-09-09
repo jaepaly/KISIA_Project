@@ -1,0 +1,172 @@
+{
+  "persona_id": "D18",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_fe5ad281",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "D18_profile_s01",
+          "text_id": "profile_bio",
+          "text": "공방 열고 삼년차 · 주 4일 굽습니다",
+          "type": "JOB",
+          "level": "explicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "D18_b03",
+        "spans": [
+          {
+            "span_id": "D18_b03_s01",
+            "text_id": "body",
+            "text": "가마 돌리는 날은 걸어서 십 분 거리라 새벽에도 나와 봐요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D18_b08",
+        "spans": [
+          {
+            "span_id": "D18_b08_s01",
+            "text_id": "body",
+            "text": "수강생들이 저를 언니라고 부르기 시작했어요",
+            "type": "SEX",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D18_b12",
+        "spans": [
+          {
+            "span_id": "D18_b12_s01",
+            "text_id": "body",
+            "text": "마흔하나에 회사를 그만두고 이걸 시작했어요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "D18_b12_s02",
+            "text_id": "photo_caption:0",
+            "text": "재료비가 올라서 수업료를 못 올리고 버티는 중",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D18_b17",
+        "spans": [
+          {
+            "span_id": "D18_b17_s01",
+            "text_id": "body",
+            "text": "남편이 가마 여는 날엔 저녁을 알아서 챙겨요",
+            "type": "FAM",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D18_b21",
+        "spans": [
+          {
+            "span_id": "D18_b21_s01",
+            "text_id": "body",
+            "text": "같이 배우던 분이 세종으로 작업실을 옮겨서 요즘은 못 봐요",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D18_b12",
+            "span_id": "D18_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D18_b08",
+            "span_id": "D18_b08_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D18_b03",
+            "span_id": "D18_b03_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": null,
+            "span_id": "D18_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D18_b17",
+            "span_id": "D18_b17_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D18_b12",
+            "span_id": "D18_b12_s02"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

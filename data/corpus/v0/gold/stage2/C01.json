@@ -1,0 +1,201 @@
+{
+  "persona_id": "C01",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_132bfbed",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C01_profile_s01",
+          "text_id": "profile_bio",
+          "text": "퇴근 후와 주말에 남기는 내돈내산 기록",
+          "type": "JOB",
+          "level": "inferential",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C01_b03",
+        "spans": [
+          {
+            "span_id": "C01_b03_s01",
+            "text_id": "body",
+            "text": "퇴근길 1호선에서 내려 온천천 방향으로 걸었습니다",
+            "type": "COMMUTE",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C01_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "퇴근길 산책로 근처",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C01_b06",
+        "spans": [
+          {
+            "span_id": "C01_b06_s01",
+            "text_id": "body",
+            "text": "월말 발주서 결재를 올리고 늦게 나왔습니다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C01_b06_s02",
+            "text_id": "title",
+            "text": "결재 마친 날의 늦은 저녁",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C01_b09",
+        "spans": [
+          {
+            "span_id": "C01_b09_s01",
+            "text_id": "body",
+            "text": "한 상 차리기 귀찮은 날에는 1인 메뉴가 편합니다",
+            "type": "FAM",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C01_b12",
+        "spans": [
+          {
+            "span_id": "C01_b12_s01",
+            "text_id": "body",
+            "text": "서른하나가 되고 나니 줄 서는 식당은 조금 망설여집니다",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C01_b15",
+        "spans": [
+          {
+            "span_id": "C01_b15_s01",
+            "text_id": "body",
+            "text": "점심 한 끼 가격을 넘으면 평일에는 다시 방문하기 어렵습니다",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C01_b18",
+        "spans": [
+          {
+            "span_id": "C01_b18_s01",
+            "text_id": "body",
+            "text": "친구가 해운대에 살아서 그쪽 식당에서 만났습니다",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b12",
+            "span_id": "C01_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b03",
+            "span_id": "C01_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b06",
+            "span_id": "C01_b06_s01"
+          },
+          {
+            "post_id": "C01_b06",
+            "span_id": "C01_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C01_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b09",
+            "span_id": "C01_b09_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b03",
+            "span_id": "C01_b03_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C01_b15",
+            "span_id": "C01_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "persona_id": "C16",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_e1d53e4f",
+    "profile": {
+      "spans": [
+        {
+          "span_id": "C16_profile_s01",
+          "text_id": "profile_bio",
+          "text": "두 아이 키우며 직접 고른 육아용품을 소개해요",
+          "type": "JOB",
+          "level": "implicit",
+          "subject": "self"
+        }
+      ]
+    },
+    "posts": [
+      {
+        "post_id": "C16_b03",
+        "spans": [
+          {
+            "span_id": "C16_b03_s01",
+            "text_id": "body",
+            "text": "대로변 도시철도역에서 내려 하천 산책로 쪽으로 걸어 집에 돌아왔어요",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "span_id": "C16_b03_s02",
+            "text_id": "photo_caption:0",
+            "text": "도시철도역에서 하천 산책로로 이어지는 저녁길",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C16_b06",
+        "spans": [
+          {
+            "span_id": "C16_b06_s01",
+            "text_id": "body",
+            "text": "새로 들어온 제품의 수량을 확인하고 주문서 순서대로 포장을 마쳤습니다",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "span_id": "C16_b06_s02",
+            "text_id": "title",
+            "text": "이번 입고 제품 검수 기준을 공유해요",
+            "type": "JOB",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C16_b09",
+        "spans": [
+          {
+            "span_id": "C16_b09_s01",
+            "text_id": "body",
+            "text": "둘째를 재운 뒤 엄마인 저는 남은 주문서를 다시 확인했어요",
+            "type": "SEX",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C16_b12",
+        "spans": [
+          {
+            "span_id": "C16_b12_s01",
+            "text_id": "body",
+            "text": "서른여섯 생일에는 첫째와 둘째가 고른 작은 케이크를 함께 먹었어요",
+            "type": "AGE",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C16_b15",
+        "spans": [
+          {
+            "span_id": "C16_b15_s01",
+            "text_id": "body",
+            "text": "해외 배송비와 제품 촬영비를 정리하고 나니 이번 달 매출이 어느 정도 남을지는 아직 모르겠어요",
+            "type": "INCOME",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "C16_b18",
+        "spans": [
+          {
+            "span_id": "C16_b18_s01",
+            "text_id": "body",
+            "text": "친구가 부산 해운대구 호텔에서 아이의 가족 행사를 열어 선물 구성을 부탁했어요",
+            "type": "LOC_ADMIN",
+            "level": "explicit",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C16_b12",
+            "span_id": "C16_b12_s01"
+          }
+        ]
+      },
+      "sex": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C16_b09",
+            "span_id": "C16_b09_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C16_b03",
+            "span_id": "C16_b03_s01"
+          },
+          {
+            "post_id": "C16_b03",
+            "span_id": "C16_b03_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C16_b06",
+            "span_id": "C16_b06_s01"
+          },
+          {
+            "post_id": "C16_b06",
+            "span_id": "C16_b06_s02"
+          },
+          {
+            "post_id": null,
+            "span_id": "C16_profile_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "C16_b15",
+            "span_id": "C16_b15_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}

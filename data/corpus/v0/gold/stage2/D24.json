@@ -1,0 +1,143 @@
+{
+  "persona_id": "D24",
+  "label_version": "v0",
+  "derived_from": "clue_plan",
+  "input": {
+    "user_ref": "u_7d29060f",
+    "profile": null,
+    "posts": [
+      {
+        "post_id": "D24_b02",
+        "spans": [
+          {
+            "span_id": "D24_b02_s01",
+            "text_id": "body",
+            "text": "객실 넷이라 주말 예약이 차면 그 주는 못 쉬네",
+            "type": "JOB",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D24_b06",
+        "spans": [
+          {
+            "span_id": "D24_b06_s01",
+            "text_id": "body",
+            "text": "계곡 물소리 때문에 창을 못 열어 두는 집이네",
+            "type": "LOC_ADMIN",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D24_b12",
+        "spans": [
+          {
+            "span_id": "D24_b12_s01",
+            "text_id": "body",
+            "text": "손주 이유식을 내가 만들어 보내니 딸이 더 놀라더구먼",
+            "type": "SEX",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D24_b18",
+        "spans": [
+          {
+            "span_id": "D24_b18_s01",
+            "text_id": "body",
+            "text": "여름 두 달로 일 년을 버티는 구조라 겨울엔 손을 놓네",
+            "type": "INCOME",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ]
+      },
+      {
+        "post_id": "D24_b26",
+        "spans": [
+          {
+            "span_id": "D24_b26_s01",
+            "text_id": "body",
+            "text": "형님이 춘천 시내에 카페를 내서 개업 구경 갔다 왔네",
+            "type": "LOC_ADMIN",
+            "level": "inferential",
+            "subject": "other"
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D24_b12",
+            "span_id": "D24_b12_s01"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D24_b06",
+            "span_id": "D24_b06_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D24_b02",
+            "span_id": "D24_b02_s01"
+          }
+        ]
+      },
+      "family": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "commute": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "income": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D24_b18",
+            "span_id": "D24_b18_s01"
+          }
+        ]
+      }
+    },
+    "rewrites": []
+  }
+}
