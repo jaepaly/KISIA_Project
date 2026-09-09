@@ -1,14 +1,15 @@
-측정일 2026-09-07 · corpus-v0 · 배정 gold/iaa/_assignment.json (seed 20260908 · #192) · 라벨 A=nuewsun C=jhyun114 · scripts/iaa.py
-⚠️ 1차 파일럿. 갈린 자리 진단은 PR #188 리뷰 참조. G2 지표에는 2차 IAA 수치를 쓴다.
+측정일 2026-09-07 · corpus-v0 (p1.0 옛 본문 · 재생성 #201 이전) · 배정 gold/iaa/_assignment.json (seed 20260908 · #192) · 라벨 A=nuewsun C=jhyun114 · scripts/iaa.py
+재계산 2026-09-09 · A 파일의 D16_b17·D20_b18 누락 2스팬 보완(#221 · b68a642) 반영 · 입력 main 12a9476 + #221. 보완 전 값은 partial 22.9% / exact 0% (9/7 · #188). 늘어난 TP 는 D20_b18 「쉰둘인데」 1건 — D16_b17 「딸」(A) 은 C 의 「딸 야자」와 겹침 1/4 이라 매칭 안 됨 (#200 경계 쟁점).
+⚠️ 1차 파일럿. 갈린 자리 진단은 PR #188 리뷰 참조. G2 지표에는 새 코퍼스 2차 IAA 수치를 쓴다.
 
 IAA — 공통 reviewed 글 16편
 기준: partial=type 일치 + 문자 IoU>=0.5, 1:1 최대 매칭
 
 level            A    C   TP        P        R  partial F1   exact F1
-explicit         7    6    3    42.9%    50.0%       46.2%       0.0%
-implicit        12    0    0     0.0%     0.0%        0.0%       0.0%
+explicit         8    6    4    50.0%    66.7%       57.1%      14.3%
+implicit        13    0    0     0.0%     0.0%        0.0%       0.0%
 inferential      2    8    0     0.0%     0.0%        0.0%       0.0%
-overall         21   14    4    19.0%    28.6%       22.9%       0.0%
+overall         23   14    5    21.7%    35.7%       27.0%       5.4%
 
-matched span level 일치:   3/4 (75.0%)
-matched span subject 일치: 4/4 (100.0%)
+matched span level 일치:   4/5 (80.0%)
+matched span subject 일치: 5/5 (100.0%)
