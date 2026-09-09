@@ -1,7 +1,7 @@
 # 핸드오프 — 원티드 AI Championship 2026 데모 (2026-09-08 새벽 기준)
 
 > 세션이 끊겨도 여기서 이어간다. 상세 경위는 [LOG.md](LOG.md), 화면·수치·통합 계획은 [README.md](README.md).
-> 브랜치 `D/demo/championship-spike` · **로컬 전용, push·PR 금지** · PM 단독 · 팀 로드맵 영향 0.
+> 브랜치 `D/demo/championship-spike` · **main PR 금지** (브랜치 push 는 9/9 부터 — E 와 공유) · 본 프로젝트 우선 · 팀 로드맵 영향 0.
 
 ## 일정
 
