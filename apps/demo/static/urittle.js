@@ -146,6 +146,11 @@
 
   // ── 장식 — 좋아요 · 이웃추가 (저장 안 함) ────────────────────────────────
   function initDecor() {
+    // 카드 전체 클릭 — 안의 버튼·링크·폼은 제 역할 그대로
+    $$(".ut-card[data-href]").forEach((c) => c.addEventListener("click", (e) => {
+      if (e.target.closest("a,button,form,input,.like")) return;
+      location.href = c.dataset.href;
+    }));
     $$(".like").forEach((el) => el.addEventListener("click", (ev) => {
       ev.preventDefault(); ev.stopPropagation();
       const b = $("b", el); if (!b) return;

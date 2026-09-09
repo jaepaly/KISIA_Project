@@ -35,7 +35,7 @@
 
   {% for p in posts %}
     {% set eng = ut_engage(p.post_id) %}
-    <div class="ut-card {{ 'dim' if p.visibility == 'private' }}">
+    <div class="ut-card {{ 'dim' if p.visibility == 'private' }}" data-href="/posts/{{ p.post_id }}">
       <div class="ut-byline">
         <span class="dt">{{ p.created_at[:16].replace('T', ' ') }}</span>
         <span class="ut-chips" style="margin-left:auto">
