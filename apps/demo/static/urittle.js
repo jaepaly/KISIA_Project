@@ -211,7 +211,16 @@
   function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
   window.padoTourStart = function () { tourSave({ step: 0 }); if (location.pathname !== "/") location.href = "/"; else renderTour(); };
   window.padoTourReset = function () { tourSave({ step: 0 }); location.href = "/"; };
-  window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); };
+  window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); const h = $(".tour-hole"); h && h.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); updateWelcome(null); };
+  // 첫 방문 카드 — 투어 중엔 한 줄 진행바로 접힌다 (시작을 눌렀는데 아무것도 안 바뀌면 눌린 줄 모른다)
+  function updateWelcome(step) {
+    const w = $("[data-tour-welcome]"); if (!w) return;
+    w.classList.toggle("tour-on", step != null);
+    let bar = $(".welcome-bar", w);
+    if (step == null) { bar && bar.remove(); return; }
+    if (!bar) { bar = document.createElement("div"); bar.className = "welcome-bar"; w.appendChild(bar); }
+    bar.innerHTML = '<span class="n">▶ 3분 체험 진행 중</span><span class="p">' + (step + 1) + " / " + TOUR.length + '</span><span class="t">밝게 뚫린 곳을 따라가세요</span><button type="button" onclick="padoTourStop()">그만하기</button>';
+  }
   function updateTourLinks() {
     const s = tourState();
     $$("[data-tour-welcome]").forEach((el) => { el.hidden = !!(s && s.done); });   // 투어 중에도 첫 화면 카드는 남긴다 — «처음부터» 가 첫 화면이어야 한다
@@ -222,7 +231,7 @@
     updateTourLinks();
     const stale = $(".tour-mark"); stale && stale.remove();
     $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot"));
-    if (!s || s.done || s.step == null) return;
+    if (!s || s.done || s.step == null) { const h = $(".tour-hole"); h && h.remove(); updateWelcome(null); return; }
     const p = location.pathname;
     let i = s.step;
     // 현재 페이지에 맞는 단계로 — 앞 단계를 건너뛰었으면 따라잡고, 조건(when)이 안 맞으면 기다린다
@@ -250,6 +259,7 @@
     nextBtn && nextBtn.addEventListener("click", () => { if (st.advance === "done") { window.padoTourStop(); finishTour(); } else { tourSave({ step: i + 1 }); renderTour(); } });
     if (target) {
       target.classList.add("tour-spot");
+      spotlight(target);
       const clickEl = st.clickTarget ? ($$(st.clickTarget).find(visible) || null) : target;
       if (st.advance === "click" && clickEl) {
         clickEl.classList.add("tour-spot");
@@ -257,10 +267,21 @@
       }
       place(card, target);
       target.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
-      setTimeout(() => place(card, target), RM ? 0 : 500);
+      setTimeout(() => { place(card, target); spotlight(target); }, RM ? 0 : 500);
+      setTimeout(() => spotlight(target), RM ? 0 : 900);
     } else {
       card.classList.add("floating");
+      const hole = $(".tour-hole"); hole && hole.classList.remove("on");
     }
+    updateWelcome(i);
+  }
+  function spotlight(target) {
+    let hole = $(".tour-hole");
+    if (!hole) { hole = document.createElement("div"); hole.className = "tour-hole"; document.body.appendChild(hole); }
+    const r = target.getBoundingClientRect(), pad = 8;
+    hole.style.top = (r.top - pad) + "px"; hole.style.left = (r.left - pad) + "px";
+    hole.style.width = (r.width + pad * 2) + "px"; hole.style.height = (r.height + pad * 2) + "px";
+    hole.classList.add("on");
   }
   function place(card, target) {
     const r = target.getBoundingClientRect();
@@ -300,7 +321,9 @@
     initDecor();
     initActRail();
     renderTour();
-    addEventListener("resize", () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); c && t && place(c, t); });
+    const follow = () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); if (c && t) { place(c, t); spotlight(t); } };
+    addEventListener("resize", follow);
+    addEventListener("scroll", () => { const t = $(".tour-spot"); t && $(".tour-hole") && spotlight(t); }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(initMore);   // 웹폰트가 늦게 오면 줄 높이가 바뀐다
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();

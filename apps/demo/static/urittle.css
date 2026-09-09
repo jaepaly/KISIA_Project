@@ -258,6 +258,16 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 .rail-tour{font-size:12px;color:var(--ut-ink3)}
 .rail-tour button{background:transparent;color:var(--ut-sea);padding:0;font-size:12px;font-weight:700}
 
+.tour-hole{position:fixed;z-index:29;pointer-events:none;border-radius:12px;opacity:0;transition:top .35s var(--ease),left .35s var(--ease),width .35s var(--ease),height .35s var(--ease),opacity .3s;
+  box-shadow:0 0 0 9999px rgba(43,38,32,.42)}
+.tour-hole.on{opacity:1}
+.welcome.tour-on > :not(.welcome-bar){display:none}
+.welcome.tour-on{padding:12px 18px}
+.welcome-bar{display:flex;align-items:center;gap:12px;font-size:13.5px;position:relative}
+.welcome-bar .n{font-weight:700;color:var(--ut-sea)}
+.welcome-bar .p{font-family:"IBM Plex Mono",Consolas,monospace;background:var(--ut-sea);color:#fff;border-radius:99px;padding:1px 10px;font-size:12px}
+.welcome-bar .t{color:var(--ut-ink2)}
+.welcome-bar button{margin-left:auto;background:transparent;color:var(--ut-ink3);font-weight:400;padding:4px 8px;font-size:12.5px;border:1px solid var(--ut-line);border-radius:8px}
 .tour-spot{position:relative;z-index:31;box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-sea),0 0 0 14px rgba(12,109,104,.16)!important;border-radius:10px;animation:spot 1.6s ease-in-out infinite}
 @keyframes spot{50%{box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-sea),0 0 0 22px rgba(12,109,104,0)}}
 .tour-mark{position:absolute;z-index:32;width:min(340px,calc(100vw - 24px));background:var(--ut-ink);color:#fff;border-radius:14px;padding:13px 15px 11px;
@@ -275,7 +285,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 .tour-mark .bt .skip:hover{background:rgba(255,255,255,.2)}
 .tour-mark .bt .hint{margin-left:auto;font-size:12px;color:#ffe9a8;text-align:right}
 .tour-mark.done{background:var(--ut-sea)}
-@keyframes popin{from{opacity:0;transform:translateY(-6px)}}
+@keyframes popin{0%{opacity:0;transform:translateY(-10px) scale(.96)}60%{transform:translateY(3px) scale(1.01)}100%{opacity:1;transform:none}}
 .tour-mark.floating{animation:none}
 
 /* ── 하단 탭바 (모바일) ── */
