@@ -1,5 +1,7 @@
 # W4 코퍼스 v1 동결 — validate + audit
 측정일: 2026-09-09
+기준 커밋: d4cf8cb (main · #215 교사 라벨 탐지본·#217 D 검수 머지 후) — 이 해시가 코퍼스 v1 이다. 동결 후 재생성 없음.
+재확인: D 가 같은 커밋에서 validate --cards · corpus_audit.py 를 다시 돌려 아래 출력과 일치함을 확인 (2026-09-09 16:20)
 
 ## validate.py
 OK   A01.json  (1 issue)
