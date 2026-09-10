@@ -60,6 +60,23 @@ def pado_static(fname: str):
     return send_from_directory(HERE / "static", fname)
 
 
+# 외부에 잠깐 노출할 때(터널·임시 배포) 링크 유출 대비 — DEMO_ACCESS_KEY 가 있으면 ?key= 로 한 번 들어와야 한다(쿠키로 기억)
+ACCESS_KEY = os.getenv("DEMO_ACCESS_KEY", "")
+
+
+@app.before_request
+def _gate():
+    if not ACCESS_KEY or request.path.startswith("/pado-static/"):
+        return None
+    if request.args.get("key") == ACCESS_KEY:
+        resp = redirect(request.path)
+        resp.set_cookie("pado_key", ACCESS_KEY, max_age=60 * 60 * 24 * 30, samesite="Lax")
+        return resp
+    if request.cookies.get("pado_key") == ACCESS_KEY:
+        return None
+    return ("<h2 style='font-family:sans-serif;margin:40px'>초대 링크로 들어와 주세요</h2>", 403)
+
+
 # ── 화면 장식 — 좋아요·댓글·이웃 수. 글 ID 에서 결정론적으로 만든다 ──────────
 #    시연 때마다 숫자가 흔들리면 어제 캡처와 달라져 설명이 꼬인다. 저장하지 않는다.
 _AVATARS = ["🌾", "🌻", "🌿", "🪴", "🌱", "🍀", "🌷", "🧺", "🪺", "🫖"]

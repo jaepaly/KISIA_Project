@@ -29,6 +29,15 @@ python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」�
 > Claude Code 안에서 백그라운드로 띄우면 메모리 여유가 적을 때(≈3GB 이하) 감시가 서버를 죽인다. 그럴 땐 독립 프로세스로:
 > `Start-Process python -ArgumentList 'apps/demo/app.py' -WindowStyle Hidden` (sns_ext.py 도 같이). 내릴 땐 PID 로 Stop-Process.
 
+> **밖에 잠깐 보여줄 때(멘토·심사 전 리허설)** — cloudflared 무료 임시 터널 + 접속 열쇠. 계정·요금·DNS 없음. PC 와 두 서버가 켜져 있는 동안만 산다.
+> ```powershell
+> $env:DEMO_ACCESS_KEY = (Get-Content "$env:TEMP\padopool_key.txt")      # 열쇠는 저장소 밖 · 채팅에 안 붙임
+> Start-Process python -ArgumentList 'apps/demo/sns_ext.py' -WindowStyle Hidden   # 열쇠 켜서 우리뜰 재시작
+> & "C:\Program Files (x86)\cloudflared\cloudflared.exe" tunnel --url http://localhost:3000   # 로그의 *.trycloudflare.com 이 주소
+> ```
+> 초대 링크는 `https://<주소>/?key=<열쇠>`. 열쇠 없이 열면 403. 터널은 :3000 만 낸다(파도풀 :8000 은 우리뜰이 내부에서 부른다).
+> 끝나면 cloudflared 를 내리고(주소가 바로 죽는다) `seed.py --reset` 으로 멘토가 만진 글을 되돌린다.
+
 - 첫 화면(`/`)에 **첫 방문 카드** + 「▶ 3분 체험 시작」 → **9단계 투어**가 시연 순서대로 데려간다 (마당일기 → 내 글 점검 → 421 →
   깔때기 → 위치태그 끄기 → 421→111,069 → 글쓰기 → 예문·체험 계정·점검 → 색칠된 표현). 발표 대본이 곧 이 9단계.
 - 정본 수치(`probe.baseline.json`, 위치태그 ON/OFF): **D05 421/111,069** · D01 36,061/434,408 · E20 1,231/17,433 · C02 899/14,574 ·
