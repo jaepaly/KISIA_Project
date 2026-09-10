@@ -460,7 +460,7 @@ W4 「시설·랜드마크 `facilities.json`」 의 첫 조각이다. 역 이름
 | 행정동 경계 | vuski/admdongkor `HangJeongDong_ver20260701.geojson` (행안부 `adm_cd2` 10자리) <https://github.com/vuski/admdongkor> | 공개 저장소. 34MB 라 커밋하지 않는다 |
 
 ```powershell
-python -X utf8 scripts/build_stations.py `
+python -X utf8 scripts/data/build_stations.py `
   --stations "$env:USERPROFILE\Downloads\stations_raw.json" `
   --bounds   "$env:USERPROFILE\Downloads\HangJeongDong_ver20260701.geojson" `
   --out data/dict/admin/stations.json

@@ -1,6 +1,6 @@
 """역 사전 만들기 — 도시철도 역 이름 → 행정동(읍면동) 코드. data/dict/admin/stations.json 의 재현 스크립트.
 
-    python scripts/build_stations.py --stations <표준데이터 json> --bounds <행정동 geojson> --out data/dict/admin/stations.json
+    python scripts/data/build_stations.py --stations <표준데이터 json> --bounds <행정동 geojson> --out data/dict/admin/stations.json
 
 입력 (둘 다 공개 자료, 키 없이 받는다)
   - 공공데이터포털 「전국도시철도역사정보표준데이터」(국가철도공단 취합) — 역 이름·노선·위경도·도로명주소. 898건, 기준일 2019~2021.
@@ -28,7 +28,7 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 
