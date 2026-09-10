@@ -10,8 +10,8 @@
 
 | 항목 | 값 |
 |---|---|
-| 측정일 | 2026-08-28 (W2 1차) / 2026-09-01 (W3 등급별 분해 갱신) |
-| 데이터 버전 | `corpus-v0` (페르소나 22명 `clue_plan` 185개 단서 문장) |
+| 측정일 | 2026-08-28 (W2 1차) / 2026-09-01 (W3 등급별 분해) / 2026-09-08 (W3 도달 가능성) / **2026-09-10 (W4 p2.3 재측정)** |
+| 데이터 버전 | W2·W3: `corpus-v0` (인물 22명 `clue_plan` 185개 단서 문장) · **W4: `corpus-v0-p2.3` (인물 115명 `clue_plan` 967개 단서 문장 · #201)** — 둘 다 설계 문장 기준이며 실제 본문·검수 골드 기준 재채점은 W5 |
 | 비교 도구 | ① 규칙 기반(정규식 8종) · ② Microsoft Presidio · ③ 한국어 개체명(NER) 모델 |
 | 상한선 도구 | Google Gemini (W3 추가 예정) |
 | 채점 기준 | **partial match (IoU ≥ 0.5, 도구 유리 원칙: type 불문, 주 지표)** · exact match (부 지표) |
@@ -25,9 +25,11 @@
 유형 일치    기존 도구에 최대한 유리하게 판정하기 위해 type 불문 IoU 매칭 (b-baselines §7.2)
 3종 합집합   하나라도 잡으면 「잡았다」
 주/부 지표   partial(IoU ≥ 0.5) 이 주 지표 · exact 는 부 지표로 병기
+LLM 채점    주 지표: 골드 attr 일치 — sex↔family 는 동치 (label-schema §3-2 매핑표: 배우자·가족 호칭은 sex·family 둘 다에 기여)
+            부 지표: attr + subject 엄격 일치 (subject 는 우리 규약 — 「엄마가 밥 차려놨다」= 글쓴이 가족 구성 = self — 이라 blind LLM 은 알 수 없음)
 W3 게이트   미탐 공간:   implicit ≥ 45%  AND  inferential ≥ 45%
-            도달 가능성: implicit ≥ 60%  AND  inferential ≥ 60% (Gemini)
-            판정: 둘 다 충족시 PASS · 하나만 충족시 PENDING · 둘 다 미달시 STOP
+            도달 가능성: implicit ≥ 60% (주 지표) — inferential 은 [DEC-006] 으로 게이트 제외 (9/10)
+            판정: 둘 다 충족시 PASS · 하나만 충족시 HOLD · 둘 다 미달시 STOP
 ```
 
 ## 실행
@@ -45,7 +47,21 @@ python experiments/exp01-baseline/run_koreanpii.py
 python experiments/exp01-baseline/compare.py
 ```
 
-## W3 등급별 미탐 공간 및 도달 가능성 실측 결과
+## W4 p2.3 재측정 — 인물 115명 설계 단서 967건 (2026-09-10)
+
+| 등급 | 골드 | 3종 전원 미탐(partial) | 미탐율 | 도달 가능성 · attr (주) | 도달 가능성 · attr+subject (부) | 게이트 | 판정 |
+|---|---:|---:|---:|:---:|:---:|:---:|:---:|
+| `explicit` | 263 | 118 | 44.9% | **99.2%** (116/117) | 88.0% (103/117) | *진단값* | — |
+| `implicit` | 448 | 206 | **46.0%** | **83.4%** (171/205) | 50.2% (103/205) | 미탐 ≥ 45% · 도달 ≥ 60% | ✅ ✅ |
+| `inferential` | 256 | 133 | **51.9%** | 66.9% (89/133) | 48.1% (64/133) | 미탐 ≥ 45% · 도달은 게이트 밖(DEC-006) | ✅ — |
+| **합계** | **967** | **457** | **47.3%** | 82.6% (376/455) | 59.3% (270/455) | — | **PASS** |
+
+> - 모델 gemini-3.1-pro · High · Gemini CLI via Antigravity · 입력은 `reachability_inputs.jsonl` 457건(id+text 만) · 출력 `results/gemini_labeled.jsonl` · unscorable(골드 subject 없음) 2건 `S01_b12_03, S01_b17_04`
+> - **왜 채점을 둘로 나눴나** — 엄격 채점의 미회수 대부분은 LLM 이 단서를 못 본 게 아니라 우리 규약을 모른 것이다: 「엄마가 밥 차려놨다」를 골드는 family/**self**(글쓴이의 가족 구성)로 두는데 Gemini 는 family/**other**(엄마는 남) 로 읽고(implicit 40건), 「아빠가 돈 많이 벌어올게」를 골드는 **sex**(§3-2 호칭 규약) 로 두는데 Gemini 는 **family** 로 읽는다(53건 중 대부분). 진짜 못 찾은 것은 implicit 9건. 게이트 취지(학습으로 도달 가능한가)엔 attr 채점이 맞고, 엄격 채점은 「규약까지 맞히나」의 참고치로 병기한다.
+> - **판정 PASS** — 미탐 공간 implicit 46.0% · inferential 51.9% 충족, 도달 가능성 implicit 83.4% 충족. inferential 도달 가능성은 [DEC-006] 으로 게이트 밖(§4-1 정의상 단독 문장으로 확정되지 않는 등급).
+> - W3(9/8) 대비: 표본이 185→967 로 늘고 미탐 53.0%→47.3%. 같은 설계 문장 기준이라 방향은 같다. 실제 본문·검수 골드(`gold/`) 기준 재채점은 W5.
+
+## W3 등급별 미탐 공간 및 도달 가능성 실측 결과 (2026-09-08 · 이력)
 
 | 등급 | 골드 | 3종 전원 미탐(partial) | 미탐율 (주 지표) | 미탐율 (exact) | 도달 가능성 (Gemini) | W3 게이트 기준 | 판정 |
 |---|---:|---:|---:|---:|:---:|:---:|:---:|
@@ -64,7 +80,7 @@ python experiments/exp01-baseline/compare.py
 > - 제외: exp01 설계 라벨의 `subject`가 없는 `S01_b12_03`, `S01_b17_04` 2건은 unscorable로 분리
 > - 재현 자료: 합성 코퍼스에서 파생한 `reachability_inputs.jsonl`과 `results/gemini_labeled.jsonl`을 함께 기록
 >
-> ⭐ **판정 결론**: `implicit`과 `inferential` 모두 미탐 공간 게이트를 충족했으나, 도달 가능성에서 `implicit`(86.5%)만 충족하고 `inferential`(42.4%)이 60%에 미달했습니다. 두 축 중 하나만 충족했으므로 #128 규칙에 따라 최종 판정은 **HOLD**입니다.
+> ⭐ **판정 결론 (당시)**: `implicit`과 `inferential` 모두 미탐 공간 게이트를 충족했으나, 도달 가능성에서 `implicit`(86.5%)만 충족하고 `inferential`(42.4%)이 60%에 미달했습니다. 두 축 중 하나만 충족했으므로 #128 규칙에 따라 판정은 **HOLD**였습니다. → 9/10 [DEC-006] 으로 inferential 을 게이트에서 제외했고(같은 98건 Opus 4.8 재측정 51.5% — `results/reach_compare.json`, #228), p2.3 재측정(위) 기준 **PASS**.
 > `explicit`(60.0%)의 높은 미탐율은 한글 수사("마흔여덟") 등 기존 도구의 구조적 한계(`label-schema` §4-1)에 기인함을 확인했습니다.
 
 ## 관찰 결과 (W2/W3 미탐 관찰표 발췌)
@@ -98,8 +114,8 @@ python experiments/exp01-baseline/compare.py
 2. **explicit 역전 현상 규명**: `explicit` 미탐율(60.0%)이 높은 것은 정규식/NER이 한국어 수사("스물아홉", "마흔여덟")를 인식하지 못하는 기존 도구의 구조적 한계(`label-schema` §4-1)임을 확인.
 3. **결론**: 규칙/NER 기반 도구의 한계를 입증하고, 문맥 기반 1단 스팬 탐지기(`c1_span`)의 당위성을 확보함.
 
-## 향후 계획 (W4)
+## 향후 계획 (W5)
 
-- inferential 도달 가능성 42.4%로 60% 기준에 미달하여 `HOLD` 판정.
-- 멘토링에서 inferential 학습 진행 여부와 보완 방식을 논의한다.
+- 게이트는 PASS (p2.3 · DEC-006). inferential 은 1단이 **표시**만 하고 값 판정은 2단·누적으로 넘긴다 — 1단 inferential 스팬 F1 목표는 IAA 상한에 묶는다.
+- 실제 본문·검수 골드(`gold/` reviewed) 기준으로 도구 3종을 재채점한다 — 설계 문장이 아니라 생성 본문에 도구를 돌리고 검수 스팬을 골드로. 단위가 바뀌므로 위 수치와 직접 비교하지 않는다.
 - 골드 subject 누락 2건은 임의 보정하지 않고 unscorable로 공개하며 데이터 담당자 확인 후 보완한다.

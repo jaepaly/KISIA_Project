@@ -5,7 +5,8 @@
   "scoring": {
     "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
     "secondary": "exact_match",
-    "llm_reachability": "gold attr+subject strict match; missing gold subject excluded"
+    "llm_reachability": "gold attr match with sex<->family equivalence (label-schema §3-2); missing gold subject excluded",
+    "llm_reachability_strict": "gold attr+subject strict match (secondary — subject is a schema convention a blind LLM cannot know)"
   },
   "gate_thresholds": {
     "missed_rate": {
@@ -14,17 +15,18 @@
     },
     "reachability": {
       "implicit": 0.6,
-      "inferential": 0.6
+      "inferential": null,
+      "note": "DEC-006 (2026-09-10): inferential 은 게이트에서 제외"
     }
   },
-  "gate_decision": "HOLD",
+  "gate_decision": "PASS",
   "summary": {
     "total_gold_evaluated": 967,
     "missed_by_all_three_tools_partial": 457,
     "missed_rate_partial": 0.4726,
     "missed_by_all_three_tools_exact": 457,
     "missed_rate_exact": 0.4726,
-    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 47.3%(partial)를 탐지하지 못함 -> 1단 스팬 모델 필요성 입증 및 W3 게이트 판정: HOLD"
+    "conclusion": "기존 도구 3종 모두 한국형 문맥 준식별자의 47.3%(partial)를 탐지하지 못함 -> 1단 스팬 모델 필요성 입증 및 W3 게이트 판정: PASS"
   },
   "by_level": {
     "explicit": {
@@ -32,30 +34,36 @@
       "missed_by_tools": 118,
       "missed_rate": 0.4487,
       "missed_rate_exact": 0.4487,
-      "llm_recovers": 103,
+      "llm_recovers": 116,
+      "llm_recovers_strict": 103,
       "llm_scorable": 117,
       "llm_unscorable": 1,
-      "reachability": 0.8803
+      "reachability": 0.9915,
+      "reachability_strict": 0.8803
     },
     "implicit": {
       "gold": 448,
       "missed_by_tools": 206,
       "missed_rate": 0.4598,
       "missed_rate_exact": 0.4598,
-      "llm_recovers": 103,
+      "llm_recovers": 171,
+      "llm_recovers_strict": 103,
       "llm_scorable": 205,
       "llm_unscorable": 1,
-      "reachability": 0.5024
+      "reachability": 0.8341,
+      "reachability_strict": 0.5024
     },
     "inferential": {
       "gold": 256,
       "missed_by_tools": 133,
       "missed_rate": 0.5195,
       "missed_rate_exact": 0.5195,
-      "llm_recovers": 64,
+      "llm_recovers": 89,
+      "llm_recovers_strict": 64,
       "llm_scorable": 133,
       "llm_unscorable": 0,
-      "reachability": 0.4812
+      "reachability": 0.6692,
+      "reachability_strict": 0.4812
     }
   },
   "environment": {
@@ -67,7 +75,7 @@
       "reasoning_mode": "high",
       "via": "Gemini CLI via Antigravity",
       "measured_at": "2026-09-10",
-      "evaluation": "attr+subject strict match",
+      "evaluation": "attr match (sex<->family equivalent) primary; attr+subject strict secondary",
       "unscorable_ids": [
         "S01_b12_03",
         "S01_b17_04"

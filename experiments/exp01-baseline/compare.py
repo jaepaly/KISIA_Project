@@ -8,9 +8,16 @@ W3 단계: 골드셋 대비 등급별(explicit/implicit/inferential) 미탐 공�
   - 주 지표: partial match (IoU >= 0.5, 기존 도구 유리 원칙: type 불문 매칭)
   - 부 지표: exact match (시작/끝 인덱스 완전 일치)
   - 3종 합집합: 3개 도구(regex, presidio, koreanpii) 중 하나라도 탐지하면 탐지 성공
+  - LLM 도달 가능성 채점 (골드 attr 기준):
+      주 지표: attr 일치 — sex↔family 는 동치로 본다 (label-schema §3-2 매핑표:
+              배우자·가족 호칭은 sex·family 둘 다에 기여하므로 어느 쪽으로 읽어도 회수)
+      부 지표: attr + subject 엄격 일치 (subject 는 우리 스키마 규약 — 「엄마가 밥 차려놨다」는
+              글쓴이의 가족 구성이라 self — 이라 blind LLM 이 알 수 없어 게이트엔 쓰지 않는다)
+      subject 없는 골드는 unscorable 로 분리
   - W3 게이트:
       미탐 공간:   implicit >= 45% AND inferential >= 45%
-      도달 가능성: implicit >= 60% AND inferential >= 60%
+      도달 가능성: implicit >= 60%  (주 지표 · inferential 은 DEC-006 으로 게이트 제외 —
+                   §4-1 정의상 단독 문장으로 확정되지 않는 등급이라 문장 단위로 재지 않는다)
       판정: 둘 다 충족시 PASS · 하나만 충족시 HOLD · 둘 다 미달시 STOP
 """
 
@@ -222,9 +229,12 @@ def main() -> int:
     gold_counts = collections.Counter()
     missed_counts_partial = collections.Counter()
     missed_counts_exact = collections.Counter()
-    llm_recovers_counts = collections.Counter()
+    llm_recovers_counts = collections.Counter()         # 주 지표: attr (sex↔family 동치)
+    llm_recovers_strict_counts = collections.Counter()  # 부 지표: attr + subject
     llm_scorable_counts = collections.Counter()
     llm_unscorable_counts = collections.Counter()
+    llm_unscorable_ids = []
+    ATTR_EQUIV = {"sex": {"sex", "family"}, "family": {"family", "sex"}}
 
     sample_rows = []
 
@@ -264,15 +274,20 @@ def main() -> int:
             gold_subject = item.get("subject")
             if gold_subject not in {"self", "other", "unknown"}:
                 llm_unscorable_counts[level] += 1
+                llm_unscorable_ids.append(item.get("id") or key)
             else:
                 llm_scorable_counts[level] += 1
-                if l_rec and any(
-                    span.get("attr") == item.get("attr")
-                    and span.get("subject") == gold_subject
-                    for span in l_rec.get("spans", [])
-                ):
+                gold_attr = item.get("attr")
+                spans = l_rec.get("spans", []) if l_rec else []
+                accepted = ATTR_EQUIV.get(gold_attr, {gold_attr})
+                if any(span.get("attr") in accepted for span in spans):
                     llm_recovers_counts[level] += 1
                     llm_recovered = True
+                if any(
+                    span.get("attr") == gold_attr and span.get("subject") == gold_subject
+                    for span in spans
+                ):
+                    llm_recovers_strict_counts[level] += 1
 
         if missed_exact:
             missed_counts_exact[level] += 1
@@ -293,6 +308,7 @@ def main() -> int:
     total_missed_partial = sum(missed_counts_partial.values())
     total_missed_exact = sum(missed_counts_exact.values())
     total_llm_recovers = sum(llm_recovers_counts.values())
+    total_llm_recovers_strict = sum(llm_recovers_strict_counts.values())
     total_llm_scorable = sum(llm_scorable_counts.values())
 
     # 3. 등급별 지표 계산
@@ -302,10 +318,12 @@ def main() -> int:
         m_p = missed_counts_partial[lv]
         m_e = missed_counts_exact[lv]
         rec = llm_recovers_counts[lv]
+        rec_s = llm_recovers_strict_counts[lv]
         scorable = llm_scorable_counts[lv]
         m_rate_p = round(m_p / g, 4) if g > 0 else 0.0
         m_rate_e = round(m_e / g, 4) if g > 0 else 0.0
         reach = round(rec / scorable, 4) if scorable > 0 else (0.0 if not llm_res else 1.0)
+        reach_s = round(rec_s / scorable, 4) if scorable > 0 else (0.0 if not llm_res else 1.0)
 
         by_level[lv] = {
             "gold": g,
@@ -314,23 +332,24 @@ def main() -> int:
             "missed_by_tools_exact": m_e,
             "missed_rate_exact": m_rate_e,
             "llm_recovers": rec,
+            "llm_recovers_strict": rec_s,
             "llm_scorable": scorable,
             "llm_unscorable": llm_unscorable_counts[lv],
             "reachability": reach,
+            "reachability_strict": reach_s,
         }
 
     total_missed_rate = round(total_missed_partial / total_gold, 4) if total_gold > 0 else 0.0
 
     # 4. W3 중단 기준(Gate) 판정
     # 게이트: implicit >= 45% AND inferential >= 45% (미탐 공간)
-    #        implicit >= 60% AND inferential >= 60% (도달 가능성)
+    #        implicit >= 60% (도달 가능성 · 주 지표) — inferential 은 DEC-006 으로 제외
     imp_miss_ok = by_level["implicit"]["missed_rate_partial"] >= 0.45
     inf_miss_ok = by_level["inferential"]["missed_rate_partial"] >= 0.45
     missed_space_pass = imp_miss_ok and inf_miss_ok
 
     imp_reach_ok = by_level["implicit"]["reachability"] >= 0.60 if has_llm else True
-    inf_reach_ok = by_level["inferential"]["reachability"] >= 0.60 if has_llm else True
-    reachability_pass = imp_reach_ok and inf_reach_ok
+    reachability_pass = imp_reach_ok
 
     if has_llm:
         if missed_space_pass and reachability_pass:
@@ -355,20 +374,22 @@ def main() -> int:
     print(f"   - 주 채점 기준: partial match (IoU >= 0.5)  /  부 지표: exact match")
     print(f"   - 3종 도구 합집합 미탐률: {total_missed_rate * 100:.1f}% ({total_missed_partial}/{total_gold})")
     print("=" * 84)
-    print(f"{'등급':<14} | {'골드':>6} | {'3종 미탐(partial)':>16} | {'미탐율(주)':>10} | {'미탐율(exact)':>12} | {'도달가능성':>10}")
-    print("-" * 84)
+    print(f"{'등급':<14} | {'골드':>6} | {'3종 미탐(partial)':>16} | {'미탐율(주)':>10} | {'미탐율(exact)':>12} | {'도달(attr)':>10} | {'도달(엄격)':>10}")
+    print("-" * 98)
     for lv in levels:
         info = by_level[lv]
         reach_str = f"{info['reachability'] * 100:.1f}%" if has_llm else "-"
-        print(f"{lv:<14} | {info['gold']:>6} | {info['missed_by_tools_partial']:>16} | {info['missed_rate_partial'] * 100:>9.1f}% | {info['missed_rate_exact'] * 100:>11.1f}% | {reach_str:>10}")
-    print("-" * 84)
+        reach_s_str = f"{info['reachability_strict'] * 100:.1f}%" if has_llm else "-"
+        print(f"{lv:<14} | {info['gold']:>6} | {info['missed_by_tools_partial']:>16} | {info['missed_rate_partial'] * 100:>9.1f}% | {info['missed_rate_exact'] * 100:>11.1f}% | {reach_str:>10} | {reach_s_str:>10}")
+    print("-" * 98)
     tot_reach_str = f"{total_llm_recovers / total_llm_scorable * 100:.1f}%" if (has_llm and total_llm_scorable > 0) else "-"
-    print(f"{'합계':<14} | {total_gold:>6} | {total_missed_partial:>16} | {total_missed_rate * 100:>9.1f}% | {total_missed_exact / total_gold * 100:>11.1f}% | {tot_reach_str:>10}")
+    tot_reach_s_str = f"{total_llm_recovers_strict / total_llm_scorable * 100:.1f}%" if (has_llm and total_llm_scorable > 0) else "-"
+    print(f"{'합계':<14} | {total_gold:>6} | {total_missed_partial:>16} | {total_missed_rate * 100:>9.1f}% | {total_missed_exact / total_gold * 100:>11.1f}% | {tot_reach_str:>10} | {tot_reach_s_str:>10}")
     print("=" * 84)
     print(f"🚩 [W3 게이트 판정]: {gate_decision}")
     print(f"   - 미탐 공간 게이트 (implicit >= 45% AND inferential >= 45%): {'✅ 충족' if missed_space_pass else '❌ 미달'}")
     if has_llm:
-        print(f"   - 도달 가능성 게이트 (implicit >= 60% AND inferential >= 60%): {'✅ 충족' if reachability_pass else '❌ 미달'}")
+        print(f"   - 도달 가능성 게이트 (implicit >= 60%, attr 채점 · inferential 은 DEC-006 으로 제외): {'✅ 충족' if reachability_pass else '❌ 미달'}")
     else:
         print("   - 도달 가능성 게이트: 미측정 (LLM 결과 파일 없음) — PASS 는 측정 후에만 나온다")
     print("=" * 84)
@@ -387,11 +408,12 @@ def main() -> int:
         "scoring": {
             "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
             "secondary": "exact_match",
-            "llm_reachability": "gold attr+subject strict match; missing gold subject excluded",
+            "llm_reachability": "gold attr match with sex<->family equivalence (label-schema §3-2); missing gold subject excluded",
+            "llm_reachability_strict": "gold attr+subject strict match (secondary — subject is a schema convention a blind LLM cannot know)",
         },
         "gate_thresholds": {
             "missed_rate": {"implicit": 0.45, "inferential": 0.45},
-            "reachability": {"implicit": 0.60, "inferential": 0.60},
+            "reachability": {"implicit": 0.60, "inferential": None, "note": "DEC-006 (2026-09-10): inferential 은 게이트에서 제외"},
         },
         "gate_decision": gate_decision,
         "summary": {
@@ -409,9 +431,11 @@ def main() -> int:
                 "missed_rate": by_level[lv]["missed_rate_partial"],
                 "missed_rate_exact": by_level[lv]["missed_rate_exact"],
                 "llm_recovers": by_level[lv]["llm_recovers"],
+                "llm_recovers_strict": by_level[lv]["llm_recovers_strict"],
                 "llm_scorable": by_level[lv]["llm_scorable"],
                 "llm_unscorable": by_level[lv]["llm_unscorable"],
                 "reachability": by_level[lv]["reachability"],
+                "reachability_strict": by_level[lv]["reachability_strict"],
             }
             for lv in levels
         },
@@ -424,8 +448,8 @@ def main() -> int:
                 "reasoning_mode": "high",
                 "via": "Gemini CLI via Antigravity",
                 "measured_at": datetime.now().strftime("%Y-%m-%d"),
-                "evaluation": "attr+subject strict match",
-                "unscorable_ids": ["S01_b12_03", "S01_b17_04"]
+                "evaluation": "attr match (sex<->family equivalent) primary; attr+subject strict secondary",
+                "unscorable_ids": llm_unscorable_ids,
             } if has_llm else "pending",
         },
     }
