@@ -1,0 +1,7 @@
+{
+  "seed": 20260910,
+  "train_count": 2917,
+  "test_count": 175,
+  "blind_assignment": "data/corpus/v0/gold/blind/_assignment.json",
+  "iaa_assignment": "data/corpus/v0/gold/iaa/_assignment.json"
+}
