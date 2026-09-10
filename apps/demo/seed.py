@@ -19,7 +19,8 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
 SNS = ROOT / "apps" / "sns"
 CORPUS = ROOT / "data" / "corpus" / "v0"
 sys.path.insert(0, str(SNS))
@@ -53,8 +54,17 @@ def geo_tag_for(persona: dict) -> str | None:
     return " ".join(parts[-2:]) if len(parts) >= 2 else None
 
 
+def _title_overrides() -> dict[str, str]:
+    """데모 전용 제목 덮어쓰기 — data/titles.json. 코퍼스 제목이 반복돼 보일 때만 쓴다(단서 없는 제목만)."""
+    f = HERE / "data" / "titles.json"
+    if not f.exists():
+        return {}
+    return {k: v for k, v in json.loads(f.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+
+
 def seed(conn, pids: list[str]) -> dict[str, int]:
     counts: dict[str, int] = {}
+    titles = _title_overrides()
     # 체험 계정 — 글 0편. 심사위원이 아무 문장이나 써 봐도 그 글만으로 k 가 서게 (기존 글이 바닥을 만들지 않게)
     conn.execute(
         "INSERT OR IGNORE INTO authors(author_id,user_ref,nickname,bio,joined_at) VALUES(?,?,?,?,?)",
@@ -79,7 +89,7 @@ def seed(conn, pids: list[str]) -> dict[str, int]:
             conn.execute(
                 "INSERT OR IGNORE INTO posts(post_id,author_id,title,body,created_at,geo_tag,visibility,source)"
                 " VALUES(?,?,?,?,?,?,'public','seed')",
-                (post["post_id"], pid, texts.get("title"), texts["body"], post["created_at"], geo))
+                (post["post_id"], pid, titles.get(post["post_id"], texts.get("title")), texts["body"], post["created_at"], geo))
             caps = sorted((k for k in texts if k.startswith("photo_caption:")), key=lambda k: int(k.split(":")[1]))
             for k in caps:
                 conn.execute("INSERT OR IGNORE INTO photos(post_id,idx,caption) VALUES(?,?,?)",
