@@ -1,5 +1,5 @@
 {# 오른쪽 레일 — 피드·프로필·글·에디터 화면 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
-<div class="rail-card rail-tour rv">{% if me %}로그인이 없는 데모예요. 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»예요. 위의 「내 블로그」「점검」이 여기로 가요.{% else %}로그인이 없는 데모예요. 아직 아무 블로그도 열지 않았어요. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」 메뉴가 생겨요.{% endif %}
+<div class="rail-card rail-tour rv">{% if me %}데모라 로그인 없이 봐요. 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»예요. 위의 「내 블로그」「점검」이 여기로 가요.{% else %}데모라 로그인 없이 봐요. 아직 아무 블로그도 열지 않았어요. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」 메뉴가 생겨요.{% endif %}
   <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
 {% if me %}
 {% set st = ut_stats(me.author_id) %}

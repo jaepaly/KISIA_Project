@@ -49,6 +49,22 @@ h1,h2,h3,.serif{font-family:"Gowun Dodum","IBM Plex Sans KR",serif;font-weight:4
 .ut-nav a.chk.on{background:var(--ut-sea-soft);color:var(--ut-sea)}
 .ut-nav a.write{background:var(--ut-earth);color:#fff;box-shadow:0 4px 12px -6px rgba(138,90,43,.6)}
 .ut-nav a.write:hover{background:#734619;color:#fff;transform:translateY(-1px)}
+.ut-nav a.login{border:1px solid var(--ut-line);padding:6px 13px}
+.ut-nav a.login.on{background:var(--ut-panel2);color:var(--ut-ink)}
+
+/* ── 로그인·회원가입 — 형식만 (인증 없음) ── */
+.ut-auth{max-width:420px;margin:30px auto 0}
+.ut-auth-tabs{display:flex;gap:4px;margin-bottom:12px;background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:12px;padding:4px}
+.ut-auth-tabs a{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:13.5px;color:var(--ut-ink2);font-weight:700}
+.ut-auth-tabs a:hover{text-decoration:none}
+.ut-auth-tabs a.on{background:var(--ut-panel);color:var(--ut-earth);box-shadow:var(--ut-shadow)}
+.ut-auth-form{padding:26px 26px 22px}
+.ut-auth-logo{font-family:"Gowun Dodum",sans-serif;font-size:24px;color:var(--ut-earth);text-align:center;margin-bottom:6px}
+.ut-auth-form label:first-of-type{margin-top:8px}
+.ut-auth-form input.pw{letter-spacing:.2em}
+.ut-auth-note{font-size:12px;color:var(--ut-ink3);margin:10px 0 12px;line-height:1.5}
+.ut-auth-form button[type=submit]{width:100%}
+.ut-auth-alt{margin-top:12px;font-size:12.5px;color:var(--ut-ink3);text-align:center}
 
 /* ── 셸 — 본문 + 레일 ── */
 .ut-shell{position:relative;z-index:1;max-width:var(--shell-max);margin:0 auto;padding:0 24px;
@@ -109,7 +125,20 @@ a.ut-card:hover .ut-more{text-decoration:underline}
   radial-gradient(circle at 20% 30%,rgba(255,255,255,.55),transparent 45%),
   radial-gradient(circle at 80% 75%,rgba(255,255,255,.35),transparent 40%)}
 .ut-photo span{position:relative;z-index:1;background:rgba(255,253,248,.7);border-radius:99px;padding:4px 12px}
-.ut-cap{font-size:13px;color:var(--ut-ink2);padding-left:12px;border-left:2px solid var(--ut-line);margin:0 0 14px}
+/* 사진은 사진답게 — 큰 액자 + 그 밑에 «사진 설명» 이라고 붙인 캡션 (9/10 피드백) */
+.ut-photos{margin:18px 0 6px;display:grid;gap:14px}
+.ut-figure{margin:0;border:1px solid var(--ut-line);border-radius:14px;overflow:hidden;background:var(--ut-panel2)}
+.ut-figure .ut-photo{margin:0;border:none;border-radius:0;aspect-ratio:16/9}
+.ut-figure .ut-photo::before{content:"";position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:14px;
+  background:rgba(255,253,248,.55);box-shadow:0 8px 20px -10px rgba(60,45,25,.4)}
+.ut-figure .ut-photo .ph-no{position:absolute;left:12px;bottom:10px;font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;background:rgba(43,38,32,.6);color:#fff;border-radius:99px;padding:2px 10px}
+.ut-figure .ut-photo::after{background:
+  radial-gradient(circle at 20% 30%,rgba(255,255,255,.55),transparent 45%),
+  radial-gradient(circle at 80% 75%,rgba(255,255,255,.35),transparent 40%),
+  linear-gradient(to top,rgba(43,38,32,.08),transparent 40%)}
+.ut-figure .ut-photo::after{content:"🖼";font-size:30px;display:flex;align-items:center;justify-content:center;color:var(--ut-ink3)}
+.ut-cap{font-size:13.5px;color:var(--ut-ink2);margin:0;padding:10px 14px;border-top:1px solid var(--ut-line);background:var(--ut-panel);line-height:1.6}
+.ut-cap .cap-lab{display:inline-block;font-size:10.5px;color:var(--ut-ink3);background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:99px;padding:0 8px;margin-right:8px;vertical-align:1px;letter-spacing:.02em}
 
 .ut-comments{margin-top:16px;border-top:1px solid var(--ut-line);padding-top:14px}
 .ut-comments h3{font-size:13px;color:var(--ut-ink3);margin:0 0 10px;font-family:inherit}
@@ -140,7 +169,7 @@ a.ut-card:hover .ut-more{text-decoration:underline}
 /* ── 파도풀 진입 배너 ── */
 .ut-pado{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1.5px solid var(--ut-sea);
   background:linear-gradient(120deg,var(--ut-sea-soft),#e8f2f1);border-radius:var(--ut-radius);padding:14px 18px;margin:14px 0;position:relative;overflow:hidden}
-.ut-pado::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(12,109,104,.07)}
+.ut-pado::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(12,109,104,.07);pointer-events:none}   /* 장식이 버튼을 가리면 안 된다 (9/10 피드백) */
 .ut-pado .t{flex:1;min-width:230px;font-size:13.5px;color:var(--ut-ink2);position:relative}
 .ut-pado .t b{color:var(--ut-ink);font-size:14.5px}
 .ut-pado a.go{background:var(--ut-sea);color:#fff;border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:700;position:relative;
@@ -246,14 +275,16 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-earth
 .welcome-overlay[hidden]{display:none}
 body.welcome-open{overflow:hidden}
 @keyframes fadein{from{opacity:0}}
-.welcome{position:relative;overflow:hidden;background:linear-gradient(135deg,#fffdf8,#eef5f3 70%,#f3ecdd);border:1.5px solid var(--ut-sea);
+.welcome{position:relative;background:radial-gradient(circle at calc(100% + 60px) calc(100% + 80px),rgba(12,109,104,.09) 0 220px,transparent 221px),linear-gradient(135deg,#fffdf8,#eef5f3 70%,#f3ecdd);border:1.5px solid var(--ut-sea);
   border-radius:20px;padding:26px 28px;width:min(760px,100%);max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 30px 80px -30px rgba(0,0,0,.5);animation:popin .3s var(--ease)}
-.welcome::after{content:"";position:absolute;right:-60px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:rgba(12,109,104,.07)}
 .welcome h2{margin:0 0 6px;font-size:21px;color:var(--ut-ink)}
 .welcome h2 b{color:var(--ut-sea);font-weight:400}
-.welcome p{margin:0 0 12px;font-size:13.5px;color:var(--ut-ink2);line-height:1.65;max-width:60em}
+.welcome p{margin:0 0 12px;font-size:13.5px;color:var(--ut-ink2);line-height:1.7;max-width:46em}
+.welcome .how-lab{font-size:11.5px;color:var(--ut-sea);font-weight:700;letter-spacing:.06em;margin:2px 0 6px}
+.welcome .tour-line{font-size:12px;color:var(--ut-ink3);margin:0 0 14px;line-height:1.6}
+.welcome .tour-line .k{font-family:"IBM Plex Mono",Consolas,monospace;color:var(--ut-sea);font-weight:600}
 .welcome ol{margin:0 0 14px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.welcome li{background:rgba(255,253,248,.85);border:1px solid var(--ut-line);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--ut-ink2);line-height:1.5}
+.welcome li{background:rgba(255,253,248,.85);border:1px solid var(--ut-line);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--ut-ink2);line-height:1.55}
 .welcome li b{display:block;color:var(--ut-ink);font-size:13.5px;margin-bottom:2px}
 .welcome li .k{font-family:"IBM Plex Mono",Consolas,monospace;color:var(--ut-sea);font-weight:600}
 .welcome .bt{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative}
@@ -315,6 +346,7 @@ body.welcome-open{overflow:hidden}
   .ut-top-in{padding:9px 14px;gap:10px}
   .ut-nav{display:none}
   .ut-restart{margin-left:auto}
+  .ut-figure .ut-photo{aspect-ratio:4/3}
   .ut-shell,.ut-foot{padding:0 14px}
   .ut-wrap{margin-top:16px}
   .ut-card,.rail-card{padding:16px 16px;border-radius:14px}

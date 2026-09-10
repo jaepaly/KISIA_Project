@@ -104,6 +104,7 @@
       li.addEventListener("click", (ev) => {
         if (ev.target.closest("a")) return;
         lensOn();
+        revealMark(marks[0]);
         marks[0].scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
         marks.forEach((m) => { m.classList.remove("flash"); void m.offsetWidth; m.classList.add("flash"); });
       });
@@ -169,11 +170,86 @@
     }
   }
 
+  // ── 점검 화면의 네 걸음(탭) — 한 번에 한 카드만. 해시로 어디든 바로 갈 수 있다 ──────────
+  const TAB_NAMES = { sum: "요약", funnel: "어떻게 좁혀지나", evidence: "근거 문장", actions: "이렇게 하면 넓어져요" };
+  function tabList() { return $$(".pado-tabs a[data-tab]").map((a) => a.dataset.tab); }
+  function showTab(name, opts) {
+    opts = opts || {};
+    const tabs = tabList(); if (!tabs.length || !tabs.includes(name)) return false;
+    $$(".card[data-tab]").forEach((c) => { c.hidden = c.dataset.tab !== name; });
+    $$(".pado-tabs a[data-tab]").forEach((a) => {
+      a.classList.toggle("on", a.dataset.tab === name);
+      if (tabs.indexOf(a.dataset.tab) < tabs.indexOf(name)) a.classList.add("seen");
+    });
+    const card = $('.card[data-tab="' + name + '"]');
+    if (card) { $$(".rv", card).forEach(reveal); if (card.classList.contains("rv")) reveal(card); }
+    // 투어 말풍선 — 가리키던 곳이 다른 탭으로 숨으면 아래에 띄우고, 다시 보이면 제자리로
+    const tm = $(".tour-mark:not(.done)"), ts = $(".tour-spot");
+    if (tm && ts) { if (ts.offsetParent === null) tm.classList.add("floating"); else { tm.classList.remove("floating"); place(tm, ts); } }
+    try { history.replaceState(null, "", "#" + (card ? card.id : name)); } catch (e) {}
+    if (!opts.keepScroll) { const bar = $(".pado-tabs"); if (bar && bar.getBoundingClientRect().top < 0) bar.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" }); }
+    return true;
+  }
+  function tabOf(el) { const c = el && el.closest && el.closest(".card[data-tab]"); return c ? c.dataset.tab : null; }
+  function showTabFor(el, opts) { const t = tabOf(el); if (t && $('.card[data-tab="' + t + '"]').hidden) showTab(t, opts); }
+  window.padoShowTab = showTab;
+  function initTabs() {
+    const tabs = tabList(); if (!tabs.length) return;
+    $$(".pado-tabs a[data-tab]").forEach((a) => a.addEventListener("click", (ev) => { ev.preventDefault(); showTab(a.dataset.tab); }));
+    // 카드마다 «이전 / 다음» 줄
+    $$(".card[data-tab]").forEach((card) => {
+      const i = tabs.indexOf(card.dataset.tab);
+      const nav = document.createElement("div"); nav.className = "tab-nav";
+      nav.innerHTML = '<button type="button" class="prev"' + (i === 0 ? " disabled" : "") + '>← 이전</button>'
+        + '<span class="pos">' + (i + 1) + " / " + tabs.length + "</span>"
+        + (i < tabs.length - 1 ? '<button type="button" class="next">다음: ' + TAB_NAMES[tabs[i + 1]] + " →</button>" : '<span style="margin-left:auto">여기가 마지막이에요. 조치를 누르면 1번부터 다시 계산돼요</span>');
+      card.appendChild(nav);
+      const prev = $(".prev", nav), next = $(".next", nav);
+      prev && prev.addEventListener("click", () => showTab(tabs[i - 1]));
+      next && next.addEventListener("click", () => showTab(tabs[i + 1]));
+    });
+    // 해시로 들어오면 그 카드부터 (#actions · #act-2 · #evidence-card)
+    const h = (location.hash || "").slice(1);
+    let start = tabs[0];
+    if (h) { const el = document.getElementById(h); const t = el && (el.dataset.tab || tabOf(el)); if (t && tabs.includes(t)) start = t; }
+    showTab(start, { keepScroll: true });
+    if (h && h !== start) { const el = document.getElementById(h); el && setTimeout(() => el.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" }), 50); }
+  }
+
+  // ── 근거 문장 — 카드 접기 · 나머지 펼치기 ────────────────────────────────
+  function initEvidence() {
+    $$("[data-evi-toggle]").forEach((w) => w.addEventListener("click", (e) => { if (e.target.closest("a")) return; w.parentElement.classList.toggle("folded"); }));
+    $$("[data-evi-fold]").forEach((b) => b.addEventListener("click", () => {
+      const all = b.dataset.eviFold === "all";
+      $$("#evidence .evi").forEach((c) => c.classList.toggle("folded", all));
+      if (!all) expandEvidence();
+    }));
+    const more = $("[data-evi-more]"); more && more.addEventListener("click", expandEvidence);
+  }
+  function expandEvidence() { const ev = $("#evidence"); ev && ev.classList.remove("collapsed"); const m = $("[data-evi-more]"); m && m.remove(); }
+  function revealMark(mark) {   // 다른 탭·접힌 카드·숨긴 나머지 안의 표현으로 갈 때
+    showTabFor(mark, { keepScroll: true });
+    const card = mark.closest(".evi"); if (card) { card.classList.remove("folded"); if (card.classList.contains("extra")) expandEvidence(); }
+  }
+
+  // ── 조치 ③ 표현 바꾸기 — 후보 칩 한 줄, 고른 것만 펼친다 ──────────────────
+  function initRewriteChips() {
+    $$("[data-rw-group]").forEach((g) => {
+      const act = g.closest(".act");
+      const opts = $$("[data-rw-opt]", act);
+      const chips = $$("button[data-rw]", g);
+      const pick = (i) => { chips.forEach((c) => c.classList.toggle("on", c.dataset.rw === String(i))); opts.forEach((o) => { o.hidden = o.dataset.rwOpt !== String(i); }); };
+      chips.forEach((c) => c.addEventListener("click", () => pick(c.dataset.rw)));
+      pick(0);
+    });
+  }
+
   // ── 조치 체크리스트(레일) → 카드로 ───────────────────────────────────────
   function initActRail() {
     $$("[data-goto]").forEach((a) => a.addEventListener("click", (ev) => {
       const t = $(a.dataset.goto); if (!t) return;
       ev.preventDefault();
+      showTabFor(t, { keepScroll: true });
       t.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" });
       t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash");
     }));
@@ -209,13 +285,25 @@
       advance: "click", hint: "👆 이 버튼을 누르면 이어져요",
       onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
     { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span]", when: () => !!$("#draftSpans"),
-      title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 숫자, 그리고 「그대로 두기」가 나와요. 고르는 건 글쓴이예요.",
+      title: "⑨ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 숫자, 그리고 「그대로 두기」가 나와요. 고르는 건 글쓴이예요. 한 번 고른 표현도 다시 눌러 바꿀 수 있어요.",
+      advance: "next" },
+    { page: (p) => p === "/check-draft" || p === "/new", target: "#cmpBtn", when: () => !!$("#draftSpans") && !!$("#cmpBtn") && !$("#cmpTbl tbody tr"),
+      title: "⑩ 같은 글을 다른 사람이 올리면?", text: "파도풀은 글 한 편이 아니라 «이미 올린 글까지 합쳐서» 봐요. 그래서 같은 문장이라도 누가 올리느냐에 따라 숫자가 달라요. 눌러서 비교해 보세요.",
+      advance: "click", hint: "👆 이 버튼을 누르면 이어져요" },
+    { page: (p) => p === "/check-draft" || p === "/new", target: "#cmpTbl", when: () => !!$("#cmpTbl tbody tr"),
+      title: "⑪ 사람마다 다른 숫자", text: "체험 계정은 이 글 하나뿐이라 넓고, 글이 많은 계정은 이미 좁혀진 위에 얹혀요. 그래서 파도풀은 계정 단위로 봐요.",
       advance: "done" },
   ];
   function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
   function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
   window.padoTourStart = function () { tourSave({ step: 0 }); if (location.pathname !== "/") location.href = "/"; else renderTour(); };
-  window.padoTourReset = function () { tourSave(null); location.href = "/"; };
+  // 처음부터 — 투어 상태만이 아니라 글 데이터(끈 태그·비공개·고친 본문·새 글)도 시딩 값으로 되돌린다
+  window.padoTourReset = function () {
+    tourSave(null);
+    const f = document.createElement("form"); f.method = "post"; f.action = "/demo/reset"; f.style.display = "none";
+    document.body.appendChild(f); f.submit();
+  };
+  window.padoTourRefresh = function () { renderTour(); };   // 페이지를 안 바꾸고 화면이 바뀌었을 때(작성자 비교 표)
   window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); const h = $(".tour-hole"); h && h.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); updateWelcome(null); };
   // 첫 방문 카드 — 투어 중엔 한 줄 진행바로 접힌다 (시작을 눌렀는데 아무것도 안 바뀌면 눌린 줄 모른다)
   function updateWelcome(step) {
@@ -250,7 +338,11 @@
     if (i !== s.step) tourSave({ step: i });
     const st = TOUR[i];
     const visible = (el) => el && el.offsetParent !== null;
-    const target = $$(st.target).find(visible) || null;
+    let target = $$(st.target).find(visible) || null;
+    if (!target) {   // 다른 탭(점검의 네 걸음) 안에 있으면 그 탭을 켠다
+      const cand = $$(st.target)[0];
+      if (cand && tabOf(cand)) { showTab(tabOf(cand), { keepScroll: true }); target = $$(st.target).find(visible) || null; }
+    }
     st.onShow && st.onShow();
     const card = document.createElement("div");
     card.className = "tour-mark";
@@ -331,6 +423,9 @@
     initLinking();
     initRailWidget();
     initDecor();
+    initTabs();
+    initEvidence();
+    initRewriteChips();
     initActRail();
     renderTour();
     const follow = () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); if (c && t) { place(c, t); spotlight(t); } };

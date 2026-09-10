@@ -22,10 +22,16 @@
     <h1 class="ut-title big">{{ p.title or "(제목 없음)" }}</h1>
     <div class="ut-body">{{ p.body }}</div>
 
+    {% if photos %}
+    <div class="ut-photos">
     {% for ph in photos %}
-      <div class="ut-photo"><span>🖼 사진 {{ ph.idx + 1 }}</span></div>
-      {% if ph.caption %}<p class="ut-cap">{{ ph.caption }}</p>{% endif %}
+      <figure class="ut-figure">
+        <div class="ut-photo" data-seed="{{ p.post_id }}:{{ ph.idx }}"><span class="ph-no">사진 {{ ph.idx + 1 }} / {{ photos|length }}</span></div>
+        {% if ph.caption %}<figcaption class="ut-cap"><span class="cap-lab">사진 설명</span>{{ ph.caption }}</figcaption>{% endif %}
+      </figure>
     {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="ut-engage">
       <span class="like"><i>♥</i> 좋아요 <b>{{ eng.likes }}</b></span>

@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#f5f2ea">
   <title>{% block title %}우리뜰{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&family=Gowun+Dodum&display=swap">
+  {# 폰트는 실제로 쓰는 4면만 — 본문 400·700, 숫자용 모노 500, 제목용 고운돋움 (9/10 피드백: 안 쓰는 폰트를 너무 많이 받아왔다) #}
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&family=IBM+Plex+Mono:wght@500&family=Gowun+Dodum&display=swap">
   <link rel="stylesheet" href="/pado-static/urittle.css">
   {% block head %}{% endblock %}
 </head>
@@ -22,6 +23,7 @@
         {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}">내 블로그</a>
         <a href="/u/{{ me.user_ref }}/check" class="chk {{ 'on' if nav == 'check' }}">🌊 점검</a>{% endif %}
         <a href="/new" class="write {{ 'on' if nav == 'new' }}">✏️ 글쓰기</a>
+        <a href="/login" class="login {{ 'on' if nav == 'login' }}">로그인</a>
       </nav>
     </div>
   </header>

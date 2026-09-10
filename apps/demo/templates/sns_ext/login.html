@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ '로그인' if mode == 'login' else '회원가입' }} — 우리뜰{% endblock %}
+{% block shellclass %}no-rail{% endblock %}
+{% block rail %}{% endblock %}
+{% block content %}
+<main class="ut-wrap">
+  <section class="ut-auth">
+    <div class="ut-auth-tabs">
+      <a href="/login" class="{{ 'on' if mode == 'login' }}">로그인</a>
+      <a href="/signup" class="{{ 'on' if mode == 'signup' }}">회원가입</a>
+    </div>
+    <form method="post" action="/{{ mode }}" class="ut-card ut-auth-form">
+      <div class="ut-auth-logo">🌱 우리뜰</div>
+      {% if mode == 'signup' %}
+        <label for="nick">별명</label>
+        <input type="text" id="nick" name="nick" placeholder="이웃들에게 보일 이름" autocomplete="off">
+      {% endif %}
+      <label for="email">이메일</label>
+      <input type="text" id="email" name="email" placeholder="you@example.com" autocomplete="off">
+      <label for="pw">비밀번호</label>
+      <input type="text" id="pw" name="pw" placeholder="••••••••" autocomplete="off" class="pw">
+      <div class="ut-auth-note">데모라 계정이 실제로 만들어지지 않아요. 아무것도 안 적고 눌러도 돼요.</div>
+      <button type="submit">{{ '로그인' if mode == 'login' else '가입하고 시작하기' }}</button>
+      <div class="ut-auth-alt">
+        {% if mode == 'login' %}처음이세요? <a href="/signup">회원가입</a>{% else %}이미 계정이 있어요 <a href="/login">로그인</a>{% endif %}
+        · <a href="/">둘러보기만 할게요</a>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}

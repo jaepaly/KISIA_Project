@@ -7,21 +7,92 @@
   body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
   .pado{background:var(--panel);border:1px solid var(--line);border-radius:var(--ut-radius);
         padding:20px 22px;box-shadow:var(--ut-shadow)}
-  .pado .card{border-radius:12px;scroll-margin-top:84px}
+  .pado .card{border-radius:12px;scroll-margin-top:140px}
   .pado h3.ct,.pado .lede,.pado .funnel,.pado .evi,.pado .act{font-family:"IBM Plex Sans KR",sans-serif}
   .pado-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .pado-hd .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--sea-ink)}
   .pado-hd .by{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right;line-height:1.5}
-  .act{scroll-margin-top:84px}
-  abbr.q{text-decoration:none;border-bottom:1px dotted var(--ink3);cursor:help}
-  .hero .lab abbr.q{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:1px solid var(--ink3);border-radius:50%;font-size:10px;margin-left:4px;vertical-align:1px}
+  .act{scroll-margin-top:140px}
   @media (max-width:640px){.pado{padding:14px 14px}.pado-hd .by{margin-left:0;text-align:left}}
+
+  /* ── 점검을 네 걸음으로 — 한 화면에 다 놓으면 한참 내려야 한다 (9/10 피드백) ── */
+  .pado-tabs{position:sticky;top:60px;z-index:5;display:flex;gap:4px;background:var(--panel);padding:6px 0 10px;margin:0 0 6px;
+    border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+  .pado-tabs::-webkit-scrollbar{display:none}
+  .pado-tabs a{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-size:13px;color:var(--ink2);
+    border:1px solid transparent;white-space:nowrap;transition:background .15s,color .15s}
+  .pado-tabs a .n{width:22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;
+    font-family:"IBM Plex Mono",Consolas,monospace;font-size:11.5px;color:var(--ink3);flex:0 0 22px}
+  .pado-tabs a:hover{background:var(--panel2);text-decoration:none}
+  .pado-tabs a.on{background:var(--sea-soft);color:var(--sea-ink);font-weight:700;border-color:#bcd9d6}
+  .pado-tabs a.on .n{background:var(--sea);color:#fff;border-color:var(--sea)}
+  .pado-tabs a.seen .n{background:var(--low-soft);color:var(--low);border-color:#bfe0c8}
+  .card[data-tab][hidden]{display:none}
+  .tab-nav{display:flex;gap:10px;align-items:center;margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink3)}
+  .tab-nav .pos{font-family:"IBM Plex Mono",Consolas,monospace}
+  .tab-nav button{background:var(--panel2);color:var(--ink2);border:1px solid var(--line);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600}
+  .tab-nav button.next{margin-left:auto;background:var(--sea);color:#fff;border-color:var(--sea)}
+  .tab-nav button.next:hover{background:#0a5b57}
+  .tab-nav button[disabled]{opacity:.35;cursor:default}
+  @media (max-width:640px){.pado-tabs{top:52px}.pado-tabs a{padding:7px 9px;font-size:12px}.pado-tabs a .t{display:none}.pado-tabs a.on .t{display:inline}}
+
+  /* ── 물음표·등급·점수 — 올리자마자 설명이 뜨고 색이 바뀐다 (9/10 피드백: 뭐가 되는 건지 몰랐다) ── */
+  .tip{position:relative;cursor:help;border-bottom:1px dotted var(--ink3);transition:color .12s,border-color .12s,background .12s;border-radius:3px}
+  .tip:hover,.tip:focus{color:var(--sea-ink);border-bottom-color:var(--sea);background:var(--sea-soft);outline:none}
+  .tip::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:30;width:min(300px,80vw);background:var(--ut-ink);color:#fff;
+    font-size:12px;line-height:1.55;font-weight:400;font-family:"IBM Plex Sans KR",sans-serif;padding:9px 11px;border-radius:9px;
+    box-shadow:0 12px 30px -12px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .12s,transform .12s,visibility .12s;
+    white-space:normal;letter-spacing:0;text-align:left;pointer-events:none}
+  .tip::before{content:"";position:absolute;left:10px;top:calc(100% + 2px);border:6px solid transparent;border-bottom-color:var(--ut-ink);opacity:0;visibility:hidden;transition:opacity .12s;z-index:31}
+  .tip:hover::after,.tip:focus::after,.tip:hover::before,.tip:focus::before{opacity:1;visibility:visible;transform:none}
+  .tip.q{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border:1px solid var(--ink3);border-radius:50%;font-size:10.5px;margin-left:4px;vertical-align:1px;border-bottom-style:solid}
+  .tip.q:hover,.tip.q:focus{background:var(--sea);color:#fff;border-color:var(--sea)}
+  .hero .meta{font-size:11.5px;color:var(--ink3);display:inline-flex;gap:10px;flex-wrap:wrap;align-items:center;margin-left:6px}
+  .hero .meta .tip{padding:0 3px}
+
+  /* ── 근거 문장 — 사진은 사진답게, 설명은 «사진 설명» 이라고 붙여서 (9/10 피드백) ── */
+  .evi-fig{margin:8px 0 4px;display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:start}
+  .evi-fig .ph{aspect-ratio:4/3;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3);
+    background:linear-gradient(135deg,#efe6d4,#e3ecdf 55%,#dde8e7);text-align:center;line-height:1.3;padding:4px}
+  .evi-fig figcaption{font-size:12.5px;color:var(--ink2);white-space:pre-line;padding-top:2px}
+  .evi-fig .cap-lab{display:inline-block;font-size:10.5px;color:var(--ink3);background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:0 8px;margin-right:6px;vertical-align:1px}
+  .dchip{cursor:help}
+  .legend .dchip-i{background:var(--earth-soft);border:1px solid var(--earth)}
+  /* 카드가 많으면 접는다 */
+  .evi .w{cursor:pointer;user-select:none}
+  .evi .w .fold{margin-left:auto;font-size:11px;color:var(--ink3);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .evi .w .fold::after{content:"▾";transition:transform .15s}
+  .evi.folded .w .fold::after{transform:rotate(-90deg)}
+  .evi.folded .bd,.evi.folded .evi-fig,.evi.folded .cap{display:none}
+  .evi-more{display:block;width:100%;margin-top:8px;background:var(--panel2);color:var(--ink2);border:1px dashed var(--line);border-radius:9px;padding:9px;font-size:13px;font-weight:600}
+  .evi-more:hover{background:var(--sea-soft);color:var(--sea-ink)}
+  #evidence.collapsed .evi.extra{display:none}
+  .evi-tools{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--ink3);margin:0 0 6px}
+  .evi-tools button{background:transparent;color:var(--sea-ink);border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-size:12px;font-weight:600}
+
+  /* ── 조치 카드 — 어떤 글인지, 어떤 단서가 사라지는지 (9/10 피드백) ── */
+  .about{margin-top:10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);padding:9px 12px;font-size:12.5px;color:var(--ink2)}
+  .about .ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--ink3)}
+  .about .t{font-weight:700;color:var(--ink);margin-top:2px;font-size:13.5px}
+  .about .ex{color:var(--ink3);margin-top:2px;font-size:12px}
+  .about .cutl{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
+  .about .cutc{background:var(--hi-soft);color:var(--hi);border-radius:99px;padding:1px 9px;text-decoration:line-through}
+  .about .cutc.keep{background:var(--low-soft);color:var(--low);text-decoration:none}
+  /* 리라이트 — 후보는 칩 한 줄, 고른 것만 펼친다 (표현이 n개면 3n줄이 되던 것) */
+  .rw-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .rw-chips button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:baseline;transition:all .12s}
+  .rw-chips button small{font-weight:400;color:var(--ink3);font-size:11px}
+  .rw-chips button:hover{border-color:var(--sea);color:var(--sea-ink)}
+  .rw-chips button.on{background:var(--sea-soft);border-color:var(--sea);color:var(--sea-ink)}
+  .rwopt[hidden]{display:none}
+  .rwopt{margin-top:6px;background:var(--panel2);border-color:var(--line)}
+  .diff{font-size:13.5px;color:var(--ink2)}
 </style>
 {% endblock %}
 
 {% block rail %}
 {% if res %}
-<div class="rail-card rail-tour rv"><b>{{ a.nickname }}</b> 님의 공개 글을 파도풀이 읽은 결과예요. 위에서부터 요약, 어떻게 좁혀지는지, 근거 문장, 조치 순서로 보시면 돼요.
+<div class="rail-card rail-tour rv"><b>{{ a.nickname }}</b> 님의 공개 글을 파도풀이 읽은 결과예요. 네 걸음이에요. 요약, 어떻게 좁혀지는지, 근거 문장, 그리고 조치.
   <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
 <div class="rail-card rail-sum rv">
   <div class="rail-h"><span class="mark">🌊 파도풀 요약</span><span class="tag nosave">저장하지 않아요</span></div>
@@ -40,17 +111,17 @@
   <ul class="rail-acts">
     {% for act in res.actions %}
       <li><a href="#act-{{ loop.index }}" data-goto="#act-{{ loop.index }}">
-        <span class="n">{{ {'unpublish':'①','activity_meta':'②','rewrite':'③'}[act.action_type] }}</span>
+        <span class="n">{{ ['①','②','③','④','⑤','⑥'][loop.index0] }}</span>
         <span class="nm">{{ {'unpublish':'비공개','activity_meta':'위치태그 끄기','rewrite':'표현 바꾸기'}[act.action_type] }} · {{ act.post_id }}</span>
         <span class="kk">→ {{ '{:,}'.format(act.k) }}</span></a></li>
     {% endfor %}
   </ul>
   {% endif %}
   <ul class="rail-toc">
-    <li><a href="#sum" data-goto="#sum">요약</a></li>
-    <li><a href="#funnel" data-goto="#funnel">어떻게 좁혀지나</a></li>
-    <li><a href="#evidence-card" data-goto="#evidence-card">근거 문장</a></li>
-    <li><a href="#actions" data-goto="#actions">조치</a></li>
+    <li><a href="#sum" data-goto="#sum">1 요약</a></li>
+    <li><a href="#funnel" data-goto="#funnel">2 어떻게 좁혀지나</a></li>
+    <li><a href="#evidence-card" data-goto="#evidence-card">3 근거 문장</a></li>
+    <li><a href="#actions" data-goto="#actions">4 이렇게 하면 넓어져요</a></li>
   </ul>
 </div>
 <div class="rail-card rail-note rv d1">
@@ -78,16 +149,27 @@
 {% set k = res.k %}
 {% set nation = res.steps[0].n_after %}
 
-<div class="card" id="sum">
+<nav class="pado-tabs" aria-label="점검 단계">
+  <a href="#sum" data-tab="sum"><span class="n">1</span><span class="t">요약</span></a>
+  <a href="#funnel" data-tab="funnel"><span class="n">2</span><span class="t">어떻게 좁혀지나</span></a>
+  <a href="#evidence-card" data-tab="evidence"><span class="n">3</span><span class="t">근거 문장</span></a>
+  <a href="#actions" data-tab="actions"><span class="n">4</span><span class="t">이렇게 하면 넓어져요</span></a>
+</nav>
+
+<div class="card" id="sum" data-tab="sum">
   <div class="hero">
     <svg class="ring big {{ res.css }}" viewBox="0 0 84 84" data-risk="{{ res.risk if res.risk is not none else '' }}" data-css="{{ res.css }}" aria-label="재식별 위험 점수 {{ res.risk }}">
       <circle class="tr" cx="42" cy="42" r="36"/><circle class="pr" cx="42" cy="42" r="36" data-ring/>
       <text class="rn" x="42" y="46" text-anchor="middle" data-ring-num>0</text>
     </svg>
     <div>
-      <div class="lab">전 국민 {{ '{:,}'.format(nation) }}명 중, 이 사람일 수 있는 후보 <abbr class="q" title="후보: 이 글들이 드러낸 조건(사는 곳, 나이, 성별)에 전부 맞는 주민등록 인구 수예요. 작을수록 특정되기 쉬워요. 이름을 맞히는 게 아니라 몇 명 중 하나인지를 세요.">?</abbr></div>
+      <div class="lab">전 국민 {{ '{:,}'.format(nation) }}명 중, 이 사람일 수 있는 후보 <span class="tip q" tabindex="0" data-tip="이 글들이 드러낸 조건(사는 곳, 나이, 성별)에 전부 맞는 주민등록 인구 수예요. 작을수록 특정되기 쉬워요. 이름을 맞히는 게 아니라 «몇 명 중 하나» 인지를 세요.">?</span></div>
       <div class="big" style="color:var(--{{ res.css }})">{% if k %}<span data-count="{{ k }}">0</span><span class="u">명</span>{% else %}—{% endif %}</div>
-      <span class="lvl {{ res.css }}">{{ res.label }}</span> <span style="font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace"><abbr class="q" title="k_level: 후보 수 등급이에요. 2명 이하 VERY_HIGH, 5명 미만 HIGH, 5명 이상 ACCEPTABLE. 화면의 위험 높음/보통/낮음은 보기 쉽게 더 잘게 나눈 거예요.">k_level {{ res.k_level }}</abbr> · <abbr class="q" title="위험 점수: 후보 수를 0~100으로 옮긴 값이에요. 1명이면 100, 전 국민이면 0. 보기 쉽게 만든 숫자예요.">위험 점수 {{ res.risk }}</abbr></span>
+      <span class="lvl {{ res.css }}">{{ res.label }}</span>
+      <span class="meta">
+        <span class="tip" tabindex="0" data-tip="후보 수로 매기는 등급이에요. 2명 이하면 VERY_HIGH, 5명 미만이면 HIGH, 5명 이상이면 ACCEPTABLE. 화면의 «위험 높음·보통·낮음» 은 이걸 보기 쉽게 더 잘게 나눈 거예요.">후보 등급 <span class="mono">{{ res.k_level }}</span></span>
+        <span class="tip" tabindex="0" data-tip="후보 수를 0~100 으로 옮긴 값이에요. 1명이면 100, 전 국민이면 0. 높을수록 위험해요.">위험 점수 <span class="mono">{{ res.risk }}</span></span>
+      </span>
     </div>
   </div>
 
@@ -116,7 +198,7 @@
   <p class="lede" style="margin:8px 0 0;font-size:12px">「기권」은 단서가 없어서 추측하지 않았다는 뜻이에요. 파도풀은 어떤 항목이 드러나는지까지만 보고, 실제 값을 알아내려 하지는 않아요.</p>
 </div>
 
-<div class="card" id="funnel">
+<div class="card" id="funnel" data-tab="funnel" hidden>
   <h3 class="ct">어떻게 좁혀지나</h3>
   <p class="lede">단계마다 나오는 숫자는 행정안전부 주민등록 인구통계(읍면동, 5세 구간, 성별)에서 실제로 센 사람 수예요. 줄을 누르면 그 단서가 나온 문장으로 가요.</p>
   <ul class="funnel" data-nation="{{ nation }}">
@@ -124,7 +206,7 @@
       <li class="{{ 'abst' if s.method == 'abstain' else '' }} {{ 'final' if (loop.last and s.method != 'abstain') or (loop.index == res.steps|length - 1 and res.steps[-1].method == 'abstain') else '' }}"
           data-n="{{ s.n_after }}" {% if s.src and s.src.span_id %}data-span-link="{{ s.src.span_id }}"{% endif %}>
         <span><span class="desc">{% if s.src and s.src.channel == 'geo_tag' %}<span class="metatag">메타</span>{% endif %}{{ s.condition }}</span>
-          {% set ch = {'body':'본문','title':'제목','geo_tag':'위치태그','profile_bio':'프로필 소개'} %}<div class="src">{% if s.src and s.src.post_id %}<a href="/posts/{{ s.src.post_id }}?back={{ back }}">{{ s.src.post_id }}</a> {{ ch.get(s.src.channel, '사진 설명' if s.src.channel.startswith('photo') else s.src.channel) }}의 「{{ s.src.text }}」{% elif s.src and s.src.channel == 'flags.dialect_hits' %}{{ s.src.text.split(' · ')[:4]|join(', ') }} 같은 말투 ({{ s.src.posts[0] }} 외 {{ s.src.posts|length - 1 }}편){% elif s.method == 'abstain' %}단서가 없어서 추측하지 않았어요{% else %}전체 합계{% endif %}</div></span>
+          {% set ch = {'body':'본문','title':'제목','geo_tag':'위치태그','profile_bio':'프로필 소개'} %}<div class="src">{% if s.src and s.src.post_id %}<a href="/posts/{{ s.src.post_id }}?back={{ back }}">{{ s.src.post_id }}</a> {{ ch.get(s.src.channel, '사진 설명' if s.src.channel.startswith('photo') else s.src.channel) }}의 「{{ s.src.text }}」{% elif s.src and s.src.channel == 'flags.dialect_hits' %}🗣 {{ s.src.text.split(' · ')[:4]|join(', ') }} 같은 말투 ({{ s.src.posts[0] }} 외 {{ s.src.posts|length - 1 }}편){% elif s.method == 'abstain' %}단서가 없어서 추측하지 않았어요{% else %}전체 합계{% endif %}</div></span>
         <span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>
     {% endfor %}
     {% if delta %}{% for c in delta.cut %}<li class="cut"><span><span class="desc">{{ c }}</span><div class="src">✂ 조치로 이 단서가 사라졌어요</div></span><span class="k">—</span></li>{% endfor %}{% endif %}
@@ -136,67 +218,85 @@
   {% endif %}
 </div>
 
-<div class="card" id="evidence-card">
+<div class="card" id="evidence-card" data-tab="evidence" hidden>
   <h3 class="ct">근거 문장</h3>
-  <p class="lede">글은 원문 그대로예요. 색이 칠해진 부분이 신상이 드러나는 표현이에요. 점선은 <b>잡았지만 걸러낸</b> 표현이고요.</p>
+  <p class="lede">글은 원문 그대로예요. 색이 칠해진 부분이 신상이 드러나는 표현이에요. 점선은 <b>잡았지만 걸러낸</b> 표현이고요. 글 위의 갈색 칩은 <b>말투(사투리)</b>로 잡은 지역 단서예요.</p>
   <div class="lens-row"><span>위험 문장 표시</span><button id="lensSwitch" class="sw" role="switch" aria-checked="true" aria-label="위험 문장 표시" onclick="toggleLens(this)" style="padding:0"><i></i></button></div>
   <div class="legend" id="lensLegend">
-    <span><i style="background:var(--mark-loc)"></i>사는 곳·장소</span><span><i style="background:var(--mark-age)"></i>나이</span><span><i style="background:var(--mark-fam)"></i>가족·성별</span><span><i style="background:var(--mark-inc)"></i>소득·직업</span><span><i style="background:var(--mark-com)"></i>이동·통근</span><span><i style="border-bottom:2px dashed var(--mid);height:6px"></i>걸러낸 표현</span>
+    <span><i style="background:var(--mark-loc)"></i>사는 곳·장소</span><span><i style="background:var(--mark-age)"></i>나이</span><span><i style="background:var(--mark-fam)"></i>가족·성별</span><span><i style="background:var(--mark-inc)"></i>소득·직업</span><span><i style="background:var(--mark-com)"></i>이동·통근</span><span><i style="border-bottom:2px dashed var(--mid);height:6px"></i>걸러낸 표현</span><span><i class="dchip-i"></i>🗣 말투로 잡은 지역</span>
   </div>
-  <div id="evidence">
+  <div class="evi-tools"><span>단서가 있는 글 {{ res.evidence|length }}편</span><button type="button" data-evi-fold="all">모두 접기</button><button type="button" data-evi-fold="none">모두 펼치기</button></div>
+  <div id="evidence" class="{{ 'collapsed' if res.evidence|length > 3 }}">
     {% for c in res.evidence %}
-      <div class="evi">
-        <div class="w">{% if c.post_id.startswith('프로필') %}{{ c.post_id }}{% else %}<a href="/posts/{{ c.post_id }}?back={{ back }}">{{ c.post_id }}</a>{% endif %}
-          {% if c.geo_tag %}<span class="geochip">📍 {{ c.geo_tag }}</span>{% endif %}{% for d in c.dialect %}<span class="dchip">{{ d }}</span>{% endfor %}
-          <span style="margin-left:auto">{{ c.n_spans }}개 단서</span></div>
+      <div class="evi {{ 'extra' if loop.index > 3 }}">
+        <div class="w" data-evi-toggle>{% if c.post_id.startswith('프로필') %}{{ c.post_id }}{% else %}<a href="/posts/{{ c.post_id }}?back={{ back }}">{{ c.post_id }}</a>{% endif %}
+          {% if c.geo_tag %}<span class="geochip">📍 {{ c.geo_tag }}</span>{% endif %}{% for d in c.dialect %}<span class="dchip" title="말투(사투리)에서 지역이 드러나요. 「{{ d }}」 는 특정 지역에서 주로 쓰는 표현이에요">🗣 {{ d }}</span>{% endfor %}
+          <span class="fold">{{ c.n_spans }}개 단서</span></div>
         {% for ch in c.channels %}
           {% if ch.text_id == 'title' %}<div class="bd" style="font-weight:700;color:var(--ink)">{{ ch.html|safe }}</div>
-          {% elif ch.text_id.startswith('photo_caption') %}<div class="cap">📷 {{ ch.html|safe }}</div>
+          {% elif ch.text_id.startswith('photo_caption') %}<figure class="evi-fig"><div class="ph">🖼 사진 {{ ch.text_id.split(':')[1]|int + 1 }}</div><figcaption><span class="cap-lab">사진 설명</span>{{ ch.html|safe }}</figcaption></figure>
           {% else %}<div class="bd">{{ ch.html|safe }}</div>{% endif %}
         {% endfor %}
       </div>
     {% endfor %}
   </div>
+  {% if res.evidence|length > 3 %}<button type="button" class="evi-more" data-evi-more>나머지 {{ res.evidence|length - 3 }}편 펼치기 ▾</button>{% endif %}
 </div>
 
-<div class="card" id="actions">
+<div class="card" id="actions" data-tab="actions" hidden>
   <h3 class="ct">이렇게 하면 넓어져요</h3>
   <p class="lede">부담이 적은 것부터 놓았어요. 전부 할 필요는 없어요. 옆의 숫자는 그 조치를 한 상태로 다시 센 값이에요. 파도풀은 권하기만 하고, <b>누르는 건 우리뜰에서 당신이</b> 해요.</p>
-  {% set names = {'unpublish': '① 이 글만 비공개', 'activity_meta': '② 위치태그 끄기', 'rewrite': '③ 표현만 바꾸기'} %}
+  {% set names = {'unpublish': '이 글만 비공개', 'activity_meta': '위치태그 끄기', 'rewrite': '표현만 바꾸기'} %}
   {% set sure = {'highest': '가장 확실', 'high': '확실', 'medium': '잔존 단서 가능'} %}
   {% for act in res.actions %}
     <div class="act" id="act-{{ loop.index }}">
-      <div class="head"><span class="nm">{{ names[act.action_type] }}</span>
+      <div class="head"><span class="nm">{{ ['①','②','③','④','⑤','⑥'][loop.index0] }} {{ names[act.action_type] }}</span>
         <span class="pill b-{{ {'low':'low','medium':'mid','high':'hi'}[act.burden] }}">부담 {{ {'low':'낮음','medium':'중간','high':'높음 · 글의 뼈대'}[act.burden] }}</span>
         <span class="pill sure">{{ sure[act.certainty] }}</span>
-        <span class="no"><a href="/posts/{{ act.post_id }}?back={{ back }}">{{ act.post_id }}</a>{% if act.action_type == 'activity_meta' %} · geo_tag{% endif %}</span></div>
+        <span class="no"><a href="/posts/{{ act.post_id }}?back={{ back }}">{{ act.post_id }}</a>{% if act.action_type == 'activity_meta' %} · 위치태그{% endif %}</span></div>
       <div class="body">{{ act.rationale }}</div>
       <div class="delta">이것만 하면 {{ '{:,}'.format(k) }} → <b><span data-count="{{ act.k }}" data-from="{{ k }}">{{ '{:,}'.format(act.k) }}</span>명</b>, 위의 조치까지 같이 하면 <b>{{ '{:,}'.format(act.k_cum) }}명</b></div>
 
       {% if act.action_type == 'rewrite' and act.span_id in res.rewrites %}
         {% set cands = res.rewrites[act.span_id] %}
-        <div class="diff" style="margin-top:8px"><del>{{ cands[0].sentence }}</del></div>
+        {% set parts = cands[0].sentence.split(cands[0].span_text, 1) %}
+        <div class="diff" style="margin-top:8px">{{ parts[0] }}<del>{{ cands[0].span_text }}</del>{{ parts[1] if parts|length > 1 else '' }}</div>
+        <div class="rw-chips" data-rw-group>
+          {% for c in cands %}<button type="button" data-rw="{{ loop.index0 }}">「{{ c.suggestion or '지운다' }}」<small>{{ c.note }}</small></button>{% endfor %}
+        </div>
         {% for c in cands %}
-          <form method="post" action="/posts/{{ act.post_id }}/edit" class="rwopt">
+          <form method="post" action="/posts/{{ act.post_id }}/edit" class="rwopt" data-rw-opt="{{ loop.index0 }}" hidden>
             <input type="hidden" name="from" value="padopool"><input type="hidden" name="back" value="{{ back }}">
             <input type="hidden" name="note" value="{{ names[act.action_type] }} · 후보 {{ loop.index }} 「{{ c.suggestion }}」 ({{ c.note }})">
             <input type="hidden" name="{{ c.field }}" value="{{ c.new_full }}">
-            <span><span class="cand">「{{ c.suggestion }}」</span> <span class="nt">{{ c.note }}</span><div class="nt" style="color:var(--ink2)">→ {{ c.new_sentence }}</div></span>
+            <span><span class="nt" style="color:var(--ink2)">→ {{ c.new_sentence }}</span></span>
             <span class="sim" title="원문과 얼마나 비슷한지 글자 단위로 잰 값이에요">유사도 {{ '%.2f'|format(c.similarity) }}</span>
             <button class="btn-apply" type="submit">이 표현으로 고치기 →</button>
           </form>
         {% endfor %}
-        <div class="nt" style="font-size:12px;color:var(--ink3);margin-top:4px">말투는 두고 드러나는 정보만 바꿔요. 안전할수록 원문에서 멀어져요(유사도가 낮아져요). 수정 화면에서 직접 고쳐 써도 돼요.</div>
+        <div class="nt" style="font-size:12px;color:var(--ink3);margin-top:6px">말투는 두고 드러나는 정보만 바꿔요. 안전할수록 원문에서 멀어져요(유사도가 낮아져요). 수정 화면에서 직접 고쳐 써도 돼요.</div>
       {% elif act.action_type == 'unpublish' %}
+        <div class="about">
+          <div class="ttl">🔒 비공개할 글 · <a href="/posts/{{ act.post_id }}?back={{ back }}">{{ act.post_id }}</a></div>
+          <div class="t">「{{ act.post.title or '(제목 없음)' }}」</div>
+          <div class="ex">{{ act.post.excerpt }}</div>
+          <div class="cutl">이 글을 내리면 사라지는 단서
+            {% if act.cut %}{% for c in act.cut %}<span class="cutc">{{ c }}</span>{% endfor %}{% else %}<span class="cutc keep">같은 단서가 다른 글에도 있어서 표에서 사라지진 않고, 후보 수만 넓어져요</span>{% endif %}</div>
+        </div>
         <form class="go" method="post" action="/posts/{{ act.post_id }}/visibility"><input type="hidden" name="back" value="{{ back }}">
           <button class="btn-apply" type="submit">🔒 이 글 비공개로</button><span style="font-size:12px;color:var(--ink3)">비공개는 삭제가 아니에요. 언제든 되돌릴 수 있어요.</span></form>
       {% else %}
+        <div class="about">
+          <div class="ttl">📍 위치태그가 붙은 글 · <a href="/posts/{{ act.post_id }}?back={{ back }}">{{ act.post_id }}</a>{% if act.post.geo_tag %}<span class="geochip">📍 {{ act.post.geo_tag }}</span>{% endif %}</div>
+          <div class="t">「{{ act.post.title or '(제목 없음)' }}」</div>
+          <div class="ex">{{ act.post.excerpt }}</div>
+        </div>
         <form class="go" method="post" action="/posts/{{ act.post_id }}/geo_tag"><input type="hidden" name="back" value="{{ back }}">
           <button class="btn-apply" type="submit">📍 위치태그 지우기</button><span style="font-size:12px;color:var(--ink3)">본문에는 없는 정보라 글만 읽는 검사기는 놓쳐요. 글을 안 고치고도 가장 크게 넓어지는 조치예요.</span></form>
       {% endif %}
     </div>
   {% endfor %}
-  <div class="except">④ 삭제를 권하는 글은 <b>{{ res.exceptional|length }}건</b>이에요. 표현을 바꿔서 해결되지 않는 글이 없어서 추천에 넣지 않았어요. 삭제는 되돌릴 수 없으니 마지막 수단이에요.</div>
+  <div class="except">삭제를 권하는 글은 <b>{{ res.exceptional|length }}건</b>이에요. 표현을 바꿔서 해결되지 않는 글이 없어서 추천에 넣지 않았어요. 삭제는 되돌릴 수 없으니 마지막 수단이에요.</div>
   <div class="boundary"><b>파도풀은 제안까지만 해요.</b> 전부 하면 후보 <b>{{ '{:,}'.format(res.projected_k) }}명</b>, 위험 점수 {{ res.projected.current_risk|int }} → <b>{{ res.projected.projected_risk|int }}</b>. 조치를 누르면 이 화면이 다시 계산돼요.</div>
   <div class="actions"><a class="btn btn-ghost" href="/u/{{ a.user_ref }}/check">다시 점검</a></div>
 </div>

@@ -22,14 +22,39 @@
   .floor .alt{display:block;margin-top:3px;color:var(--ink3)}
   .editor-tip{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink3);margin-top:8px}
   .editor-tip .cnt{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace}
+  .ba-note{font-size:12.5px;color:var(--ink2);margin:-4px 0 10px;padding:8px 12px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);line-height:1.55}
+  .ba-note b{color:var(--ink)}
+  .ba-note .lo{color:var(--hi);font-weight:700}.ba-note .hi{color:var(--low);font-weight:700}
   @media (max-width:640px){.before-after{grid-template-columns:1fr}.before-after .arrow{text-align:center;transform:rotate(90deg)}}
+  /* 같은 글, 다른 작성자 — 계정마다 숫자가 다르다는 것을 한 표로 */
+  .cmp{margin-top:14px;border:1px dashed var(--line);border-radius:10px;padding:12px 14px;background:var(--panel2)}
+  .cmp-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink2)}
+  .cmp-h b{color:var(--ink)}
+  .cmp-h button{margin-left:auto;background:var(--sea);color:#fff;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700}
+  .cmp-h button:disabled{opacity:.6}
+  .cmp table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+  .cmp th{text-align:left;font-weight:400;font-size:11.5px;color:var(--ink3);padding:4px 8px;border-bottom:1px solid var(--line)}
+  .cmp td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .cmp tr:last-child td{border-bottom:none}
+  .cmp td.n{font-family:"IBM Plex Mono",Consolas,monospace;text-align:right;font-variant-numeric:tabular-nums}
+  .cmp td.n.after{font-weight:600}
+  .cmp tr.me td{background:var(--sea-soft)}
+  .cmp .lvl{font-size:11.5px;font-weight:700;border-radius:99px;padding:1px 8px}
+  .cmp .lvl.hi{background:var(--hi-soft);color:var(--hi)}.cmp .lvl.mid{background:var(--mid-soft);color:var(--mid)}.cmp .lvl.low{background:var(--low-soft);color:var(--low)}
+  .cmp .bar{display:block;height:5px;border-radius:99px;background:linear-gradient(90deg,var(--sea),#6fb5b0);margin-top:4px;transition:width .8s var(--ease)}
+  .cmp .note{font-size:12px;color:var(--ink3);margin-top:8px}
+  .cmp tr.loading td{color:var(--ink3)}
 
   /* 색칠된 표현을 누르면 후보가 뜬다 */
   .pado-panel .evi mark[data-span]{cursor:pointer;border-bottom:2px solid rgba(12,109,104,.45);transition:filter .15s,box-shadow .15s}
   .pado-panel .evi mark[data-span]:hover{filter:saturate(1.4) brightness(.97);box-shadow:0 0 0 2px var(--sea-soft)}
   .pado-panel .evi mark.open{box-shadow:0 0 0 2px var(--sea)}
-  .pado-panel .evi .fixed{background:var(--low-soft);color:var(--low);border-radius:3px;padding:0 3px;border-bottom:2px solid var(--low);font-weight:700}
+  .pado-panel .evi .fixed{background:var(--low-soft);color:var(--low);border-radius:3px;padding:0 3px;border-bottom:2px solid var(--low);font-weight:700;cursor:pointer;transition:box-shadow .15s}
   .pado-panel .evi .fixed::after{content:" ✓";font-size:11px}
+  .pado-panel .evi .fixed:hover{box-shadow:0 0 0 2px var(--low-soft)}
+  .pado-panel .evi .fixed.open{box-shadow:0 0 0 2px var(--low)}
+  .rw-pop li.restore button .n{color:var(--ink3)}
+  .rw-pop li.restore button .t{font-weight:400;color:var(--ink2)}
   .rw-hint{font-size:12.5px;color:var(--ink2);margin:6px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .rw-hint .tap{display:inline-flex;align-items:center;gap:4px;background:var(--sea-soft);color:var(--sea-ink);border-radius:99px;padding:1px 9px;font-size:11.5px;font-weight:700}
   .rw-hint .fixedn{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace;color:var(--low);font-weight:600}
@@ -96,6 +121,7 @@
         <div class="arrow">→</div>
         <div class="b after {{ 'narrow' if check.narrows }}"><div class="n">{% if af.k %}<span data-count="{{ af.k }}" data-from="{{ b.k or af.k }}">{{ '{:,}'.format(af.k) }}</span>{% else %}—{% endif %}</div><div class="l">이 글을 올리면, {{ af.label }}</div></div>
       </div>
+      <div class="ba-note">숫자는 <b>«나일 수 있는 사람 수»</b>예요. <span class="hi">클수록 안전</span>하고, <span class="lo">작을수록 특정되기 쉬워요</span>. 이름을 맞히는 게 아니라 «몇 명 중 하나» 인지를 실제 주민등록 인구로 세요.</div>
       <div class="riskmeta">
         <div class="row"><span>이 글에서 찾은 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
       </div>
@@ -127,6 +153,11 @@
       {% if check.draft.traps %}
         <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">{{ t.why }}</span></li>{% endfor %}</ul></div>
       {% endif %}
+      <div class="cmp" id="cmpBox">
+        <div class="cmp-h"><b>같은 글을 다른 사람이 올리면?</b><span>이미 올린 글이 다르면 같은 문장이라도 결과가 달라요.</span><button type="button" id="cmpBtn">작성자별로 비교하기</button></div>
+        <table id="cmpTbl" hidden><thead><tr><th>작성자</th><th style="text-align:right">지금</th><th style="text-align:right">이 글을 올리면</th><th></th></tr></thead><tbody></tbody></table>
+        <div class="note" id="cmpNote" hidden>체험 계정은 이 글 하나뿐이라 넓고, 글이 많은 계정은 이미 좁혀진 위에 얹혀요. 파도풀이 글 한 편이 아니라 계정 단위로 보는 이유예요.</div>
+      </div>
       <p class="lede" style="font-size:12px;margin:10px 0 0">점검은 <b>다 쓴 뒤에 한 번</b> 해요. 파도풀은 이 글을 저장하지 않아요.</p>
     </div>
   {% endif %}
@@ -181,7 +212,8 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
   let fixed=0, pop=null;
 
   function adjust(field,pos){return (shifts[field]||[]).reduce((p,s)=>p+(s.at<pos?s.delta:0),pos)}
-  function replaceIn(field,s,cand){
+  function replaceIn(field,s,cand,cur){
+    cur=cur==null?s.text:cur;
     const el=fields[field](); if(!el) return false;
     let v=el.value, st=s.start, en=s.end, lineOff=0;
     if(s.text_id.startsWith('photo_caption')){   // 캡션은 줄 단위 — 그 줄의 시작 오프셋을 더한다
@@ -189,20 +221,30 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
       for(let j=0;j<i&&j<lines.length;j++) lineOff+=lines[j].length+1;
     }
     st=adjust(field,st+lineOff); en=adjust(field,en+lineOff);
-    if(v.slice(st,en)!==s.text){ const i=v.indexOf(s.text); if(i<0) return false; st=i; en=i+s.text.length; }
+    if(v.slice(st,st+cur.length)===cur){ en=st+cur.length; }
+    else { const i=v.indexOf(cur); if(i<0) return false; st=i; en=i+cur.length; }
     el.value=v.slice(0,st)+cand+v.slice(en);
     (shifts[field]=shifts[field]||[]).push({at:st,delta:cand.length-(en-st)});
     el.dispatchEvent(new Event('input'));
     return true;
   }
-  function close(){ if(pop){pop.remove();pop=null;} document.querySelectorAll('#draftPreview mark.open').forEach(m=>m.classList.remove('open')); }
+  function close(){ if(pop){pop.remove();pop=null;} document.querySelectorAll('#draftPreview .open').forEach(m=>m.classList.remove('open')); }
   function pick(mark,s,c){
     const field=s.text_id==='body'?'body':(s.text_id==='title'?'title':'captions');
-    if(!replaceIn(field,s,c.text)) return;
-    const f=document.createElement('span'); f.className='fixed'; f.textContent=c.text||'(삭제)'; f.title='원래 표현: 「'+s.text+'」';
-    if(s.particle){ const nx=mark.nextSibling; if(nx&&nx.nodeType===3&&nx.textContent.startsWith(s.particle)) nx.textContent=nx.textContent.slice(s.particle.length); }
-    mark.replaceWith(f);
-    fixed++; const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=false; fc.textContent='고친 표현 '+fixed+'개';}
+    const cur=mark.dataset.cur!=null?mark.dataset.cur:s.text;
+    const restoring=c.restore===true;
+    if(!replaceIn(field,s,c.text,cur)) return;
+    if(restoring){   // 원래 표현으로 — 다시 색칠된 표현이 된다
+      const m=document.createElement('mark'); m.dataset.span=s.span_id; m.className=mark.dataset.cls||''; m.textContent=s.text;
+      mark.replaceWith(m); fixed=Math.max(0,fixed-1);
+    } else {
+      const f=document.createElement('span'); f.className='fixed'; f.textContent=c.text||'(삭제)'; f.title='원래 표현: 「'+s.text+'」 · 눌러서 다시 고를 수 있어요';
+      f.dataset.span=s.span_id; f.dataset.cur=c.text; f.dataset.cls=mark.dataset.cls||mark.className.replace(/\b(open|ack|hot|flash)\b/g,'').trim();
+      if(s.particle&&mark.tagName==='MARK'){ const nx=mark.nextSibling; if(nx&&nx.nodeType===3&&nx.textContent.startsWith(s.particle)) nx.textContent=nx.textContent.slice(s.particle.length); }
+      mark.replaceWith(f);
+      if(mark.tagName==='MARK') fixed++;
+    }
+    const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=fixed===0; fc.textContent='고친 표현 '+fixed+'개';}
     const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 고친 글로 다시 점검';}
     close();
   }
@@ -240,12 +282,15 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
           +'</span></div>':'')
       +'</li>';
     const widen=s.candidates.filter(c=>c.kind==='widen'), erase=s.candidates.filter(c=>c.kind!=='widen');
-    pop.innerHTML='<div class="hd"><b>「'+s.text+'」</b><span>'+s.type+' · '+s.level+'</span>'+(afterK?'<span class="kk">지금 '+fmt(afterK)+'명</span>':'')+'</div>'
+    const isFixed=mark.classList.contains('fixed');
+    pop.innerHTML='<div class="hd"><b>「'+s.text+'」</b><span>'+s.type+' · '+s.level+(isFixed?' · 지금은 「'+(mark.dataset.cur||'(삭제)')+'」':'')+'</span>'+(afterK?'<span class="kk">지금 '+fmt(afterK)+'명</span>':'')+'</div>'
+      +(isFixed?'<ul><li class="restore"><button type="button" data-restore><span class="n">↩</span><span class="t">원래 표현 「'+s.text+'」으로 되돌리기</span><span class="kv"></span></button></li></ul>':'')
       +(hasWiden?'<div class="grp">↗ 지우지 않고 넓히기 (뜻은 남기고 숫자만 늘려요)</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
       +'<div class="grp">✕ '+(hasWiden?'아예 지우기':'다르게 쓰기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>'
-      +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 그대로 둬도 돼요. 대신 나일 수 있는 사람이 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 줄어드는 건 감수하는 선택이에요.</span></div>'
+      +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 그대로 둬도 돼요. 대신 나일 수 있는 사람이 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 줄어들 수 있어요.</span></div>'
       +'<div class="ft"><span>말투는 두고 드러나는 정보만 바꿔요</span><button type="button" data-self>직접 고치기</button><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
     pop.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>pick(mark,s,s.candidates[+b.dataset.i])));
+    const rs=pop.querySelector('[data-restore]'); rs&&rs.addEventListener('click',()=>pick(mark,s,{text:s.text,restore:true}));
     pop.querySelectorAll('button[data-untag]').forEach(b=>b.addEventListener('click',()=>untag(b)));
     pop.querySelector('[data-keep]').addEventListener('click',()=>keep(mark,s));
     pop.querySelector('[data-x]').addEventListener('click',close);
@@ -254,9 +299,34 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
     const r=mark.getBoundingClientRect(); const w=pop.offsetWidth;
     pop.style.top=(scrollY+r.bottom+6)+'px'; pop.style.left=Math.max(8,Math.min(scrollX+r.left, scrollX+innerWidth-w-8))+'px';
   }
-  document.getElementById('draftPreview').addEventListener('click',e=>{ const m=e.target.closest('mark[data-span]'); if(!m) return; if(m.classList.contains('x')) return; e.preventDefault(); if(m.classList.contains('open')) close(); else open(m); });
-  document.addEventListener('click',e=>{ if(pop&&!pop.contains(e.target)&&!e.target.closest('mark[data-span]')) close(); });
+  document.getElementById('draftPreview').addEventListener('click',e=>{ const m=e.target.closest('mark[data-span],.fixed[data-span]'); if(!m) return; if(m.classList.contains('x')) return; e.preventDefault(); if(m.classList.contains('open')) close(); else open(m); });
+  document.addEventListener('click',e=>{ if(pop&&!pop.contains(e.target)&&!e.target.closest('mark[data-span],.fixed[data-span]')) close(); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+
+  /* 같은 초안을 작성자마다 점검 — 순서대로 한 명씩 (파도풀 한 번에 0.7초쯤) */
+  const cmpBtn=document.getElementById('cmpBtn');
+  cmpBtn&&cmpBtn.addEventListener('click',async()=>{
+    const sel=document.getElementById('author_id'); const tbl=document.getElementById('cmpTbl'); const tb=tbl.querySelector('tbody');
+    const body={title:document.getElementById('title').value, body:document.getElementById('body').value, geo_tag:document.getElementById('geo_tag').value, captions:document.getElementById('captions').value};
+    cmpBtn.disabled=true; cmpBtn.textContent='세는 중…'; tb.innerHTML=''; tbl.hidden=false;
+    const opts=Array.from(sel.options); let maxK=1;
+    for(const o of opts){
+      const tr=document.createElement('tr'); tr.className='loading'+(o.value===sel.value?' me':''); tr.innerHTML='<td>'+o.textContent.split(' (')[0]+'</td><td class="n">…</td><td class="n after">…</td><td></td>'; tb.appendChild(tr);
+      try{
+        const r=await fetch('/check-draft.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({author_id:o.value,...body})});
+        const d=await r.json(); if(d.error) throw d.error;
+        maxK=Math.max(maxK,d.after_k||1);
+        tr.className=o.value===sel.value?'me':'';
+        tr.innerHTML='<td><b>'+d.nickname+'</b><br><small style="color:var(--ink3)">공개 글 '+d.n_posts+'편'+(o.value===sel.value?' · 지금 고른 작성자':'')+'</small></td>'
+          +'<td class="n">'+(d.before_k?fmt(d.before_k):'—')+'</td><td class="n after" data-k="'+(d.after_k||0)+'">'+(d.after_k?fmt(d.after_k):'—')+'<span class="bar" style="width:0"></span></td>'
+          +'<td><span class="lvl '+d.css+'">'+d.label+'</span></td>';
+      }catch(e){ tr.className=''; tr.innerHTML='<td>'+o.textContent.split(' (')[0]+'</td><td colspan="3" style="color:var(--ink3)">파도풀에 연결하지 못했어요</td>'; }
+    }
+    tb.querySelectorAll('td.after').forEach(td=>{ const k=+td.dataset.k||0; const w=k>0?Math.max(2,100*Math.log10(k+1)/Math.log10(maxK+1)):2; requestAnimationFrame(()=>{ td.querySelector('.bar').style.width=w+'%'; }); });
+    document.getElementById('cmpNote').hidden=false;
+    cmpBtn.textContent='다시 비교'; cmpBtn.disabled=false;
+    if(window.padoTourRefresh) window.padoTourRefresh();
+  });
 })();
 </script>
 {% endblock %}

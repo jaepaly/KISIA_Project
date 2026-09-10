@@ -22,6 +22,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import os
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -29,6 +30,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SNS = HERE.parent / "sns"
 sys.path.insert(0, str(SNS))          # apps/sns/app.py 가 `from db import ...` 를 쓴다
+sys.path.insert(0, str(HERE))         # /demo/reset 이 seed.py 를 import 한다
 
 import jinja2  # noqa: E402
 import requests  # noqa: E402
@@ -62,6 +64,16 @@ def pado_static(fname: str):
 
 # 외부에 잠깐 노출할 때(터널·임시 배포) 링크 유출 대비 — DEMO_ACCESS_KEY 가 있으면 ?key= 로 한 번 들어와야 한다(쿠키로 기억)
 ACCESS_KEY = os.getenv("DEMO_ACCESS_KEY", "")
+
+
+_ACTION_PATH = re.compile(r"^/posts/[^/]+/(visibility|geo_tag|body)$")
+
+
+@app.before_request
+def _mark_action():
+    """조치 라우트(비공개는 apps/sns 원본)를 지나면 표시해 둔다 — 점검 화면이 «방금 조치했다» 를 알 수 있게."""
+    if request.method == "POST" and _ACTION_PATH.match(request.path):
+        session["acted"] = True
 
 
 @app.before_request
@@ -153,7 +165,7 @@ def _chrome():
         me = db().execute("SELECT a.* FROM authors a JOIN posts p ON p.author_id = a.author_id"
                           " WHERE p.post_id = ?", (va["post_id"],)).fetchone()
     # 홈·글쓰기처럼 아무 블로그도 안 보고 있으면 «나» 는 없다 — 마당일기를 기본값으로 두면 심사자가 헷갈린다
-    nav = {"index": "home", "profile": "blog", "check": "check", "new": "new"}.get(request.endpoint or "")
+    nav = {"index": "home", "profile": "blog", "check": "check", "new": "new", "login": "login", "signup": "login"}.get(request.endpoint or "")
     neighbors = db().execute("SELECT * FROM authors WHERE author_id != 'GUEST' ORDER BY author_id").fetchall()
     n_posts = {r["author_id"]: r["n"] for r in
                db().execute("SELECT author_id, COUNT(*) n FROM posts WHERE visibility = 'public' GROUP BY author_id")}
@@ -220,8 +232,10 @@ def check(user_ref: str):
     key = f"chk:{user_ref}"
     prev = session.get(key)
     delta = None
+    # «조치 직후» 에만 변화 배너 — 시딩을 되돌린 뒤 옛 k 가 쿠키에 남아 있어도 배너가 뜨지 않게 (투어 6단계 오작동)
+    acted = session.pop("acted", False)
     if res:
-        if prev and prev.get("k") != res["k"]:
+        if acted and prev and prev.get("k") != res["k"]:
             now = {s["condition"] for s in res["steps"]}
             delta = {"k": prev["k"], "risk": prev["risk"], "cut": [c for c in prev.get("steps", []) if c not in now]}
         session[key] = {"k": res["k"], "risk": res["risk"],
@@ -279,6 +293,58 @@ def check_draft():
     res, err = pado("/api/check", payload)
     return render_template("new_ext.html", authors=authors, now=draft["created_at"] or datetime.now(KST).strftime("%Y-%m-%dT%H:%M"),
                            draft=draft, check=res, err=err, author=a)
+
+
+@app.post("/check-draft.json")
+def check_draft_json():
+    """같은 초안을 «다른 작성자» 로 점검했을 때의 숫자만 — 에디터의 「작성자별로 비교」 가 부른다.
+    같은 글이라도 이미 올린 글이 다르면 결과가 다르다는 것을 보여주는 용도 (9/10 피드백)."""
+    from flask import jsonify
+    f = request.get_json(silent=True) or {}
+    a = db().execute("SELECT * FROM authors WHERE author_id = ?", (f.get("author_id"),)).fetchone()
+    if a is None:
+        abort(400)
+    export = export_json(a["user_ref"]) or {"schema_version": "1.0", "user_ref": a["user_ref"], "nickname": a["nickname"],
+                                             "profile_bio": a["bio"], "posts": []}
+    payload = {"export": export, "draft": {
+        "title": f.get("title") or None, "body": f.get("body") or "",
+        "photos": [{"caption": c.strip()} for c in (f.get("captions") or "").splitlines() if c.strip()],
+        "activity_meta": {"geo_tag": f.get("geo_tag") or None}}}
+    res, err = pado("/api/check", payload)
+    if not res:
+        return jsonify({"error": err}), 502
+    b, af = res["before"], res["after"]
+    return jsonify({"author_id": a["author_id"], "nickname": a["nickname"], "n_posts": b["n_posts"],
+                    "before_k": b["k"], "after_k": af["k"], "label": af["label"], "css": af["css"],
+                    "n_spans": res["draft"]["n_spans"]})
+
+
+# ── 처음부터 — 투어만이 아니라 글 데이터도 시딩 값으로 되돌린다 (9/10 피드백) ────────
+@app.post("/demo/reset")
+def demo_reset():
+    """위치태그 끄기·비공개·본문 수정·새 글을 전부 되돌린다. seed.py 와 같은 코드를 같은 프로세스에서 돌린다."""
+    import seed as seeder   # apps/demo/seed.py — HERE 가 sys.path 에 있다
+    c = db()
+    c.executescript("DELETE FROM photos; DELETE FROM posts; DELETE FROM authors;")
+    c.commit()
+    seeder.seed(c, seeder.DEFAULT_PERSONAS)
+    session.clear()          # 지난 점검 k(delta 배너) 도 지운다
+    return redirect("/")
+
+
+# ── 로그인·회원가입 — 형식만 있는 화면. 실제 인증은 없다 (9/10 피드백: 있어 보이면 좋겠다) ──
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        return redirect("/")
+    return render_template("login.html", mode="login")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        return redirect("/")
+    return render_template("login.html", mode="signup")
 
 
 # ── 조치 ②③ — 플랫폼에서 실행한다 ──────────────────────────────────────────
