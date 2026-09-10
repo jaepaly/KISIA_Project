@@ -54,6 +54,10 @@
   .pado-panel .evi .fixed:hover{box-shadow:0 0 0 2px var(--low-soft)}
   .pado-panel .evi .fixed.open{box-shadow:0 0 0 2px var(--low)}
   .rw-pop li.restore button .n{color:var(--ink3)}
+  .rw-pop li.self button .n{color:var(--earth)}
+  .rw-pop li.self button .t{font-weight:600;color:var(--ink2)}
+  .rw-hint .self-edit{margin-left:auto;padding:4px 11px;font-size:12px;font-weight:700;background:var(--panel);border:1px solid var(--line);color:var(--earth);transition:box-shadow .2s,background .2s}
+  .rw-hint .self-edit.on{background:var(--earth-soft);box-shadow:0 0 0 3px rgba(138,90,43,.18)}
   .rw-pop li.restore button .t{font-weight:400;color:var(--ink2)}
   .rw-hint{font-size:12.5px;color:var(--ink2);margin:6px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .rw-hint .tap{display:inline-flex;align-items:center;gap:4px;background:var(--sea-soft);color:var(--sea-ink);border-radius:99px;padding:1px 9px;font-size:11.5px;font-weight:700}
@@ -140,6 +144,7 @@
       {% endif %}
       {% if check.draft.n_spans %}
       <div class="rw-hint"><span class="tap">👆 색칠한 부분을 누르면</span> 지명과 나이는 <b>지우지 않고 넓히는 안</b>(김해시 진영읍 → 김해시 → 경남)부터 보여주고, 그다음에 바꾸거나 지우는 안이 나와요. 각각 몇 명이 되는지 실제로 세요. 마음에 안 들면 <b>그대로 두기</b>도 돼요. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
+      <div class="rw-hint" style="margin-top:4px"><span>아래 미리보기는 보기용이에요. 글자를 누르면 <b>본문 칸의 그 자리</b>로 가요.</span><button type="button" class="ghost self-edit" id="editHere" onclick="(function(){var t=document.getElementById('body');t.focus();t.scrollIntoView({block:'center',behavior:'smooth'})})()">✎ 본문에서 직접 고치기</button></div>
       {% endif %}
       <div id="draftPreview">
       {% for c in check.draft.channels %}
@@ -243,10 +248,45 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
       if(s.particle&&mark.tagName==='MARK'){ const nx=mark.nextSibling; if(nx&&nx.nodeType===3&&nx.textContent.startsWith(s.particle)) nx.textContent=nx.textContent.slice(s.particle.length); }
       mark.replaceWith(f);
       if(mark.tagName==='MARK') fixed++;
+      mergeDup(field,f);
     }
     const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=fixed===0; fc.textContent='고친 표현 '+fixed+'개';}
     const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 고친 글로 다시 점검';}
     close();
+  }
+  /* 붙어 있는 고친 표현 둘이 같은 말로 끝나고 시작하면(「우리 근처」+「근처」) 뒤엣것을 지운다 — E 가 본 「우리 근처 근처에서」 */
+  function mergeDup(field,f){
+    const el=fields[field](); if(!el) return;
+    const esc=t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const pair=(a,b)=>{   // a 가 앞, b 가 뒤 — 둘 다 .fixed. 사이는 공백뿐
+      const A=a.dataset.cur||'', B=b.dataset.cur||''; if(!A||!B) return false;
+      let drop=null, keep=null;
+      if(A===B||A.endsWith(B)) { drop=b; keep=a; }          // 「우리 근처」+「근처」 → 뒤를 지움
+      else if(B.startsWith(A)) { drop=a; keep=b; }          // 「근처」+「근처 정류장」 → 앞을 지움
+      if(!drop) return false;
+      const D=drop.dataset.cur, rx=drop===b?new RegExp(esc(A)+'(\\s+)'+esc(B)):new RegExp(esc(A)+'(\\s+)'+esc(B));
+      const m=rx.exec(el.value); if(!m) return false;
+      const at=drop===b?m.index+A.length:m.index, len=drop===b?m[1].length+B.length:A.length+m[1].length;
+      el.value=el.value.slice(0,at)+el.value.slice(at+len);
+      (shifts[field]=shifts[field]||[]).push({at:at,delta:-len});
+      const ws=drop===b?drop.previousSibling:drop.nextSibling; if(ws&&ws.nodeType===3&&!ws.textContent.trim()) ws.remove();
+      drop.remove(); fixed=Math.max(0,fixed-1);
+      keep.title+=' · 옆의 「'+D+'」 는 겹쳐서 합쳤어요';
+      el.dispatchEvent(new Event('input'));
+      return true;
+    };
+    const near=(n,dir)=>{ let x=dir<0?n.previousSibling:n.nextSibling; if(x&&x.nodeType===3&&!x.textContent.trim()) x=dir<0?x.previousSibling:x.nextSibling; return x&&x.nodeType===1&&x.classList.contains('fixed')?x:null; };
+    const prev=near(f,-1); if(prev&&pair(prev,f)) return;
+    const next=near(f,1); if(next) pair(f,next);
+  }
+  /* 미리보기의 보통 글자를 누르면 본문 칸의 그 자리로 간다 — 미리보기는 읽기 전용이라는 걸 몰라도 되게 */
+  function jumpToText(node,offset){
+    const evi=node.parentElement&&node.parentElement.closest('.evi'); const tid=evi?evi.dataset.textId:'body';
+    const el=fields[tid==='body'?'body':(tid==='title'?'title':'captions')](); if(!el) return;
+    const t=node.textContent, probe=t.slice(Math.max(0,offset-8),offset+8).trim(); let i=probe?el.value.indexOf(probe):-1;
+    if(i<0){ const w=(t.slice(offset).match(/^[^\s,.!?…]+/)||[''])[0]; i=w?el.value.indexOf(w):-1; }
+    el.focus(); if(i>=0) el.setSelectionRange(i,i); el.scrollIntoView({block:'center',behavior:'smooth'});
+    const tip=document.getElementById('editHere'); if(tip){ tip.classList.add('on'); setTimeout(()=>tip.classList.remove('on'),1500); }
   }
   /* 다른 글의 위치태그 끄기 — 우리뜰 라우트(플랫폼)로 보내고, 끝나면 지금 초안으로 점검을 다시 돌린다 */
   function untag(btn){
@@ -288,7 +328,8 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
       +(hasWiden?'<div class="grp">↗ 지우지 않고 넓히기 (뜻은 남기고 숫자만 늘려요)</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
       +'<div class="grp">✕ '+(hasWiden?'아예 지우기':'다르게 쓰기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>'
       +'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 그대로 둬도 돼요. 대신 나일 수 있는 사람이 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 줄어들 수 있어요.</span></div>'
-      +'<div class="ft"><span>말투는 두고 드러나는 정보만 바꿔요</span><button type="button" data-self>직접 고치기</button><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
+      +'<ul><li class="self"><button type="button" data-self><span class="n">✎</span><span class="t">내가 직접 고칠게요</span><span class="kv"></span><span class="nt">본문 칸으로 가서 이 자리를 골라 둬요. 후보가 다 어색할 때</span></button></li></ul>'
+      +'<div class="ft"><span>말투는 두고 드러나는 정보만 바꿔요</span><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
     pop.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>pick(mark,s,s.candidates[+b.dataset.i])));
     const rs=pop.querySelector('[data-restore]'); rs&&rs.addEventListener('click',()=>pick(mark,s,{text:s.text,restore:true}));
     pop.querySelectorAll('button[data-untag]').forEach(b=>b.addEventListener('click',()=>untag(b)));
@@ -299,7 +340,13 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
     const r=mark.getBoundingClientRect(); const w=pop.offsetWidth;
     pop.style.top=(scrollY+r.bottom+6)+'px'; pop.style.left=Math.max(8,Math.min(scrollX+r.left, scrollX+innerWidth-w-8))+'px';
   }
-  document.getElementById('draftPreview').addEventListener('click',e=>{ const m=e.target.closest('mark[data-span],.fixed[data-span]'); if(!m) return; if(m.classList.contains('x')) return; e.preventDefault(); if(m.classList.contains('open')) close(); else open(m); });
+  document.getElementById('draftPreview').addEventListener('click',e=>{
+    const m=e.target.closest('mark[data-span],.fixed[data-span]');
+    if(!m){ if(pop) return; const bd=e.target.closest('.bd'); if(!bd) return;
+      let node=null, off=0; try{ const r=document.caretRangeFromPoint?document.caretRangeFromPoint(e.clientX,e.clientY):null; if(r){node=r.startContainer;off=r.startOffset;} }catch(_){}
+      if(!node||node.nodeType!==3){ node=bd.firstChild; off=0; }
+      jumpToText(node,off); return; }
+    if(m.classList.contains('x')) return; e.preventDefault(); if(m.classList.contains('open')) close(); else open(m); });
   document.addEventListener('click',e=>{ if(pop&&!pop.contains(e.target)&&!e.target.closest('mark[data-span],.fixed[data-span]')) close(); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
 
