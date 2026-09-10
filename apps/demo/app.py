@@ -166,10 +166,19 @@ def api_payload(res: dict) -> dict:
     for sid, items in rewrite_forms(res).items():
         rws[sid] = [{"suggestion": r["suggestion"], "note": r["_note"], "similarity": r["semantic_similarity"],
                      "sentence": r["_sentence"], "new_sentence": r["_new_sentence"], "field": r["field"],
-                     "new_full": r["new_full"], "text_id": r["_text_id"]} for r in items]
+                     "new_full": r["new_full"], "text_id": r["_text_id"], "span_text": r["_span_text"]} for r in items]
+    posts_by = {p["post_id"]: p for p in view["posts"]}
+    def _about(pid: str) -> dict:
+        p = posts_by.get(pid)
+        if not p:
+            return {}
+        body = p["texts"].get("body", "")
+        return {"title": p["texts"].get("title") or "", "excerpt": body[:90].replace("\n", " ") + ("…" if len(body) > 90 else ""),
+                "geo_tag": p["activity_meta"].get("geo_tag")}
     acts = [{"action_type": a["action_type"], "burden": a["burden"], "certainty": a["certainty"],
              "rationale": a["rationale"], "projected_delta": a["projected_delta"], "post_id": a["_post_id"],
-             "span_id": a.get("_span_id"), "k": a["_k"], "k_cum": a["_k_cum"]} for a in rec["actions"]]
+             "span_id": a.get("_span_id"), "k": a["_k"], "k_cum": a["_k_cum"], "cut": a.get("_cut", []),
+             "post": _about(a["_post_id"])} for a in rec["actions"]]
     return {
         **summary(res), "user_ref": view["user_ref"], "nickname": view["nickname"],
         "findings": {a: {**f, "ko": _ATTR_KO[a]} for a, f in st2["findings"].items()},

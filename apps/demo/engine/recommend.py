@@ -246,11 +246,15 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
             best = (pid, f)
     if best:
         pid, f = best
-        k1, d = delta(compute(view, exclude_posts=frozenset({pid})))
+        alone = compute(view, exclude_posts=frozenset({pid}))
+        k1, d = delta(alone)
+        # 이 글을 내리면 «어떤 단서» 가 사라지는지 — 화면이 글 제목과 함께 보여준다 (9/10 피드백: 무슨 글을 내리는지 몰랐다)
+        left = {s["condition"] for s in alone["steps"]}
+        cut = [s["condition"] for s in base["steps"] if s["condition"] not in left and s["axis"] != "sex"]
         actions.append({"action_type": "unpublish", "burden": "low", "certainty": "highest",
                         "targets": [{"kind": "post", "ref": pid}], "projected_delta": min(d, 0.0),
                         "rationale": "이 글 한 편만 비공개해도 단서 하나가 사라져요. 삭제가 아니라서 되돌릴 수 있어요.",
-                        "_k": k1, "_post_id": pid})
+                        "_k": k1, "_post_id": pid, "_cut": cut})
 
     # ③ 리라이트 — (태그 끈 뒤) k 단계에 쓰인 본문 스팬 중 효과가 큰 순서로 최대 2건
     rw_cands = []
@@ -281,6 +285,7 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
             josa = leading_particle(tail)
             new_sentence = sentence[: sp["start"] - ls] + c["text"] + fit_particle(c["text"], josa) + tail[len(josa):]
             rewrites.append({"post_id": p["post_id"], "span_id": sp["span_id"], "suggestion": c["text"][:200],
+                             "_span_text": sp["text"],
                              "semantic_similarity": similarity(sentence, new_sentence),
                              "residual_risk": "partial" if f["k"] < 100_000 else "none",
                              "_note": c["note"], "_text_id": sp["text_id"], "_sentence": sentence,

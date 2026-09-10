@@ -19,7 +19,7 @@ from functools import lru_cache
 from typing import Any
 
 from .dialect import dialect_hits
-from .specificity import place_lexicon
+from .specificity import guarded_lexicon, place_lexicon
 
 MODEL_VERSION = "demo-rules-0.1.0"
 
@@ -117,12 +117,17 @@ _LOC_NEXT = re.compile(
 
 
 @lru_cache(maxsize=1)
-def _place_rx() -> tuple[re.Pattern, dict[str, str]]:
+def _place_rx() -> tuple[re.Pattern, dict[str, str], frozenset[str]]:
     """사전 전체를 정규식 하나로 — 긴 표면형이 앞에 오게 정렬돼 있어 같은 자리에서는 긴 것이 이긴다.
-    (표면형마다 finditer 를 돌리면 3,700개 × 채널 수만큼 컴파일 캐시가 밀려 스캔 한 번에 4초가 걸렸다)"""
+    (표면형마다 finditer 를 돌리면 3,700개 × 채널 수만큼 컴파일 캐시가 밀려 스캔 한 번에 4초가 걸렸다)
+
+    스톱리스트 약칭(강남·서초·화성…)은 «거주 서술이 바로 뒤에 올 때만» 지명으로 본다 — 「난 강남에 산다」 는
+    잡고 「강남 스타일」 은 안 잡는다 (9/10 피드백: 「강남에 산다」 가 안 잡히는데 「경남에 산다」 는 잡혔다)."""
     lex = dict(place_lexicon())
-    rx = re.compile("|".join(re.escape(s) for s in lex))
-    return rx, lex
+    guarded = {k: v for k, v in guarded_lexicon() if k not in lex}
+    lex.update(guarded)
+    rx = re.compile("|".join(re.escape(s) for s in sorted(lex, key=lambda k: -len(k))))
+    return rx, lex, frozenset(guarded)
 
 
 def _place_candidates(text: str) -> list[tuple[int, int, str]]:
@@ -132,12 +137,14 @@ def _place_candidates(text: str) -> list[tuple[int, int, str]]:
       · 바로 앞에 한글이 붙어 있으면 지명이 아니다 (단어 안쪽 부분 일치)
       · 행정 접미사가 없는 약칭은 뒤에 접미사·역·장소 조사 중 하나가 와야 한다
     """
-    rx, lex = _place_rx()
+    rx, lex, guarded = _place_rx()
     out: list[tuple[int, int, str]] = []
     for m in rx.finditer(text):
         s, e = m.start(), m.end()
         surface = m.group(0)
         if s > 0 and _HANGUL.match(text[s - 1]):
+            continue
+        if surface in guarded and not _LIVES_AFTER.match(text[e:]):
             continue
         bare = surface[-1] not in _ADMIN_SUFFIX + "도"   # 시도 전체 이름은 시·도로 끝난다
         if bare and e < len(text) and _HANGUL.match(text[e]) and not _LOC_NEXT.match(text[e:e + 3]):
@@ -151,7 +158,7 @@ _GAP = re.compile(r"[  ]{0,2}")
 
 # 여행·출장 글 표지 — 글 안 지명을 방문지로 돌린다
 _TRAVEL = re.compile(r"\d\s*박\s*\d\s*일|당일치기|여행|출장|관광|휴가|답사|숙소|호텔|펜션|게스트하우스|공항|기차표|비행기")
-_LIVES_AFTER = re.compile(r"^\s*(?:에|에서|서)?\s*(?:사는|살|집|이사|거주|살아)")
+_LIVES_AFTER = re.compile(r"^\s*(?:에|에서|서)?\s*(?:사는|살|산다|산\s|삽니다|사요|사네|집|이사|거주)")
 
 
 def _merge_adjacent_places(text: str, cands: list[tuple[int, int, str]]) -> list[tuple[int, int, str]]:

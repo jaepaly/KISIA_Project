@@ -163,6 +163,29 @@ def place_lexicon() -> tuple[tuple[str, str], ...]:
     return tuple(sorted(out.items(), key=lambda kv: -len(kv[0])))
 
 
+@lru_cache(maxsize=1)
+def guarded_lexicon() -> tuple[tuple[str, str], ...]:
+    """스톱리스트에 걸린 시도·시군구 약칭 — 탐지기가 «거주 서술이 바로 뒤에 올 때만» 쓰는 사전.
+    「난 강남에 산다」 의 강남은 잡아야 하지만 「강남 스타일」「한동안」 은 아니다. 뒤 문맥 검사는 detect 가 한다."""
+    ix = _index()
+    dup: dict[str, int] = {}
+    for r in ix["R"].values():
+        if r["level"] != "sido":
+            dup[r["name"]] = dup.get(r["name"], 0) + 1
+    out: dict[str, str] = {}
+    for r in ix["R"].values():
+        name = r["name"]
+        if r["level"] == "sido":
+            short = _SIDO_SHORT.get(name)
+            if short and short in _PLACE_STOPLIST:
+                out[short] = name
+        elif r["level"] == "sigungu":
+            short = name[:-1] if name[-1] in "시군구" and len(name) >= 3 else None
+            if short and len(short) >= 2 and short in _PLACE_STOPLIST and short not in out:
+                out[short] = r["full_name"] if dup[name] == 1 else name
+    return tuple(sorted(out.items(), key=lambda kv: -len(kv[0])))
+
+
 def resolve_place(canonical: str) -> list[str]:
     """정본 이름 → 코드 후보. 시도 이름은 직접, 그 외는 C 의 resolve."""
     ix = _index()

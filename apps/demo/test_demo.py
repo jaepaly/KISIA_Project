@@ -200,3 +200,36 @@ def test_external_llm_is_off_by_default(monkeypatch):
     monkeypatch.delenv("DEMO_EXTERNAL_REWRITE", raising=False)
     assert external.enabled() is False
     assert external.rewrite_candidates("x", "x", "x") is None
+
+
+# ── 9/10 피드백 반영분 ────────────────────────────────────────────────────────
+def _spans(text: str) -> list[str]:
+    r = detect_post({"post_id": "x", "title": None, "body": text, "photos": [], "activity_meta": {}})
+    return [s["text"] for s in r["record"]["spans"]]
+
+
+def test_stoplisted_short_place_counts_only_with_residence_context():
+    """「강남에 산다」 는 잡고, 「강남 스타일」「한동안」 은 안 잡는다 — 스톱리스트 약칭은 거주 서술이 붙을 때만."""
+    assert _spans("난 강남에 산다") == ["강남"]
+    assert _spans("난 경남에 산다") == ["경남"]
+    assert _spans("화성에 산 지 오래") == ["화성"]
+    assert _spans("강남 스타일이 유행이다") == []
+    assert _spans("한동안 강남 갔다") == []
+
+
+def test_unpublish_action_says_which_clues_vanish(scan):
+    _, _, rec, _ = scan
+    acts = [a for a in rec["actions"] if a["action_type"] == "unpublish"]
+    assert acts and isinstance(acts[0]["_cut"], list)
+    rws = rec["rewrites"]
+    assert rws and all(r["_span_text"] in r["_sentence"] for r in rws)
+
+
+def test_api_scan_actions_carry_post_and_cut(client):
+    j = client.post("/api/scan", json=d05_export()).get_json()
+    for a in j["actions"]:
+        assert "post" in a and "cut" in a
+        if a["action_type"] in ("unpublish", "activity_meta"):
+            assert a["post"].get("title") is not None
+    for sid, cands in j["rewrites"].items():
+        assert all(c["span_text"] in c["sentence"] for c in cands)
