@@ -71,12 +71,12 @@
    ]
   },
   "off": {
-   "k": 14574,
+   "k": 899,
    "path": [
     "nation:sum=51088284",
-    "location:admin_code=371855",
-    "age:crosstab_lookup=29717",
-    "sex:crosstab_lookup=14574"
+    "location:admin_code=20507",
+    "age:crosstab_lookup=1945",
+    "sex:crosstab_lookup=899"
    ]
   }
  },

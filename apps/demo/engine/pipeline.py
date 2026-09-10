@@ -97,6 +97,9 @@ def signals_from(view: dict[str, Any], *, exclude_posts=frozenset(), exclude_met
         t = sp["type"]
         if t == "LOC_ADMIN" and note.get("place"):
             sig["places"].append({"canonical": note["place"], "src": src})
+        elif t == "LOC_FACILITY" and note.get("place"):      # 역 — 읍면동 코드가 이미 정해져 있다 (사다리로 넓히면 codes 없이 정본 지명만)
+            sig["places"].append({"canonical": note["place"], "codes": list(note["codes"] or []) or None,
+                                  "station": note.get("station"), "src": src})
         elif t == "LOC_FACILITY" and note.get("admin_unit"):
             if sig["admin_unit"] is None or note["admin_unit"] == "면":
                 sig["admin_unit"] = {"unit": note["admin_unit"], "src": src}

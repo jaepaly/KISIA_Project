@@ -21,7 +21,7 @@ sys.path.insert(0, str(HERE))
 
 from engine.detect import detect_post, detect_profile  # noqa: E402
 from engine.pipeline import analyze, compute  # noqa: E402
-from engine.recommend import recommend, stage2_output  # noqa: E402
+from engine.recommend import ladder_candidates, recommend, stage2_output  # noqa: E402
 
 USER_REF = "u_d05a11c2"
 
@@ -233,3 +233,39 @@ def test_api_scan_actions_carry_post_and_cut(client):
             assert a["post"].get("title") is not None
     for sid, cands in j["rewrites"].items():
         assert all(c["span_text"] in c["sentence"] for c in cands)
+
+
+# ── 역 사전 (E 피드백 9/10: 「용마산역」 이 안 잡혔다) ──────────────────────────
+def _post(body: str) -> dict:
+    return {"post_id": "p1", "title": None, "body": body, "photos": [], "activity_meta": {},
+            "created_at": "2026-01-01T00:00:00+09:00", "visibility": "public"}
+
+
+def _export(body: str) -> dict:
+    return {"schema_version": "1.0", "user_ref": "u_t", "nickname": "t", "profile_bio": None, "posts": [_post(body)]}
+
+
+def test_station_name_resolves_to_dong_and_narrows_k():
+    r = detect_post(_post("용마산역 근처에 산다. 태릉입구에서 7호선 타고 출근."))
+    got = {s["text"]: (s["type"], r["notes"].get(s["span_id"], {}).get("place")) for s in r["record"]["spans"]}
+    assert got["용마산역"] == ("LOC_FACILITY", "서울특별시 중랑구 면목제4동")
+    assert got["태릉입구"][0] == "LOC_FACILITY" and got["태릉입구"][1].endswith("공릉1동")
+    base = compute(analyze(_export("용마산역 근처에 산다. 서른셋이다.")))
+    steps = {s["condition"]: s["n_after"] for s in base["steps"]}
+    assert any("용마산역" in c for c in steps) and base["k"] < 5000
+
+
+def test_station_same_name_in_many_cities_is_not_counted():
+    r = detect_post(_post("시청역에서 만나자"))
+    n = r["notes"][r["record"]["spans"][0]["span_id"]]
+    assert n["exclude"] == "ambiguous" and "역이" in n["why"]
+    assert detect_post(_post("울역에 갔다"))["record"]["spans"] == []          # 「서울역」 안쪽 부분 일치 금지
+
+
+def test_station_ladder_widens_to_gu_then_city():
+    view = analyze(_export("용마산역 근처에 산다."))
+    p = view["posts"][0]
+    sp = p["spans"][0]
+    ladder = ladder_candidates(view, "p1", sp, p["notes"][sp["span_id"]])
+    assert [l["text"] for l in ladder] == ["중랑구", "서울"]
+    assert ladder[0]["k"] < ladder[1]["k"]

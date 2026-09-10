@@ -178,6 +178,12 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
         for a in ancestors(note["place"]):
             r = k_with_note(view, post_id, sp["span_id"], {"place": a["canonical"]}, "location")
             out.append({"text": a["text"], "note": f"{a['level']}까지만 남김", **r})
+    elif sp["type"] == "LOC_FACILITY" and note.get("station") and note.get("place"):
+        # 역 이름 → 그 역이 놓인 동·구·시. 「용마산역」 → 「면목동」 → 「중랑구」 → 「서울」
+        for a in ancestors(note["place"]):
+            r = k_with_note(view, post_id, sp["span_id"],
+                            {"place": a["canonical"], "codes": None, "station": None}, "location")
+            out.append({"text": a["text"], "note": f"역 대신 {a['level']}까지만", **r})
     elif sp["type"] == "AGE" and note.get("age") is not None:
         d = int(note["age"]) // 10 * 10
         if d >= 10:

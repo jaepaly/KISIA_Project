@@ -32,6 +32,7 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 | `DEMO_PORT` · `SNS_PORT` | 8000 · 3000 | 포트 |
 | `DEMO_PERSONAS` | `D05,D01,E20,C02,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
 | `DEMO_ACCESS_KEY` | 없음(문 열림) | 있으면 우리뜰이 `?key=<값>` 으로 들어온 사람에게만 쿠키를 주고, 나머지는 403. 터널·배포로 밖에 열 때 켠다 |
+| `DEMO_STATION_SCOPE` | `emd` | 역 이름을 «역이 놓인 동 하나»(`emd`)로 볼지 «반경 700m 안 이웃 동까지»(`near`)로 볼지. 특정성 규칙의 판단(C)이라 스위치로 둠 |
 | `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` + `ANTHROPIC_API_KEY` 가 있을 때만 (Claude) 리라이트 후보를 외부 API 로 만든다. provenance 에 표시된다 |
 | `C1_MODEL_PATH` | 없음 | B 의 KoELECTRA 가중치 경로. 있으면 규칙 탐지기 대신 실제 모델 |
 
@@ -96,7 +97,7 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 | **D06** 「느린 기록」 `/u/u_5ebca0cc` | 의령군 궁류면 · 38세 · 여 · 연구직 | **5** / 199,109 | 「면사무소」→읍면 9,234,300 → 궁류면(태그) 1,006 → 35~39세 9 → 여성(「남편」) 5 | 영월·정읍·광주(이동 경로) · 창원(타인) |
 | D01 「새벽두시간」 `/u/u_b627b6c8` | 용인시 기흥구 신갈동 · 47세 · 남 | 36,061 / 434,408 | 「기흥호수공원」×4 → 기흥구 → 신갈동(태그). 나이·성별 단서 없음 | 「처남이 광교 살아서 저수지」(타인) |
 | E20 「종강했음」 `/u/u_bae97f9f` | 세종시 도담동 · 21세 · 여 · 대학생 | 1,231 / 17,433 | 「세종」×3 → 세종시 → 도담동(태그) → 20~24세(「스물하나」). 성별 단서 없음 | 「정류장」(시설, 단위 없음) |
-| C02 「주차먼저」 `/u/u_4ad869af` | 대전 유성구 노은1동 · 46세 · 남 · 식자재 배송기사 | 899 / 14,574 | 「유성구」×2 → 노은1동(태그) → 45~49세(「마흔여섯」) → 남성(「아내」). **3단이 전부 진짜 단서**, 오탐 0 | — |
+| C02 「주차먼저」 `/u/u_4ad869af` | 대전 유성구 노은1동 · 46세 · 남 · 식자재 배송기사 | 899 / **899** | 「노은역」×3(역 사전, 9/11) → 노은1동 → 45~49세(「마흔여섯」) → 남성(「아내」). 태그를 꺼도 역 이름이 같은 동을 가리켜 숫자가 안 변한다 — **인물 설계가 심어 둔 단서를 그대로 찾은 것** (design_note: 「노은역 방향 이동과 방문 분포를 결합해 노은1동 생활권」) | — |
 
 **D06 이 두 번째 시연감이다** — D05 가 「지명 0회인데 421명」이라면 D06 은 「위치태그 하나가 20만 명을 5명으로」다. 조치 ② 의 효과가 가장 극적으로 보인다.
 
@@ -143,7 +144,9 @@ data/titles.json    데모 전용 제목 덮어쓰기 — 단서 없는 제목�
 data/comments.json  글별 댓글(손으로 쓴 256개)
 engine/detect.py    1단 스탑갭 (규칙). span.schema.json 형식
 engine/dialect.py   방언 사전 매칭 → flags.dialect_hits
-engine/specificity.py  깔때기 — kopl.c2_specificity 위에서 k
+engine/specificity.py  깔때기 — kopl.c2_specificity 위에서 k · 역 사전(stations.json) 조회
+data/stations.json  도시철도 역 764개 → 행정동 코드(emd) · 반경 700m 이웃 동(near) · 동명 역 표시(ambiguous). tools/build_stations.py 가 공개 자료 둘로 만든다
+tools/build_stations.py  역 사전 빌더 — 공공데이터포털 역사 정보(좌표) × 행정동 경계 GeoJSON → 점-다각형 판정 (의존성 없음)
 engine/pipeline.py  export → 뷰 → k (what-if 지원) · findings
 engine/recommend.py 조치 3종 + 예외 · 리라이트 3안 · Stage2Output
 engine/external.py  외부 LLM — Claude API (기본 꺼짐)

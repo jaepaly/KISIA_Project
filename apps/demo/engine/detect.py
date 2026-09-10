@@ -19,7 +19,7 @@ from functools import lru_cache
 from typing import Any
 
 from .dialect import dialect_hits
-from .specificity import guarded_lexicon, place_lexicon
+from .specificity import guarded_lexicon, place_lexicon, station_lookup
 
 MODEL_VERSION = "demo-rules-0.1.0"
 
@@ -153,6 +153,37 @@ def _place_candidates(text: str) -> list[tuple[int, int, str]]:
     return out
 
 
+# ── 역 이름 — 「용마산역」 은 언제나, 「태릉입구」 처럼 역을 뗀 꼴은 3자 이상이고 뒤에 장소 조사·역·앞·근처 가 올 때만 ──
+_STATION_NEXT = re.compile(r"^(?:역|에서|에|까지|부터|앞|근처|쪽|으로|로|사거리|입구)")
+
+
+@lru_cache(maxsize=1)
+def _station_rx() -> tuple[re.Pattern | None, dict[str, bool]]:
+    from .specificity import stations
+    by_alias = stations()["by_alias"]
+    if not by_alias:
+        return None, {}
+    guarded = {a: (not a.endswith("역")) for a in by_alias if a.endswith("역") or len(a) >= 3}
+    rx = re.compile("|".join(re.escape(a) for a in sorted(guarded, key=lambda k: -len(k))))
+    return rx, guarded
+
+
+def _station_candidates(text: str) -> list[tuple[int, int, str]]:
+    """(start, end, surface). 앞에 한글이 붙어 있으면(「서울역」 안의 「울역」 같은 것) 아니다."""
+    rx, guarded = _station_rx()
+    if rx is None:
+        return []
+    out = []
+    for m in rx.finditer(text):
+        s, e = m.start(), m.end()
+        if s > 0 and _HANGUL.match(text[s - 1]):
+            continue
+        if guarded[m.group(0)] and not _STATION_NEXT.match(text[e:]):
+            continue
+        out.append((s, e, m.group(0)))
+    return out
+
+
 _GAP = re.compile(r"[  ]{0,2}")
 
 
@@ -218,6 +249,30 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
             note["why"] = "지나가는 길이나 오가는 버스 이야기예요. 사는 곳으로 세지 않아요"
         cands.append({"text_id": text_id, "start": s, "end": e, "text": t[s:e],
                       "type": "LOC_ADMIN", "level": level, "subject": subject, "score": 0.8})
+        notes[f"{s}:{e}"] = note
+
+    for s, e, surface in _station_candidates(t):
+        st = station_lookup(surface)
+        if st is None:
+            continue
+        before, after = t[:s], t[e:]
+        subject, level, note = "self", "inferential", {"facility": "station", "station": st["name"]}
+        if st["ambiguous"]:
+            note["exclude"] = "ambiguous"
+            note["why"] = f"같은 이름의 역이 {st['n']}곳이에요. 어느 도시인지 글에 없어서 세지 않아요"
+        elif _OTHER_BEFORE.search(before) or _OTHER_AFTER.search(after):
+            subject = "other"
+            note["why"] = "다른 사람의 장소예요. 글쓴이 정보로 세지 않아요"
+        elif _PAST_BEFORE.search(before) and _PAST_AFTER.search(after):
+            note["exclude"] = "past_residence"
+            note["why"] = "「예전에 … 살 때」처럼 과거 이야기예요. 지금 사는 곳으로 세지 않아요"
+        elif _TRANSIT_AFTER.search(after):
+            note["exclude"] = "transit"
+            note["why"] = "지나가는 길이나 오가는 버스 이야기예요. 사는 곳으로 세지 않아요"
+        else:
+            note.update({"place": st["place"], "codes": st["codes"], "scope": st["scope"], "lines": st["lines"]})
+        cands.append({"text_id": text_id, "start": s, "end": e, "text": t[s:e],
+                      "type": "LOC_FACILITY", "level": level, "subject": subject, "score": 0.8})
         notes[f"{s}:{e}"] = note
 
     for m in _AGE_KO.finditer(t):

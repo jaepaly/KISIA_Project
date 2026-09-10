@@ -13,6 +13,7 @@ k 의 뜻은 C 계약과 같다 — 조건에 해당하는 주민등록 인구 �
 from __future__ import annotations
 
 import math
+import os
 from functools import lru_cache
 from typing import Any
 
@@ -186,6 +187,43 @@ def guarded_lexicon() -> tuple[tuple[str, str], ...]:
     return tuple(sorted(out.items(), key=lambda kv: -len(kv[0])))
 
 
+# ── 역 사전 — 도시철도 역 이름 → 행정동. apps/demo/data/stations.json (tools/build_stations.py 가 만든다) ──
+#    「용마산역 근처에 산다」 는 지명 사전에 없어 안 잡히던 것(E 피드백 9/10). 역 하나를 «역이 놓인 동 하나» 로 볼지
+#    «걸어서 닿는 이웃 동까지» 로 볼지는 특정성 규칙의 판단(C 몫)이라 스위치로 둔다: DEMO_STATION_SCOPE=emd|near
+STATION_SCOPE = os.getenv("DEMO_STATION_SCOPE", "emd")
+
+
+@lru_cache(maxsize=1)
+def stations() -> dict[str, Any]:
+    """{"by_alias": {표면형: [역, …]}, "list": [역, …]}. 파일이 없으면 빈 사전 — 역 탐지만 꺼진다."""
+    import json
+    from pathlib import Path
+    f = Path(__file__).resolve().parents[1] / "data" / "stations.json"
+    if not f.exists():
+        return {"by_alias": {}, "list": []}
+    doc = json.loads(f.read_text(encoding="utf-8"))
+    by_alias: dict[str, list[dict[str, Any]]] = {}
+    for st in doc["stations"]:
+        for a in st["aliases"]:
+            by_alias.setdefault(a, []).append(st)
+    return {"by_alias": by_alias, "list": doc["stations"], "source": doc.get("_source")}
+
+
+def station_lookup(surface: str) -> dict[str, Any] | None:
+    """표면형 → 역 정보. 같은 이름의 역이 여러 도시에 있으면 {"ambiguous": True, "n": …} 만 돌려준다."""
+    hits = stations()["by_alias"].get(surface) or []
+    if not hits:
+        return None
+    if len(hits) > 1 or hits[0].get("ambiguous"):
+        return {"ambiguous": True, "n": len(hits), "name": hits[0]["name"]}
+    st = hits[0]
+    codes = [st["emd"]] + (list(st.get("near") or []) if STATION_SCOPE == "near" else [])
+    ix = _index()
+    return {"ambiguous": False, "name": st["name"], "lines": st.get("lines") or [], "emd": st["emd"],
+            "place": ix["R"][st["emd"]]["full_name"], "codes": [c for c in codes if c in ix["R"]],
+            "scope": STATION_SCOPE, "near_names": [ix["R"][c]["name"] for c in (st.get("near") or []) if c in ix["R"]]}
+
+
 def resolve_place(canonical: str) -> list[str]:
     """정본 이름 → 코드 후보. 시도 이름은 직접, 그 외는 C 의 resolve."""
     ix = _index()
@@ -242,10 +280,14 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
     # 크기가 같으면 이미 올라간 글의 것을 초안(draft)보다 먼저 — «올리기 전/후» 비교가 순서에 흔들리지 않게
     best: tuple[int, list[str], dict[str, Any]] | None = None
     for p in sorted(signals.get("places") or [], key=lambda x: (x.get("src") or {}).get("post_id") == "draft"):
-        cands = resolve_place(p["canonical"])
-        if len(cands) != 1:
-            continue
-        sub = [c for c in descendants(cands[0]) if c in set(codes)] or descendants(cands[0])
+        if p.get("codes"):                      # 역처럼 읍면동 코드가 이미 정해진 장소
+            full = list(p["codes"])
+        else:
+            cands = resolve_place(p["canonical"])
+            if len(cands) != 1:
+                continue
+            full = descendants(cands[0])
+        sub = [c for c in full if c in set(codes)] or full
         if not sub:
             continue
         if best is None or len(sub) < len(best[1]):
@@ -254,9 +296,15 @@ def funnel(signals: dict[str, Any]) -> dict[str, Any]:
         codes = best[1]
         n = count(codes)
         p = best[2]
-        steps.append({"axis": "location", "kind": "admin_code",
-                      "condition": f"지명 «{p['canonical']}»" + (" (위치태그)" if p["src"].get("channel") == "geo_tag" else ""),
-                      "n_after": n, "method": "regions.json resolve", "src": p["src"]})
+        if p.get("station"):
+            scope = "역이 놓인 동" if len(p["codes"]) == 1 else f"역 둘레 {len(p['codes'])}개 동"
+            cond = f"역 «{p['station']}» 근처 ({p['canonical'].split()[-1]} · {scope})"
+            method = "stations.json → regions"
+        else:
+            cond = f"지명 «{p['canonical']}»" + (" (위치태그)" if p["src"].get("channel") == "geo_tag" else "")
+            method = "regions.json resolve"
+        steps.append({"axis": "location", "kind": "admin_code", "condition": cond,
+                      "n_after": n, "method": method, "src": p["src"]})
 
     bands: list[str] | None = None
     age = signals.get("age")
