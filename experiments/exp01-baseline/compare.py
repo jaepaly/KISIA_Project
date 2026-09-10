@@ -56,6 +56,17 @@ def load_jsonl(path: Path) -> dict[str, dict]:
     return out
 
 
+def load_jsonl_rows(path: Path) -> list[dict]:
+    """JSONL을 원래 행 단위로 읽는다. LLM 입력 완전성 검증에 사용한다."""
+    if not path.is_file():
+        return []
+    return [
+        json.loads(line)
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+
 def load_clues(path: Path) -> list[dict]:
     """골드셋 clues.jsonl 또는 spans.jsonl 파일을 로드한다."""
     if not path.is_file():
@@ -111,6 +122,8 @@ def main() -> int:
     parser.add_argument("--koreanpii", default="experiments/exp01-baseline/results/koreanpii.jsonl", help="Korean PII 결과 JSONL")
     parser.add_argument("--llm", default="experiments/exp01-baseline/results/gemini_labeled.jsonl", help="LLM 상한선 결과 JSONL (로컬 중간산출물, 선택사항)")
     parser.add_argument("--out", default="experiments/exp01-baseline/results/metrics.json", help="출력 metrics.json 경로")
+    parser.add_argument("--reachability-out", default="experiments/exp01-baseline/reachability_inputs.jsonl", help="3종 전원 미탐 LLM 블라인드 입력 JSONL")
+    parser.add_argument("--data-version", default="corpus-v0-p2.3", help="metrics.json에 기록할 코퍼스 버전")
     parser.add_argument("--scoring", default="partial_match", choices=["partial_match", "exact_match"], help="주 채점 방식")
     args = parser.parse_args()
 
@@ -118,8 +131,8 @@ def main() -> int:
     regex_res = load_jsonl(Path(args.regex))
     presidio_res = load_jsonl(Path(args.presidio))
     koreanpii_res = load_jsonl(Path(args.koreanpii))
+    llm_rows = load_jsonl_rows(Path(args.llm))
     llm_res = load_jsonl(Path(args.llm))
-    has_llm = bool(llm_res)
 
     # 1. 합집합 키 수집 (버그 수정: or 단축평가 제거, set union 적용)
     all_keys = set(regex_res.keys()) | set(presidio_res.keys()) | set(koreanpii_res.keys())
@@ -144,6 +157,65 @@ def main() -> int:
                 or koreanpii_res.get(k, {}).get("text", "")
             )
             items.append({"id": k, "text_id": k, "text": text, "level": "implicit"})
+
+    # 새 코퍼스에서 도구 3종이 모두 놓친 항목을 먼저 확정하고, LLM에는
+    # 골드 attr/level/subject를 제외한 id+text만 전달한다.
+    missed_items = []
+    for item in items:
+        key = item.get("text_id") or item.get("id") or item.get("text", "")
+        r_rec = regex_res.get(key) or regex_res.get(item.get("text", ""))
+        p_rec = presidio_res.get(key) or presidio_res.get(item.get("text", ""))
+        k_rec = koreanpii_res.get(key) or koreanpii_res.get(item.get("text", ""))
+        if not any(
+            is_detected_span(item, rec, mode="partial")
+            for rec in (r_rec, p_rec, k_rec)
+        ):
+            missed_items.append(item)
+
+    reachability_path = Path(args.reachability_out)
+    reachability_path.parent.mkdir(parents=True, exist_ok=True)
+    reachability_path.write_text(
+        "".join(
+            json.dumps(
+                {"id": item.get("id"), "text": item.get("text", "")},
+                ensure_ascii=False,
+            )
+            + "\n"
+            for item in missed_items
+        ),
+        encoding="utf-8",
+    )
+
+    # 일부만 있는 옛 LLM 파일을 has_llm=True로 받아 잘못된 수치를 만드는 것을
+    # 막는다. 건수뿐 아니라 ID와 원문도 새 미탐 입력과 완전히 같아야 한다.
+    has_llm = False
+    if llm_rows:
+        expected = {str(item.get("id")): item.get("text", "") for item in missed_items}
+        actual_ids = [str(row.get("id", "")) for row in llm_rows]
+        actual = {str(row.get("id", "")): row.get("text", "") for row in llm_rows}
+        errors = []
+        if len(actual_ids) != len(set(actual_ids)):
+            errors.append("LLM 결과 ID 중복")
+        if set(actual) != set(expected):
+            missing = sorted(set(expected) - set(actual))
+            extra = sorted(set(actual) - set(expected))
+            errors.append(
+                f"LLM 결과 ID 불일치: expected={len(expected)}, actual={len(actual_ids)}, "
+                f"missing={len(missing)}, extra={len(extra)}"
+            )
+        mismatched_text = [
+            item_id for item_id in set(expected) & set(actual)
+            if expected[item_id] != actual[item_id]
+        ]
+        if mismatched_text:
+            errors.append(f"LLM 결과 원문 불일치: {len(mismatched_text)}건")
+        if errors:
+            print("❌ 현재 LLM 결과는 새 미탐 입력과 호환되지 않습니다.")
+            for error in errors:
+                print(f"   - {error}")
+            print(f"   - 새 입력: {reachability_path} ({len(expected)}건)")
+            return 2
+        has_llm = True
 
     # 2. 등급별 집계 카운터 초기화
     levels = ["explicit", "implicit", "inferential"]
@@ -311,7 +383,7 @@ def main() -> int:
     metrics_data = {
         "experiment": "exp01-baseline",
         "measured_at": datetime.now().strftime("%Y-%m-%d"),
-        "data_version": "corpus-v0",
+        "data_version": args.data_version,
         "scoring": {
             "primary": "partial_match (IoU >= 0.5, type-agnostic tool-favoring)",
             "secondary": "exact_match",
@@ -351,7 +423,7 @@ def main() -> int:
                 "id": "gemini-3.1-pro",
                 "reasoning_mode": "high",
                 "via": "Gemini CLI via Antigravity",
-                "measured_at": "2026-09-08",
+                "measured_at": datetime.now().strftime("%Y-%m-%d"),
                 "evaluation": "attr+subject strict match",
                 "unscorable_ids": ["S01_b12_03", "S01_b17_04"]
             } if has_llm else "pending",
