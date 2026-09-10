@@ -1,0 +1,19 @@
+{
+  "seed": 20260910,
+  "train_count": 2917,
+  "test_count": 175,
+  "kind_counts": {
+    "train": {
+      "ambient": 421,
+      "clue": 518,
+      "noise": 1978
+    },
+    "test": {
+      "clue": 175
+    }
+  },
+  "test_personas": 101,
+  "note": "test 는 blind·IAA 배정 = 전부 단서 글(kind=clue). 잡담·ambient 가 없어 과탐·기권 평가엔 별도 표본이 필요하다. test 인물은 전원 train 에도 있다(인물 분리 아님).",
+  "blind_assignment": "data/corpus/v0/gold/blind/_assignment.json",
+  "iaa_assignment": "data/corpus/v0/gold/iaa/_assignment.json"
+}
