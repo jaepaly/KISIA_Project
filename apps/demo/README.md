@@ -149,7 +149,7 @@ engine/recommend.py 조치 3종 + 예외 · 리라이트 3안 · Stage2Output
 engine/external.py  외부 LLM — Claude API (기본 꺼짐)
 templates/sns_ext/  우리뜰 화면 전체를 덧씌운다: base(셸·하단 탭바) · _rail(오른쪽 레일) · list · profile_ext · post_ext · new_ext · edit_post · check(네 걸음 탭) · login(형식만)
 static/urittle.css  우리뜰 디자인 (따뜻한 종이 톤). 파도풀 demo.css 의 바다 톤과 일부러 다르다. ≥1024 2단 · ≤640 탭바
-static/urittle.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json) · 점검 탭 · 근거 접기 · 후보 칩 · 투어(TOUR 11단계) · 처음부터(/demo/reset)
+static/urittle.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json) · 점검 탭 · 근거 접기 · 후보 칩 · 투어(TOUR 12단계) · 처음부터(/demo/reset)
 templates/, static/demo.css  파도풀 단독 화면(개발용). 우리뜰 점검 화면도 /pado-static 으로 같이 쓴다
 test_demo.py        숫자 · 함정 · 계약 · 계층 경계 · API 12건
 probe.py            시딩 인물 4명 k 회귀 — --save 로 baseline, --diff 로 본 프로젝트 자원 교체 뒤 변화 확인
