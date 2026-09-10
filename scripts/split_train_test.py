@@ -13,6 +13,7 @@ seed는 train 내부를 섞는 데만 쓴다 — test 구성 자체는 배정 �
 from __future__ import annotations
 
 import argparse
+import collections
 import json
 import random
 from pathlib import Path
@@ -21,9 +22,12 @@ from pathlib import Path
 def load_assignment(path: Path) -> set[tuple[str, str]]:
     """blind/iaa _assignment.json에서 (persona_id, post) 집합을 읽는다."""
     if not path.is_file():
-        return set()
+        raise SystemExit(f"배정 파일이 없다: {path} — 없으면 test 가 비어서 조용히 누수된다")
     d = json.loads(path.read_text(encoding="utf-8-sig"))
-    return {(g["persona_id"], g["post"]) for g in d.get("글", [])}
+    keys = {(g["persona_id"], g["post"]) for g in d.get("글", [])}
+    if not keys:
+        raise SystemExit(f"배정 파일에 글이 없다: {path}")
+    return keys
 
 
 def main() -> int:
@@ -51,11 +55,11 @@ def main() -> int:
                 continue
             try:
                 r = json.loads(line)
-            except json.JSONDecodeError:
-                continue
+            except json.JSONDecodeError as e:
+                raise SystemExit(f"JSON 오류: {f}: {e}")
             post_id = r.get("post_id")
             if not post_id:
-                continue  # 프로필 레코드는 제외
+                raise SystemExit(f"post_id 없는 레코드: {f}")
             post = post_id.split("_")[-1]
             key = (pid, post)
             if key in test_keys:
@@ -66,11 +70,16 @@ def main() -> int:
 
     if test_keys:
         missing = sorted(test_keys)
-        print(f"⚠ 배정됐지만 posts에 없는 글 {len(missing)}건 (아직 생성 안 됐거나 다른 사유)")
+        print(f"🔴 배정됐지만 posts에 없는 글 {len(missing)}건 — 배정과 코퍼스가 어긋났다")
         for k in missing[:10]:
             print("  ", k)
+        return 1
 
-    print(f"train {len(train_recs)}편 · test {len(test_recs)}편")
+    kind_counts = {
+        "train": dict(sorted(collections.Counter(r.get("kind", "?") for r in train_recs).items())),
+        "test": dict(sorted(collections.Counter(r.get("kind", "?") for r in test_recs).items())),
+    }
+    print(f"train {len(train_recs)}편 {kind_counts['train']} · test {len(test_recs)}편 {kind_counts['test']}")
 
     if a.dry_run:
         print("(--dry-run — 파일을 저장하지 않았다)")
@@ -107,6 +116,9 @@ def main() -> int:
         "seed": a.seed,
         "train_count": len(train_recs),
         "test_count": len(test_recs),
+        "kind_counts": kind_counts,
+        "test_personas": len({r.get("persona_id") for r in test_recs}),
+        "note": "test 는 blind·IAA 배정 = 전부 단서 글(kind=clue). 잡담·ambient 가 없어 과탐·기권 평가엔 별도 표본이 필요하다. test 인물은 전원 train 에도 있다(인물 분리 아님).",
         "blind_assignment": a.blind_assignment,
         "iaa_assignment": a.iaa_assignment,
     }
