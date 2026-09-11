@@ -36,7 +36,8 @@ import jinja2  # noqa: E402
 import requests  # noqa: E402
 from flask import abort, redirect, render_template, request, send_from_directory, session  # noqa: E402
 
-PADO = os.getenv("PADOPOOL_URL", "http://localhost:8000").rstrip("/")
+# 127.0.0.1 — Windows 에서 「localhost」 는 IPv6(::1) 를 먼저 찔러 보고 실패한 뒤에야 IPv4 로 가서 요청마다 2초가 샌다
+PADO = os.getenv("PADOPOOL_URL", "http://127.0.0.1:8000").rstrip("/")
 KST = timezone(timedelta(hours=9))
 
 
@@ -59,7 +60,25 @@ app.jinja_loader = jinja2.ChoiceLoader([
 
 @app.get("/pado-static/<path:fname>")
 def pado_static(fname: str):
-    return send_from_directory(HERE / "static", fname)
+    return send_from_directory(HERE / "static", fname, max_age=3600)   # CSS·JS 는 1시간 캐시
+
+
+@app.after_request
+def _gzip(resp):
+    """텍스트 응답은 gzip — 첫 화면 HTML 이 190KB(글 전문 + 댓글)라 압축이 5배쯤 줄인다. 개발 서버엔 압축이 없다."""
+    import gzip
+    if resp.direct_passthrough and resp.mimetype in ("text/css", "application/javascript", "text/javascript"):
+        resp.direct_passthrough = False          # 정적 CSS·JS 도 읽어서 압축한다 (셋이 74KB → 20KB)
+    if (resp.status_code != 200 or resp.direct_passthrough or "gzip" not in request.headers.get("Accept-Encoding", "")
+            or not resp.mimetype or not (resp.mimetype.startswith("text/") or resp.mimetype in ("application/json", "application/javascript"))
+            or resp.content_length is not None and resp.content_length < 1024):
+        return resp
+    data = gzip.compress(resp.get_data(), compresslevel=6)
+    resp.set_data(data)
+    resp.headers["Content-Encoding"] = "gzip"
+    resp.headers["Vary"] = "Accept-Encoding"
+    resp.headers["Content-Length"] = str(len(data))
+    return resp
 
 
 # 외부에 잠깐 노출할 때(터널·임시 배포) 링크 유출 대비 — DEMO_ACCESS_KEY 가 있으면 ?key= 로 한 번 들어와야 한다(쿠키로 기억)

@@ -33,7 +33,7 @@ from engine.pipeline import analyze, compute, evidence_posts  # noqa: E402
 from engine.recommend import (_line_of, candidates_for, fit_particle, ladder_candidates,  # noqa: E402
                               leading_particle, recommend, stage2_output)
 
-SNS_URL = os.getenv("SNS_URL", "http://localhost:3000").rstrip("/")
+SNS_URL = os.getenv("SNS_URL", "http://127.0.0.1:3000").rstrip("/")   # localhost 는 Windows 에서 IPv6 시도로 2초 지연
 DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,E20,C02,D06").split(",") if p]
 
 app = Flask(__name__)

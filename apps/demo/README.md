@@ -27,8 +27,8 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 
 | 환경변수 | 기본 | 뜻 |
 |---|---|---|
-| `PADOPOOL_URL` | `http://localhost:8000` | 우리뜰이 부르는 파도풀 API |
-| `SNS_URL` | `http://localhost:3000` | 파도풀 단독 화면(개발용)이 읽는 우리뜰 |
+| `PADOPOOL_URL` | `http://127.0.0.1:8000` | 우리뜰이 부르는 파도풀 API (localhost 는 Windows 에서 IPv6 시도로 요청마다 2초 지연) |
+| `SNS_URL` | `http://127.0.0.1:3000` | 파도풀 단독 화면(개발용)이 읽는 우리뜰 |
 | `DEMO_PORT` · `SNS_PORT` | 8000 · 3000 | 포트 |
 | `DEMO_PERSONAS` | `D05,D01,E20,C02,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
 | `DEMO_ACCESS_KEY` | 없음(문 열림) | 있으면 우리뜰이 `?key=<값>` 으로 들어온 사람에게만 쿠키를 주고, 나머지는 403. 터널·배포로 밖에 열 때 켠다 |
