@@ -243,7 +243,7 @@ def main() -> None:
 
     conn.commit()
     conn.close()
-    print(f"완료 — 인물 {len(persona_ids)}명 · 새 글 {total_posts}편 · 새 사진 캡션 {total_photos}건 → {db_path}")
+    print(f"완료: 인물 {len(persona_ids)}명 / 새 글 {total_posts}편 / 새 사진 캡션 {total_photos}건 / {db_path}")
 
 
 if __name__ == "__main__":
