@@ -42,7 +42,8 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 | `DEMO_PERSONAS` | `D05,D01,E20,C02,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
 | `DEMO_ACCESS_KEY` | 없음(문 열림) | 있으면 Veilo 가 `?key=<값>` 으로 들어온 사람에게만 쿠키를 주고, 나머지는 403. 터널·배포로 밖에 열 때 켠다 |
 | `DEMO_STATION_SCOPE` | `emd` | 역 이름을 «역이 놓인 동 하나»(`emd`)로 볼지 «반경 700m 안 이웃 동까지»(`near`)로 볼지. 특정성 규칙의 판단(C)이라 스위치로 둠 |
-| `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` + `ANTHROPIC_API_KEY` 가 있을 때만 (Claude) 리라이트 후보를 외부 API 로 만든다. provenance 에 표시된다 |
+| `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` 일 때 «다르게 쓰기» 후보를 Claude 로 만든다(하이브리드 — 사다리·인구 수는 규칙, 말은 모델, 모델 답은 규칙이 다시 검사). 키는 `ANTHROPIC_API_KEY` 또는 `ANTHROPIC_AUTH_TOKEN`, 환경변수에 없으면 `.env` 에서 읽는다. provenance 에 표시된다 |
+| `ANTHROPIC_BASE_URL` | Anthropic 본사 | 협회 게이트웨이(monogpt.kr monorouter)는 `https://monogpt.kr/api/monorouter/v1/anthropic` — 끝의 `/v1` 은 SDK 가 붙인다. 모델 이름은 `claude-haiku-4.5` 형식(`DEMO_EXTERNAL_MODEL`) |
 | `C1_MODEL_PATH` | 없음 | B 의 KoELECTRA 가중치 경로. 있으면 규칙 탐지기 대신 실제 모델 |
 
 ## 시연 — 전부 Veilo 안에서

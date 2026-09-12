@@ -75,6 +75,14 @@ def _line_of(text: str, start: int, end: int) -> tuple[int, int]:
     return ls, (len(text) if le < 0 else le)
 
 
+def sentence_context(text: str, start: int, end: int) -> dict[str, Any]:
+    """스팬이 든 줄(문장)의 앞 줄·뒤 줄 — 외부 모델에 «문맥» 으로 준다. 글 전체는 안 보낸다."""
+    ls, le = _line_of(text, start, end)
+    before = [l for l in text[:ls].split("\n") if l.strip()]
+    after = [l for l in text[le:].split("\n") if l.strip()]
+    return {"prev": before[-1].strip() if before else None, "next": after[0].strip() if after else None}
+
+
 _PARTICLE = re.compile(r"^(으로|이|가|을|를|은|는|과|와)(?=[\s,.!?~…)」』]|$)")
 _TO_CONS = {"가": "이", "를": "을", "는": "은", "와": "과"}
 _TO_VOW = {v: k for k, v in _TO_CONS.items()}
@@ -192,9 +200,10 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     return out
 
 
-def candidates_for(sentence: str, sp: dict[str, Any]) -> tuple[list[dict[str, str]], bool]:
-    """스팬 하나의 리라이트 후보 3안 — (후보, 외부 LLM 사용 여부). 외부가 꺼져 있으면 캐시 → 표면형 → 유형별 일반 후보."""
-    cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지")
+def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | None = None) -> tuple[list[dict[str, str]], bool]:
+    """스팬 하나의 «다르게 쓰기» 후보 — (후보, 외부 LLM 사용 여부). 외부(문맥 포함)가 켜져 있으면 그것, 아니면 캐시 → 표면형 → 유형별 일반 후보.
+    사다리(넓히기)는 ladder_candidates 가 따로 낸다 — 숫자는 규칙, 말은 모델."""
+    cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
     if cands:
         return cands, True
     if sp["text"] in _CACHE:
@@ -282,9 +291,11 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         text = p["texts"][sp["text_id"]]
         ls, le = _line_of(text, sp["start"], sp["end"])
         sentence = text[ls:le]
-        cands, used = candidates_for(sentence, sp)
-        ext_used = ext_used or used
         widen = ladder_candidates(view, p["post_id"], sp, p["notes"].get(sp["span_id"], {}))
+        ctx = {**sentence_context(text, sp["start"], sp["end"]), "ladder": [w["text"] for w in widen],
+               "particle": leading_particle(text[sp["end"]:])}
+        cands, used = candidates_for(sentence, sp, ctx)
+        ext_used = ext_used or used
         cands = ([{"text": w["text"], "note": w["note"]} for w in widen] + cands)[:3]
         for c in cands:
             tail = sentence[sp["end"] - ls:]

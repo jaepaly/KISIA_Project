@@ -47,7 +47,9 @@ python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」�
   **D06 5/199,109**. (D11·D17 은 9/8 에 E20·C02 로 교체 — 시골 노년 중복·태그 효과 약함.) D05 가 메인, D06 이 두 번째 시연감.
 - 리라이트: 색칠된 표현 클릭 → 팝오버 — **넓히기 사다리**(진영읍 → 김해시 → 경남, 단마다 실제 k) → 지우기 → **그대로 두기**.
   바닥이 다른 글이면 「⤷ 다른 글 N편의 「기흥」이 남아」 + 「그것까지 치우면 → k」 + 태그 끄기 버튼.
-- 외부 LLM 은 Claude API, 기본 꺼짐. 켜면 리라이트 후보가 실제 생성으로 바뀐다 (`DEMO_EXTERNAL_REWRITE=true` + `ANTHROPIC_API_KEY`).
+- 외부 LLM 은 Claude, 기본 꺼짐. 켜면(`DEMO_EXTERNAL_REWRITE=true` + `.env` 의 `ANTHROPIC_API_KEY`·`ANTHROPIC_BASE_URL`) «다르게 쓰기» 후보가
+  협회 게이트웨이의 하이쿠로 바뀐다 — 사다리와 인구 수는 규칙 그대로, 모델 답은 탐지기가 다시 검사해 지명·나이가 남으면 그 단계 숫자를 붙인다.
+  점검이 표현당 3~5초 느려진다(스팬끼리 병렬). 9/12 로컬에서 켜 봄. 비교 도구 `tools/compare_rewrite.py`.
 - 1단 탐지는 규칙 스탑갭. 화면에 명시. `C1_MODEL_PATH` 로 B 모델 교체 가능.
 - **역 사전** (9/11): 「용마산역」「태릉입구」 같은 도시철도 역 이름 764개를 행정동으로 푼다 (`data/stations.json`, `DEMO_STATION_SCOPE=emd|near`).
   본 프로젝트로 보낼 PR 초안은 브랜치 `D/dict/stations` (main 기준) — C 가 검토·승인만 하면 된다. 이슈·PR 게시는 사용자 OK 뒤.

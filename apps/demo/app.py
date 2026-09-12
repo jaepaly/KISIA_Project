@@ -30,8 +30,8 @@ from markupsafe import Markup  # noqa: E402
 
 from engine import external  # noqa: E402
 from engine.pipeline import analyze, compute, evidence_posts  # noqa: E402
-from engine.recommend import (_line_of, candidates_for, fit_particle, ladder_candidates,  # noqa: E402
-                              leading_particle, recommend, stage2_output)
+from engine.recommend import (_line_of, candidates_for, fit_particle, k_with_note, ladder_candidates,  # noqa: E402
+                              leading_particle, recommend, sentence_context, stage2_output)
 
 SNS_URL = os.getenv("SNS_URL", "http://127.0.0.1:3000").rstrip("/")   # localhost 는 Windows 에서 IPv6 시도로 2초 지연
 DEMO_PERSONAS = [p for p in os.getenv("DEMO_PERSONAS", "D05,D01,E20,C02,D06").split(",") if p]
@@ -132,6 +132,23 @@ def traps(view: dict) -> list[dict]:
     return out
 
 
+def _leak_of(text: str) -> dict | None:
+    """대체 표현 안에 지명·나이가 남아 있는지 — 탐지기를 그 표현에만 돌린다. {"place": 정본} | {"age": n} | {"age_decade": d} | None"""
+    from engine.detect import detect_post
+    r = detect_post({"post_id": "x", "title": None, "body": text, "photos": [], "activity_meta": {}})
+    for sp in r["record"]["spans"]:
+        n = r["notes"].get(sp["span_id"], {})
+        if sp["subject"] != "self" or n.get("exclude"):
+            continue
+        if n.get("place"):
+            return {"place": n["place"]}
+        if n.get("age") is not None:
+            return {"age": n["age"]}
+        if n.get("age_decade") is not None:
+            return {"age_decade": n["age_decade"]}
+    return None
+
+
 def rewrite_forms(res: dict) -> dict[str, list[dict]]:
     """조치 ③ 카드용 — span_id → 후보 3안. 각 후보에 «Veilo 수정 화면으로 보낼 본문 전체» 를 붙인다."""
     view = res["view"]
@@ -224,16 +241,38 @@ def api_check():
     # 초안 스팬마다 — 에디터에서 그 자리를 누르면 바로 고를 수 있게 후보 3안과 «이 표현을 빼면 k» 를 붙인다
     spans_out = []
     ext_used = after["stage2"]["provenance"]["external_llm_used"]
-    for s in self_spans:
+
+    def _one(s: dict) -> tuple[dict, list, list, bool]:
+        """스팬 하나의 사다리 + 다르게 쓰기 후보. 외부 모델은 스팬마다 한 번 — 병렬로 돈다."""
         text = dv["texts"][s["text_id"]]
         ls, le = _line_of(text, s["start"], s["end"])
-        cands, used = candidates_for(text[ls:le], s)
+        ladder = ladder_candidates(after["view"], "draft", s, dv["notes"].get(s["span_id"], {}))
+        ctx = {**sentence_context(text, s["start"], s["end"]), "ladder": [w["text"] for w in ladder],
+               "particle": leading_particle(text[s["end"]:])}
+        cands, used = candidates_for(text[ls:le], s, ctx)
+        return s, ladder, cands, used
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        results = list(pool.map(_one, self_spans))
+
+    for s, ladder, cands, used in results:
+        text = dv["texts"][s["text_id"]]
         ext_used = ext_used or used
         k_without = compute(after["view"], exclude_spans=frozenset({s["span_id"]}))["k"]
-        # 지우지 말고 넓히기 — 지명은 상위 행정구역, 나이는 10년 단위. 각 단에 실제 k. 그 뒤에 일반 후보(지우기)
-        ladder = ladder_candidates(after["view"], "draft", s, dv["notes"].get(s["span_id"], {}))
-        merged = [{**c, "kind": "widen"} for c in ladder] + \
-                 [{**c, "k": k_without, "kind": "erase"} for c in cands][: (2 if ladder else 3)]
+        # 모델이 낸 말을 규칙이 검사한다 — 지명·나이가 남아 있으면 그 단계의 실제 k 를 붙이고, 원래와 같은 단서면 버린다
+        checked = []
+        for c in cands:
+            kind, k = "erase", k_without
+            leak = _leak_of(c["text"]) if c.get("source") == "llm" and c["text"] else None
+            if leak:
+                if leak.get("place") == dv["notes"].get(s["span_id"], {}).get("place") or leak.get("age") == dv["notes"].get(s["span_id"], {}).get("age"):
+                    continue                                  # 같은 단서가 그대로 — 바뀐 게 없다
+                patch = {"place": leak["place"], "codes": None, "station": None} if leak.get("place") else {"age": leak.get("age"), "age_decade": leak.get("age_decade")}
+                k = k_with_note(after["view"], "draft", s["span_id"], patch, "location" if leak.get("place") else "age")["k"]
+                kind = "widen"
+            checked.append({**c, "k": k, "kind": kind})
+        merged = [{**c, "kind": "widen"} for c in ladder] + checked[: (2 if ladder else 3)]
         # 뒤에 조사가 붙어 있으면 치환 범위에 넣고 후보마다 받침에 맞는 조사를 붙여 준다 (「이 나이이 되니」 방지)
         particle = leading_particle(text[s["end"]:])
         spans_out.append({"span_id": s["span_id"], "text": s["text"] + particle, "particle": particle,
