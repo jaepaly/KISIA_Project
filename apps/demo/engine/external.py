@@ -1,7 +1,7 @@
 """외부 LLM 호출은 이 파일에서만 한다 (E-system.md §2 「한 파일에서만 · 게이트를 통과」).
 
 기본값은 **꺼짐**이다. 켜려면 두 조건이 모두 필요하다 —
-    DEMO_EXTERNAL_REWRITE=true   AND   ANTHROPIC_API_KEY 가 있다.
+    DEMO_EXTERNAL_REWRITE=true   AND   ANTHROPIC_API_KEY 또는 ANTHROPIC_AUTH_TOKEN 이 있다 (선택: ANTHROPIC_BASE_URL).
 
 켜지면 리라이트 후보 3안을 API 로 만들고, provenance.external_llm_used 가 true 가 된다.
 꺼져 있으면 `recommend.py` 의 캐시·규칙 후보를 쓴다. 데모 페이지는 어느 쪽을 썼는지 표시한다.
@@ -19,15 +19,29 @@ from typing import Any
 MODEL = os.getenv("DEMO_EXTERNAL_MODEL", "claude-haiku-4-5-20251001")
 
 
+def _client():
+    """API 키(ANTHROPIC_API_KEY) 또는 인증 토큰(ANTHROPIC_AUTH_TOKEN) 어느 쪽이든. ANTHROPIC_BASE_URL 이 있으면 그리로."""
+    import anthropic
+    kw = {}
+    if os.getenv("ANTHROPIC_AUTH_TOKEN"):
+        kw["auth_token"] = os.environ["ANTHROPIC_AUTH_TOKEN"]
+    elif os.getenv("ANTHROPIC_API_KEY"):
+        kw["api_key"] = os.environ["ANTHROPIC_API_KEY"]
+    if os.getenv("ANTHROPIC_BASE_URL"):
+        kw["base_url"] = os.environ["ANTHROPIC_BASE_URL"]
+    # 협회 게이트웨이(monogpt.kr monorouter)는 SDK 기본 User-Agent 를 WAF 가 막는다 — 우리 이름으로 보낸다
+    return anthropic.Anthropic(**kw, default_headers={"User-Agent": "padopool-demo/0.1"})
+
+
 def enabled() -> bool:
-    return os.getenv("DEMO_EXTERNAL_REWRITE", "").lower() == "true" and bool(os.getenv("ANTHROPIC_API_KEY"))
+    return (os.getenv("DEMO_EXTERNAL_REWRITE", "").lower() == "true"
+            and bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN")))
 
 
 def rewrite_candidates(sentence: str, span_text: str, voice_hint: str) -> list[dict[str, Any]] | None:
     """[{"text": 대체 표현, "note": 한 줄 설명}] ×3, 실패·비활성이면 None."""
     if not enabled():
         return None
-    import anthropic
 
     system = ("너는 한국어 글의 프라이버시 리라이터다. 주어진 문장에서 표시된 구간만 바꾼다. "
               "말투·어미·방언은 그대로 두고, 신상(지명·행정단위·배차 간격·나이·소득 주기)이 새는 정보만 지운다. "
@@ -35,7 +49,7 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str) -> list[d
               'JSON 배열만 출력한다: [{"text": "...", "note": "..."}]')
     user = f"문장: {sentence}\n바꿀 구간: {span_text}\n말투 힌트: {voice_hint}"
     try:
-        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+        client = _client()
         msg = client.messages.create(
             model=MODEL,
             max_tokens=512,
