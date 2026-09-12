@@ -415,3 +415,55 @@ python -X utf8 scripts/data/build_legal_admin_map.py `
 `legal_admin_map.json`의 구조 기준일은 `2026-07-01`이고 인구 사전의
 기준월은 `2026-07`이다. 원본 배포처는 행정표준코드관리시스템
 <https://www.code.go.kr/>이다.
+
+---
+
+## 11. `stations.json` — 시설 사전 1차: 도시철도 역 → 행정동 (2026-09-11 · D 가 초안, C 검토)
+
+W4 「시설·랜드마크 `facilities.json`」 의 첫 조각이다. 역 이름은 지명 사전에 없어 「용마산역 근처에 산다」 가
+사는 곳 단서로 안 풀리던 것(대회 데모 9/10 E 피드백)을 막는다. 시설 전체가 아니라 **도시철도 역 764개**만 담는다.
+`facilities.json` 으로 합칠지, 이 파일을 그대로 둘지는 C 가 정한다.
+
+### 레코드
+
+```json
+{
+  "name": "용마산역",
+  "aliases": ["용마산역", "용마산"],
+  "lines": ["서울 도시철도 7호선"],
+  "operator": "서울교통공사",
+  "lat": 37.5735, "lon": 127.0866,
+  "emd": "1126054000",                       // 역이 놓인 행정동 (regions.json 코드)
+  "emd_name": "서울특별시 중랑구 면목제4동",
+  "sigungu": "1126000000",
+  "near": ["1121571000", "1121572000", "1126057000"],   // 반경 700m 안에 경계가 닿는 이웃 행정동
+  "ambiguous": false                         // 같은 이름의 역이 다른 도시에도 있으면 true (시청·중앙·교대 …)
+}
+```
+
+- `emd` 와 `near` 의 코드는 전부 `regions.json` 에 있다 (테스트 `test_facilities.py` 가 확인).
+- 환승역은 레코드 하나에 `lines` 여러 개. 같은 이름이 1.5km 안에 있으면 같은 역으로 본다.
+- `ambiguous` 역은 이름만으로는 코드를 주지 않는다 — 행정구역 사전이 동명 지명(중앙동 31곳)을 안 고르는 것과 같은 원칙.
+
+### C 가 정할 것
+
+역 하나를 어느 범위로 볼지 — `kopl.c2_specificity.facilities.station_lookup(name, scope=…)`
+- `scope="emd"` 역이 놓인 행정동 하나 (면목제4동 17,439명)
+- `scope="near"` 이웃 행정동까지 (면목제4동 + 3개 동 79,803명)
+엔진(`engine.resolve`)에 어떻게 물릴지도 C 몫이다. 이 PR 은 자료와 조회 함수까지만 둔다.
+
+### 원본과 재현
+
+| 자료 | 출처 | 비고 |
+|---|---|---|
+| 역 이름·노선·좌표 | 공공데이터포털 「전국도시철도역사정보표준데이터」 (국가철도공단 취합, 898건, 기준일 2019~2021) <https://www.data.go.kr/data/15013205/standard.do> | 공공누리 1유형. 회원가입 없이 `columList.json → standard.json` 으로 받는다 |
+| 행정동 경계 | vuski/admdongkor `HangJeongDong_ver20260701.geojson` (행안부 `adm_cd2` 10자리) <https://github.com/vuski/admdongkor> | 공개 저장소. 34MB 라 커밋하지 않는다 |
+
+```powershell
+python -X utf8 scripts/data/build_stations.py `
+  --stations "$env:USERPROFILE\Downloads\stations_raw.json" `
+  --bounds   "$env:USERPROFILE\Downloads\HangJeongDong_ver20260701.geojson" `
+  --out data/dict/admin/stations.json
+```
+
+점-다각형 판정은 순수 파이썬(의존성 없음), 1~2초. 2019~2021 이후 개통한 역(신림선·GTX 등)은 원본에 없다 — 표준데이터가 갱신되면 다시 돌린다.
