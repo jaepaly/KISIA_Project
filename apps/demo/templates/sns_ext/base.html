@@ -37,7 +37,7 @@
       <a class="ut-restart" href="/" onclick="padoTourReset(); return false;" title="첫 화면으로 돌아가서 3분 체험을 처음부터 시작해요">⟲ 처음부터</a>
       <nav class="ut-nav">
         <a href="/new" class="write {{ 'on' if nav == 'new' }}">✎ 글쓰기</a>
-        {% if me %}<a href="/u/{{ me.user_ref }}/check" class="chk {{ 'on' if nav == 'check' }}" title="파도풀로 내 글 점검">🌊 점검</a>{% endif %}
+        {% if me %}<a href="/u/{{ me.user_ref }}/check" class="chk {{ 'on' if nav == 'check' }}" title="파도풀로 내 글 점검" data-busy="파도풀이 공개 글을 모아 세고 있어요">🌊 점검</a>{% endif %}
         <a href="/login" class="icon-btn {{ 'on' if nav == 'login' }}" title="알림" aria-label="알림">🔔</a>
         <a href="{% if me %}/u/{{ me.user_ref }}{% else %}/login{% endif %}" class="avatar" title="{% if me %}{{ me.nickname }}{% else %}로그인{% endif %}">
           {% if me %}{{ ut_avatar(me.author_id) }}{% else %}<svg class="sym"><use href="#veilo-sym"/></svg>{% endif %}</a>

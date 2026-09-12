@@ -33,7 +33,7 @@
           </form>
           {% endif %}
           <a role="menuitem" href="/posts/{{ p.post_id }}/edit{% if back %}?back={{ back }}{% endif %}"><i>✎</i>본문 고치기<small>파도풀 제안을 골라 넣거나 직접 써요</small></a>
-          {% if p.user_ref %}<a role="menuitem" href="/u/{{ p.user_ref }}/check"><i>🌊</i>내 계정 점검<small>이 글만이 아니라 이 계정의 공개 글 전체를 파도풀로</small></a>{% endif %}
+          {% if p.user_ref %}<a role="menuitem" href="/u/{{ p.user_ref }}/check" data-busy="파도풀이 공개 글을 모아 세고 있어요"><i>🌊</i>내 계정 점검<small>이 글만이 아니라 이 계정의 공개 글 전체를 파도풀로</small></a>{% endif %}
         </div>
       </div>
     </div>

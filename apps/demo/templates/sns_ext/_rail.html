@@ -34,7 +34,7 @@
 <nav class="rail-menu rv" aria-label="메뉴">
   <a href="/" class="{{ 'on' if nav == 'home' }}"><i>🏠</i>홈</a>
   {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}"><i>{{ ut_avatar(me.author_id) }}</i>내 블로그</a>
-  <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}"><i>🌊</i>파도풀 점검</a>{% endif %}
+  <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}" data-busy="파도풀이 공개 글을 모아 세고 있어요"><i>🌊</i>파도풀 점검</a>{% endif %}
   <a href="/new" class="{{ 'on' if nav == 'new' }}"><i>✎</i>글쓰기</a>
   <a href="/?tab=photo"><i>🖼</i>사진</a>
   <a href="/?tab=guest"><i>📒</i>방명록</a>
@@ -56,7 +56,7 @@
   </div>
   <div class="rail-pado-foot">
     <span class="sk" data-sub>이름이나 전화번호가 없어도 흩어진 단서가 합쳐지면 사람이 특정돼요.</span>
-    <a class="go" href="/u/{{ me.user_ref }}/check">내 글 점검 →</a>
+    <a class="go" href="/u/{{ me.user_ref }}/check" data-busy="파도풀이 공개 글을 모아 세고 있어요">내 글 점검 →</a>
   </div>
 </div>
 {% endif %}

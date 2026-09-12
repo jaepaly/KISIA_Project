@@ -163,6 +163,19 @@
       const on = btn.classList.toggle("done");
       btn.textContent = on ? "✓ 이웃" : "+ 이웃추가";
     }));
+    // 점검 중 표시 — 파도풀 호출은 0.7초(규칙)에서 3~10초(Claude 켬)까지 걸린다. 누르자마자 가운데에 원이 돌고 글이 뜬다
+    const busy = (msg) => {
+      if ($(".ut-busy")) return;
+      const o = document.createElement("div"); o.className = "ut-busy";
+      o.innerHTML = '<div class="box"><div class="spin"></div><b>' + (msg || "파도풀이 세는 중이에요") + '</b><span>공개 글을 모아 나일 수 있는 사람 수를 세고, 표현마다 어울리는 후보를 만들어요</span></div>';
+      document.body.appendChild(o);
+    };
+    document.addEventListener("click", (e) => {
+      const el = e.target.closest("[data-busy]"); if (!el || e.defaultPrevented) return;
+      if (el.tagName === "A" && (e.metaKey || e.ctrlKey || el.target === "_blank")) return;
+      setTimeout(() => busy(el.dataset.busy), 0);
+    });
+    addEventListener("pageshow", () => { const o = $(".ut-busy"); o && o.remove(); });   // 뒤로가기(bfcache)로 돌아오면 지운다
     // ⋯ 메뉴 — 글 화면 오른쪽 위. 바깥 클릭·Esc 로 닫힌다
     $$("[data-menu]").forEach((m) => {
       const btn = $("[data-menu-btn]", m), pop = $(".ut-menu-pop", m);

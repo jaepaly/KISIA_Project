@@ -42,7 +42,7 @@
     <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
 
     <div class="editor-actions">
-      <button type="submit" formaction="/check-draft" data-recheck class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>{% if check %}🌊 고쳐 쓴 뒤 다시 점검{% else %}🌊 파도풀로 점검{% endif %}</button>
+      <button type="submit" formaction="/check-draft" data-recheck data-busy="파도풀이 이 글을 점검하고 있어요" class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)" {% if not authors %}disabled{% endif %}>{% if check %}🌊 고쳐 쓴 뒤 다시 점검{% else %}🌊 파도풀로 점검{% endif %}</button>
       <button type="submit" {% if not authors %}disabled{% endif %}>{% if check and check.narrows %}알고도 올리기{% else %}올리기{% endif %}</button>
       <span style="font-size:12px;color:var(--ut-ink3)">점검한 뒤에 고쳐 쓰고 다시 점검할 수 있어요.</span>
     </div>

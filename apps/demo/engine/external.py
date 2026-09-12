@@ -63,6 +63,8 @@ def enabled() -> bool:
 
 
 _PARTICLE_ALT = {"이": "가", "가": "이", "을": "를", "를": "을", "은": "는", "는": "은", "과": "와", "와": "과"}
+# 구간 바로 뒤에 붙는 조사 — 문장에 그대로 남아 있으므로 모델 답 끝에 같은 조사가 있으면 뗀다 (「오일장에」→「장에」+「에」 = 「장에에」 방지)
+_TAIL_PARTICLES = ("에서는", "에서", "으로", "부터", "까지", "한테", "께서", "에", "로", "의", "도", "만", "은", "는", "이", "가", "을", "를", "과", "와")
 
 
 def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> str:
@@ -71,6 +73,12 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
     tail = sentence[i + len(span_text):] if i >= 0 else ""
     if particle and tail.startswith(particle):
         tail = tail[len(particle):]
+    # 문장에 남아 있는 조사가 답 끝에도 있으면 뗀다
+    for tp in _TAIL_PARTICLES:
+        if tail.startswith(tp) and out.endswith(tp) and len(out) > len(tp):
+            out = out[: -len(tp)].rstrip()
+            tail = tail[len(tp):]
+            break
     tail = tail.lstrip()
     for pt in ({particle, _PARTICLE_ALT.get(particle, "")} - {""}):
         if out.endswith(pt) and len(out) > len(pt):

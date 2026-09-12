@@ -403,3 +403,11 @@ body.welcome-open{overflow:hidden}
   *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;scroll-behavior:auto!important}
   .rv{opacity:1;transform:none}
 }
+
+/* ── 점검 중 오버레이 ── */
+.ut-busy{position:fixed;inset:0;z-index:60;background:rgba(248,243,237,.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;animation:fadein .2s}
+.ut-busy .box{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:18px;padding:26px 30px;box-shadow:var(--ut-shadow-hi);max-width:min(360px,calc(100vw - 40px));text-align:center}
+.ut-busy .spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--ut-sea-soft);border-top-color:var(--ut-sea);animation:spin .9s linear infinite}
+.ut-busy b{font-size:15px;color:var(--ut-ink)}
+.ut-busy span{font-size:12.5px;color:var(--ut-ink3);line-height:1.5}
+@keyframes spin{to{transform:rotate(360deg)}}
