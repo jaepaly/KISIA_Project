@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}내 글 점검 — {{ a.nickname }} — 우리뜰{% endblock %}
+{% block title %}내 글 점검 — {{ a.nickname }} — Veilo{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="/pado-static/demo.css">
+<link rel="stylesheet" href="/pado-static/demo.css?v={{ asset_v }}">
 <style>
-  /* demo.css 가 뒤에 오므로 우리뜰 골격을 되돌린다 — 진단 패널만 파도풀 톤을 쓴다 */
+  /* demo.css 가 뒤에 오므로 Veilo 골격을 되돌린다 — 진단 패널만 파도풀 톤을 쓴다 */
   body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
   .pado{background:var(--panel);border:1px solid var(--line);border-radius:var(--ut-radius);
         padding:20px 22px;box-shadow:var(--ut-shadow)}
   .pado .card{border-radius:12px;scroll-margin-top:140px}
-  .pado h3.ct,.pado .lede,.pado .funnel,.pado .evi,.pado .act{font-family:"IBM Plex Sans KR",sans-serif}
+  .pado h3.ct,.pado .lede,.pado .funnel,.pado .evi,.pado .act{font-family:Pretendard,sans-serif}
   .pado-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .pado-hd .mark{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--sea-ink)}
   .pado-hd .by{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right;line-height:1.5}
@@ -22,14 +22,14 @@
   .pado-tabs a{flex:1 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-size:13px;color:var(--ink2);
     border:1px solid transparent;white-space:nowrap;transition:background .15s,color .15s}
   .pado-tabs a .n{width:22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;
-    font-family:"IBM Plex Mono",Consolas,monospace;font-size:11.5px;color:var(--ink3);flex:0 0 22px}
+    font-family:Pretendard,Consolas,monospace;font-size:11.5px;color:var(--ink3);flex:0 0 22px}
   .pado-tabs a:hover{background:var(--panel2);text-decoration:none}
   .pado-tabs a.on{background:var(--sea-soft);color:var(--sea-ink);font-weight:700;border-color:#bcd9d6}
   .pado-tabs a.on .n{background:var(--sea);color:#fff;border-color:var(--sea)}
   .pado-tabs a.seen .n{background:var(--low-soft);color:var(--low);border-color:#bfe0c8}
   .card[data-tab][hidden]{display:none}
   .tab-nav{display:flex;gap:10px;align-items:center;margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink3)}
-  .tab-nav .pos{font-family:"IBM Plex Mono",Consolas,monospace}
+  .tab-nav .pos{font-family:Pretendard,Consolas,monospace}
   .tab-nav button{background:var(--panel2);color:var(--ink2);border:1px solid var(--line);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600}
   .tab-nav button.next{margin-left:auto;background:var(--sea);color:#fff;border-color:var(--sea)}
   .tab-nav button.next:hover{background:#0a5b57}
@@ -40,7 +40,7 @@
   .tip{position:relative;cursor:help;border-bottom:1px dotted var(--ink3);transition:color .12s,border-color .12s,background .12s;border-radius:3px}
   .tip:hover,.tip:focus{color:var(--sea-ink);border-bottom-color:var(--sea);background:var(--sea-soft);outline:none}
   .tip::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 8px);z-index:30;width:min(300px,80vw);background:var(--ut-ink);color:#fff;
-    font-size:12px;line-height:1.55;font-weight:400;font-family:"IBM Plex Sans KR",sans-serif;padding:9px 11px;border-radius:9px;
+    font-size:12px;line-height:1.55;font-weight:400;font-family:Pretendard,sans-serif;padding:9px 11px;border-radius:9px;
     box-shadow:0 12px 30px -12px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .12s,transform .12s,visibility .12s;
     white-space:normal;letter-spacing:0;text-align:left;pointer-events:none}
   .tip::before{content:"";position:absolute;left:10px;top:calc(100% + 2px);border:6px solid transparent;border-bottom-color:var(--ut-ink);opacity:0;visibility:hidden;transition:opacity .12s;z-index:31}
@@ -126,7 +126,7 @@
 </div>
 <div class="rail-card rail-note rv d1">
   <b>파도풀은 무엇을 받나요</b>
-  <p>우리뜰이 넘겨주는 <b>공개 글</b>(제목, 본문, 사진 설명, 위치태그, 프로필 소개)뿐이에요. 저장하지 않고 결과만 돌려준 뒤 잊어요. 글을 바꾸는 버튼은 전부 우리뜰에 있어요.</p>
+  <p>Veilo 가 넘겨주는 <b>공개 글</b>(제목, 본문, 사진 설명, 위치태그, 프로필 소개)뿐이에요. 저장하지 않고 결과만 돌려준 뒤 잊어요. 글을 바꾸는 버튼은 전부 Veilo 에 있어요.</p>
 </div>
 {% else %}
 {% include "_rail.html" %}
@@ -141,7 +141,7 @@
     <div class="pado-hd">
       <span class="mark">🌊 파도풀 점검</span>
       <span style="font-size:13px;color:var(--ink2)">{{ ut_avatar(a.author_id) }} {{ a.nickname }} 님의 공개 글</span>
-      <span class="by">우리뜰이 <b>공개 글만</b> 파도풀에 보내 결과를 받아 와요<br>파도풀은 글을 저장하지 않아요. 고치는 건 이 화면에서 직접 하시면 돼요</span>
+      <span class="by">Veilo 가 <b>공개 글만</b> 파도풀에 보내 결과를 받아 와요<br>파도풀은 글을 저장하지 않아요. 고치는 건 이 화면에서 직접 하시면 돼요</span>
     </div>
 
 {% if err %}<div class="err">{{ err }}</div>{% endif %}
@@ -245,7 +245,7 @@
 
 <div class="card" id="actions" data-tab="actions" hidden>
   <h3 class="ct">이렇게 하면 넓어져요</h3>
-  <p class="lede">부담이 적은 것부터 놓았어요. 전부 할 필요는 없어요. 옆의 숫자는 그 조치를 한 상태로 다시 센 값이에요. 파도풀은 권하기만 하고, <b>누르는 건 우리뜰에서 당신이</b> 해요.</p>
+  <p class="lede">부담이 적은 것부터 놓았어요. 전부 할 필요는 없어요. 옆의 숫자는 그 조치를 한 상태로 다시 센 값이에요. 파도풀은 권하기만 하고, <b>누르는 건 Veilo 에서 당신이</b> 해요.</p>
   {% set names = {'unpublish': '이 글만 비공개', 'activity_meta': '위치태그 끄기', 'rewrite': '표현만 바꾸기'} %}
   {% set sure = {'highest': '가장 확실', 'high': '확실', 'medium': '잔존 단서 가능'} %}
   {% for act in res.actions %}

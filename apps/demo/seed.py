@@ -1,4 +1,4 @@
-"""코퍼스 인물·글을 우리뜰(apps/sns) DB 에 시딩한다 — 데모 리허설용.
+"""코퍼스 인물·글을 Veilo(apps/sns) DB 에 시딩한다 — 데모 리허설용.
 
     python apps/demo/seed.py --reset            # DB 삭제 → schema.sql → 시딩
     python apps/demo/seed.py --personas D05,D01 # 인물 지정

@@ -5,9 +5,9 @@
 {% set acted = prev is not none %}
 
 <div class="guide">
-  <div class="g done"><span class="n">장면 1</span>우리뜰 구경</div>
+  <div class="g done"><span class="n">장면 1</span>Veilo 구경</div>
   <div class="g done"><span class="n">장면 2</span>파도풀로 스캔</div>
-  <div class="g {{ 'done' if acted else 'on' }}"><span class="n">장면 3</span>우리뜰에서 조치 3종 — 버튼은 SNS 에 있다</div>
+  <div class="g {{ 'done' if acted else 'on' }}"><span class="n">장면 3</span>Veilo 에서 조치 3종 — 버튼은 SNS 에 있다</div>
   <div class="g {{ 'on' if acted else '' }}"><span class="n">장면 4</span>재스캔 — 숫자가 내려간다</div>
 </div>
 
@@ -98,7 +98,7 @@
 
 <div class="card">
   <h3 class="ct">조치 — 부담이 낮은 것부터 권합니다</h3>
-  <p class="lede">전부 할 필요 없습니다. 예상 효과는 그 조치를 적용한 상태로 다시 센 값이고, <b>실행 버튼은 우리뜰에 있습니다.</b> 파도풀은 남의 글을 직접 바꾸지 않습니다 — 그게 이미 침해입니다.</p>
+  <p class="lede">전부 할 필요 없습니다. 예상 효과는 그 조치를 적용한 상태로 다시 센 값이고, <b>실행 버튼은 Veilo 에 있습니다.</b> 파도풀은 남의 글을 직접 바꾸지 않습니다 — 그게 이미 침해입니다.</p>
   {% set names = {'unpublish': '① 부분 비공개', 'activity_meta': '② 활동 메타 관리 — 위치태그 끄기', 'rewrite': '③ 리라이트 — 표현만 바꾸기'} %}
   {% set sure = {'highest': '가장 확실', 'high': '확실', 'medium': '잔존 단서 가능'} %}
   {% for a in rec.actions %}
@@ -121,20 +121,20 @@
             <input type="hidden" name="{{ c.field }}" value="{{ c.new_full }}">
             <span><span class="cand">「{{ c.suggestion }}」</span> <span class="nt">{{ c._note }}</span><div class="nt" style="color:var(--ink2)">→ {{ c._new_sentence }}</div></span>
             <span class="sim" title="문자 2-gram Jaccard — 임베딩 유사도가 아닙니다">유사도 {{ '%.2f'|format(c.semantic_similarity) }}</span>
-            <button class="btn-apply" type="submit">이 표현으로 우리뜰에서 고치기 →</button>
+            <button class="btn-apply" type="submit">이 표현으로 Veilo 에서 고치기 →</button>
           </form>
         {% endfor %}
-        <div class="nt" style="font-size:12px;color:var(--ink3);margin-top:4px">말투는 그대로 두고 새는 정보만 바꿉니다. 안전할수록 원문에서 멀어집니다(유사도 ↓). 어느 것도 마음에 안 들면 우리뜰 수정 화면에서 직접 고쳐 쓰면 됩니다. 후보는 {% if st2.provenance.external_llm_used %}데모 한정 외부 API{% else %}캐시·규칙(2단 모델 자리 — 다음 버전){% endif %}가 만들었습니다.</div>
+        <div class="nt" style="font-size:12px;color:var(--ink3);margin-top:4px">말투는 그대로 두고 새는 정보만 바꿉니다. 안전할수록 원문에서 멀어집니다(유사도 ↓). 어느 것도 마음에 안 들면 Veilo 수정 화면에서 직접 고쳐 쓰면 됩니다. 후보는 {% if st2.provenance.external_llm_used %}데모 한정 외부 API{% else %}캐시·규칙(2단 모델 자리 — 다음 버전){% endif %}가 만들었습니다.</div>
       {% else %}
         <div class="go">
-          <a class="btn btn-earth" href="{{ sns_url }}/posts/{{ a._post_id }}" target="sns">🌱 우리뜰에서 {% if a.action_type == 'unpublish' %}비공개하기{% else %}위치태그 끄기{% endif %} →</a>
+          <a class="btn btn-earth" href="{{ sns_url }}/posts/{{ a._post_id }}" target="sns">🌱 Veilo 에서 {% if a.action_type == 'unpublish' %}비공개하기{% else %}위치태그 끄기{% endif %} →</a>
           <span style="font-size:12px;color:var(--ink3)">{% if a.action_type == 'unpublish' %}비공개는 삭제가 아닙니다 — 언제든 되돌립니다.{% else %}본문을 안 읽는 채널이라 본문 스캔 도구는 못 봅니다. 선행 측정에서 감소 폭 1위였던 조치입니다.{% endif %}</span>
         </div>
       {% endif %}
     </div>
   {% endfor %}
   <div class="except">④ 삭제 권고 <b>{{ rec.exceptional|length }}건</b> — 리라이트로 해결되지 않는 글이 없어 기본 추천에 올리지 않았습니다. 삭제는 되돌릴 수 없어 마지막 예외 경로입니다.</div>
-  <div class="boundary"><b>파도풀은 제안까지만 합니다.</b> 글을 고치고 닫는 결정과 실행은 우리뜰에서, 사용자가 직접 합니다. 전부 적용하면 후보 <b>{{ '{:,}'.format(rec.projected_k) }}명</b> · 위험 점수 {{ rec.projected.current_risk|int }} → <b>{{ rec.projected.projected_risk|int }}</b>.</div>
+  <div class="boundary"><b>파도풀은 제안까지만 합니다.</b> 글을 고치고 닫는 결정과 실행은 Veilo 에서, 사용자가 직접 합니다. 전부 적용하면 후보 <b>{{ '{:,}'.format(rec.projected_k) }}명</b> · 위험 점수 {{ rec.projected.current_risk|int }} → <b>{{ rec.projected.projected_risk|int }}</b>.</div>
   <div class="actions">
     <a class="btn btn-ghost" href="/api/result/{{ user_ref }}" target="_blank">계약 JSON 보기</a>
     <form method="post" action="/forget/{{ user_ref }}" style="display:inline"><button class="btn-ghost" type="submit">결과 지우기</button></form>

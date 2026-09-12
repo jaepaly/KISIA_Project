@@ -19,7 +19,7 @@ export PYTHONIOENCODING=utf-8 PYTHONPATH=src
 
 python apps/demo/seed.py --reset          # 코퍼스 인물 5명 + 체험 계정 → data/interim/sns.db (서버가 떠 있어도 됨)
 python apps/demo/app.py                   # 터미널 1 — 파도풀 API      http://localhost:8000
-python apps/demo/sns_ext.py               # 터미널 2 — 우리뜰(플랫폼)  http://localhost:3000  ← 여기를 연다
+python apps/demo/sns_ext.py               # 터미널 2 — Veilo(플랫폼)  http://localhost:3000  ← 여기를 연다
 ```
 
 정상 확인:
@@ -44,10 +44,10 @@ python apps/demo/probe.py --diff                                     # 「변화
 
 ```
 apps/demo/
-  sns_ext.py              우리뜰 실행기. apps/sns 를 import 해 화면·라우트를 덧씌운다 (apps/sns 는 안 고친다)
-  templates/sns_ext/      우리뜰 화면 전부 — base(셸·탭바) · _rail(오른쪽 레일) · list · profile_ext · post_ext · new_ext(에디터+팝오버) · edit_post · check(점검)
-  static/urittle.css      우리뜰 디자인 (종이 톤). 반응형 분기 1023/640px
-  static/urittle.js       효과 — 리빌·카운트업·링·깔때기 막대·hover 연결·레일 위젯·「더 보기」·점검 탭·근거 접기·후보 칩·투어(TOUR 배열)·처음부터(/demo/reset)
+  sns_ext.py              Veilo 실행기. apps/sns 를 import 해 화면·라우트를 덧씌운다 (apps/sns 는 안 고친다)
+  templates/sns_ext/      Veilo 화면 전부 — base(셸·탭바) · _rail(오른쪽 레일) · list · profile_ext · post_ext · new_ext(에디터+팝오버) · edit_post · check(점검)
+  static/veilo.css      Veilo 디자인 (종이 톤). 반응형 분기 1023/640px
+  static/veilo.js       효과 — 리빌·카운트업·링·깔때기 막대·hover 연결·레일 위젯·「더 보기」·점검 탭·근거 접기·후보 칩·투어(TOUR 배열)·처음부터(/demo/reset)
   app.py                  파도풀 API (:8000) — /api/scan · /api/check. DB 없음, 저장 없음
   engine/detect.py        1단 탐지 — 규칙 스탑갭 (B 모델이 오면 C1_MODEL_PATH 로 교체)
   engine/specificity.py   깔때기 — C 의 kopl.c2_specificity 위에서 k
@@ -56,14 +56,14 @@ apps/demo/
   data/comments.json      글별 댓글 (손으로 씀) · probe.baseline.json  화면 숫자의 정본
 ```
 
-- 문구·레이아웃·효과 → `templates/sns_ext/*` · `urittle.css` · `urittle.js`. 서버 재시작 필요(템플릿 캐시). 정적 파일은 새로고침만.
-- 투어 문구·순서 → `urittle.js` 의 `TOUR` 배열.
+- 문구·레이아웃·효과 → `templates/sns_ext/*` · `veilo.css` · `veilo.js`. 서버 재시작 필요(템플릿 캐시). 정적 파일은 새로고침만.
+- 투어 문구·순서 → `veilo.js` 의 `TOUR` 배열.
 - 숫자가 바뀌는 수정(engine/) → 반드시 `probe.py --diff` 로 어느 인물의 k 가 왜 바뀌었는지 설명할 수 있어야 한다.
 
 ## 4. 깨지면 안 되는 것
 
 1. `pytest apps/demo/test_demo.py apps/sns/test_export.py` **22 passed** 와 `probe.py --diff` **변화 없음** — 커밋 전에.
-2. **경계** — 파도풀(app.py)은 저장하지 않고 우리뜰의 글을 바꾸지 않는다. 비공개·위치태그·본문 수정 버튼은 전부 우리뜰(sns_ext) 라우트다. 테스트가 이걸 검사한다.
+2. **경계** — 파도풀(app.py)은 저장하지 않고 Veilo의 글을 바꾸지 않는다. 비공개·위치태그·본문 수정 버튼은 전부 Veilo(sns_ext) 라우트다. 테스트가 이걸 검사한다.
 3. **규칙 탐지기는 «클래스» 만 고친다.** 「이 단어도 잡아야 하는데」 식의 개별 표현 추가는 하지 않는다 — 9/28 KoELECTRA 로 통째 교체된다. *잘못 잡는* 것(오탐)만, 그것도 한 부류를 닫는 규칙으로.
 4. `apps/sns/` 는 E 소유다 — 고쳐도 되지만, 고치면 데모가 아니라 본 프로젝트 변경이니 main 으로 가는 PR 로.
 5. API 키·실명·실데이터는 커밋하지 않는다. 인물·글·댓글은 전부 합성이다.

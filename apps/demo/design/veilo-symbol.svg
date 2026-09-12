@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Veilo symbol — 겹쳐진 두 장의 잎/베일 (핸드오프 v1.1 확정 심볼의 벡터 재현). 비율은 바꾸지 않는다. -->
+  <path d="M50 98 C16 84 4 52 12 14 C40 26 56 58 50 98 Z" fill="#D8896F"/>
+  <path d="M50 98 C84 84 96 52 88 14 C60 26 44 58 50 98 Z" fill="#D9C9B8"/>
+  <path d="M50 98 C44 76 44 58 50 44 C56 58 56 76 50 98 Z" fill="#C89A84"/>
+</svg>

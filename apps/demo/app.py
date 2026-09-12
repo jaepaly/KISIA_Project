@@ -1,12 +1,12 @@
 """파도풀 — 재식별 위험 셀프 점검. 대회용 스파이크 (정본은 E 의 W5 분석 웹앱).
 
     python apps/demo/app.py                 # http://localhost:8000
-    SNS_URL=http://localhost:3000           # 우리뜰. 이 주소의 /api/export/<user_ref> 만 본다
+    SNS_URL=http://localhost:3000           # Veilo. 이 주소의 /api/export/<user_ref> 만 본다
 
 계층 경계 (E-system.md §2):
   - DB 없음. 파일 안 씀. 스캔 결과는 프로세스 메모리에만 있다가 사라진다.
   - SNS 의 export 응답만 읽는다. sns.db 를 열지 않는다.
-  - 조치는 «권고» 까지. 실행 버튼은 우리뜰(SNS) 쪽 링크다. 여기서 글을 바꾸는 라우트는 없다.
+  - 조치는 «권고» 까지. 실행 버튼은 Veilo(SNS) 쪽 링크다. 여기서 글을 바꾸는 라우트는 없다.
   - 외부 호출은 engine/external.py 한 곳, 기본 꺼짐.
 """
 
@@ -133,7 +133,7 @@ def traps(view: dict) -> list[dict]:
 
 
 def rewrite_forms(res: dict) -> dict[str, list[dict]]:
-    """조치 ③ 카드용 — span_id → 후보 3안. 각 후보에 «우리뜰 수정 화면으로 보낼 본문 전체» 를 붙인다."""
+    """조치 ③ 카드용 — span_id → 후보 3안. 각 후보에 «Veilo 수정 화면으로 보낼 본문 전체» 를 붙인다."""
     view = res["view"]
     texts = {p["post_id"]: p["texts"] for p in view["posts"]}
     out: dict[str, list[dict]] = {}
@@ -159,7 +159,7 @@ def summary(res: dict) -> dict:
 
 
 def api_payload(res: dict) -> dict:
-    """우리뜰(플랫폼)이 자기 화면에 그릴 수 있는 형태. 계약 Stage2Output 은 `stage2` 에 그대로 담는다."""
+    """Veilo(플랫폼)이 자기 화면에 그릴 수 있는 형태. 계약 Stage2Output 은 `stage2` 에 그대로 담는다."""
     view, base, rec, st2 = res["view"], res["base"], res["rec"], res["stage2"]
     cards = [{**c, "channels": [{**ch, "html": str(ch["html"])} for ch in c["channels"]]} for c in evidence_cards(view)]
     rws: dict[str, list] = {}
@@ -192,7 +192,7 @@ def api_payload(res: dict) -> dict:
 
 @app.post("/api/scan")
 def api_scan():
-    """플랫폼(우리뜰)이 export 형식 그대로 보내면 진단을 돌려준다. 저장하지 않는다."""
+    """플랫폼(Veilo)이 export 형식 그대로 보내면 진단을 돌려준다. 저장하지 않는다."""
     export = request.get_json(silent=True)
     if not export or "user_ref" not in export or "posts" not in export:
         abort(400)
@@ -274,10 +274,10 @@ def scan():
     except requests.RequestException as e:
         return render_template("connect.html", accounts=example_accounts(), sns_url=SNS_URL,
                                external_on=external.enabled(),
-                               error=f"우리뜰({SNS_URL})에 연결하지 못했습니다 — SNS 가 떠 있나요? ({e.__class__.__name__})"), 502
+                               error=f"Veilo({SNS_URL})에 연결하지 못했습니다 — SNS 가 떠 있나요? ({e.__class__.__name__})"), 502
     if export is None:
         return render_template("connect.html", accounts=example_accounts(), sns_url=SNS_URL,
-                               external_on=external.enabled(), error=f"우리뜰에 {user_ref} 계정이 없습니다."), 404
+                               external_on=external.enabled(), error=f"Veilo 에 {user_ref} 계정이 없습니다."), 404
     res = run_scan(export)
     s = SESSIONS.setdefault(user_ref, {"prev": None, "cur": None})
     s["prev"], s["cur"] = s["cur"], res

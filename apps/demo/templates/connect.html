@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="guide">
-  <div class="g done"><span class="n">장면 1</span>우리뜰 구경 — 방문자 눈에는 신상이 없다</div>
+  <div class="g done"><span class="n">장면 1</span>Veilo 구경 — 방문자 눈에는 신상이 없다</div>
   <div class="g on"><span class="n">장면 2</span>파도풀로 스캔</div>
-  <div class="g"><span class="n">장면 3</span>우리뜰에서 조치 3종</div>
+  <div class="g"><span class="n">장면 3</span>Veilo 에서 조치 3종</div>
   <div class="g"><span class="n">장면 4</span>재스캔 — 숫자가 내려간다</div>
 </div>
 
@@ -13,7 +13,7 @@
 
 <div class="card">
   <h3 class="ct">SNS 계정을 연결하면, 공개 글만 가져옵니다</h3>
-  <p class="lede">파도풀은 우리뜰의 <span class="mono">/api/export/&lt;user_ref&gt;</span> 로 <b>공개 상태의 글·제목·사진 캡션·위치태그·프로필 소개만</b> 봅니다 — 공격자가 볼 수 있는 범위와 정확히 같습니다. 비공개 글, 계정 내부 ID, 이메일은 애초에 넘어오지 않습니다.</p>
+  <p class="lede">파도풀은 Veilo의 <span class="mono">/api/export/&lt;user_ref&gt;</span> 로 <b>공개 상태의 글·제목·사진 캡션·위치태그·프로필 소개만</b> 봅니다 — 공격자가 볼 수 있는 범위와 정확히 같습니다. 비공개 글, 계정 내부 ID, 이메일은 애초에 넘어오지 않습니다.</p>
 
   <form method="post" action="/scan" id="scanForm">
     <div class="chips">
@@ -24,7 +24,7 @@
     <div class="acct">
       <div class="avatar">🌾</div>
       <div>
-        <label for="ref" style="font-size:12px;color:var(--ink3)">우리뜰 익명 핸들 (user_ref)</label><br>
+        <label for="ref" style="font-size:12px;color:var(--ink3)">Veilo 익명 핸들 (user_ref)</label><br>
         <input type="text" id="ref" name="user_ref" value="{{ accounts[0].user_ref if accounts else '' }}" placeholder="u_…" required>
       </div>
       <div class="actions" style="margin-left:auto"><button class="btn-go" type="submit">스캔 시작</button></div>

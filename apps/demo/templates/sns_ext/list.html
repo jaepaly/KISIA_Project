@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}우리뜰 — 동네 기록{% endblock %}
+{% block title %}Veilo — Share What Matters{% endblock %}
 {% block content %}
 <main class="ut-wrap">
 
   <div class="welcome-overlay" data-tour-welcome hidden>
   <section class="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
-    <h2 id="welcomeTitle">우리뜰은 가상 SNS이고,<br><b>🌊 파도풀</b>은 여기 붙어서 내 글이 나를 얼마나 드러내는지 알려주는 서비스예요</h2>
+    <div class="welcome-brand"><svg class="sym"><use href="#veilo-sym"/></svg><span>Veilo</span><small>Share What Matters</small></div>
+    <h2 id="welcomeTitle">Veilo 는 가상 SNS이고,<br><b>🌊 파도풀</b>은 여기 붙어서 내 글이 나를 얼마나 드러내는지 알려주는 서비스예요</h2>
     <p>이름도 전화번호도 없는 글이라도 여러 편이 합쳐지면 사람이 특정돼요.<br>
       파도풀은 <b>나일 수 있는 사람이 몇 명까지 줄어드는지</b>를 실제 주민등록 인구로 세고,<br>
-      글을 지우지 않는 방법부터 권해요.</p>
+      글을 지우지 않는 방법부터 권해요. 중요한 이야기는 그대로, 단서만 베일로 가려요.</p>
     <div class="how-lab">이렇게 써요</div>
     <ol>
       <li><b>① 평소처럼 글을 써요</b>하고 싶은 이야기를 그대로 적어요. 지명이나 이름을 일부러 피하지 않아도 돼요</li>
@@ -25,17 +26,35 @@
   </div>
   <div class="welcome-bar-slot"></div>
 
-  <div class="ut-h"><h1>이웃들의 기록</h1><span class="sub">{{ posts|length }}편</span></div>
+  {# 브랜드 헤더 — 핸드오프: 심볼 + Veilo + 짧은 메시지, 실사 대신 추상 그래픽 #}
+  <section class="ut-brand rv" aria-label="Veilo">
+    <div class="ut-brand-in">
+      <div class="left"><span class="line">지금, 더 자유롭게<br>연결되는 공간.</span></div>
+      <div class="center"><svg class="sym big"><use href="#veilo-sym"/></svg><div class="wm">Veilo</div><div class="slogan">Kindness Protects Progress</div></div>
+      <div class="right"><span class="line">Same Stories<br>A Safer<br>Tomorrow</span></div>
+    </div>
+  </section>
+
+  <nav class="ut-cats" aria-label="카테고리">
+    <a href="/" class="{{ 'on' if tab == 'home' }}">홈</a>
+    <a href="/?tab=post" class="{{ 'on' if tab == 'post' }}">글</a>
+    <a href="/?tab=photo" class="{{ 'on' if tab == 'photo' }}">사진</a>
+    <a href="/?tab=video" class="{{ 'on' if tab == 'video' }}">영상</a>
+    <a href="/?tab=guest" class="{{ 'on' if tab == 'guest' }}">방명록</a>
+  </nav>
+
+  {% if tab in ('home', 'post', 'photo') %}
+  <div class="ut-h"><h1>{{ {'home': '이웃들의 기록', 'post': '글', 'photo': '사진이 있는 글'}[tab] }}</h1><span class="sub">{{ posts|length }}편{% if q %} · 「{{ q }}」 검색{% endif %}</span></div>
 
   <div class="ut-filter">
-    <a href="/" class="{{ 'on' if not selected_author }}">전체</a>
+    <a href="/{% if tab != 'home' %}?tab={{ tab }}{% endif %}" class="{{ 'on' if not selected_author }}">전체</a>
     {% for a in authors if a.author_id != 'GUEST' %}
-      <a href="/?author={{ a.author_id }}" class="{{ 'on' if a.author_id == selected_author }}">{{ ut_avatar(a.author_id) }} {{ a.nickname }}</a>
+      <a href="/?author={{ a.author_id }}{% if tab != 'home' %}&tab={{ tab }}{% endif %}" class="{{ 'on' if a.author_id == selected_author }}">{{ ut_avatar(a.author_id) }} {{ a.nickname }}</a>
     {% endfor %}
   </div>
 
   {% if not posts %}
-    <p class="ut-empty">아직 글이 없어요. <a href="/new">첫 글을 써 보세요</a>.</p>
+    <p class="ut-empty">{% if q %}「{{ q }}」에 맞는 글이 없어요.{% else %}아직 글이 없어요. <a href="/new">첫 글을 써 보세요</a>.{% endif %}</p>
   {% endif %}
 
   {% for p in posts %}
@@ -46,6 +65,7 @@
         <span class="nm">{{ p.nickname }}</span>
         <span class="dt">{{ p.created_at[:10] }}</span>
         <span class="ut-chips" style="margin-left:auto">
+          {% if p.n_photos %}<span class="ut-chip pic">🖼 {{ p.n_photos }}</span>{% endif %}
           {% if p.geo_tag %}<span class="ut-chip">📍 {{ p.geo_tag }}</span>{% endif %}
           {% if p.visibility == 'private' %}<span class="ut-chip priv">🔒 비공개</span>{% endif %}
         </span>
@@ -59,6 +79,19 @@
       </div>
     </a>
   {% endfor %}
+
+  {% elif tab == 'video' %}
+    <div class="ut-h"><h1>영상</h1></div>
+    <div class="ut-empty ut-card"><svg class="sym" style="width:36px;height:36px"><use href="#veilo-sym"/></svg><br>아직 올라온 영상이 없어요. 데모에서는 글과 사진만 다뤄요.</div>
+  {% else %}
+    <div class="ut-h"><h1>방명록</h1><span class="sub">이웃이 남긴 한마디</span></div>
+    <div class="ut-card">
+      {% for g in guestbook %}
+        <div class="ut-cmt"><span class="av">{{ g.emoji }}</span><span><span class="who">{{ g.who }}</span> <span class="dt" style="font-size:11px;color:var(--ut-ink3)">{{ g.when }}</span><br><span class="txt">{{ g.text }}</span></span></div>
+      {% endfor %}
+      <div class="ut-cmt-form"><input type="text" placeholder="한마디 남기기 (데모라 저장되지 않아요)" disabled><button class="ghost" type="button" disabled>남기기</button></div>
+    </div>
+  {% endif %}
 
 </main>
 {% endblock %}

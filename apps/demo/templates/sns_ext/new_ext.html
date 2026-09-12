@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}글쓰기 — 우리뜰{% endblock %}
+{% block title %}글쓰기 — Veilo{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="/pado-static/demo.css">
+<link rel="stylesheet" href="/pado-static/demo.css?v={{ asset_v }}">
 <style>
   body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}
   .pado-panel{border:1.5px solid var(--sea);border-radius:var(--ut-radius);background:var(--panel);
@@ -11,7 +11,7 @@
   .editor-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:20px}
   .before-after{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:4px 0 12px}
   .before-after .b{text-align:center;padding:12px 10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line)}
-  .before-after .b .n{font-family:"IBM Plex Mono",Consolas,monospace;font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+  .before-after .b .n{font-family:Pretendard,Consolas,monospace;font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
   .before-after .b .l{font-size:11.5px;color:var(--ink3);margin-top:3px}
   .before-after .b.after{border-color:var(--sea);background:var(--sea-soft)}
   .before-after .arrow{font-size:22px;color:var(--ink3)}
@@ -21,7 +21,7 @@
   .floor a{color:var(--earth-ink);font-weight:700;margin-left:4px}
   .floor .alt{display:block;margin-top:3px;color:var(--ink3)}
   .editor-tip{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--ink3);margin-top:8px}
-  .editor-tip .cnt{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace}
+  .editor-tip .cnt{margin-left:auto;font-family:Pretendard,Consolas,monospace}
   .ba-note{font-size:12.5px;color:var(--ink2);margin:-4px 0 10px;padding:8px 12px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);line-height:1.55}
   .ba-note b{color:var(--ink)}
   .ba-note .lo{color:var(--hi);font-weight:700}.ba-note .hi{color:var(--low);font-weight:700}
@@ -36,7 +36,7 @@
   .cmp th{text-align:left;font-weight:400;font-size:11.5px;color:var(--ink3);padding:4px 8px;border-bottom:1px solid var(--line)}
   .cmp td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
   .cmp tr:last-child td{border-bottom:none}
-  .cmp td.n{font-family:"IBM Plex Mono",Consolas,monospace;text-align:right;font-variant-numeric:tabular-nums}
+  .cmp td.n{font-family:Pretendard,Consolas,monospace;text-align:right;font-variant-numeric:tabular-nums}
   .cmp td.n.after{font-weight:600}
   .cmp tr.me td{background:var(--sea-soft)}
   .cmp .lvl{font-size:11.5px;font-weight:700;border-radius:99px;padding:1px 8px}
@@ -61,19 +61,19 @@
   .rw-pop li.restore button .t{font-weight:400;color:var(--ink2)}
   .rw-hint{font-size:12.5px;color:var(--ink2);margin:6px 0 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .rw-hint .tap{display:inline-flex;align-items:center;gap:4px;background:var(--sea-soft);color:var(--sea-ink);border-radius:99px;padding:1px 9px;font-size:11.5px;font-weight:700}
-  .rw-hint .fixedn{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace;color:var(--low);font-weight:600}
+  .rw-hint .fixedn{margin-left:auto;font-family:Pretendard,Consolas,monospace;color:var(--low);font-weight:600}
   .rw-pop{position:absolute;z-index:40;width:min(360px,calc(100vw - 28px));background:var(--panel);border:1px solid var(--line);border-radius:12px;
     box-shadow:0 2px 4px rgba(23,40,43,.06),0 18px 40px -14px rgba(23,40,43,.35);padding:10px 10px 8px;
     animation:popin .18s cubic-bezier(.22,.61,.36,1);transform-origin:top left}
   @keyframes popin{from{opacity:0;transform:translateY(-6px) scale(.98)}}
   .rw-pop .hd{display:flex;align-items:baseline;gap:8px;padding:2px 6px 8px;border-bottom:1px dashed var(--line);font-size:12px;color:var(--ink3)}
   .rw-pop .hd b{color:var(--ink);font-size:13px}
-  .rw-pop .hd .kk{margin-left:auto;font-family:"IBM Plex Mono",Consolas,monospace;color:var(--low);font-weight:600;white-space:nowrap}
+  .rw-pop .hd .kk{margin-left:auto;font-family:Pretendard,Consolas,monospace;color:var(--low);font-weight:600;white-space:nowrap}
   .rw-pop ul{list-style:none;margin:6px 0 0;padding:0}
   .rw-pop li button{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;width:100%;text-align:left;background:transparent;border:1px solid transparent;
     border-radius:8px;padding:7px 8px;font-weight:400;color:var(--ink);transition:background .12s,border-color .12s}
   .rw-pop li button:hover{background:var(--sea-soft);border-color:#bcd9d6}
-  .rw-pop li button .n{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;color:var(--sea-ink);font-weight:600;padding-top:2px}
+  .rw-pop li button .n{font-family:Pretendard,Consolas,monospace;font-size:11px;color:var(--sea-ink);font-weight:600;padding-top:2px}
   .rw-pop li button .t{font-weight:700;font-size:13.5px}
   .rw-pop li button .t.del{color:var(--ink3);font-style:italic;font-weight:400}
   .rw-pop li button .nt{grid-column:2;font-size:11.5px;color:var(--ink3)}
@@ -82,13 +82,13 @@
   .rw-pop li.widen button:hover{background:var(--low-soft);border-color:#bfe0c8}
   .rw-pop li.erase button .n{color:var(--ink3)}
   .rw-pop li button{grid-template-columns:auto 1fr auto}
-  .rw-pop li button .kv{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11.5px;color:var(--low);font-weight:600;white-space:nowrap;padding-top:2px}
+  .rw-pop li button .kv{font-family:Pretendard,Consolas,monospace;font-size:11.5px;color:var(--low);font-weight:600;white-space:nowrap;padding-top:2px}
   .rw-pop li button .nt{grid-column:2/4}
   .rw-pop li button .kv.bound{color:var(--mid)}
   .rw-pop li button .nt.why{color:var(--mid)}
   .rw-pop li .fix{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 8px 6px 30px;padding:6px 9px;border-radius:7px;
     background:var(--low-soft);font-size:11.5px;color:var(--ink2)}
-  .rw-pop li .fix b{color:var(--low);font-family:"IBM Plex Mono",Consolas,monospace}
+  .rw-pop li .fix b{color:var(--low);font-family:Pretendard,Consolas,monospace}
   .rw-pop li .fix .acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .rw-pop li .fix button,.rw-pop li .fix a{background:var(--low);color:#fff;border:none;border-radius:6px;padding:3px 9px;font-size:11.5px;font-weight:700;text-decoration:none;white-space:nowrap}
   .rw-pop li .fix button:disabled{opacity:.6}
@@ -98,7 +98,7 @@
   .rw-pop .keep b{color:var(--mid)}
   .pado-panel .evi mark.ack{background:transparent!important;border-bottom:2px dotted var(--mid);color:var(--ink2)}
   .pado-panel .evi mark.ack::after{content:" 감수";font-size:10.5px;color:var(--mid);font-weight:700}
-  .rw-hint .keptn{font-family:"IBM Plex Mono",Consolas,monospace;color:var(--mid);font-weight:600}
+  .rw-hint .keptn{font-family:Pretendard,Consolas,monospace;color:var(--mid);font-weight:600}
   .rw-pop .ft{display:flex;gap:8px;align-items:center;margin-top:6px;padding:6px 6px 0;border-top:1px dashed var(--line);font-size:11.5px;color:var(--ink3)}
   .rw-pop .ft button{background:transparent;color:var(--sea-ink);padding:2px 6px;font-size:12px;border:1px solid var(--line);border-radius:6px}
   .rw-pop .ft .x{margin-left:auto;border:none;color:var(--ink3);font-size:15px;line-height:1;padding:0 4px}
@@ -288,7 +288,7 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
     el.focus(); if(i>=0) el.setSelectionRange(i,i); el.scrollIntoView({block:'center',behavior:'smooth'});
     const tip=document.getElementById('editHere'); if(tip){ tip.classList.add('on'); setTimeout(()=>tip.classList.remove('on'),1500); }
   }
-  /* 다른 글의 위치태그 끄기 — 우리뜰 라우트(플랫폼)로 보내고, 끝나면 지금 초안으로 점검을 다시 돌린다 */
+  /* 다른 글의 위치태그 끄기 — Veilo 라우트(플랫폼)로 보내고, 끝나면 지금 초안으로 점검을 다시 돌린다 */
   function untag(btn){
     const pid=btn.dataset.untag; btn.disabled=true; btn.textContent='끄는 중…';
     const fd=new URLSearchParams(); fd.set('back','/new');

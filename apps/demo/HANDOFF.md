@@ -21,7 +21,7 @@ pip install -r apps/sns/requirements.txt -r apps/demo/requirements.txt
 export PYTHONIOENCODING=utf-8 PYTHONPATH=src
 python apps/demo/seed.py --reset       # 5명 + 체험 계정(GUEST)
 python apps/demo/app.py                # 파도풀 API  :8000
-python apps/demo/sns_ext.py            # 우리뜰      :3000  ← 심사위원이 여는 곳
+python apps/demo/sns_ext.py            # Veilo      :3000  ← 심사위원이 여는 곳
 python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -q    # 22 passed
 python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」이어야 정상
 ```
@@ -32,14 +32,15 @@ python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」�
 > **밖에 잠깐 보여줄 때(멘토·심사 전 리허설)** — cloudflared 무료 임시 터널 + 접속 열쇠. 계정·요금·DNS 없음. PC 와 두 서버가 켜져 있는 동안만 산다.
 > ```powershell
 > $env:DEMO_ACCESS_KEY = (Get-Content "$env:TEMP\padopool_key.txt")      # 열쇠는 저장소 밖 · 채팅에 안 붙임
-> Start-Process python -ArgumentList 'apps/demo/sns_ext.py' -WindowStyle Hidden   # 열쇠 켜서 우리뜰 재시작
+> Start-Process python -ArgumentList 'apps/demo/sns_ext.py' -WindowStyle Hidden   # 열쇠 켜서 Veilo 재시작
 > & "C:\Program Files (x86)\cloudflared\cloudflared.exe" tunnel --url http://localhost:3000   # 로그의 *.trycloudflare.com 이 주소
 > ```
-> 초대 링크는 `https://<주소>/?key=<열쇠>`. 열쇠 없이 열면 403. 터널은 :3000 만 낸다(파도풀 :8000 은 우리뜰이 내부에서 부른다).
+> 초대 링크는 `https://<주소>/?key=<열쇠>`. 열쇠 없이 열면 403. 터널은 :3000 만 낸다(파도풀 :8000 은 Veilo 가 내부에서 부른다).
 > 끝나면 cloudflared 를 내리고(주소가 바로 죽는다) `seed.py --reset` 으로 멘토가 만진 글을 되돌린다.
 
 - 첫 화면(`/`)에 **첫 방문 모달** + 「▶ 3분 체험 시작」 → **12단계 투어**가 시연 순서대로 데려간다 (마당일기 → 내 글 점검 → 421 →
   깔때기 → 근거 문장 → 위치태그 끄기 → 421→111,069 → 글쓰기 → 예문·체험 계정·점검 → 색칠된 표현 → 작성자별 비교 → 사람마다 다른 숫자). 발표 대본이 곧 이 12단계.
+- **9/12 이름·디자인 교체: Veilo(베일로)** — 핸드오프 v1.1 레이아웃(좌측 사이드바·브랜드 헤더·카테고리 탭·드로어)까지 적용. 파도풀 이름은 유지. 기준 문서 `design/`.
 - 점검 화면은 **네 걸음 탭**(요약·어떻게 좁혀지나·근거 문장·이렇게 하면 넓어져요). 「⟲ 처음부터」는 투어와 **글 데이터**를 함께 되돌린다(`POST /demo/reset`).
   9/10 팀원·멘토 피드백 20건은 전부 반영 — 목록은 `LOG.md 9/10`.
 - 정본 수치(`probe.baseline.json`, 위치태그 ON/OFF): **D05 421/111,069** · D01 36,061/434,408 · E20 1,231/17,433 · C02 899/899(역 사전 뒤) ·
@@ -65,7 +66,7 @@ c9e950e docs  LOG.md 시작
 003d84a fix   심사위원 문장 8개 오탐 4부류 (열·둘째날·여행 글·손님이·9호선 후보)
 256e8d6 fix   연속 지명 합치기 · 동명 읍면동은 맥락 없이 확정 안 함
 2f88c3b feat  에디터 리라이트 팝오버 + 조사 맞춤(fit_particle)
-343e568 feat  2단 레이아웃 · 모바일 탭바 · urittle.js 효과 · 🛟→🌊
+343e568 feat  2단 레이아웃 · 모바일 탭바 · veilo.js 효과 · 🛟→🌊
 9aecf28 refactor 지명 정규식 하나로 — 스캔 6s → 0.7s
 d83004c fix   지명 오탐 + 구 있는 시 인구 0 — 4명이 k=1 이던 원인
 913de9c feat  외부 리라이트 OpenAI → Claude API
@@ -77,7 +78,7 @@ d83004c fix   지명 오탐 + 구 있는 시 인구 0 — 4명이 k=1 이던 원
    `data/interim/sns.db` 는 배포 뒤 `seed.py --reset` 으로 만든다. 배포 링크로 투어 12단계를 한 번 끝까지 돌려 본다 (휴대폰도).
 2. **Claude 켠 뒤 리라이트 품질 재점검** — 규칙 후보가 어색하던 자리(월급·시급·연금 명사 하나짜리, 「면사무소 앞에서…」 긴 절).
    `LOG 9/7` 의 심사위원 문장 8개를 다시 돌린다.
-3. **투어 문구·순서 손보기** — 사용자가 직접 돌려 본 뒤 어색한 말풍선 수정. `urittle.js` 의 `TOUR` 배열.
+3. **투어 문구·순서 손보기** — 사용자가 직접 돌려 본 뒤 어색한 말풍선 수정. `veilo.js` 의 `TOUR` 배열.
 4. **시연 대본에 D06 장면** — 「위치태그 하나가 20만 → 5명」. README 표 참고.
 5. 첫 `git merge main` (다음 주) → `probe.py --diff` → 바뀐 숫자 README·LOG 에. B 진행 보고 `C1_MODEL_PATH` 시도.
 6. 접수 서류(제출 폼 텍스트) — 첫 방문 카드 문구 + README 「경계」 절이 재료.

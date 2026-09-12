@@ -8,9 +8,18 @@
 준식별자가 여러 글에 흩어져 있다가 결합되면 개인이 특정된다. 파도풀은 그 결합을 찾아 **후보가 몇 명까지
 좁혀지는가(k)** 를 주민등록 인구표로 센다.
 
-**논지**: 가상 SNS 「우리뜰」이 파도풀을 붙여 쓴다. 글을 쓸 때 올리기 전에 한 번 점검하고, 이미 쓴 글은 모아서
-점검한다. 우리뜰이 네이버·인스타 자리이고, 다른 SNS 도 같은 방식으로 붙일 수 있다.
+**논지**: 가상 SNS 「Veilo」이 파도풀을 붙여 쓴다. 글을 쓸 때 올리기 전에 한 번 점검하고, 이미 쓴 글은 모아서
+점검한다. Veilo 가 네이버·인스타 자리이고, 다른 SNS 도 같은 방식으로 붙일 수 있다.
 (크롬 확장으로 만들지 않은 이유 — 확장은 에디터 안에서는 되지만 **이미 써 둔 글 목록을 불러와 함께 셀 수 없다.**)
+
+## 이름·디자인 — Veilo (베일로), 2026-09-12 팀 투표
+
+- 서비스명 **Veilo / 베일로** — 「베일로 가린다」의 중의. 게시물은 그대로 공유하되, 개인을 특정할 수 있는 단서는 veil 처럼 가린다.
+  멘토 지적(「우리뜰」은 뜻이 없고 유치하다) → 팀원 각자 안 → 투표. **파도풀 이름은 그대로** — Veilo 는 플랫폼, 파도풀은 거기 붙는 점검 서비스.
+- 디자인 기준선은 `design/veilo-handoff-v1.1.md` (팀 확정 핸드오프의 텍스트). 토큰 Terracotta `#D8896F` · Sand `#D9C9B8` · Taupe `#A89B91` · Ivory `#F8F3ED` ·
+  Charcoal `#3E3A36`, 폰트 Pretendard + Plus Jakarta Sans, 좌측 사이드바 300px + 메인, 카테고리 탭 홈·글·사진·영상·방명록, 모달보다 toast.
+  심볼 SVG 재현본 `design/veilo-symbol.svg` (= `static/veilo-symbol.svg`).
+- 화면 클래스 접두사 `ut-` 는 옛 이름의 흔적이라 그대로 둔다. 파도풀 패널(`demo.css`)의 바다 톤은 일부러 남긴다 — «다른 서비스가 붙어 있다» 는 경계가 보여야 한다.
 
 ## 띄우기
 
@@ -20,23 +29,23 @@ export PYTHONIOENCODING=utf-8 PYTHONPATH=src            # Windows git-bash 기�
 
 python apps/demo/seed.py --reset          # 코퍼스 인물 5명 + 체험 계정 → data/interim/sns.db (리허설 전 항상. 서버가 떠 있어도 됨)
 python apps/demo/app.py                   # 파도풀 API      http://localhost:8000
-python apps/demo/sns_ext.py               # 우리뜰(플랫폼)  http://localhost:3000  ← 심사위원이 보는 곳
+python apps/demo/sns_ext.py               # Veilo(플랫폼)  http://localhost:3000  ← 심사위원이 보는 곳
 
 python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 passed
 ```
 
 | 환경변수 | 기본 | 뜻 |
 |---|---|---|
-| `PADOPOOL_URL` | `http://127.0.0.1:8000` | 우리뜰이 부르는 파도풀 API (localhost 는 Windows 에서 IPv6 시도로 요청마다 2초 지연) |
-| `SNS_URL` | `http://127.0.0.1:3000` | 파도풀 단독 화면(개발용)이 읽는 우리뜰 |
+| `PADOPOOL_URL` | `http://127.0.0.1:8000` | Veilo 가 부르는 파도풀 API (localhost 는 Windows 에서 IPv6 시도로 요청마다 2초 지연) |
+| `SNS_URL` | `http://127.0.0.1:3000` | 파도풀 단독 화면(개발용)이 읽는 Veilo |
 | `DEMO_PORT` · `SNS_PORT` | 8000 · 3000 | 포트 |
 | `DEMO_PERSONAS` | `D05,D01,E20,C02,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
-| `DEMO_ACCESS_KEY` | 없음(문 열림) | 있으면 우리뜰이 `?key=<값>` 으로 들어온 사람에게만 쿠키를 주고, 나머지는 403. 터널·배포로 밖에 열 때 켠다 |
+| `DEMO_ACCESS_KEY` | 없음(문 열림) | 있으면 Veilo 가 `?key=<값>` 으로 들어온 사람에게만 쿠키를 주고, 나머지는 403. 터널·배포로 밖에 열 때 켠다 |
 | `DEMO_STATION_SCOPE` | `emd` | 역 이름을 «역이 놓인 동 하나»(`emd`)로 볼지 «반경 700m 안 이웃 동까지»(`near`)로 볼지. 특정성 규칙의 판단(C)이라 스위치로 둠 |
 | `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` + `ANTHROPIC_API_KEY` 가 있을 때만 (Claude) 리라이트 후보를 외부 API 로 만든다. provenance 에 표시된다 |
 | `C1_MODEL_PATH` | 없음 | B 의 KoELECTRA 가중치 경로. 있으면 규칙 탐지기 대신 실제 모델 |
 
-## 시연 — 전부 우리뜰 안에서
+## 시연 — 전부 Veilo 안에서
 
 메인 인물 **D05 「마당일기」** `/u/u_1a2e7dcc` — 68세 · 여성 · 담양군 창평면. **글 18편에 지명이 한 번도 안 나온다.**
 
@@ -55,7 +64,7 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
 ## 경계 — 어디가 플랫폼이고 어디가 파도풀인가
 
 ```
-우리뜰 (3000, apps/sns + sns_ext.py)        파도풀 (8000, app.py)
+Veilo (3000, apps/sns + sns_ext.py)        파도풀 (8000, app.py)
   글·계정·사진 DB                              DB 없음 · 파일 없음 · 저장 없음
   /api/export/<user_ref>  ──(같은 형식)──▶   POST /api/scan   전체 점검
   글쓰기 초안             ──────────────▶   POST /api/check  올리기 전 점검
@@ -63,16 +72,16 @@ b17 「예전에 광주 살 때는」(시제 → 과거 거주), b08 「딸네 �
   조치 실행은 여기서: 비공개 · 위치태그 · 본문 수정
 ```
 
-- 파도풀에 넘어가는 건 `/api/export` 형식뿐이다. 우리뜰이 원본 뷰 함수(`sns.export`)를 그대로 불러 만든다.
-- 파도풀은 권고까지. 우리뜰의 글을 바꾸는 라우트는 파도풀에 없다 (테스트가 `requests.post`·`sqlite3` 부재를 확인).
+- 파도풀에 넘어가는 건 `/api/export` 형식뿐이다. Veilo 가 원본 뷰 함수(`sns.export`)를 그대로 불러 만든다.
+- 파도풀은 권고까지. Veilo의 글을 바꾸는 라우트는 파도풀에 없다 (테스트가 `requests.post`·`sqlite3` 부재를 확인).
 - 외부 LLM 은 `engine/external.py` 한 곳, 기본 꺼짐.
 
 ## 무엇이 진짜고 무엇이 스탑갭인가
 
 | 부품 | 상태 | 데모에서 |
 |---|---|---|
-| 우리뜰 · `/api/export` · 비공개 → export 반영 | ✅ E 완성 | `apps/sns` 그대로. `sns_ext.py` 가 import 해서 화면·점검·태그 지우기·본문 수정을 **덧씌운다** |
-| 우리뜰 디자인 (피드·프로필·글·에디터) | ✅ 데모용 | 좋아요·댓글·이웃 수는 글 ID 에서 만든 **결정론적 장식**이다 (시연 때마다 흔들리면 안 되므로). 저장하지 않는다 |
+| Veilo · `/api/export` · 비공개 → export 반영 | ✅ E 완성 | `apps/sns` 그대로. `sns_ext.py` 가 import 해서 화면·점검·태그 지우기·본문 수정을 **덧씌운다** |
+| Veilo 디자인 (피드·프로필·글·에디터) | ✅ 데모용 | 좋아요·댓글·이웃 수는 글 ID 에서 만든 **결정론적 장식**이다 (시연 때마다 흔들리면 안 되므로). 저장하지 않는다 |
 | 특정성 k · 깔때기 | ✅ 실제 | C 의 `kopl.c2_specificity` — `regions.json`(geo-2026-07) + 행안부 주민등록 교차표(읍면동 × 5세 × 성별). 예시값 없음 |
 | 조치 추천 · 예상 효과 · 올리기 전/후 k | ✅ 실제 계산 | 조치(또는 초안)를 반영한 상태로 깔때기를 다시 센다 |
 | 1단 스팬 탐지 | ⚠️ **규칙 기반 스탑갭** | `engine/detect.py`. B 의 v1 은 9/20, 통합 W6~. `C1_MODEL_PATH` 로 교체 가능. 화면에 명시 |
@@ -137,7 +146,7 @@ B 모델은 스팬을 내고, 그 스팬을 k 에 넣을지 말지는 여기 후
 ## 파일
 
 ```
-sns_ext.py          우리뜰 실행기 — apps/sns 를 import 해 점검 화면·에디터 점검·조치 라우트를 덧씌운다 (임시)
+sns_ext.py          Veilo 실행기 — apps/sns 를 import 해 점검 화면·에디터 점검·조치 라우트를 덧씌운다 (임시)
 app.py              파도풀 API (8000): POST /api/scan · /api/check. DB 없음. 단독 화면(/)은 개발 확인용
 seed.py             코퍼스 → sns.db 시딩 (E 의 scripts/seed_sns.py 가 나오면 삭제). data/titles.json 이 있으면 제목을 덮어쓴다(D05 「구월 이튿날」 반복 대응)
 data/titles.json    데모 전용 제목 덮어쓰기 — 단서 없는 제목만. 코퍼스는 안 건드린다
@@ -150,10 +159,10 @@ tools/build_stations.py  역 사전 빌더 — 공공데이터포털 역사 정�
 engine/pipeline.py  export → 뷰 → k (what-if 지원) · findings
 engine/recommend.py 조치 3종 + 예외 · 리라이트 3안 · Stage2Output
 engine/external.py  외부 LLM — Claude API (기본 꺼짐)
-templates/sns_ext/  우리뜰 화면 전체를 덧씌운다: base(셸·하단 탭바) · _rail(오른쪽 레일) · list · profile_ext · post_ext · new_ext · edit_post · check(네 걸음 탭) · login(형식만)
-static/urittle.css  우리뜰 디자인 (따뜻한 종이 톤). 파도풀 demo.css 의 바다 톤과 일부러 다르다. ≥1024 2단 · ≤640 탭바
-static/urittle.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json) · 점검 탭 · 근거 접기 · 후보 칩 · 투어(TOUR 12단계) · 처음부터(/demo/reset)
-templates/, static/demo.css  파도풀 단독 화면(개발용). 우리뜰 점검 화면도 /pado-static 으로 같이 쓴다
+templates/sns_ext/  Veilo 화면 전체를 덧씌운다: base(셸·하단 탭바) · _rail(오른쪽 레일) · list · profile_ext · post_ext · new_ext · edit_post · check(네 걸음 탭) · login(형식만)
+static/veilo.css  Veilo 디자인 (따뜻한 종이 톤). 파도풀 demo.css 의 바다 톤과 일부러 다르다. ≥1024 2단 · ≤640 탭바
+static/veilo.js   화면 효과 — 스크롤 리빌 · 숫자 카운트업 · 링 게이지 · 깔때기 막대(로그 척도) · 깔때기↔근거 hover 연결 · 레일 위젯(check.json) · 점검 탭 · 근거 접기 · 후보 칩 · 투어(TOUR 12단계) · 처음부터(/demo/reset)
+templates/, static/demo.css  파도풀 단독 화면(개발용). Veilo 점검 화면도 /pado-static 으로 같이 쓴다
 test_demo.py        숫자 · 함정 · 계약 · 계층 경계 · API 12건
 probe.py            시딩 인물 4명 k 회귀 — --save 로 baseline, --diff 로 본 프로젝트 자원 교체 뒤 변화 확인
 LOG.md              대회 작업 일지 — 결정·발견(→ 본 프로젝트)·남은 것

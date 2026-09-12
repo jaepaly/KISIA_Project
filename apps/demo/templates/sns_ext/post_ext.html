@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ p.title or "글" }} — 우리뜰{% endblock %}
+{% block title %}{{ p.title or "글" }} — Veilo{% endblock %}
 {% block content %}
 <main class="ut-wrap">
   <a class="ut-back" href="{{ back or ('/u/' ~ p.user_ref) }}">← {% if back %}점검 화면으로{% else %}{{ p.nickname }} 님의 블로그{% endif %}</a>

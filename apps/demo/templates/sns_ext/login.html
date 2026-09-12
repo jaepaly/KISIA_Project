@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ '로그인' if mode == 'login' else '회원가입' }} — 우리뜰{% endblock %}
+{% block title %}{{ '로그인' if mode == 'login' else '회원가입' }} — Veilo{% endblock %}
 {% block shellclass %}no-rail{% endblock %}
 {% block rail %}{% endblock %}
 {% block content %}
@@ -10,7 +10,7 @@
       <a href="/signup" class="{{ 'on' if mode == 'signup' }}">회원가입</a>
     </div>
     <form method="post" action="/{{ mode }}" class="ut-card ut-auth-form">
-      <div class="ut-auth-logo">🌱 우리뜰</div>
+      <div class="ut-auth-logo"><svg class="sym"><use href="#veilo-sym"/></svg>Veilo</div>
       {% if mode == 'signup' %}
         <label for="nick">별명</label>
         <input type="text" id="nick" name="nick" placeholder="이웃들에게 보일 이름" autocomplete="off">

@@ -1,14 +1,14 @@
-"""우리뜰 실행기 — `apps/sns` 를 **고치지 않고** 파도풀을 붙인 플랫폼으로 띄운다.
+"""Veilo(베일로) 실행기 — `apps/sns` 를 **고치지 않고** 파도풀을 붙인 플랫폼으로 띄운다. (9/12 팀 투표로 우리뜰 → Veilo)
 
     python apps/demo/sns_ext.py            # http://localhost:3000 (SNS_PORT)
     PADOPOOL_URL=http://localhost:8000     # 파도풀 API. 우리뜰이 이 서비스를 «붙여 쓴다»
 
-논지: 파도풀은 플랫폼에 붙는 서비스다. 우리뜰이 네이버·인스타 자리이고, 다른 SNS 도 같은 방식으로 붙일 수 있다.
-경계는 그대로다 — 우리뜰이 파도풀에 보내는 것은 `/api/export` 와 같은 형식뿐이고, 파도풀은 저장하지 않는다.
-조치 실행(비공개·태그·본문 수정)은 전부 우리뜰 라우트다. 파도풀은 권고만 한다.
+논지: 파도풀은 플랫폼에 붙는 서비스다. Veilo 가 네이버·인스타 자리이고, 다른 SNS 도 같은 방식으로 붙일 수 있다.
+경계는 그대로다 — Veilo 가 파도풀에 보내는 것은 `/api/export` 와 같은 형식뿐이고, 파도풀은 저장하지 않는다.
+조치 실행(비공개·태그·본문 수정)은 전부 Veilo 라우트다. 파도풀은 권고만 한다.
 
 apps/sns/app.py 는 E 소유라 손대지 않는다. 그 Flask 앱을 import 해서
-  - GET  /u/<user_ref>/check    「내 글 점검」 — 파도풀 /api/scan 결과를 우리뜰 화면에 그린다. 조치 버튼도 여기
+  - GET  /u/<user_ref>/check    「내 글 점검」 — 파도풀 /api/scan 결과를 Veilo 화면에 그린다. 조치 버튼도 여기
   - GET  /new  · POST /check-draft   글쓰기 에디터에 「🌊 점검」 — 올리기 전 1회 [MF-015]
   - GET  /u/<user_ref>  · /posts/<id>   프로필·글 화면 덮어쓰기 (진입 버튼 · 태그 지우기 · 본문 고치기)
   - POST /posts/<id>/geo_tag · /edit · /body   조치 ②③
@@ -51,7 +51,7 @@ def _load(name: str, path: Path):
 
 sns = _load("sns_app", SNS / "app.py")
 app, db = sns.app, sns.db
-app.secret_key = os.getenv("SNS_SECRET", "urittle-demo-not-secret")   # 지난 점검 k 를 쿠키 세션에 둔다
+app.secret_key = os.getenv("SNS_SECRET", "veilo-demo-not-secret")   # 지난 점검 k 를 쿠키 세션에 둔다
 app.jinja_loader = jinja2.ChoiceLoader([
     jinja2.FileSystemLoader(str(HERE / "templates" / "sns_ext")),
     app.jinja_loader,
@@ -170,11 +170,15 @@ app.jinja_env.globals.update(ut_avatar=ut_avatar, ut_engage=ut_engage, ut_commen
                              ut_stats=ut_stats)
 
 
+# 정적 파일 캐시 무효화 — CSS·JS 의 수정 시각을 ?v= 로 붙인다 (캐시 1시간이라 고친 직후 옛 파일이 남는다)
+_ASSET_V = str(int(max((HERE / "static" / f).stat().st_mtime for f in ("veilo.css", "veilo.js", "demo.css"))))
+
+
 @app.context_processor
 def _chrome():
     """헤더가 쓰는 것 — 지금 보고 있는 계정(me)과 활성 메뉴(nav).
 
-    우리뜰에는 로그인이 없다. 데모에서는 «보고 있는 블로그의 주인» 을 내 계정처럼 다룬다. 홈에서는 없다.
+    Veilo 에는 로그인이 없다. 데모에서는 «보고 있는 블로그의 주인» 을 내 계정처럼 다룬다. 홈에서는 없다.
     """
     me = None
     va = (request.view_args or {})
@@ -188,7 +192,7 @@ def _chrome():
     neighbors = db().execute("SELECT * FROM authors WHERE author_id != 'GUEST' ORDER BY author_id").fetchall()
     n_posts = {r["author_id"]: r["n"] for r in
                db().execute("SELECT author_id, COUNT(*) n FROM posts WHERE visibility = 'public' GROUP BY author_id")}
-    return {"me": me, "nav": nav, "neighbors": neighbors, "n_posts_by": n_posts}
+    return {"me": me, "nav": nav, "neighbors": neighbors, "n_posts_by": n_posts, "asset_v": _ASSET_V}
 
 
 # ── 파도풀 호출 — 보내는 것은 export 형식뿐 ─────────────────────────────────
@@ -238,11 +242,41 @@ def post_ext(post_id: str):
                            back=request.args.get("back"))
 
 
+_GUESTBOOK = [("뜰지기", "🪵", "오래오래 이 뜰이 있었으면 좋겠어요.", "3일 전"), ("도시댁", "🧺", "글 읽으러 매일 들러요. 고마워요.", "5일 전"),
+              ("감나무집", "🍂", "우리 동네 이야기 같아서 좋네요.", "일주일 전"), ("바람꽃", "🌾", "사진 설명이 참 정겨워요.", "2주 전")]
+
+
+def index_ext():
+    """홈 — 핸드오프 v1.1 의 카테고리 탭(홈·글·사진·영상·방명록)과 검색. 원본 index 의 작성자 필터는 그대로."""
+    tab = request.args.get("tab") or "home"
+    if tab not in ("home", "post", "photo", "video", "guest"):
+        tab = "home"
+    author_id = request.args.get("author")
+    q = (request.args.get("q") or "").strip()
+    sql = ("SELECT p.*, a.nickname, a.user_ref, (SELECT COUNT(*) FROM photos ph WHERE ph.post_id = p.post_id) n_photos"
+           " FROM posts p JOIN authors a ON a.author_id = p.author_id WHERE 1=1")
+    args: list = []
+    if author_id:
+        sql += " AND p.author_id = ?"
+        args.append(author_id)
+    if q:
+        sql += " AND (p.title LIKE ? OR p.body LIKE ?)"
+        args += [f"%{q}%", f"%{q}%"]
+    if tab == "photo":
+        sql += " AND EXISTS (SELECT 1 FROM photos ph WHERE ph.post_id = p.post_id)"
+    sql += " ORDER BY p.created_at DESC LIMIT 200"
+    posts = db().execute(sql, args).fetchall() if tab in ("home", "post", "photo") else []
+    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+    guestbook = [{"who": w, "emoji": e, "text": t, "when": d} for w, e, t, d in _GUESTBOOK]
+    return render_template("list.html", posts=posts, authors=authors, selected_author=author_id, tab=tab, q=q, guestbook=guestbook)
+
+
+app.view_functions["index"] = index_ext
 app.view_functions["profile"] = profile_ext
 app.view_functions["post"] = post_ext
 
 
-# ── 내 글 점검 — 파도풀 결과를 우리뜰 안에 그린다 ─────────────────────────────
+# ── 내 글 점검 — 파도풀 결과를 Veilo 안에 그린다 ─────────────────────────────
 @app.get("/u/<user_ref>/check")
 def check(user_ref: str):
     a = _author(user_ref)

@@ -1,4 +1,4 @@
-/* 우리뜰 화면 효과 — 전부 «보이는 것» 만 다룬다. 서버 값은 data-* 로 받고, 여기서는 숫자를 세고 막대를 그린다.
+/* Veilo 화면 효과 — 전부 «보이는 것» 만 다룬다. 서버 값은 data-* 로 받고, 여기서는 숫자를 세고 막대를 그린다.
    prefers-reduced-motion 이면 애니메이션 없이 최종 상태로 바로 간다. */
 (function () {
   "use strict";
@@ -163,6 +163,12 @@
       const on = btn.classList.toggle("done");
       btn.textContent = on ? "✓ 이웃" : "+ 이웃추가";
     }));
+    // 모바일 드로어 — 사이드바를 ☰ 로 연다 (핸드오프: 모바일은 사이드바를 접고 드로어로)
+    const side = $("[data-drawer-panel]"), scrim = $("[data-drawer-close]");
+    const drawer = (on) => { if (!side) return; side.classList.toggle("open", on); if (scrim) scrim.hidden = !on; };
+    $$("[data-drawer]").forEach((b) => b.addEventListener("click", () => drawer(!side.classList.contains("open"))));
+    scrim && scrim.addEventListener("click", () => drawer(false));
+    side && side.addEventListener("click", (e) => { if (e.target.closest("a")) drawer(false); });
     const top = $(".ut-top");
     if (top) {
       const onScroll = () => top.classList.toggle("scrolled", scrollY > 8);
@@ -262,7 +268,7 @@
       title: "① 마당일기 님의 블로그로", text: "68세 할머니의 글 18편이에요. 이름도 지명도 한 번 안 나와요. 그런데도 사람이 좁혀지는지 볼게요.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc", target: ".ut-pado a.go",
-      title: "② 내 글 점검", text: "우리뜰이 이 계정의 공개 글만 파도풀에 보내요. 파도풀은 저장하지 않고 결과만 돌려줘요.",
+      title: "② 내 글 점검", text: "Veilo 가 이 계정의 공개 글만 파도풀에 보내요. 파도풀은 저장하지 않고 결과만 돌려줘요.",
       advance: "click" },
     { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#sum .hero", when: () => !$(".delta-banner"),
       title: "③ 이름도 전화번호도 없는데 421명", text: "이름과 전화번호만 찾는 검사기라면 «안전»이에요. 파도풀은 글들을 합쳐서 봐서 전 국민 5,100만 명 중 421명까지 좁혀요.",
@@ -401,7 +407,7 @@
   function finishTour() {
     const d = document.createElement("div");
     d.className = "tour-mark floating done";
-    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요. 다른 인물도 보고(느린 기록은 위치태그 하나가 20만 → 5명), 고친 표현을 골라 저장해 보고, 비공개도 눌러 보세요. 파도풀은 권하기만 하고, 누르는 건 우리뜰이에요.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
+    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요. 다른 인물도 보고(느린 기록은 위치태그 하나가 20만 → 5명), 고친 표현을 골라 저장해 보고, 비공개도 눌러 보세요. 파도풀은 권하기만 하고, 누르는 건 Veilo 예요.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
     document.body.appendChild(d);
     d.querySelector("[data-x]").addEventListener("click", () => d.remove());
   }

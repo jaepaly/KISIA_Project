@@ -1,14 +1,12 @@
-{# 오른쪽 레일 — 피드·프로필·글·에디터 화면 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
-<div class="rail-card rail-tour rv">{% if me %}데모라 로그인 없이 봐요. 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»예요. 위의 「내 블로그」「점검」이 여기로 가요.{% else %}데모라 로그인 없이 봐요. 아직 아무 블로그도 열지 않았어요. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」 메뉴가 생겨요.{% endif %}
-  <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
+{# 왼쪽 사이드바 — 핸드오프 v1.1 「좌측 프로필·메뉴 280~320px」. 피드·프로필·글·에디터 공통. 점검 화면은 자기 요약으로 덮어쓴다. #}
 {% if me %}
 {% set st = ut_stats(me.author_id) %}
 <div class="rail-card rail-me rv">
-  <div class="rail-cover"></div>
   <div class="rail-who">
     <span class="ut-av lg">{{ ut_avatar(me.author_id) }}</span>
     <div>
       <a class="nm" href="/u/{{ me.user_ref }}">{{ me.nickname }}</a>
+      <div class="handle">@{{ me.user_ref }}</div>
       {% if me.bio %}<div class="bio">{{ me.bio }}</div>{% endif %}
     </div>
   </div>
@@ -17,8 +15,32 @@
     <span><b>{{ st.neighbors }}</b>이웃</span>
     <span><b>{{ '{:,}'.format(st.visits) }}</b>방문</span>
   </div>
+  <div class="rail-btns"><button type="button" class="ut-follow">+ 이웃추가</button><a class="ut-btn ghost" href="/u/{{ me.user_ref }}">내 블로그</a></div>
 </div>
+{% else %}
+<div class="rail-card rail-me rv">
+  <div class="rail-who">
+    <span class="ut-av lg sym"><svg class="sym"><use href="#veilo-sym"/></svg></span>
+    <div><span class="nm">Veilo</span><div class="handle">@veilo_official</div>
+      <div class="bio">중요한 이야기는 그대로, 개인을 특정할 수 있는 정보는 더 안전하게.</div></div>
+  </div>
+  <div class="rail-btns"><a class="ut-btn ghost" href="/login">로그인</a><a class="ut-btn ghost" href="/signup">회원가입</a></div>
+</div>
+{% endif %}
 
+<div class="rail-card rail-tour rv">{% if me %}데모라 로그인 없이 봐요. 지금은 <b>{{ me.nickname }}</b> 님 블로그를 보고 있으니 이 계정이 «나»예요. 「내 블로그」「점검」이 여기로 가요.{% else %}데모라 로그인 없이 봐요. 아직 아무 블로그도 열지 않았어요. <b>이웃을 고르면 그 계정이 «나»</b>가 되고 「내 블로그」「점검」 메뉴가 생겨요.{% endif %}
+  <span data-tour-restart hidden> · <button type="button" onclick="padoTourStart()">▶ 3분 체험 다시 보기</button></span></div>
+
+<nav class="rail-menu rv" aria-label="메뉴">
+  <a href="/" class="{{ 'on' if nav == 'home' }}"><i>🏠</i>홈</a>
+  {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}"><i>{{ ut_avatar(me.author_id) }}</i>내 블로그</a>
+  <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}"><i>🌊</i>파도풀 점검</a>{% endif %}
+  <a href="/new" class="{{ 'on' if nav == 'new' }}"><i>✎</i>글쓰기</a>
+  <a href="/?tab=photo"><i>🖼</i>사진</a>
+  <a href="/?tab=guest"><i>📒</i>방명록</a>
+</nav>
+
+{% if me %}
 <div class="rail-card rail-pado rv" data-pado-widget="{{ me.user_ref }}">
   <div class="rail-h"><span class="mark">🌊 파도풀</span><span class="tag nosave">저장하지 않아요</span></div>
   <div class="rail-pado-body">
@@ -55,6 +77,6 @@
 </div>
 
 <div class="rail-card rail-note rv">
-  <b>어디까지가 우리뜰이고 어디부터 파도풀인가요</b>
-  <p>글, 계정, 사진은 <b>우리뜰</b>에 있어요. 파도풀은 우리뜰이 넘겨주는 <b>공개 글</b>만 받아서 봐요. 비공개, 위치태그, 본문 수정 버튼은 전부 우리뜰에 있어요.</p>
+  <b>어디까지가 Veilo 이고 어디부터 파도풀인가요</b>
+  <p>글, 계정, 사진은 <b>Veilo</b> 에 있어요. 파도풀은 Veilo 가 넘겨주는 <b>공개 글</b>만 받아서 봐요. 비공개, 위치태그, 본문 수정 버튼은 전부 Veilo 에 있어요.</p>
 </div>
