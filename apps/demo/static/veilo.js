@@ -163,6 +163,14 @@
       const on = btn.classList.toggle("done");
       btn.textContent = on ? "✓ 이웃" : "+ 이웃추가";
     }));
+    // ⋯ 메뉴 — 글 화면 오른쪽 위. 바깥 클릭·Esc 로 닫힌다
+    $$("[data-menu]").forEach((m) => {
+      const btn = $("[data-menu-btn]", m), pop = $(".ut-menu-pop", m);
+      const set = (on) => { pop.hidden = !on; btn.setAttribute("aria-expanded", String(on)); };
+      btn.addEventListener("click", (e) => { e.stopPropagation(); set(pop.hidden); });
+      document.addEventListener("click", (e) => { if (!m.contains(e.target)) set(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    });
     // 모바일 드로어 — 사이드바를 ☰ 로 연다 (핸드오프: 모바일은 사이드바를 접고 드로어로)
     const side = $("[data-drawer-panel]"), scrim = $("[data-drawer-close]");
     const drawer = (on) => { if (!side) return; side.classList.toggle("open", on); if (scrim) scrim.hidden = !on; };
