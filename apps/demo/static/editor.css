@@ -110,8 +110,8 @@
 .verdict.narrow{background:var(--hi-soft);border-color:var(--hi)}.verdict.narrow .ic{background:var(--hi)}
 .verdict.same{background:var(--mid-soft);border-color:var(--mid)}.verdict.same .ic{background:var(--mid)}
 .verdict.safe{background:var(--low-soft);border-color:var(--low)}.verdict.safe .ic{background:var(--low);animation:safePop .6s cubic-bezier(.22,.61,.36,1) .15s both}
-.verdict.safe b{color:var(--low)}
-.verdict.safe b u{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px;text-decoration-color:rgba(32,113,58,.55)}
+.verdict.safe b,.verdict.safe b u{color:var(--low)}
+.verdict.safe b u{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px;text-decoration-color:var(--low)}
 @keyframes verdictIn{from{opacity:0;transform:translateY(6px)}}
 @keyframes safePop{0%{transform:scale(.4)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){.verdict,.verdict.safe .ic{animation:none}}

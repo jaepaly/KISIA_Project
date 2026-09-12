@@ -171,7 +171,7 @@ app.jinja_env.globals.update(ut_avatar=ut_avatar, ut_engage=ut_engage, ut_commen
 
 
 # 정적 파일 캐시 무효화 — CSS·JS 의 수정 시각을 ?v= 로 붙인다 (캐시 1시간이라 고친 직후 옛 파일이 남는다)
-_ASSET_V = str(int(max((HERE / "static" / f).stat().st_mtime for f in ("veilo.css", "veilo.js", "demo.css"))))
+_ASSET_V = str(int(max((HERE / "static" / f).stat().st_mtime for f in ("veilo.css", "veilo.js", "demo.css", "editor.css"))))
 
 
 @app.context_processor
