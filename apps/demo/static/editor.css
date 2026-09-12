@@ -102,3 +102,15 @@
   .recheck-pulse{animation:pulse 1.2s ease-in-out infinite;background:var(--sea)!important;color:#fff!important;border-color:var(--sea)!important}
   @keyframes pulse{50%{box-shadow:0 0 0 8px rgba(12,109,104,0)}0%,100%{box-shadow:0 0 0 0 rgba(12,109,104,.45)}}
   @media (prefers-reduced-motion:reduce){.recheck-pulse{animation:none}.rw-pop{animation:none}}
+
+/* 점검 판정 — 한눈에 보이게. 줄었으면 코랄, 그대로면 호박, 없으면 초록 */
+.verdict{display:flex;gap:12px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:12px;border:1.5px solid;font-size:13.5px;line-height:1.6;color:var(--ink2);animation:verdictIn .45s cubic-bezier(.22,.61,.36,1)}
+.verdict b{color:var(--ink);font-size:14.5px}
+.verdict .ic{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+.verdict.narrow{background:var(--hi-soft);border-color:var(--hi)}.verdict.narrow .ic{background:var(--hi)}
+.verdict.same{background:var(--mid-soft);border-color:var(--mid)}.verdict.same .ic{background:var(--mid)}
+.verdict.safe{background:var(--low-soft);border-color:var(--low)}.verdict.safe .ic{background:var(--low);animation:safePop .6s cubic-bezier(.22,.61,.36,1) .15s both}
+.verdict.safe b{color:var(--low)}
+@keyframes verdictIn{from{opacity:0;transform:translateY(6px)}}
+@keyframes safePop{0%{transform:scale(.4)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.verdict,.verdict.safe .ic{animation:none}}

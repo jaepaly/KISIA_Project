@@ -39,7 +39,7 @@
     {% endfor %}
 
     <div class="editor-actions">
-      <button type="submit" formaction="/posts/{{ p.post_id }}/check" data-recheck class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)">🌊 파도풀로 점검</button>
+      <button type="submit" formaction="/posts/{{ p.post_id }}/check" data-recheck class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)">{% if check %}🌊 고쳐 쓴 뒤 다시 점검{% else %}🌊 파도풀로 점검{% endif %}</button>
       <button type="submit">저장</button>
       <a class="ut-btn ghost" href="/posts/{{ p.post_id }}{% if back %}?back={{ back }}{% endif %}">취소</a>
     </div>

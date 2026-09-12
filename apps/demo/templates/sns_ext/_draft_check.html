@@ -19,11 +19,11 @@
         {% if mode != 'edit' %}<span class="alt">이 글 하나만 놓고 보고 싶으면 작성자를 <b>🧪 체험 계정</b>으로 바꿔 보세요.</span>{% endif %}</div>
       {% endif %}
       {% if check.narrows %}
-        <p class="lede" style="margin-top:12px"><b>이 글 하나로 나일 수 있는 사람이 {{ '{:,}'.format(b.k) }}명에서 {{ '{:,}'.format(af.k) }}명으로 줄어요.</b> 아래에 색을 칠한 부분이 신상이 드러나는 표현이에요. 고쳐 쓰고 다시 점검해도 되고, 알고도 올릴 수 있어요.</p>
+        <div class="verdict narrow"><span class="ic">!</span><div><b>이 글 하나로 나일 수 있는 사람이 {{ '{:,}'.format(b.k) }}명에서 {{ '{:,}'.format(af.k) }}명으로 줄어요.</b><br>아래에 색을 칠한 부분이 신상이 드러나는 표현이에요. 고쳐 쓰고 다시 점검해도 되고, 알고도 올릴 수 있어요.</div></div>
       {% elif check.draft.n_spans %}
-        <p class="lede" style="margin-top:12px">단서는 있지만 이미 올린 글이 여기까지 좁혀 둬서 숫자는 그대로예요. 다만 나중에 다른 글을 지워도 이 글의 단서는 남아요.</p>
+        <div class="verdict same"><span class="ic">≈</span><div><b>단서는 있지만 숫자는 그대로예요.</b><br>이미 올린 글이 여기까지 좁혀 둬서 그래요. 다만 나중에 다른 글을 지워도 이 글의 단서는 남아요.</div></div>
       {% else %}
-        <p class="lede" style="margin-top:12px">신상이 드러나는 표현이 없어요. 올려도 숫자가 변하지 않아요.</p>
+        <div class="verdict safe"><span class="ic">✓</span><div><b>신상이 드러나는 표현이 없어요.</b><br>{% if mode == 'edit' %}이대로 두거나 저장해도{% else %}올려도{% endif %} 나일 수 있는 사람 수가 변하지 않아요.</div></div>
       {% endif %}
       {% if check.draft.n_spans %}
       <div class="rw-hint"><span class="tap">👆 색칠한 부분을 누르면</span> 지명과 나이는 <b>지우지 않고 넓히는 안</b>(김해시 진영읍 → 김해시 → 경남)부터 보여주고, 그다음에 바꾸거나 지우는 안이 나와요. 각각 몇 명이 되는지 실제로 세요. 마음에 안 들면 <b>그대로 두기</b>도 돼요. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
