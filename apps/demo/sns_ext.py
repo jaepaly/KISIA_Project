@@ -424,6 +424,27 @@ def edit_post(post_id: str):
                            back=request.form.get("back") or request.args.get("back"))
 
 
+@app.post("/posts/<post_id>/check")
+def check_post_edit(post_id: str):
+    """글 고치기 화면의 「파도풀로 점검」 — 이 글을 뺀 나머지 공개 글 위에 «지금 입력칸의 글» 을 얹어 점검한다.
+    글쓰기의 check_draft 와 같은 패널·팝오버를 쓴다. 저장은 여전히 「저장」 버튼."""
+    p, photos = _post_row(post_id)
+    a = db().execute("SELECT * FROM authors WHERE author_id = ?", (p["author_id"],)).fetchone()
+    f = request.form
+    export = export_json(a["user_ref"]) or {"schema_version": "1.0", "user_ref": a["user_ref"], "nickname": a["nickname"],
+                                             "profile_bio": a["bio"], "posts": []}
+    export = {**export, "posts": [x for x in export.get("posts") or [] if x.get("post_id") != post_id]}
+    caps = {ph["idx"]: (f.get(f"caption{ph['idx']}") or "") for ph in photos}
+    payload = {"export": export, "draft": {
+        "title": f.get("title") or None, "body": f.get("body") or "",
+        "photos": [{"caption": caps[i]} for i in sorted(caps)],
+        "activity_meta": {"geo_tag": p["geo_tag"] or None}}}
+    res, err = pado("/api/check", payload)
+    proposal = {"body": f.get("body"), "title": f.get("title"), "captions": caps, "note": "", "source": "check"}
+    return render_template("edit_post.html", p=p, photos=photos, proposal=proposal, check=res, err=err, author=a,
+                           back=f.get("back") or request.args.get("back"))
+
+
 @app.post("/posts/<post_id>/body")
 def save_body(post_id: str):
     p, photos = _post_row(post_id)

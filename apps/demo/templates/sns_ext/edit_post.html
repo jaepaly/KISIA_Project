@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block title %}글 고치기 — Veilo{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/pado-static/demo.css?v={{ asset_v }}">
+<link rel="stylesheet" href="/pado-static/editor.css?v={{ asset_v }}">
+<style>body{background:var(--ut-bg);color:var(--ut-ink);font-size:15px;padding-bottom:70px}</style>
+{% endblock %}
 {% block content %}
 <main class="ut-wrap">
   <a class="ut-back" href="/posts/{{ p.post_id }}{% if back %}?back={{ back }}{% endif %}">← 글로 돌아가기</a>
   <div class="ut-h"><h1>글 고치기</h1><span class="sub">{{ p.title or "(제목 없음)" }}</span></div>
 
-  {% if proposal %}
+  {% if err %}<div class="err">{{ err }}</div>{% endif %}
+  {% with mode='edit' %}{% include '_draft_check.html' %}{% endwith %}
+
+  {% if proposal and proposal.source == 'padopool' %}
   <div class="ut-pado" style="align-items:flex-start">
     <div class="t"><b>🌊 파도풀이 고친 표현을 넣어 뒀어요</b><br>{{ proposal.note }}<br>
       <span style="color:var(--ut-ink3)">파도풀은 제안까지만 해요. 저장은 여기서 당신이 눌러요. 마음에 안 들면 직접 고쳐 써도 돼요.</span></div>
@@ -17,7 +25,7 @@
     <label for="title">제목</label>
     <input type="text" name="title" id="title" value="{{ (proposal.title if proposal and proposal.title else p.title) or '' }}">
 
-    <label for="body">본문{% if proposal and proposal.body and proposal.body != p.body %} <span class="hint" style="color:var(--ut-sea)">(파도풀 제안이 들어가 있어요)</span>{% endif %}</label>
+    <label for="body">본문{% if proposal and proposal.source == 'padopool' and proposal.body and proposal.body != p.body %} <span class="hint" style="color:var(--ut-sea)">(파도풀 제안이 들어가 있어요)</span>{% endif %}</label>
     {% if proposal and proposal.body and proposal.body != p.body %}
       <details style="margin:4px 0 0;font-size:12.5px;color:var(--ut-ink3)"><summary>원문 보기</summary>
         <div style="white-space:pre-line;background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:10px;padding:12px 14px;margin-top:6px">{{ p.body }}</div></details>
@@ -25,15 +33,19 @@
     <textarea name="body" id="body" rows="12" required>{{ (proposal.body if proposal and proposal.body else p.body) }}</textarea>
 
     {% for ph in photos %}
-      <label for="caption{{ ph.idx }}">사진 {{ ph.idx + 1 }} 캡션{% if proposal and ph.idx in proposal.captions and proposal.captions[ph.idx] != ph.caption %} <span class="hint" style="color:var(--ut-sea)">(파도풀 제안이 들어가 있어요. 원래: {{ ph.caption }})</span>{% endif %}</label>
+      <label for="caption{{ ph.idx }}">사진 {{ ph.idx + 1 }} 캡션{% if proposal and proposal.source == 'padopool' and ph.idx in proposal.captions and proposal.captions[ph.idx] != ph.caption %} <span class="hint" style="color:var(--ut-sea)">(파도풀 제안이 들어가 있어요. 원래: {{ ph.caption }})</span>{% endif %}</label>
       <input type="text" name="caption{{ ph.idx }}" id="caption{{ ph.idx }}"
              value="{{ proposal.captions[ph.idx] if proposal and ph.idx in proposal.captions else (ph.caption or '') }}">
     {% endfor %}
 
-    <div style="display:flex;gap:9px;margin-top:20px;flex-wrap:wrap">
+    <div class="editor-actions">
+      <button type="submit" formaction="/posts/{{ p.post_id }}/check" data-recheck class="ghost" style="background:var(--sea-soft);color:var(--sea-ink);border-color:var(--sea-soft)">🌊 파도풀로 점검</button>
       <button type="submit">저장</button>
       <a class="ut-btn ghost" href="/posts/{{ p.post_id }}{% if back %}?back={{ back }}{% endif %}">취소</a>
     </div>
   </form>
 </main>
+{% endblock %}
+{% block scripts %}
+{% include '_draft_check_script.html' %}
 {% endblock %}

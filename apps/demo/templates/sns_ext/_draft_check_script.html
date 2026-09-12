@@ -1,0 +1,184 @@
+{# 파도풀 점검 팝오버 스크립트 — 글쓰기·글 고치기 공용. 폼 뒤(block scripts)에서 include #}
+<script>
+
+
+/* 색칠된 표현 → 후보 팝오버 → 본문 치환. 저장은 안 한다 — 폼 값만 바뀌고, 「다시 점검」 을 누르라고 깜빡인다. */
+(function(){
+  const src=document.getElementById('draftSpans'); if(!src) return;
+  const spans=JSON.parse(src.textContent||'[]'); const byId={}; spans.forEach(s=>byId[s.span_id]=s);
+  const fmt=n=>Number(n).toLocaleString('ko-KR');
+  const afterK={{ (check.after.k if check and check.after and check.after.k) or 'null' }};
+  /* 필드 — 글쓰기는 title/body/captions(줄마다 사진 하나), 글 고치기는 title/body/caption0·caption1… (사진마다 입력칸) */
+  const getField=id=>document.getElementById(id);
+  const fieldFor=tid=>tid==='body'?'body':(tid==='title'?'title':(getField('caption'+tid.split(':')[1])?'caption'+tid.split(':')[1]:'captions'));
+  const shifts={};                      // field → [{at, delta}] 앞선 치환으로 밀린 오프셋 보정
+  let fixed=0, pop=null;
+
+  function adjust(field,pos){return (shifts[field]||[]).reduce((p,s)=>p+(s.at<pos?s.delta:0),pos)}
+  function replaceIn(field,s,cand,cur){
+    cur=cur==null?s.text:cur;
+    const el=getField(field); if(!el) return false;
+    let v=el.value, st=s.start, en=s.end, lineOff=0;
+    if(field==='captions'&&s.text_id.startsWith('photo_caption')){   // 캡션은 줄 단위 — 그 줄의 시작 오프셋을 더한다
+      const i=parseInt(s.text_id.split(':')[1],10); const lines=v.split('\n');
+      for(let j=0;j<i&&j<lines.length;j++) lineOff+=lines[j].length+1;
+    }
+    st=adjust(field,st+lineOff); en=adjust(field,en+lineOff);
+    if(v.slice(st,st+cur.length)===cur){ en=st+cur.length; }
+    else { const i=v.indexOf(cur); if(i<0) return false; st=i; en=i+cur.length; }
+    el.value=v.slice(0,st)+cand+v.slice(en);
+    (shifts[field]=shifts[field]||[]).push({at:st,delta:cand.length-(en-st)});
+    el.dispatchEvent(new Event('input'));
+    return true;
+  }
+  function close(){ if(pop){pop.remove();pop=null;} document.querySelectorAll('#draftPreview .open').forEach(m=>m.classList.remove('open')); }
+  function pick(mark,s,c){
+    const field=fieldFor(s.text_id);
+    const cur=mark.dataset.cur!=null?mark.dataset.cur:s.text;
+    const restoring=c.restore===true;
+    if(!replaceIn(field,s,c.text,cur)) return;
+    if(restoring){   // 원래 표현으로 — 다시 색칠된 표현이 된다
+      const m=document.createElement('mark'); m.dataset.span=s.span_id; m.className=mark.dataset.cls||''; m.textContent=s.text;
+      mark.replaceWith(m); fixed=Math.max(0,fixed-1);
+    } else {
+      const f=document.createElement('span'); f.className='fixed'; f.textContent=c.text||'(삭제)'; f.title='원래 표현: 「'+s.text+'」 · 눌러서 다시 고를 수 있어요';
+      f.dataset.span=s.span_id; f.dataset.cur=c.text; f.dataset.cls=mark.dataset.cls||mark.className.replace(/\b(open|ack|hot|flash)\b/g,'').trim();
+      if(s.particle&&mark.tagName==='MARK'){ const nx=mark.nextSibling; if(nx&&nx.nodeType===3&&nx.textContent.startsWith(s.particle)) nx.textContent=nx.textContent.slice(s.particle.length); }
+      mark.replaceWith(f);
+      if(mark.tagName==='MARK') fixed++;
+      mergeDup(field,f);
+    }
+    const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=fixed===0; fc.textContent='고친 표현 '+fixed+'개';}
+    const btn=document.querySelector('button[data-recheck]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 고친 글로 다시 점검';}
+    close();
+    if(window.padoTourRefresh) setTimeout(()=>window.padoTourRefresh(true),50);   // 자리만 다시 — 스포트라이트는 처음 한 번만
+  }
+  /* 붙어 있는 고친 표현 둘이 같은 말로 끝나고 시작하면(「우리 근처」+「근처」) 뒤엣것을 지운다 — E 가 본 「우리 근처 근처에서」 */
+  function mergeDup(field,f){
+    const el=getField(field); if(!el) return;
+    const esc=t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const pair=(a,b)=>{   // a 가 앞, b 가 뒤 — 둘 다 .fixed. 사이는 공백뿐
+      const A=a.dataset.cur||'', B=b.dataset.cur||''; if(!A||!B) return false;
+      let drop=null, keep=null;
+      if(A===B||A.endsWith(B)) { drop=b; keep=a; }          // 「우리 근처」+「근처」 → 뒤를 지움
+      else if(B.startsWith(A)) { drop=a; keep=b; }          // 「근처」+「근처 정류장」 → 앞을 지움
+      if(!drop) return false;
+      const D=drop.dataset.cur, rx=drop===b?new RegExp(esc(A)+'(\\s+)'+esc(B)):new RegExp(esc(A)+'(\\s+)'+esc(B));
+      const m=rx.exec(el.value); if(!m) return false;
+      const at=drop===b?m.index+A.length:m.index, len=drop===b?m[1].length+B.length:A.length+m[1].length;
+      el.value=el.value.slice(0,at)+el.value.slice(at+len);
+      (shifts[field]=shifts[field]||[]).push({at:at,delta:-len});
+      const ws=drop===b?drop.previousSibling:drop.nextSibling; if(ws&&ws.nodeType===3&&!ws.textContent.trim()) ws.remove();
+      drop.remove(); fixed=Math.max(0,fixed-1);
+      keep.title+=' · 옆의 「'+D+'」 는 겹쳐서 합쳤어요';
+      el.dispatchEvent(new Event('input'));
+      return true;
+    };
+    const near=(n,dir)=>{ let x=dir<0?n.previousSibling:n.nextSibling; if(x&&x.nodeType===3&&!x.textContent.trim()) x=dir<0?x.previousSibling:x.nextSibling; return x&&x.nodeType===1&&x.classList.contains('fixed')?x:null; };
+    const prev=near(f,-1); if(prev&&pair(prev,f)) return;
+    const next=near(f,1); if(next) pair(f,next);
+  }
+  /* 미리보기의 보통 글자를 누르면 본문 칸의 그 자리로 간다 — 미리보기는 읽기 전용이라는 걸 몰라도 되게 */
+  function jumpToText(node,offset){
+    const evi=node.parentElement&&node.parentElement.closest('.evi'); const tid=evi?evi.dataset.textId:'body';
+    const el=getField(fieldFor(tid)); if(!el) return;
+    const t=node.textContent, probe=t.slice(Math.max(0,offset-8),offset+8).trim(); let i=probe?el.value.indexOf(probe):-1;
+    if(i<0){ const w=(t.slice(offset).match(/^[^\s,.!?…]+/)||[''])[0]; i=w?el.value.indexOf(w):-1; }
+    el.focus(); if(i>=0) el.setSelectionRange(i,i); el.scrollIntoView({block:'center',behavior:'smooth'});
+    const tip=document.getElementById('editHere'); if(tip){ tip.classList.add('on'); setTimeout(()=>tip.classList.remove('on'),1500); }
+  }
+  /* 다른 글의 위치태그 끄기 — Veilo 라우트(플랫폼)로 보내고, 끝나면 지금 초안으로 점검을 다시 돌린다 */
+  function untag(btn){
+    const pid=btn.dataset.untag; btn.disabled=true; btn.textContent='끄는 중…';
+    const fd=new URLSearchParams(); fd.set('back','/new');
+    fetch('/posts/'+encodeURIComponent(pid)+'/geo_tag',{method:'POST',body:fd,headers:{'Content-Type':'application/x-www-form-urlencoded'},redirect:'follow'})
+      .then(()=>{ close(); const chk=document.querySelector('button[data-recheck]'); chk.textContent='🌊 다시 점검 중…'; chk.click(); })
+      .catch(()=>{ btn.disabled=false; btn.textContent='다시 시도'; });
+  }
+  let kept=0;
+  function keep(mark,s){
+    mark.classList.add('ack'); mark.title='그대로 두기로 했어요. 「'+s.text+'」는 그대로 올라가요';
+    kept++; const kc=document.getElementById('keptCount'); if(kc){kc.hidden=false; kc.textContent='그대로 두기 '+kept+'개';}
+    const btn=document.querySelector('button[type=submit]:not([formaction])'); if(btn) btn.textContent='알고도 올리기';
+    close();
+  }
+  function open(mark){
+    close(); const s=byId[mark.dataset.span]; if(!s) return;
+    mark.classList.add('open');
+    pop=document.createElement('div'); pop.className='rw-pop'; pop.setAttribute('role','dialog');
+    const hasWiden=s.candidates.some(c=>c.kind==='widen');
+    const row=(c,i)=>'<li class="'+(c.kind||'')+'"><button type="button" data-i="'+i+'">'
+      +'<span class="n">'+(c.kind==='widen'?'↗':'✕')+'</span>'
+      +'<span class="t'+(c.text?'':' del')+'">'+(c.text||'지운다')+'</span>'
+      +'<span class="kv'+(c.bound?' bound':'')+'">'+(c.k!=null?'→ '+fmt(c.k)+'명':'')+'</span>'
+      +(c.note?'<span class="nt">'+c.note+'</span>':'')
+      +(c.bound?'<span class="nt why">⤷ '+c.bound+'</span>':'')+'</button>'
+      +(c.bound_fix?'<div class="fix"><span>그것까지 지우면 <b>→ '+fmt(c.bound_k)+'명</b></span><span class="acts">'
+          +(c.bound_fix.geo_posts||[]).map(p=>'<button type="button" data-untag="'+p+'">📍 '+p+' 태그 끄기</button>').join('')
+          +((c.bound_fix.span_posts||[]).length
+              ?'<a href="'+c.bound_fix.check_url+'#actions" target="_blank" rel="noopener">✎ 「'+c.bound_fix.text+'」 '+c.bound_fix.span_posts.length+'편, 내 글 점검에서 ↗</a>'
+              :'')
+          +'</span></div>':'')
+      +'</li>';
+    const isFixed=mark.classList.contains('fixed');
+    /* 이미 고친 표현을 다시 열면 «고른 표현» 이 기준이다 — 지금 숫자는 그 후보의 값, 목록은 그보다 넓은 후보만 (사다리에서 한 칸 위) */
+    const cur=isFixed?(mark.dataset.cur||''):null;
+    const chosen=isFixed?s.candidates.find(c=>(c.text||'')===cur):null;
+    const nowK=chosen&&chosen.k!=null?chosen.k:afterK;
+    const pool=isFixed?s.candidates.filter(c=>(c.text||'')!==cur&&(chosen==null||chosen.k==null||c.k==null||c.k>=chosen.k)):s.candidates;
+    const widen=pool.filter(c=>c.kind==='widen'), erase=pool.filter(c=>c.kind!=='widen');
+    const hasWiden2=widen.length>0;
+    pop.innerHTML='<div class="hd"><b>「'+(isFixed?(cur||'(삭제)'):s.text)+'」</b><span>'+s.type+' · '+s.level+(isFixed?' · 원래는 「'+s.text+'」':'')+'</span>'+(nowK?'<span class="kk">지금 '+fmt(nowK)+'명</span>':'')+'</div>'
+      +(isFixed?'<ul><li class="restore"><button type="button" data-restore><span class="n">↩</span><span class="t">원래 표현 「'+s.text+'」으로 되돌리기</span><span class="kv">'+(afterK?'→ '+fmt(afterK)+'명':'')+'</span></button></li></ul>':'')
+      +(hasWiden2?'<div class="grp">↗ '+(isFixed?'여기서 더 넓히기':'지우지 않고 넓히기 (뜻은 남기고 숫자만 늘려요)')+'</div><ul>'+widen.map((c,i)=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
+      +(erase.length?'<div class="grp">✕ '+(hasWiden2||isFixed?'아예 지우기':'다르게 쓰기')+'</div><ul>'+erase.map(c=>row(c,s.candidates.indexOf(c))).join('')+'</ul>':'')
+      +(isFixed&&!widen.length&&!erase.length?'<div class="grp">더 넓힐 후보가 없어요 — 되돌리거나 직접 고쳐요</div>':'')
+      +(isFixed?'':'<div class="keep"><button type="button" data-keep>그대로 두기</button><span>마음에 드는 표현이 없으면 그대로 둬도 돼요. 대신 나일 수 있는 사람이 <b>'+(afterK?fmt(afterK):'—')+'명</b>까지 줄어들 수 있어요.</span></div>')
+      +'<ul><li class="self"><button type="button" data-self><span class="n">✎</span><span class="t">내가 직접 고칠게요</span><span class="kv"></span><span class="nt">본문 칸으로 가서 이 자리를 골라 둬요. 후보가 다 어색할 때</span></button></li></ul>'
+      +'<div class="ft"><span>말투는 두고 드러나는 정보만 바꿔요</span><button type="button" class="x" data-x aria-label="닫기">×</button></div>';
+    pop.querySelectorAll('button[data-i]').forEach(b=>b.addEventListener('click',()=>pick(mark,s,s.candidates[+b.dataset.i])));
+    const rs=pop.querySelector('[data-restore]'); rs&&rs.addEventListener('click',()=>pick(mark,s,{text:s.text,restore:true}));
+    pop.querySelectorAll('button[data-untag]').forEach(b=>b.addEventListener('click',()=>untag(b)));
+    const kp=pop.querySelector('[data-keep]'); kp&&kp.addEventListener('click',()=>keep(mark,s));
+    pop.querySelector('[data-x]').addEventListener('click',close);
+    pop.querySelector('[data-self]').addEventListener('click',()=>{ const el=getField(fieldFor(s.text_id)); close(); if(!el) return; el.focus(); const i=el.value.indexOf(s.text); if(i>=0) el.setSelectionRange(i,i+s.text.length); el.scrollIntoView({block:'center',behavior:'smooth'}); });
+    document.body.appendChild(pop);
+    const r=mark.getBoundingClientRect(); const w=pop.offsetWidth;
+    pop.style.top=(scrollY+r.bottom+6)+'px'; pop.style.left=Math.max(8,Math.min(scrollX+r.left, scrollX+innerWidth-w-8))+'px';
+  }
+  document.getElementById('draftPreview').addEventListener('click',e=>{
+    const m=e.target.closest('mark[data-span],.fixed[data-span]');
+    if(!m){ if(pop) return; const bd=e.target.closest('.bd'); if(!bd) return;
+      let node=null, off=0; try{ const r=document.caretRangeFromPoint?document.caretRangeFromPoint(e.clientX,e.clientY):null; if(r){node=r.startContainer;off=r.startOffset;} }catch(_){}
+      if(!node||node.nodeType!==3){ node=bd.firstChild; off=0; }
+      jumpToText(node,off); return; }
+    if(m.classList.contains('x')) return; e.preventDefault(); if(m.classList.contains('open')) close(); else open(m); });
+  document.addEventListener('click',e=>{ if(pop&&!pop.contains(e.target)&&!e.target.closest('mark[data-span],.fixed[data-span]')) close(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+
+  /* 같은 초안을 작성자마다 점검 — 순서대로 한 명씩 (파도풀 한 번에 0.7초쯤) */
+  const cmpBtn=document.getElementById('cmpBtn');
+  cmpBtn&&cmpBtn.addEventListener('click',async()=>{
+    const sel=document.getElementById('author_id'); const tbl=document.getElementById('cmpTbl'); const tb=tbl.querySelector('tbody'); if(!sel) return;
+    const body={title:document.getElementById('title').value, body:document.getElementById('body').value, geo_tag:(document.getElementById('geo_tag')||{value:''}).value, captions:(document.getElementById('captions')||{value:''}).value};
+    cmpBtn.disabled=true; cmpBtn.textContent='세는 중…'; tb.innerHTML=''; tbl.hidden=false;
+    const opts=Array.from(sel.options); let maxK=1;
+    for(const o of opts){
+      const tr=document.createElement('tr'); tr.className='loading'+(o.value===sel.value?' me':''); tr.innerHTML='<td>'+o.textContent.split(' (')[0]+'</td><td class="n">…</td><td class="n after">…</td><td></td>'; tb.appendChild(tr);
+      try{
+        const r=await fetch('/check-draft.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({author_id:o.value,...body})});
+        const d=await r.json(); if(d.error) throw d.error;
+        maxK=Math.max(maxK,d.after_k||1);
+        tr.className=o.value===sel.value?'me':'';
+        tr.innerHTML='<td><b>'+d.nickname+'</b><br><small style="color:var(--ink3)">공개 글 '+d.n_posts+'편'+(o.value===sel.value?' · 지금 고른 작성자':'')+'</small></td>'
+          +'<td class="n">'+(d.before_k?fmt(d.before_k):'—')+'</td><td class="n after" data-k="'+(d.after_k||0)+'">'+(d.after_k?fmt(d.after_k):'—')+'<span class="bar" style="width:0"></span></td>'
+          +'<td><span class="lvl '+d.css+'">'+d.label+'</span></td>';
+      }catch(e){ tr.className=''; tr.innerHTML='<td>'+o.textContent.split(' (')[0]+'</td><td colspan="3" style="color:var(--ink3)">파도풀에 연결하지 못했어요</td>'; }
+    }
+    tb.querySelectorAll('td.after').forEach(td=>{ const k=+td.dataset.k||0; const w=k>0?Math.max(2,100*Math.log10(k+1)/Math.log10(maxK+1)):2; requestAnimationFrame(()=>{ td.querySelector('.bar').style.width=w+'%'; }); });
+    document.getElementById('cmpNote').hidden=false;
+    cmpBtn.textContent='다시 비교'; cmpBtn.disabled=false;
+    if(window.padoTourRefresh) window.padoTourRefresh();
+  });
+})();
+</script>

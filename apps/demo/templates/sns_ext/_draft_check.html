@@ -1,0 +1,53 @@
+{# 파도풀 점검 패널 — 글쓰기·글 고치기 공용. 변수: check · author · mode(new|edit) #}
+  {% if check %}
+    {% set b = check.before %}{% set af = check.after %}{% set ch = {'body':'본문','title':'제목','geo_tag':'위치태그','profile_bio':'프로필 소개'} %}
+    <div class="pado-panel">
+      <div class="mark">🌊 {% if mode == 'edit' %}이 글을 이대로 두면{% else %}이 글을 올리면{% endif %}</div>
+      <div class="before-after">
+        <div class="b"><div class="n">{% if b.k %}<span data-count="{{ b.k }}" data-from="{{ b.k }}">{{ '{:,}'.format(b.k) }}</span>{% else %}—{% endif %}</div><div class="l">{% if mode == 'edit' %}이 글을 뺀 나머지 {{ b.n_posts }}편으로{% else %}지금, 공개 글 {{ b.n_posts }}편으로{% endif %}</div></div>
+        <div class="arrow">→</div>
+        <div class="b after {{ 'narrow' if check.narrows }}"><div class="n">{% if af.k %}<span data-count="{{ af.k }}" data-from="{{ b.k or af.k }}">{{ '{:,}'.format(af.k) }}</span>{% else %}—{% endif %}</div><div class="l">{% if mode == 'edit' %}이 글까지 합치면{% else %}이 글을 올리면{% endif %}, {{ af.label }}</div></div>
+      </div>
+      <div class="ba-note">숫자는 <b>«나일 수 있는 사람 수»</b>예요. <span class="hi">클수록 안전</span>하고, <span class="lo">작을수록 특정되기 쉬워요</span>. 이름을 맞히는 게 아니라 «몇 명 중 하나» 인지를 실제 주민등록 인구로 세요.</div>
+      <div class="riskmeta">
+        <div class="row"><span>이 글에서 찾은 단서</span><span class="v">{{ check.draft.n_spans }}개{% if check.draft.dialect %} · 방언 {{ check.draft.dialect|length }}{% endif %}{% if check.draft.geo_tag %} · 📍위치태그{% endif %}</span></div>
+      </div>
+      {% if b.n_posts and b.k and b.k < check.after.steps[0].n_after %}
+      <div class="floor"><b>지금 숫자 {{ '{:,}'.format(b.k) }}명은 이미 올린 글 {{ b.n_posts }}편이 만든 값이에요.</b>
+        이 글을 아무리 고쳐도 그보다 넓어지진 않아요. 후보 옆의 「⤷ 다른 글에 …가 남아 있어서」가 그 뜻이에요.
+        {% if author %}<a href="/u/{{ author.user_ref }}/check" target="_blank" rel="noopener">내 글 점검에서 그 글들 보기 ↗</a>{% endif %}
+        {% if mode != 'edit' %}<span class="alt">이 글 하나만 놓고 보고 싶으면 작성자를 <b>🧪 체험 계정</b>으로 바꿔 보세요.</span>{% endif %}</div>
+      {% endif %}
+      {% if check.narrows %}
+        <p class="lede" style="margin-top:12px"><b>이 글 하나로 나일 수 있는 사람이 {{ '{:,}'.format(b.k) }}명에서 {{ '{:,}'.format(af.k) }}명으로 줄어요.</b> 아래에 색을 칠한 부분이 신상이 드러나는 표현이에요. 고쳐 쓰고 다시 점검해도 되고, 알고도 올릴 수 있어요.</p>
+      {% elif check.draft.n_spans %}
+        <p class="lede" style="margin-top:12px">단서는 있지만 이미 올린 글이 여기까지 좁혀 둬서 숫자는 그대로예요. 다만 나중에 다른 글을 지워도 이 글의 단서는 남아요.</p>
+      {% else %}
+        <p class="lede" style="margin-top:12px">신상이 드러나는 표현이 없어요. 올려도 숫자가 변하지 않아요.</p>
+      {% endif %}
+      {% if check.draft.n_spans %}
+      <div class="rw-hint"><span class="tap">👆 색칠한 부분을 누르면</span> 지명과 나이는 <b>지우지 않고 넓히는 안</b>(김해시 진영읍 → 김해시 → 경남)부터 보여주고, 그다음에 바꾸거나 지우는 안이 나와요. 각각 몇 명이 되는지 실제로 세요. 마음에 안 들면 <b>그대로 두기</b>도 돼요. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
+      <div class="rw-hint" style="margin-top:4px"><span>아래 미리보기는 보기용이에요. 글자를 누르면 <b>본문 칸의 그 자리</b>로 가요.</span><button type="button" class="ghost self-edit" id="editHere" onclick="(function(){var t=document.getElementById('body');t.focus();t.scrollIntoView({block:'center',behavior:'smooth'})})()">✎ 본문에서 직접 고치기</button></div>
+      {% endif %}
+      <div id="draftPreview">
+      {% for c in check.draft.channels %}
+        <div class="evi" data-text-id="{{ c.text_id }}"><div class="w">{{ ch.get(c.text_id, '사진 설명' if c.text_id.startswith('photo') else c.text_id) }}</div><div class="bd">{{ c.html|safe }}</div></div>
+      {% endfor %}
+      </div>
+      <script type="application/json" id="draftSpans">{{ check.draft.spans|tojson }}</script>
+      {% if check.contributing %}
+        <ul class="funnel">{% for s in check.contributing %}<li><span><span class="desc">{{ s.condition }}</span><div class="src">{{ ch.get(s.src.channel, '사진 설명' if s.src.channel.startswith('photo') else s.src.channel) }}의 「{{ s.src.text }}」</div></span><span class="k">{{ '{:,}'.format(s.n_after) }}</span></li>{% endfor %}</ul>
+      {% endif %}
+      {% if check.draft.traps %}
+        <div class="trap"><b>⚠ 걸러낸 표현</b><ul>{% for t in check.draft.traps %}<li><b>{{ t.kind }}</b> 「{{ t.text }}」 <span class="q">{{ t.why }}</span></li>{% endfor %}</ul></div>
+      {% endif %}
+      {% if mode != 'edit' %}
+      <div class="cmp" id="cmpBox">
+        <div class="cmp-h"><b>같은 글을 다른 사람이 올리면?</b><span>이미 올린 글이 다르면 같은 문장이라도 결과가 달라요.</span><button type="button" id="cmpBtn">작성자별로 비교하기</button></div>
+        <table id="cmpTbl" hidden><thead><tr><th>작성자</th><th style="text-align:right">지금</th><th style="text-align:right">이 글을 올리면</th><th></th></tr></thead><tbody></tbody></table>
+        <div class="note" id="cmpNote" hidden>체험 계정은 이 글 하나뿐이라 넓고, 글이 많은 계정은 이미 좁혀진 위에 얹혀요. 파도풀이 글 한 편이 아니라 계정 단위로 보는 이유예요.</div>
+      </div>
+      {% endif %}
+      <p class="lede" style="font-size:12px;margin:10px 0 0">{% if mode == 'edit' %}고친 뒤 「저장」을 눌러야 글이 바뀌어요.{% else %}점검은 <b>다 쓴 뒤에 한 번</b> 해요.{% endif %} 파도풀은 이 글을 저장하지 않아요.</p>
+    </div>
+  {% endif %}
