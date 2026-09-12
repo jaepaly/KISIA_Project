@@ -269,3 +269,13 @@ def test_station_ladder_widens_to_gu_then_city():
     ladder = ladder_candidates(view, "p1", sp, p["notes"][sp["span_id"]])
     assert [l["text"] for l in ladder] == ["중랑구", "서울"]
     assert ladder[0]["k"] < ladder[1]["k"]
+
+
+def test_age_with_casual_endings_and_numeric_context():
+    """「스물셋임」「나 23임」 같은 반말 어미·숫자 나이 (9/12 사용자 지적: 「근데 나 나이 스물셋임.」 이 안 잡혔다)."""
+    def ages(t):
+        r = detect_post(_post(t))
+        return [r["notes"][s["span_id"]]["age"] for s in r["record"]["spans"] if s["type"] == "AGE"]
+    assert ages("근데 나 나이 스물셋임.") == [23]
+    assert ages("스물셋이야!") == [23] and ages("나 23임") == [23] and ages("23살임") == [23]
+    assert ages("시간 어디감???? 12시에 잤다") == [] and ages("살림살이") == [] and ages("서른 넘어서") == []

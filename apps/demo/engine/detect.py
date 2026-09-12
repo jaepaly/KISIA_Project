@@ -44,11 +44,17 @@ _TRANSIT_AFTER = re.compile(
 _TENS = {"열": 10, "스물": 20, "서른": 30, "마흔": 40, "쉰": 50, "예순": 60, "일흔": 70, "여든": 80, "아흔": 90}
 _ONES = {"하나": 1, "한": 1, "둘": 2, "두": 2, "셋": 3, "세": 3, "넷": 4, "네": 4,
          "다섯": 5, "여섯": 6, "일곱": 7, "여덟": 8, "아홉": 9}
+# 한글 수사 나이 — 뒤에 서술 어미가 붙어야 나이다 (「스물셋임」「스물셋이야」「스물셋이에요」… 9/12 사용자 지적으로 어미 보강)
 _AGE_KO = re.compile(
     r"(열|스물|서른|마흔|쉰|예순|일흔|여든|아흔)(하나|둘|셋|넷|다섯|여섯|일곱|여덟|아홉)?"
-    r"(?=\s*(살|인디|인데|이다|이네|이고|입니다|이라|이면|이 |$|,|\.))"
+    r"(?=\s*(살|세\b|인디|인데|이다|이네|이고|입니다|이라|이면|임\b|이야|이에요|이예요|이지|이요|이었|이구|이랑|이며|인\s|됨|되니|되고|됐|이\s|$|,|\.|!|\?|~))"
 )
-_AGE_NUM = re.compile(r"(?<![\d])(\d{2})\s*살(?![\d])")
+# 숫자 나이 — 「23살」「23세」, 또는 「나이 23」「올해 23」「나 23임」처럼 나이 문맥이 앞뒤에 있을 때만 (맨 숫자 두 자리는 뭐든 될 수 있다)
+_AGE_NUM = re.compile(
+    r"(?<![\d])(?:(\d{2})\s*(?:살|세)(?![\d]|림|균|구)"
+    r"|(?:나이(?:는|가|은|:)?|올해|만)\s*(\d{2})(?![\d])"
+    r"|(?<![\d])(\d{2})(?=\s*(?:임\b|이야|이에요|이예요|이다|인데|인디|입니다)))"
+)
 _AGE_DECADE = re.compile(r"(\d)0대\s*(초반|중반|후반)?")
 
 
@@ -285,9 +291,12 @@ def detect_channel(text: str, text_id: str) -> tuple[list[dict[str, Any]], dict[
                       "type": "AGE", "level": "explicit", "subject": "self", "score": 0.9})
         notes[f"{m.start()}:{m.end()}"] = {"age": age}
     for m in _AGE_NUM.finditer(t):
+        num = int(next(g for g in m.groups() if g))
+        if not 10 <= num <= 99:
+            continue
         cands.append({"text_id": text_id, "start": m.start(), "end": m.end(), "text": m.group(0),
                       "type": "AGE", "level": "explicit", "subject": "self", "score": 0.9})
-        notes[f"{m.start()}:{m.end()}"] = {"age": int(m.group(1))}
+        notes[f"{m.start()}:{m.end()}"] = {"age": num}
     for m in _AGE_DECADE.finditer(t):
         cands.append({"text_id": text_id, "start": m.start(), "end": m.end(), "text": m.group(0),
                       "type": "AGE", "level": "explicit", "subject": "self", "score": 0.85})
