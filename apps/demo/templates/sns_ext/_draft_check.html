@@ -23,7 +23,7 @@
       {% elif check.draft.n_spans %}
         <div class="verdict same"><span class="ic">≈</span><div><b>단서는 있지만 숫자는 그대로예요.</b><br>이미 올린 글이 여기까지 좁혀 둬서 그래요. 다만 나중에 다른 글을 지워도 이 글의 단서는 남아요.</div></div>
       {% else %}
-        <div class="verdict safe"><span class="ic">✓</span><div><b>신상이 드러나는 표현이 없어요.</b><br>{% if mode == 'edit' %}이대로 두거나 저장해도{% else %}올려도{% endif %} 나일 수 있는 사람 수가 변하지 않아요.</div></div>
+        <div class="verdict safe"><span class="ic">✓</span><div><b><u>신상이 드러나는 표현이 없어요.</u></b><br>{% if mode == 'edit' %}이대로 두거나 저장해도{% else %}올려도{% endif %} 나일 수 있는 사람 수가 변하지 않아요.</div></div>
       {% endif %}
       {% if check.draft.n_spans %}
       <div class="rw-hint"><span class="tap">👆 색칠한 부분을 누르면</span> 지명과 나이는 <b>지우지 않고 넓히는 안</b>(김해시 진영읍 → 김해시 → 경남)부터 보여주고, 그다음에 바꾸거나 지우는 안이 나와요. 각각 몇 명이 되는지 실제로 세요. 마음에 안 들면 <b>그대로 두기</b>도 돼요. <span class="keptn" id="keptCount" hidden></span> <span class="fixedn" id="fixedCount" hidden>고친 표현 0개</span></div>
