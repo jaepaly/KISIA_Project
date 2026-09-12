@@ -254,7 +254,7 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
     const fc=document.getElementById('fixedCount'); if(fc){fc.hidden=fixed===0; fc.textContent='고친 표현 '+fixed+'개';}
     const btn=document.querySelector('button[formaction="/check-draft"]'); if(btn){btn.classList.add('recheck-pulse'); btn.textContent='🌊 고친 글로 다시 점검';}
     close();
-    if(window.padoTourRefresh) setTimeout(window.padoTourRefresh,50);
+    if(window.padoTourRefresh) setTimeout(()=>window.padoTourRefresh(true),50);   // 자리만 다시 — 스포트라이트는 처음 한 번만
   }
   /* 붙어 있는 고친 표현 둘이 같은 말로 끝나고 시작하면(「우리 근처」+「근처」) 뒤엣것을 지운다 — E 가 본 「우리 근처 근처에서」 */
   function mergeDup(field,f){

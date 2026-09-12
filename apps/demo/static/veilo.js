@@ -312,7 +312,7 @@
     const f = document.createElement("form"); f.method = "post"; f.action = "/demo/reset"; f.style.display = "none";
     document.body.appendChild(f); f.submit();
   };
-  window.padoTourRefresh = function () { renderTour(); };   // 페이지를 안 바꾸고 화면이 바뀌었을 때(작성자 비교 표)
+  window.padoTourRefresh = function (quiet) { renderTour(quiet); };   // 페이지를 안 바꾸고 화면이 바뀌었을 때(작성자 비교 표·고친 표현). quiet 면 자리만 다시 잡고 스포트라이트는 안 켠다
   window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); const h = $(".tour-hole"); h && h.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); updateWelcome(null); };
   // 첫 방문 카드 — 투어 중엔 한 줄 진행바로 접힌다 (시작을 눌렀는데 아무것도 안 바뀌면 눌린 줄 모른다)
   function updateWelcome(step) {
@@ -328,7 +328,7 @@
     document.body.classList.toggle("welcome-open", !s && !!$("[data-tour-welcome]"));
     $$("[data-tour-restart]").forEach((el) => { el.hidden = !(s && s.done); });
   }
-  function renderTour() {
+  function renderTour(quiet) {
     const s = tourState();
     updateTourLinks();
     const stale = $(".tour-mark"); stale && stale.remove();
@@ -370,16 +370,18 @@
     nextBtn && nextBtn.addEventListener("click", () => { if (st.advance === "done") { window.padoTourStop(); finishTour(); } else { tourSave({ step: i + 1 }); renderTour(); } });
     if (target) {
       target.classList.add("tour-spot");
-      spotlight(target);
+      if (!quiet) spotlight(target);
       const clickEl = st.clickTarget ? ($$(st.clickTarget).find(visible) || null) : target;
       if (st.advance === "click" && clickEl) {
         clickEl.classList.add("tour-spot");
         clickEl.addEventListener("click", () => tourSave({ step: i + 1 }), { once: true });
       }
       place(card, target);
-      target.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
-      setTimeout(() => { place(card, target); spotlight(target); }, RM ? 0 : 500);
-      setTimeout(() => spotlight(target), RM ? 0 : 900);
+      if (!quiet) {
+        target.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
+        setTimeout(() => { place(card, target); spotlight(target); }, RM ? 0 : 500);
+        setTimeout(() => spotlight(target), RM ? 0 : 900);
+      }
     } else {
       card.classList.add("floating");
       const hole = $(".tour-hole"); hole && hole.classList.remove("on");
