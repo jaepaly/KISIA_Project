@@ -203,11 +203,11 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
 def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | None = None) -> tuple[list[dict[str, str]], bool]:
     """스팬 하나의 «다르게 쓰기» 후보 — (후보, 외부 LLM 사용 여부). 외부(문맥 포함)가 켜져 있으면 그것, 아니면 캐시 → 표면형 → 유형별 일반 후보.
     사다리(넓히기)는 ladder_candidates 가 따로 낸다 — 숫자는 규칙, 말은 모델."""
+    if sp["text"] in _CACHE:                       # 손으로 다듬어 둔 후보(면사무소 앞 … 한 대라 같은 긴 절)는 모델보다 낫다 — 그대로 쓴다
+        return _CACHE[sp["text"]], False
     cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
     if cands:
         return cands, True
-    if sp["text"] in _CACHE:
-        return _CACHE[sp["text"]], False
     for rx, c in _BY_TEXT:
         if rx.search(sp["text"]):
             return c, False

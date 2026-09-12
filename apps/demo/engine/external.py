@@ -73,12 +73,16 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
     tail = sentence[i + len(span_text):] if i >= 0 else ""
     if particle and tail.startswith(particle):
         tail = tail[len(particle):]
-    # 문장에 남아 있는 조사가 답 끝에도 있으면 뗀다
-    for tp in _TAIL_PARTICLES:
-        if tail.startswith(tp) and out.endswith(tp) and len(out) > len(tp):
-            out = out[: -len(tp)].rstrip()
-            tail = tail[len(tp):]
-            break
+    # 구간 뒤에 조사가 이어지면(「오일장|에 다녀왔다」) 답 끝의 조사는 어떤 것이든 뗀다 — 문장의 조사가 그대로 남아 붙기 때문 (「장에」+에, 「장을」+에)
+    if any(tail.startswith(tp) for tp in _TAIL_PARTICLES):
+        for tp in sorted(_TAIL_PARTICLES, key=len, reverse=True):
+            if out.endswith(tp) and len(out) > len(tp) + 0 and len(out) - len(tp) >= 1:
+                out = out[: -len(tp)].rstrip()
+                break
+        for tp in _TAIL_PARTICLES:
+            if tail.startswith(tp):
+                tail = tail[len(tp):]
+                break
     tail = tail.lstrip()
     for pt in ({particle, _PARTICLE_ALT.get(particle, "")} - {""}):
         if out.endswith(pt) and len(out) > len(pt):
