@@ -293,7 +293,7 @@
       title: "⑨ 예문을 넣고 점검", text: "본문에 예문을 넣어 뒀어요. 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 작성자는 체험 계정이에요. 이 버튼을 누르면 올리기 전에 점검해요.",
       advance: "click", hint: "👆 이 버튼을 누르면 이어져요",
       onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
-    { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span]", when: () => !!$("#draftSpans"),
+    { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span], #draftPreview .fixed[data-span]", when: () => !!$("#draftSpans"), place: "above",
       title: "⑩ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 숫자, 그리고 「그대로 두기」가 나와요. 고르는 건 글쓴이예요. 한 번 고른 표현도 다시 눌러 바꿀 수 있어요.",
       advance: "next" },
     { page: (p) => p === "/check-draft" || p === "/new", target: "#cmpBtn", when: () => !!$("#draftSpans") && !!$("#cmpBtn") && !$("#cmpTbl tbody tr"),
@@ -355,6 +355,7 @@
     st.onShow && st.onShow();
     const card = document.createElement("div");
     card.className = "tour-mark";
+    if (st.place) card.dataset.place = st.place;
     card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span><span class=\"ti\">" + st.title + '</span><button type="button" class="fold" data-fold title="접기 / 펼치기" aria-label="접기">▾</button></div><div class="tx">' + st.text + "</div>"
       + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
       + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
@@ -386,12 +387,14 @@
     updateWelcome(i);
   }
   let holeTimer = null;
-  function spotlight(target) {
+  function spotlight(target, follow) {
     let hole = $(".tour-hole");
     if (!hole) { hole = document.createElement("div"); hole.className = "tour-hole"; document.body.appendChild(hole); }
     const r = target.getBoundingClientRect(), pad = 8;
+    hole.style.transition = follow ? "none" : "";   // 스크롤을 따라갈 땐 전환 없이 — 전환이 있으면 구멍이 뒤늦게 따라온다
     hole.style.top = (r.top - pad) + "px"; hole.style.left = (r.left - pad) + "px";
     hole.style.width = (r.width + pad * 2) + "px"; hole.style.height = (r.height + pad * 2) + "px";
+    if (follow) return;                              // 따라가기만 — 켜진 시간(1.1초)은 늘리지 않는다
     hole.classList.add("on");
     clearTimeout(holeTimer);
     holeTimer = setTimeout(() => hole.classList.remove("on"), 1100);   // 잠깐만 어둡게 — 계속 두면 다른 데를 안 둘러본다
@@ -400,7 +403,8 @@
     const r = target.getBoundingClientRect();
     const w = card.offsetWidth, h = card.offsetHeight;
     let top = scrollY + r.bottom + 12, left = scrollX + r.left;
-    if (r.bottom + 12 + h > innerHeight && r.top - 12 - h > 0) { top = scrollY + r.top - 12 - h; card.classList.add("above"); } else card.classList.remove("above");
+    const wantAbove = card.dataset.place === "above" && r.top - 12 - h > 0;
+    if (wantAbove || (r.bottom + 12 + h > innerHeight && r.top - 12 - h > 0)) { top = scrollY + r.top - 12 - h; card.classList.add("above"); } else card.classList.remove("above");
     left = Math.max(8, Math.min(left, scrollX + innerWidth - w - 8));
     card.style.top = top + "px"; card.style.left = left + "px";
   }
@@ -425,6 +429,15 @@
   }
 
   function boot() {
+    // 새로고침은 «처음부터» — 심사자가 F5 를 누르면 첫 화면 모달로 돌아간다 (글 데이터는 그대로, 투어 상태만 지운다)
+    try {
+      const nav = performance.getEntriesByType("navigation")[0];
+      if (nav && nav.type === "reload" && !sessionStorage.getItem("pado_reload_done")) {
+        sessionStorage.setItem("pado_reload_done", "1"); tourSave(null);
+        if (location.pathname !== "/" || location.search) { location.replace("/"); return; }
+      }
+      sessionStorage.removeItem("pado_reload_done");
+    } catch (e) {}
     initMore();
     initFunnels(document);
     initReveal();
@@ -439,7 +452,7 @@
     renderTour();
     const follow = () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); if (c && t) { place(c, t); spotlight(t); } };
     addEventListener("resize", follow);
-    addEventListener("scroll", () => { const t = $(".tour-spot"), h = $(".tour-hole"); if (t && h && h.classList.contains("on")) spotlight(t); }, { passive: true });
+    addEventListener("scroll", () => { const t = $(".tour-spot"), h = $(".tour-hole"); if (t && h && h.classList.contains("on")) spotlight(t, true); }, { passive: true });
     // 모달: 바깥 클릭·Esc 는 「그냥 둘러볼게요」
     const ov = $("[data-tour-welcome]");
     if (ov) { ov.addEventListener("click", (e) => { if (e.target === ov) window.padoTourStop(); });

@@ -253,7 +253,8 @@ def index_ext():
         tab = "home"
     author_id = request.args.get("author")
     q = (request.args.get("q") or "").strip()
-    sql = ("SELECT p.*, a.nickname, a.user_ref, (SELECT COUNT(*) FROM photos ph WHERE ph.post_id = p.post_id) n_photos"
+    sql = ("SELECT p.*, a.nickname, a.user_ref, (SELECT COUNT(*) FROM photos ph WHERE ph.post_id = p.post_id) n_photos,"
+           " (SELECT group_concat(COALESCE(ph.caption, ''), char(31)) FROM photos ph WHERE ph.post_id = p.post_id) captions"
            " FROM posts p JOIN authors a ON a.author_id = p.author_id WHERE 1=1")
     args: list = []
     if author_id:
@@ -268,7 +269,7 @@ def index_ext():
     posts = db().execute(sql, args).fetchall() if tab in ("home", "post", "photo") else []
     authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
     guestbook = [{"who": w, "emoji": e, "text": t, "when": d} for w, e, t, d in _GUESTBOOK]
-    return render_template("list.html", posts=posts, authors=authors, selected_author=author_id, tab=tab, q=q, guestbook=guestbook)
+    return render_template("list.html", posts=posts, authors=authors, selected_author=author_id, tab=tab, q=q, guestbook=guestbook, sep=chr(31))
 
 
 app.view_functions["index"] = index_ext

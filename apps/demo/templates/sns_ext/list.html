@@ -72,6 +72,14 @@
       </div>
       <span class="ut-title">{{ p.title or "(제목 없음)" }}</span>
       <div class="ut-excerpt">{{ p.body }}</div>
+      {% if p.n_photos %}
+      <div class="ut-card-photos" aria-label="사진 {{ p.n_photos }}장">
+        {% for cap in (p.captions or '').split(sep) %}{% if loop.index <= 3 %}
+          <figure class="pv"><div class="ph"><span>🖼</span></div>{% if cap %}<figcaption><span class="cap-lab">사진 설명</span>{{ cap }}</figcaption>{% endif %}</figure>
+        {% endif %}{% endfor %}
+        {% if p.n_photos > 3 %}<span class="more">+{{ p.n_photos - 3 }}</span>{% endif %}
+      </div>
+      {% endif %}
       <div class="ut-engage">
         <span class="like"><i>♥</i> 좋아요 <b>{{ eng.likes }}</b></span>
         <span>💬 댓글 <b>{{ eng.comments }}</b></span>
