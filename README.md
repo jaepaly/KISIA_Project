@@ -126,29 +126,11 @@ C가 이번 주 어느 시점에 재제출 가능한지 킥오프에서 확인�
 
 (가)·(나)·(다) 중 선택 후 즉시 이슈 등록. B에게 알린다 — B의 train/test 분리가 이 결정에 걸려있다.
 
-### 월~화 — train/test 분리 스크립트 (W4 이월)
+### 월~화 — split 누수 검증 (✅ #230 W4 머지 완료)
 
-```python
-# scripts/split_train_test.py 새로 작성
-# 핵심 제약:
-#   - blind 배정 글 (gold/blind/_assignment.json) → test 전용
-#   - IAA 배정 글 (gold/iaa/_assignment.json) → test 전용
-#   - 나머지: 인물 단위로 train/test 8:2 (인물 섞임 없음)
-#   - seed 커밋 필수 (재현성)
-#   - 누수 검사: test 글 post_id 가 train 에 없는지 확인
-```
+`scripts/split_train_test.py` 와 `data/corpus/v0/splits/` 는 **W4 에 완료** (`#230` 머지됨). 이번 주는 새로 작성하지 않는다.
 
-```bash
-python scripts/split_train_test.py \
-  --gold     data/corpus/v0/gold \
-  --blind    data/corpus/v0/gold/blind/_assignment.json \
-  --iaa      data/corpus/v0/gold/iaa/_assignment.json \
-  --out      data/corpus/v0/splits/ \
-  --seed     42
-# 출력: splits/train.jsonl · splits/test.jsonl · splits/split_log.txt
-```
-
-완성 후 B에게 경로 알린다 — B는 이 결과를 `prepare_bio.py` 에 바로 연결한다.
+대신 방향 결정(#235) 이후 **기존 split에 누수가 없는지 한 번 확인**하고 B에게 경로를 알린다.
 
 **누수 검사 (반드시 통과)**:
 
@@ -222,16 +204,13 @@ print(f'스팬 0 검수 글: {zero_span}편')
 ### 만들 것
 
 ```
-scripts/split_train_test.py              train/test 분리 스크립트
-data/corpus/v0/splits/train.jsonl        학습 분할
-data/corpus/v0/splits/test.jsonl         평가 분할
 data/corpus/v0/gold/iaa/A_spans_v2.jsonl  IAA 2차 (C #229 완료 후)
 ```
 
 ### 완료 기준
 
 - [ ] test set 구성 방향 결정 + 이슈 기록
-- [ ] `split_train_test.py` PR 머지 — blind·IAA 배정 글 누수 0건 검증
+- [ ] split 누수 검증 통과 + B 에게 경로 공유
 - [ ] `label-schema` #223 §3-2 배우자 호칭 1줄 추가 PR
 - [ ] IAA 2차 착수 (C #229 완료 조건부)
 
