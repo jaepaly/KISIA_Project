@@ -39,29 +39,54 @@ TYPE_LABELS: Dict[str, str] = {
 
 _DIGIT_RE = re.compile(r"\d+")
 
+# 사람 나이로 볼 수 있는 상한. 이를 넘거나 '년'(출생연도)이 붙으면 연령대로 환산하지 않는다.
+_MAX_AGE = 149
+
 
 def _age_decade(text: str) -> str:
-    """'48'·'48세'·'40대' → '40'. 숫자가 없으면(한글 나이 등) 빈 문자열.
+    """'48'·'48세'·'40대' → '40'. 나이로 환산할 수 없으면 빈 문자열.
 
-    한글 수사('마흔여덟')는 환산하지 않는다 — 파서를 두면 오차·유지비만 늘고,
-    일반화 실패 시 일반 토큰으로 떨어져도 라운드트립은 그대로 보장된다.
+    - 한글 수사('마흔여덟')는 환산하지 않는다 (숫자 없음).
+    - 출생연도('1990년생')·비현실적 숫자('1990')는 나이가 아니므로 환산하지 않는다.
+      → §3-2 상 AGE 여도 값이 나이가 아니면 일반 토큰으로 떨어지되 라운드트립은 보장된다.
     """
+    if "년" in text:  # '1990년생'·'90년대생' 등 출생연도 표현
+        return ""
     m = _DIGIT_RE.search(text)
     if not m:
         return ""
     try:
-        return str((int(m.group()) // 10) * 10)
+        n = int(m.group())
     except ValueError:
-        # 비정상적으로 긴 숫자열(Python int 변환 한도 등)은 환산하지 않고 폴백
+        # 비정상적으로 긴 숫자열(Python int 변환 한도 등)
         return ""
+    if not (0 <= n <= _MAX_AGE):  # 출생연도 등 나이 범위 밖
+        return ""
+    return str((n // 10) * 10)
 
 
-def _check_no_overlap(spans: List[Dict[str, Any]]) -> None:
-    """label-schema §6: 겹치는 스팬 금지. 겹치면 역순 교체가 토큰을 절단하므로 즉시 막는다.
+def _validate_spans(text: str, spans: List[Dict[str, Any]]) -> None:
+    """anonymize 입력 경계 검증. c1_span.validate_span_output 이 이미 거르지만,
+    잘못된 스팬이 오면 조용히 원문과 다른 문자열로 복원되므로 여기서 명확히 막는다.
 
-    c1_span.validate_span_output 이 이미 걸러내지만, anonymize 는 외부 입력을 받는
-    경계이므로 조용한 손상 대신 명확한 오류로 실패한다.
+    - offset 범위: 0 <= start < end <= len(text) (span.schema.json)
+    - 텍스트 일치: text[start:end] == sp["text"]
+    - 겹침 금지: 같은 채널 내 겹침 (label-schema §6) — 역순 교체가 토큰을 절단
     """
+    n = len(text)
+    for sp in spans:
+        start, end = sp["start"], sp["end"]
+        if not (0 <= start < end <= n):
+            raise ValueError(
+                f"스팬 offset 범위 오류: [{start},{end}) "
+                f"(0 <= start < end <= {n} 필요) — {sp.get('text')!r}"
+            )
+        if text[start:end] != sp["text"]:
+            raise ValueError(
+                f"스팬 텍스트 불일치: text[{start}:{end}]={text[start:end]!r} "
+                f"!= {sp['text']!r}"
+            )
+
     ordered = sorted(spans, key=lambda s: (s["start"], s["end"]))
     for prev, cur in zip(ordered, ordered[1:]):
         if cur["start"] < prev["end"]:
@@ -100,13 +125,22 @@ def _make_placeholder(
     used: Dict[str, str],
     text: str,
 ) -> str:
-    """스팬 하나에 유일하고 원문과 충돌하지 않는 가명 토큰을 배정한다."""
+    """스팬 하나에 유일하고 원문과 충돌하지 않는 가명 토큰을 배정한다.
+
+    정본 10종(§3-2) 밖의 유형은 조용히 처리하지 않고 거부한다 — span.schema.json
+    의 유형 상한 위반을 호출 측이 확인할 수 있어야 한다.
+    """
+    if typ not in TYPE_LABELS:
+        raise ValueError(
+            f"허용되지 않은 스팬 유형: {typ!r} (정본 10종만 허용, label-schema §3-2)"
+        )
+
     if typ == "AGE":
         decade = _age_decade(original)
         if decade:
             return _unique_token(lambda sfx: f"[{decade}대{sfx}]", original, used, text)
 
-    label = TYPE_LABELS.get(typ, "단서")
+    label = TYPE_LABELS[typ]
     type_counter[typ] = type_counter.get(typ, 0) + 1
     n = type_counter[typ]
     return _unique_token(lambda sfx: f"[{label}{n}{sfx}]", original, used, text)
@@ -122,9 +156,10 @@ def anonymize(text: str, spans: List[Dict[str, Any]]) -> Tuple[str, Dict[str, st
       anon_text: 가명 토큰으로 치환된 텍스트
       key:       {가명토큰: 원문} 복원 매핑
 
-    스팬은 뒤(큰 start)에서 앞으로 교체해 offset 밀림을 막는다.
+    입력을 경계에서 검증한다(offset 범위·텍스트 일치·겹침·정본 10종). 스팬은
+    뒤(큰 start)에서 앞으로 교체해 offset 밀림을 막는다.
     """
-    _check_no_overlap(spans)
+    _validate_spans(text, spans)
 
     ordered = sorted(spans, key=lambda s: s["start"], reverse=True)
     key: Dict[str, str] = {}

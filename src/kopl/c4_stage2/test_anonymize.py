@@ -149,17 +149,13 @@ def test_age_triple_same_decade() -> None:
     print("[PASS] 9. 같은 연령대 3개 분리 라운드트립 통과")
 
 
-def test_unknown_type_no_collision() -> None:
-    """미등록 유형 여럿이 폴백 라벨을 공유해도 토큰은 유일해야 한다 (Codex P2-4)."""
+def test_unknown_type_rejected() -> None:
+    """정본 10종 밖의 유형은 조용히 처리하지 말고 거부한다 (C 리뷰 #243)."""
     text = "가 나"
-    spans = [
-        {"start": 0, "end": 1, "text": "가", "type": "FOO"},
-        {"start": 2, "end": 3, "text": "나", "type": "BAR"},
-    ]
-    anon, key = anonymize(text, spans)
-    assert len(key) == 2, f"폴백 토큰 충돌: {key}"
-    assert restore(anon, key) == text, f"복원 실패: {restore(anon, key)!r}"
-    print("[PASS] 10. 미등록 유형 폴백 토큰 유일성 통과")
+    spans = [{"start": 0, "end": 1, "text": "가", "type": "FOO"}]
+    with pytest.raises(ValueError, match="허용되지 않은 스팬 유형"):
+        anonymize(text, spans)
+    print("[PASS] 10. 정본 외 유형 거부 통과")
 
 
 def test_age_huge_digits_fallback() -> None:
@@ -168,7 +164,35 @@ def test_age_huge_digits_fallback() -> None:
     spans = [{"start": 0, "end": len(text), "text": text, "type": "AGE"}]
     anon, key = anonymize(text, spans)
     assert restore(anon, key) == text, "긴 숫자열 AGE 복원 실패"
-    print("[PASS] 12. 긴 숫자열 AGE 폴백 통과")
+    print("[PASS] 11. 긴 숫자열 AGE 폴백 통과")
+
+
+def test_birth_year_not_generalized() -> None:
+    """출생연도는 나이가 아니므로 [1990대] 로 환산하지 않는다 (C 리뷰 #243)."""
+    text = "1990년생입니다"
+    spans = [{"start": 0, "end": 6, "text": "1990년생", "type": "AGE"}]
+    anon, key = anonymize(text, spans)
+    assert "[1990대]" not in anon, f"출생연도가 연령대로 환산됨: {anon!r}"
+    assert restore(anon, key) == text, f"복원 실패: {restore(anon, key)!r}"
+    print("[PASS] 12. 출생연도 비환산 통과")
+
+
+def test_span_text_mismatch_rejected() -> None:
+    """sp['text'] 가 text[start:end] 와 다르면 거부한다 (C 리뷰 #243)."""
+    text = "판교 사는 사람"
+    spans = [{"start": 0, "end": 2, "text": "분당", "type": "LOC_ADMIN"}]  # text[0:2]='판교'
+    with pytest.raises(ValueError, match="텍스트 불일치"):
+        anonymize(text, spans)
+    print("[PASS] 13. 스팬 텍스트 불일치 거부 통과")
+
+
+def test_offset_out_of_range_rejected() -> None:
+    """offset 이 범위를 벗어나면 거부한다 (C 리뷰 #243)."""
+    text = "판교"
+    spans = [{"start": 0, "end": 5, "text": "판교", "type": "LOC_ADMIN"}]  # end > len
+    with pytest.raises(ValueError, match="offset 범위"):
+        anonymize(text, spans)
+    print("[PASS] 14. offset 범위 오류 거부 통과")
 
 
 def test_overlap_rejected() -> None:
@@ -180,7 +204,7 @@ def test_overlap_rejected() -> None:
     ]
     with pytest.raises(ValueError, match="겹치는 스팬"):
         anonymize(text, spans)
-    print("[PASS] 11. 겹침 스팬 거부 통과")
+    print("[PASS] 15. 겹침 스팬 거부 통과")
 
 
 if __name__ == "__main__":
@@ -194,7 +218,10 @@ if __name__ == "__main__":
     test_token_literal_in_original()
     test_original_text_is_tokenlike()
     test_age_triple_same_decade()
-    test_unknown_type_no_collision()
+    test_unknown_type_rejected()
     test_age_huge_digits_fallback()
+    test_birth_year_not_generalized()
+    test_span_text_mismatch_rejected()
+    test_offset_out_of_range_rejected()
     test_overlap_rejected()
     print("=== [성공] c4_stage2 라운드트립 전 항목 통과 ===")
