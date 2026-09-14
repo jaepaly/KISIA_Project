@@ -59,7 +59,7 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 > 로드맵 §3:
 >
 > W5는 B가 학습 v1을 확정하고, E가 통합을 조기 착수하는 주다. C의 기여도 엔진 v1도 시작한다.
-> **다음 주(W6)가 추석 연휴 — 근무일 3일.** B·D는 이번 주 말일(9/19)에 학습 잡을 킥오프해 연휴 중 GPU 가 돌아가도록 한다.
+> **다음 주(W6)가 추석 연휴 — 근무일 3일.** B·D는 학습 epoch 소요 시간을 먼저 확인하고, 연휴를 걸쳐야 할 만큼 오래 걸리는 경우에만 금 말일에 tmux 잡을 띄운다.
 
 ---
 
@@ -351,24 +351,20 @@ python experiments/exp06-finetune/infer.py \
 check-jsonschema --schemafile docs/contracts/span.schema.json /tmp/span_result.json
 ```
 
-### 금 말일 — W6 비동기 학습 잡 착수
+### 금 말일 — W6 비동기 학습 잡 (조건부)
 
-연휴 중 PC가 켜져 있어야 한다. tmux를 쓰면 ssh 연결이 끊겨도 실행이 유지된다.
+**먼저 확인**: o_weight 탐색 1 epoch 실측 시간이 얼마인지. 연휴 3일을 걸쳐야 할 만큼 오래 걸리는 경우에만 tmux 잡을 띄운다. 몇 시간이면 W6 정상 근무일(화~목)에 돌려도 충분.
 
 ```bash
-# tmux 세션 열기
+# 연휴를 걸쳐야 할 만큼 오래 걸릴 때만 실행
 tmux new -s w6_train
-
-# 긴 학습 시작
 python experiments/exp06-finetune/train.py \
   --o-weight <최적값> \
   --epochs 20 \
   --output experiments/exp06-finetune/runs/v1_long \
   --resume-from-checkpoint latest \
   2>&1 | tee logs/v1_long.log
-
-# Ctrl+B → D 로 세션에서 빠져나옴 (학습은 계속 실행)
-# 연휴 후 확인: tmux attach -t w6_train
+# Ctrl+B → D 로 세션에서 빠져나옴
 ```
 
 ### 만들 것
@@ -385,7 +381,7 @@ models/registry.md                        v1 체크포인트 등록
 - [ ] v1 체크포인트 확정 + `models/registry.md` 등록 PR
 - [ ] CPU 지연 측정 + 기록 (목표 < 300ms)
 - [ ] 추론 함수 `infer.py` — `span.schema.json` 계약 통과
-- [ ] W6 비동기 학습 잡 착수 (금 말일 · tmux)
+- [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
 ---
 
@@ -673,10 +669,12 @@ PM 역할: 팀원 5명 보고 취합 + 막힌 항목 확인 (특히 A test set �
 ### 목 21:00 — 멘토링
 
 **이번 주 멘토링 안건:**
-1. **W6 추석 대응** — B·D 학습 잡 비동기 배치 방식 보고
-2. **IAA 2차 결과** (C #229 완료 시) — 암묵 F1 수준 보고
+1. **W6 추석 대응** — B epoch 소요 시간 확인 후 tmux 잡 여부 결정
+2. **IAA 2차 결과** — 암묵 F1 수준 보고
 
-### 금 말일 — W6 비동기 학습 잡 착수
+### 금 말일 — W6 학습 잡 (조건부)
+
+**먼저 확인**: QLoRA 1 epoch 실측 시간. 연휴를 걸쳐야 할 만큼 오래 걸릴 때만 실행.
 
 ```bash
 tmux new -s w6_qwen3
@@ -709,7 +707,7 @@ experiments/exp07-qwen3-finetune/runs/v1_*   QLoRA 추가 실험
 - [ ] `anonymize()` + `restore()` — 라운드트립 단위 테스트 통과
 - [ ] 가명화 모듈 PR 머지
 - [ ] QLoRA 에포크 ≥ 3 완료 + loss 곡선 이슈 등록
-- [ ] W6 비동기 학습 잡 착수 (금 말일 · tmux)
+- [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
 ---
 
@@ -999,7 +997,7 @@ scripts/check_boundary.sh             계층 경계 검증
 | 목 | | D | 가명화 PR 머지 + QLoRA ≥ 3 epoch |
 | 목 | | E | 엔드투엔드 흐름 점검 + check_boundary |
 | **목 21:00** | | 전원+멘토 | 멘토링 — W6 추석 대응 + IAA 2차 |
-| **금 9/19** | | B·D | W6 비동기 학습 잡 착수 (tmux) |
+| **금 9/19** | | B·D | W6 학습 잡 — epoch 시간 확인 후 필요시 tmux 착수 |
 | 금 | | E | (스트레치) 활동 메타 필드 착수 |
 | **금 마감 전** | | D(PM) | 주간보고서 최종 제출 + `w05` 태그 |
 
