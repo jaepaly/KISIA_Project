@@ -31,3 +31,4 @@
 
 # 다이어그램은 텍스트지만 리뷰에서 접는다
 *.svg       text eol=lf linguist-generated=true
+apps/demo/deploy/** text eol=lf
