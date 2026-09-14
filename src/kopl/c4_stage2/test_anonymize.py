@@ -162,6 +162,15 @@ def test_unknown_type_no_collision() -> None:
     print("[PASS] 10. 미등록 유형 폴백 토큰 유일성 통과")
 
 
+def test_age_huge_digits_fallback() -> None:
+    """비정상적으로 긴 숫자열 AGE — 크래시 없이 폴백 토큰으로 라운드트립 (Codex 재검토 P2)."""
+    text = "0" * 4400 + "48세"
+    spans = [{"start": 0, "end": len(text), "text": text, "type": "AGE"}]
+    anon, key = anonymize(text, spans)
+    assert restore(anon, key) == text, "긴 숫자열 AGE 복원 실패"
+    print("[PASS] 12. 긴 숫자열 AGE 폴백 통과")
+
+
 def test_overlap_rejected() -> None:
     """겹치는 스팬은 조용히 절단하지 말고 거부한다 (label-schema §6, Codex P2-3)."""
     text = "서울역 광장"
@@ -186,5 +195,6 @@ if __name__ == "__main__":
     test_original_text_is_tokenlike()
     test_age_triple_same_decade()
     test_unknown_type_no_collision()
+    test_age_huge_digits_fallback()
     test_overlap_rejected()
     print("=== [성공] c4_stage2 라운드트립 전 항목 통과 ===")

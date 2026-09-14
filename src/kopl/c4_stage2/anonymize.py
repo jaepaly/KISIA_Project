@@ -49,7 +49,11 @@ def _age_decade(text: str) -> str:
     m = _DIGIT_RE.search(text)
     if not m:
         return ""
-    return str((int(m.group()) // 10) * 10)
+    try:
+        return str((int(m.group()) // 10) * 10)
+    except ValueError:
+        # 비정상적으로 긴 숫자열(Python int 변환 한도 등)은 환산하지 않고 폴백
+        return ""
 
 
 def _check_no_overlap(spans: List[Dict[str, Any]]) -> None:
