@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # 로컬(git-bash)에서: 현재 HEAD 를 tar 로 묶어 서버에 올리고, 의존성·시딩·서비스·nginx 를 갱신한다.
-#   apps/demo/deploy/deploy.sh ubuntu@IP ~/.ssh/veilo.pem [--reset]
+#   apps/demo/deploy/deploy.sh ec2-user@IP ~/.ssh/veilo.pem [--reset]      (Ubuntu 면 ubuntu@IP)
 # --reset : 글 데이터(sns.db)를 시딩 상태로 되돌린다 (첫 배포·리허설 전). 9/20 이후엔 코드 배포 자체를 하지 않는다.
 set -euo pipefail
-HOST="${1:?ubuntu@IP}"; KEY="${2:?pem path}"; RESET="${3:-}"
+HOST="${1:?ec2-user@IP}"; KEY="${2:?pem path}"; RESET="${3:-}"
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 TGZ="$(mktemp -t veilo-XXXX).tgz"
 cd "$ROOT"
@@ -21,9 +21,13 @@ sudo chown -R veilo:veilo /srv/veilo/app
 sudo chown veilo:veilo /srv/veilo/.env && sudo chmod 600 /srv/veilo/.env
 sudo -u veilo /srv/veilo/venv/bin/pip install -q -r /srv/veilo/app/apps/sns/requirements.txt -r /srv/veilo/app/apps/demo/requirements.txt waitress
 sudo cp /srv/veilo/app/apps/demo/deploy/veilo.service /srv/veilo/app/apps/demo/deploy/padopool.service /etc/systemd/system/
-sudo cp /srv/veilo/app/apps/demo/deploy/nginx.conf /etc/nginx/sites-available/veilo
-sudo ln -sf /etc/nginx/sites-available/veilo /etc/nginx/sites-enabled/veilo
-sudo rm -f /etc/nginx/sites-enabled/default
+if [ -d /etc/nginx/sites-available ]; then
+  sudo cp /srv/veilo/app/apps/demo/deploy/nginx.conf /etc/nginx/sites-available/veilo
+  sudo ln -sf /etc/nginx/sites-available/veilo /etc/nginx/sites-enabled/veilo
+  sudo rm -f /etc/nginx/sites-enabled/default
+else
+  sudo cp /srv/veilo/app/apps/demo/deploy/nginx.conf /etc/nginx/conf.d/veilo.conf
+fi
 sudo systemctl daemon-reload
 if [ '$RESET' = '--reset' ] || [ ! -f /srv/veilo/data/sns.db ]; then
   sudo systemctl stop veilo padopool 2>/dev/null || true

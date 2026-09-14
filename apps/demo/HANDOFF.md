@@ -20,14 +20,14 @@
 
 | 파일 | 무엇 |
 |---|---|
-| `bootstrap.sh` | 서버에서 한 번: apt · `veilo` 계정 · `/srv/veilo/{app,data,venv}` · nginx |
-| `deploy.sh ubuntu@IP KEY.pem [--reset]` | 로컬에서: `git archive HEAD` 를 tar 로 올리고 pip · systemd · nginx 갱신 · (첫 배포·`--reset`) 시딩 |
+| `bootstrap.sh` | 서버에서 한 번: dnf(Amazon Linux 2023, python3.11) 또는 apt(Ubuntu) · `veilo` 계정 · `/srv/veilo/{app,data,venv}` · nginx |
+| `deploy.sh ec2-user@IP KEY.pem [--reset]` | 로컬에서: `git archive HEAD` 를 tar 로 올리고 pip · systemd · nginx 갱신 · (첫 배포·`--reset`) 시딩 |
 | `wsgi_sns.py` · `wsgi_pado.py` | waitress 진입점 (sns_ext / app) |
 | `veilo.service` · `padopool.service` | systemd — `EnvironmentFile=/srv/veilo/.env` |
 | `nginx.conf` | 80 → 3000. 도메인 붙이면 `server_name` 고치고 `certbot --nginx` |
 | `env.example` | 서버 `.env` 본. **키는 로컬 `.env` 값을 서버에서 손으로 넣는다** (저장소 X) |
 
-콘솔에서 할 것(사람): 서울 리전 · Ubuntu 24.04 · t3.small · 키 페어(.pem) · 보안그룹 **22 는 내 IP 만** · **Elastic IP**(재시작해도 주소 유지).
+콘솔에서 할 것(사람): 서울 리전 · **Amazon Linux 2023**(이 계정은 Ubuntu AMI 가 막혀 있다 — 빠른 시작은 AMI 오류, 마켓플레이스는 권한 거부, 9/14) · t3.small · 키 페어(.pem) · 보안그룹 **22 는 내 IP 만** · **Elastic IP**(재시작해도 주소 유지).
 **80/443 을 0.0.0.0/0 으로 여는 것은 KISIA 안내문(9/14)상 담당자 확인이 먼저다** — 확인 전엔 닫아 두고 SSH 로만 올린다. 안 되면 자비 VM(Lightsail/Hetzner)으로 같은 킷을 쓴다.
 KISIA 계정 규칙: 첫 로그인 후 암호 변경 + **MFA 등록 필수** · Access Key 는 안 만든다(SSH 만 씀) · 안 쓰는 자원은 지운다 · 인증정보는 어디에도 안 적는다.
 심사용은 `DEMO_ACCESS_KEY` 비움(문 열림). 9/18 접수 URL = 9/20 이후 심사 끝까지 같은 주소여야 한다 → 도메인 권장.
