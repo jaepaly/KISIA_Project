@@ -4,11 +4,18 @@ blind(C가 매긴 것) + IAA(A·C 파일럿) 배정 글은 test 전용이다.
 교사 출력을 보기 전에 사람이 매긴 골드 표본이라, 학습(train)에
 섞이면 모델이 이미 본 적 있는 글로 평가받는 셈이 된다.
 
+#235 — blind·IAA는 전부 단서 글(kind=clue)이라, 1단 과탐(precision·
+특이도)과 2단 기권(abstain)을 잴 잡담·ambient 표본이 test에 없었다.
+선택지 (가)로 간다 — 검수 정본(gold/ 최상위, reviewed:true)의
+negative_control 글 중 일부를 seed로 뽑아 test에 추가한다. blind는
+아니지만(교사 라벨을 본 뒤 검수), 잡담·ambient는 "단서가 없다"는
+확인이 핵심이라 등급·유형처럼 판단이 갈리는 영역이 아니다 — 검수
+정본의 신뢰도로 충분하다.
+
     python scripts/split_train_test.py --dry-run   먼저 통계만 확인
     python scripts/split_train_test.py              실제 분리 + 파일 저장
 
-seed는 train 내부를 섞는 데만 쓴다 — test 구성 자체는 배정 파일로
-결정되는 거라 무작위성이 없다.
+seed는 train 내부를 섞는 데, 그리고 잡담 표본을 뽑는 데 쓴다.
 """
 from __future__ import annotations
 
@@ -30,23 +37,61 @@ def load_assignment(path: Path) -> set[tuple[str, str]]:
     return keys
 
 
+def load_noise_candidates(gold_dir: Path) -> set[tuple[str, str]]:
+    """검수 정본(최상위 gold/*_spans.jsonl)에서 reviewed:true + negative_control
+    글의 (persona_id, post) 후보를 모은다. blind/iaa/detect 하위 폴더는
+    glob("*_spans.jsonl")이 최상위만 보므로 자동으로 제외된다.
+    """
+    candidates: set[tuple[str, str]] = set()
+    for f in gold_dir.glob("*_spans.jsonl"):
+        pid = f.stem.replace("_spans", "")
+        for line in f.read_text(encoding="utf-8-sig").splitlines():
+            if not line.strip():
+                continue
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            post_id = r.get("post_id")
+            if not post_id:
+                continue  # 프로필 레코드
+            if r.get("reviewed") and r.get("flags", {}).get("negative_control"):
+                post = post_id.split("_")[-1]
+                candidates.add((pid, post))
+    return candidates
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--posts", default="data/corpus/v0/posts")
     ap.add_argument("--blind-assignment", default="data/corpus/v0/gold/blind/_assignment.json")
     ap.add_argument("--iaa-assignment", default="data/corpus/v0/gold/iaa/_assignment.json")
+    ap.add_argument("--gold-dir", default="data/corpus/v0/gold")
     ap.add_argument("--out", default="data/corpus/v0/splits")
     ap.add_argument("--seed", type=int, default=20260910)
+    ap.add_argument("--noise-sample-size", type=int, default=80,
+                     help="검수 정본에서 test로 추가할 잡담·ambient 글 수 (#235 선택지 가)")
+    ap.add_argument("--no-noise", action="store_true",
+                     help="잡담·ambient 표본 추가를 끈다 (W4까지의 옛 동작)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
     test_keys = load_assignment(Path(a.blind_assignment)) | load_assignment(Path(a.iaa_assignment))
-    print(f"test 전용 배정: blind+IAA 합쳐 {len(test_keys)}건")
+    print(f"test 전용 배정(blind+IAA): {len(test_keys)}건")
+
+    noise_added = 0
+    if not a.no_noise:
+        candidates = load_noise_candidates(Path(a.gold_dir)) - test_keys
+        rng_noise = random.Random(a.seed)
+        sample_size = min(a.noise_sample_size, len(candidates))
+        noise_sample = set(rng_noise.sample(sorted(candidates), sample_size))
+        test_keys |= noise_sample
+        noise_added = len(noise_sample)
+        print(f"잡담·ambient 표본 추가(#235 가): 후보 {len(candidates)}건 중 {noise_added}건 (seed={a.seed})")
 
     posts_dir = Path(a.posts)
     train_recs: list[dict] = []
     test_recs: list[dict] = []
-    missing = []
 
     for f in sorted(posts_dir.glob("*.jsonl")):
         pid = f.stem
@@ -64,7 +109,7 @@ def main() -> int:
             key = (pid, post)
             if key in test_keys:
                 test_recs.append(r)
-                test_keys.discard(key)  # 실제로 찾은 것만 남기고 지운다
+                test_keys.discard(key)
             else:
                 train_recs.append(r)
 
@@ -103,7 +148,6 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    # 누수 검사 — test의 post_id가 train에 하나도 없는지
     train_ids = {r["post_id"] for r in train_recs if r.get("post_id")}
     test_ids = {r["post_id"] for r in test_recs if r.get("post_id")}
     leak = train_ids & test_ids
@@ -117,10 +161,19 @@ def main() -> int:
         "train_count": len(train_recs),
         "test_count": len(test_recs),
         "kind_counts": kind_counts,
+        "noise_sample_added": noise_added,
         "test_personas": len({r.get("persona_id") for r in test_recs}),
-        "note": "test 는 blind·IAA 배정 = 전부 단서 글(kind=clue). 잡담·ambient 가 없어 과탐·기권 평가엔 별도 표본이 필요하다. test 인물은 전원 train 에도 있다(인물 분리 아님).",
+        "note": (
+            "test = blind·IAA(단서 글) + #235 결정(가)로 추가한 검수 정본 "
+            "잡담·ambient 표본. 잡담·ambient는 blind가 아니라 검수(교사 라벨을 "
+            "본 뒤 사람이 확정)라는 한계가 있음 — 다만 '단서 없음' 확인은 "
+            "등급·유형처럼 판단이 갈리는 영역이 아니라 신뢰도 충분하다고 판단. "
+            "test 인물은 전원 train에도 있다(인물 분리 아님) — 인물 단위 "
+            "부트스트랩으로 보완 필요."
+        ),
         "blind_assignment": a.blind_assignment,
         "iaa_assignment": a.iaa_assignment,
+        "decision_issue": "#235",
     }
     (out_dir / "split_meta.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8"

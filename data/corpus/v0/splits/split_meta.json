@@ -1,19 +1,22 @@
 {
   "seed": 20260910,
-  "train_count": 2917,
-  "test_count": 175,
+  "train_count": 2837,
+  "test_count": 255,
   "kind_counts": {
     "train": {
       "ambient": 421,
       "clue": 518,
-      "noise": 1978
+      "noise": 1898
     },
     "test": {
-      "clue": 175
+      "clue": 175,
+      "noise": 80
     }
   },
-  "test_personas": 101,
-  "note": "test 는 blind·IAA 배정 = 전부 단서 글(kind=clue). 잡담·ambient 가 없어 과탐·기권 평가엔 별도 표본이 필요하다. test 인물은 전원 train 에도 있다(인물 분리 아님).",
+  "noise_sample_added": 80,
+  "test_personas": 105,
+  "note": "test = blind·IAA(단서 글) + #235 결정(가)로 추가한 검수 정본 잡담·ambient 표본. 잡담·ambient는 blind가 아니라 검수(교사 라벨을 본 뒤 사람이 확정)라는 한계가 있음 — 다만 '단서 없음' 확인은 등급·유형처럼 판단이 갈리는 영역이 아니라 신뢰도 충분하다고 판단. test 인물은 전원 train에도 있다(인물 분리 아님) — 인물 단위 부트스트랩으로 보완 필요.",
   "blind_assignment": "data/corpus/v0/gold/blind/_assignment.json",
-  "iaa_assignment": "data/corpus/v0/gold/iaa/_assignment.json"
+  "iaa_assignment": "data/corpus/v0/gold/iaa/_assignment.json",
+  "decision_issue": "#235"
 }
