@@ -14,6 +14,22 @@
 | ~10/17 | (9/20 동결 — 본 프로젝트 자원 갈아끼우기는 데모데이 이후 · 제출본은 건드리지 않는다) |
 | **10/17** | 데모데이 |
 
+## 배포 — AWS EC2 (9/14 계정 수령)
+
+`apps/demo/deploy/` 에 전부 있다. 개발 서버 대신 **waitress** 두 프로세스(:3000 Veilo · :8000 파도풀, 둘 다 127.0.0.1) + **nginx**(80 → 3000). 파도풀 API 는 밖에 안 연다.
+
+| 파일 | 무엇 |
+|---|---|
+| `bootstrap.sh` | 서버에서 한 번: apt · `veilo` 계정 · `/srv/veilo/{app,data,venv}` · nginx |
+| `deploy.sh ubuntu@IP KEY.pem [--reset]` | 로컬에서: `git archive HEAD` 를 tar 로 올리고 pip · systemd · nginx 갱신 · (첫 배포·`--reset`) 시딩 |
+| `wsgi_sns.py` · `wsgi_pado.py` | waitress 진입점 (sns_ext / app) |
+| `veilo.service` · `padopool.service` | systemd — `EnvironmentFile=/srv/veilo/.env` |
+| `nginx.conf` | 80 → 3000. 도메인 붙이면 `server_name` 고치고 `certbot --nginx` |
+| `env.example` | 서버 `.env` 본. **키는 로컬 `.env` 값을 서버에서 손으로 넣는다** (저장소 X) |
+
+콘솔에서 할 것(사람): 서울 리전 · Ubuntu 24.04 · t3.small · 키 페어(.pem) · 보안그룹 22/80/443 · **Elastic IP**(재시작해도 주소 유지).
+심사용은 `DEMO_ACCESS_KEY` 비움(문 열림). 9/18 접수 URL = 9/20 이후 심사 끝까지 같은 주소여야 한다 → 도메인 권장.
+
 ## 지금 상태 — 링크로 낼 수 있는 기준선
 
 ```bash
