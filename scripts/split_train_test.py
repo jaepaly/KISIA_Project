@@ -70,9 +70,9 @@ def main() -> int:
     ap.add_argument("--out", default="data/corpus/v0/splits")
     ap.add_argument("--seed", type=int, default=20260910)
     ap.add_argument("--noise-sample-size", type=int, default=80,
-                     help="검수 정본에서 test로 추가할 잡담·ambient 글 수 (#235 선택지 가)")
+                     help="검수 정본에서 test로 추가할 잡담(noise) 글 수 (#235 선택지 가)")
     ap.add_argument("--no-noise", action="store_true",
-                     help="잡담·ambient 표본 추가를 끈다 (W4까지의 옛 동작)")
+                     help="잡담 표본 추가를 끈다 (W4까지의 옛 동작)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
@@ -87,7 +87,7 @@ def main() -> int:
         noise_sample = set(rng_noise.sample(sorted(candidates), sample_size))
         test_keys |= noise_sample
         noise_added = len(noise_sample)
-        print(f"잡담·ambient 표본 추가(#235 가): 후보 {len(candidates)}건 중 {noise_added}건 (seed={a.seed})")
+        print(f"잡담 표본 추가(#235 가): 후보 {len(candidates)}건 중 {noise_added}건 (seed={a.seed})")
 
     posts_dir = Path(a.posts)
     train_recs: list[dict] = []
@@ -165,7 +165,7 @@ def main() -> int:
         "test_personas": len({r.get("persona_id") for r in test_recs}),
         "note": (
             "test = blind·IAA(단서 글) + #235 결정(가)로 추가한 검수 정본 "
-            "잡담·ambient 표본. 잡담·ambient는 blind가 아니라 검수(교사 라벨을 "
+            "잡담(noise) 표본. 잡담 표본은 blind가 아니라 검수(교사 라벨을 "
             "본 뒤 사람이 확정)라는 한계가 있음 — 다만 '단서 없음' 확인은 "
             "등급·유형처럼 판단이 갈리는 영역이 아니라 신뢰도 충분하다고 판단. "
             "test 인물은 전원 train에도 있다(인물 분리 아님) — 인물 단위 "
