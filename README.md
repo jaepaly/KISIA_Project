@@ -548,119 +548,31 @@ data/corpus/v0/gold/contribution/<pid>.json               증류 타깃 세트
 
 B가 스팬을 찾으면 그 구간을 실제 표현에서 **가명 라벨로 교체**하고, 나중에 다시 원래 표현으로 **복원**한다. 이 단계가 있어야 D의 2단 모델이 원문 지명을 보지 않고 구조만 판단할 수 있다.
 
-### 월~화 — 가명화 모듈 구현
+### ~~월~화 — 가명화 모듈 구현~~ ✅ 완료 (9/14 · #243 머지)
 
-```python
-# src/kopl/c4_stage2/anonymize.py
+`src/kopl/c4_stage2/anonymize.py` — `anonymize(text, spans) → (anon_text, key)` / `restore(anon_text, key) → 원문`.
 
-# 가명 라벨 규칙 (label-schema §6 기반)
-LABEL_TEMPLATE = {
-    "LOC_FACILITY": "[시설{idx}]",
-    "LOC_REGION":   "[지역{idx}]",
-    "AGE":          "[{decade}0대]",    # 48 → 40대
-    "JOB":          "[직업{idx}]",
-    "FAMILY":       "[관계{idx}]",
-    "COMMUTE":      "[통근지{idx}]",
-    "INCOME":       "[소득{idx}]",
-    "SEX":          "[성별{idx}]",
-    "REL_WORK":     "[직장관계{idx}]",
-}
-
-def anonymize(text: str, spans: list[dict]) -> tuple[str, dict]:
-    """
-    text:  원문 문자열
-    spans: B(c1) 출력 스팬 목록 (start·end·type·text 포함)
-
-    반환:
-      anon_text: 가명 처리된 텍스트
-      key:       복원 매핑 {"[시설1]": "신갈저수지", "[40대]": "마흔여덟", ...}
-    """
-    # 스팬을 역순(뒤에서 앞으로)으로 교체해야 offset이 안 밀린다
-    sorted_spans = sorted(spans, key=lambda s: -s["start"])
-    key = {}
-    counter = {}   # 유형별 카운터
-
-    result = text
-    for sp in sorted_spans:
-        typ = sp.get("type", "UNKNOWN")
-        counter[typ] = counter.get(typ, 0) + 1
-        idx = counter[typ]
-
-        if typ == "AGE":
-            # 48 → 40대 변환 시도
-            import re
-            m = re.search(r"\d+", sp["text"])
-            decade = (int(m.group()) // 10) if m else "X"
-            placeholder = f"[{decade}0대]"
-        else:
-            tpl = LABEL_TEMPLATE.get(typ, "[단서{idx}]")
-            placeholder = tpl.format(idx=idx)
-
-        key[placeholder] = sp["text"]
-        result = result[:sp["start"]] + placeholder + result[sp["end"]:]
-
-    return result, key
-
-
-def restore(anon_text: str, key: dict) -> str:
-    """가명 텍스트 + 키 → 원문 복원"""
-    result = anon_text
-    for placeholder, original in key.items():
-        result = result.replace(placeholder, original)
-    return result
-```
-
-**라운드트립 단위 테스트**:
-
-```python
-# tests/test_anonymize.py
-def test_roundtrip():
-    text = "집 근처 신갈저수지 조황입니다. 마흔여덟 되니 무릎이…"
-    spans = [
-        {"start": 4,  "end": 10, "text": "신갈저수지", "type": "LOC_FACILITY"},
-        {"start": 14, "end": 18, "text": "마흔여덟",   "type": "AGE"},
-    ]
-    anon, key = anonymize(text, spans)
-    assert "[시설1]" in anon
-    assert "[40대]" in anon
-    restored = restore(anon, key)
-    assert restored == text, f"복원 실패: {restored!r} ≠ {text!r}"
-
-def test_multi_same_type():
-    text = "신갈저수지 옆 기흥호수 조황"
-    spans = [
-        {"start": 0,  "end": 5,  "text": "신갈저수지", "type": "LOC_FACILITY"},
-        {"start": 6,  "end": 10, "text": "기흥호수",   "type": "LOC_FACILITY"},
-    ]
-    anon, key = anonymize(text, spans)
-    assert "[시설1]" in anon and "[시설2]" in anon
-```
+- 정본 10종(§3-2) 유형명 준수 · 정본 외 유형은 `ValueError` 거부
+- 가명 토큰은 유일 + 원문에 부분문자열로 부재 → 라운드트립 무조건 보장
+- 입력 경계 검증: offset 범위 · `text[start:end]` 일치 · 겹침(§6) 거부
+- AGE 는 숫자면 연령대(`[40대]`) 일반화, 출생연도(`1990년생`)·한글 나이는 일반 토큰 폴백
 
 ```bash
-python -m pytest tests/test_anonymize.py -v
+python -m pytest src/kopl/c4_stage2/test_anonymize.py -v   # 15 passed
 ```
 
-### 화~수 — QLoRA 2단 학습 계속
+Codex 2회 + C 리뷰 반영. 설계 상세는 #243.
 
-W4 첫 잡(dev loss 0.005) 이후 에포크를 늘린다.
+### 수~목 — v1 SFT 빌더 (본문 + 골드 스팬 + anonymize)
 
-```bash
-python experiments/exp07-qwen3-finetune/train.py \
-  --epochs 5 \
-  --batch 4 \
-  --lr 1e-4 \
-  --output experiments/exp07-qwen3-finetune/runs/v1_e5
-```
+⚠️ **v0 학습 입력에는 anonymize 를 연결하지 않는다.** v0 입력(clue_plan 유도, `make_sft.py`)의 스팬 `text` 는 값이 아니라 **단서 구절 전체**라, 통째로 치환하면 등급·subject·함정 판단 근거가 같이 지워진다 (9/14 Codex 검토로 확정).
 
-**이번 주부터 가명 처리 후 입력 사용**:
+대신 골드 스팬(#229 까지 머지 · 본문 offset 포함)으로 **v1 SFT 입력**을 만들고 거기에 가명화를 건다:
 
-```python
-# 학습 데이터 생성 시
-from kopl.c4_stage2.anonymize import anonymize
-
-anon_text, key = anonymize(post["body"], gold_spans)
-# anon_text 를 Qwen3 입력으로 사용 (원문 대신)
-```
+1. 글 본문 + `gold/<pid>_spans.jsonl` → `anonymize()` → 가명 본문을 모델 입력으로
+2. 함정(`통로=`) 정보는 clue_plan 과 조인 — 골드 스팬엔 note 가 없어 설계 필요
+3. test 글 제외 기준은 **#235 결정**을 따른다 (A · 비동기 요청)
+4. train/dev 재생성 후 **QLoRA 재학습(epochs ≥ 3)은 v1 데이터로** — 금 또는 W6 잡
 
 ### 수 23:59 — 주간보고서 + 팀원 보고 취합
 
@@ -674,13 +586,12 @@ PM 역할: 팀원 5명 보고 취합 + 막힌 항목 확인 (특히 A test set �
 
 ### 금 말일 — W6 학습 잡 (조건부)
 
-**먼저 확인**: QLoRA 1 epoch 실측 시간. 연휴를 걸쳐야 할 만큼 오래 걸릴 때만 실행.
+**먼저 확인**: QLoRA 1 epoch 실측 시간. 연휴를 걸쳐야 할 만큼 오래 걸릴 때만 실행. v1 SFT 데이터가 목요일까지 준비되면 **v1(가명화) 데이터로** 돌린다 — 안 되면 v0 로 돌리고 v1 재학습은 W7.
 
 ```bash
 tmux new -s w6_qwen3
-python experiments/exp07-qwen3-finetune/train.py \
+python experiments/exp08-stage2-sft/train.py \
   --epochs 20 \
-  --output experiments/exp07-qwen3-finetune/runs/v1_long \
   2>&1 | tee logs/qwen3_v1.log
 # Ctrl+B → D
 ```
@@ -697,16 +608,17 @@ python experiments/exp07-qwen3-finetune/train.py \
 ### 만들 것
 
 ```
-src/kopl/c4_stage2/anonymize.py              가명화·복원 모듈
-tests/test_anonymize.py                      라운드트립 단위 테스트
-experiments/exp07-qwen3-finetune/runs/v1_*   QLoRA 추가 실험
+src/kopl/c4_stage2/                          가명화·복원 모듈 ✅ (#243 · 테스트 co-located)
+experiments/exp08-stage2-sft/make_sft_v1.py  v1 SFT 빌더 (본문+골드스팬+anonymize)
+experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분
 ```
 
 ### 완료 기준
 
-- [ ] `anonymize()` + `restore()` — 라운드트립 단위 테스트 통과
-- [ ] 가명화 모듈 PR 머지
-- [ ] QLoRA 에포크 ≥ 3 완료 + loss 곡선 이슈 등록
+- [x] `anonymize()` + `restore()` — 라운드트립 15종 통과 (9/14)
+- [x] 가명화 모듈 PR 머지 (#243 · 9/14)
+- [ ] v1 SFT 빌더 — 본문+골드스팬 → 가명 입력 (test 제외는 #235 결정 따름)
+- [ ] QLoRA 에포크 ≥ 3 완료 (v1 데이터) + loss 곡선 이슈 등록
 - [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
 ---
@@ -984,7 +896,7 @@ scripts/check_boundary.sh             계층 경계 검증
 | 월~화 | | A | train/test 분리 스크립트 |
 | 월~화 | | B | o_weight 그리드 탐색 시작 |
 | 월~화 | | C | ~~#229 재제출~~ ✅ 완료 → IAA 2차 표본 추출 착수 |
-| 월~화 | | D | 가명화 모듈 구현 + 라운드트립 테스트 |
+| 월~화 | | D | ~~가명화 모듈~~ ✅ #243 머지 (9/14 선완료) |
 | 월~화 | | E | 목 엔진 4종 구현 + 계약 검증 |
 | **화~수** | | B | o_weight 탐색 결과 비교표 작성 |
 | 화 | | C | IAA 2차 표본 추출 (A와) |
@@ -994,7 +906,7 @@ scripts/check_boundary.sh             계층 경계 검증
 | **월 9/22 11:15** | | D(PM) | KISIA 줌 주간보고회 발표 |
 | **목 9/18** | | B | v1 체크포인트 확정 + registry.md PR |
 | 목 | | C | LOO 기여도 엔진 + 증류 타깃 생성 |
-| 목 | | D | 가명화 PR 머지 + QLoRA ≥ 3 epoch |
+| 수~목 | | D | v1 SFT 빌더 (본문+골드스팬+anonymize) + QLoRA ≥ 3 epoch (v1) |
 | 목 | | E | 엔드투엔드 흐름 점검 + check_boundary |
 | **목 21:00** | | 전원+멘토 | 멘토링 — W6 추석 대응 + IAA 2차 |
 | **금 9/19** | | B·D | W6 학습 잡 — epoch 시간 확인 후 필요시 tmux 착수 |
