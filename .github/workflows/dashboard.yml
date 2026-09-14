@@ -13,23 +13,24 @@ name: dashboard
 #    안 켜면 deploy 단계가 «Not Found» 로 실패한다.
 
 on:
-  schedule:
-    # 2시간마다. 페이지가 브라우저에서 GitHub API 를 직접 읽으므로 이 실행은
-    # «API 가 막혔을 때 쓸 폴백»을 갱신할 뿐이다. 30분마다 돌 이유가 없다.
-    - cron: '0 */2 * * *'
-  push:
-    branches: [main]
-    paths:
-      # 체크리스트 표식이 문서에 있으므로 문서가 바뀌면 다시 만든다
-      - 'docs/**'
-      - 'scripts/build_dashboard.py'
-      - '.github/workflows/dashboard.yml'
-  pull_request:
-    types: [opened, closed, reopened, ready_for_review, converted_to_draft,
-            review_requested, review_request_removed]
-  issues:
-    types: [opened, closed, reopened, assigned, unassigned]
+  # ⚠️ 2026-09-14 자동 실행 중단 — 저장소 비공개 전환으로 GitHub Pages(무료 플랜)가
+  #    내려가 deploy 단계가 매 실행 실패한다. 대시보드는 AWS 계정 수령 후
+  #    S3+CloudFront 로 옮겨 배포를 되살린다. 그때까지 자동 트리거를 멈춘다.
+  #    원복: 아래 schedule/push/pull_request/issues 주석 해제.
   workflow_dispatch:
+  # schedule:
+  #   - cron: '0 */2 * * *'
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - 'docs/**'
+  #     - 'scripts/build_dashboard.py'
+  #     - '.github/workflows/dashboard.yml'
+  # pull_request:
+  #   types: [opened, closed, reopened, ready_for_review, converted_to_draft,
+  #           review_requested, review_request_removed]
+  # issues:
+  #   types: [opened, closed, reopened, assigned, unassigned]
 
 # 기본은 읽기만. 배포 잡에서만 올린다 — PR 이벤트로 돌 때 그 PR 의 코드가
 # pages 쓰기 토큰을 쥐면 안 된다.
