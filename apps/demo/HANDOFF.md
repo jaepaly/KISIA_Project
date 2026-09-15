@@ -25,6 +25,7 @@
 | `wsgi_sns.py` · `wsgi_pado.py` | waitress 진입점 (sns_ext / app) |
 | `veilo.service` · `padopool.service` | systemd — `EnvironmentFile=/srv/veilo/.env` |
 | `nginx.conf` | 80 → 3000. 도메인 붙이면 `server_name` 고치고 `certbot --nginx` |
+| `veilo-reseed.service/.timer` | 매일 04:00(서울) 시딩 상태로 되돌린다 — 심사 기간 한 달간 방문자가 바꾼 글이 쌓이지 않게. 멈췄다 재시딩하고 다시 켠다 |
 | `env.example` | 서버 `.env` 본. **키는 로컬 `.env` 값을 서버에서 손으로 넣는다** (저장소 X) |
 
 콘솔에서 할 것(사람): 서울 리전 · **Amazon Linux 2023**(이 계정은 Ubuntu AMI 가 막혀 있다 — 빠른 시작은 AMI 오류, 마켓플레이스는 권한 거부, 9/14) · t3.small · 키 페어(.pem) · 보안그룹 **22 는 내 IP 만** · **Elastic IP**(재시작해도 주소 유지).

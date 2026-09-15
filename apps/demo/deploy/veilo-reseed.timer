@@ -1,0 +1,10 @@
+# 새벽 4시(서울)에 재시딩. bootstrap.sh 가 서버 시간대를 Asia/Seoul 로 맞춘다.
+[Unit]
+Description=Veilo demo data reseed (daily 04:00)
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+Persistent=false
+
+[Install]
+WantedBy=timers.target

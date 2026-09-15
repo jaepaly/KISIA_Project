@@ -22,6 +22,9 @@ from pathlib import Path
 from typing import Any
 
 MODEL = os.getenv("DEMO_EXTERNAL_MODEL", "claude-haiku-4.5")
+# 심사위원을 기다리게 하지 않는다 — 이 안에 답이 안 오면 규칙·캐시 후보로 떨어진다(화면은 그대로 뜬다).
+# 환경변수라 9/20 동결 뒤에도 서버에서 조절할 수 있다.
+TIMEOUT = float(os.getenv("DEMO_EXTERNAL_TIMEOUT", "8"))
 _ROOT = Path(__file__).resolve().parents[3]
 
 
@@ -52,7 +55,7 @@ def _client():
         kw["api_key"] = os.environ["ANTHROPIC_API_KEY"]
     if os.getenv("ANTHROPIC_BASE_URL"):
         kw["base_url"] = os.environ["ANTHROPIC_BASE_URL"]
-    return anthropic.Anthropic(**kw, max_retries=1, timeout=20, default_headers={"User-Agent": "padopool-demo/0.1"})
+    return anthropic.Anthropic(**kw, max_retries=0, timeout=TIMEOUT, default_headers={"User-Agent": "padopool-demo/0.1"})
 
 
 def enabled() -> bool:

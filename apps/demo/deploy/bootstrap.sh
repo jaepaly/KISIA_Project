@@ -17,5 +17,12 @@ sudo mkdir -p /srv/veilo/app /srv/veilo/data
 sudo chown -R veilo:veilo /srv/veilo
 sudo chmod 755 /srv/veilo
 sudo -u veilo $PY -m venv /srv/veilo/venv
+sudo timedatectl set-timezone Asia/Seoul || true
+# 스왑 2G — 1GB VPS 에서 두 프로세스 + 인구표가 동시에 커질 때 OOM 으로 죽지 않게
+if [ ! -f /swapfile ]; then
+  sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+  sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+  grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
+fi
 sudo systemctl enable --now nginx
 echo "bootstrap: 시스템 준비 끝 ($PY). 이제 로컬에서 deploy.sh 를 돌리면 코드·의존성·서비스가 올라간다."

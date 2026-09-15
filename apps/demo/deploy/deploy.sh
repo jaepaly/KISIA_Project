@@ -20,7 +20,7 @@ sudo chown -R veilo:veilo /srv/veilo/app
 [ -f /srv/veilo/.env ] || sudo cp /srv/veilo/app/apps/demo/deploy/env.example /srv/veilo/.env
 sudo chown veilo:veilo /srv/veilo/.env && sudo chmod 600 /srv/veilo/.env
 sudo -u veilo /srv/veilo/venv/bin/pip install -q -r /srv/veilo/app/apps/sns/requirements.txt -r /srv/veilo/app/apps/demo/requirements.txt waitress
-sudo cp /srv/veilo/app/apps/demo/deploy/veilo.service /srv/veilo/app/apps/demo/deploy/padopool.service /etc/systemd/system/
+sudo cp /srv/veilo/app/apps/demo/deploy/veilo.service /srv/veilo/app/apps/demo/deploy/padopool.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.timer /etc/systemd/system/
 if [ -d /etc/nginx/sites-available ]; then
   sudo cp /srv/veilo/app/apps/demo/deploy/nginx.conf /etc/nginx/sites-available/veilo
   sudo ln -sf /etc/nginx/sites-available/veilo /etc/nginx/sites-enabled/veilo
@@ -33,7 +33,7 @@ if [ '$RESET' = '--reset' ] || [ ! -f /srv/veilo/data/sns.db ]; then
   sudo systemctl stop veilo padopool 2>/dev/null || true
   sudo -u veilo env \$(grep -v '^#' /srv/veilo/.env | xargs) PYTHONPATH=/srv/veilo/app/src /srv/veilo/venv/bin/python /srv/veilo/app/apps/demo/seed.py --reset
 fi
-sudo systemctl enable --now padopool veilo
+sudo systemctl enable --now padopool veilo veilo-reseed.timer
 sudo systemctl restart padopool veilo
 sudo nginx -t && sudo systemctl reload nginx
 sleep 2; curl -s -o /dev/null -w 'veilo http %{http_code}\n' http://127.0.0.1/ ; curl -s -o /dev/null -w 'padopool http %{http_code}\n' http://127.0.0.1:8000/
