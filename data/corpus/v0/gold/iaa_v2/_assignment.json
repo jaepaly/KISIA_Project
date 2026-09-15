@@ -1,0 +1,71 @@
+{
+  "생성": "scripts/sample_gold.py --seed 20260915 --target 20",
+  "설명": "blind 200 대상 글. 교사 라벨을 보기 전에 매긴다. 등급·속성은 일부러 담지 않았다 — 정답을 보면 blind 가 아니다.",
+  "출력": "data/corpus/v0/gold/blind/<persona_id>_spans.jsonl",
+  "글": [
+    {
+      "persona_id": "A07",
+      "post": "b12"
+    },
+    {
+      "persona_id": "A11",
+      "post": "b03"
+    },
+    {
+      "persona_id": "A12",
+      "post": "b07"
+    },
+    {
+      "persona_id": "A14",
+      "post": "b15"
+    },
+    {
+      "persona_id": "A16",
+      "post": "b03"
+    },
+    {
+      "persona_id": "B06",
+      "post": "b20"
+    },
+    {
+      "persona_id": "B21",
+      "post": "b29"
+    },
+    {
+      "persona_id": "C08",
+      "post": "b03"
+    },
+    {
+      "persona_id": "D12",
+      "post": "b01"
+    },
+    {
+      "persona_id": "D14",
+      "post": "b06"
+    },
+    {
+      "persona_id": "D14",
+      "post": "b25"
+    },
+    {
+      "persona_id": "E05",
+      "post": "b13"
+    },
+    {
+      "persona_id": "E07",
+      "post": "b05"
+    },
+    {
+      "persona_id": "E08",
+      "post": "b11"
+    },
+    {
+      "persona_id": "E18",
+      "post": "b20"
+    },
+    {
+      "persona_id": "E20",
+      "post": "b17"
+    }
+  ]
+}
