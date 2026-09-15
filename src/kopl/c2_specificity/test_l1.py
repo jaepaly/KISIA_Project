@@ -107,6 +107,40 @@ def test_unknown_location() -> None:
     assert result["k_level"] == "UNKNOWN"
 
 
+def test_sigungu_aggregate_code_format() -> None:
+    """aggregated_from 코드는 10자리 숫자이고 중복이 없어야 한다."""
+    r = specificity_l1("경상남도 통영시", age=41, sex="F")
+    codes = r["aggregated_from"]
+    assert len(codes) >= 10
+    assert all(
+        len(c) == 10 and c.isdigit() for c in codes
+    ), f"10자리 숫자가 아닌 코드 존재: {codes}"
+    assert len(codes) == len(set(codes)), "aggregated_from에 중복 코드 있음"
+
+
+def test_sigungu_aggregate_unknown_on_missing_child() -> None:
+    """하위 읍면동 인구가 하나라도 없으면 UNKNOWN을 반환해야 한다."""
+    import unittest.mock
+    from kopl.c2_specificity import engine as _engine
+
+    original = _engine.pop_lookup
+    emd_hit: dict[str, int] = {"n": 0}
+
+    def pop_with_gap(pop_table, **kwargs):
+        result = original(pop_table, **kwargs)
+        if result is not None:
+            emd_hit["n"] += 1
+            if emd_hit["n"] == 2:
+                return None
+        return result
+
+    with unittest.mock.patch.object(_engine, "pop_lookup", new=pop_with_gap):
+        r = specificity_l1("경상남도 통영시", age=41, sex="F")
+
+    assert r["k"] is None
+    assert r["k_level"] == "UNKNOWN"
+
+
 def test_ambiguous_location() -> None:
     result = specificity_l1(
         "중앙동",
@@ -165,6 +199,11 @@ if __name__ == "__main__":
     assert s["k_level"] != "UNKNOWN" and s["resolution"] == "sigungu_aggregate", s
     print(f"[PASS] 시도 단위(제주) 재귀 합산 k={s['k']} ({len(s['aggregated_from'])}개 동)")
 
+    test_sigungu_aggregate_code_format()
+    print("[PASS] aggregated_from 10자리 숫자 코드 형식 + 중복 없음")
+
+    test_sigungu_aggregate_unknown_on_missing_child()
+    print("[PASS] 하위 읍면동 인구 누락 시 UNKNOWN 회귀")
 
     test_ambiguous_location()
     print("[PASS] 동명이 지명 임의 선택 차단")
