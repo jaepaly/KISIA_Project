@@ -1,0 +1,10 @@
+{
+  "seed": 20260916,
+  "k": 8,
+  "dev_pids": 12,
+  "test_excluded": 255,
+  "train": 342,
+  "dev": 30,
+  "personas_with_data": 70,
+  "personas_skipped": 22
+}
