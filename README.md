@@ -612,15 +612,15 @@ python experiments/exp08-stage2-sft/train.py \
 
 ```
 src/kopl/c4_stage2/                          가명화·복원 모듈 ✅ (#243 · 테스트 co-located)
-experiments/exp08-stage2-sft/make_sft_v1.py  v1 SFT 빌더 (본문+골드스팬+anonymize)
-experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분
+experiments/exp08-stage2-sft/make_sft_v1.py  v1 SFT 빌더 ✅ (9/15 · train 342 / dev 30)
+experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분 (로컬 생성, .gitignore)
 ```
 
 ### 완료 기준
 
 - [x] `anonymize()` + `restore()` — 라운드트립 15종 통과 (9/14)
 - [x] 가명화 모듈 PR 머지 (#243 · 9/14)
-- [ ] v1 SFT 빌더 — 본문+골드스팬 → 가명 입력 (test 제외는 #244 split 따름)
+- [x] v1 SFT 빌더 — gold spans + anonymize → 가명 입력 (test 제외 #244 · train 342 / dev 30 · 9/15)
 - [ ] QLoRA 에포크 ≥ 3 완료 (v1 데이터) + loss 곡선 이슈 등록
 - [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
