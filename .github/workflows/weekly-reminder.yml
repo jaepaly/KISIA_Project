@@ -162,17 +162,17 @@ jobs:
           # ── 본문 ──────────────────────────────────────────────
           case "$KIND" in
             mon)
-              body=$(printf '%s\n\n🗓️ **주간 보고회 — 오늘 14:00**' "$ALL")
+              body=$(printf '%s\n\n🗓️ **주간 보고회 — 오늘 11:15**' "$ALL")
               ;;
             tue)
-              body=$(printf '%s\n\n🗓️ **팀 회의 — 오늘 20:00**' "$ALL")
+              body=$(printf '%s\n\n🗓️ **팀 회의 — 오늘 21:00**' "$ALL")
               ;;
             wed)
               body=$(printf '%s\n\n📋 **개별 보고 5줄 — 오늘 23:59 마감**\n\nCONTRIBUTING 의 5줄 형식 그대로 보내주세요.\n**4번 「증빙 링크」에 커밋·PR 링크**를 꼭 넣어주세요 — 그게 있어야 주간보고에 그대로 옮깁니다.\n%s\n**지금 열린 PR**\n```\n%s\n```\n**열린 이슈**\n```\n%s\n```' \
                      "$TEAM" "$review_block" "$prs" "$issues")
               ;;
             thu)
-              body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 20:00**' "$ALL")
+              body=$(printf '%s\n\n🎓 **정기 멘토링 — 오늘 21:00**' "$ALL")
               ;;
             status)
               # PM 이 아무 때나 쏘는 현황판. 일정 알림이 아니라 «지금 무엇이
