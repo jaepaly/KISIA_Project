@@ -7,6 +7,12 @@ HOST="${1:?ec2-user@IP}"; KEY="${2:?pem path}"; RESET="${3:-}"
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 TGZ="$(mktemp -t veilo-XXXX).tgz"
 cd "$ROOT"
+# git archive 는 **커밋된 것만** 올린다 — 고쳐 놓고 커밋을 빠뜨리면 조용히 옛 코드가 배포된다 (9/16 에 한 번 당함)
+if [ -n "$(git status --porcelain -- apps/demo apps/sns src/kopl)" ]; then
+  echo "⚠ 커밋하지 않은 변경이 있다 — 그 내용은 배포되지 않는다:"
+  git status --short -- apps/demo apps/sns src/kopl | sed "s/^/    /"
+  printf "  그래도 계속할까? [y/N] "; read -r a; [ "$a" = "y" ] || exit 1
+fi
 git archive --format=tar.gz -o "$TGZ" HEAD apps/demo apps/sns src/kopl data/dict/admin data/corpus/v0
 echo "archive: $(du -h "$TGZ" | cut -f1)"
 S="ssh -i $KEY -o StrictHostKeyChecking=accept-new $HOST"
