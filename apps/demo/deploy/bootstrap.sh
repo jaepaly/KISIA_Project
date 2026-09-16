@@ -9,7 +9,7 @@ if command -v dnf >/dev/null; then
   sudo sed -i '/^    server {$/,/^    }$/d' /etc/nginx/nginx.conf
 else
   sudo apt-get update -q
-  sudo apt-get install -y -q python3 python3-venv python3-pip nginx
+  sudo apt-get install -y -q python3 python3-venv python3-pip nginx certbot python3-certbot-nginx
   PY=python3
 fi
 id veilo >/dev/null 2>&1 || sudo useradd -r -m -d /srv/veilo -s /sbin/nologin veilo
@@ -25,4 +25,6 @@ if [ ! -f /swapfile ]; then
   grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
 fi
 sudo systemctl enable --now nginx
+echo "bootstrap: 인증서는 DNS(veilo.site A 레코드)가 이 서버를 가리킨 뒤에:"
+echo "  sudo certbot --nginx -d veilo.site -d www.veilo.site --redirect --agree-tos -m <메일> --non-interactive"
 echo "bootstrap: 시스템 준비 끝 ($PY). 이제 로컬에서 deploy.sh 를 돌리면 코드·의존성·서비스가 올라간다."
