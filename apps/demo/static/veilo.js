@@ -182,6 +182,23 @@
     });
     document.addEventListener("invalid", unbusy, true);     // 뒤늦게 걸려도 원을 치운다
     addEventListener("pageshow", () => { const o = $(".ut-busy"); o && o.remove(); });   // 뒤로가기(bfcache)로 돌아오면 지운다
+
+    // 「점검」은 «내가 눌러서 지금 도는 일» 로 읽혀야 한다. 화면이 눈 깜짝할 새 뜨면 눌리기 전부터
+    // 있던 화면처럼 보인다. 그렇다고 가짜로 늦추지는 않는다 — 실제로 걸린 시간을 재서 **모자란 만큼만** 채운다.
+    // (숫자·깔때기는 누를 때마다 진짜로 다시 센다. 미리 만들어 둔 것은 「다르게 쓰기」 문구뿐이다.)
+    const MIN_CHECK_MS = 1100;
+    if (document.body.classList.contains("check-page")) {
+      let took = 0;
+      try {
+        const e = performance.getEntriesByType("navigation")[0];
+        took = e ? e.responseEnd - e.startTime : 0;
+      } catch (err) { took = 0; }
+      const left = Math.round(MIN_CHECK_MS - took);
+      if (took > 0 && left > 120) {
+        busy("파도풀이 세는 중이에요");
+        setTimeout(() => { const o = $(".ut-busy"); o && o.remove(); }, left);
+      }
+    }
     // ⋯ 메뉴 — 글 화면 오른쪽 위. 바깥 클릭·Esc 로 닫힌다
     $$("[data-menu]").forEach((m) => {
       const btn = $("[data-menu-btn]", m), pop = $(".ut-menu-pop", m);
