@@ -31,7 +31,8 @@ fi
 sudo systemctl daemon-reload
 if [ '$RESET' = '--reset' ] || [ ! -f /srv/veilo/data/sns.db ]; then
   sudo systemctl stop veilo padopool 2>/dev/null || true
-  sudo -u veilo env \$(grep -v '^#' /srv/veilo/.env | xargs) PYTHONPATH=/srv/veilo/app/src /srv/veilo/venv/bin/python /srv/veilo/app/apps/demo/seed.py --reset
+  DBP=\$(sudo grep -m1 '^SNS_DB_PATH=' /srv/veilo/.env | cut -d= -f2-)
+  sudo -u veilo env PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src SNS_DB_PATH=\$DBP /srv/veilo/venv/bin/python /srv/veilo/app/apps/demo/seed.py --reset
 fi
 sudo systemctl enable --now padopool veilo veilo-reseed.timer
 sudo systemctl restart padopool veilo

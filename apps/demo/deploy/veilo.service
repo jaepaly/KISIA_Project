@@ -8,7 +8,7 @@ Wants=padopool.service
 User=veilo
 WorkingDirectory=/srv/veilo/app
 EnvironmentFile=/srv/veilo/.env
-Environment=PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src:/srv/veilo/app/apps/demo
+Environment=PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src:/srv/veilo/app/apps/demo:/srv/veilo/app/apps/demo/deploy
 ExecStart=/srv/veilo/venv/bin/waitress-serve --listen=127.0.0.1:3000 --threads=8 wsgi_sns:application
 Restart=always
 RestartSec=3
