@@ -94,6 +94,10 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
         piece = tail[:L].rstrip()
         if len(piece) >= 2 and out.endswith(piece):
             return out[: -len(piece)].rstrip()      # 꼬리만 돌려줬으면 빈 문자열 = «지운다»
+    # 한 글자짜리 낱말도 겹치면 뗀다 — 「면사무소」→「그 앞」 이 「그 앞 앞 정류장」 이 되는 것 (9/16 배포 확인)
+    head = tail.split()[0] if tail.split() else ""
+    if head and out.endswith(head):
+        return out[: -len(head)].rstrip()           # out 이 그 낱말뿐이면 "" = «지운다»
     return out
 
 

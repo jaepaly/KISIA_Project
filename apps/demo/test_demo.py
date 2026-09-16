@@ -195,6 +195,19 @@ def test_api_check_shows_draft_narrowing(client):
     assert j["after"]["k"] == j["before"]["k"] and j["draft"]["n_spans"] == 0 and j["narrows"] is False
 
 
+def test_rewrite_trims_word_that_repeats_the_next_word():
+    """모델 답 끝이 구간 뒤 낱말과 겹치면 뗀다 — 「면사무소」→「그 앞」 이 「그 앞 앞 정류장」 이 되면 안 된다 (9/16)."""
+    from engine.external import _trim_tail
+
+    s = "차를 세워 두고 면사무소 앞 정류장 쪽으로 걸었는데"
+    assert _trim_tail(s, "면사무소", "그 앞") == "그"
+    assert _trim_tail(s, "면사무소", "장터 앞") == "장터"
+    assert _trim_tail(s, "면사무소", "관공서") == "관공서"      # 안 겹치면 그대로
+    assert _trim_tail(s, "면사무소", "앞") == ""                # 그 낱말뿐이면 지우기 후보
+    s2 = "어제 오일장에 다녀왔다"
+    assert _trim_tail(s2, "오일장", "장에", "에") == "장"       # 조사 규칙은 그대로
+
+
 def test_external_llm_is_off_by_default(monkeypatch):
     from engine import external
     monkeypatch.delenv("DEMO_EXTERNAL_REWRITE", raising=False)
