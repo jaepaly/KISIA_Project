@@ -139,6 +139,10 @@
 | 매일 04시 재시딩 | 한 달 무인 가동 | `veilo-reseed.timer` |
 | 환영 모달 줄바꿈 | 문단마다 `max-width:46em` 이 글자 크기에 걸려 폭이 제각각(621/552px) | `veilo.css` |
 | 글쓰기 사진 첨부 | 캡션을 한 줄에 하나씩 적는 textarea 가 불편했다 | `new_ext.html` · 자리 만들고 「설명 추가」 |
+| 조치 버튼에 진행 표시 | 「위치태그 지우기」를 눌러도 6초 동안 아무 변화가 없어 멈춘 줄 안다 | `check.html`·`post_ext.html` `data-busy` |
+| 검사에 걸리면 원을 안 띄움 | 본문이 비면 폼이 안 보내지는데 원만 계속 돌아 멈춘 것처럼 보였다 | `veilo.js` `checkValidity` + `invalid` |
+| 한 줄 칸의 엔터 차단 | 사진 설명·제목에서 엔터를 치면 점검이 시작됐다 | `new_ext.html`·`edit_post.html` |
+| 겹치는 리라이트 후보 버림 | 「읍내 정류장」 + 「앞 정류장」 | `external.py` `_repeats_nearby()` |
 
 > 본 프로젝트로 가져갈 것: `_swaps_admin_unit` 의 발상(모델 답을 규칙이 되받아 검사) — 2단 리라이트에 그대로 쓴다.
 
