@@ -2,7 +2,6 @@
 {% block title %}글쓰기 — Veilo{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/pado-static/demo.css?v={{ asset_v }}">
-<link rel="stylesheet" href="/pado-static/demo.css?v={{ asset_v }}">
 <link rel="stylesheet" href="/pado-static/editor.css?v={{ asset_v }}">
 {% endblock %}
 {% block content %}
@@ -35,8 +34,12 @@
     <label for="geo_tag">위치 태그 <span class="hint">(선택, 글에 함께 표시돼요)</span></label>
     <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 담양군 창평면" value="{{ draft.geo_tag if draft else '' }}">
 
-    <label for="captions">사진 캡션 <span class="hint">(선택, 한 줄에 하나씩 사진 1, 2… 순서로)</span></label>
-    <textarea name="captions" id="captions" rows="2" placeholder="정류장에서">{{ draft.captions if draft else '' }}</textarea>
+    <label>사진 <span class="hint">(선택) 데모라 이미지 파일은 올리지 않아요. 파도풀이 보는 건 «사진 설명»이에요</span></label>
+    <div class="ph-add">
+      <div class="ph-list" data-ph-list></div>
+      <button type="button" class="ph-btn" data-ph-add>＋ 사진 첨부</button>
+    </div>
+    <textarea name="captions" id="captions" hidden>{{ draft.captions if draft else '' }}</textarea>
 
     <label for="created_at">작성 시각 <span class="hint">실제 SNS에는 없지만 여기서는 바꿔 볼 수 있어요</span></label>
     <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
@@ -53,5 +56,50 @@
 {% block scripts %}
 <script>(function(){const t=document.getElementById('body'),c=document.getElementById('bodyCount');if(!t||!c)return;
 const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEventListener('input',u);u();})();</script>
+<script>
+/* 사진 첨부 — 자리를 먼저 만들고, 「설명 추가」를 눌러야 설명 칸이 열린다.
+   서버(apps/sns)는 captions 를 「한 줄에 하나」로 받으므로 숨은 textarea 에 그대로 맞춰 둔다. */
+(function(){
+  const list = document.querySelector('[data-ph-list]');
+  const add  = document.querySelector('[data-ph-add]');
+  const store = document.getElementById('captions');
+  if (!list || !add || !store) return;
+
+  function sync(){
+    const caps = [...list.querySelectorAll('.ph-item')].map(f => {
+      const i = f.querySelector('.cap-in');
+      return i ? i.value.trim() : '';
+    });
+    store.value = caps.join('\n');
+    [...list.querySelectorAll('.ph-item')].forEach((f, n) => {
+      f.querySelector('.ph b').textContent = '사진 ' + (n + 1);
+      const i = f.querySelector('.cap-in'), none = f.querySelector('.cap-none');
+      const empty = !i || !i.value.trim();
+      if (none) none.hidden = !empty || !i;
+    });
+  }
+
+  function slot(caption){
+    const f = document.createElement('figure');
+    f.className = 'ph-item';
+    f.innerHTML = '<div class="ph"><span>🖼</span><b>사진</b></div>'
+      + '<button type="button" class="ph-del" aria-label="사진 지우기">✕</button>'
+      + '<button type="button" class="cap-add">＋ 설명 추가</button>'
+      + '<input type="text" class="cap-in" placeholder="예: 정류장에서" hidden>'
+      + '<p class="cap-none" hidden>설명이 없으면 올릴 때 이 사진은 빠져요.</p>';
+    const btn = f.querySelector('.cap-add'), inp = f.querySelector('.cap-in');
+    btn.addEventListener('click', () => { btn.hidden = true; inp.hidden = false; inp.focus(); sync(); });
+    inp.addEventListener('input', sync);
+    f.querySelector('.ph-del').addEventListener('click', () => { f.remove(); sync(); });
+    if (caption !== undefined) { btn.hidden = true; inp.hidden = false; inp.value = caption; }
+    list.appendChild(f);
+    return f;
+  }
+
+  add.addEventListener('click', () => { slot(); sync(); });
+  (store.value || '').split('\n').filter(x => x.trim()).forEach(c => slot(c));   /* 점검하고 돌아왔을 때 */
+  sync();
+})();
+</script>
 {% include '_draft_check_script.html' %}
 {% endblock %}
