@@ -101,5 +101,18 @@ const u=()=>{c.textContent=t.value.length.toLocaleString('ko-KR')+'자'};t.addEv
   sync();
 })();
 </script>
+<script>
+/* 한 줄 입력칸에서 엔터를 치면 폼이 그대로 보내져 「파도풀 점검」이 시작된다 — 제목·위치태그·사진 설명 모두.
+   엔터는 칸을 빠져나가는 것으로만 쓴다. 본문(textarea)과 버튼은 그대로 둔다. */
+(function(){
+  const form = document.querySelector('form.ut-card');
+  if (!form) return;
+  form.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const t = e.target;
+    if (t.tagName === 'INPUT' && t.type !== 'submit' && t.type !== 'button') { e.preventDefault(); t.blur(); }
+  });
+})();
+</script>
 {% include '_draft_check_script.html' %}
 {% endblock %}

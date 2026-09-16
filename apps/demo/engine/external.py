@@ -122,6 +122,25 @@ def _swaps_admin_unit(span_text: str, out: str) -> bool:
     return bool(ma and mb and ma.group(1) != mb.group(1))
 
 
+def _repeats_nearby(sentence: str, span_text: str, out: str) -> bool:
+    """답을 넣었을 때 바로 뒤 몇 낱말 안에서 같은 말이 되풀이되면 True.
+
+    「면사무소」→「읍내 정류장」 이 「읍내 정류장 앞 정류장」 이 되는 것. 억지로 다듬기보다 후보를 버린다.
+    """
+    i = sentence.find(span_text)
+    tail = sentence[i + len(span_text):] if i >= 0 else ""
+    words = (out + " " + tail).split()[:6]
+    seen: dict[str, int] = {}
+    for n, w in enumerate(words):
+        w = w.strip(".,!?·“”‘’\"'")
+        if len(w) < 2:
+            continue
+        if w in seen and n - seen[w] <= 2:
+            return True
+        seen[w] = n
+    return False
+
+
 def _extract_span(sentence: str, span_text: str, out: str, particle: str = "") -> str | None:
     """모델이 구간 대신 문장 전체를 돌려줬으면 앞뒤 공통 부분을 벗겨 대체 표현만 남긴다. 못 벗기면 None."""
     out = out.strip().strip("「」\"'")
@@ -184,6 +203,8 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue
             if t and _swaps_admin_unit(span_text, t):
                 continue                       # 행정단위를 바꾼 답은 버린다 (거짓이 된다)
+            if t and _repeats_nearby(sentence, span_text, t):
+                continue                       # 넣으면 같은 말이 겹치는 답도 버린다
             out.append({"text": t, "note": (str(a.get("note", "")).strip()[:40] if t else "그냥 지운다"), "source": "llm"})
         return out[:3] or None
     except Exception:  # noqa: BLE001 — 데모는 외부 실패로 멈추지 않는다. 캐시·규칙으로 떨어진다

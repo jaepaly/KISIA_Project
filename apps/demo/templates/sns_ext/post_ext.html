@@ -24,12 +24,12 @@
           <div class="lab">내 글 관리</div>
           <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility">
             <input type="hidden" name="back" value="{{ back or ('/posts/' ~ p.post_id) }}">
-            <button type="submit" role="menuitem"><i>{% if p.visibility == 'public' %}🔒{% else %}🌐{% endif %}</i>{% if p.visibility == 'public' %}비공개로 전환{% else %}공개로 전환{% endif %}<small>삭제가 아니에요. 언제든 되돌려요</small></button>
+            <button type="submit" role="menuitem" data-busy="공개 여부를 바꾸고 있어요"><i>{% if p.visibility == 'public' %}🔒{% else %}🌐{% endif %}</i>{% if p.visibility == 'public' %}비공개로 전환{% else %}공개로 전환{% endif %}<small>삭제가 아니에요. 언제든 되돌려요</small></button>
           </form>
           {% if p.geo_tag %}
           <form class="inline" method="post" action="/posts/{{ p.post_id }}/geo_tag">
             {% if back %}<input type="hidden" name="back" value="{{ back }}">{% endif %}
-            <button type="submit" role="menuitem"><i>📍</i>위치태그 지우기<small>{{ p.geo_tag }} · 본문은 그대로</small></button>
+            <button type="submit" role="menuitem" data-busy="위치태그를 지우고 있어요"><i>📍</i>위치태그 지우기<small>{{ p.geo_tag }} · 본문은 그대로</small></button>
           </form>
           {% endif %}
           <a role="menuitem" href="/posts/{{ p.post_id }}/edit{% if back %}?back={{ back }}{% endif %}"><i>✎</i>본문 고치기<small>파도풀 제안을 골라 넣거나 직접 써요</small></a>

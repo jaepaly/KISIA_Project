@@ -170,11 +170,17 @@
       o.innerHTML = '<div class="box"><div class="spin"></div><b>' + (msg || "파도풀이 세는 중이에요") + '</b><span>공개 글을 모아 나일 수 있는 사람 수를 세고, 표현마다 어울리는 후보를 만들어요</span></div>';
       document.body.appendChild(o);
     };
+    const unbusy = () => { const o = $(".ut-busy"); o && o.remove(); };
     document.addEventListener("click", (e) => {
       const el = e.target.closest("[data-busy]"); if (!el || e.defaultPrevented) return;
       if (el.tagName === "A" && (e.metaKey || e.ctrlKey || el.target === "_blank")) return;
+      // 보내는 폼이 「본문을 적어 주세요」 같은 검사에 걸리면 아무 일도 안 일어난다 — 그때 원만 돌면 멈춘 것처럼 보인다
+      const form = el.form || (el.tagName === "BUTTON" ? el.closest("form") : null);
+      if (form && typeof form.checkValidity === "function" && !el.formNoValidate && !form.noValidate
+          && !form.checkValidity()) return;
       setTimeout(() => busy(el.dataset.busy), 0);
     });
+    document.addEventListener("invalid", unbusy, true);     // 뒤늦게 걸려도 원을 치운다
     addEventListener("pageshow", () => { const o = $(".ut-busy"); o && o.remove(); });   // 뒤로가기(bfcache)로 돌아오면 지운다
     // ⋯ 메뉴 — 글 화면 오른쪽 위. 바깥 클릭·Esc 로 닫힌다
     $$("[data-menu]").forEach((m) => {

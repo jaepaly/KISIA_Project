@@ -337,3 +337,15 @@ def _visibility(sns_ext, client, post_id: str) -> str:
     p = sns_ext._VISITORS / f"{vid}.db"
     return sqlite3.connect(p).execute(
         "SELECT visibility FROM posts WHERE post_id = ?", (post_id,)).fetchone()[0]
+
+
+def test_rewrite_drops_candidate_that_repeats_a_nearby_word():
+    """넣었을 때 같은 말이 겹치는 답은 버린다 — 「읍내 정류장」 + 「앞 정류장」 (9/16)."""
+    from engine.external import _repeats_nearby, _swaps_admin_unit
+
+    s = "차를 세워 두고 면사무소 앞 정류장 쪽으로 걸었는데"
+    assert _repeats_nearby(s, "면사무소", "읍내 정류장") is True
+    assert _repeats_nearby(s, "면사무소", "관공서") is False
+    assert _swaps_admin_unit("면사무소", "읍사무소") is True      # 행정단위를 바꾸는 답도 버린다
+    assert _swaps_admin_unit("면사무소", "그 건물") is False
+    assert _swaps_admin_unit("김해시 진영읍", "김해시") is False   # 덜어내기만 한 답은 통과
