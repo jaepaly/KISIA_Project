@@ -44,6 +44,7 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 | `DEMO_STATION_SCOPE` | `emd` | 역 이름을 «역이 놓인 동 하나»(`emd`)로 볼지 «반경 700m 안 이웃 동까지»(`near`)로 볼지. 특정성 규칙의 판단(C)이라 스위치로 둠 |
 | `DEMO_EXTERNAL_REWRITE` | 꺼짐 | `true` 일 때 «다르게 쓰기» 후보를 Claude 로 만든다(하이브리드 — 사다리·인구 수는 규칙, 말은 모델, 모델 답은 규칙이 다시 검사). 키는 `ANTHROPIC_API_KEY` 또는 `ANTHROPIC_AUTH_TOKEN`, 환경변수에 없으면 `.env` 에서 읽는다. provenance 에 표시된다 |
 | `ANTHROPIC_BASE_URL` | Anthropic 본사 | 협회 게이트웨이(monogpt.kr monorouter)는 `https://monogpt.kr/api/monorouter/v1/anthropic` — 끝의 `/v1` 은 SDK 가 붙인다. 모델 이름은 `claude-haiku-4.5` 형식(`DEMO_EXTERNAL_MODEL`) |
+| `DEMO_EXTERNAL_REWRITE` 보조 | — | 시딩된 글의 후보는 `data/rewrites.json` 에 **미리 구워 둔다**(`tools/bake_rewrites.py`). 화면은 그것을 먼저 보고, 없을 때만(=심사위원이 직접 쓴 글) 모델을 부른다 |
 | `DEMO_EXTERNAL_TIMEOUT` | `8`(초) | Claude 응답을 이 시간까지만 기다린다. 넘으면 규칙·캐시 후보로 떨어지고 화면은 그대로 뜬다(재시도 없음). 배포 뒤 서버에서 조절 가능 |
 | `DEMO_VISITOR_TTL` | `21600`(6시간) | 방문자마다 글 데이터 사본을 하나씩 준다(심사위원 동시 접속). 이 시간 동안 안 쓰면 지운다. 원본 `SNS_DB_PATH` 는 읽기 전용 본 |
 | `SNS_SECRET` | 고정 문자열 | 세션 쿠키 서명 키. 방문자 사본을 가르는 값이라 배포 때는 임의 값으로 |
