@@ -152,6 +152,16 @@ def _swaps_family_term(span_text: str, out: str) -> bool:
     return bool(theirs - mine)
 
 
+def _clashes_with_verb(sentence: str, span_text: str, out: str) -> bool:
+    """구간이 「출근」처럼 «하다» 앞에 붙는 말인데 답이 부사구면 True — 「직장에서」+「할 때」.
+
+    이 자리에 올 수 있는 것은 명사뿐이다.
+    """
+    i = sentence.find(span_text)
+    nxt = sentence[i + len(span_text): i + len(span_text) + 1] if i >= 0 else ""
+    return nxt in ("하", "한", "할", "해", "했") and out[-1:] in ("서", "에", "로", "고", "며", "면", "야", "서")
+
+
 def _echoes_tail(sentence: str, span_text: str, out: str) -> bool:
     """답이 구간 바로 뒤에 오는 말을 다시 품고 있으면 True.
 
@@ -264,6 +274,8 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue                       # 넣으면 같은 말이 겹치는 답도 버린다
             if t and _echoes_tail(sentence, span_text, t):
                 continue                       # 구간 뒤의 말을 도로 끌어안은 답도 버린다
+            if t and _clashes_with_verb(sentence, span_text, t):
+                continue                       # 「출근」 자리에 부사구를 넣어 「직장에서할 때」 가 되는 답도 버린다
             if t and _borrows_other_clue(t, ctx.get("others")):
                 continue                       # 같은 문장의 다른 단서를 끌어다 쓴 답도 버린다
             if len(t) > max(14, len(span_text) * 4):
