@@ -14,7 +14,11 @@
 | ~10/17 | (9/20 동결 — 본 프로젝트 자원 갈아끼우기는 데모데이 이후 · 제출본은 건드리지 않는다) |
 | **10/17** | 데모데이 |
 
-## 배포 — AWS EC2 (9/14 계정 수령)
+## 배포 — **https://veilo.site 로 떠 있음** (9/16)
+
+**서버**: 내 AWS 계정 Lightsail 1GB · 서울 ap-northeast-2a · Ubuntu 24.04 · 고정 IP `54.180.27.125` · `ssh -i ~/.ssh/veilo.pem ubuntu@54.180.27.125`
+**도메인**: veilo.site(가비아, 가비아 네임서버, A 레코드 @ · www, TTL 600) · HTTPS 는 Let's Encrypt(certbot 자동 갱신) · http → https 리다이렉트
+**재배포**: `bash apps/demo/deploy/deploy.sh ubuntu@54.180.27.125 ~/.ssh/veilo.pem` (글 데이터까지 되돌리려면 뒤에 `--reset`)
 
 `apps/demo/deploy/` 에 전부 있다. 개발 서버 대신 **waitress** 두 프로세스(:3000 Veilo · :8000 파도풀, 둘 다 127.0.0.1) + **nginx**(80 → 3000). 파도풀 API 는 밖에 안 연다.
 
