@@ -187,9 +187,12 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
             f"\n이미 바뀐 구간: {ctx.get('already') or '(없음)'}"
             f"\n사다리(이미 제안됨, 피할 것): {' → '.join(ctx.get('ladder') or []) or '(없음)'}")
     try:
-        msg = _client().messages.create(model=MODEL, max_tokens=400, system=system,
+        # 1200 — 후보 3개는 200토큰이면 되지만, 「생각」을 하는 큰 모델은 그 예산까지 여기서 쓴다.
+        # 400 이면 생각하다 답이 잘려 후보가 통째로 사라졌다 (claude-sonnet-5, 9/16)
+        msg = _client().messages.create(model=MODEL, max_tokens=1200, system=system,
                                         messages=[{"role": "user", "content": user}])
-        content = msg.content[0].text.strip()
+        # 큰 모델은 답 앞에 «생각» 블록을 붙여 보낸다 — 글 블록만 모은다 (haiku 는 글 하나뿐이라 그대로다)
+        content = "\n".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
         if content.startswith("```"):
             content = re.sub(r"^```[a-z]*\n?|\n?```$", "", content).strip()
         arr = json.loads(content)
