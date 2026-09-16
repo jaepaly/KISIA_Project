@@ -40,7 +40,14 @@ fi
 sudo systemctl enable --now padopool veilo veilo-reseed.timer
 sudo systemctl restart padopool veilo
 sudo nginx -t && sudo systemctl reload nginx
-sleep 2; curl -s -o /dev/null -w 'veilo http %{http_code}\n' http://127.0.0.1/ ; curl -s -o /dev/null -w 'padopool http %{http_code}\n' http://127.0.0.1:8000/
+sleep 2
+curl -s -o /dev/null -w 'veilo(앱) %{http_code}
+' http://127.0.0.1:3000/
+curl -s -o /dev/null -w 'padopool(앱) %{http_code}
+' http://127.0.0.1:8000/
+# certbot 이 붙은 뒤로 바깥에서는 도메인 이름으로만 열린다 (호스트가 다르면 404 가 정상)
+curl -s -o /dev/null -w 'nginx(veilo.site) %{http_code}
+' -H 'Host: veilo.site' http://127.0.0.1/
 "
 rm -f "$TGZ"
 echo "deploy: 끝. 브라우저에서 http://<IP>/ (도메인 붙이면 certbot --nginx)"

@@ -18,6 +18,7 @@
 
 **서버**: 내 AWS 계정 Lightsail 1GB · 서울 ap-northeast-2a · Ubuntu 24.04 · 고정 IP `54.180.27.125` · `ssh -i ~/.ssh/veilo.pem ubuntu@54.180.27.125`
 **도메인**: veilo.site(가비아, 가비아 네임서버, A 레코드 @ · www, TTL 600) · HTTPS 는 Let's Encrypt(certbot 자동 갱신) · http → https 리다이렉트
+**방문자 격리**: 방문자마다 `data/visitors/<vid>.db` 사본을 준다(원본 `data/sns.db` 는 읽기 전용). 심사위원이 동시에 들어와도 서로 안 건드린다. 6시간 안 쓰면 지우고, 새벽 재시딩 때 전부 비운다.
 **재배포**: `bash apps/demo/deploy/deploy.sh ubuntu@54.180.27.125 ~/.ssh/veilo.pem` (글 데이터까지 되돌리려면 뒤에 `--reset`)
 
 `apps/demo/deploy/` 에 전부 있다. 개발 서버 대신 **waitress** 두 프로세스(:3000 Veilo · :8000 파도풀, 둘 다 127.0.0.1) + **nginx**(80 → 3000). 파도풀 API 는 밖에 안 연다.
