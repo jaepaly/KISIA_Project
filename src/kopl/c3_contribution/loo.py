@@ -14,6 +14,8 @@ from typing import Any
 
 ENGINE_VERSION = "c3-0.1.0"
 _USER_REF_RE = re.compile(r"^u_[0-9a-f]{8,}$")
+# contribution.schema.json 계약 확정 시 맞춰 변경
+_MAX_TOP_SPANS = 3
 
 RiskFunction = Callable[[tuple[str, ...]], float]
 SpanRef = Mapping[str, str]
@@ -69,7 +71,7 @@ def _normalize_spans(
             raise ValueError(f"{post_id}의 top_spans에 중복이 있습니다: {key!r}")
         seen.add(key)
         refs.append({"span_id": span_id, "text_id": text_id})
-    return refs[:3]
+    return refs[:_MAX_TOP_SPANS]
 
 
 def leave_one_out(
