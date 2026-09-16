@@ -69,10 +69,15 @@ def fetch_export(user_ref: str) -> dict | None:
     return r.json()
 
 
-def run_scan(export: dict) -> dict:
+def run_scan(export: dict, external_on: bool = True) -> dict:
+    """external_on=False — 「다르게 쓰기」 후보를 규칙으로만 만든다.
+
+    `/api/check`(에디터 점검)는 구간마다 후보를 **자기가 다시** 만든다. 그대로 두면 같은 구간에
+    모델이 두 번 불려 초안 점검이 배로 걸렸다 (9/16 실측 9.5초 중 5.4초가 이 중복).
+    """
     view = analyze(export)
     base = compute(view)
-    rec = recommend(view, base)
+    rec = recommend(view, base, external_on)
     out = stage2_output(view, base, rec)
     return {"view": view, "base": base, "rec": rec, "stage2": out,
             "n_posts": len(export.get("posts") or [])}
@@ -227,12 +232,12 @@ def api_check():
     export, draft = j.get("export"), j.get("draft")
     if not export or draft is None:
         abort(400)
-    before = run_scan(export)
+    before = run_scan(export, external_on=False)      # 후보는 아래에서 구간마다 다시 만든다
     d = {"post_id": "draft", "user_ref": export["user_ref"], "title": draft.get("title") or None,
          "body": draft.get("body") or "", "photos": draft.get("photos") or [],
          "activity_meta": {"nickname": export.get("nickname"), "geo_tag": (draft.get("activity_meta") or {}).get("geo_tag"),
                            "post_time": None}}
-    after = run_scan({**export, "posts": [*export["posts"], d]})
+    after = run_scan({**export, "posts": [*export["posts"], d]}, external_on=False)
     dv = [p for p in after["view"]["posts"] if p["post_id"] == "draft"][0]
     chans = [{"text_id": tid, "html": str(mark_text(txt, [s for s in dv["spans"] if s["text_id"] == tid], dv["notes"]))}
              for tid, txt in dv["texts"].items()]
@@ -253,7 +258,9 @@ def api_check():
         return s, ladder, cands, used
 
     from concurrent.futures import ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=4) as pool:
+    # 구간마다 외부 호출 한 번 — 4 로 묶어 두면 구간 6개짜리 초안이 두 차례로 나뉘어 배가 걸린다.
+    # 심사위원이 직접 쓴 글은 캐시가 없어 이 경로가 가장 느리다 (9/16 실측 9.5초)
+    with ThreadPoolExecutor(max_workers=max(4, min(12, len(self_spans)))) as pool:
         results = list(pool.map(_one, self_spans))
 
     for s, ladder, cands, used in results:

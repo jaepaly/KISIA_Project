@@ -200,12 +200,14 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     return out
 
 
-def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | None = None) -> tuple[list[dict[str, str]], bool]:
+def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | None = None,
+                   external_on: bool = True) -> tuple[list[dict[str, str]], bool]:
     """스팬 하나의 «다르게 쓰기» 후보 — (후보, 외부 LLM 사용 여부). 외부(문맥 포함)가 켜져 있으면 그것, 아니면 캐시 → 표면형 → 유형별 일반 후보.
     사다리(넓히기)는 ladder_candidates 가 따로 낸다 — 숫자는 규칙, 말은 모델."""
     if sp["text"] in _CACHE:                       # 손으로 다듬어 둔 후보(면사무소 앞 … 한 대라 같은 긴 절)는 모델보다 낫다 — 그대로 쓴다
         return _CACHE[sp["text"]], False
-    cands = external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
+    cands = (external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
+             if external_on else None)
     if cands:
         return cands, True
     for rx, c in _BY_TEXT:
@@ -223,7 +225,7 @@ def _is_backbone(text_all: dict[str, str], sp: dict[str, Any]) -> bool:
     return n >= 2 or (in_title and in_body)
 
 
-def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
+def recommend(view: dict[str, Any], base: dict[str, Any], external_on: bool = True) -> dict[str, Any]:
     """조치 목록. 두 가지 예상값을 함께 낸다 —
 
     - `projected_delta` (계약): 이 조치 **단독**의 위험 점수 변화.
@@ -294,7 +296,7 @@ def recommend(view: dict[str, Any], base: dict[str, Any]) -> dict[str, Any]:
         widen = ladder_candidates(view, p["post_id"], sp, p["notes"].get(sp["span_id"], {}))
         ctx = {**sentence_context(text, sp["start"], sp["end"]), "ladder": [w["text"] for w in widen],
                "particle": leading_particle(text[sp["end"]:])}
-        cands, used = candidates_for(sentence, sp, ctx)
+        cands, used = candidates_for(sentence, sp, ctx, external_on)
         ext_used = ext_used or used
         cands = ([{"text": w["text"], "note": w["note"]} for w in widen] + cands)[:3]
         for c in cands:
