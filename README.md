@@ -613,7 +613,7 @@ data/corpus/v0/gold/contribution/<pid>.json               증류 타깃 세트
 
 - [x] #229 blind 200 머지 완료 (9/14 · 159편 267스팬)
 - [ ] IAA 2차 라벨링 완료 + 등급별 F1 이슈 등록
-- [ ] `loo.py` LOO 기여도 — 단위 테스트 통과
+- [x] `loo.py` LOO 기여도 — 단위 테스트 통과 (#251 머지 · 9/16 · CI guard pass)
 - [ ] 증류 타깃 세트 — `contribution.schema.json` 계약 통과
 
 ---
@@ -696,7 +696,7 @@ experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분 (로컬 �
 - [x] `anonymize()` + `restore()` — 라운드트립 15종 통과 (9/14)
 - [x] 가명화 모듈 PR 머지 (#243 · 9/14)
 - [x] v1 SFT 빌더 — gold spans + anonymize → 가명 입력 (test 제외 #244 · train 342 / dev 30 · 9/15)
-- [ ] QLoRA 에포크 ≥ 3 완료 (v1 데이터) + loss 곡선 이슈 등록
+- [x] QLoRA 에포크 ≥ 3 완료 (v1 데이터) + loss 곡선 이슈 등록 (#253 · 9/16 · dev_loss 0.41→0.0044 · verdict 90%)
 - [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
 ---
