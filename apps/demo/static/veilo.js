@@ -332,12 +332,20 @@
   ];
   function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
   function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
-  window.padoTourStart = function () { tourSave({ step: 0 }); if (location.pathname !== "/") location.href = "/"; else renderTour(); };
-  // 처음부터 — 투어 상태만이 아니라 글 데이터(끈 태그·비공개·고친 본문·새 글)도 시딩 값으로 되돌린다
-  window.padoTourReset = function () {
-    tourSave(null);
+  // 모달의 «3분 체험 시작» · 레일의 «다시 보기» — 여기서 비로소 글 데이터(끈 태그·비공개·고친 본문·새 글)를 시딩 값으로 되돌린다.
+  // 되돌리기는 "/" 로 보내 주므로 1단계 상태만 미리 저장해 두면 돌아오자마자 투어가 붙는다.
+  window.padoTourStart = function () {
+    tourSave({ step: 0 });
     const f = document.createElement("form"); f.method = "post"; f.action = "/demo/reset"; f.style.display = "none";
     document.body.appendChild(f); f.submit();
+  };
+  // 헤더·탭바의 «3분 체험 시작» — 안내 모달을 다시 띄우기만 한다.
+  // 여기서 글을 되돌리면 «그냥 둘러볼게요» 를 고를 사람의 조치까지 지워 버린다 (9/16 사용자 지적)
+  window.padoTourReset = function () {
+    tourSave(null);
+    if (location.pathname !== "/" || location.search) { location.href = "/"; return; }
+    renderTour();
+    window.scrollTo({ top: 0 });
   };
   window.padoTourRefresh = function (quiet) { renderTour(quiet); };   // 페이지를 안 바꾸고 화면이 바뀌었을 때(작성자 비교 표·고친 표현). quiet 면 자리만 다시 잡고 스포트라이트는 안 켠다
   window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); const h = $(".tour-hole"); h && h.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); updateWelcome(null); };
