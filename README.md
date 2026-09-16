@@ -323,6 +323,21 @@ for LR in 1e-5 2e-5 5e-5; do
 done
 ```
 
+| learning rate | 최고 epoch | 최고 eval F1 | 비고 |
+|---|---|---|---|
+| 1e-5 | 10 | 0.2269 | 목표 미달 |
+| 2e-5 | 9 | 0.3235 | 목표 달성 |
+| 5e-5 | 10 | **0.3690** | 최적 후보 |
+
+측정: 2026-09-16 · corpus-v0 p2.3 · `monologg/koelectra-base-v3-discriminator`.
+`o_weight=0.02`, batch 16, 10 epochs, fp16, 동일 persona 단위 train/eval 분리
+(706/95개 창)로 각 LR을 처음부터 순차 실행했다. 평가는 type 일치 + partial match(IoU ≥ 0.5) 스팬 F1이다.
+
+LR `5e-5`의 `runs/v1_lr5e-5/checkpoint-epoch-10`을 최적 후보로 선정했다
+(P 0.2925 · R 0.5000 · TP 31 · FP 75 · FN 31).
+내부 eval 목표 F1 ≥ 0.25를 달성했으며, 오탐 개선은 후속 과제로 남긴다.
+최종 체크포인트 등록과 CPU 지연 측정은 목요일에 진행한다.
+
 ### 목 — v1 체크포인트 확정 + models/registry.md 등록
 
 ```markdown
@@ -410,7 +425,7 @@ models/registry.md                        v1 체크포인트 등록
 
 ### 완료 기준
 
-- [ ] o_weight 그리드 탐색 — 전체 eval F1 ≥ 0.25
+- [x] o_weight 그리드 탐색 — 전체 eval F1 ≥ 0.25 (LR 후속 탐색에서 0.3690 달성 · 9/16)
 - [ ] v1 체크포인트 확정 + `models/registry.md` 등록 PR
 - [ ] CPU 지연 측정 + 기록 (목표 < 300ms)
 - [ ] 추론 함수 `infer.py` — `span.schema.json` 계약 통과
