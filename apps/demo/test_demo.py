@@ -378,7 +378,17 @@ def test_baked_rewrites_file_is_sane():
     items = d["items"]
     assert len(items) >= 50
     for v in items.values():
-        assert v["candidates"], v["span"]
-        for c in v["candidates"]:
+        for c in v["candidates"]:            # 빈 목록 = 「쓸 만한 답 없음」 을 기록해 둔 것 (모델 재호출 방지)
             assert c["text"] not in _EMPTY_ONE
             assert len(c["text"]) <= max(14, len(v["span"]) * 4)
+
+
+def test_candidate_fits_where_it_goes():
+    """「퇴근」 뒤가 「할 무렵」 이면 그 자리에는 명사만 온다 — 규칙 후보도 같은 검사를 받는다 (9/16)."""
+    from engine.external import _clashes_with_verb
+
+    s = "퇴근할 무렵에는 비가 그쳤다"
+    assert _clashes_with_verb(s, "퇴근", "일 나가는", "할 무렵에는") is True
+    assert _clashes_with_verb(s, "퇴근", "직장에서는", "할 무렵에는") is True
+    assert _clashes_with_verb(s, "퇴근", "일", "할 무렵에는") is False
+    assert _clashes_with_verb(s, "퇴근", "일 나가는", " 시간의 길이") is False   # 뒤가 다르면 상관없다

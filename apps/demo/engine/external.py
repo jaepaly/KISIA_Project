@@ -66,6 +66,8 @@ def enabled() -> bool:
 
 
 # 꼬리를 떼다 남은 한 글자 — 「그」「한」「밖」 은 뜻이 없다. 「장」「길」「역」 처럼 뜻이 있는 한 글자는 남긴다
+# 조사·연결어미로 끝나는 말 — 「하다」 앞자리에는 못 온다
+_ENDINGS = set("는은이가을를에서로고며면야의도만랑과와")
 _EMPTY_ONE = {"그", "이", "저", "한", "밖", "안", "것", "데", "때", "수", "더", "또"}
 _PARTICLE_ALT = {"이": "가", "가": "이", "을": "를", "를": "을", "은": "는", "는": "은", "과": "와", "와": "과"}
 # 구간 바로 뒤에 붙는 조사 — 문장에 그대로 남아 있으므로 모델 답 끝에 같은 조사가 있으면 뗀다 (「오일장에」→「장에」+「에」 = 「장에에」 방지)
@@ -152,14 +154,18 @@ def _swaps_family_term(span_text: str, out: str) -> bool:
     return bool(theirs - mine)
 
 
-def _clashes_with_verb(sentence: str, span_text: str, out: str) -> bool:
+def _clashes_with_verb(sentence: str, span_text: str, out: str, after: str = "") -> bool:
     """구간이 「출근」처럼 «하다» 앞에 붙는 말인데 답이 부사구면 True — 「직장에서」+「할 때」.
 
     이 자리에 올 수 있는 것은 명사뿐이다.
     """
-    i = sentence.find(span_text)
-    nxt = sentence[i + len(span_text): i + len(span_text) + 1] if i >= 0 else ""
-    return nxt in ("하", "한", "할", "해", "했") and out[-1:] in ("서", "에", "로", "고", "며", "면", "야", "서")
+    if after:
+        nxt = after[:1]                        # 같은 말이 문장에 여러 번 나오면 find 는 엉뚱한 자리를 본다
+    else:
+        i = sentence.find(span_text)
+        nxt = sentence[i + len(span_text): i + len(span_text) + 1] if i >= 0 else ""
+    # 이 자리에 올 수 있는 것은 명사뿐이다 — 조사나 연결어미로 끝나면 「…에서는할 때」 가 된다
+    return nxt in ("하", "한", "할", "해", "했") and out[-1:] in _ENDINGS
 
 
 def _echoes_tail(sentence: str, span_text: str, out: str) -> bool:
@@ -274,7 +280,7 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue                       # 넣으면 같은 말이 겹치는 답도 버린다
             if t and _echoes_tail(sentence, span_text, t):
                 continue                       # 구간 뒤의 말을 도로 끌어안은 답도 버린다
-            if t and _clashes_with_verb(sentence, span_text, t):
+            if t and _clashes_with_verb(sentence, span_text, t, ctx.get("after") or ""):
                 continue                       # 「출근」 자리에 부사구를 넣어 「직장에서할 때」 가 되는 답도 버린다
             if t and _borrows_other_clue(t, ctx.get("others")):
                 continue                       # 같은 문장의 다른 단서를 끌어다 쓴 답도 버린다

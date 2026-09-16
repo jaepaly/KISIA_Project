@@ -249,18 +249,31 @@ def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | 
     사다리(넓히기)는 ladder_candidates 가 따로 낸다 — 숫자는 규칙, 말은 모델."""
     if sp["text"] in _CACHE:                       # 손으로 다듬어 둔 후보(면사무소 앞 … 한 대라 같은 긴 절)는 모델보다 낫다 — 그대로 쓴다
         return _CACHE[sp["text"]], False
-    baked = _baked().get(_bake_key(sentence, sp["text"], (context or {}).get("ladder")))
-    if baked:
-        # 모델이 만든 답이지만 **이번 요청에서는 밖으로 나가지 않았다** — provenance 의 「외부 호출」은 그대로 0
-        return [{**c, "source": "baked"} for c in baked], False
-    cands = (external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
-             if external_on else None)
+    key = _bake_key(sentence, sp["text"], (context or {}).get("ladder"))
+    b = _baked()
+    if key in b:
+        # 모델이 만든 답이지만 **이번 요청에서는 밖으로 나가지 않았다** — provenance 의 「외부 호출」은 그대로 0.
+        # 빈 목록은 «구워 봤지만 규칙 검사를 통과한 답이 없었다» 는 뜻 — 모델을 다시 부르지 않고 규칙으로 간다.
+        cands = [{**c, "source": "baked"} for c in b[key]] or None
+        if cands:
+            return cands, False
+    else:
+        cands = (external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
+                 if external_on else None)
     if cands:
         return cands, True
+    # 규칙 후보도 자리에 맞는지 본다 — 「퇴근」 뒤가 「할 무렵」 인데 JOB 일반 후보 「일 나가는」 을 넣으면
+    # 「일 나가는할 무렵」 이 된다. 모델 답만 검사하고 우리 후보는 안 보던 구멍이었다 (9/16)
+    after = (context or {}).get("after") or ""
+
+    def _fits(items: list[dict[str, str]]) -> list[dict[str, str]]:
+        return [c for c in items
+                if not (c.get("text") and external._clashes_with_verb(sentence, sp["text"], c["text"], after))]
+
     for rx, c in _BY_TEXT:
         if rx.search(sp["text"]):
-            return c, False
-    return (_GENERIC.get(sp["type"]) or [{"text": "", "note": "삭제"}] * 3), False
+            return (_fits(c) or [{"text": "", "note": "삭제"}]), False
+    return (_fits(_GENERIC.get(sp["type"]) or []) or [{"text": "", "note": "삭제"}]), False
 
 
 def _is_backbone(text_all: dict[str, str], sp: dict[str, Any]) -> bool:
@@ -343,7 +356,8 @@ def recommend(view: dict[str, Any], base: dict[str, Any], external_on: bool = Tr
         widen = ladder_candidates(view, p["post_id"], sp, p["notes"].get(sp["span_id"], {}))
         ctx = {**sentence_context(text, sp["start"], sp["end"]), "ladder": [w["text"] for w in widen],
                "particle": leading_particle(text[sp["end"]:]),
-               "others": others_in_sentence(p, sp, ls, le)}
+               "others": others_in_sentence(p, sp, ls, le),
+                           "after": text[sp["end"]:sp["end"] + 16]}
         cands, used = candidates_for(sentence, sp, ctx, external_on)
         ext_used = ext_used or used
         cands = ([{"text": w["text"], "note": w["note"]} for w in widen] + cands)[:3]

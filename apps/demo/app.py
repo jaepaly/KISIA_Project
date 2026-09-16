@@ -255,7 +255,8 @@ def api_check():
         ladder = ladder_candidates(after["view"], "draft", s, dv["notes"].get(s["span_id"], {}))
         ctx = {**sentence_context(text, s["start"], s["end"]), "ladder": [w["text"] for w in ladder],
                "particle": leading_particle(text[s["end"]:]),
-               "others": others_in_sentence(dv, s, ls, le)}
+               "others": others_in_sentence(dv, s, ls, le),
+                   "after": text[s["end"]:s["end"] + 16]}
         cands, used = candidates_for(text[ls:le], s, ctx)
         return s, ladder, cands, used
 

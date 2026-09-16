@@ -55,7 +55,8 @@ def spans_to_bake():
                     seen.add(key)
                     ctx = {**sentence_context(text, sp["start"], sp["end"]), "ladder": ladder,
                            "particle": leading_particle(text[sp["end"]:]),
-                           "others": others_in_sentence(p, sp, ls, le)}
+                           "others": others_in_sentence(p, sp, ls, le),
+                           "after": text[sp["end"]:sp["end"] + 16]}
                     out.append((key, pid, sentence, sp["text"], ctx))
     return out
 
@@ -74,7 +75,10 @@ def main() -> int:
     for n, (key, pid, sentence, span, ctx) in enumerate(missing, 1):
         cands = external.rewrite_candidates(sentence, span, "평서형 · 구어체 어미 · 방언 유지", ctx)
         if not cands:
-            print(f"  [{n}/{len(missing)}] {pid} 「{span}」 — 후보 없음(규칙으로 떨어진다)")
+            # «없음» 도 적어 둔다 — 안 적으면 실행할 때마다 모델을 다시 불러 화면이 느려진다
+            items[key] = {"persona": pid, "span": span, "sentence": sentence,
+                          "ladder": ctx.get("ladder") or [], "candidates": []}
+            print(f"  [{n}/{len(missing)}] {pid} 「{span}」 — 쓸 만한 답 없음 → 규칙으로 간다")
             continue
         items[key] = {"persona": pid, "span": span, "sentence": sentence,
                       "ladder": ctx.get("ladder") or [], "candidates": cands}
