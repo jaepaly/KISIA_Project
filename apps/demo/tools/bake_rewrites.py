@@ -25,7 +25,7 @@ sys.path.insert(0, str(DEMO))
 
 from engine import external                                  # noqa: E402
 from engine.pipeline import analyze, compute                 # noqa: E402
-from engine.recommend import (_bake_key, _line_of, ladder_candidates,  # noqa: E402
+from engine.recommend import (_CACHE, _bake_key, _line_of, ladder_candidates,  # noqa: E402
                               leading_particle, others_in_sentence, sentence_context)
 from probe import DEFAULT, export_for                        # noqa: E402
 
@@ -41,6 +41,8 @@ def spans_to_bake():
             for p in view["posts"]:
                 for sp in p["spans"]:
                     if sp["subject"] != "self" or p["notes"].get(sp["span_id"], {}).get("exclude"):
+                        continue
+                    if sp["text"] in _CACHE:      # 손으로 다듬어 둔 후보가 이긴다 — 구울 필요가 없다
                         continue
                     text = p["texts"][sp["text_id"]]
                     ls, le = _line_of(text, sp["start"], sp["end"])

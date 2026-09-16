@@ -95,7 +95,12 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
     for L in range(len(tail), 1, -1):
         piece = tail[:L].rstrip()
         if len(piece) >= 2 and out.endswith(piece):
-            return out[: -len(piece)].rstrip()      # 꼬리만 돌려줬으면 빈 문자열 = «지운다»
+            cut = out[: -len(piece)].rstrip()       # 꼬리만 돌려줬으면 빈 문자열 = «지운다»
+            # 자르고 나면 조사가 다시 끝에 드러난다 — 「장이 서지 않는 날의」 → 「장이」 → 「장」
+            for pt in ({particle, _PARTICLE_ALT.get(particle, "")} - {""}):
+                if cut.endswith(pt) and len(cut) > len(pt):
+                    cut = cut[: -len(pt)].rstrip()
+            return cut
     # 한 글자짜리 낱말도 겹치면 뗀다 — 「면사무소」→「그 앞」 이 「그 앞 앞 정류장」 이 되는 것 (9/16 배포 확인)
     head = tail.split()[0] if tail.split() else ""
     if head and out.endswith(head):
@@ -145,6 +150,18 @@ def _swaps_family_term(span_text: str, out: str) -> bool:
         return False
     theirs = {i for i, g in enumerate(_FAMILY) if any(w in out for w in g)}
     return bool(theirs - mine)
+
+
+def _echoes_tail(sentence: str, span_text: str, out: str) -> bool:
+    """답이 구간 바로 뒤에 오는 말을 다시 품고 있으면 True.
+
+    「오일장」 뒤가 「이 서지 않는 날의」 인데 답이 「장날이 아닌 날의」 면 넣었을 때 같은 말이 두 번 나온다.
+    모델이 구간이 아니라 «절» 을 바꾸려 들 때 생긴다.
+    """
+    i = sentence.find(span_text)
+    head = sentence[i + len(span_text): i + len(span_text) + 12] if i >= 0 else ""
+    words = [w for w in head.replace(",", " ").split() if len(w) >= 2]
+    return any(w in out for w in words)
 
 
 def _borrows_other_clue(out: str, others: list[str] | None) -> bool:
@@ -245,6 +262,8 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue                       # 행정단위를 바꾼 답은 버린다 (거짓이 된다)
             if t and _repeats_nearby(sentence, span_text, t):
                 continue                       # 넣으면 같은 말이 겹치는 답도 버린다
+            if t and _echoes_tail(sentence, span_text, t):
+                continue                       # 구간 뒤의 말을 도로 끌어안은 답도 버린다
             if t and _borrows_other_clue(t, ctx.get("others")):
                 continue                       # 같은 문장의 다른 단서를 끌어다 쓴 답도 버린다
             if len(t) > max(14, len(span_text) * 4):
