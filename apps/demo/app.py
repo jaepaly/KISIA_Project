@@ -30,7 +30,8 @@ from markupsafe import Markup  # noqa: E402
 
 from engine import external  # noqa: E402
 from engine.pipeline import analyze, compute, evidence_posts  # noqa: E402
-from engine.recommend import (_line_of, candidates_for, fit_particle, k_with_note, ladder_candidates,  # noqa: E402
+from engine.recommend import (_line_of, candidates_for, fit_particle, k_with_note, ladder_candidates,
+                              others_in_sentence,  # noqa: E402
                               leading_particle, recommend, sentence_context, stage2_output)
 
 SNS_URL = os.getenv("SNS_URL", "http://127.0.0.1:3000").rstrip("/")   # localhost 는 Windows 에서 IPv6 시도로 2초 지연
@@ -253,7 +254,8 @@ def api_check():
         ls, le = _line_of(text, s["start"], s["end"])
         ladder = ladder_candidates(after["view"], "draft", s, dv["notes"].get(s["span_id"], {}))
         ctx = {**sentence_context(text, s["start"], s["end"]), "ladder": [w["text"] for w in ladder],
-               "particle": leading_particle(text[s["end"]:])}
+               "particle": leading_particle(text[s["end"]:]),
+               "others": others_in_sentence(dv, s, ls, le)}
         cands, used = candidates_for(text[ls:le], s, ctx)
         return s, ladder, cands, used
 

@@ -301,7 +301,7 @@
   <div class="actions"><a class="btn btn-ghost" href="/u/{{ a.user_ref }}/check" data-busy="다시 세고 있어요">다시 점검</a></div>
 </div>
 
-<p style="font-size:11.5px;color:var(--ink3);margin:14px 0 0">인물과 글은 전부 합성이에요. 표현 탐지는 아직 규칙 기반이고(학습 모델은 다음 버전), 후보 수는 실제 주민등록 인구표로 셌어요. 외부 서버 호출 {% if res.provenance.external_llm_used %}1건(표현 후보, 데모 한정){% else %}0건{% endif %}.</p>
+<p style="font-size:11.5px;color:var(--ink3);margin:14px 0 0">인물과 글은 전부 합성이에요. 표현 탐지는 아직 규칙 기반이고(학습 모델은 다음 버전), 후보 수는 실제 주민등록 인구표로 셌어요. 외부 서버 호출 {% if res.provenance.external_llm_used %}1건(표현 후보, 데모 한정){% else %}0건{% endif %}. 「다르게 쓰기」 후보는 Claude 가 만들어요. 여기 실린 글의 후보는 <b>미리 만들어 둬서</b> 이 화면에서는 밖으로 나가는 것이 없고, 직접 쓴 글을 점검할 때만 그때 한 번 불러요.</p>
 {% endif %}
   </div>
 </main>

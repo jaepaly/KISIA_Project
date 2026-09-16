@@ -349,3 +349,36 @@ def test_rewrite_drops_candidate_that_repeats_a_nearby_word():
     assert _swaps_admin_unit("면사무소", "읍사무소") is True      # 행정단위를 바꾸는 답도 버린다
     assert _swaps_admin_unit("면사무소", "그 건물") is False
     assert _swaps_admin_unit("김해시 진영읍", "김해시") is False   # 덜어내기만 한 답은 통과
+
+
+def test_rewrite_rejects_false_or_broken_candidates():
+    """모델 답을 규칙이 되받아 검사한다 — 거짓이 되거나 말이 안 되는 답은 버린다 (9/16)."""
+    from engine.external import (_borrows_other_clue, _extract_span, _swaps_admin_unit,
+                                 _swaps_family_term)
+
+    assert _swaps_admin_unit("면사무소", "작은 읍의 관공서") is True   # 면 사람에게 읍은 거짓
+    assert _swaps_admin_unit("면사무소", "관공서") is False
+    assert _swaps_family_term("남편", "집사람") is True               # 성별까지 뒤집힌다
+    assert _swaps_family_term("남편", "그 사람") is False
+    assert _borrows_other_clue("정류장 근처", ["정류장"]) is True      # 다른 단서를 대신 쓴다
+    assert _borrows_other_clue("관공서", ["정류장"]) is False
+    s = "아침 오일장에 두달만에 다녀왔다."
+    assert _extract_span(s, "오일장", "장에", "") == "장"              # 답이 원문과 겹쳐도 조사를 뗀다
+
+
+def test_baked_rewrites_file_is_sane():
+    """미리 구워 둔 후보 — 배포 때 이 파일이 화면을 채운다. 깨진 항목이 있으면 심사위원이 본다."""
+    import json as _json
+
+    from engine.external import _EMPTY_ONE
+
+    p = HERE / "data" / "rewrites.json"
+    assert p.exists(), "tools/bake_rewrites.py 로 만든다"
+    d = _json.loads(p.read_text(encoding="utf-8"))
+    items = d["items"]
+    assert len(items) >= 50
+    for v in items.values():
+        assert v["candidates"], v["span"]
+        for c in v["candidates"]:
+            assert c["text"] not in _EMPTY_ONE
+            assert len(c["text"]) <= max(14, len(v["span"]) * 4)

@@ -65,6 +65,8 @@ def enabled() -> bool:
     return bool(os.getenv("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_AUTH_TOKEN"))
 
 
+# 꼬리를 떼다 남은 한 글자 — 「그」「한」「밖」 은 뜻이 없다. 「장」「길」「역」 처럼 뜻이 있는 한 글자는 남긴다
+_EMPTY_ONE = {"그", "이", "저", "한", "밖", "안", "것", "데", "때", "수", "더", "또"}
 _PARTICLE_ALT = {"이": "가", "가": "이", "을": "를", "를": "을", "은": "는", "는": "은", "과": "와", "와": "과"}
 # 구간 바로 뒤에 붙는 조사 — 문장에 그대로 남아 있으므로 모델 답 끝에 같은 조사가 있으면 뗀다 (「오일장에」→「장에」+「에」 = 「장에에」 방지)
 _TAIL_PARTICLES = ("에서는", "에서", "으로", "부터", "까지", "한테", "께서", "에", "로", "의", "도", "만", "은", "는", "이", "가", "을", "를", "과", "와")
@@ -105,6 +107,8 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
 # 프롬프트로도 막고 있지만 확률이라 샌다. 여기서 규칙이 한 번 더 거른다 — 「숫자는 규칙, 말은 모델, 검사는 규칙」.
 _ADMIN_OFFICE = ("읍사무소", "면사무소", "동사무소", "리사무소", "시청", "군청", "구청", "도청")
 _UNIT_TAIL = re.compile(r"[가-힣]{2,}([시군구읍면동리])$")
+# 「면사무소」 → 「작은 «읍»의 관공서」 처럼 다른 단위 낱말이 끼어드는 것 (궁류면 사람에게 읍은 거짓이다)
+_UNIT_WORD = re.compile(r"(?:^|[\s의])([읍면동리])(?:$|[\s의에])")
 
 
 def _swaps_admin_unit(span_text: str, out: str) -> bool:
@@ -119,7 +123,36 @@ def _swaps_admin_unit(span_text: str, out: str) -> bool:
     if a and b and a != b:
         return True
     ma, mb = _UNIT_TAIL.search(span_text.strip()), _UNIT_TAIL.search(out.strip())
-    return bool(ma and mb and ma.group(1) != mb.group(1))
+    if ma and mb and ma.group(1) != mb.group(1):
+        return True
+    unit = {w[0] for w in a} | ({ma.group(1)} if ma else set())        # 구간이 걸친 단위(면사무소 → 「면」)
+    return bool(unit and {m.group(1) for m in _UNIT_WORD.finditer(out)} - unit)
+
+
+# 가족 호칭은 바꾸면 «다른 사람» 이 된다. 「남편」→「집사람」 은 성별까지 뒤집혀 거짓이 된다 (D06 은 여성).
+_FAMILY = [
+    {"남편", "신랑", "바깥양반", "서방"},
+    {"아내", "집사람", "마누라", "와이프", "안사람", "처"},
+    {"아들"}, {"딸"}, {"아버지", "아빠", "부친"}, {"어머니", "엄마", "모친"},
+    {"형", "오빠"}, {"누나", "언니"}, {"할아버지"}, {"할머니"},
+]
+
+
+def _swaps_family_term(span_text: str, out: str) -> bool:
+    """구간의 가족 호칭을 «다른» 호칭으로 바꾸면 True."""
+    mine = {i for i, g in enumerate(_FAMILY) if any(w in span_text for w in g)}
+    if not mine:
+        return False
+    theirs = {i for i, g in enumerate(_FAMILY) if any(w in out for w in g)}
+    return bool(theirs - mine)
+
+
+def _borrows_other_clue(out: str, others: list[str] | None) -> bool:
+    """답이 같은 문장의 «다른 단서» 를 그대로 끌어다 쓰면 True.
+
+    「면사무소」→「정류장 근처」, 「정류장」→「면사무소 앞 …」 — 하나를 가리면서 다른 하나를 드러낸다.
+    """
+    return any(o and len(o) >= 2 and o in out for o in (others or []))
 
 
 def _repeats_nearby(sentence: str, span_text: str, out: str) -> bool:
@@ -146,7 +179,9 @@ def _extract_span(sentence: str, span_text: str, out: str, particle: str = "") -
     out = out.strip().strip("「」\"'")
     if not out or out == span_text:
         return None
-    if len(out) <= max(24, len(span_text) * 3) and out not in sentence:
+    # 길이로만 가른다 — 예전에는 «답이 원문 안에 있으면 문장을 통째로 돌려준 것» 으로 봤는데,
+    # 「오일장」→「장에」 처럼 답이 원문의 일부와 겹치면 엉뚱한 가지로 빠져 조사가 안 떨어졌다 (9/16)
+    if len(out) <= max(24, len(span_text) * 3) and len(out) < len(sentence) * 0.6:
         return _trim_tail(sentence, span_text, out, particle)      # "" 이면 지우기 후보
     # 문장 전체 형태 — 공통 접두·접미 벗기기
     i = 0
@@ -175,9 +210,11 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
         "말투·어미·방언·문장 부호는 그대로 두고, 신상(지명·행정단위·시설 이름·배차 간격·나이·소득 주기)이 새는 정보만 없앤다. "
         "규칙: (1) 출력의 text 에는 구간을 대신할 표현만 쓴다 — 문장 전체를 쓰지 않는다, 구간 뒤에 오는 조사는 넣지 않는다. "
         "(2) 앞뒤 문장과 이어 읽었을 때 자연스러워야 한다. 같은 문장에 이미 바뀐 구간이 있으면 그 말과 겹치거나 반복되지 않게 한다. "
+        "「같은 문장의 다른 단서」로 적힌 말은 그것 자체가 가려야 할 정보이므로 대신 쓰지 않는다. "
         "(3) 「사다리」로 적힌 상위 지명·연령대는 이미 제안됐으니 똑같은 안은 내지 않는다 — 대신 정보를 지우거나 에둘러 말한다. "
         "나이·장소를 다른 값이나 다른 연령대로 바꾸지 않는다(스물셋 → «스물 안 된», 예순여덟 → «여든 가까운» 은 거짓이다). "
         "방언·어미는 원문에 있는 것만 쓰고 새로 만들지 않는다(«안 오라» 같은 어미를 지어내지 않는다). "
+        "가족 호칭은 다른 호칭으로 바꾸지 않는다(남편 → «집사람» 은 사람이 바뀐다). 지우거나 «그 사람» 처럼 두루뭉술하게 한다. "
         "(4) 후보 3개: ① 정보만 지운 최소 수정 ② 표현을 조금 더 바꾼 안 ③ 이유나 서술 자체를 바꾼 안. 없던 사실을 지어내지 않는다. "
         'JSON 배열만 출력한다: [{"text": "...", "note": "10자 안팎 설명"}]'
     )
@@ -208,6 +245,14 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue                       # 행정단위를 바꾼 답은 버린다 (거짓이 된다)
             if t and _repeats_nearby(sentence, span_text, t):
                 continue                       # 넣으면 같은 말이 겹치는 답도 버린다
+            if t and _borrows_other_clue(t, ctx.get("others")):
+                continue                       # 같은 문장의 다른 단서를 끌어다 쓴 답도 버린다
+            if len(t) > max(14, len(span_text) * 4):
+                continue                       # 구간을 대신할 «표현» 이 아니라 문장을 새로 쓴 답은 버린다
+            if _swaps_family_term(span_text, t):
+                continue                       # 가족 호칭을 바꾼 답은 버린다 (다른 사람이 된다)
+            if t in _EMPTY_ONE:
+                continue                       # 꼬리만 남은 한 글자는 후보가 아니다
             out.append({"text": t, "note": (str(a.get("note", "")).strip()[:40] if t else "그냥 지운다"), "source": "llm"})
         return out[:3] or None
     except Exception:  # noqa: BLE001 — 데모는 외부 실패로 멈추지 않는다. 캐시·규칙으로 떨어진다

@@ -12,7 +12,11 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
+import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from . import external
@@ -172,6 +176,17 @@ def _same_value_key(view: dict[str, Any], src: dict[str, Any], axis: str) -> Any
     return None
 
 
+def others_in_sentence(post: dict[str, Any], sp: dict[str, Any], ls: int, le: int) -> list[str]:
+    """같은 문장 안의 «다른» 단서 구간들. 하나를 가리면서 다른 하나를 대신 쓰지 않게 하려는 것."""
+    out = []
+    for o in post["spans"]:
+        if o["span_id"] == sp["span_id"] or o["text_id"] != sp["text_id"]:
+            continue
+        if ls <= o["start"] < le and o["text"] not in out:
+            out.append(o["text"])
+    return out
+
+
 def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, Any],
                       note: dict[str, Any]) -> list[dict[str, Any]]:
     """지우지 말고 넓히기 — 지명은 상위 행정구역으로, 나이는 10년 단위로. 각 단에 실제 k 를 붙인다.
@@ -200,12 +215,37 @@ def ladder_candidates(view: dict[str, Any], post_id: str | None, sp: dict[str, A
     return out
 
 
+# ── 미리 구워 둔 후보 ────────────────────────────────────────────────────
+# 시딩된 글은 모든 심사위원에게 똑같다. 그 답을 배포 전에 한 번 만들어 파일로 두면 —
+#   ① 화면이 1초 안에 뜨고 ② 게이트웨이가 죽어도 시연이 그대로 돌고 ③ 사람마다 다른 문구가 뜨지 않는다.
+# 심사위원이 «직접 쓴 글» 은 여기 없으므로 그대로 모델을 부른다 — 진짜로 도는 것을 보여주는 자리다.
+# 파일은 tools/bake_rewrites.py 가 만든다 (모델이 만든 답 그대로, 사람이 고르지 않는다).
+_BAKED_PATH = Path(__file__).resolve().parents[1] / "data" / "rewrites.json"
+
+
+def _bake_key(sentence: str, span_text: str, ladder: list[str] | None) -> str:
+    raw = "".join([sentence, span_text, "|".join(ladder or [])])
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+@lru_cache(maxsize=1)
+def _baked() -> dict[str, list[dict[str, str]]]:
+    try:
+        return {k: v["candidates"] for k, v in json.loads(_BAKED_PATH.read_text(encoding="utf-8"))["items"].items()}
+    except Exception:      # noqa: BLE001 — 파일이 없으면 그냥 모델을 부른다
+        return {}
+
+
 def candidates_for(sentence: str, sp: dict[str, Any], context: dict[str, Any] | None = None,
                    external_on: bool = True) -> tuple[list[dict[str, str]], bool]:
     """스팬 하나의 «다르게 쓰기» 후보 — (후보, 외부 LLM 사용 여부). 외부(문맥 포함)가 켜져 있으면 그것, 아니면 캐시 → 표면형 → 유형별 일반 후보.
     사다리(넓히기)는 ladder_candidates 가 따로 낸다 — 숫자는 규칙, 말은 모델."""
     if sp["text"] in _CACHE:                       # 손으로 다듬어 둔 후보(면사무소 앞 … 한 대라 같은 긴 절)는 모델보다 낫다 — 그대로 쓴다
         return _CACHE[sp["text"]], False
+    baked = _baked().get(_bake_key(sentence, sp["text"], (context or {}).get("ladder")))
+    if baked:
+        # 모델이 만든 답이지만 **이번 요청에서는 밖으로 나가지 않았다** — provenance 의 「외부 호출」은 그대로 0
+        return [{**c, "source": "baked"} for c in baked], False
     cands = (external.rewrite_candidates(sentence, sp["text"], "평서형 · 구어체 어미 · 방언 유지", context)
              if external_on else None)
     if cands:
@@ -295,7 +335,8 @@ def recommend(view: dict[str, Any], base: dict[str, Any], external_on: bool = Tr
         sentence = text[ls:le]
         widen = ladder_candidates(view, p["post_id"], sp, p["notes"].get(sp["span_id"], {}))
         ctx = {**sentence_context(text, sp["start"], sp["end"]), "ladder": [w["text"] for w in widen],
-               "particle": leading_particle(text[sp["end"]:])}
+               "particle": leading_particle(text[sp["end"]:]),
+               "others": others_in_sentence(p, sp, ls, le)}
         cands, used = candidates_for(sentence, sp, ctx, external_on)
         ext_used = ext_used or used
         cands = ([{"text": w["text"], "note": w["note"]} for w in widen] + cands)[:3]
