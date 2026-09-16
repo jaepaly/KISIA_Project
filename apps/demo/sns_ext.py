@@ -254,6 +254,10 @@ def _chrome():
                           " WHERE p.post_id = ?", (va["post_id"],)).fetchone()
     # 홈·글쓰기처럼 아무 블로그도 안 보고 있으면 «나» 는 없다 — 마당일기를 기본값으로 두면 심사자가 헷갈린다
     nav = {"index": "home", "profile": "blog", "check": "check", "new": "new", "login": "login", "signup": "login"}.get(request.endpoint or "")
+    if nav == "home":                       # 홈 안의 탭(사진·방명록)도 왼쪽 메뉴에서 자기 칸이 켜져야 한다
+        t = request.args.get("tab")
+        if t in ("photo", "guest"):
+            nav = t
     neighbors = db().execute("SELECT * FROM authors WHERE author_id != 'GUEST' ORDER BY author_id").fetchall()
     n_posts = {r["author_id"]: r["n"] for r in
                db().execute("SELECT author_id, COUNT(*) n FROM posts WHERE visibility = 'public' GROUP BY author_id")}

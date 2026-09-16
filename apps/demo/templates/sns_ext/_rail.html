@@ -36,8 +36,8 @@
   {% if me %}<a href="/u/{{ me.user_ref }}" class="{{ 'on' if nav == 'blog' }}"><i>{{ ut_avatar(me.author_id) }}</i>내 블로그</a>
   <a href="/u/{{ me.user_ref }}/check" class="{{ 'on' if nav == 'check' }}" data-busy="파도풀이 공개 글을 모아 세고 있어요"><i>🌊</i>파도풀 점검</a>{% endif %}
   <a href="/new" class="{{ 'on' if nav == 'new' }}"><i>✎</i>글쓰기</a>
-  <a href="/?tab=photo"><i>🖼</i>사진</a>
-  <a href="/?tab=guest"><i>📒</i>방명록</a>
+  <a href="/?tab=photo" class="{{ 'on' if nav == 'photo' }}"><i>🖼</i>사진</a>
+  <a href="/?tab=guest" class="{{ 'on' if nav == 'guest' }}"><i>📒</i>방명록</a>
 </nav>
 
 {% if me %}
