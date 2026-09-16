@@ -292,3 +292,48 @@ def test_age_with_casual_endings_and_numeric_context():
     assert ages("근데 나 나이 스물셋임.") == [23]
     assert ages("스물셋이야!") == [23] and ages("나 23임") == [23] and ages("23살임") == [23]
     assert ages("시간 어디감???? 12시에 잤다") == [] and ages("살림살이") == [] and ages("서른 넘어서") == []
+
+
+# ── 방문자별 글 데이터 — 심사위원 둘이 동시에 들어와도 서로를 건드리지 않는다 (9/16) ──
+def test_visitors_do_not_share_post_data(tmp_path, monkeypatch):
+    """A 가 글을 비공개로 돌려도 B 화면에는 그대로 있어야 한다."""
+    monkeypatch.setenv("SNS_DB_PATH", str(tmp_path / "sns.db"))
+    monkeypatch.setenv("DEMO_EXTERNAL_REWRITE", "")
+    for m in [k for k in list(sys.modules) if k in ("sns_app", "sns_ext", "seed", "db")]:
+        del sys.modules[m]
+    import seed as seeder
+    from db import connect, init                       # apps/sns/db.py
+    c = connect()
+    init(c)
+    seeder.seed(c, ["D05"])
+    c.close()
+
+    import sns_ext
+    sns_ext.app.config["TESTING"] = True
+    a, b = sns_ext.app.test_client(), sns_ext.app.test_client()
+
+    assert a.get("/").status_code == 200
+    assert b.get("/").status_code == 200
+    with a.session_transaction() as sa, b.session_transaction() as sb:
+        assert sa["vid"] != sb["vid"]                  # 사람마다 다른 사본
+    assert len(list((tmp_path / "visitors").glob("*.db"))) == 2
+
+    post_id = connect().execute("SELECT post_id FROM posts LIMIT 1").fetchone()[0]
+    a.post(f"/posts/{post_id}/visibility")
+    assert _visibility(sns_ext, a, post_id) == "private"
+    assert _visibility(sns_ext, b, post_id) == "public"     # B 는 그대로다
+    with sns_ext.app.test_request_context():
+        assert sns_ext._TEMPLATE.exists()                   # 원본은 건드리지 않는다
+    import sqlite3
+    v = sqlite3.connect(sns_ext._TEMPLATE).execute(
+        "SELECT visibility FROM posts WHERE post_id = ?", (post_id,)).fetchone()[0]
+    assert v == "public"
+
+
+def _visibility(sns_ext, client, post_id: str) -> str:
+    import sqlite3
+    with client.session_transaction() as s:
+        vid = s["vid"]
+    p = sns_ext._VISITORS / f"{vid}.db"
+    return sqlite3.connect(p).execute(
+        "SELECT visibility FROM posts WHERE post_id = ?", (post_id,)).fetchone()[0]

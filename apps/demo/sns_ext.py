@@ -23,6 +23,10 @@ import hashlib
 import importlib.util
 import os
 import re
+import secrets
+import shutil
+import sqlite3
+import time
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -34,7 +38,8 @@ sys.path.insert(0, str(HERE))         # /demo/reset 이 seed.py 를 import 한�
 
 import jinja2  # noqa: E402
 import requests  # noqa: E402
-from flask import abort, redirect, render_template, request, send_from_directory, session  # noqa: E402
+from flask import (abort, has_request_context, redirect, render_template,  # noqa: E402
+                   request, send_from_directory, session)
 
 # 127.0.0.1 — Windows 에서 「localhost」 는 IPv6(::1) 를 먼저 찔러 보고 실패한 뒤에야 IPv4 로 가서 요청마다 2초가 샌다
 PADO = os.getenv("PADOPOOL_URL", "http://127.0.0.1:8000").rstrip("/")
@@ -56,6 +61,66 @@ app.jinja_loader = jinja2.ChoiceLoader([
     jinja2.FileSystemLoader(str(HERE / "templates" / "sns_ext")),
     app.jinja_loader,
 ])
+
+
+# ── 방문자마다 자기 글 데이터 ──────────────────────────────────────────
+# 심사 기간에는 여러 사람이 동시에 들어온다. 글 데이터가 하나면 한 사람이 비공개로 돌린 글이
+# 다른 사람 화면에서도 사라진다. 그래서 «시딩된 원본»(SNS_DB_PATH)은 읽기 전용 본으로 두고,
+# 방문자마다 그 사본 하나를 만들어 쓴다. 176KB 짜리 파일이라 복사가 싸다.
+# 요청 밖(기동·시딩·테스트)에서는 원본을 그대로 쓴다.
+_TEMPLATE = Path(os.getenv("SNS_DB_PATH", str(HERE.parents[1] / "data" / "interim" / "sns.db")))
+_VISITORS = _TEMPLATE.parent / "visitors"
+_VISITOR_TTL = int(os.getenv("DEMO_VISITOR_TTL", "21600"))       # 6시간 쓰지 않으면 지운다
+_sns_connect = sns.connect
+_swept = 0.0
+
+
+def _sweep_visitors() -> None:
+    """오래된 방문자 파일을 지운다. 10분에 한 번만 훑는다."""
+    global _swept
+    now = time.time()
+    if now - _swept < 600:
+        return
+    _swept = now
+    try:
+        for f in _VISITORS.glob("*.db"):
+            if now - f.stat().st_mtime > _VISITOR_TTL:
+                f.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
+def visitor_db_path() -> Path | None:
+    """이 요청을 보낸 사람의 글 데이터 파일. 요청 밖이면 None(= 원본을 쓴다)."""
+    if not has_request_context():
+        return None
+    vid = session.get("vid")
+    if not vid:
+        vid = secrets.token_hex(8)
+        session["vid"] = vid
+    p = _VISITORS / f"{vid}.db"
+    if not p.exists():
+        _VISITORS.mkdir(parents=True, exist_ok=True)
+        if not _TEMPLATE.exists():
+            return None                                   # 아직 시딩 전이면 원본 경로로 넘긴다
+        tmp = p.with_suffix(".tmp")
+        shutil.copyfile(_TEMPLATE, tmp)                   # 반쯤 복사된 파일을 열지 않도록 임시 이름으로
+        os.replace(tmp, p)
+        _sweep_visitors()
+    return p
+
+
+def _connect_visitor() -> sqlite3.Connection:
+    p = visitor_db_path()
+    if p is None:
+        return _sns_connect()
+    c = sqlite3.connect(p)
+    c.row_factory = sqlite3.Row
+    c.execute("PRAGMA foreign_keys = ON")
+    return c
+
+
+sns.connect = _connect_visitor      # apps/sns/app.py 의 db() 가 부르는 이름을 갈아 끼운다
 
 
 @app.get("/pado-static/<path:fname>")
@@ -382,7 +447,10 @@ def demo_reset():
     c.executescript("DELETE FROM photos; DELETE FROM posts; DELETE FROM authors;")
     c.commit()
     seeder.seed(c, seeder.DEFAULT_PERSONAS)
+    vid = session.get("vid")
     session.clear()          # 지난 점검 k(delta 배너) 도 지운다
+    if vid:
+        session["vid"] = vid      # 방금 되돌린 내 파일을 계속 쓴다 (새 사본을 또 만들지 않게)
     return redirect("/")
 
 

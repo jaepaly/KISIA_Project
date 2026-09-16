@@ -101,6 +101,27 @@ def _trim_tail(sentence: str, span_text: str, out: str, particle: str = "") -> s
     return out
 
 
+# 행정단위를 슬쩍 바꾸는 답을 버리기 위한 것 — 궁류«면» 사람에게 「읍사무소」는 거짓이다 (9/16 배포에서 발견).
+# 프롬프트로도 막고 있지만 확률이라 샌다. 여기서 규칙이 한 번 더 거른다 — 「숫자는 규칙, 말은 모델, 검사는 규칙」.
+_ADMIN_OFFICE = ("읍사무소", "면사무소", "동사무소", "리사무소", "시청", "군청", "구청", "도청")
+_UNIT_TAIL = re.compile(r"[가-힣]{2,}([시군구읍면동리])$")
+
+
+def _swaps_admin_unit(span_text: str, out: str) -> bool:
+    """구간과 답이 «다른» 행정단위를 가리키면 True — 면사무소→읍사무소, 진영읍→진영동.
+
+    구간에서 덜어내기만 한 답(「김해시 진영읍」→「김해시」)은 거짓이 아니므로 통과시킨다.
+    """
+    if out.strip() and out.strip() in span_text:
+        return False
+    a = {w for w in _ADMIN_OFFICE if w in span_text}
+    b = {w for w in _ADMIN_OFFICE if w in out}
+    if a and b and a != b:
+        return True
+    ma, mb = _UNIT_TAIL.search(span_text.strip()), _UNIT_TAIL.search(out.strip())
+    return bool(ma and mb and ma.group(1) != mb.group(1))
+
+
 def _extract_span(sentence: str, span_text: str, out: str, particle: str = "") -> str | None:
     """모델이 구간 대신 문장 전체를 돌려줬으면 앞뒤 공통 부분을 벗겨 대체 표현만 남긴다. 못 벗기면 None."""
     out = out.strip().strip("「」\"'")
@@ -161,6 +182,8 @@ def rewrite_candidates(sentence: str, span_text: str, voice_hint: str,
                 continue
             if any(t == o["text"] for o in out):
                 continue
+            if t and _swaps_admin_unit(span_text, t):
+                continue                       # 행정단위를 바꾼 답은 버린다 (거짓이 된다)
             out.append({"text": t, "note": (str(a.get("note", "")).strip()[:40] if t else "그냥 지운다"), "source": "llm"})
         return out[:3] or None
     except Exception:  # noqa: BLE001 — 데모는 외부 실패로 멈추지 않는다. 캐시·규칙으로 떨어진다
