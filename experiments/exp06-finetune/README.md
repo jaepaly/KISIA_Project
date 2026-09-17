@@ -57,6 +57,8 @@ corpus-v0 p2.3 · KoELECTRA 기존 LR 5e-5 epoch 10 체크포인트 · CPU 4스�
 `evaluate_test.py`는 공식 `splits/test.jsonl`을 변경하지 않고 기존
 `gold/iaa/_assignment.json`에 배정된 test ID만 제외한다.
 현재 255편 중 IAA 16편을 제외한 **239편·358스팬**이다.
+IAA 배정 ID 중복·16편 개수 불일치·공식 test 내 배정 ID 누락은
+즉시 오류로 중단한다. 교집합만 취해 일부 제외하는 동작은 허용하지 않는다.
 단서 159편은 `gold/blind/`의 reviewed 정답, 잡담 80편은 최상위
 `gold/`의 reviewed 정답을 사용한다. 중복 일반 검수본보다 blind를 우선한다.
 잡담 80편 중 빈 정답은 8편뿐이며, 나머지 72편의 실제 단서는 유지한다.
@@ -86,7 +88,51 @@ test에서 임계값 탐색을 반복하지 않는다. 출력은 gitignore된 `r
 `v1_lr5e-5/checkpoint-epoch-10` · CUDA · 임계값 0.7):
 239편·358스팬에서 TP 111 / FP 286 / FN 247,
 precision 0.2796 / recall 0.3101 / partial F1 **0.2940**.
+참고 exact 1:1 채점은 TP 61 / FP 336 / FN 297,
+precision 0.1537 / recall 0.1704 / exact F1 **0.1616**이다.
+exact 지표는 저장된 동일 예측에서 재채점했으며 모델 추론을 반복하지 않았다.
+원래 출력은 보존하고 보완 지표를 `runs/test_v1_lr5e-5_t07_exact/metrics.json`에 기록했다.
+
+```powershell
+python experiments/exp06-finetune/evaluate_test.py --rescore-from experiments/exp06-finetune/runs/test_v1_lr5e-5_t07 --output-dir experiments/exp06-finetune/runs/test_v1_lr5e-5_t07_exact
+```
+
 내부 eval F1 0.4839와 별개로 기록하며 최종 목표 성능 달성으로 해석하지 않는다.
+
+### v1 확정 보류 — epoch 1~10 내부 eval 비교
+
+`checkpoint-epoch-10`은 현재 평가한 후보이며 최종 v1 확정은 보류한다.
+기존 LR 5e-5 epoch 1~10을 동일한 내부 persona eval·겹침 해소·임계값 0.7로
+비교하는 `compare_internal_epochs.py`를 추가했다. 재학습 없이 저장 모델을
+로드해 평가하며 격리 test·blind·IAA 정답은 열지 않는다.
+2026-09-17 · corpus-v0 p2.3 · 동일 KoELECTRA LR 5e-5 실행의 저장 모델을
+CUDA에서 내부 eval 95개 창·84채널·62골드 스팬으로 비교했다.
+seed 20260911, 동일 persona holdout 0.100, 겹침 해소와 임계값 0.7을 고정했다.
+
+| epoch | partial F1 | exact F1 | P | R | TP / FP / FN |
+|---|---|---|---|---|---|
+| 1 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 2 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 3 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 4 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 5 | 0.2326 | 0.1860 | 0.4167 | 0.1613 | 10 / 14 / 52 |
+| 6 | 0.3434 | 0.2222 | 0.4595 | 0.2742 | 17 / 20 / 45 |
+| 7 | 0.3789 | 0.2947 | 0.5455 | 0.2903 | 18 / 15 / 44 |
+| 8 | 0.3111 | 0.1926 | 0.2877 | 0.3387 | 21 / 52 / 41 |
+| 9 | 0.4274 | 0.3248 | 0.4545 | 0.4032 | 25 / 30 / 37 |
+| 10 | **0.4839** | **0.4194** | 0.4839 | 0.4839 | 30 / 32 / 32 |
+
+이 실행의 epoch 1~10 중 주 지표와 참고 exact 모두 epoch 10이 최고다.
+따라서 기존 epoch 10 후보를 유지하며 최종 v1 확정은 리뷰 승인 대기다.
+
+```powershell
+python experiments/exp06-finetune/compare_internal_epochs.py --run-dir experiments/exp06-finetune/runs/v1_lr5e-5 --device cuda --output-dir experiments/exp06-finetune/runs/internal_epoch_compare_t07
+```
+
+결과는 `metrics.json`과 `comparison.md`로 새 폴더에 저장한다.
+test를 연 뒤 수행하는 내부 eval 비교라는 시점을 명시한다.
+다른 epoch가 최선이어도 이미 공개한 test를 사용해 재비교하지 않는다.
+epoch 10 test·CPU 결과를 다른 모델의 측정 결과로 옮겨 쓰지 않는다.
 
 ### CPU 예비 지연 측정 (2026-09-17)
 

@@ -4,8 +4,12 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from evaluate_test import prepare, score_subset
+from evaluate_test import prepare as prepare_data, score_subset, legacy_iaa_ids, exact_span_sets
 from prepare_bio import DataError
+
+
+def prepare(root, bio):
+    return prepare_data(root, bio, expected_iaa_count=1)
 
 
 class EvaluationTests(unittest.TestCase):
@@ -64,6 +68,32 @@ class EvaluationTests(unittest.TestCase):
         guesses = {pid: [{**span, 'type': 'AGE'} for span in row['spans']] for pid, row in gold.items()}
         metrics = score_subset(posts, gold, guesses)['overall']
         self.assertEqual((metrics['tp'], metrics['fp'], metrics['fn']), (0, 2, 2))
+
+    def test_duplicate_iaa_ids_fail(self):
+        row = {'persona_id': 'X', 'post': 'b03'}
+        with self.assertRaisesRegex(DataError, 'Duplicate IAA'):
+            legacy_iaa_ids({'글': [row, row]}, {'X_b03'}, 2)
+
+    def test_missing_iaa_id_fails(self):
+        with self.assertRaisesRegex(DataError, 'missing from official test'):
+            legacy_iaa_ids({'글': [{'persona_id': 'X', 'post': 'typo'}]}, {'X_b03'}, 1)
+
+    def test_iaa_count_fails(self):
+        with self.assertRaisesRegex(DataError, 'must be 16'):
+            legacy_iaa_ids({'글': [{'persona_id': 'X', 'post': 'b03'}]}, {'X_b03'})
+
+    def test_partial_boundary_is_not_exact(self):
+        gold = {'p': {'texts': {'body': '집 근처'}, 'spans': [{'start': 0, 'end': 4, 'type': 'REL_HOME', 'text_id': 'body'}]}}
+        pred = {'p': [{'start': 0, 'end': 3, 'type': 'REL_HOME', 'text_id': 'body'}]}
+        metrics = score_subset(['p'], gold, pred)
+        self.assertEqual(metrics['overall']['f1'], 1.0)
+        self.assertEqual(metrics['exact']['overall']['f1'], 0.0)
+
+    def test_exact_one_to_one_and_wrong_type(self):
+        truth = {('p', 'body'): {(0, 4, 'REL_HOME')}}
+        pred = {('p', 'body'): {(0, 4, 'REL_HOME'), (0, 4, 'AGE')}}
+        metrics = exact_span_sets(truth, pred)['overall']
+        self.assertEqual((metrics['tp'], metrics['fp'], metrics['fn']), (1, 1, 0))
 
 
 if __name__ == '__main__':

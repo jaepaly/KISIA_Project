@@ -14,7 +14,7 @@ import time
 import unicodedata
 
 import infer
-from prepare_bio import DataError, read_jsonl, validate_channel
+from prepare_bio import DataError, TYPES, read_jsonl, validate_channel
 import train
 
 
@@ -32,7 +32,26 @@ def index_posts(rows):
     return indexed
 
 
-def prepare(root: Path, bio_path: Path):
+def legacy_iaa_ids(assignment, tests, expected_count=16):
+    rows = assignment.get('글')
+    if not isinstance(rows, list):
+        raise DataError('Invalid IAA assignment')
+    ids = []
+    for row in rows:
+        if not isinstance(row, dict) or not all(isinstance(row.get(k), str) and row[k] for k in ('persona_id', 'post')):
+            raise DataError('Invalid IAA assignment ID')
+        ids.append(f"{row['persona_id']}_{row['post']}")
+    if len(set(ids)) != len(ids):
+        raise DataError('Duplicate IAA assignment ID')
+    if len(ids) != expected_count:
+        raise DataError(f'IAA assignment count must be {expected_count}, got {len(ids)}')
+    missing = set(ids) - set(tests)
+    if missing:
+        raise DataError(f'IAA IDs missing from official test: {sorted(missing)}')
+    return set(ids)
+
+
+def prepare(root: Path, bio_path: Path, *, expected_iaa_count=16):
     tests = index_posts(records(root / 'splits/test.jsonl'))
     training = index_posts(records(root / 'splits/train.jsonl'))
     bio = records(bio_path)
@@ -40,7 +59,7 @@ def prepare(root: Path, bio_path: Path):
     if leak:
         raise DataError(f'Test leakage, including excluded IAA: {sorted(leak)}')
     assignment = json.loads((root / 'gold/iaa/_assignment.json').read_text(encoding='utf-8-sig'))
-    excluded = {f"{r['persona_id']}_{r['post']}" for r in assignment['글']} & set(tests)
+    excluded = legacy_iaa_ids(assignment, tests, expected_iaa_count)
     selected = {pid: row for pid, row in tests.items() if pid not in excluded}
     gold, provenance, redundant = {}, {}, []
     source_files = []
@@ -108,13 +127,67 @@ def prepare(root: Path, bio_path: Path):
     return selected, gold, audit
 
 
+def exact_span_sets(truth, guessed):
+    counts = defaultdict(lambda: {'tp': 0, 'fp': 0, 'fn': 0})
+    for key in truth.keys() | guessed.keys():
+        actual, predicted = truth.get(key, set()), guessed.get(key, set())
+        for label, spans in [('tp', actual & predicted), ('fp', predicted - actual), ('fn', actual - predicted)]:
+            for span in spans:
+                counts[span[2]][label] += 1
+    def finish(c):
+        tp, fp, fn = c['tp'], c['fp'], c['fn']
+        return {**c, 'precision': tp / (tp + fp) if tp + fp else 0.0,
+                'recall': tp / (tp + fn) if tp + fn else 0.0,
+                'f1': 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else 0.0}
+    return {'overall': finish({k: sum(c[k] for c in counts.values()) for k in ('tp', 'fp', 'fn')}),
+            'by_type': {kind: finish(c) for kind, c in sorted(counts.items())},
+            'match_policy': 'identical start/end/type; one-to-one unique spans per channel'}
+
+
 def score_subset(posts, gold, predictions):
     truth, guessed = {}, {}
     for pid in posts:
         for tid in gold[pid]['texts']:
             truth[(pid, tid)] = {(s['start'], s['end'], s['type']) for s in gold[pid]['spans'] if s['text_id'] == tid}
             guessed[(pid, tid)] = {(s['start'], s['end'], s['type']) for s in predictions[pid] if s['text_id'] == tid}
-    return train.score_span_sets(truth, guessed)
+    result = train.score_span_sets(truth, guessed)
+    result['exact'] = exact_span_sets(truth, guessed)
+    return result
+
+
+def rescore_saved(directory, posts, gold, audit):
+    report = json.loads((directory / 'metrics.json').read_text(encoding='utf-8'))
+    if report['audit']['input_sha256'] != audit['input_sha256']:
+        raise DataError('Saved test input hashes differ; refusing to rescore changed data')
+    rows = index_posts(records(directory / 'predictions.jsonl'))
+    if set(rows) != set(posts):
+        raise DataError('Saved prediction IDs differ from approved test selection')
+    predictions = {}
+    for pid, raw in rows.items():
+        if raw.get('texts') != gold[pid]['texts']:
+            raise DataError(f'Saved prediction source mismatch: {pid}')
+        seen = set()
+        for span in raw['candidates']:
+            tid, start, end = span['text_id'], span['start'], span['end']
+            if tid not in raw['texts'] or not 0 <= start < end <= len(raw['texts'][tid]) or raw['texts'][tid][start:end] != span['text']:
+                raise DataError(f'Invalid saved prediction offset: {pid}')
+            if span['type'] not in TYPES:
+                raise DataError(f'Invalid saved prediction type: {pid}')
+            identity = (tid, start, end, span['type'])
+            if identity in seen:
+                raise DataError(f'Duplicate saved prediction: {pid}')
+            seen.add(identity)
+        predictions[pid] = raw['candidates']
+    scored = score_subset(posts, gold, predictions)
+    if scored['overall'] != report['metrics']['overall']:
+        raise DataError('Original partial metric changed during rescore')
+    report['metrics'] = scored
+    report['by_kind'] = {kind: score_subset([p for p, r in posts.items() if r['kind'] == kind], gold, predictions)
+                         for kind in sorted({r['kind'] for r in posts.values()})}
+    report['rescored_at_utc'] = datetime.now(timezone.utc).isoformat()
+    report['rescore_source'] = str(directory)
+    report['model_inference_repeated'] = False
+    return report
 
 
 def main():
@@ -127,17 +200,25 @@ def main():
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--threads', type=int, default=4)
     parser.add_argument('--min-span-score', type=float, default=0.7)
+    parser.add_argument('--rescore-from', type=Path, help='Add exact metrics using saved predictions; no model execution')
     args = parser.parse_args()
     posts, gold, audit = prepare(args.corpus_dir, args.bio_data)
     print(json.dumps(audit, ensure_ascii=False, indent=2))
     if args.audit_only:
         return
-    if not args.checkpoint_dir or not args.output_dir or args.threads < 1:
+    if (not args.checkpoint_dir and not args.rescore_from) or not args.output_dir or args.threads < 1:
         parser.error('Evaluation requires --checkpoint-dir, --output-dir and positive --threads')
     if args.output_dir.exists():
         parser.error('Output directory already exists; refusing to overwrite any previous test result')
     if 'runs' not in args.output_dir.parts:
         parser.error('Store local evaluation output under runs/')
+    if args.rescore_from:
+        report = rescore_saved(args.rescore_from, posts, gold, audit)
+        args.output_dir.mkdir(parents=True, exist_ok=False)
+        (args.output_dir / 'metrics.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        print(json.dumps(report['metrics'], ensure_ascii=False, indent=2))
+        print(f'Saved: {args.output_dir / "metrics.json"}')
+        return
     import torch
     import transformers
     torch.set_num_threads(args.threads)
