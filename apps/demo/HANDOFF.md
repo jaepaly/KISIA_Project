@@ -44,6 +44,27 @@ KISIA 계정 규칙: 첫 로그인 후 암호 변경 + **MFA 등록 필수** · 
 DNS 가 서버를 가리킨 뒤 `sudo certbot --nginx -d veilo.site -d www.veilo.site --redirect` 로 HTTPS.
 심사용은 `DEMO_ACCESS_KEY` 비움(문 열림). 9/18 접수 URL = 9/20 이후 심사 끝까지 같은 주소여야 한다 → 도메인 권장.
 
+### 서버 이전 절차 (멘토 제공 EC2 t3.small 로 · 9/17 결정)
+
+**도메인이 있어서 링크는 안 바뀐다** — `veilo.site` 의 A 레코드만 새 IP 로 돌리면 접수 때 낸 주소가 그대로 산다.
+**접수(9/18) 뒤에 한다.** 지금 Lightsail 이 잘 떠 있고, 이전은 급할 이유가 없다.
+
+새 서버에서 먼저 확인할 것 — **보안그룹에 22·80·443 이 열려 있는지**. 멘토/KISIA 계정이면 80·443 개방이 담당자 확인 대상일 수 있다.
+
+1. `bash apps/demo/deploy/bootstrap.sh` (새 서버에서 한 번)
+2. `.env` 를 옮긴다 — 키가 들어 있으므로 scp 로만, 저장소에 넣지 않는다:
+   `ssh 옛서버 'sudo cat /srv/veilo/.env' > /tmp/env && scp /tmp/env 새서버:/tmp/ && ssh 새서버 'sudo mv /tmp/env /srv/veilo/.env && sudo chown veilo:veilo /srv/veilo/.env && sudo chmod 600 /srv/veilo/.env' && rm /tmp/env`
+3. **인증서를 먼저 옮긴다** — 이러면 DNS 를 바꾸는 순간부터 HTTPS 가 끊기지 않는다.
+   `ssh 옛서버 'sudo tar czf - /etc/letsencrypt' | ssh 새서버 'sudo tar xzf - -C /'`
+   (안 옮기면 DNS 가 새 서버를 가리킨 뒤에야 certbot 을 돌릴 수 있고, 그 사이 인증서 오류가 뜬다)
+4. `bash apps/demo/deploy/deploy.sh ubuntu@새IP ~/.ssh/키.pem --reset`
+5. **새 IP 로 먼저 확인**: `curl -H 'Host: veilo.site' http://새IP/` → 301, `curl http://새IP:3000/` → 200
+6. 가비아 DNS 의 A 레코드(`@`·`www`)를 새 IP 로. TTL 은 이미 600
+7. 퍼지면 `https://veilo.site` 확인 + k 값 5인물 대조(`probe.baseline.json`)
+8. **옛 Lightsail 은 하루 더 켜 둔다** — 두 서버가 겹쳐 도는 동안은 누가 어느 쪽에 붙어도 정상이다. 하루 뒤 **인스턴스를 삭제**한다(Lightsail 은 중지해도 요금이 나온다)
+9. 새 서버에서 `sudo certbot renew --dry-run` 으로 자동 갱신이 사는지 한 번 본다
+
+
 ## 지금 상태 — 링크로 낼 수 있는 기준선
 
 ```bash
