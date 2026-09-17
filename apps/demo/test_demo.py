@@ -392,3 +392,16 @@ def test_candidate_fits_where_it_goes():
     assert _clashes_with_verb(s, "퇴근", "직장에서는", "할 무렵에는") is True
     assert _clashes_with_verb(s, "퇴근", "일", "할 무렵에는") is False
     assert _clashes_with_verb(s, "퇴근", "일 나가는", " 시간의 길이") is False   # 뒤가 다르면 상관없다
+
+
+def test_privacy_page_renders_from_the_policy_file():
+    """저장소가 비공개라 처리방침은 사이트가 직접 내놓아야 한다 — /privacy 가 사본을 읽어 그린다 (9/17)."""
+    from engine.mdlite import render
+
+    md = (HERE / "data" / "privacy-policy.md").read_text(encoding="utf-8")
+    html = render(md)
+    assert "<!--" not in html                     # 파일 머리 주석은 화면에 나오지 않는다
+    assert "<h1>" in html and html.count("<table") >= 5
+    assert "GitHub" not in html                   # 비공개 저장소 링크를 심사위원에게 주지 않는다
+    for fact in ("6시간", "04:00", "localStorage", "Claude Haiku 4.5", "8초"):
+        assert fact in html, fact

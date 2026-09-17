@@ -444,6 +444,17 @@ def check_draft_json():
 
 
 # ── 처음부터 — 투어만이 아니라 글 데이터도 시딩 값으로 되돌린다 (9/10 피드백) ────────
+@app.get("/privacy")
+def privacy():
+    """개인정보 처리방침 — 저장소가 비공개라 심사위원이 GitHub 로는 못 본다. 사이트가 직접 내놓는다.
+
+    정본은 main 의 `docs/privacy-policy.md`, 여기 있는 것은 그 사본(`data/privacy-policy.md`).
+    """
+    from engine.mdlite import render
+    md = (HERE / "data" / "privacy-policy.md").read_text(encoding="utf-8")
+    return render_template("privacy.html", body=render(md), nav=None)
+
+
 @app.post("/demo/reset")
 def demo_reset():
     """위치태그 끄기·비공개·본문 수정·새 글을 전부 되돌린다. seed.py 와 같은 코드를 같은 프로세스에서 돌린다."""

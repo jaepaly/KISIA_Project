@@ -21,6 +21,8 @@
 **방문자 격리**: 방문자마다 `data/visitors/<vid>.db` 사본을 준다(원본 `data/sns.db` 는 읽기 전용). 심사위원이 동시에 들어와도 서로 안 건드린다. 6시간 안 쓰면 지우고, 새벽 재시딩 때 전부 비운다.
 **미리 구운 후보**: `apps/demo/data/rewrites.json` (60항목). 시딩된 글의 「다르게 쓰기」는 여기서 나와 **점검 화면이 0.6~1.5초**, 외부 호출 0건.
 글이나 탐지 규칙을 바꾸면 `DEMO_EXTERNAL_REWRITE=true PYTHONPATH=src python apps/demo/tools/bake_rewrites.py` 로 다시 굽는다(`--check` 는 빠진 것만 센다).
+**개인정보 처리방침**: `/privacy` 가 `apps/demo/data/privacy-policy.md` 를 읽어 그린다(`engine/mdlite.py`). 바닥글과 점검 화면에서 링크.
+정본은 main 의 `docs/privacy-policy.md` — 정본이 바뀌면 `git show origin/main:docs/privacy-policy.md > apps/demo/data/privacy-policy.md` 로 다시 복사하고 문의처 문구만 손본다(저장소가 비공개라 이슈 링크를 쓸 수 없다).
 **재배포**: `bash apps/demo/deploy/deploy.sh ubuntu@54.180.27.125 ~/.ssh/veilo.pem` (글 데이터까지 되돌리려면 뒤에 `--reset`)
 
 `apps/demo/deploy/` 에 전부 있다. 개발 서버 대신 **waitress** 두 프로세스(:3000 Veilo · :8000 파도풀, 둘 다 127.0.0.1) + **nginx**(80 → 3000). 파도풀 API 는 밖에 안 연다.

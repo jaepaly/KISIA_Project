@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}개인정보 처리방침 — Veilo{% endblock %}
+{% block head %}
+<style>
+  .pp{background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:18px;padding:34px 40px;
+      box-shadow:var(--ut-shadow);max-width:920px}
+  .pp h1{font-size:27px;margin:0 0 6px;letter-spacing:-.02em}
+  .pp h2{font-size:19px;margin:34px 0 10px;padding-top:18px;border-top:1px solid var(--ut-line);letter-spacing:-.01em}
+  .pp h2:first-of-type{border-top:0;padding-top:0}
+  .pp h3{font-size:16px;margin:22px 0 8px}
+  .pp p{font-size:14.5px;line-height:1.78;color:var(--ut-ink2);margin:0 0 10px;word-break:keep-all}
+  .pp ul{margin:0 0 14px;padding-left:20px}
+  .pp li{font-size:14.5px;line-height:1.78;color:var(--ut-ink2);margin-bottom:6px;word-break:keep-all}
+  .pp b{color:var(--ut-ink)}
+  .pp code{background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:5px;padding:1px 5px;
+      font-size:12.5px;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ut-ink2)}
+  .pp blockquote{margin:0 0 18px;padding:16px 20px;background:var(--ut-panel2);border-left:3px solid var(--ut-earth);
+      border-radius:0 12px 12px 0}
+  .pp blockquote p{margin:0 0 6px}.pp blockquote p:last-child{margin:0}
+  .pp table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:13.5px}
+  .pp th,.pp td{border:1px solid var(--ut-line);padding:9px 12px;text-align:left;vertical-align:top;
+      line-height:1.65;color:var(--ut-ink2);word-break:keep-all}
+  .pp th{background:var(--ut-panel2);color:var(--ut-ink);font-weight:700;white-space:nowrap}
+  .pp hr{border:0;border-top:1px solid var(--ut-line);margin:26px 0}
+  .pp a{color:var(--ut-earth-ink);text-decoration:underline}
+  @media (max-width:768px){.pp{padding:22px 18px}.pp table{font-size:12.5px}.pp th,.pp td{padding:7px 8px}}
+</style>
+{% endblock %}
+{% block content %}
+<main class="ut-wrap">
+  <div class="ut-h"><h1>개인정보 처리방침</h1><span class="sub">파도풀 · Veilo</span></div>
+  <article class="pp">{{ body|safe }}</article>
+</main>
+{% endblock %}
