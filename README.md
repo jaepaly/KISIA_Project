@@ -459,7 +459,7 @@ models/registry.md                        v1 체크포인트 등록
 - [x] 오탐 분석 + 겹침 해소 + 신뢰도 임계값 0.7 후처리 — F1 0.3690 → **0.4839** (#255 · 9/17 · FP 75→32)
 - [ ] v1 체크포인트 확정 + `models/registry.md` 등록 PR
 - [ ] CPU 지연 측정 + 기록 (목표 < 300ms)
-- [ ] 추론 함수 `infer.py` — `span.schema.json` 계약 통과
+- [x] 추론 함수 `infer.py` — `span.schema.json` 계약 통과 (#260 · 9/17 · F1 0.4839 parity 확인)
 - [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
 
 ---
