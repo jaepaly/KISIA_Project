@@ -404,7 +404,7 @@ def test_privacy_page_renders_from_the_policy_file():
     assert "<h1>" in html and html.count("<table") >= 5
     # 공개용 문서다 — 저장소 안쪽 사정(팀·경로·주최 기관)은 읽는 사람에게 뜻이 없다 (9/17 사용자 지적)
     for internal in ("GitHub", "KISIA", "대회", "심사위원", "apps/", "docs/", "monogpt",
-                     "페르소나", "이지희", "provenance", "스탑갭"):
+                     "페르소나", "이지희", "provenance", "스탑갭", "작성지침"):
         assert internal not in html, internal
     for fact in ("6시간", "04:00", "localStorage", "Claude Haiku 4.5", "8초"):
         assert fact in html, fact
