@@ -9,8 +9,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import os
+import platform
 import random
 import time
 from collections import defaultdict
@@ -170,6 +173,25 @@ def span_iou(left: tuple[int, int, str], right: tuple[int, int, str]) -> float:
     return intersection / union if union else 0.0
 
 
+def resolve_overlapping_spans(
+    spans: Iterable[tuple[int, int, str]],
+) -> set[tuple[int, int, str]]:
+    """Resolve window conflicts within ONE text channel, longest span first.
+
+    Identical spans are deduplicated; any positive overlap conflicts even when
+    types differ. Adjacent spans remain separate. Never union or extend spans:
+    that would invent boundaries not predicted by any window. Ties use start,
+    end, then type for deterministic, gold-independent selection (contract §6).
+    """
+    accepted: list[tuple[int, int, str]] = []
+    for span in sorted(set(spans), key=lambda s: (-(s[1] - s[0]), s[0], s[1], s[2])):
+        if span[0] < 0 or span[1] <= span[0]:
+            raise TrainError(f"Invalid predicted span: {span}")
+        if not any(span[0] < other[1] and other[0] < span[1] for other in accepted):
+            accepted.append(span)
+    return set(accepted)
+
+
 def score_span_sets(
     gold_by_text: dict[tuple[str, str], set[tuple[int, int, str]]],
     pred_by_text: dict[tuple[str, str], set[tuple[int, int, str]]],
@@ -220,13 +242,38 @@ def score_span_sets(
     }
 
 
-def evaluate(model: Any, loader: Any, rows: Sequence[dict[str, Any]], device: Any, id2label: dict[int, str]) -> dict[str, Any]:
+def mean_span_score(values: Sequence[float]) -> float:
+    if not values:
+        raise TrainError("Predicted span has no token confidence scores.")
+    return sum(values) / len(values)
+
+
+def filter_span_predictions(pred_by_text: dict, span_scores: dict, min_span_score: float) -> dict:
+    """Resolve overlaps first, then filter. No gold labels influence selection.
+
+    Scores are mean predicted-token probabilities per window, averaged over
+    windows predicting the identical span; they are NOT calibrated accuracy.
+    Never resurrect a shorter span when the longest span fails the threshold.
+    """
+    if not 0 <= min_span_score <= 1:
+        raise TrainError("--min-span-score must be between 0 and 1.")
+    merged = {key: resolve_overlapping_spans(spans) for key, spans in pred_by_text.items()}
+    if min_span_score == 0:
+        return merged
+    return {key: {span for span in spans
+                  if mean_span_score(span_scores.get((key, span), [])) >= min_span_score}
+            for key, spans in merged.items()}
+
+
+def evaluate(model: Any, loader: Any, rows: Sequence[dict[str, Any]], device: Any,
+             id2label: dict[int, str], min_span_score: float = 0.0) -> dict[str, Any]:
     import torch
 
     model.eval()
     losses: list[float] = []
     gold_by_text: dict[tuple[str, str], set[tuple[int, int, str]]] = defaultdict(set)
     pred_by_text: dict[tuple[str, str], set[tuple[int, int, str]]] = defaultdict(set)
+    span_scores: dict[Any, list[float]] = defaultdict(list)
     with torch.no_grad():
         for batch in loader:
             indexes = batch.pop("example_index")
@@ -234,6 +281,7 @@ def evaluate(model: Any, loader: Any, rows: Sequence[dict[str, Any]], device: An
             output = model(**model_batch)
             losses.append(float(output.loss.detach().cpu()))
             predictions = output.logits.argmax(dim=-1).detach().cpu().tolist()
+            probabilities = output.logits.softmax(dim=-1).detach().cpu() if min_span_score else None
             gold_labels = batch["labels"].tolist()
             for batch_index, row_index in enumerate(indexes):
                 row = rows[row_index]
@@ -244,10 +292,21 @@ def evaluate(model: Any, loader: Any, rows: Sequence[dict[str, Any]], device: An
                     -100 if gold_id == -100 else pred_id
                     for pred_id, gold_id in zip(predictions[batch_index], gold_labels[batch_index])
                 ]
-                pred_by_text[key].update(
-                    decode_token_spans(row["offset_mapping"], valid_predictions, id2label)
-                )
+                spans = decode_token_spans(row["offset_mapping"], valid_predictions, id2label)
+                pred_by_text[key].update(spans)
+                if probabilities is not None:
+                    for span in spans:
+                        values = [float(probabilities[batch_index, ti, tag])
+                                  for ti, ((start, end), tag) in enumerate(
+                                      zip(row["offset_mapping"], valid_predictions))
+                                  if tag != -100 and start < end
+                                  and start < span[1] and end > span[0]]
+                        span_scores[(key, span)].append(mean_span_score(values))
+    pred_by_text = filter_span_predictions(pred_by_text, span_scores, min_span_score)
     metrics = score_span_sets(gold_by_text, pred_by_text)
+    metrics["merge_policy"] = "longest_first_no_overlap_v1"
+    metrics["min_span_score"] = min_span_score
+    metrics["score_policy"] = "mean_token_probability_then_mean_windows_v1"
     metrics["loss"] = sum(losses) / len(losses) if losses else 0.0
     metrics["texts"] = len(gold_by_text | pred_by_text)
     return metrics
@@ -291,6 +350,69 @@ def set_seed(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
+def configure_determinism(enabled: bool) -> None:
+    """Strict opt-in; call before CUDA initialization. Default behavior is unchanged."""
+    if not enabled:
+        return
+    import torch
+
+    if torch.cuda.is_initialized():
+        raise TrainError("Deterministic mode must be configured before CUDA initialization.")
+    os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def build_run_config(args: Any, train_rows: Sequence[dict], eval_rows: Sequence[dict],
+                     model: Any) -> dict[str, Any]:
+    """Record reproducibility inputs, never credentials or arbitrary environment variables."""
+    import torch
+    import transformers
+
+    def split_info(rows: Sequence[dict]) -> dict:
+        ids = [row["example_id"] for row in rows]
+        return {"examples": len(rows),
+                "example_ids_sha256": hashlib.sha256(json.dumps(ids).encode("utf-8")).hexdigest(),
+                "personas": sorted({str(row["persona_id"]) for row in rows})}
+
+    return {
+        "data_sha256": file_sha256(args.data),
+        "labels_sha256": file_sha256(args.labels),
+        "training_code_sha256": file_sha256(Path(__file__)),
+        "settings": {key: getattr(args, key) for key in (
+            "model", "epochs", "batch_size", "learning_rate", "weight_decay", "o_weight",
+            "eval_ratio", "seed", "overfit", "fp16", "min_span_score", "deterministic")},
+        "train": split_info(train_rows), "eval": split_info(eval_rows),
+        "environment": {
+            "python": platform.python_version(), "os": platform.system(),
+            "torch": str(torch.__version__), "transformers": transformers.__version__,
+            "cuda": torch.version.cuda, "cudnn": torch.backends.cudnn.version(),
+            "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
+            "attention_backend": getattr(model.config, "_attn_implementation", None),
+            "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+            "cudnn_deterministic": torch.backends.cudnn.deterministic,
+            "cudnn_benchmark": torch.backends.cudnn.benchmark,
+            "matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
+            "cudnn_allow_tf32": torch.backends.cudnn.allow_tf32,
+            "cublas_workspace_config": os.environ.get("CUBLAS_WORKSPACE_CONFIG")
+                if args.deterministic else None,
+        },
+        "reproducibility_scope": "fresh runs in identical software/hardware environment",
+        "resume_rng_restored": False if args.resume_from_checkpoint else None,
+    }
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
@@ -312,6 +434,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--overfit", type=int, default=0, metavar="N")
     parser.add_argument("--resume-from-checkpoint", nargs="?", const="latest")
     parser.add_argument("--fp16", action="store_true")
+    parser.add_argument("--deterministic", action="store_true",
+                        help="Strict reproducibility for fresh runs on the same environment; unsupported operations fail.")
+    parser.add_argument("--min-span-score", type=float, default=0.0,
+                        help="Evaluation span-score threshold (0 disables filtering; does not change training loss).")
     return parser.parse_args(argv)
 
 
@@ -323,8 +449,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise TrainError("--eval-ratio는 0과 1 사이여야 합니다.")
     if not 0 < args.o_weight <= 1:
         raise TrainError("--o-weight는 0보다 크고 1 이하여야 합니다.")
+    if not 0 <= args.min_span_score <= 1:
+        raise TrainError("--min-span-score는 0 이상 1 이하여야 합니다.")
 
     import torch
+    configure_determinism(args.deterministic)
     from torch.utils.data import DataLoader
     from transformers import AutoModelForTokenClassification, AutoTokenizer
 
@@ -354,6 +483,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         label2id=label2id,
         id2label=id2label,
         ignore_mismatched_sizes=checkpoint is None,
+        **({"attn_implementation": "eager"} if args.deterministic else {}),
     )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -384,7 +514,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     eval_loader = DataLoader(
         BioDataset(eval_rows), batch_size=args.batch_size, shuffle=False, collate_fn=collator,
         num_workers=0,
+        **({"generator": torch.Generator().manual_seed(args.seed + 1)} if args.deterministic else {}),
     )
+    run_config = build_run_config(args, train_rows, eval_rows, model)
+    if args.deterministic:
+        print("deterministic=True (strict; same-environment fresh runs only)")
+        if checkpoint:
+            print("WARNING: resumed runs do not restore RNG/scaler/shuffle states; uninterrupted-run equivalence is not guaranteed.")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     run_started = time.time()
     print(
@@ -424,7 +560,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             if step == 1 or step % 10 == 0 or step == len(train_loader):
                 print(f"epoch {epoch} step {step}/{len(train_loader)} loss={loss_sum / step:.6f}")
 
-        final_metrics = evaluate(model, eval_loader, eval_rows, device, id2label)
+        final_metrics = evaluate(model, eval_loader, eval_rows, device, id2label, args.min_span_score)
         final_metrics.update(
             {
                 "epoch": epoch,
@@ -435,6 +571,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "split": split_name,
                 "seed": args.seed,
                 "o_weight": args.o_weight,
+                "run_config": run_config,
             }
         )
         overall = final_metrics["overall"]
