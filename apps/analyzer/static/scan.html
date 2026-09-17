@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>1화면 — 스캔</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h1>1화면 — 글 목록 · 스캔 요청</h1>
+<nav>
+  <a href="/static/scan.html">스캔</a>
+  <a href="/static/diagnosis.html">진단</a>
+  <a href="/static/action.html">조치</a>
+</nav>
+
+<div class="card">
+  <h2>가상 SNS 계정으로 스캔</h2>
+  <p><code>user_ref</code> (예: <code>u_3f2a91c4</code>)</p>
+  <input id="userRef" type="text" placeholder="u_...">
+  <button id="scanBtn">스캔 시작</button>
+  <p id="scanMsg"></p>
+</div>
+
+<div class="card">
+  <h2>글 직접 분석 (수동 업로드)</h2>
+  <p>.txt(줄마다 글 한 편) 또는 .json(내보내기 형식) — 서버는 메모리에서만 읽고 디스크에 저장하지 않는다.</p>
+  <input id="uploadFile" type="file" accept=".txt,.json">
+  <button id="uploadBtn">업로드하고 분석</button>
+  <p id="uploadMsg"></p>
+</div>
+
+<div id="postList"></div>
+
+<footer id="badge"></footer>
+
+<script src="/static/common.js"></script>
+<script>
+showEngineBadge("badge");
+
+async function runScan(user_ref) {
+  const msg = document.getElementById("scanMsg");
+  msg.textContent = "스캔 중...";
+  const r = await fetch(`/scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
+  if (!r.ok) {
+    const detail = await r.text();
+    msg.textContent = `실패: ${r.status} ${detail}`;
+    msg.className = "error";
+    return;
+  }
+  const data = await r.json();
+  saveScan(data);
+  msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+  location.href = "/static/diagnosis.html";
+}
+
+document.getElementById("scanBtn").onclick = () => {
+  const v = document.getElementById("userRef").value.trim();
+  if (!v) return;
+  runScan(v);
+};
+
+document.getElementById("uploadBtn").onclick = async () => {
+  const msg = document.getElementById("uploadMsg");
+  const f = document.getElementById("uploadFile").files[0];
+  if (!f) { msg.textContent = "파일을 선택하세요"; return; }
+  msg.textContent = "분석 중...";
+  const form = new FormData();
+  form.append("file", f);
+  const r = await fetch("/upload", { method: "POST", body: form });
+  if (!r.ok) {
+    msg.textContent = `실패: ${r.status} ${await r.text()}`;
+    msg.className = "error";
+    return;
+  }
+  const data = await r.json();
+  saveScan(data);
+  msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+  location.href = "/static/diagnosis.html";
+};
+
+const cached = loadScan();
+if (cached) {
+  document.getElementById("postList").innerHTML =
+    `<p>가장 최근 스캔: <b>${cached.user_ref}</b> — 글 ${cached.posts.length}편 (진단/조치 화면에서 이어볼 수 있습니다)</p>`;
+}
+</script>
+</body>
+</html>

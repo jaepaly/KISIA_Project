@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>2화면 — 진단</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h1>2화면 — 위험도 진단</h1>
+<nav>
+  <a href="/static/scan.html">스캔</a>
+  <a href="/static/diagnosis.html">진단</a>
+  <a href="/static/action.html">조치</a>
+</nav>
+
+<div id="content">불러오는 중...</div>
+<footer id="badge"></footer>
+
+<script src="/static/common.js"></script>
+<script>
+showEngineBadge("badge");
+
+function renderSpecificity(spec) {
+  const o = spec.output;
+  if (o.k === null) {
+    return `<p><span class="badge unknown">산출 불가</span> 현재 조건으로는 k(추정 후보 수)를 계산할 수 없습니다.</p>`;
+  }
+  return `<p><span class="badge found">${o.k_level}</span> 추정 후보 약 <b>${o.k}</b>명 (${o.basis.source}, ${o.basis.as_of} 기준)</p>`;
+}
+
+function renderFindings(findings) {
+  return Object.entries(findings).map(([attr, f]) => {
+    if (f.verdict === "abstain") {
+      return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge abstain">판단 보류</span> (근거 부족, confidence ${f.confidence})</div>`;
+    }
+    return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge found">${VERDICT_LABEL[f.verdict] || f.verdict}</span>
+      ${f.granularity ? `(${f.granularity})` : ""} confidence ${f.confidence}</div>`;
+  }).join("");
+}
+
+function highlight(body, spans) {
+  if (!spans.length) return body || "";
+  let out = "";
+  let last = 0;
+  const sorted = [...spans].sort((a, b) => a.start - b.start);
+  for (const s of sorted) {
+    out += (body || "").slice(last, s.start);
+    out += `<span class="span-hit" title="${s.type} / ${s.level} / ${s.subject}">${(body || "").slice(s.start, s.end)}</span>`;
+    last = s.end;
+  }
+  out += (body || "").slice(last);
+  return out;
+}
+
+function renderPosts(data) {
+  if (!data.posts.length) {
+    return `<div class="card">탐지된 글이 없습니다 (네거티브 컨트롤 — 위험도 계산 대상 0편).</div>`;
+  }
+  return data.posts.map(p => {
+    const spans = (data.spans[p.post_id] || { spans: [] }).spans;
+    const spanNote = spans.length ? "" : "<p><i>탐지된 단서 없음</i></p>";
+    return `<div class="card"><p>${highlight(p.body, spans)}</p>${spanNote}</div>`;
+  }).join("");
+}
+
+const data = loadScan();
+const el = document.getElementById("content");
+if (!data) {
+  el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="/static/scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
+} else {
+  el.innerHTML = `
+    <h2>${data.user_ref}</h2>
+    ${renderSpecificity(data.specificity)}
+    <p>기준 위험도: <b>${data.contribution.output.baseline_risk}</b></p>
+    <h3>7속성 판정</h3>
+    ${renderFindings(data.stage2.output.findings)}
+    <h3>글 (탐지된 단서 하이라이트)</h3>
+    ${renderPosts(data)}
+    <p><a href="/static/action.html">→ 조치 화면으로</a></p>
+  `;
+}
+</script>
+</body>
+</html>

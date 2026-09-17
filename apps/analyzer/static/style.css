@@ -1,0 +1,13 @@
+body { font-family: sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+h1 { font-size: 1.3rem; }
+nav a { margin-right: 1rem; }
+.card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin: 0.75rem 0; }
+.badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+.badge.abstain { background: #eee; color: #666; }
+.badge.found { background: #ffe3e3; color: #a11; }
+.badge.unknown { background: #fff3cd; color: #856404; }
+.span-hit { background: #ffe3e3; padding: 0 2px; border-radius: 2px; }
+button { cursor: pointer; padding: 0.5rem 1rem; }
+input[type=text] { padding: 0.4rem; width: 220px; }
+footer { margin-top: 2rem; font-size: 0.8rem; color: #888; }
+.error { color: #a11; }

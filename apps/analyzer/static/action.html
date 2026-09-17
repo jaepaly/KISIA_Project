@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>3화면 — 조치</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h1>3화면 — 조치 추천</h1>
+<nav>
+  <a href="/static/scan.html">스캔</a>
+  <a href="/static/diagnosis.html">진단</a>
+  <a href="/static/action.html">조치</a>
+</nav>
+
+<div id="content">불러오는 중...</div>
+<footer id="badge"></footer>
+
+<script src="/static/common.js"></script>
+<script>
+showEngineBadge("badge");
+
+const BURDEN_LABEL = { low: "낮음", medium: "보통", high: "높음" };
+const ACTION_LABEL = { unpublish: "비공개 전환", activity_meta: "활동 메타 수정", rewrite: "표현 리라이트" };
+
+function renderActions(actions) {
+  if (!actions.length) return "<p>추천할 조치가 없습니다.</p>";
+  return actions.map(a => `
+    <div class="card">
+      <b>${ACTION_LABEL[a.action_type] || a.action_type}</b>
+      <span class="badge">부담 ${BURDEN_LABEL[a.burden] || a.burden}</span>
+      <p>대상: ${a.targets.map(t => `${t.kind}:${t.ref}`).join(", ")}</p>
+      <p>예상 변화: ${a.projected_delta}</p>
+      ${a.rationale ? `<p><i>${a.rationale}</i></p>` : ""}
+    </div>
+  `).join("");
+}
+
+async function rescan(user_ref) {
+  const r = await fetch(`/scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
+  if (!r.ok) return;
+  saveScan(await r.json());
+  render();
+}
+
+function render() {
+  const data = loadScan();
+  const el = document.getElementById("content");
+  if (!data) {
+    el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="/static/scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
+    return;
+  }
+  const rec = data.stage2.output.recommendation;
+  el.innerHTML = `
+    <h2>${data.user_ref}</h2>
+    <p class="card"><b>${rec.projected.current_risk} → ${rec.projected.projected_risk}</b>
+      (감소 ${rec.projected.reduction_pct}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
+    <h3>추천 조치</h3>
+    ${renderActions(rec.actions)}
+    <p>비공개 전환은 가상 SNS 쪽 글 화면에서 직접 실행합니다 — 분석기는 '무엇을' 할지만 말합니다.</p>
+    <button id="rescanBtn">비공개로 바꾼 뒤 재계산</button>
+  `;
+  document.getElementById("rescanBtn").onclick = () => rescan(data.user_ref);
+}
+
+render();
+</script>
+</body>
+</html>
