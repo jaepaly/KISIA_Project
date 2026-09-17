@@ -413,3 +413,6 @@ body.welcome-open{overflow:hidden}
 .ut-busy b{font-size:15px;color:var(--ut-ink)}
 .ut-busy span{font-size:12.5px;color:var(--ut-ink3);line-height:1.5}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* 처리방침 — 바닥글은 글이 103편이라 도달하지 못한다. 첫 화면에서 보이는 자리에 둔다 (9/17) */
+.rail-pado-foot .pp-link{display:block;margin-top:8px;font-size:11.5px;color:var(--ut-ink3);text-decoration:underline;text-underline-offset:2px}
+.rail-pado-foot .pp-link:hover{color:var(--ut-earth-ink)}
