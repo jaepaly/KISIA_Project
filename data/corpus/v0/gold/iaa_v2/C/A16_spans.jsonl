@@ -1,0 +1,2 @@
+{"schema_version": "1.0", "corpus_version": "v0", "created": "2026-09-16"}
+{"post_id": "A16_b03", "persona_id": "A16", "texts": {"title": "안경은 코앞에 있었다", "body": "안경을 어디 뒀나 한참 찾았다.\n\n서랍을 열었다 닫고, 방금 앉았던 자리도 손으로 더듬었다. 없네...\n\n냉이를 다듬어 볼까 하다가도 잎인지 버릴 건지 늘 헷갈린다. 예순여덟인데 아직도 나물이 어렵다.\n\n안경은 머리 위에 얹혀 있었다!! 어이가 없어서 웃었다.\n\n그만."}, "spans": [{"span_id": "A16_b03_s01", "text_id": "body", "start": 93, "end": 97, "text": "예순여덟", "type": "AGE", "level": "explicit", "subject": "self"}], "flags": {"gen_signal": false, "meme_hits": [], "negative_control": false}, "reviewed": true}
