@@ -30,7 +30,8 @@ python experiments/exp06-finetune/test_infer.py
 PR에서 확인할 설계 판단: W2 기존 동작과의 호환을 위해 등급·주체 고정값을 잠정 유지했다.
 이 고정값을 유지할지, 별도 판정 로직을 연결할지 리뷰 요청한다.
 **계약 출력 구조는 지원하지만 등급·주체의 실제 판정은 미구현**이다.
-최종 v1 체크포인트 선정과 격리 test 평가, CPU 지연 측정은 별도로 진행한다.
+격리 test 평가와 합성 예문 CPU 예비 측정은 아래에 기록했다.
+최종 v1 체크포인트 선정·registry 등록은 별도로 진행한다.
 test를 반복적인 임계값 튜닝에 사용하지 않는다. 계약 파일·기존 src 탐지기는 변경하지 않았다.
 
 ### 내부 eval 추론 일치 검증 (2026-09-17)
@@ -50,6 +51,111 @@ corpus-v0 p2.3 · KoELECTRA 기존 LR 5e-5 epoch 10 체크포인트 · CPU 4스�
 이는 BIO 추론 경로의 일치 검증이며 등급·주체 판정 정확성을 검증한 것이 아니다.
 
 ## 무엇을 왜 재는가
+
+### 공식 test 평가 — 기존 IAA 제외 (2026-09-17 팀 승인)
+
+`evaluate_test.py`는 공식 `splits/test.jsonl`을 변경하지 않고 기존
+`gold/iaa/_assignment.json`에 배정된 test ID만 제외한다.
+현재 255편 중 IAA 16편을 제외한 **239편·358스팬**이다.
+IAA 배정 ID 중복·16편 개수 불일치·공식 test 내 배정 ID 누락은
+즉시 오류로 중단한다. 교집합만 취해 일부 제외하는 동작은 허용하지 않는다.
+단서 159편은 `gold/blind/`의 reviewed 정답, 잡담 80편은 최상위
+`gold/`의 reviewed 정답을 사용한다. 중복 일반 검수본보다 blind를 우선한다.
+잡담 80편 중 빈 정답은 8편뿐이며, 나머지 72편의 실제 단서는 유지한다.
+교사 원본 및 기존 IAA A·C 정답은 평가 입력으로 사용하지 않는다.
+
+```powershell
+python experiments/exp06-finetune/evaluate_test.py --audit-only
+python experiments/exp06-finetune/test_evaluate_test.py
+python experiments/exp06-finetune/evaluate_test.py --checkpoint-dir experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10 --device cuda --min-span-score 0.7 --output-dir experiments/exp06-finetune/runs/test_v1_lr5e-5_t07
+```
+
+원문·NFC·offset·정답 누락과 공식 split 및 실제 BIO 입력의 글 ID 누수를
+먼저 검사한다. 누락 정답을 빈 정답으로 취급하지 않는다.
+2026-09-17 audit에서 학습 글 ID 누수 0건이었으나 인물은 66명 겹친다.
+기존 체크포인트는 당시 학습 데이터 해시를 저장하지 않았으므로 현재 BIO
+누수 검사만으로 과거 학습 입력의 동일성까지 보장하지 않는다.
+
+주 지표는 type 일치 + partial IoU ≥ 0.5 스팬 F1이며 유형별·글 kind별로
+함께 출력한다. `level`·`subject`는 모델 예측이 아니므로 평가하지 않는다.
+내부 eval에서 선정한 체크포인트와 잠정 임계값 0.7을 고정해 평가하고,
+test에서 임계값 탐색을 반복하지 않는다. 출력은 gitignore된 `runs/`에
+`metrics.json` 및 비계약 raw `predictions.jsonl`로 저장하며 기존 폴더가
+있으면 덮어쓰지 않는다. 모델 로딩을 제외한 평가 실행 시간은 CPU 지연
+벤치마크가 아니다. audit-only는 데이터 검증이며 모델 test 성능 측정은 아니다.
+
+실행 결과(2026-09-17 · corpus-v0 p2.3 · KoELECTRA
+`v1_lr5e-5/checkpoint-epoch-10` · CUDA · 임계값 0.7):
+239편·358스팬에서 TP 111 / FP 286 / FN 247,
+precision 0.2796 / recall 0.3101 / partial F1 **0.2940**.
+참고 exact 1:1 채점은 TP 61 / FP 336 / FN 297,
+precision 0.1537 / recall 0.1704 / exact F1 **0.1616**이다.
+exact 지표는 저장된 동일 예측에서 재채점했으며 모델 추론을 반복하지 않았다.
+원래 출력은 보존하고 보완 지표를 `runs/test_v1_lr5e-5_t07_exact/metrics.json`에 기록했다.
+
+```powershell
+python experiments/exp06-finetune/evaluate_test.py --rescore-from experiments/exp06-finetune/runs/test_v1_lr5e-5_t07 --output-dir experiments/exp06-finetune/runs/test_v1_lr5e-5_t07_exact
+```
+
+내부 eval F1 0.4839와 별개로 기록하며 최종 목표 성능 달성으로 해석하지 않는다.
+
+### v1 확정 보류 — epoch 1~10 내부 eval 비교
+
+`checkpoint-epoch-10`은 현재 평가한 후보이며 최종 v1 확정은 보류한다.
+기존 LR 5e-5 epoch 1~10을 동일한 내부 persona eval·겹침 해소·임계값 0.7로
+비교하는 `compare_internal_epochs.py`를 추가했다. 재학습 없이 저장 모델을
+로드해 평가하며 격리 test·blind·IAA 정답은 열지 않는다.
+2026-09-17 · corpus-v0 p2.3 · 동일 KoELECTRA LR 5e-5 실행의 저장 모델을
+CUDA에서 내부 eval 95개 창·84채널·62골드 스팬으로 비교했다.
+seed 20260911, 동일 persona holdout 0.100, 겹침 해소와 임계값 0.7을 고정했다.
+
+| epoch | partial F1 | exact F1 | P | R | TP / FP / FN |
+|---|---|---|---|---|---|
+| 1 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 2 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 3 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 4 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0 / 0 / 62 |
+| 5 | 0.2326 | 0.1860 | 0.4167 | 0.1613 | 10 / 14 / 52 |
+| 6 | 0.3434 | 0.2222 | 0.4595 | 0.2742 | 17 / 20 / 45 |
+| 7 | 0.3789 | 0.2947 | 0.5455 | 0.2903 | 18 / 15 / 44 |
+| 8 | 0.3111 | 0.1926 | 0.2877 | 0.3387 | 21 / 52 / 41 |
+| 9 | 0.4274 | 0.3248 | 0.4545 | 0.4032 | 25 / 30 / 37 |
+| 10 | **0.4839** | **0.4194** | 0.4839 | 0.4839 | 30 / 32 / 32 |
+
+이 실행의 epoch 1~10 중 주 지표와 참고 exact 모두 epoch 10이 최고다.
+따라서 기존 epoch 10 후보를 유지하며 최종 v1 확정은 리뷰 승인 대기다.
+
+```powershell
+python experiments/exp06-finetune/compare_internal_epochs.py --run-dir experiments/exp06-finetune/runs/v1_lr5e-5 --device cuda --output-dir experiments/exp06-finetune/runs/internal_epoch_compare_t07
+```
+
+결과는 `metrics.json`과 `comparison.md`로 새 폴더에 저장한다.
+test를 연 뒤 수행하는 내부 eval 비교라는 시점을 명시한다.
+다른 epoch가 최선이어도 이미 공개한 test를 사용해 재비교하지 않는다.
+epoch 10 test·CPU 결과를 다른 모델의 측정 결과로 옮겨 쓰지 않는다.
+
+### CPU 예비 지연 측정 (2026-09-17)
+
+corpus-v0 p2.3로 학습한 동일 KoELECTRA 체크포인트
+`v1_lr5e-5/checkpoint-epoch-10`, 임계값 0.7,
+AMD Ryzen 5 9600X 6-Core Processor, CPU 4스레드.
+모델 로딩 2.81초는 지연 통계에서 제외했다.
+입력별 워밍업 5회 후 30회 측정했고, p95는 nearest-rank(정렬 후 29번째)다.
+
+| 합성 입력 | 문자 수 | 창 수 | 평균 ms | 중앙값 ms | p95 ms |
+|---|---|---|---|---|---|
+| 짧은 글 | 39 | 1 | 21.49 | 20.97 | 24.07 |
+| 중간 글 | 195 | 1 | 61.80 | 60.46 | 67.60 |
+| 긴 글 | 780 | 2 | 256.40 | 254.35 | 276.31 |
+
+합성 본문 `집 근처 신갈저수지에 다녀왔어요. 퇴근길에 가족과 저녁을 먹었습니다. `
+(끝 공백 포함)를 각각 1·5·20회 반복했다.
+`SpanDetector.detect({'post_id': 'timing_b01', 'body': text})` 호출 전체를
+`time.perf_counter()`로 측정했다. 토큰화·모델·후처리·계약 검증을 포함하고
+모델 로딩·파일 저장은 제외한다. 세 fixture의 p95는 모두 300ms 미만이다.
+실제 코퍼스 전체의 지연 달성을 보장하는 대표 벤치마크가 아닌 예비 측정이다.
+등급·주체는 기존 고정값이고 실제 판정 로직의 실행 비용은 포함하지 않는다.
+임시 측정 스크립트는 사용자 요청대로 측정 후 삭제했다.
 
 검수 골드의 문자 offset 스팬을 KoELECTRA 토큰 분류용 BIO 라벨로 바꾸고,
 100건 과적합 테스트와 첫 1 epoch 학습이 끝까지 실행되는지 확인한다.
@@ -114,8 +220,8 @@ GPU 데스크탑에서 생성된 `train.jsonl`로 먼저 100건 과적합 테스
 
 ## 한계
 
-- 현재 변환기는 학습 데이터만 만든다. blind·IAA 정답을 합친 최종 평가셋
-  로더는 검수가 완료된 뒤 별도로 연결한다.
+- 변환기는 학습 데이터만 만든다. 격리 test 평가는 `evaluate_test.py`로
+  별도 연결하며 위 팀 승인대로 기존 IAA 배정 글을 제외한다.
 - `level`과 `subject`는 BIO 유형에 합치지 않고 원본 `spans` 메타데이터로
   보존한다. 등급별 평가는 예측 BIO를 문자 스팬으로 복원한 뒤 계산한다.
 - 성능 수치는 아직 없다. 이 README의 결과 부분은 첫 학습 잡 뒤 실제
