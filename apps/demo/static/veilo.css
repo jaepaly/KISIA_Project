@@ -414,5 +414,6 @@ body.welcome-open{overflow:hidden}
 .ut-busy span{font-size:12.5px;color:var(--ut-ink3);line-height:1.5}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* 처리방침 — 바닥글은 글이 103편이라 도달하지 못한다. 첫 화면에서 보이는 자리에 둔다 (9/17) */
-.rail-tour .pp-link{display:block;margin-top:9px;padding-top:9px;border-top:1px solid var(--ut-line);font-size:11.5px;color:var(--ut-ink3);text-decoration:none}
-.rail-tour .pp-link:hover{color:var(--ut-earth-ink);text-decoration:underline;text-underline-offset:2px}
+.rail-tour .pp-link{display:inline-block;margin-top:10px;padding-top:10px;border-top:1px solid var(--ut-line);width:100%;font-size:12.5px;font-weight:600;color:var(--ut-earth-ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.rail-tour .pp-link::before{content:"🛡 ";text-decoration:none;font-weight:400}
+.rail-tour .pp-link:hover{color:var(--ut-earth);text-decoration-thickness:2px}
