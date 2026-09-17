@@ -26,7 +26,7 @@ sudo chown -R veilo:veilo /srv/veilo/app
 [ -f /srv/veilo/.env ] || sudo cp /srv/veilo/app/apps/demo/deploy/env.example /srv/veilo/.env
 sudo chown veilo:veilo /srv/veilo/.env && sudo chmod 600 /srv/veilo/.env
 sudo -u veilo /srv/veilo/venv/bin/pip install -q -r /srv/veilo/app/apps/sns/requirements.txt -r /srv/veilo/app/apps/demo/requirements.txt waitress
-sudo cp /srv/veilo/app/apps/demo/deploy/veilo.service /srv/veilo/app/apps/demo/deploy/padopool.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.timer /etc/systemd/system/
+sudo cp /srv/veilo/app/apps/demo/deploy/veilo.service /srv/veilo/app/apps/demo/deploy/padoful.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.service /srv/veilo/app/apps/demo/deploy/veilo-reseed.timer /etc/systemd/system/
 # certbot 이 이미 443 설정을 써 넣었으면 덮어쓰지 않는다 — 덮으면 배포할 때마다 HTTPS 가 날아간다
 if sudo grep -q 'managed by Certbot' /etc/nginx/sites-available/veilo /etc/nginx/conf.d/veilo.conf 2>/dev/null; then
   echo 'nginx: 인증서 설정이 있어 conf 는 그대로 둔다'
@@ -37,19 +37,21 @@ elif [ -d /etc/nginx/sites-available ]; then
 else
   sudo cp /srv/veilo/app/apps/demo/deploy/nginx.conf /etc/nginx/conf.d/veilo.conf
 fi
+sudo systemctl disable --now padopool.service 2>/dev/null || true   # 옛 이름(9/17 padoful 로 바꿈)
+sudo rm -f /etc/systemd/system/padopool.service
 sudo systemctl daemon-reload
 if [ '$RESET' = '--reset' ] || [ ! -f /srv/veilo/data/sns.db ]; then
-  sudo systemctl stop veilo padopool 2>/dev/null || true
+  sudo systemctl stop veilo padoful 2>/dev/null || true
   DBP=\$(sudo grep -m1 '^SNS_DB_PATH=' /srv/veilo/.env | cut -d= -f2-)
   sudo -u veilo env PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src SNS_DB_PATH=\$DBP /srv/veilo/venv/bin/python /srv/veilo/app/apps/demo/seed.py --reset
 fi
-sudo systemctl enable --now padopool veilo veilo-reseed.timer
-sudo systemctl restart padopool veilo
+sudo systemctl enable --now padoful veilo veilo-reseed.timer
+sudo systemctl restart padoful veilo
 sudo nginx -t && sudo systemctl reload nginx
 sleep 2
 curl -s -o /dev/null -w 'veilo(앱) %{http_code}
 ' http://127.0.0.1:3000/
-curl -s -o /dev/null -w 'padopool(앱) %{http_code}
+curl -s -o /dev/null -w 'padoful(앱) %{http_code}
 ' http://127.0.0.1:8000/
 # certbot 이 붙은 뒤로 바깥에서는 도메인 이름으로만 열린다 (호스트가 다르면 404 가 정상)
 curl -s -o /dev/null -w 'nginx(veilo.site) %{http_code}

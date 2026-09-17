@@ -9,7 +9,7 @@ Type=oneshot
 User=root
 EnvironmentFile=/srv/veilo/.env
 Environment=PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src
-ExecStart=/bin/systemctl stop veilo padopool
+ExecStart=/bin/systemctl stop veilo padoful
 ExecStart=/bin/sh -c 'cd /srv/veilo/app && sudo -u veilo env PYTHONIOENCODING=utf-8 PYTHONPATH=/srv/veilo/app/src SNS_DB_PATH=$SNS_DB_PATH /srv/veilo/venv/bin/python apps/demo/seed.py --reset'
 ExecStart=/bin/sh -c 'rm -rf /srv/veilo/data/visitors'
-ExecStart=/bin/systemctl start padopool veilo
+ExecStart=/bin/systemctl start padoful veilo

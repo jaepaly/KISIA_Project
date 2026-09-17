@@ -1,6 +1,6 @@
-# /etc/systemd/system/padopool.service — 파도풀 API. 바깥에 안 연다 (Veilo 가 127.0.0.1:8000 으로 부른다)
+# /etc/systemd/system/padoful.service — 파도풀 API. 바깥에 안 연다 (Veilo 가 127.0.0.1:8000 으로 부른다)
 [Unit]
-Description=padopool API (demo)
+Description=padoful API (demo)
 After=network.target
 
 [Service]

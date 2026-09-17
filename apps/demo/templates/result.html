@@ -116,7 +116,7 @@
         <div class="diff" style="margin-top:8px"><del>{{ cands[0]._sentence }}</del></div>
         {% for c in cands %}
           <form method="post" action="{{ sns_url }}/posts/{{ a._post_id }}/edit" target="sns" class="rwopt">
-            <input type="hidden" name="from" value="padopool">
+            <input type="hidden" name="from" value="padoful">
             <input type="hidden" name="note" value="{{ names[a.action_type] }} · 후보 {{ loop.index }} 「{{ c.suggestion }}」 ({{ c._note }})">
             <input type="hidden" name="{{ c.field }}" value="{{ c.new_full }}">
             <span><span class="cand">「{{ c.suggestion }}」</span> <span class="nt">{{ c._note }}</span><div class="nt" style="color:var(--ink2)">→ {{ c._new_sentence }}</div></span>

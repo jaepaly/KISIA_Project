@@ -30,7 +30,7 @@
 | `bootstrap.sh` | 서버에서 한 번: dnf(Amazon Linux 2023, python3.11) 또는 apt(Ubuntu) · `veilo` 계정 · `/srv/veilo/{app,data,venv}` · nginx |
 | `deploy.sh ec2-user@IP KEY.pem [--reset]` | 로컬에서: `git archive HEAD` 를 tar 로 올리고 pip · systemd · nginx 갱신 · (첫 배포·`--reset`) 시딩 |
 | `wsgi_sns.py` · `wsgi_pado.py` | waitress 진입점 (sns_ext / app) |
-| `veilo.service` · `padopool.service` | systemd — `EnvironmentFile=/srv/veilo/.env` |
+| `veilo.service` · `padoful.service` | systemd — `EnvironmentFile=/srv/veilo/.env` |
 | `nginx.conf` | 80 → 3000. `server_name veilo.site www.veilo.site` |
 | `veilo-reseed.service/.timer` | 매일 04:00(서울) 시딩 상태로 되돌린다 — 심사 기간 한 달간 방문자가 바꾼 글이 쌓이지 않게. 멈췄다 재시딩하고 다시 켠다 |
 | `env.example` | 서버 `.env` 본. **키는 로컬 `.env` 값을 서버에서 손으로 넣는다** (저장소 X) |
@@ -59,7 +59,7 @@ python apps/demo/probe.py --diff       # 5명 k 회귀 — 「변화 없음」�
 
 > **밖에 잠깐 보여줄 때(멘토·심사 전 리허설)** — cloudflared 무료 임시 터널 + 접속 열쇠. 계정·요금·DNS 없음. PC 와 두 서버가 켜져 있는 동안만 산다.
 > ```powershell
-> $env:DEMO_ACCESS_KEY = (Get-Content "$env:TEMP\padopool_key.txt")      # 열쇠는 저장소 밖 · 채팅에 안 붙임
+> $env:DEMO_ACCESS_KEY = (Get-Content "$env:TEMP\padoful_key.txt")      # 열쇠는 저장소 밖 · 채팅에 안 붙임
 > Start-Process python -ArgumentList 'apps/demo/sns_ext.py' -WindowStyle Hidden   # 열쇠 켜서 Veilo 재시작
 > & "C:\Program Files (x86)\cloudflared\cloudflared.exe" tunnel --url http://localhost:3000   # 로그의 *.trycloudflare.com 이 주소
 > ```
@@ -104,7 +104,7 @@ d83004c fix   지명 오탐 + 구 있는 시 인구 0 — 4명이 k=1 이던 원
 
 ## 다음에 할 일 (우선순위)
 
-1. **배포** (AWS 오면 즉시) — 한 인스턴스, `PADOPOOL_URL`·`SNS_URL`·`DEMO_EXTERNAL_REWRITE=true`·`ANTHROPIC_API_KEY`.
+1. **배포** (AWS 오면 즉시) — 한 인스턴스, `PADOFUL_URL`·`SNS_URL`·`DEMO_EXTERNAL_REWRITE=true`·`ANTHROPIC_API_KEY`.
    `data/interim/sns.db` 는 배포 뒤 `seed.py --reset` 으로 만든다. 배포 링크로 투어 12단계를 한 번 끝까지 돌려 본다 (휴대폰도).
 2. **Claude 켠 뒤 리라이트 품질 재점검** — 규칙 후보가 어색하던 자리(월급·시급·연금 명사 하나짜리, 「면사무소 앞에서…」 긴 절).
    `LOG 9/7` 의 심사위원 문장 8개를 다시 돌린다.

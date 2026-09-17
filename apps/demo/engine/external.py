@@ -55,7 +55,7 @@ def _client():
         kw["api_key"] = os.environ["ANTHROPIC_API_KEY"]
     if os.getenv("ANTHROPIC_BASE_URL"):
         kw["base_url"] = os.environ["ANTHROPIC_BASE_URL"]
-    return anthropic.Anthropic(**kw, max_retries=0, timeout=TIMEOUT, default_headers={"User-Agent": "padopool-demo/0.1"})
+    return anthropic.Anthropic(**kw, max_retries=0, timeout=TIMEOUT, default_headers={"User-Agent": "padoful-demo/0.1"})
 
 
 def enabled() -> bool:

@@ -267,7 +267,7 @@
         </div>
         {% for c in cands %}
           <form method="post" action="/posts/{{ act.post_id }}/edit" class="rwopt" data-rw-opt="{{ loop.index0 }}" hidden>
-            <input type="hidden" name="from" value="padopool"><input type="hidden" name="back" value="{{ back }}">
+            <input type="hidden" name="from" value="padoful"><input type="hidden" name="back" value="{{ back }}">
             <input type="hidden" name="note" value="{{ names[act.action_type] }} · 후보 {{ loop.index }} 「{{ c.suggestion }}」 ({{ c.note }})">
             <input type="hidden" name="{{ c.field }}" value="{{ c.new_full }}">
             <span><span class="nt" style="color:var(--ink2)">→ {{ c.new_sentence }}</span></span>

@@ -1,7 +1,7 @@
 """Veilo(베일로) 실행기 — `apps/sns` 를 **고치지 않고** 파도풀을 붙인 플랫폼으로 띄운다. (9/12 팀 투표로 우리뜰 → Veilo)
 
     python apps/demo/sns_ext.py            # http://localhost:3000 (SNS_PORT)
-    PADOPOOL_URL=http://localhost:8000     # 파도풀 API. 우리뜰이 이 서비스를 «붙여 쓴다»
+    PADOFUL_URL=http://localhost:8000     # 파도풀 API. 우리뜰이 이 서비스를 «붙여 쓴다»
 
 논지: 파도풀은 플랫폼에 붙는 서비스다. Veilo 가 네이버·인스타 자리이고, 다른 SNS 도 같은 방식으로 붙일 수 있다.
 경계는 그대로다 — Veilo 가 파도풀에 보내는 것은 `/api/export` 와 같은 형식뿐이고, 파도풀은 저장하지 않는다.
@@ -42,7 +42,8 @@ from flask import (abort, has_request_context, redirect, render_template,  # noq
                    request, send_from_directory, session)
 
 # 127.0.0.1 — Windows 에서 「localhost」 는 IPv6(::1) 를 먼저 찔러 보고 실패한 뒤에야 IPv4 로 가서 요청마다 2초가 샌다
-PADO = os.getenv("PADOPOOL_URL", "http://127.0.0.1:8000").rstrip("/")
+PADO = (os.getenv("PADOFUL_URL") or os.getenv("PADOPOOL_URL")   # 옛 이름도 읽는다 (서버 .env 를 안 고쳐도 뜬다)
+        or "http://127.0.0.1:8000").rstrip("/")
 KST = timezone(timedelta(hours=9))
 
 

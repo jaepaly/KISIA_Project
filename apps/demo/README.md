@@ -36,7 +36,7 @@ python -m pytest apps/demo/test_demo.py apps/sns/test_export.py -v     # 22 pass
 
 | 환경변수 | 기본 | 뜻 |
 |---|---|---|
-| `PADOPOOL_URL` | `http://127.0.0.1:8000` | Veilo 가 부르는 파도풀 API (localhost 는 Windows 에서 IPv6 시도로 요청마다 2초 지연) |
+| `PADOFUL_URL` | `http://127.0.0.1:8000` | Veilo 가 부르는 파도풀 API (localhost 는 Windows 에서 IPv6 시도로 요청마다 2초 지연) |
 | `SNS_URL` | `http://127.0.0.1:3000` | 파도풀 단독 화면(개발용)이 읽는 Veilo |
 | `DEMO_PORT` · `SNS_PORT` | 8000 · 3000 | 포트 |
 | `DEMO_PERSONAS` | `D05,D01,E20,C02,D06` | 파도풀 단독 화면의 예시 계정 (시딩과 같은 목록) |
@@ -132,7 +132,7 @@ Veilo (3000, apps/sns + sns_ext.py)        파도풀 (8000, app.py)
 | W6 | E | 활동 메타 관리 화면 | `sns_ext.py` 의 geo_tag 라우트·프로필 덮어쓰기 | E 화면으로 링크만 | 투어 5단계가 E 버튼을 가리키게 `TOUR` 셀렉터 수정 |
 | W7 | **D** | **Qwen3 2단 v1** (결합 추론·리라이트) | `engine/external.py`(Claude) · `_CACHE`·`_GENERIC` 후보 | 로컬 2단 호출을 `candidates_for` 의 첫 분기로. 「넓히기 사다리」 는 프롬프트의 후보 유형으로 | 리라이트 문장이 말투를 지키는지 · provenance.external_llm_used=false |
 | W9 | E·D | 에디터 실시간 경고 | `new_ext.html` 의 «작성 완료 후 1회» 안내 | 입력 중 경고로 교체, 팝오버는 그대로 | 투어 8단계 문구 |
-| 배포 시 | PM | KISIA AWS | — | `DEMO_EXTERNAL_REWRITE=true` + `ANTHROPIC_API_KEY`(D 2단 전까지) · `PADOPOOL_URL` | 접수 링크 |
+| 배포 시 | PM | KISIA AWS | — | `DEMO_EXTERNAL_REWRITE=true` + `ANTHROPIC_API_KEY`(D 2단 전까지) · `PADOFUL_URL` | 접수 링크 |
 
 **동기화 루틴** — 주 1회 `git merge main` 을 이 브랜치에 (엔진이 `src/kopl` 을 직접 import 하므로 C·B 코드 변화가 바로 들어온다).
 머지 직후 `PYTHONPATH=src python apps/demo/probe.py --diff` 와 `pytest apps/demo` 를 돌리고, 바뀐 숫자는 README 표·LOG 에 적는다.
@@ -145,7 +145,7 @@ B 모델은 스팬을 내고, 그 스팬을 k 에 넣을지 말지는 여기 후
 
 1. **리라이트 3안과 계약.** 현행 `Rewrite.suggestion` 은 단수라 같은 span_id 로 Rewrite 레코드 3개를 낸다. `suggestions` 배열로 갈지는 D·E 논점.
 2. **`sns_ext.py`** 는 E 의 W4~W6 「메타 관리」· W9 「에디터 경고」 화면이 나오면 지운다.
-3. **배포는 AWS** [MF-013] — 크레딧 조건 확인 후. 두 프로세스를 한 인스턴스에 두고 `PADOPOOL_URL` 만 맞추면 된다.
+3. **배포는 AWS** [MF-013] — 크레딧 조건 확인 후. 두 프로세스를 한 인스턴스에 두고 `PADOFUL_URL` 만 맞추면 된다.
 4. 시딩 인물 5명은 `specificity_l1` 이 UNKNOWN 을 내지 않는 인물이다 (115명 중 63명 산출 가능, #115 법정동 문제).
 
 ## 파일

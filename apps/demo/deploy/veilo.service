@@ -1,8 +1,8 @@
 # /etc/systemd/system/veilo.service — Veilo 플랫폼 (심사위원이 보는 곳). nginx 가 80/443 → 127.0.0.1:3000
 [Unit]
-Description=Veilo (padopool demo platform)
-After=network.target padopool.service
-Wants=padopool.service
+Description=Veilo (padoful demo platform)
+After=network.target padoful.service
+Wants=padoful.service
 
 [Service]
 User=veilo
