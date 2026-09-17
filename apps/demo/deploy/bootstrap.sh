@@ -3,7 +3,7 @@
 #   scp -i KEY.pem apps/demo/deploy/bootstrap.sh ec2-user@IP:~ && ssh -i KEY.pem ec2-user@IP 'bash bootstrap.sh'
 set -euo pipefail
 if command -v dnf >/dev/null; then
-  sudo dnf install -y -q python3.11 python3.11-pip nginx
+  sudo dnf install -y -q python3.11 python3.11-pip nginx certbot python3-certbot-nginx
   PY=python3.11
   # AL2023 의 nginx.conf 에는 80 을 듣는 기본 server 블록이 들어 있다 — 우리 conf.d 와 겹치지 않게 지운다
   sudo sed -i '/^    server {$/,/^    }$/d' /etc/nginx/nginx.conf

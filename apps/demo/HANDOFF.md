@@ -16,7 +16,8 @@
 
 ## 배포 — **https://veilo.site 로 떠 있음** (9/16)
 
-**서버**: 내 AWS 계정 Lightsail 1GB · 서울 ap-northeast-2a · Ubuntu 24.04 · 고정 IP `54.180.27.125` · `ssh -i ~/.ssh/veilo.pem ubuntu@54.180.27.125`
+**서버(신, 9/17)**: 멘토 제공 EC2 t3.small · Amazon Linux 2023 · 2GB · `54.116.187.21` · `ssh -i ~/.ssh/veilo-ec2.pem ec2-user@54.116.187.21` — 배포·인증서·k 5인물 검증 완료, DNS 전환 대기
+**서버(구)**: 내 AWS 계정 Lightsail 1GB · Ubuntu 24.04 · `54.180.27.125` · `ssh -i ~/.ssh/veilo.pem ubuntu@54.180.27.125` — DNS 전환 뒤 하루 겹쳐 두고 **삭제**(중지만 하면 요금이 나온다)
 **도메인**: veilo.site(가비아, 가비아 네임서버, A 레코드 @ · www, TTL 600) · HTTPS 는 Let's Encrypt(certbot 자동 갱신) · http → https 리다이렉트
 **방문자 격리**: 방문자마다 `data/visitors/<vid>.db` 사본을 준다(원본 `data/sns.db` 는 읽기 전용). 심사위원이 동시에 들어와도 서로 안 건드린다. 6시간 안 쓰면 지우고, 새벽 재시딩 때 전부 비운다.
 **미리 구운 후보**: `apps/demo/data/rewrites.json` (60항목). 시딩된 글의 「다르게 쓰기」는 여기서 나와 **점검 화면이 0.6~1.5초**, 외부 호출 0건.
@@ -56,6 +57,8 @@ DNS 가 서버를 가리킨 뒤 `sudo certbot --nginx -d veilo.site -d www.veilo
    `ssh 옛서버 'sudo cat /srv/veilo/.env' > /tmp/env && scp /tmp/env 새서버:/tmp/ && ssh 새서버 'sudo mv /tmp/env /srv/veilo/.env && sudo chown veilo:veilo /srv/veilo/.env && sudo chmod 600 /srv/veilo/.env' && rm /tmp/env`
 3. **인증서를 먼저 옮긴다** — 이러면 DNS 를 바꾸는 순간부터 HTTPS 가 끊기지 않는다.
    `ssh 옛서버 'sudo tar czf - /etc/letsencrypt' | ssh 새서버 'sudo tar xzf - -C /'`
+   그 다음 새 서버에서 **발급 없이 설치만**: `sudo certbot install --cert-name veilo.site --nginx --redirect --non-interactive`
+   (`certbot renew --dry-run` 은 DNS 가 새 서버를 가리키기 전엔 실패한다 — 정상. 인증서 자체는 12/15 까지 유효)
    (안 옮기면 DNS 가 새 서버를 가리킨 뒤에야 certbot 을 돌릴 수 있고, 그 사이 인증서 오류가 뜬다)
 4. `bash apps/demo/deploy/deploy.sh ubuntu@새IP ~/.ssh/키.pem --reset`
 5. **새 IP 로 먼저 확인**: `curl -H 'Host: veilo.site' http://새IP/` → 301, `curl http://새IP:3000/` → 200
