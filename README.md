@@ -43,9 +43,9 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 | 역할 | 담당 | **이번 주 핵심** |
 |---|---|---|
 | **[A · 데이터 리드](docs/roles/A-data.md)** | 이은선 | ~~test set 결정~~ ✅ #244 + ~~IAA 2차~~ ✅ #248 + ~~네거티브 보강~~ ✅ #249 |
-| **[B · 1단 탐지](docs/roles/B-detector.md)** | 최진필 | **o_weight 튜닝 → v1 확정** · W6 잡 착수 |
+| **[B · 1단 탐지](docs/roles/B-detector.md)** | 최진필 | **v1 확정 ✅** (#263 · checkpoint-epoch-10 · p95 276ms) |
 | **[C · 특정성·누적](docs/roles/C-specificity.md)** | 신정현 | ~~IAA 2차~~ ✅ #250 + ~~기여도 엔진 v1~~ ✅ #251 |
-| **[D · 2단 추론·조치](docs/roles/D-stage2.md)** | 박재현 (PM) | **가명화·복원 계층** + W6 잡 착수 |
+| **[D · 2단 추론·조치](docs/roles/D-stage2.md)** | 박재현 (PM) | **가명화·복원 계층 ✅** + 3ep adapter v1 확정 ✅ (#264) |
 | **[E · 시스템·컴플라이언스](docs/roles/E-system.md)** | 이지희 | **분석 웹앱 3화면 연결** + 수동 업로드 |
 
 ---
@@ -457,10 +457,9 @@ models/registry.md                        v1 체크포인트 등록
 
 - [x] o_weight 그리드 탐색 — 전체 eval F1 ≥ 0.25 (LR 후속 탐색에서 0.3690 달성 · 9/16)
 - [x] 오탐 분석 + 겹침 해소 + 신뢰도 임계값 0.7 후처리 — F1 0.3690 → **0.4839** (#255 · 9/17 · FP 75→32)
-- [ ] v1 체크포인트 확정 + `models/registry.md` 등록 PR
-- [ ] CPU 지연 측정 + 기록 (목표 < 300ms)
+- [x] v1 체크포인트 확정 + CPU 지연 측정 (checkpoint-epoch-10 · 임계값 0.7 · #263 · 9/18 · test F1 0.2940 · p95 276ms < 300ms)
 - [x] 추론 함수 `infer.py` — `span.schema.json` 계약 통과 (#260 · 9/17 · F1 0.4839 parity 확인)
-- [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
+- [x] W6 학습 잡 — 1ep=16.57초 확인 · 연휴 tmux 불필요 (#262 · 9/17)
 
 ---
 
@@ -698,7 +697,7 @@ experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분 (로컬 �
 - [x] 가명화 모듈 PR 머지 (#243 · 9/14)
 - [x] v1 SFT 빌더 — gold spans + anonymize → 가명 입력 (test 제외 #244 · train 342 / dev 30 · 9/15)
 - [x] QLoRA 에포크 ≥ 3 완료 (v1 데이터) + loss 곡선 이슈 등록 (#253 · 9/16 · dev_loss 0.41→0.0044 · verdict 90%)
-- [ ] W6 학습 잡 — epoch 소요 시간 확인 후 필요시 금 말일 tmux 착수
+- [x] W6 학습 잡 — 3ep adapter v1 확정 · 추가 학습 불필요 (#264 · 9/18 · verdict 90%)
 
 ---
 
