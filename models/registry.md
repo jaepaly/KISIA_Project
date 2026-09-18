@@ -18,11 +18,38 @@
 
 | 이름 | 단계 | 베이스 | 방식 | 위치 | 학습일 | 데이터 버전 | 지표 |
 |---|---|---|---|---|---|---|---|
-| | 1단 | KoELECTRA-base | full FT | | | | |
+| koelectra-v1 | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO | `experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10` (B 데스크톱 로컬) | 2026-09-16 | corpus-v0 p2.3 · 검수 골드 · #244 split | 내부 eval partial/exact F1 0.4839/0.4194 · test 0.2940/0.1616 · 합성 CPU p95 최대 276.31ms (9/17) |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 
 **모든 행에 학습일 · 데이터 버전 · 지표를 함께 적는다.** 없으면 10주 뒤에
 그 체크포인트가 무엇이었는지 복원할 수 없다.
+
+### 1단 koelectra-v1 — W5 등록 (2026-09-17)
+
+- 기존 LR 5e-5 실행의 epoch 1~10을 동일 내부 eval·후처리로 비교했으며,
+  epoch 10이 partial F1 0.4839와 exact F1 0.4194 모두 최고였다.
+  비교는 test 공개 이후 내부 eval에서만 수행했고, 다른 epoch를 test로 재비교하지 않았다.
+- 학습: reviewed 정본 311편·464스팬 → 801 BIO 창, persona holdout
+  train 706 / eval 95창. full FT, 10 epochs, batch 16, LR 5e-5,
+  o_weight 0.02, fp16, seed 20260911. 이 등록 모델은 기존 비결정적 실행이며
+  별도 deterministic A·B 모델(F1 0.4516)과 혼동하지 않는다.
+- 후처리: 긴 스팬 우선 겹침 해소 + 평균 토큰 확률/창별 평균 점수 임계값 0.7.
+  0.7은 내부 eval에서 선정한 잠정 운용값이며 test상 최적값을 입증하지 않는다.
+- test: 공식 255편에서 팀 승인대로 기존 IAA 16편을 평가시에만 제외한
+  239편·358스팬. partial TP 111 / FP 286 / FN 247, exact TP 61 / FP 336 / FN 297.
+  현재 split·BIO의 글 ID 누수는 0건이나 인물 66명은 겹친다.
+  잡담은 blind가 아닌 검수본이고, 기존 체크포인트에는 당시 학습 입력 해시가 없다.
+- CPU: Ryzen 5 9600X, 4스레드, 입력별 워밍업 5회·반복 30회.
+  합성 39/195/780자(1/1/2창)의 p95는 24.07/67.60/276.31ms.
+  토큰화·추론·후처리·계약 검증 포함, 로딩 2.81초 제외.
+  실제 코퍼스 전체 지연 또는 향후 등급·주체 판정 비용의 달성을 보장하지 않는다.
+- 모델은 경계·유형만 예측한다. `level=implicit`·`subject=self`는 호환용
+  고정값이며 의미 판정이 아니다. E 인계 시 이 제한을 함께 전달한다.
+- 가중치 SHA-256: `3c2d9867e672fdfd5542d51eb0f0cf449266ed58c63ad582511047f4549530b5`.
+  경로는 로컬 포인터이며 Git clone으로 가중치가 내려오지 않는다.
+- 상세 비교표·평가 명령·측정 한계: [exp06 README](../experiments/exp06-finetune/README.md).
+
+이는 W5 초기 모델 등록이며 최종 제품 성능 목표를 달성했다는 의미가 아니다.
 
 ## 추론 요구사항 (제품 기준)
 
