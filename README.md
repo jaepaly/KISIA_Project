@@ -193,7 +193,7 @@ print('누수 0건' if not leak else f'누수 {len(leak)}건')
 "
 ```
 
-### 화 — label-schema §3-2 수정
+### ~~화 — label-schema §3-2 수정~~ ✅ 완료 (9/14 · #245)
 
 ```bash
 # 수정 위치 확인
@@ -202,7 +202,7 @@ grep -n "배우자\|호칭" docs/contracts/label-schema.md
 
 ✅ 완료 — [#223](../../issues/223) 합의안(SEX/implicit 고정·explicit 격상 금지)을 §3-2에 추가, #245 머지 (9/14 · label-schema v1.1).
 
-### 수~목 — IAA 2차 준비
+### ~~수~목 — IAA 2차 준비~~ ✅ 완료 (9/17 · #248 #250 · overall 50.0%)
 
 C의 #229가 9/14 머지됐다. IAA 2차 표본을 C와 함께 뽑는다.
 
@@ -218,7 +218,7 @@ IAA 2차 절차:
 5. 결과 이슈 등록
 ```
 
-### 수~목 — 네거티브 보강 (roadmap A W5 항목)
+### ~~수~목 — 네거티브 보강 (roadmap A W5 항목)~~ ✅ 완료 (9/15 · #249)
 
 test set 방향과 무관하게 진행한다. 네거티브 컨트롤(신상 단서 없는 글)이 학습 데이터에 충분히 포함되어야 모델이 "잡담 글에서 오탐"을 내지 않는다.
 
@@ -368,7 +368,7 @@ LR `5e-5`의 `runs/v1_lr5e-5/checkpoint-epoch-10`을 최적 후보로 선정했�
 회귀 테스트 18개 및 `git diff --check` 통과. 오탐은 여전히 남아 있어 완전 해결로 보지 않는다.
 모델·체크포인트·분석 결과는 `runs/` 로컬 산출물로 유지하며 커밋하지 않는다.
 
-### 목 — v1 체크포인트 확정 + models/registry.md 등록
+### ~~목 — v1 체크포인트 확정 + models/registry.md 등록~~ ✅ 완료 (9/18 · #263 · checkpoint-epoch-10 · p95 276ms)
 
 ```markdown
 # models/registry.md 에 추가할 행 예시
@@ -398,7 +398,7 @@ with torch.no_grad():
 print(f"{(time.perf_counter()-t0)*1000:.1f} ms")
 ```
 
-### 목~금 — 추론 함수 래퍼 (E에게 넘길 것)
+### ~~목~금 — 추론 함수 래퍼 (E에게 넘길 것)~~ ✅ 완료 (9/17 · #260 · infer.py · F1 0.4839 parity)
 
 E가 분석기에 연결할 수 있도록 계약 형식으로 감싼다:
 
@@ -429,7 +429,7 @@ python experiments/exp06-finetune/infer.py \
 check-jsonschema --schemafile docs/contracts/span.schema.json /tmp/span_result.json
 ```
 
-### 금 말일 — W6 비동기 학습 잡 (조건부)
+### ~~금 말일 — W6 비동기 학습 잡 (조건부)~~ ✅ 불필요 확정 (9/17 · #262 · 1ep=16.57초 · 연휴 tmux 불필요)
 
 **먼저 확인**: o_weight 탐색 1 epoch 실측 시간이 얼마인지. 연휴 3일을 걸쳐야 할 만큼 오래 걸리는 경우에만 tmux 잡을 띄운다. 몇 시간이면 W6 정상 근무일(화~목)에 돌려도 충분.
 
@@ -478,7 +478,7 @@ PR #229 머지 완료. 159편 267스팬 · check_gold --strict 101개 통과 · 
 
 > 이슈 #242: D03_b04_s01 서술어 경계 잔존 기록됨 (267스팬 중 3% · IAA 비교 허용 범위)
 
-### 화 — IAA 2차 표본 추출 (A와)
+### ~~화 — IAA 2차 표본 추출 (A와)~~ ✅ 완료 (9/17 · A·C 라벨링 · overall F1 50.0%)
 
 #229 머지 완료 → IAA 2차 즉시 착수 가능.
 
@@ -494,7 +494,7 @@ python scripts/sample_iaa.py \
 
 표본이 나오면 A·C가 각자 독립 라벨링한다.
 
-### 수~목 — 기여도 엔진 v1 (LOO)
+### ~~수~목 — 기여도 엔진 v1 (LOO)~~ ✅ 완료 (9/17 · #251 머지)
 
 **LOO(Leave-One-Out) 기여도가 무엇인가:**
 
@@ -589,7 +589,7 @@ check-jsonschema --schemafile docs/contracts/contribution.schema.json \
   data/corpus/v0/gold/contribution/A11.json
 ```
 
-### 금 — IAA 2차 결과 이슈 등록
+### ~~금 — IAA 2차 결과 이슈 등록~~ ✅ 완료 (9/17 · #248 #250 머지 · overall 50.0%)
 
 ```bash
 python scripts/iaa.py \
@@ -641,7 +641,7 @@ python -m pytest src/kopl/c4_stage2/test_anonymize.py -v   # 15 passed
 
 Codex 2회 + C 리뷰 반영. 설계 상세는 #243.
 
-### 수~목 — v1 SFT 빌더 (본문 + 골드 스팬 + anonymize)
+### ~~수~목 — v1 SFT 빌더 (본문 + 골드 스팬 + anonymize)~~ ✅ 완료 (9/15 · train 342 / dev 30)
 
 ⚠️ **v0 학습 입력에는 anonymize 를 연결하지 않는다.** v0 입력(clue_plan 유도, `make_sft.py`)의 스팬 `text` 는 값이 아니라 **단서 구절 전체**라, 통째로 치환하면 등급·subject·함정 판단 근거가 같이 지워진다 (9/14 Codex 검토로 확정).
 
@@ -652,17 +652,17 @@ Codex 2회 + C 리뷰 반영. 설계 상세는 #243.
 3. test 글 제외 기준은 **#244 새 split**을 따른다 (test 255편 = clue 175 + noise 80)
 4. train/dev 재생성 후 **QLoRA 재학습(epochs ≥ 3)은 v1 데이터로** — 금 또는 W6 잡
 
-### 수 23:59 — 주간보고서 + 팀원 보고 취합
+### ~~수 23:59 — 주간보고서 + 팀원 보고 취합~~ ✅ 완료 (9/18 최종 제출)
 
 PM 역할: 팀원 5명 보고 취합 + 막힌 항목 확인 (특히 IAA 2차 진행). 취합본 기준으로 다음날 KISIA 줌 주간보고회(월 11:15) 발표.
 
-### 목 21:00 — 멘토링
+### ~~목 21:00 — 멘토링~~ ✅ 완료 (9/17 · 데모 문맥·일정 조율·EC2 이전)
 
 **이번 주 멘토링 안건:**
 1. **W6 추석 대응** — B epoch 소요 시간 확인 후 tmux 잡 여부 결정
 2. **IAA 2차 결과** — 암묵 F1 수준 보고
 
-### 금 말일 — W6 학습 잡 (조건부)
+### ~~금 말일 — W6 학습 잡 (조건부)~~ ✅ 불필요 확정 (9/18 · 3ep v1 확정 · verdict 90% · #264)
 
 **먼저 확인**: QLoRA 1 epoch 실측 시간. 연휴를 걸쳐야 할 만큼 오래 걸릴 때만 실행. v1 SFT 데이터가 목요일까지 준비되면 **v1(가명화) 데이터로** 돌린다 — 안 되면 v0 로 돌리고 v1 재학습은 W7.
 
@@ -721,7 +721,7 @@ experiments/exp08-stage2-sft/data/           v1 train/dev 재생성분 (로컬 �
                                     └─ engines/real.py  ← B·C·D 완성 후
 ```
 
-### 월 — 통합 아키텍처 확인 + 경계 스크립트
+### ~~월 — 통합 아키텍처 확인 + 경계 스크립트~~ ✅ 완료 (#254 · 9/17)
 
 ```bash
 # 경계 검증 — 분석기가 SNS 내부를 직접 건드리지 않는지 확인
@@ -746,7 +746,7 @@ EOF
 chmod +x scripts/check_boundary.sh
 ```
 
-### 월~화 — 목 엔진 구현 + 계약 검증
+### ~~월~화 — 목 엔진 구현 + 계약 검증~~ ✅ 완료 (#254 · 9/17 · 4종 스키마 통과)
 
 `howto/e-integration.md §2`의 코드를 `apps/analyzer/engines/mock.py`로 만든다.
 
@@ -790,7 +790,7 @@ check-jsonschema --schemafile docs/contracts/stage2-io.schema.json /tmp/test_sta
 
 **4개 모두 통과**해야 다음 단계로 간다.
 
-### 화~수 — 분석기 서버 + 3화면 구현
+### ~~화~수 — 분석기 서버 + 3화면 구현~~ ✅ 완료 (#254 · 9/17 · 에러 없음)
 
 ```
 apps/analyzer/
@@ -860,7 +860,7 @@ print(hashlib.sha256('A11'.encode()).hexdigest()[:12])
 ")
 ```
 
-### 수~목 — 수동 업로드 경로
+### ~~수~목 — 수동 업로드 경로~~ ✅ 완료 (#254 · 9/17 · 디스크 저장 없음)
 
 ```python
 # apps/analyzer/server.py 에 추가
@@ -893,7 +893,7 @@ async def upload_and_scan(file: UploadFile = File(...)):
 </form>
 ```
 
-### 목 — 엔드투엔드 흐름 점검
+### ~~목 — 엔드투엔드 흐름 점검~~ ✅ 완료 (#254 · 9/17 · ENGINE_MODE=mock 에러 없음)
 
 ```
 SNS 시딩된 글 (예: A11 글 전체)
