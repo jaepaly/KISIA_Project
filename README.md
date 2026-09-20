@@ -19,7 +19,7 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 > | 협업 규칙 (브랜치·커밋·리뷰) | [CONTRIBUTING.md](CONTRIBUTING.md) |
 > | **골드셋 형식** | [docs/contracts/label-schema.md](docs/contracts/label-schema.md) §8 · §9 |
 > | **절대 하면 안 되는 것** | [docs/RULES-DO-NOT.md](docs/RULES-DO-NOT.md) |
-> | **팀 대시보드 (로컬)** | `python scripts/open_dashboard.py` — gh CLI 필요 ([설치](https://cli.github.com/)) · `gh auth login` 최초 1회 |
+> | **팀 대시보드** | AWS 배포본 — 주소는 팀 채널 공지 참조 |
 
 ---
 
@@ -110,35 +110,6 @@ D(PM)이 W5 성과를 발표한다. 개인 5줄 보고를 **일요일 9/20 저�
 4. 증빙 링크:
 5. 막힌 것 + 필요한 지원:
 ```
-
----
-
-## 전원 공통 — 로컬 대시보드 실행
-
-저장소가 9/14 비공개 전환 이후 GitHub Pages가 중단됐다. **gh CLI 스냅샷 기반**으로 로컬에서 동일한 대시보드를 열 수 있다.
-
-### 1회 설정
-
-```bash
-# 1) gh CLI 설치 (없는 경우만)
-#    Windows: winget install GitHub.cli
-#    macOS:   brew install gh
-
-# 2) GitHub 인증 (최초 1회)
-gh auth login
-# → GitHub.com / HTTPS / 브라우저 로그인 선택 후 완료
-```
-
-### 대시보드 열기
-
-```bash
-# 저장소 루트에서
-python scripts/open_dashboard.py
-```
-
-`site/index.html`이 생성되고 브라우저가 자동으로 열린다.
-
-> ⚠️ 브라우저에서 새로고침(F5)해도 데이터가 바뀌지 않는다. 최신 현황을 보려면 스크립트를 다시 실행해야 한다.
 
 ---
 
