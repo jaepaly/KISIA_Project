@@ -285,6 +285,8 @@ def span_to_condition(span: dict, post_id: str) -> dict | None:
 
 같은 축 조건이 여러 개여도 된다 — `risk_total` 이 축별 max(resolution) 하나만 쓴다 (규칙 1).
 
+**`span_id`는 condition에 넣지 않는다** — `specificity.schema.json`의 condition이 `additionalProperties: false`라 계약 검증에서 깨진다. `contributions[].clue_ids`·`top_spans`는 아래 생성기에서 `clue_index`/`span_index`로 `leave_one_out()`에 넘긴다 (#261 9/20 정정).
+
 **입력은 골드로 한다.** B `infer.py` 출력은 `level=implicit`·`subject=self` 고정값이라 이 분기가 작동하지 않는다 (B 섹션 참고). 골드 파일: 최상위 `gold/*_spans.jsonl`(`reviewed: true` 만) + `gold/blind/*_spans.jsonl`. `gold/detect/`(교사 출력)·`iaa*/`·`stage2/`는 쓰지 않는다.
 
 ```bash
@@ -347,8 +349,12 @@ def main(gold: Path, personas: Path, out: Path) -> None:
             conds = build_conditions({p: spans[p] for p in post_ids})
             return risk_total(conds)                   # conds 가 비면 0.0 — 전부-제거 케이스
 
-        result = leave_one_out(user_ref=user_ref_for(pid),
-                               post_ids=sorted(spans), risk_fn=risk_fn)
+        # contribution 계약의 clue_ids · top_spans 는 condition 이 아니라 여기서 채운다
+        clue_index = {p: [s["span_id"] for s in ss] for p, ss in spans.items()}
+        span_index = {p: [{"span_id": s["span_id"], "text_id": s["text_id"]} for s in ss]
+                      for p, ss in spans.items()}            # loo.py 가 앞 3개만 쓴다
+        result = leave_one_out(user_ref=user_ref_for(pid), post_ids=sorted(spans),
+                               risk_fn=risk_fn, clue_index=clue_index, span_index=span_index)
         (out / f"{pid}.json").write_text(
             json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
 ```
