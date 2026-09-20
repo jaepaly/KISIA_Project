@@ -9,6 +9,9 @@
 - gold 검수자가 이미 함정(통로=) 제거 → 별도 clue_plan 조인 불필요
 - test split(#244) 글은 학습에 사용하지 않음
 - v0 make_sft.py와 동일 출력 포맷 → train.py 수정 불필요
+- --contribution DIR (C 증류 타깃 gold/contribution/<pid>.json) 이 있으면:
+    전체-글 예시에만 posts[].contribution(delta) 입력 + assistant 에 recommendation 출력을 붙인다.
+    부분집합 예시는 LOO 를 다시 못 구하므로 그대로 둔다 (findings 만).
 """
 from __future__ import annotations
 
@@ -21,7 +24,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(Path(__file__).parent))
 from kopl.c4_stage2.anonymize import anonymize  # noqa: E402
+from contribution_targets import load_contribution, post_deltas, recommendation_from_contribution  # noqa: E402
 
 GOLD = ROOT / "data/corpus/v0/gold"
 POSTS = ROOT / "data/corpus/v0/posts"
@@ -57,11 +62,13 @@ verdict: specified(확정) · narrowed(범위 좁혀짐) · weak_signal(약한 �
 규칙: evidence 는 근거 스팬의 post_id·span_id 만 (프로필 스팬은 post_id null). subject "other" 는 남의 정보라 근거 불가.
 본인 얘기라도 예전 거주지·출신지·방문지·이사 갈 곳·예전 직장은 지금 것이 아니다 — 근거 불가.
 cross_post 는 근거가 서로 다른 글 2편 이상일 때만 true. 실제 값(나이·지명)은 쓰지 않는다.
-출력은 {"findings": {7속성 전부}, "rewrites": []} JSON 하나."""
+posts[].contribution(이 글을 내렸을 때 위험도 변화, 음수)이 주어지면 recommendation 도 낸다: 기여도 큰 글부터 unpublish 조치를 부담 낮은 순으로, projected 에 현재→예상 위험도.
+출력은 {"findings": {7속성 전부}, "rewrites": []} 에 recommendation 이 있으면 덧붙인 JSON 하나."""
 
 
 def user_ref(pid: str) -> str:
-    return "u_" + hashlib.sha256(pid.encode()).hexdigest()[:8]
+    # scripts/seed_sns.py · C gen_contribution_targets.py 와 같은 규칙 (12자리) — 셋이 같아야 조인된다
+    return "u_" + hashlib.sha256(pid.encode()).hexdigest()[:12]
 
 
 def load_test_ids() -> set[str]:
@@ -189,17 +196,22 @@ def findings_from_spans(post_span_pairs: list[tuple[str, list[dict]]]) -> dict:
     return out
 
 
-def build_example(pid: str, post_entries: list[dict], findings: dict) -> dict:
+def build_example(
+    pid: str, post_entries: list[dict], findings: dict, recommendation: dict | None = None,
+) -> dict:
     inp = {
         "user_ref": user_ref(pid),
         "profile": None,
         "posts": post_entries,
     }
+    answer: dict = {"findings": findings, "rewrites": []}
+    if recommendation is not None:
+        answer["recommendation"] = recommendation
     return {
         "messages": [
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": json.dumps(inp, ensure_ascii=False)},
-            {"role": "assistant", "content": json.dumps({"findings": findings, "rewrites": []}, ensure_ascii=False)},
+            {"role": "assistant", "content": json.dumps(answer, ensure_ascii=False)},
         ]
     }
 
@@ -210,7 +222,10 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=20260916)
     ap.add_argument("--dev", type=int, default=12, help="dev 로 뗄 인물 수")
     ap.add_argument("--out", default=str(HERE / "data"))
+    ap.add_argument("--contribution", default=None,
+                    help="C 증류 타깃 디렉터리 (gold/contribution). 있으면 전체-글 예시에 delta 입력 + recommendation 출력")
     a = ap.parse_args()
+    contrib_dir = Path(a.contribution) if a.contribution else None
     rng = random.Random(a.seed)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -235,6 +250,7 @@ def main() -> int:
         "dev": 0,
         "personas_with_data": 0,
         "personas_skipped": 0,
+        "with_recommendation": 0,
     }
 
     with (
@@ -275,10 +291,23 @@ def main() -> int:
             def make_pair_list(pids_subset: list[str]) -> list[tuple[str, list[dict]]]:
                 return [(p, post_data[p][0]) for p in pids_subset]
 
-            # 원본 (전체 글)
+            # 원본 (전체 글) — C 증류 타깃이 있으면 여기에만 delta 입력·recommendation 출력을 붙인다
             entries = make_post_entries(post_ids)
             findings = findings_from_spans(make_pair_list(post_ids))
-            sink.write(json.dumps(build_example(pid, entries, findings), ensure_ascii=False) + "\n")
+            recommendation = None
+            contrib_path = contrib_dir / f"{pid}.json" if contrib_dir else None
+            if contrib_path and contrib_path.exists():
+                contrib = load_contribution(contrib_path)
+                deltas = post_deltas(contrib)
+                if set(deltas) >= set(post_ids):
+                    for e in entries:
+                        e["contribution"] = deltas[e["post_id"]]
+                    recommendation = recommendation_from_contribution(contrib)
+                    stats["with_recommendation"] += 1
+                else:
+                    # C 타깃의 글 집합이 이쪽 (reviewed · test 제외) 과 다르면 붙이지 않는다 — 원인은 로그로
+                    print(f"[skip recommendation] {pid}: contribution 글 집합 불일치", file=sys.stderr)
+            sink.write(json.dumps(build_example(pid, entries, findings, recommendation), ensure_ascii=False) + "\n")
             stats[key] += 1
 
             # 부분집합 증강

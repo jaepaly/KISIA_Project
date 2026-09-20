@@ -35,3 +35,18 @@
 - v1: 교사 스팬(`gold/detect/` → 검수 정본)으로 입력을 바꾸고 재학습 (#207)
 - rewrites 타깃 (§3-2, 교사 LLM) — v0 에서는 비움
 - W7: 외부 LLM 대비 속성 적중 일치율 ≥ 0.8 측정의 대상 모델이 이것이다
+
+## 증류 타깃 연결 (W6 · C PR 대기)
+
+`contribution_targets.py` — C 의 `gold/contribution/<pid>.json`(contribution.schema.json) 을 읽어
+① `posts[].contribution`(delta) 입력 ② `recommendation`(greedy_path → unpublish 조치, stage2-io 계약) 출력
+③ 근사기 타깃(post 별 delta·rank) 으로 바꾼다. 계약·불변식(3)(5)(6) 검증 포함.
+
+```bash
+python experiments/exp08-stage2-sft/make_sft_v1.py --contribution data/corpus/v0/gold/contribution
+python -m pytest experiments/exp08-stage2-sft/test_contribution_targets.py -q   # 픽스처 = loo.leave_one_out() 출력
+```
+
+- 전체-글 예시에만 붙는다. 부분집합 증강 예시는 LOO 를 다시 못 구하므로 findings 만 (v1 결정 · 재검토 W7)
+- `user_ref` 를 12자리로 맞췄다 (`scripts/seed_sns.py` · C 생성기와 동일). 이전 v1 데이터는 재생성 필요
+- 근사기(#124 ①) 학습 입력은 `approximator_targets()` — 별도 태스크로 두고 C PR 머지 후 착수
