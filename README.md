@@ -19,7 +19,7 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 > | 협업 규칙 (브랜치·커밋·리뷰) | [CONTRIBUTING.md](CONTRIBUTING.md) |
 > | **골드셋 형식** | [docs/contracts/label-schema.md](docs/contracts/label-schema.md) §8 · §9 |
 > | **절대 하면 안 되는 것** | [docs/RULES-DO-NOT.md](docs/RULES-DO-NOT.md) |
-> | **팀 대시보드** | AWS 배포본 — 주소는 팀 채널 공지 참조 |
+> | **팀 대시보드** | http://52.79.198.223/ (AWS) |
 
 ---
 
