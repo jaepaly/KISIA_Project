@@ -94,49 +94,57 @@ _BURDEN_ORDER = {"low": 0, "medium": 1, "high": 2}
 def recommendation_from_contribution(doc: dict, *, max_actions: int = 3) -> dict:
     """greedy_path 를 기본 추천으로. 조치는 unpublish(글) + user_scoped(프로필·메타).
 
-    - unpublish 한 건 = greedy 한 걸음. projected_delta 는 «그 시점의» 위험도 변화라
-      contributions[].delta(단독 LOO) 가 아니라 greedy 직전-직후 차이를 쓴다.
-    - user_scoped 는 글을 다 내려도 남는 몫(residual_risk) 을 해소하는 조치라 뒤에 붙인다.
+    - unpublish 한 건 = greedy 한 걸음. **projected_delta 는 계약대로 «이 조치 단독» 의 변화** =
+      contributions[].delta (전체 글에서 그 글 하나만 뺐을 때). greedy 직전-직후 차이(누적 한계효과)는
+      조치끼리 상호작용하면 이것과 달라지는데, 그 누적값은 projected.projected_risk 가 들고 간다
+      (apps/demo recommend.py 의 projected_delta / _k_cum 구분과 같다).
+    - user_scoped 는 글을 다 내려도 남는 몫(residual_risk) 을 해소하는 조치라 뒤에 붙이고,
+      그 효과도 projected_risk 에 순차 반영한다.
     - actions 는 burden 오름차순(계약) — 여기서는 전부 low 라 순서 유지.
     """
     out = doc["output"]
     base = float(out["baseline_risk"])
+    residual = float(out["residual_risk"])
     delta_by_post = {r["post_id"]: float(r["delta"]) for r in out["contributions"]}
 
     actions: list[dict] = []
-    prev = base
+    risk = base
     for step in out["greedy_path"][:max_actions]:
-        after = float(step["risk_after"])
+        risk = float(step["risk_after"])
         actions.append({
             "action_type": "unpublish",
             "burden": "low",
             "certainty": "highest",
             "targets": [{"kind": "post", "ref": step["remove"]}],
-            "projected_delta": round(min(0.0, after - prev), 2),
-            "rationale": f"단독 기여도 {delta_by_post[step['remove']]:+.1f}",
+            "projected_delta": round(min(0.0, delta_by_post[step["remove"]]), 2),
+            "rationale": f"내린 뒤 누적 {risk:.1f}",
         })
-        prev = after
 
+    floor = residual
     for item in out["user_scoped"]:
         kind, ref = _USER_SCOPED_TARGET[item["source"]]
+        d = -abs(float(item["delta"]))
         actions.append({
             "action_type": "activity_meta",
             "burden": "low",
             "certainty": "high",
             "targets": [{"kind": kind, "ref": ref}],
-            "projected_delta": round(min(0.0, -abs(float(item["delta"]))), 2),
+            "projected_delta": round(min(0.0, d), 2),
             "rationale": None,
         })
+        risk = max(0.0, risk + d)
+        floor = max(0.0, floor + d)
 
     actions.sort(key=lambda a: _BURDEN_ORDER[a["burden"]])
-    projected_risk = prev if actions else base
+    projected_risk = risk if actions else base
     rec = {
         "actions": actions,
         "projected": {
             "current_risk": round(base, 2),
             "projected_risk": round(projected_risk, 2),
             "reduction_pct": round((base - projected_risk) / base * 100, 1) if base > 0 else 0.0,
-            "target_met": projected_risk <= float(out["residual_risk"]) + 1e-9,
+            # 남은 몫(residual 에서 user_scoped 로 덜어낸 것) 까지 내려왔으면 목표 도달
+            "target_met": projected_risk <= floor + 1e-9,
         },
         "optimality_gap_pct": None,
     }

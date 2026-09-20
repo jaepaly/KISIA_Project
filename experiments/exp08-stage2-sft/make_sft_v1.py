@@ -62,8 +62,9 @@ verdict: specified(확정) · narrowed(범위 좁혀짐) · weak_signal(약한 �
 규칙: evidence 는 근거 스팬의 post_id·span_id 만 (프로필 스팬은 post_id null). subject "other" 는 남의 정보라 근거 불가.
 본인 얘기라도 예전 거주지·출신지·방문지·이사 갈 곳·예전 직장은 지금 것이 아니다 — 근거 불가.
 cross_post 는 근거가 서로 다른 글 2편 이상일 때만 true. 실제 값(나이·지명)은 쓰지 않는다.
-posts[].contribution(이 글을 내렸을 때 위험도 변화, 음수)이 주어지면 recommendation 도 낸다: 기여도 큰 글부터 unpublish 조치를 부담 낮은 순으로, projected 에 현재→예상 위험도.
-출력은 {"findings": {7속성 전부}, "rewrites": []} 에 recommendation 이 있으면 덧붙인 JSON 하나."""
+posts[].contribution(이 글을 내렸을 때 위험도 변화, 음수)이 **모든 글에** 주어졌을 때만 recommendation 을 낸다: 기여도 큰 글부터 unpublish 조치를 부담 낮은 순으로, projected_delta 는 그 조치 단독 효과, projected 에 현재→예상 위험도.
+contribution 이 없으면 recommendation 을 내지 않는다 — findings 와 rewrites 만.
+출력은 {"findings": {7속성 전부}, "rewrites": []} 에 (contribution 이 있을 때) recommendation 을 덧붙인 JSON 하나."""
 
 
 def user_ref(pid: str) -> str:
@@ -299,7 +300,7 @@ def main() -> int:
             if contrib_path and contrib_path.exists():
                 contrib = load_contribution(contrib_path)
                 deltas = post_deltas(contrib)
-                if set(deltas) >= set(post_ids):
+                if set(deltas) == set(post_ids):      # 초과·부족 모두 거른다 — greedy_path 가 이쪽에 없는 글을 가리킬 수 있다
                     for e in entries:
                         e["contribution"] = deltas[e["post_id"]]
                     recommendation = recommendation_from_contribution(contrib)

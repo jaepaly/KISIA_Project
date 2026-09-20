@@ -75,6 +75,40 @@ def test_recommendation_user_scoped_becomes_meta_action(doc: dict) -> None:
     assert rec["actions"][-1]["targets"] == [{"kind": "profile", "ref": "profile_bio"}]
     assert rec["actions"][-1]["action_type"] == "activity_meta"
     assert rec["actions"][-1]["projected_delta"] == -10.0
+    # b01 내리면 50 → 프로필 조치 -10 → 40. 남은 몫 10 도 프로필 조치로 0 이 되지만 40 > 0 이라 미도달
+    assert rec["projected"]["projected_risk"] == 40.0
+    assert rec["projected"]["target_met"] is False
+
+
+def test_projected_delta_is_standalone_not_greedy_marginal() -> None:
+    """조치끼리 상호작용하면 greedy 한계효과 ≠ 단독 LOO delta. 계약(Action.projected_delta = 단독)을 따른다."""
+    from kopl.c3_contribution.loo import leave_one_out
+
+    w = {"X_b01": 60.0, "X_b02": 50.0, "X_b03": 20.0}
+    d = leave_one_out(user_ref="u_0123456789ab", post_ids=list(w),
+                      risk_fn=lambda ids: min(100.0, sum(w[i] for i in ids)))
+    validate_contribution(d)
+    assert d["output"]["baseline_risk"] == 100.0                      # 상한에 걸려 있다
+    assert {r["post_id"]: r["delta"] for r in d["output"]["contributions"]} == \
+        {"X_b01": -30.0, "X_b02": -20.0, "X_b03": 0.0}
+    rec = recommendation_from_contribution(d, max_actions=2)
+    steps = [(a["targets"][0]["ref"], a["projected_delta"]) for a in rec["actions"]]
+    assert steps[0] == ("X_b01", -30.0)
+    assert steps[1] == ("X_b02", -20.0)           # greedy 한계효과는 -50 이지만 단독 효과 -20 을 쓴다
+    assert rec["projected"]["projected_risk"] == 20.0   # 누적은 projected_risk 가 들고 간다 (100→70→20)
+
+
+def test_recommendation_validator_rejects_bad_action(doc: dict) -> None:
+    from contribution_targets import _recommendation_validator
+
+    rec = recommendation_from_contribution(doc)
+    bad = copy.deepcopy(rec)
+    bad["actions"][0]["projected_delta"] = 5.0          # 양수 금지
+    assert list(_recommendation_validator().iter_errors(bad))
+    bad = copy.deepcopy(rec)
+    bad["actions"][0]["targets"][0]["kind"] = "comment"  # enum 밖
+    assert list(_recommendation_validator().iter_errors(bad))
+    assert not list(_recommendation_validator().iter_errors(rec))
 
 
 def test_invariants_reject_broken_rank(doc: dict) -> None:
