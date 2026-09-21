@@ -287,7 +287,9 @@ def span_to_condition(span: dict, post_id: str) -> dict | None:
 
 **`span_id`는 condition에 넣지 않는다** — `specificity.schema.json`의 condition이 `additionalProperties: false`라 계약 검증에서 깨진다. `contributions[].clue_ids`·`top_spans`는 아래 생성기에서 `clue_index`/`span_index`로 `leave_one_out()`에 넘긴다 (#261 9/20 정정).
 
-**입력은 골드로 한다.** B `infer.py` 출력은 `level=implicit`·`subject=self` 고정값이라 이 분기가 작동하지 않는다 (B 섹션 참고). 골드 파일: 최상위 `gold/*_spans.jsonl`(`reviewed: true` 만) + `gold/blind/*_spans.jsonl`. `gold/detect/`(교사 출력)·`iaa*/`·`stage2/`는 쓰지 않는다.
+**입력은 골드로 한다.** B `infer.py` 출력은 `level=implicit`·`subject=self` 고정값이라 이 분기가 작동하지 않는다 (B 섹션 참고). 골드 파일은 최상위 `gold/*_spans.jsonl`(`reviewed: true` 만) **하나뿐이다.** `gold/blind/`·`gold/detect/`(교사 출력)·`iaa*/`·`stage2/`는 쓰지 않는다.
+
+> ⚠️ **blind 를 합치지 않는다.** blind 200 은 같은 글을 C 가 독립 라벨링한 별도 정본이라 최상위와 `span_id` 가 그대로 겹친다 (실측 `A07_b16_s01`). 합치면 중복으로 생성이 중단된다. — 9/21 이전 문구는 「합친다」로 잘못 적혀 있었다. PM 정정 2026-09-22.
 
 ```bash
 # 스팬 한 개로 손 검산 — 결과가 표와 맞는지
@@ -309,7 +311,8 @@ print(span_to_condition({'type':'AGE','level':'explicit','subject':'self','text'
   python scripts/gen_contribution_targets.py \
     --gold     data/corpus/v0/gold \
     --personas data/corpus/v0/personas \
-    --out      data/corpus/v0/gold/contribution
+    --out      data/corpus/v0/gold/contribution \
+    --exclude-posts data/corpus/v0/splits/test.jsonl
 """
 import hashlib, json
 from pathlib import Path
@@ -323,25 +326,34 @@ def user_ref_for(persona_id: str) -> str:
     return "u_" + hashlib.sha256(persona_id.encode("utf-8")).hexdigest()[:12]
 
 
-def load_spans(gold: Path, persona_id: str) -> dict[str, list[dict]]:
-    """post_id → 스팬 목록. 최상위(reviewed 만) + blind/ 를 합친다. 첫 줄은 헤더."""
+def load_spans(gold: Path, persona_id: str, exclude: set[str]) -> dict[str, list[dict]]:
+    """post_id → 스팬 목록. 최상위 reviewed 만. 첫 줄은 헤더.
+
+    blind/ 는 합치지 않는다 — 같은 글의 독립 라벨이라 span_id 가 겹친다.
+    exclude 는 test split 의 post_id 집합 (아래 ⚠️ 참고).
+    """
     by_post: dict[str, list[dict]] = {}
-    for f in (gold / f"{persona_id}_spans.jsonl", gold / "blind" / f"{persona_id}_spans.jsonl"):
-        if not f.exists():
+    f = gold / f"{persona_id}_spans.jsonl"
+    if not f.exists():
+        return by_post
+    for line in f.read_text(encoding="utf-8").splitlines()[1:]:
+        rec = json.loads(line)
+        if "reviewed" in rec and not rec["reviewed"]:
             continue
-        for line in f.read_text(encoding="utf-8").splitlines()[1:]:
-            rec = json.loads(line)
-            if "reviewed" in rec and not rec["reviewed"]:
-                continue
-            by_post.setdefault(rec["post_id"], []).extend(rec.get("spans", []))
+        if rec["post_id"] in exclude:
+            continue
+        by_post.setdefault(rec["post_id"], []).extend(rec.get("spans", []))
     return by_post
 
 
-def main(gold: Path, personas: Path, out: Path) -> None:
+def main(gold: Path, personas: Path, out: Path, exclude_file: Path | None) -> None:
     out.mkdir(parents=True, exist_ok=True)
+    exclude = {json.loads(l)["post_id"]                # splits/test.jsonl — D 와 글 집합을 맞춘다
+               for l in exclude_file.read_text(encoding="utf-8").splitlines()
+               if l.strip()} if exclude_file else set()
     for pfile in sorted(personas.glob("*.json")):
         pid = pfile.stem
-        spans = load_spans(gold, pid)
+        spans = load_spans(gold, pid, exclude)
         if not spans:
             continue                                   # 골드 없는 인물은 건너뛴다 (건너뛴 목록은 PR 에 적는다)
 
@@ -363,7 +375,8 @@ def main(gold: Path, personas: Path, out: Path) -> None:
 
 ```bash
 python scripts/gen_contribution_targets.py --gold data/corpus/v0/gold \
-  --personas data/corpus/v0/personas --out data/corpus/v0/gold/contribution
+  --personas data/corpus/v0/personas --out data/corpus/v0/gold/contribution \
+  --exclude-posts data/corpus/v0/splits/test.jsonl
 
 # 계약 (전 파일)
 for f in data/corpus/v0/gold/contribution/*.json; do
@@ -383,7 +396,7 @@ for f in sorted(glob.glob('data/corpus/v0/gold/contribution/*.json'))[:20]:
 
 **검산에서 볼 것 3가지**: ① `baseline_risk` 가 인물 간에 갈리는가 (전부 같은 값이면 변환기가 resolution 을 못 만드는 것) ② rank 1 글이 실제로 지명·나이 단서가 든 글인가 ③ `greedy_path` 가 2~3개 안에서 `residual_risk`(=0) 근처로 내려가는가. 셋 중 하나라도 이상하면 PR 본문에 그대로 적는다 — 고치는 건 W7 튜닝 몫이다.
 
-> ⚠️ **test split(#244) 글도 생성한다.** 여기서 빼면 그 인물의 LOO 가 왜곡된다. 학습 시 test 인물을 빼는 건 D 가 `make_sft_v1.py` 쪽에서 한다.
+> ⚠️ **test split(#244) 글은 뺀다** — `--exclude-posts data/corpus/v0/splits/test.jsonl`. 증류 타깃은 **모델이 입력으로 보는 글 집합에 대한 LOO** 여야 한다. D 의 `make_sft_v1.py` 는 test 글을 빼고 학습 예시를 만들기 때문에, 타깃에 test 글이 섞이면 글 집합이 달라 `recommendation` 이 통째로 버려진다 (실측 조인 28/77 → 제외 후 77/77). — 9/21 이전 문구는 「test 글도 생성한다, 빼는 건 D 가」로 반대로 적혀 있었다. PM 정정 2026-09-22.
 
 ### 만들 것
 
