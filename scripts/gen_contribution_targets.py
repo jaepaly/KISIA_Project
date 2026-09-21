@@ -54,15 +54,34 @@ def load_spans(
     gold: Path,
     persona_id: str,
 ) -> dict[str, list[dict[str, Any]]]:
-    """최상위 reviewed 골드와 blind 골드를 게시글별로 합친다."""
+    """최상위 reviewed 골드를 게시글별로 모은다.
+
+    blind/ 는 합치지 않는다. 같은 글을 C 가 독립 라벨링한 별도 정본이라
+    최상위와 span_id 가 그대로 겹친다 (AGENTS.md · A-data.md §5).
+    """
     by_post: dict[str, list[dict[str, Any]]] = {}
-    paths = (
-        gold / f"{persona_id}_spans.jsonl",
-        gold / "blind" / f"{persona_id}_spans.jsonl",
-    )
-    for path in paths:
-        _read_gold_file(path, by_post)
+    _read_gold_file(gold / f"{persona_id}_spans.jsonl", by_post)
     return by_post
+
+
+def load_excluded_posts(path: Path | None) -> set[str]:
+    """제외할 post_id 집합을 splits jsonl 에서 읽는다. 경로가 없으면 빈 집합."""
+    if path is None:
+        return set()
+    if not path.exists():
+        raise FileNotFoundError(f"제외 목록을 찾을 수 없습니다: {path}")
+
+    excluded: set[str] = set()
+    lines = path.read_text(encoding="utf-8").splitlines()
+    for line_number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        record = json.loads(line)
+        post_id = record.get("post_id")
+        if not isinstance(post_id, str) or not post_id:
+            raise ValueError(f"{path}:{line_number}: post_id가 올바르지 않습니다.")
+        excluded.add(post_id)
+    return excluded
 
 
 def build_evidence_indexes(
@@ -124,15 +143,21 @@ def generate_targets(
     gold: Path,
     personas: Path,
     out: Path,
+    excluded_posts: set[str] | None = None,
 ) -> tuple[int, list[str]]:
     """골드가 있는 모든 인물의 타깃 파일을 쓰고 생성 수와 제외 목록을 반환한다."""
+    excluded = excluded_posts or set()
     out.mkdir(parents=True, exist_ok=True)
     generated = 0
     skipped: list[str] = []
 
     for persona_path in sorted(personas.glob("*.json")):
         persona_id = persona_path.stem
-        spans_by_post = load_spans(gold, persona_id)
+        spans_by_post = {
+            post_id: spans
+            for post_id, spans in load_spans(gold, persona_id).items()
+            if post_id not in excluded
+        }
         if not spans_by_post:
             skipped.append(persona_id)
             continue
@@ -153,17 +178,29 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gold", type=Path, required=True)
     parser.add_argument("--personas", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument(
+        "--exclude-posts",
+        type=Path,
+        default=None,
+        help=(
+            "제외할 post_id 목록 jsonl (보통 data/corpus/v0/splits/test.jsonl). "
+            "증류 타깃은 모델이 입력으로 보는 글 집합에 대한 LOO 여야 하므로, "
+            "학습에서 빠지는 글은 여기서도 빼야 D 의 조인이 성립한다."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    excluded = load_excluded_posts(args.exclude_posts)
     generated, skipped = generate_targets(
         args.gold,
         args.personas,
         args.out,
+        excluded,
     )
-    print(f"생성 {generated}명 · 골드 없음 {len(skipped)}명")
+    print(f"생성 {generated}명 · 골드 없음 {len(skipped)}명 · 제외 글 {len(excluded)}편")
     if skipped:
         print("건너뜀: " + " ".join(skipped))
     return 0
