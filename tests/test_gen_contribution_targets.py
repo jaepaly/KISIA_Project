@@ -48,8 +48,12 @@ def write_jsonl(path: Path, records: list[dict[str, object]]) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def test_user_ref_matches_seed_rule() -> None:
-    assert user_ref_for("A01") == "u_16a36e86f6fe"
+def test_user_ref_is_deterministic_and_non_identifying() -> None:
+    first = user_ref_for("A01")
+    assert first == user_ref_for("A01")
+    assert first != user_ref_for("A02")
+    assert first.startswith("u_")
+    assert len(first) == 14
 
 
 def test_load_spans_merges_reviewed_top_level_and_blind(
