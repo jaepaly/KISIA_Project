@@ -54,7 +54,7 @@ def test_unknown_location_and_general_facility_are_skipped() -> None:
 
 def test_known_station_becomes_facility_condition() -> None:
     condition = span_to_condition(
-        span("LOC_FACILITY", "갈산역", level="explicit"),
+        span("LOC_FACILITY", "용마산역", level="explicit"),
         "p1",
     )
     assert condition is not None
