@@ -76,6 +76,7 @@ def risk_by_axis(
 
     같은 축의 조건을 여러 개 곱하지 않고 가장 구체적인 resolution 하나만
     사용한다. 사용하지 않은 축도 0점으로 반환해 7축 계약을 고정한다.
+    kind·confidence·source_post_ids 등 나머지 계약 필드 검증은 호출자 책임이다.
     """
     if isinstance(conditions, (str, bytes)) or not isinstance(conditions, Sequence):
         raise TypeError("conditions는 조건 객체의 시퀀스여야 합니다.")
@@ -95,14 +96,14 @@ def risk_by_axis(
             raise TypeError(
                 f"conditions[{index}].resolution은 정수여야 합니다."
             )
-        if resolution not in RESOLUTION[axis]:
-            allowed = ", ".join(str(value) for value in RESOLUTION[axis])
+        if not 0 <= resolution <= 4:
             raise ValueError(
-                f"{axis} 축의 resolution은 {{{allowed}}} 중 하나여야 합니다: "
+                f"conditions[{index}].resolution은 0~4여야 합니다: "
                 f"{resolution!r}"
             )
 
-        levels[axis] = max(levels[axis], resolution)
+        clamped = min(resolution, max(RESOLUTION[axis]))
+        levels[axis] = max(levels[axis], clamped)
 
     return {
         axis: RESOLUTION[axis][levels[axis]]
