@@ -5,6 +5,8 @@ from .engine import (
     age_to_band,
     classify_k,
     resolve,
+    risk_by_axis,
+    risk_total,
     specificity,
     specificity_l1,
 )
@@ -14,6 +16,8 @@ __all__ = [
     "age_to_band",
     "classify_k",
     "resolve",
+    "risk_by_axis",
+    "risk_total",
     "specificity",
     "specificity_l1",
 ]

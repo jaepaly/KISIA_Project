@@ -5,10 +5,12 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
 from .dicts import PopulationTable, load_population, pop_lookup
+from .model import AXES, RESOLUTION, WEIGHTS
 
 DEFAULT_REGIONS_PATH = (
     Path(__file__).resolve().parents[3]
@@ -64,6 +66,64 @@ def classify_k(k: int | float | None) -> str:
     if k < 5:
         return "HIGH"
     return "ACCEPTABLE"
+
+
+
+def risk_by_axis(
+    conditions: Sequence[Mapping[str, Any]],
+) -> dict[str, float]:
+    """조건 집합에서 축별 최고 해상도를 0~100 위험 점수로 변환한다.
+
+    같은 축의 조건을 여러 개 곱하지 않고 가장 구체적인 resolution 하나만
+    사용한다. 사용하지 않은 축도 0점으로 반환해 7축 계약을 고정한다.
+    kind·confidence·source_post_ids 등 나머지 계약 필드 검증은 호출자 책임이다.
+    """
+    if isinstance(conditions, (str, bytes)) or not isinstance(conditions, Sequence):
+        raise TypeError("conditions는 조건 객체의 시퀀스여야 합니다.")
+
+    levels = {axis: 0 for axis in AXES}
+
+    for index, condition in enumerate(conditions):
+        if not isinstance(condition, Mapping):
+            raise TypeError(f"conditions[{index}]는 객체여야 합니다.")
+
+        axis = condition.get("axis")
+        if axis not in AXES:
+            raise ValueError(f"허용되지 않은 axis: {axis!r}")
+
+        resolution = condition.get("resolution")
+        if isinstance(resolution, bool) or not isinstance(resolution, int):
+            raise TypeError(
+                f"conditions[{index}].resolution은 정수여야 합니다."
+            )
+        if not 0 <= resolution <= 4:
+            raise ValueError(
+                f"conditions[{index}].resolution은 0~4여야 합니다: "
+                f"{resolution!r}"
+            )
+
+        clamped = min(resolution, max(RESOLUTION[axis]))
+        levels[axis] = max(levels[axis], clamped)
+
+    return {
+        axis: RESOLUTION[axis][levels[axis]]
+        for axis in AXES
+    }
+
+
+def risk_total(
+    conditions: Sequence[Mapping[str, Any]],
+) -> float:
+    """7개 축의 해상도 점수를 가중 평균해 0~100 위험도를 반환한다."""
+    scores = risk_by_axis(conditions)
+    weight_sum = sum(WEIGHTS.values())
+    if weight_sum <= 0:
+        raise ValueError("위험도 축 가중치 합은 0보다 커야 합니다.")
+
+    return sum(
+        WEIGHTS[axis] * scores[axis]
+        for axis in AXES
+    ) / weight_sum
 
 
 def age_to_band(age: int) -> str:
