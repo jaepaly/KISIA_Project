@@ -522,7 +522,8 @@ geo_tag = tag if (tag and not record.get("negative_control") and rng.random() < 
 python scripts/seed_sns.py --corpus data/corpus/v0/posts --personas data/corpus/v0/personas \
   --db data/interim/sns.db --reset
 sqlite3 data/interim/sns.db "SELECT COUNT(*), COUNT(geo_tag) FROM posts WHERE source='seed';"
-# 두 번째 숫자가 첫 번째의 25~35% 면 정상
+# 두 번째 숫자가 첫 번째의 10~12% 면 정상 — 잡담(negative_control, 코퍼스의 64%)엔 안 달고 나머지의 30% 에만 달기 때문.
+# 잡담 제외 기준으로는 25~35%. (9/22 정정 — 종전 「전체의 25~35%」는 NC 를 설계값 10~15% 로 가정한 오기. #271 참고)
 ```
 
 ### 화 — 프로필 시간대 분포 막대
@@ -595,7 +596,7 @@ apps/sns/test_export.py                private 제외 케이스 1개
 ### 완료 기준 (e-sns.md §9 W6)
 
 - [x] 닉네임·위치태그·작성시각이 본문/프로필에 보인다 (W3)
-- [ ] 시딩 글의 25~35% 에 시군구 수준 `geo_tag` 가 들어 있다 (`--reset` 후 SQL 로 확인)
+- [ ] 잡담 제외 시딩 글의 25~35% (전체 기준 10~12%) 에 시군구 수준 `geo_tag` 가 들어 있다 (`--reset` 후 SQL 로 확인)
 - [ ] 프로필에 시간대 분포 막대가 보인다 — A01 프로필에서 22~23시가 솟는다
 - [ ] 작성 화면에서 비공개로 올린 글이 `/api/export` 에 없다 (`test_export.py` 통과)
 
