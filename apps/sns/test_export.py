@@ -141,3 +141,46 @@ def test_비공개_글은_안_나간다(client):
 
 def test_모르는_사용자는_404(client):
     assert client.get("/api/export/u_deadbeef").status_code == 404
+
+
+# ── W6 — 작성 화면 공개범위 선택 ────────────────────────────────────
+def test_작성_화면에서_비공개로_올린_글은_export에_없다(client):
+    """최초 공개범위 선택 — app.py:113 이 'public' 고정이던 것의 회귀 테스트."""
+    before = len(get(client)["posts"])
+    client.post("/posts", data={
+        "author_id": "S01", "body": "비공개로 씁니다",
+        "created_at": "2026-03-13T09:00", "visibility": "private",
+    })
+    d = get(client)
+    assert len(d["posts"]) == before
+    assert "비공개로 씁니다" not in [p["body"] for p in d["posts"]]
+
+
+def test_작성_화면_기본값은_공개다(client):
+    before = len(get(client)["posts"])
+    client.post("/posts", data={
+        "author_id": "S01", "body": "공개로 씁니다",
+        "created_at": "2026-03-13T09:05",
+    })
+    d = get(client)
+    assert len(d["posts"]) == before + 1
+    assert "공개로 씁니다" in [p["body"] for p in d["posts"]]
+
+
+# ── W6 — 활동 메타 편집 라우트 ──────────────────────────────────────
+def test_닉네임을_빈값으로_보내면_기존값이_유지된다(client):
+    """실수로 닉네임을 지워버리는 걸 막는 안전장치."""
+    before = get(client)["nickname"]
+    client.post("/u/u_3f2a91c4/edit", data={"nickname": "", "bio": ""})
+    assert get(client)["nickname"] == before == "골목 사진"
+
+
+def test_geo_tag를_빈값으로_보내면_NULL이_된다(client):
+    """위치태그를 지우는 정상 동작 — 빈 문자열이 아니라 None으로 나가야 한다."""
+    p0 = next(x for x in get(client)["posts"] if x["post_id"] == "S01_b01")
+    assert p0["activity_meta"]["geo_tag"] == "성동구 성수동"  # 사전 확인
+
+    client.post("/posts/S01_b01/edit", data={"geo_tag": ""})
+
+    p1 = next(x for x in get(client)["posts"] if x["post_id"] == "S01_b01")
+    assert p1["activity_meta"]["geo_tag"] is None

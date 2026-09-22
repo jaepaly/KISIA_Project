@@ -107,12 +107,16 @@ def create_post():
         created_at += ":00"
     created_at += "+09:00"
 
+    visibility = f.get("visibility", "public")
+    if visibility not in ("public", "private"):
+        abort(400)
+
     post_id = f"{author_id}_m{os.urandom(4).hex()}"
     db().execute(
         "INSERT INTO posts(post_id, author_id, title, body, created_at,"
-        " geo_tag, visibility, source) VALUES (?,?,?,?,?,?,'public','manual')",
+        " geo_tag, visibility, source) VALUES (?,?,?,?,?,?,?,'manual')",
         (post_id, author_id, f.get("title") or None, f["body"], created_at,
-         f.get("geo_tag") or None))
+         f.get("geo_tag") or None, visibility))
 
     captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
     for idx, caption in enumerate(captions):
