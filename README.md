@@ -25,7 +25,7 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 
 ## 지금 상태
 
-**W5 주요 성과 완료 · W6 진입 (추석 연휴 9/24~27 · 근무일 월~수)** — `w05` 태그는 C 증류 타깃 PR 머지 후 (그때 compare 링크 추가)
+**W5 주요 성과 완료 · W6 진입 (추석 연휴 9/24~27 · 근무일 월~수)** — `w05` 태그 완료 (9/22 · #268 머지 커밋 `c792573`) → [compare w04...w05](../../compare/w04...w05)
 
 | 항목 | W5 끝 |
 |---|---|
@@ -92,9 +92,9 @@ D(PM)이 W5 성과를 발표한다. 개인 5줄 보고를 **일요일 9/20 저�
 
 | 항목 | 담당 | 상태 |
 |---|---|---|
-| PR #268 `risk_total` clamp 수정 | C | **수정 대기** (CHANGES_REQUESTED 9/19) |
+| PR #268 `risk_total` clamp 수정 | C | **머지 완료** (9/22 · [#268](../../pull/268)) |
 | #261 span_to_condition() 구현 | C | **W6 핵심** — clues.py → C3 어댑터 → 증류 타깃 PR |
-| w05 태그 | D(PM) | C 증류 타깃 PR 머지 후 |
+| w05 태그 | D(PM) | **완료** (9/22 · `c792573` · [compare](../../compare/w04...w05)) |
 | 활동 메타 — 남은 조각 | E | 스키마·토글·표시는 W3에 끝남. **시딩 위치태그 · 프로필 시간대 분포**가 남았다 |
 
 ---
@@ -411,9 +411,9 @@ data/corpus/v0/gold/contribution/<pid>.json     증류 타깃 세트 (커밋한�
 ### 완료 기준
 
 - [x] `loo.py` LOO 기여도 — 단위 테스트 통과 (#251 머지 · 9/16 · CI guard pass)
-- [ ] PR #268 — 범위 검사 유지 + clamp · 거부 케이스 3개 추가 · 재제출 (월)
+- [x] PR #268 — 범위 검사 유지 + clamp · 거부 케이스 3개 추가 · 재제출 → 머지 (9/22)
 - [ ] `span_to_condition()` + `build_conditions()` — 표 그대로 · `test_clues.py` 통과 · condition 전체 필드 (화)
-- [ ] `gen_contribution_targets.py` — 골드 있는 인물 전부 · `check-jsonschema` 전 파일 통과 (수)
+- [ ] `gen_contribution_targets.py` — test split 제외 후 생성(`--exclude-posts`) · 건너뛴 인물 목록을 PR 본문에 기재 · `check-jsonschema` 전 파일 통과 (수) — 생성기 수정은 [#269](../../pull/269)
 - [ ] PR — 검산표 20명 + 건너뛴 인물 목록 + 검산 3가지 소견 (수 9/23 · 늦으면 월 9/28)
 
 ---
@@ -443,13 +443,13 @@ W5 성과 발표. [위 팀 회의 §0](#0-전원-공통--월-921-1115-kisia-줌-
 2. E 활동 메타 마무리 보고
 3. W7 대응 — B 1단 F1 확정·C 기여도 v1 확정·D Qwen3 v1 확정
 
-### w05 태그 — C PR 머지 후
+### w05 태그 — 완료 (9/22)
 
-C 증류 타깃 PR 머지 직후 단다. **원격에 태그가 없는 상태**(현재 origin에는 w01·w02만 있고 w04는 로컬에만)이므로 push까지 한다:
+`w05` → `c792573` (PR #268 머지 커밋). 원격 태그는 `w01 w02 w04 w05`. compare 링크는 주간활동보고서 「활동 내용」에 넣는다:
 
-```bash
-git tag w05 && git push origin w04 w05
-```
+https://github.com/jaepaly/KISIA_Project/compare/w04...w05
+
+다음 주부터는 `bash scripts/tag_week.sh w06` 한 줄이면 된다 (태그 + push + compare 링크 출력).
 
 ### PM 몫
 
@@ -459,14 +459,14 @@ git tag w05 && git push origin w04 w05
 | **월 9/21 11:15** | KISIA 줌 주간보고회 발표 |
 | 월 9/21 | 멘토님께 멘토링 날짜 확인 (목 9/24 = 연휴) |
 | **수 9/23 23:59** | 주간보고서 최종 제출 |
-| C PR 머지 후 | w05 태그 (+ w04 push) |
+| 9/22 | w05 태그 — **완료** (`c792573`) |
 
 ### 완료 기준
 
 - [ ] 월 9/21 KISIA 줌 발표 완료
 - [ ] 멘토링 날짜 확정 · README 갱신
 - [ ] 주간보고서 수 9/23 23:59 제출
-- [ ] w05 태그 (C 증류 타깃 PR 머지 후 · 연휴 걸치면 W7)
+- [x] w05 태그 — 9/22 `c792573` · [compare](../../compare/w04...w05)
 
 ---
 
@@ -698,14 +698,15 @@ KISIA_Project/
 
 ---
 
-## 현재 미결 (9/20 기준)
+## 현재 미결 (9/22 기준)
 
 **PR**
-- [ ] PR #268 C `risk_total` + clamp 수정 — **C 수정 대기** → 머지 후 C3 어댑터 연결
+- [x] PR #268 C `risk_total` + clamp 수정 — 머지 (9/22)
+- [ ] [#269](../../pull/269) 증류 타깃 생성기 수정 (blind 합침 제거 · test 제외) — **C 리뷰 대기** · base `C/c2/span-to-condition` → 그 PR 을 C 가 먼저 연다
 
 **이슈 — W6**
 - [ ] #261 span_to_condition() 구현 → C3 어댑터 → 증류 타깃 PR
-- [ ] w05 태그 (C 증류 타깃 PR 머지 후)
+- [x] w05 태그 (9/22)
 
 **장기**
 - [ ] [#206](../../issues/206) #201 후속 추적 — 각자 인물 JSON 확인
