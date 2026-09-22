@@ -1,0 +1,313 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_92447797bbd4",
+    "post_ids": [
+      "S01b_b01",
+      "S01b_b02",
+      "S01b_b03",
+      "S01b_b04",
+      "S01b_b05",
+      "S01b_b06",
+      "S01b_b07",
+      "S01b_b08",
+      "S01b_b09",
+      "S01b_b10",
+      "S01b_b11",
+      "S01b_b12",
+      "S01b_b13",
+      "S01b_b14",
+      "S01b_b15",
+      "S01b_b16",
+      "S01b_b17",
+      "S01b_b18",
+      "S01b_b19",
+      "S01b_b20"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 34.29,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "S01b_b12",
+        "risk_without": 20.0,
+        "delta": -14.29,
+        "rank": 1,
+        "clue_ids": [
+          "S01b_b12_s01",
+          "S01b_b12_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b12_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b12_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b18",
+        "risk_without": 25.71,
+        "delta": -8.57,
+        "rank": 2,
+        "clue_ids": [
+          "S01b_b18_s01",
+          "S01b_b18_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b18_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b18_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b01",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b02",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "S01b_b02_s01",
+          "S01b_b02_s02",
+          "S01b_b02_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b02_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b02_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b02_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b03",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "S01b_b03_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b03_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b04",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 6,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b05",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 7,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b06",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 8,
+        "clue_ids": [
+          "S01b_b06_s01",
+          "S01b_b06_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b06_s01",
+            "text_id": "title"
+          },
+          {
+            "span_id": "S01b_b06_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b07",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 9,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b08",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 10,
+        "clue_ids": [
+          "S01b_b08_s01",
+          "S01b_b08_s02",
+          "S01b_b08_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b08_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b08_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b08_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b09",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 11,
+        "clue_ids": [
+          "S01b_b09_s01",
+          "S01b_b09_s02",
+          "S01b_b09_s03",
+          "S01b_b09_s04",
+          "S01b_b09_s05"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b09_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b09_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "S01b_b09_s03",
+            "text_id": "photo_caption:0"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b10",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 12,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b11",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 13,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b13",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 14,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b14",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 15,
+        "clue_ids": [
+          "S01b_b14_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "S01b_b14_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "S01b_b15",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 16,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b16",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 17,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b17",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 18,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b19",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 19,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "S01b_b20",
+        "risk_without": 34.29,
+        "delta": 0.0,
+        "rank": 20,
+        "clue_ids": [],
+        "top_spans": []
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "S01b_b12",
+        "risk_after": 20.0
+      },
+      {
+        "remove": "S01b_b18",
+        "risk_after": 11.43
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

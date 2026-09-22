@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_1d3a071aecf2",
+    "post_ids": [
+      "D17_b05",
+      "D17_b12",
+      "D17_b15",
+      "D17_b16",
+      "D17_b20",
+      "D17_b21",
+      "D17_b22"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 47.86,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "D17_b05",
+        "risk_without": 39.29,
+        "delta": -8.57,
+        "rank": 1,
+        "clue_ids": [
+          "D17_b05_s01",
+          "D17_b05_s02",
+          "D17_b05_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b05_s01",
+            "text_id": "title"
+          },
+          {
+            "span_id": "D17_b05_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b05_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b12",
+        "risk_without": 39.29,
+        "delta": -8.57,
+        "rank": 2,
+        "clue_ids": [
+          "D17_b12_s01",
+          "D17_b12_s02",
+          "D17_b12_s03",
+          "D17_b12_s04"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b12_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b12_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b12_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b20",
+        "risk_without": 40.0,
+        "delta": -7.86,
+        "rank": 3,
+        "clue_ids": [
+          "D17_b20_s01",
+          "D17_b20_s02",
+          "D17_b20_s03",
+          "D17_b20_s04"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b20_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b20_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b20_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b15",
+        "risk_without": 40.71,
+        "delta": -7.14,
+        "rank": 4,
+        "clue_ids": [
+          "D17_b15_s01",
+          "D17_b15_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b15_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b15_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b16",
+        "risk_without": 47.86,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "D17_b16_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b16_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b21",
+        "risk_without": 47.86,
+        "delta": 0.0,
+        "rank": 6,
+        "clue_ids": [
+          "D17_b21_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b21_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b22",
+        "risk_without": 47.86,
+        "delta": 0.0,
+        "rank": 7,
+        "clue_ids": [
+          "D17_b22_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b22_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "D17_b05",
+        "risk_after": 39.29
+      },
+      {
+        "remove": "D17_b20",
+        "risk_after": 25.71
+      },
+      {
+        "remove": "D17_b12",
+        "risk_after": 17.14
+      },
+      {
+        "remove": "D17_b15",
+        "risk_after": 10.0
+      },
+      {
+        "remove": "D17_b22",
+        "risk_after": 5.71
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

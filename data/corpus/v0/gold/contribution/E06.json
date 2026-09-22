@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_51afa6f61e34",
+    "post_ids": [
+      "E06_b13",
+      "E06_b18",
+      "E06_b19",
+      "E06_b26",
+      "E06_b27"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 11.43,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "E06_b13",
+        "risk_without": 5.71,
+        "delta": -5.71,
+        "rank": 1,
+        "clue_ids": [
+          "E06_b13_s01",
+          "E06_b13_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E06_b13_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E06_b13_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E06_b18",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 2,
+        "clue_ids": [
+          "E06_b18_s01",
+          "E06_b18_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E06_b18_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E06_b18_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E06_b19",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "E06_b19_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E06_b19_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E06_b26",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "E06_b26_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E06_b26_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E06_b27",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "E06_b27_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E06_b27_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "E06_b13",
+        "risk_after": 5.71
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

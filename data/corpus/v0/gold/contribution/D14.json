@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_0683c2bb5f8f",
+    "post_ids": [
+      "D14_b03",
+      "D14_b05",
+      "D14_b08",
+      "D14_b15",
+      "D14_b19"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 18.57,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "D14_b15",
+        "risk_without": 11.43,
+        "delta": -7.14,
+        "rank": 1,
+        "clue_ids": [
+          "D14_b15_s01",
+          "D14_b15_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D14_b15_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D14_b15_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b03",
+        "risk_without": 18.57,
+        "delta": 0.0,
+        "rank": 2,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "D14_b05",
+        "risk_without": 18.57,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "D14_b05_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D14_b05_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b08",
+        "risk_without": 18.57,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "D14_b08_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D14_b08_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D14_b19",
+        "risk_without": 18.57,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "D14_b19_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D14_b19_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "D14_b15",
+        "risk_after": 11.43
+      },
+      {
+        "remove": "D14_b05",
+        "risk_after": 5.71
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

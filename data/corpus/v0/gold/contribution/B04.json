@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_2d12e99ea105",
+    "post_ids": [
+      "B04_b04",
+      "B04_b05",
+      "B04_b11",
+      "B04_b15",
+      "B04_b21",
+      "B04_b22"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 5.71,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "B04_b04",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 1,
+        "clue_ids": [
+          "B04_b04_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b04_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b05",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 2,
+        "clue_ids": [
+          "B04_b05_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b05_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b11",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "B04_b11_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b11_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b15",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "B04_b15_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b15_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b21",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "B04_b21_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b21_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B04_b22",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 6,
+        "clue_ids": [
+          "B04_b22_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B04_b22_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}
