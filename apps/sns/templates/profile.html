@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ a.nickname }} — 파도풀{% endblock %}
+{% block title %}{{ a.nickname }} — Veilo{% endblock %}
 {% block content %}
 
 <p><a href="/">← 목록으로</a></p>
@@ -8,7 +8,39 @@
 {% if a.bio %}<p style="color:#555;">{{ a.bio }}</p>{% endif %}
 <p class="post-meta">글 {{ posts|length }}편 · {{ a.joined_at[:10] }} 가입</p>
 
+<details style="margin: 12px 0;">
+  <summary style="cursor:pointer; color:#666; font-size:0.9em;">✏️ 닉네임 · 소개 수정</summary>
+  <form method="post" action="/u/{{ a.user_ref }}/edit" style="margin-top:10px;">
+    <label for="nickname">닉네임</label>
+    <input type="text" name="nickname" id="nickname" value="{{ a.nickname }}" required>
+    <label for="bio">소개 (선택)</label>
+    <input type="text" name="bio" id="bio" value="{{ a.bio or '' }}" placeholder="한 줄 소개">
+    <button type="submit">저장</button>
+  </form>
+</details>
+
 <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+{% if hour_dist %}
+<section style="margin-bottom: 24px;">
+  <h3 style="font-size: 0.85em; color: #888; margin-bottom: 8px; font-weight: normal; letter-spacing: 0.03em;">시간대별 작성 분포</h3>
+  {% set max_cnt = hour_dist.values() | max %}
+  <div style="display: flex; align-items: flex-end; gap: 2px; height: 48px;">
+    {% for h in range(24) %}
+      {% set cnt = hour_dist.get(h, 0) %}
+      {% set bar_h = (cnt / max_cnt * 44) | int if max_cnt > 0 else 0 %}
+      <div title="{{ h }}시 {{ cnt }}편"
+           style="flex: 1; background: {% if cnt > 0 %}#4a7fc1{% else %}#e8e8e8{% endif %};
+                  height: {{ bar_h if cnt > 0 else 2 }}px; align-self: flex-end;
+                  border-radius: 2px 2px 0 0; min-width: 4px;">
+      </div>
+    {% endfor %}
+  </div>
+  <div style="display: flex; justify-content: space-between; font-size: 0.7em; color: #aaa; margin-top: 3px;">
+    <span>0시</span><span>6시</span><span>12시</span><span>18시</span><span>23시</span>
+  </div>
+</section>
+{% endif %}
 
 {% if not posts %}
   <p class="empty">아직 쓴 글이 없습니다.</p>

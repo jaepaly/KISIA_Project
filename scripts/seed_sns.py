@@ -36,6 +36,14 @@ PHOTO_CAPTION_RE = re.compile(r"^photo_caption:(\d+)$")
 # 코퍼스에 시각이 없을 때 쓸 기본 활동 시간대 (본문에 없을 경우의 폴백)
 DEFAULT_HOURS = list(range(8, 23))
 
+# 잡담(네거티브 컨트롤) 제외 글 중 위치태그를 달 확률 — 설계 파라미터는 이 0.30이다.
+# 전부 달면 시연에서 "태그 지우기"가 재미없어서 일부러 30%만 단다 (README W6 §「월」).
+# ⚠️ 전체 글 기준으로는 약 11%다 — 실측(2026-09-22, 115명·3092편) 네거티브
+# 컨트롤이 64%(1978/3092)라, "잡담 제외 글의 30%"가 전체로는 낮게 보인다.
+# README의 "전체 25~35%" 문구는 PM이 NC 10~15%(설계값)를 가정해 계산한
+# 검산값이 잘못 박힌 것이라 (2026-09-22 PM 코멘트) — README 는 9/22 정정 완료(120d651).
+_GEO_TAG_PROB = 0.30
+
 
 def user_ref_for(persona_id: str) -> str:
     """persona_id 로부터 결정적인 u_[0-9a-f]{8,} 핸들을 만든다.
@@ -105,6 +113,17 @@ def iter_posts(posts_dir: Path, persona_id: str):
                 yield json.loads(line)
 
 
+def geo_tag_for(persona: dict) -> str | None:
+    """인물의 ground_truth.location 에서 시군구 수준만 뽑는다.
+
+    "서울특별시 마포구 망원동" → "마포구". 읍면동은 본문 단서와 결합했을
+    때만 좁혀지게 위치태그에는 담지 않는다 (README W6 §「월」).
+    """
+    loc = (persona.get("ground_truth") or {}).get("location") or ""
+    parts = loc.split()
+    return " ".join(parts[1:-1]) if len(parts) >= 3 else (loc or None)
+
+
 def scatter_created_at(record: dict, hours: list[int], rng: random.Random) -> str:
     """코퍼스에 created_at 이 있으면 그대로 쓰고, 없으면 흩뿌려 만든다."""
     created_at = record.get("created_at")
@@ -144,6 +163,7 @@ def seed_persona(
     )
 
     hours = active_hours_from_persona(persona)
+    geo_tag = geo_tag_for(persona)
 
     n_posts = 0
     n_photos = 0
@@ -156,11 +176,20 @@ def seed_persona(
         if nickname_from_post:
             nickname = nickname_from_post
 
+        # 잡담(네거티브 컨트롤) 제외 글의 30% 에만 위치태그를 단다 — 전부 달면
+        # 시연에서 「지우기」가 재미없다 (README W6 §「월」 · 위 _GEO_TAG_PROB 주석).
+        # 전체 글 기준으로는 약 11% 가 정상값이다 (NC 64%).
+        tag = (
+            geo_tag
+            if geo_tag and not record.get("negative_control") and rng.random() < _GEO_TAG_PROB
+            else None
+        )
+
         cur = conn.execute(
             "INSERT OR IGNORE INTO posts"
             "(post_id, author_id, title, body, created_at, geo_tag, visibility, source)"
             " VALUES (?, ?, ?, ?, ?, ?, 'public', 'seed')",
-            (post_id, persona_id, texts.get("title"), texts.get("body"), created_at, None),
+            (post_id, persona_id, texts.get("title"), texts.get("body"), created_at, tag),
         )
         if cur.rowcount:
             n_posts += 1

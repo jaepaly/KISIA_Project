@@ -107,12 +107,16 @@ def create_post():
         created_at += ":00"
     created_at += "+09:00"
 
+    visibility = f.get("visibility", "public")
+    if visibility not in ("public", "private"):
+        abort(400)
+
     post_id = f"{author_id}_m{os.urandom(4).hex()}"
     db().execute(
         "INSERT INTO posts(post_id, author_id, title, body, created_at,"
-        " geo_tag, visibility, source) VALUES (?,?,?,?,?,?,'public','manual')",
+        " geo_tag, visibility, source) VALUES (?,?,?,?,?,?,?,'manual')",
         (post_id, author_id, f.get("title") or None, f["body"], created_at,
-         f.get("geo_tag") or None))
+         f.get("geo_tag") or None, visibility))
 
     captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
     for idx, caption in enumerate(captions):
@@ -147,6 +151,37 @@ def toggle_visibility(post_id: str):
     return redirect(back)
 
 
+@app.post("/u/<user_ref>/edit")
+def edit_profile(user_ref: str):
+    """활동 메타 관리 — nickname · bio 수정. W6."""
+    a = db().execute(
+        "SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
+    if a is None:
+        abort(404)
+    f = request.form
+    nickname = f.get("nickname", "").strip() or a["nickname"]
+    bio = f.get("bio", "").strip() or None
+    db().execute(
+        "UPDATE authors SET nickname = ?, bio = ? WHERE user_ref = ?",
+        (nickname, bio, user_ref))
+    db().commit()
+    return redirect(f"/u/{user_ref}")
+
+
+@app.post("/posts/<post_id>/edit")
+def edit_post_meta(post_id: str):
+    """활동 메타 관리 — geo_tag 수정. W6."""
+    row = db().execute(
+        "SELECT author_id FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+    if row is None:
+        abort(404)
+    geo_tag = request.form.get("geo_tag", "").strip() or None
+    db().execute(
+        "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
+    db().commit()
+    return redirect(f"/posts/{post_id}")
+
+
 @app.get("/u/<user_ref>")
 def profile(user_ref: str):
     a = db().execute(
@@ -156,8 +191,13 @@ def profile(user_ref: str):
     posts = db().execute(
         "SELECT * FROM posts WHERE author_id = ? ORDER BY created_at DESC",
         (a["author_id"],)).fetchall()
+    raw = db().execute(
+        "SELECT CAST(substr(created_at, 12, 2) AS INTEGER) AS h, COUNT(*) AS cnt"
+        " FROM posts WHERE author_id = ? GROUP BY h ORDER BY h",
+        (a["author_id"],)).fetchall()
+    hour_dist = {r["h"]: r["cnt"] for r in raw}
     try:
-        return render_template("profile.html", a=a, posts=posts)
+        return render_template("profile.html", a=a, posts=posts, hour_dist=hour_dist)
     except sqlite3.OperationalError:
         return _todo("프로필", "§4")
 

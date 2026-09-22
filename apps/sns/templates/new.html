@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}글 작성 — 파도풀{% endblock %}
+{% block title %}글 작성 — Veilo{% endblock %}
 {% block content %}
 
 <h1>글 작성</h1>
@@ -36,6 +36,12 @@
     (새벽 시간대에 쓰는 패턴 등을 시연하려면 필요합니다)
   </label>
   <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
+
+  <label for="visibility">공개 범위</label>
+  <select name="visibility" id="visibility">
+    <option value="public">공개</option>
+    <option value="private">비공개</option>
+  </select>
 
   <button type="submit" {% if not authors %}disabled{% endif %}>올리기</button>
 </form>
