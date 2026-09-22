@@ -7,42 +7,21 @@
       "E17_b01",
       "E17_b16",
       "E17_b18",
-      "E17_b25",
       "E17_b26",
       "E17_b28"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 18.57,
+    "baseline_risk": 10.0,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "E17_b25",
-        "risk_without": 10.0,
-        "delta": -8.57,
-        "rank": 1,
-        "clue_ids": [
-          "E17_b25_s01",
-          "E17_b25_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E17_b25_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E17_b25_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E17_b01",
-        "risk_without": 18.57,
+        "risk_without": 10.0,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "E17_b01_s01"
         ],
@@ -55,9 +34,9 @@
       },
       {
         "post_id": "E17_b16",
-        "risk_without": 18.57,
+        "risk_without": 10.0,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "E17_b16_s01"
         ],
@@ -70,9 +49,9 @@
       },
       {
         "post_id": "E17_b18",
-        "risk_without": 18.57,
+        "risk_without": 10.0,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "E17_b18_s01",
           "E17_b18_s02"
@@ -90,9 +69,9 @@
       },
       {
         "post_id": "E17_b26",
-        "risk_without": 18.57,
+        "risk_without": 10.0,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 4,
         "clue_ids": [
           "E17_b26_s01"
         ],
@@ -105,9 +84,9 @@
       },
       {
         "post_id": "E17_b28",
-        "risk_without": 18.57,
+        "risk_without": 10.0,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 5,
         "clue_ids": [
           "E17_b28_s01"
         ],
@@ -120,12 +99,7 @@
       }
     ],
     "user_scoped": [],
-    "greedy_path": [
-      {
-        "remove": "E17_b25",
-        "risk_after": 10.0
-      }
-    ],
+    "greedy_path": [],
     "approx_error": null,
     "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
   }

@@ -8,7 +8,6 @@
       "D22_b05",
       "D22_b06",
       "D22_b12",
-      "D22_b15",
       "D22_b22"
     ],
     "method": "loo"
@@ -82,30 +81,10 @@
         "top_spans": []
       },
       {
-        "post_id": "D22_b15",
-        "risk_without": 13.57,
-        "delta": 0.0,
-        "rank": 5,
-        "clue_ids": [
-          "D22_b15_s01",
-          "D22_b15_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D22_b15_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "D22_b15_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D22_b22",
         "risk_without": 13.57,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 5,
         "clue_ids": [
           "D22_b22_s01"
         ],

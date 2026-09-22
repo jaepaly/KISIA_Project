@@ -6,19 +6,18 @@
     "post_ids": [
       "B03_b05",
       "B03_b06",
-      "B03_b15",
       "B03_b20"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 18.57,
+    "baseline_risk": 12.86,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
         "post_id": "B03_b20",
-        "risk_without": 11.43,
+        "risk_without": 5.71,
         "delta": -7.14,
         "rank": 1,
         "clue_ids": [
@@ -32,25 +31,10 @@
         ]
       },
       {
-        "post_id": "B03_b15",
-        "risk_without": 12.86,
-        "delta": -5.71,
-        "rank": 2,
-        "clue_ids": [
-          "B03_b15_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B03_b15_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B03_b05",
-        "risk_without": 18.57,
+        "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "B03_b05_s01",
           "B03_b05_s02"
@@ -68,9 +52,9 @@
       },
       {
         "post_id": "B03_b06",
-        "risk_without": 18.57,
+        "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "B03_b06_s01"
         ],
@@ -86,10 +70,6 @@
     "greedy_path": [
       {
         "remove": "B03_b20",
-        "risk_after": 11.43
-      },
-      {
-        "remove": "B03_b15",
         "risk_after": 5.71
       }
     ],

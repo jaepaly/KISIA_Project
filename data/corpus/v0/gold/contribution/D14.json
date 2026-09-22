@@ -4,7 +4,6 @@
   "input": {
     "user_ref": "u_0683c2bb5f8f",
     "post_ids": [
-      "D14_b03",
       "D14_b05",
       "D14_b08",
       "D14_b15",
@@ -38,18 +37,10 @@
         ]
       },
       {
-        "post_id": "D14_b03",
-        "risk_without": 18.57,
-        "delta": 0.0,
-        "rank": 2,
-        "clue_ids": [],
-        "top_spans": []
-      },
-      {
         "post_id": "D14_b05",
         "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "D14_b05_s01"
         ],
@@ -64,7 +55,7 @@
         "post_id": "D14_b08",
         "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "D14_b08_s01"
         ],
@@ -79,7 +70,7 @@
         "post_id": "D14_b19",
         "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 4,
         "clue_ids": [
           "D14_b19_s01"
         ],

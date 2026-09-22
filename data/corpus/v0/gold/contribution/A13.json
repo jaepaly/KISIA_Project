@@ -4,10 +4,8 @@
   "input": {
     "user_ref": "u_899af38b9adb",
     "post_ids": [
-      "A13_b04",
       "A13_b06",
       "A13_b07",
-      "A13_b09",
       "A13_b18",
       "A13_b21",
       "A13_b23",
@@ -39,25 +37,10 @@
         ]
       },
       {
-        "post_id": "A13_b04",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 2,
-        "clue_ids": [
-          "A13_b04_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "A13_b04_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "A13_b06",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "A13_b06_s01",
           "A13_b06_s02"
@@ -77,7 +60,7 @@
         "post_id": "A13_b07",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "A13_b07_s01"
         ],
@@ -89,25 +72,10 @@
         ]
       },
       {
-        "post_id": "A13_b09",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 5,
-        "clue_ids": [
-          "A13_b09_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "A13_b09_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "A13_b18",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 4,
         "clue_ids": [
           "A13_b18_s01"
         ],
@@ -122,7 +90,7 @@
         "post_id": "A13_b21",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 7,
+        "rank": 5,
         "clue_ids": [
           "A13_b21_s01"
         ],
@@ -137,7 +105,7 @@
         "post_id": "A13_b23",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 8,
+        "rank": 6,
         "clue_ids": [
           "A13_b23_s01"
         ],
@@ -152,7 +120,7 @@
         "post_id": "A13_b26",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 7,
         "clue_ids": [
           "A13_b26_s01"
         ],
@@ -167,7 +135,7 @@
         "post_id": "A13_b29",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 10,
+        "rank": 8,
         "clue_ids": [
           "A13_b29_s01",
           "A13_b29_s02"
@@ -187,7 +155,7 @@
         "post_id": "A13_b30",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 9,
         "clue_ids": [
           "A13_b30_s01"
         ],

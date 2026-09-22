@@ -4,60 +4,22 @@
   "input": {
     "user_ref": "u_1701d0609e59",
     "post_ids": [
-      "B12_b03",
       "B12_b05",
-      "B12_b12",
-      "B12_b15",
       "B12_b24",
       "B12_b30"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 20.0,
+    "baseline_risk": 5.71,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "B12_b03",
-        "risk_without": 11.43,
-        "delta": -8.57,
-        "rank": 1,
-        "clue_ids": [
-          "B12_b03_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B12_b03_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "B12_b12",
-        "risk_without": 14.29,
-        "delta": -5.71,
-        "rank": 2,
-        "clue_ids": [
-          "B12_b12_s01",
-          "B12_b12_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B12_b12_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "B12_b12_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B12_b05",
-        "risk_without": 20.0,
+        "risk_without": 5.71,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 1,
         "clue_ids": [
           "B12_b05_s01"
         ],
@@ -69,25 +31,10 @@
         ]
       },
       {
-        "post_id": "B12_b15",
-        "risk_without": 20.0,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "B12_b15_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B12_b15_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B12_b24",
-        "risk_without": 20.0,
+        "risk_without": 5.71,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 2,
         "clue_ids": [
           "B12_b24_s01"
         ],
@@ -100,9 +47,9 @@
       },
       {
         "post_id": "B12_b30",
-        "risk_without": 20.0,
+        "risk_without": 5.71,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 3,
         "clue_ids": [
           "B12_b30_s01"
         ],
@@ -115,16 +62,7 @@
       }
     ],
     "user_scoped": [],
-    "greedy_path": [
-      {
-        "remove": "B12_b03",
-        "risk_after": 11.43
-      },
-      {
-        "remove": "B12_b12",
-        "risk_after": 5.71
-      }
-    ],
+    "greedy_path": [],
     "approx_error": null,
     "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
   }

@@ -6,8 +6,7 @@
     "post_ids": [
       "D04_b03",
       "D04_b06",
-      "D04_b07",
-      "D04_b12"
+      "D04_b07"
     ],
     "method": "loo"
   },
@@ -65,21 +64,6 @@
             "text_id": "body"
           }
         ]
-      },
-      {
-        "post_id": "D04_b12",
-        "risk_without": 20.0,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "D04_b12_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D04_b12_s01",
-            "text_id": "body"
-          }
-        ]
       }
     ],
     "user_scoped": [],
@@ -91,6 +75,10 @@
       {
         "remove": "D04_b03",
         "risk_after": 5.71
+      },
+      {
+        "remove": "D04_b06",
+        "risk_after": 0.0
       }
     ],
     "approx_error": null,

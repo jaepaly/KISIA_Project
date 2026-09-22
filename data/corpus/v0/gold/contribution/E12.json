@@ -5,18 +5,14 @@
     "user_ref": "u_0bc066aabf4b",
     "post_ids": [
       "E12_b04",
-      "E12_b06",
       "E12_b07",
       "E12_b10",
       "E12_b13",
       "E12_b16",
-      "E12_b21",
       "E12_b22",
-      "E12_b24",
       "E12_b25",
       "E12_b26",
-      "E12_b28",
-      "E12_b30"
+      "E12_b28"
     ],
     "method": "loo"
   },
@@ -46,36 +42,31 @@
         ]
       },
       {
+        "post_id": "E12_b25",
+        "risk_without": 11.43,
+        "delta": -3.57,
+        "rank": 2,
+        "clue_ids": [
+          "E12_b25_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E12_b25_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
         "post_id": "E12_b04",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 3,
         "clue_ids": [
           "E12_b04_s01"
         ],
         "top_spans": [
           {
             "span_id": "E12_b04_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E12_b06",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 3,
-        "clue_ids": [
-          "E12_b06_s01",
-          "E12_b06_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E12_b06_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E12_b06_s02",
             "text_id": "body"
           }
         ]
@@ -146,25 +137,10 @@
         ]
       },
       {
-        "post_id": "E12_b21",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 8,
-        "clue_ids": [
-          "E12_b21_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E12_b21_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E12_b22",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 8,
         "clue_ids": [
           "E12_b22_s01",
           "E12_b22_s02"
@@ -181,66 +157,16 @@
         ]
       },
       {
-        "post_id": "E12_b24",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 10,
-        "clue_ids": [
-          "E12_b24_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E12_b24_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E12_b25",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 11,
-        "clue_ids": [
-          "E12_b25_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E12_b25_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E12_b26",
         "risk_without": 15.0,
         "delta": 0.0,
-        "rank": 12,
+        "rank": 9,
         "clue_ids": [
           "E12_b26_s01"
         ],
         "top_spans": [
           {
             "span_id": "E12_b26_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E12_b30",
-        "risk_without": 15.0,
-        "delta": 0.0,
-        "rank": 13,
-        "clue_ids": [
-          "E12_b30_s01",
-          "E12_b30_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E12_b30_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "E12_b30_s02",
             "text_id": "body"
           }
         ]
@@ -251,6 +177,10 @@
       {
         "remove": "E12_b28",
         "risk_after": 7.86
+      },
+      {
+        "remove": "E12_b25",
+        "risk_after": 4.29
       }
     ],
     "approx_error": null,

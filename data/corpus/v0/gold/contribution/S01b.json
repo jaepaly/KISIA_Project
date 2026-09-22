@@ -18,12 +18,9 @@
       "S01b_b12",
       "S01b_b13",
       "S01b_b14",
-      "S01b_b15",
       "S01b_b16",
-      "S01b_b17",
       "S01b_b18",
-      "S01b_b19",
-      "S01b_b20"
+      "S01b_b19"
     ],
     "method": "loo"
   },
@@ -256,7 +253,7 @@
         ]
       },
       {
-        "post_id": "S01b_b15",
+        "post_id": "S01b_b16",
         "risk_without": 34.29,
         "delta": 0.0,
         "rank": 16,
@@ -264,34 +261,10 @@
         "top_spans": []
       },
       {
-        "post_id": "S01b_b16",
-        "risk_without": 34.29,
-        "delta": 0.0,
-        "rank": 17,
-        "clue_ids": [],
-        "top_spans": []
-      },
-      {
-        "post_id": "S01b_b17",
-        "risk_without": 34.29,
-        "delta": 0.0,
-        "rank": 18,
-        "clue_ids": [],
-        "top_spans": []
-      },
-      {
         "post_id": "S01b_b19",
         "risk_without": 34.29,
         "delta": 0.0,
-        "rank": 19,
-        "clue_ids": [],
-        "top_spans": []
-      },
-      {
-        "post_id": "S01b_b20",
-        "risk_without": 34.29,
-        "delta": 0.0,
-        "rank": 20,
+        "rank": 17,
         "clue_ids": [],
         "top_spans": []
       }

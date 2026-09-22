@@ -7,11 +7,8 @@
       "E21_b06",
       "E21_b16",
       "E21_b18",
-      "E21_b21",
       "E21_b24",
       "E21_b25",
-      "E21_b26",
-      "E21_b27",
       "E21_b28",
       "E21_b29"
     ],
@@ -23,10 +20,35 @@
     "risk_after": null,
     "contributions": [
       {
+        "post_id": "E21_b29",
+        "risk_without": 14.29,
+        "delta": -7.86,
+        "rank": 1,
+        "clue_ids": [
+          "E21_b29_s01",
+          "E21_b29_s02",
+          "E21_b29_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E21_b29_s01",
+            "text_id": "title"
+          },
+          {
+            "span_id": "E21_b29_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E21_b29_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
         "post_id": "E21_b06",
         "risk_without": 22.14,
         "delta": 0.0,
-        "rank": 1,
+        "rank": 2,
         "clue_ids": [
           "E21_b06_s01",
           "E21_b06_s02"
@@ -46,7 +68,7 @@
         "post_id": "E21_b16",
         "risk_without": 22.14,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 3,
         "clue_ids": [
           "E21_b16_s01",
           "E21_b16_s02"
@@ -66,7 +88,7 @@
         "post_id": "E21_b18",
         "risk_without": 22.14,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 4,
         "clue_ids": [
           "E21_b18_s01",
           "E21_b18_s02"
@@ -78,31 +100,6 @@
           },
           {
             "span_id": "E21_b18_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E21_b21",
-        "risk_without": 22.14,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "E21_b21_s01",
-          "E21_b21_s02",
-          "E21_b21_s03"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E21_b21_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "E21_b21_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E21_b21_s03",
             "text_id": "body"
           }
         ]
@@ -143,45 +140,10 @@
         ]
       },
       {
-        "post_id": "E21_b26",
-        "risk_without": 22.14,
-        "delta": 0.0,
-        "rank": 7,
-        "clue_ids": [
-          "E21_b26_s01",
-          "E21_b26_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E21_b26_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E21_b26_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E21_b27",
-        "risk_without": 22.14,
-        "delta": 0.0,
-        "rank": 8,
-        "clue_ids": [
-          "E21_b27_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E21_b27_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E21_b28",
         "risk_without": 22.14,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 7,
         "clue_ids": [
           "E21_b28_s01"
         ],
@@ -191,35 +153,15 @@
             "text_id": "body"
           }
         ]
-      },
-      {
-        "post_id": "E21_b29",
-        "risk_without": 22.14,
-        "delta": 0.0,
-        "rank": 10,
-        "clue_ids": [
-          "E21_b29_s01",
-          "E21_b29_s02",
-          "E21_b29_s03"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E21_b29_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "E21_b29_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E21_b29_s03",
-            "text_id": "body"
-          }
-        ]
       }
     ],
     "user_scoped": [],
-    "greedy_path": [],
+    "greedy_path": [
+      {
+        "remove": "E21_b29",
+        "risk_after": 14.29
+      }
+    ],
     "approx_error": null,
     "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
   }

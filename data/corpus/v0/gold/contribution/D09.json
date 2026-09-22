@@ -6,10 +6,7 @@
     "post_ids": [
       "D09_b08",
       "D09_b11",
-      "D09_b12",
-      "D09_b15",
-      "D09_b17",
-      "D09_b24"
+      "D09_b17"
     ],
     "method": "loo"
   },
@@ -49,61 +46,16 @@
         ]
       },
       {
-        "post_id": "D09_b12",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 3,
-        "clue_ids": [
-          "D09_b12_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D09_b12_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "D09_b15",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "D09_b15_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D09_b15_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D09_b17",
         "risk_without": 5.71,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 3,
         "clue_ids": [
           "D09_b17_s01"
         ],
         "top_spans": [
           {
             "span_id": "D09_b17_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "D09_b24",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 6,
-        "clue_ids": [
-          "D09_b24_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D09_b24_s01",
             "text_id": "body"
           }
         ]

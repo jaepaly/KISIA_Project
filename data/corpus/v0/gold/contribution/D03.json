@@ -4,50 +4,23 @@
   "input": {
     "user_ref": "u_51b1b5c0d688",
     "post_ids": [
-      "D03_b04",
       "D03_b09",
       "D03_b13",
-      "D03_b15",
       "D03_b17",
       "D03_b20"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 31.43,
+    "baseline_risk": 18.57,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D03_b04",
-        "risk_without": 18.57,
-        "delta": -12.86,
-        "rank": 1,
-        "clue_ids": [
-          "D03_b04_s01",
-          "D03_b04_s02",
-          "D03_b04_s03"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D03_b04_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "D03_b04_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "D03_b04_s03",
-            "text_id": "title"
-          }
-        ]
-      },
-      {
         "post_id": "D03_b13",
-        "risk_without": 22.86,
+        "risk_without": 10.0,
         "delta": -8.57,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "D03_b13_s01",
           "D03_b13_s02"
@@ -65,9 +38,9 @@
       },
       {
         "post_id": "D03_b09",
-        "risk_without": 31.43,
+        "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "D03_b09_s01",
           "D03_b09_s02"
@@ -84,30 +57,10 @@
         ]
       },
       {
-        "post_id": "D03_b15",
-        "risk_without": 31.43,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "D03_b15_s01",
-          "D03_b15_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D03_b15_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "D03_b15_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D03_b17",
-        "risk_without": 31.43,
+        "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 3,
         "clue_ids": [
           "D03_b17_s01"
         ],
@@ -120,9 +73,9 @@
       },
       {
         "post_id": "D03_b20",
-        "risk_without": 31.43,
+        "risk_without": 18.57,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 4,
         "clue_ids": [
           "D03_b20_s01"
         ],
@@ -136,10 +89,6 @@
     ],
     "user_scoped": [],
     "greedy_path": [
-      {
-        "remove": "D03_b04",
-        "risk_after": 18.57
-      },
       {
         "remove": "D03_b13",
         "risk_after": 10.0

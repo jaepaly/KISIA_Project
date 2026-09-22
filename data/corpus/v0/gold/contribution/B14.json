@@ -4,7 +4,6 @@
   "input": {
     "user_ref": "u_b6e084c59b2e",
     "post_ids": [
-      "B14_b20",
       "B14_b21",
       "B14_b28"
     ],
@@ -16,30 +15,10 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "B14_b20",
-        "risk_without": 16.43,
-        "delta": 0.0,
-        "rank": 1,
-        "clue_ids": [
-          "B14_b20_s01",
-          "B14_b20_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B14_b20_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "B14_b20_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B14_b21",
         "risk_without": 16.43,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "B14_b21_s01",
           "B14_b21_s02"
@@ -59,7 +38,7 @@
         "post_id": "B14_b28",
         "risk_without": 16.43,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "B14_b28_s01",
           "B14_b28_s02"

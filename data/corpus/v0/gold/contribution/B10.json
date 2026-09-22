@@ -7,8 +7,7 @@
       "B10_b07",
       "B10_b09",
       "B10_b13",
-      "B10_b19",
-      "B10_b26"
+      "B10_b19"
     ],
     "method": "loo"
   },
@@ -86,26 +85,6 @@
             "text_id": "title"
           }
         ]
-      },
-      {
-        "post_id": "B10_b26",
-        "risk_without": 13.57,
-        "delta": 0.0,
-        "rank": 5,
-        "clue_ids": [
-          "B10_b26_s01",
-          "B10_b26_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B10_b26_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "B10_b26_s02",
-            "text_id": "body"
-          }
-        ]
       }
     ],
     "user_scoped": [],
@@ -117,6 +96,10 @@
       {
         "remove": "B10_b19",
         "risk_after": 4.29
+      },
+      {
+        "remove": "B10_b07",
+        "risk_after": 0.0
       }
     ],
     "approx_error": null,

@@ -4,36 +4,20 @@
   "input": {
     "user_ref": "u_e9ffdd08e7f0",
     "post_ids": [
-      "D07_b05",
-      "D07_b16"
+      "D07_b05"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 12.86,
+    "baseline_risk": 5.71,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D07_b16",
-        "risk_without": 5.71,
-        "delta": -7.14,
-        "rank": 1,
-        "clue_ids": [
-          "D07_b16_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D07_b16_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D07_b05",
-        "risk_without": 7.14,
+        "risk_without": 0.0,
         "delta": -5.71,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "D07_b05_s01"
         ],
@@ -47,10 +31,6 @@
     ],
     "user_scoped": [],
     "greedy_path": [
-      {
-        "remove": "D07_b16",
-        "risk_after": 5.71
-      },
       {
         "remove": "D07_b05",
         "risk_after": 0.0

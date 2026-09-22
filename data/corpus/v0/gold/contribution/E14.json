@@ -4,14 +4,11 @@
   "input": {
     "user_ref": "u_b7f456e6e397",
     "post_ids": [
-      "E14_b07",
       "E14_b12",
       "E14_b13",
       "E14_b16",
-      "E14_b21",
       "E14_b22",
       "E14_b24",
-      "E14_b25",
       "E14_b27",
       "E14_b28",
       "E14_b29",
@@ -25,27 +22,21 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "E14_b07",
-        "risk_without": 12.86,
-        "delta": 0.0,
+        "post_id": "E14_b13",
+        "risk_without": 4.29,
+        "delta": -8.57,
         "rank": 1,
         "clue_ids": [
-          "E14_b07_s01",
-          "E14_b07_s02",
-          "E14_b07_s03",
-          "E14_b07_s04"
+          "E14_b13_s01",
+          "E14_b13_s02"
         ],
         "top_spans": [
           {
-            "span_id": "E14_b07_s01",
+            "span_id": "E14_b13_s01",
             "text_id": "body"
           },
           {
-            "span_id": "E14_b07_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E14_b07_s03",
+            "span_id": "E14_b13_s02",
             "text_id": "body"
           }
         ]
@@ -71,30 +62,10 @@
         ]
       },
       {
-        "post_id": "E14_b13",
-        "risk_without": 12.86,
-        "delta": 0.0,
-        "rank": 3,
-        "clue_ids": [
-          "E14_b13_s01",
-          "E14_b13_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E14_b13_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E14_b13_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E14_b16",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "E14_b16_s01"
         ],
@@ -106,25 +77,10 @@
         ]
       },
       {
-        "post_id": "E14_b21",
-        "risk_without": 12.86,
-        "delta": 0.0,
-        "rank": 5,
-        "clue_ids": [
-          "E14_b21_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E14_b21_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E14_b22",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 4,
         "clue_ids": [
           "E14_b22_s01"
         ],
@@ -139,7 +95,7 @@
         "post_id": "E14_b24",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 7,
+        "rank": 5,
         "clue_ids": [
           "E14_b24_s01"
         ],
@@ -151,35 +107,10 @@
         ]
       },
       {
-        "post_id": "E14_b25",
-        "risk_without": 12.86,
-        "delta": 0.0,
-        "rank": 8,
-        "clue_ids": [
-          "E14_b25_s01",
-          "E14_b25_s02",
-          "E14_b25_s03"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E14_b25_s01",
-            "text_id": "title"
-          },
-          {
-            "span_id": "E14_b25_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E14_b25_s03",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E14_b27",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 6,
         "clue_ids": [
           "E14_b27_s01"
         ],
@@ -194,7 +125,7 @@
         "post_id": "E14_b28",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 10,
+        "rank": 7,
         "clue_ids": [
           "E14_b28_s01"
         ],
@@ -209,7 +140,7 @@
         "post_id": "E14_b29",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 8,
         "clue_ids": [
           "E14_b29_s01"
         ],
@@ -224,7 +155,7 @@
         "post_id": "E14_b30",
         "risk_without": 12.86,
         "delta": 0.0,
-        "rank": 12,
+        "rank": 9,
         "clue_ids": [
           "E14_b30_s01"
         ],
@@ -237,7 +168,12 @@
       }
     ],
     "user_scoped": [],
-    "greedy_path": [],
+    "greedy_path": [
+      {
+        "remove": "E14_b13",
+        "risk_after": 4.29
+      }
+    ],
     "approx_error": null,
     "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
   }

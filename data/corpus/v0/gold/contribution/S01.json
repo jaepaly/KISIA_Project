@@ -7,9 +7,7 @@
       "S01_b01",
       "S01_b02",
       "S01_b03",
-      "S01_b04",
       "S01_b05",
-      "S01_b06",
       "S01_b07",
       "S01_b08",
       "S01_b09",
@@ -20,7 +18,6 @@
       "S01_b14",
       "S01_b15",
       "S01_b16",
-      "S01_b17",
       "S01_b18",
       "S01_b19",
       "S01_b20"
@@ -28,30 +25,15 @@
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 57.86,
+    "baseline_risk": 38.57,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "S01_b17",
-        "risk_without": 43.57,
-        "delta": -14.29,
-        "rank": 1,
-        "clue_ids": [
-          "S01_b17_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "S01_b17_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "S01_b12",
-        "risk_without": 45.0,
+        "risk_without": 25.71,
         "delta": -12.86,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "S01_b12_s01",
           "S01_b12_s02"
@@ -68,43 +50,18 @@
         ]
       },
       {
-        "post_id": "S01_b06",
-        "risk_without": 52.86,
-        "delta": -5.0,
-        "rank": 3,
-        "clue_ids": [
-          "S01_b06_s01",
-          "S01_b06_s02",
-          "S01_b06_s03"
-        ],
-        "top_spans": [
-          {
-            "span_id": "S01_b06_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "S01_b06_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "S01_b06_s03",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "S01_b01",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 2,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b02",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 3,
         "clue_ids": [
           "S01_b02_s01",
           "S01_b02_s02",
@@ -127,9 +84,9 @@
       },
       {
         "post_id": "S01_b03",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 4,
         "clue_ids": [
           "S01_b03_s01",
           "S01_b03_s02",
@@ -151,34 +108,26 @@
         ]
       },
       {
-        "post_id": "S01_b04",
-        "risk_without": 57.86,
-        "delta": 0.0,
-        "rank": 7,
-        "clue_ids": [],
-        "top_spans": []
-      },
-      {
         "post_id": "S01_b05",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 8,
+        "rank": 5,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b07",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 6,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b08",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 10,
+        "rank": 7,
         "clue_ids": [
           "S01_b08_s01",
           "S01_b08_s02",
@@ -201,9 +150,9 @@
       },
       {
         "post_id": "S01_b09",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 8,
         "clue_ids": [
           "S01_b09_s01",
           "S01_b09_s02"
@@ -221,33 +170,33 @@
       },
       {
         "post_id": "S01_b10",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 12,
+        "rank": 9,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b11",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 13,
+        "rank": 10,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b13",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 14,
+        "rank": 11,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b14",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 15,
+        "rank": 12,
         "clue_ids": [
           "S01_b14_s01",
           "S01_b14_s02"
@@ -265,33 +214,33 @@
       },
       {
         "post_id": "S01_b15",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 16,
+        "rank": 13,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b16",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 17,
+        "rank": 14,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b18",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 18,
+        "rank": 15,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "S01_b19",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 19,
+        "rank": 16,
         "clue_ids": [
           "S01_b19_s01"
         ],
@@ -304,9 +253,9 @@
       },
       {
         "post_id": "S01_b20",
-        "risk_without": 57.86,
+        "risk_without": 38.57,
         "delta": 0.0,
-        "rank": 20,
+        "rank": 17,
         "clue_ids": [
           "S01_b20_s01",
           "S01_b20_s02",
@@ -331,15 +280,7 @@
     "user_scoped": [],
     "greedy_path": [
       {
-        "remove": "S01_b17",
-        "risk_after": 43.57
-      },
-      {
         "remove": "S01_b12",
-        "risk_after": 30.71
-      },
-      {
-        "remove": "S01_b06",
         "risk_after": 25.71
       }
     ],

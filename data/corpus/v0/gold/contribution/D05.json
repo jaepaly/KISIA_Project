@@ -6,7 +6,6 @@
     "post_ids": [
       "D05_b03",
       "D05_b08",
-      "D05_b12",
       "D05_b14",
       "D05_b15",
       "D05_b17"
@@ -14,13 +13,13 @@
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 35.0,
+    "baseline_risk": 27.14,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
         "post_id": "D05_b14",
-        "risk_without": 26.43,
+        "risk_without": 18.57,
         "delta": -8.57,
         "rank": 1,
         "clue_ids": [
@@ -34,25 +33,10 @@
         ]
       },
       {
-        "post_id": "D05_b12",
-        "risk_without": 27.14,
-        "delta": -7.86,
-        "rank": 2,
-        "clue_ids": [
-          "D05_b12_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D05_b12_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D05_b15",
-        "risk_without": 27.86,
+        "risk_without": 20.0,
         "delta": -7.14,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "D05_b15_s01"
         ],
@@ -65,9 +49,9 @@
       },
       {
         "post_id": "D05_b03",
-        "risk_without": 29.29,
+        "risk_without": 21.43,
         "delta": -5.71,
-        "rank": 4,
+        "rank": 3,
         "clue_ids": [
           "D05_b03_s01",
           "D05_b03_s02",
@@ -91,9 +75,9 @@
       },
       {
         "post_id": "D05_b08",
-        "risk_without": 35.0,
+        "risk_without": 27.14,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 4,
         "clue_ids": [
           "D05_b08_s01",
           "D05_b08_s02",
@@ -116,9 +100,9 @@
       },
       {
         "post_id": "D05_b17",
-        "risk_without": 35.0,
+        "risk_without": 27.14,
         "delta": 0.0,
-        "rank": 6,
+        "rank": 5,
         "clue_ids": [
           "D05_b17_s01"
         ],
@@ -134,10 +118,6 @@
     "greedy_path": [
       {
         "remove": "D05_b14",
-        "risk_after": 26.43
-      },
-      {
-        "remove": "D05_b12",
         "risk_after": 18.57
       },
       {

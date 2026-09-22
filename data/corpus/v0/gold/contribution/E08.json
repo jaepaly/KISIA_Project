@@ -6,23 +6,20 @@
     "post_ids": [
       "E08_b01",
       "E08_b04",
-      "E08_b05",
-      "E08_b06",
       "E08_b11",
       "E08_b16",
-      "E08_b19",
       "E08_b24"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 19.29,
+    "baseline_risk": 13.57,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
         "post_id": "E08_b11",
-        "risk_without": 13.57,
+        "risk_without": 7.86,
         "delta": -5.71,
         "rank": 1,
         "clue_ids": [
@@ -37,7 +34,7 @@
       },
       {
         "post_id": "E08_b01",
-        "risk_without": 19.29,
+        "risk_without": 13.57,
         "delta": 0.0,
         "rank": 2,
         "clue_ids": [
@@ -57,7 +54,7 @@
       },
       {
         "post_id": "E08_b04",
-        "risk_without": 19.29,
+        "risk_without": 13.57,
         "delta": 0.0,
         "rank": 3,
         "clue_ids": [
@@ -71,45 +68,10 @@
         ]
       },
       {
-        "post_id": "E08_b05",
-        "risk_without": 19.29,
+        "post_id": "E08_b16",
+        "risk_without": 13.57,
         "delta": 0.0,
         "rank": 4,
-        "clue_ids": [
-          "E08_b05_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E08_b05_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E08_b06",
-        "risk_without": 19.29,
-        "delta": 0.0,
-        "rank": 5,
-        "clue_ids": [
-          "E08_b06_s01",
-          "E08_b06_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E08_b06_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "E08_b06_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E08_b16",
-        "risk_without": 19.29,
-        "delta": 0.0,
-        "rank": 6,
         "clue_ids": [
           "E08_b16_s01"
         ],
@@ -121,25 +83,10 @@
         ]
       },
       {
-        "post_id": "E08_b19",
-        "risk_without": 19.29,
-        "delta": 0.0,
-        "rank": 7,
-        "clue_ids": [
-          "E08_b19_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E08_b19_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E08_b24",
-        "risk_without": 19.29,
+        "risk_without": 13.57,
         "delta": 0.0,
-        "rank": 8,
+        "rank": 5,
         "clue_ids": [
           "E08_b24_s01"
         ],
@@ -155,7 +102,7 @@
     "greedy_path": [
       {
         "remove": "E08_b11",
-        "risk_after": 13.57
+        "risk_after": 7.86
       }
     ],
     "approx_error": null,

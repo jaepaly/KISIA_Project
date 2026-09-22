@@ -14,8 +14,7 @@
       "B06_b15",
       "B06_b21",
       "B06_b22",
-      "B06_b23",
-      "B06_b28"
+      "B06_b23"
     ],
     "method": "loo"
   },
@@ -211,21 +210,6 @@
           {
             "span_id": "B06_b23_s01",
             "text_id": "title"
-          }
-        ]
-      },
-      {
-        "post_id": "B06_b28",
-        "risk_without": 33.57,
-        "delta": 0.0,
-        "rank": 12,
-        "clue_ids": [
-          "B06_b28_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B06_b28_s01",
-            "text_id": "body"
           }
         ]
       }
