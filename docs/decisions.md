@@ -35,6 +35,146 @@
 | DEC-004 | 2단 베이스 모델을 Qwen3-4B 로 확정한다 | **Accepted** | W3 | exp05 |
 | DEC-005 | 해외 거주지는 권역 한 단계로 두고 k 는 UNKNOWN 으로 둔다 | **Accepted** | W3 | #82 |
 | DEC-006 | 도달 가능성 게이트에서 `inferential` 을 뺀다 — 문장 단위 측정이 §4-1 정의와 맞지 않는다 | **Accepted** | W4 | #128 · #202 · #228 |
+| DEC-007 | 스팬→condition 변환 규칙을 확정한다 — resolution·subject·REL 처리 | **Accepted** | W5 | #261 · #268 |
+| DEC-008 | 1단 koelectra-v1 체크포인트를 `checkpoint-epoch-10`·임계값 0.7로 확정한다 | **Accepted** | W5 | #263 |
+| DEC-009 | 2단 QLoRA v1 adapter를 3epoch(`checkpoint-epoch-3`)로 확정한다 | **Accepted** | W5 | #264 |
+
+---
+
+## [DEC-009] 2단 QLoRA v1 adapter를 3epoch(`checkpoint-epoch-3`)로 확정한다
+
+**상태**: Accepted · **주차**: W5 (2026-09-17) · **관련**: [#264](../../../issues/264) · **결정**: D(@jaepaly)
+
+### 무엇을 정했나
+
+2단 생성기(Qwen3-4B QLoRA)의 v1 adapter를 **3 epoch 학습 체크포인트(`checkpoint-epoch-3`)** 로 확정한다.
+
+### 왜 — verdict 90% 일치, 오류는 전부 보수적 방향
+
+`experiments/exp08-stage2-sft/eval_samples.py`로 dev 10샘플(7축 × 10 = 70칸)에 적용한 결과.
+
+| 지표 | 값 |
+|---|---|
+| verdict 일치율 | 63/70 = **90%** |
+| JSON 형식 파싱 실패 | 0건 |
+| dev_loss | 0.4102 → **0.0044** |
+
+오류 7건은 전부 **location·occupation** 축에서 나왔고, 방향이 한쪽으로만 쏠린다.
+
+```
+specified → narrowed
+narrowed  → weak_signal
+weak_signal → abstain
+```
+
+반대 방향(과대 판정)은 0건이다. 개인정보 도구에서 이 방향의 오류(보수적 과소 판정)가 반대 방향보다 안전하므로, 방향성 자체는 걸림돌로 보지 않는다.
+
+### 추가 학습을 하지 않는 이유
+
+dev_loss가 0.0044까지 내려가 **과적합이 진행 중**이다. 에포크를 늘려도 verdict 일치율이 더 오르기보다 과적합만 심해질 가능성이 높다.
+
+### 남은 한계
+
+location·occupation의 보수적 판정 경향은 이번 결정으로 해소하지 않는다. C의 증류 타깃(DEC-007) 데이터가 늘어난 뒤 재학습에서 개선을 기대하는 쪽으로 남겨둔다.
+
+### 환경
+
+모델: `Qwen/Qwen3-4B` QLoRA NF4, r=16 · 학습 train 252편(버림 90)·dev 26편·3 epoch·lr 2e-4 · VRAM 5.26GB peak
+
+---
+
+## [DEC-008] 1단 koelectra-v1 체크포인트를 `checkpoint-epoch-10`·임계값 0.7로 확정한다
+
+**상태**: Accepted · **주차**: W5 (2026-09-17) · **관련**: [#263](../../../pull/263) · **결정**: D(@jaepaly) · **구현**: philotti
+
+### 무엇을 정했나
+
+1단 탐지기(`monologg/koelectra-base-v3-discriminator`)의 v1 체크포인트를 **`v1_lr5e-5/checkpoint-epoch-10`**, 후처리 임계값을 **0.7**로 확정한다.
+
+### 공식 test 결과
+
+test 239편·358스팬 (공식 test 255편에서 IAA 16편 제외):
+
+| 지표 | 값 |
+|---|---:|
+| Partial F1 | **0.2940** (P 0.2796 · R 0.3101) |
+| Exact F1 | 0.1616 |
+| TP / FP / FN | 111 / 286 / 247 |
+| CPU p95 (합성 3종) | 24.07 / 67.60 / 276.31 ms |
+
+측정일 2026-09-17 · corpus-v0 p2.3 · 채점: type 일치 + partial IoU ≥ 0.5.
+
+### 왜 epoch 10인가 — 내부 eval 비교표로 확정
+
+최초 PR(#263)에서 Codex 리뷰가 세 가지를 지적해 보완했다.
+
+1. **exact match 지표 누락** — label-schema.md §75가 요구하는 exact F1이 없었다. 저장된 test 예측을 재채점해 partial F1 0.2940 유지·**exact F1 0.1616**을 확인, 모델 추론은 반복하지 않았다.
+2. **IAA 16편 제외의 불변 검증 없음** — 교집합만으로 제외해 배정 ID 오류를 못 잡는 구조였다. 배정 ID 중복 금지·공식 test 내 존재 검증·회귀 테스트를 추가했다.
+3. **epoch 10 우월성 미입증** — test를 이미 연 상태에서 다른 체크포인트로 재비교할 수 없으므로, **내부 eval에서 LR 5e-5의 epoch 1~10을 동일 후처리(겹침 해소 + 임계값 0.7)로 비교**했다. epoch 10이 partial F1 0.4839·exact F1 0.4194로 전 구간 최고였다.
+
+### 한계로 남긴 것
+
+인물은 학습 입력과 겹친다. 잡담(negative_control) 정답은 blind가 아닌 검수본이다. CPU 결과는 합성 예문 예비 측정이다. level·subject는 모델 예측이 아니므로 정확성 평가에서 제외했다.
+
+---
+
+## [DEC-007] 스팬→condition 변환 규칙을 확정한다 — resolution·subject·REL 처리
+
+**상태**: Accepted · **주차**: W5 (2026-09-19~20) · **관련**: [#261](../../../issues/261) · [#268](../../../pull/268) · **제안**: C(@jhyun114) · **결정**: D(@jaepaly)
+
+### 배경
+
+C3 LOO 기여도 엔진(#251)은 `risk_fn`을 외부에서 주입받는 구조이나, C2 공개 API는 `specificity`/`specificity_l1`(location·age·sex 3축)만 있고 `specificity.schema.json`이 요구하는 7축 `risk`/`risk_by_axis` 계산기가 없었다.
+
+### 무엇을 정했나
+
+**1. C2에 7축 `risk_total`을 먼저 구현하고 C3 `risk_fn`으로 연결한다.**
+
+specificity_l1의 k 값을 임시로 위험도로 변환하는 안, 확정까지 보류하는 안을 모두 제외했다 — 4축(occupation·family·commute·income)이 아예 없거나, 임시 변환식이 이후 정식 계산과 다른 타깃을 고정시킬 위험이 있었다. PR #268에서 `risk_total()` 구현·25개 테스트 통과로 이행 완료.
+
+**2. resolution 산정 — 정규화된 값에서 나오고, `level`에서 나오지 않는다.**
+
+label-schema §4-1의 `explicit`/`implicit`/`inferential`(단서 확정도)과 C-specificity §5의 resolution(좁힘 폭)은 다른 개념이다. `level`은 **confidence로만** 반영한다: `explicit 1.0 · implicit 0.8 · inferential 0.5`.
+
+| 축 | 스팬 | 규칙 |
+|---|---|---|
+| location | LOC_ADMIN | 사전(`RegionDictionary`)의 `level` 필드로: 시도 1 · 시군구 2 · 읍면동 3. 후보 복수면 가장 넓은 level. 미해석이면 조건 안 만듦 *(초안은 "코드 길이"였으나 사전이 3계층 모두 10자리 코드라 9/20 정정)* |
+| location | LOC_FACILITY | 사전에서 코드가 나오면 4 · 안 나오면(일반명사) 조건 안 만듦 |
+| age | AGE | 정확 나이 파싱 3 · 세대 표현("N대") 1 · 파싱 불가 1 |
+| sex | SEX | 무조건 1. 배우자 호칭이면 family 1(혼인 상태)도 같이 생성 |
+| occupation | JOB | 정규화기 없음(v1 잠정) — explicit 2 · implicit 1 · inferential 1. 3(직장 특정)은 라벨만으로 주지 않음 |
+| family | FAM | explicit·implicit 2(자녀 유무) · inferential 1 · 학년/자녀 수 정규식 일치 시 3 |
+| commute | COMMUTE | 노선·역 정규식 일치 시 2 · 나머지 1 |
+| income | INCOME | 무조건 1 |
+| — | REL_HOME·REL_WORK | 조건을 만들지 않음(아래 4번) |
+
+같은 축 다중 조건은 max 하나만 취한다.
+
+**3. subject 처리**
+
+- `other` → 본인 위험도에서 제외
+- `self` → 포함
+- `unknown` → 포함하되 **confidence × 0.5**. §9-2 설계상 unknown은 self/other 단서에서 귀속 표지만 빠진 것이라 실체는 대부분 self이고, 골드에 19건뿐이라 어느 쪽이든 타깃이 거의 안 바뀐다 — 개인정보 쪽으로 보수적으로 간다.
+
+**4. REL_HOME/REL_WORK와 함정·과거 관계**
+
+단독으로 아무것도 좁히지 않는 바인딩 표지(§3-3)라 조건이 아니라 **글 단위 수식자**로 쓴다: 같은 글에 REL_HOME(self)이 있으면 그 글 location 조건의 confidence를 1.0으로 올리고, REL_WORK가 있으면 commute 조건(conf 0.5)을 하나 추가한다(§3-2 매핑 중 commute만 v1 반영). 타인 함정은 `subject=other`로 이미 걸러진다. 골드에 시제 필드가 없어 v1은 과거 거주·근무를 현재로 본다 — 알려진 한계로 타깃 메타에 `assumptions`로 남기고 별도 시제 판정 단계는 W7 항목으로 미룬다.
+
+**5. 계약과의 접점**
+
+`span_id`는 condition에 넣지 않는다 — `specificity.schema.json`의 condition이 `additionalProperties: false`라 넣으면 계약 검증이 깨진다(9/20 정정). `leave_one_out()`이 받는 `clue_index`/`span_index`로 별도 전달해 `contributions[].clue_ids`·`top_spans`를 채운다.
+
+### 구조
+
+`span_to_condition()`은 C2 경계 함수(`c2_specificity/clues.py`)로 둔다. 위 표·정규식·confidence 상수는 전부 `model.py`에 모아 W7 상관 측정 때 조정한다. C3 연결은 `risk_of_posts(post_ids, clue_index)` 어댑터(`c-engine.md:258-266`)로 한다.
+
+### 검산 계획
+
+`personas/*.json`의 `ground_truth`(7축 정답) 대비, 인물별 스팬에서 뽑힌 축별 최대 resolution이 ground_truth가 뒷받침하는 수준을 넘는지 20명 표본으로 대조한다. 증류 타깃 생성 PR에 이 대조표를 첨부한다.
+
+### 남은 것
+
+전부 v1 잠정값이며 W7 상관 측정 때 조정 대상이다. 확정 후 진행 순서: 골드 스팬 → C2 condition 변환 → C2–C3 risk_fn 어댑터 구현 → A01 기준 계산 검증 → 전체 기여도 타깃 생성.
 
 ---
 
