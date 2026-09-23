@@ -93,9 +93,9 @@ D(PM)이 W5 성과를 발표한다. 개인 5줄 보고를 **일요일 9/20 저�
 | 항목 | 담당 | 상태 |
 |---|---|---|
 | PR #268 `risk_total` clamp 수정 | C | **머지 완료** (9/22 · [#268](../../pull/268)) |
-| #261 span_to_condition() 구현 | C | **W6 핵심** — clues.py → C3 어댑터 → 증류 타깃 PR |
+| #261 span_to_condition() 구현 | C | **W6 핵심** — #272 열림(9/22) · 리뷰 수정 대기(9/23) → #269 |
 | w05 태그 | D(PM) | **완료** (9/22 · `c792573` · [compare](../../compare/w04...w05)) |
-| 활동 메타 — 남은 조각 | E | 스키마·토글·표시는 W3에 끝남. **시딩 위치태그 · 프로필 시간대 분포**가 남았다 |
+| 활동 메타 — 남은 조각 | E | **완료** — #271 머지 (9/22) · 후속 #275 (9/23) |
 
 ---
 
@@ -412,7 +412,7 @@ data/corpus/v0/gold/contribution/<pid>.json     증류 타깃 세트 (커밋한�
 
 - [x] `loo.py` LOO 기여도 — 단위 테스트 통과 (#251 머지 · 9/16 · CI guard pass)
 - [x] PR #268 — 범위 검사 유지 + clamp · 거부 케이스 3개 추가 · 재제출 → 머지 (9/22)
-- [ ] `span_to_condition()` + `build_conditions()` — 표 그대로 · `test_clues.py` 통과 · condition 전체 필드 (화)
+- [ ] `span_to_condition()` + `build_conditions()` — 표 그대로 · `test_clues.py` 통과 · condition 전체 필드 (화) — #272 (9/22) · **리뷰 수정 대기**: condition 전체 필드 중 `age_band` value 가 계약 enum 위반
 - [ ] `gen_contribution_targets.py` — test split 제외 후 생성(`--exclude-posts`) · 건너뛴 인물 목록을 PR 본문에 기재 · `check-jsonschema` 전 파일 통과 (수) — 생성기 수정은 [#269](../../pull/269)
 - [ ] PR — 검산표 20명 + 건너뛴 인물 목록 + 검산 3가지 소견 (수 9/23 · 늦으면 월 9/28)
 
@@ -596,9 +596,9 @@ apps/sns/test_export.py                private 제외 케이스 1개
 ### 완료 기준 (e-sns.md §9 W6)
 
 - [x] 닉네임·위치태그·작성시각이 본문/프로필에 보인다 (W3)
-- [ ] 잡담 제외 시딩 글의 25~35% (전체 기준 10~12%) 에 시군구 수준 `geo_tag` 가 들어 있다 (`--reset` 후 SQL 로 확인)
-- [ ] 프로필에 시간대 분포 막대가 보인다 — A01 프로필에서 22~23시가 솟는다
-- [ ] 작성 화면에서 비공개로 올린 글이 `/api/export` 에 없다 (`test_export.py` 통과)
+- [x] 잡담 제외 시딩 글의 25~35% (전체 기준 10~12%) 에 시군구 수준 `geo_tag` 가 들어 있다 — #271 · 9/22 · 333/3092 = 10.8% (잡담 제외 29.9%)
+- [x] 프로필에 시간대 분포 막대가 보인다 — A01 17편 전부 22시 (#271 · 9/22)
+- [x] 작성 화면에서 비공개로 올린 글이 `/api/export` 에 없다 — 공개범위 select + 회귀 테스트, `test_export.py` 14 passed (#271 · 9/22)
 
 ---
 
@@ -699,14 +699,20 @@ KISIA_Project/
 
 ---
 
-## 현재 미결 (9/22 기준)
+## 현재 미결 (9/23 기준)
 
 **PR**
 - [x] PR #268 C `risk_total` + clamp 수정 — 머지 (9/22)
-- [ ] [#269](../../pull/269) 증류 타깃 생성기 수정 (blind 합침 제거 · test 제외) — **C 리뷰 대기** · base `C/c2/span-to-condition` → 그 PR 을 C 가 먼저 연다
+- [ ] [#272](../../pull/272) span_to_condition() + build_conditions() (C) — **CHANGES_REQUESTED 9/23**: `age_band` value 계약 enum 위반(골드 50/155) · AGE/COMMUTE/FAM/배우자/시설 별칭 오분류 · 스키마 테스트 부탁. 수정 커밋 대기
+- [ ] [#269](../../pull/269) 증류 타깃 생성기 수정 (blind 합침 제거 · test 제외) — **C 리뷰 대기** · base `C/c2/span-to-condition`, #272 머지 뒤 자동으로 main 재조준
+- [ ] [#270](../../pull/270) decisions.md DEC-007~009 (A) — Codex 2차 검토 후 **5군데 수정 대기** (COMMUTE 번호 · REL_WORK resolution 1 · §75→75행 · DEC-009 원문 밖 판단 2문장)
+- [x] [#271](../../pull/271) E 활동 메타 — 머지 (9/22)
+- [x] [#275](../../pull/275) Pretendard self-host (#274) — 머지 (9/23)
 
 **이슈 — W6**
-- [ ] #261 span_to_condition() 구현 → C3 어댑터 → 증류 타깃 PR
+- [ ] #261 span_to_condition() 구현 → C3 어댑터 → 증류 타깃 PR — #272 · #269 로 진행 중 (위 PR 항목)
+- [ ] [#273](../../issues/273) 「네거티브 컨트롤 전체의 10~15%」 용어 정정 — A·D 결정 대기 · 연휴 뒤 9/28
+- [x] [#274](../../issues/274) 폰트 CDN 제3자 로드 — #275 로 해결 (9/23)
 - [x] w05 태그 (9/22)
 
 **장기**
