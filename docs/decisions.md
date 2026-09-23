@@ -67,11 +67,11 @@ narrowed  → weak_signal
 weak_signal → abstain
 ```
 
-반대 방향(과대 판정)은 0건이다. 개인정보 도구에서 이 방향의 오류(보수적 과소 판정)가 반대 방향보다 안전하므로, 방향성 자체는 걸림돌로 보지 않는다.
+반대 방향(과대 판정)은 이 dev 10샘플에서 0건이다.
 
 ### 추가 학습을 하지 않는 이유
 
-dev_loss가 0.0044까지 내려가 **과적합이 진행 중**이다. 에포크를 늘려도 verdict 일치율이 더 오르기보다 과적합만 심해질 가능성이 높다.
+dev_loss가 0.0044까지 내려가 **과적합이 진행 중**이라, 추가 에포크는 불필요하다고 판단했다.
 
 ### 남은 한계
 
@@ -108,7 +108,7 @@ test 239편·358스팬 (공식 test 255편에서 IAA 16편 제외):
 
 최초 PR(#263)에서 Codex 리뷰가 세 가지를 지적해 보완했다.
 
-1. **exact match 지표 누락** — label-schema.md §75가 요구하는 exact F1이 없었다. 저장된 test 예측을 재채점해 partial F1 0.2940 유지·**exact F1 0.1616**을 확인, 모델 추론은 반복하지 않았다.
+1. **exact match 지표 누락** — `docs/contracts/label-schema.md` 75행이 요구하는 exact F1이 없었다. 저장된 test 예측을 재채점해 partial F1 0.2940 유지·**exact F1 0.1616**을 확인, 모델 추론은 반복하지 않았다.
 2. **IAA 16편 제외의 불변 검증 없음** — 교집합만으로 제외해 배정 ID 오류를 못 잡는 구조였다. 배정 ID 중복 금지·공식 test 내 존재 검증·회귀 테스트를 추가했다.
 3. **epoch 10 우월성 미입증** — test를 이미 연 상태에서 다른 체크포인트로 재비교할 수 없으므로, **내부 eval에서 LR 5e-5의 epoch 1~10을 동일 후처리(겹침 해소 + 임계값 0.7)로 비교**했다. epoch 10이 partial F1 0.4839·exact F1 0.4194로 전 구간 최고였다.
 
@@ -144,7 +144,7 @@ label-schema §4-1의 `explicit`/`implicit`/`inferential`(단서 확정도)과 C
 | sex | SEX | 무조건 1. 배우자 호칭이면 family 1(혼인 상태)도 같이 생성 |
 | occupation | JOB | 정규화기 없음(v1 잠정) — explicit 2 · implicit 1 · inferential 1. 3(직장 특정)은 라벨만으로 주지 않음 |
 | family | FAM | explicit·implicit 2(자녀 유무) · inferential 1 · 학년/자녀 수 정규식 일치 시 3 |
-| commute | COMMUTE | 노선·역 정규식 일치 시 2 · 나머지 1 |
+| commute | COMMUTE | 노선·역·번호 정규식(N호선·N번·~역) 일치 시 2(경로) · 나머지 1(수단) |
 | income | INCOME | 무조건 1 |
 | — | REL_HOME·REL_WORK | 조건을 만들지 않음(아래 4번) |
 
@@ -158,7 +158,7 @@ label-schema §4-1의 `explicit`/`implicit`/`inferential`(단서 확정도)과 C
 
 **4. REL_HOME/REL_WORK와 함정·과거 관계**
 
-단독으로 아무것도 좁히지 않는 바인딩 표지(§3-3)라 조건이 아니라 **글 단위 수식자**로 쓴다: 같은 글에 REL_HOME(self)이 있으면 그 글 location 조건의 confidence를 1.0으로 올리고, REL_WORK가 있으면 commute 조건(conf 0.5)을 하나 추가한다(§3-2 매핑 중 commute만 v1 반영). 타인 함정은 `subject=other`로 이미 걸러진다. 골드에 시제 필드가 없어 v1은 과거 거주·근무를 현재로 본다 — 알려진 한계로 타깃 메타에 `assumptions`로 남기고 별도 시제 판정 단계는 W7 항목으로 미룬다.
+단독으로 아무것도 좁히지 않는 바인딩 표지(§3-3)라 조건이 아니라 **글 단위 수식자**로 쓴다: 같은 글에 REL_HOME(self)이 있으면 그 글 location 조건의 confidence를 1.0으로 올리고, REL_WORK가 있으면 resolution 1인 commute 조건(conf 0.5)을 하나 추가한다(§3-2 매핑 중 commute만 v1 반영). 타인 함정은 `subject=other`로 이미 걸러진다. 골드에 시제 필드가 없어 v1은 과거 거주·근무를 현재로 본다 — 알려진 한계로 타깃 메타에 `assumptions`로 남기고 별도 시제 판정 단계는 W7 항목으로 미룬다.
 
 **5. 계약과의 접점**
 
