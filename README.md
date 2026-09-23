@@ -138,7 +138,7 @@ W7 A 역할: "exp8 축약판 지원". 필요한 라벨 추가 작업이 있는�
 
 ### 완료 기준
 
-- [ ] decisions.md — W5 결정 3건 추가
+- [x] decisions.md — W5 결정 3건 추가 — [#270](../../pull/270) 머지 (9/23 · DEC-007~009 · Codex 2차 검토 5군데 반영)
 
 ---
 
@@ -413,7 +413,7 @@ data/corpus/v0/gold/contribution/<pid>.json     증류 타깃 세트 (커밋한�
 - [x] `loo.py` LOO 기여도 — 단위 테스트 통과 (#251 머지 · 9/16 · CI guard pass)
 - [x] PR #268 — 범위 검사 유지 + clamp · 거부 케이스 3개 추가 · 재제출 → 머지 (9/22)
 - [ ] `span_to_condition()` + `build_conditions()` — 표 그대로 · `test_clues.py` 통과 · condition 전체 필드 (화) — #272 (9/22) · **리뷰 수정 대기**: condition 전체 필드 중 `age_band` value 가 계약 enum 위반
-- [ ] `gen_contribution_targets.py` — test split 제외 후 생성(`--exclude-posts`) · 건너뛴 인물 목록을 PR 본문에 기재 · `check-jsonschema` 전 파일 통과 (수) — 생성기 수정은 [#269](../../pull/269)
+- [x] `gen_contribution_targets.py` — test split 제외 후 생성(`--exclude-posts`) · 건너뛴 인물 목록을 PR 본문에 기재 · `check-jsonschema` 전 파일 통과 (수) — [#269](../../pull/269) 브랜치 기준: 79명 생성·계약 79/79 통과·SFT 조인 77/77 (9/22~23). main 머지는 #272 뒤
 - [ ] PR — 검산표 20명 + 건너뛴 인물 목록 + 검산 3가지 소견 (수 9/23 · 늦으면 월 9/28)
 
 ---
@@ -705,7 +705,7 @@ KISIA_Project/
 - [x] PR #268 C `risk_total` + clamp 수정 — 머지 (9/22)
 - [ ] [#272](../../pull/272) span_to_condition() + build_conditions() (C) — **CHANGES_REQUESTED 9/23**: `age_band` value 계약 enum 위반(골드 50/155) · AGE/COMMUTE/FAM/배우자/시설 별칭 오분류 · 스키마 테스트 부탁. 수정 커밋 대기
 - [ ] [#269](../../pull/269) 증류 타깃 생성기 수정 (blind 합침 제거 · test 제외) — **C 리뷰 대기** · base `C/c2/span-to-condition`, #272 머지 뒤 자동으로 main 재조준
-- [ ] [#270](../../pull/270) decisions.md DEC-007~009 (A) — Codex 2차 검토 후 **5군데 수정 대기** (COMMUTE 번호 · REL_WORK resolution 1 · §75→75행 · DEC-009 원문 밖 판단 2문장)
+- [x] [#270](../../pull/270) decisions.md DEC-007~009 (A) — Codex 2차 검토 5군데 반영 · 머지 (9/23)
 - [x] [#271](../../pull/271) E 활동 메타 — 머지 (9/22)
 - [x] [#275](../../pull/275) Pretendard self-host (#274) — 머지 (9/23)
 
