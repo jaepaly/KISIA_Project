@@ -174,7 +174,7 @@ python experiments/exp06-finetune/infer.py \
 
 ### 완료 기준
 
-- [ ] E에게 체크포인트 경로·`--min-span-score 0.7`·level/subject 고정값 제한을 이슈 코멘트로 공유 (수 9/23까지)
+- [x] E에게 체크포인트 경로·`--min-span-score 0.7`·level/subject 고정값 제한을 이슈 코멘트로 공유 — [#266 보충 댓글](../../issues/266#issuecomment-5771322810) (9/22) · E 회신: W7(9/28~) `real.py` 연동, 체크포인트는 그때 요청
 
 ---
 
