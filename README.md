@@ -463,9 +463,9 @@ https://github.com/jaepaly/KISIA_Project/compare/w04...w05
 
 ### 완료 기준
 
-- [ ] 월 9/21 KISIA 줌 발표 완료
-- [ ] 멘토링 날짜 확정 · README 갱신
-- [ ] 주간보고서 수 9/23 23:59 제출
+- [x] 월 9/21 KISIA 줌 발표 완료
+- [x] 멘토링 날짜 확정 · README 갱신
+- [x] 주간보고서 수 9/23 23:59 제출
 - [x] w05 태그 — 9/22 `c792573` · [compare](../../compare/w04...w05)
 
 ---
