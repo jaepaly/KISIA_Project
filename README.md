@@ -25,83 +25,74 @@ KISIA 2026 AI 보안기술개발 · 개인정보 트랙 3팀 · 2026-08-17 ~ 11-
 
 ## 지금 상태
 
-**W5 주요 성과 완료 · W6 진입 (추석 연휴 9/24~27 · 근무일 월~수)** — `w05` 태그 완료 (9/22 · #268 머지 커밋 `c792573`) → [compare w04...w05](../../compare/w04...w05)
+**W6 완료 · W7 진입 — M2 마감 주** — `w06` 태그 (9/25 · `1e73618`) → [compare w05...w06](../../compare/w05...w06)
 
-| 항목 | W5 끝 |
+| 항목 | W6 끝 |
 |---|---|
 | 코퍼스 | **v1 동결** ✅ 115명 3,092편 · d4cf8cb · 9/9 |
 | 골드셋 검수 | **417편 587스팬** ✅ + blind 159편 267스팬 (#229 · 9/14) |
 | IAA | **2차 완료 ✅** overall 50.0% (explicit 51.9% · implicit 44.4% · inferential 20.0% · 9/17) |
-| 1단 탐지 v1 | **koelectra-v1 확정 ✅** checkpoint-epoch-10 · test F1 0.2940 · p95 276ms (#263 · 9/18) |
-| 2단 QLoRA | **3ep adapter v1 확정 ✅** dev_loss 0.0044 · verdict 90% (#264 · 9/18) |
-| 기여도 엔진 | **LOO v1 ✅** loo.py · CI pass (#251 · 9/16) · `risk_total` PR #268 수정 대기 |
-| 분석 웹앱 | **3화면 연결 ✅** ENGINE_MODE=mock 엔드투엔드 에러 없음 (#254 · 9/17) |
+| 1단 탐지 v1 | **koelectra-v1 확정 ✅** checkpoint-epoch-10 · 임계값 0.7 · test F1 0.2940(전체 partial) · p95 276ms (#263 · #256 종결) — **등급별 F1 은 W7** |
+| 2단 QLoRA | **3ep adapter v1 확정 ✅** dev_loss 0.0044 · verdict 90% (#264 · DEC-009) |
+| 위험도·기여도 | **LOO v1 ✅** (#251) · **7축 `risk_total` ✅** (#268 · 9/22) · 조건 변환기 [#272](../../pull/272) 수정 중 · 증류 타깃 79명 [#269](../../pull/269) (#272 수정 전 기준 계약 79/79 · SFT 조인 77/77 — 수정 반영 후 재생성) |
+| 가상 SNS | **활동 메타 완료 ✅** 위치태그 333편 · 시간대 막대 · 공개범위 선택 (#271) · Veilo · 폰트 self-host (#275) |
+| 분석 웹앱 | **3화면 연결 ✅** ENGINE_MODE=mock (#254) — 실 엔진 연동은 W7 ([#266](../../issues/266)) |
 | 지명 사전 | UNKNOWN 18→2 ✅ · 픽스처 19/19 (#218) |
-| 가명화·복원 | `anonymize()` + `restore()` ✅ 라운드트립 15종 (#243 · 9/14) |
-| 설계서 | ✅ 제출 완료 9/10 |
-| `w04` 태그 | ✅ 9/11 · `w05` 태그 — C 증류 타깃 PR 머지 후 |
+| 가명화·복원 | `anonymize()` + `restore()` ✅ 라운드트립 15종 (#243) |
+| 결정 기록 | DEC-007~009 ✅ (#270 · 9/23) |
+| 태그 | `w05` ✅ 9/22 · `w06` ✅ 9/25 |
 
 | 역할 | 담당 | **이번 주 핵심** |
 |---|---|---|
-| **[A · 데이터 리드](docs/roles/A-data.md)** | 이은선 | 문서 정비 (decisions.md 최신화) — 비동기 |
-| **[B · 1단 탐지](docs/roles/B-detector.md)** | 최진필 | E real.py 연결 준비 — 체크포인트·임계값 공유 |
-| **[C · 특정성·누적](docs/roles/C-specificity.md)** | 신정현 | **증류 타깃 세트** — PR #268 clamp + span_to_condition() + gen_contribution_targets.py |
-| **[D · 2단 추론·조치](docs/roles/D-stage2.md)** | 박재현 (PM) | 월 KISIA 줌 발표 · w05 태그 |
-| **[E · 시스템·컴플라이언스](docs/roles/E-system.md)** | 이지희 | **활동 메타 필드** — 공개/비공개 토글 |
+| **[A · 데이터 리드](docs/roles/A-data.md)** | 이은선 | #273 용어 정정 · exp8 축약판 지원 |
+| **[B · 1단 탐지](docs/roles/B-detector.md)** | 최진필 | **1단 F1 확정** — 등급별 F1 선측정(월~화) · 성능 리포트 |
+| **[C · 특정성·누적](docs/roles/C-specificity.md)** | 신정현 | #272 → #269 머지 → **위험도 상관 · [필수] 조치 재현** |
+| **[D · 2단 추론·조치](docs/roles/D-stage2.md)** | 박재현 (PM) | **외부 LLM 일치율 · [필수] 조치 재현**(C와) · PM |
+| **[E · 시스템·컴플라이언스](docs/roles/E-system.md)** | 이지희 | **exp8 축약판 · 중간점검 초안** · 실 엔진 연동 착수 |
 
 ---
 
-# W6 (9/21~9/27) — 각자 할 일
+# W7 (9/28~10/4) — 각자 할 일
 
-**제출물**: 주간활동보고서 (외부)
-**단계**: **M2-c** · 근무일 3일 🔴 — **월 9/21 · 화 9/22 · 수 9/23** (추석 연휴 목 9/24 ~ 일 9/27)
+**제출물**: 주간활동보고서 (외부) — 다음 주 W8 중간점검보고서를 준비하는 주
+**단계**: **M2 마감 · M2 판정** · 근무일 4일 (roadmap §2)
 
-> ## 이번 주 한 문장 — **C가 증류 타깃을 완성하고, E가 활동 메타를 채운다. 마감은 수요일.**
+> ## 이번 주 한 문장 — **W8 중간점검에 들어갈 숫자를 이번 주에 뽑는다.**
 >
-> 로드맵 §3:
+> W8 은 근무일 3일에 중간점검보고서가 걸려 있다 (roadmap §2). 그래서 **초안은 W7에 쓰고 W8엔 수치만 채운다** (roadmap §7 완화책 ②). 이번 주 산출물은 대부분 **측정값**이다 — 결과와 함께 **측정 방법 · 측정일 · 데이터 버전 · 체크포인트**를 적는다. 방법이 안 남은 숫자는 중간점검에 못 넣는다.
 >
-> W6은 추석 연휴로 근무일이 **월·화·수 3일**뿐이다. B·D 학습 잡은 이미 확정(불필요)이라 비동기. 핵심은 C가 #261 결정을 구현해 증류 타깃 PR을 올리는 것, E가 활동 메타의 남은 조각(시딩 위치태그·프로필 시간대 분포)을 채우는 것이다. **내부 마감은 수 9/23 23:59.** 수요일까지 안 끝나는 것은 연휴 뒤 월 9/28로 넘긴다 — 연휴 중 작업을 기대하지 않는다.
+> 이번 주에 재는 G1 지표 (roadmap §5):
+>
+> | 지표 | 계층 | 누가 |
+> |---|---|---|
+> | 스팬 탐지 F1(명시) ≥ 0.80 | [필수] | B |
+> | 글 1건 로컬 탐지 지연 < 300ms (CPU) | [필수] | B |
+> | 조치 3단계 적용 시 위험도 −54~61% 재현 | [필수] | C · D |
+> | 스팬 탐지 F1(암묵) ≥ M1 IAA 측정치의 80% | [목표] | B |
+> | 위험도 상관 Spearman ≥ 0.7 | [목표] | C |
+> | Qwen3 vs 외부 LLM 속성 적중 일치율 ≥ 0.8 | [목표] | D |
+> | 기존 도구 대비 추가 탐지율 > 0 | [목표] | B |
 
 ---
 
-## 0. 전원 공통 — 월 9/21 11:15 KISIA 줌 주간보고회
-
-D(PM)이 W5 성과를 발표한다. 개인 5줄 보고를 **일요일 9/20 저녁까지** PM에게 보낸다.
-
-```
-1. 이번 주 내 목표:
-2. 실제로 한 일:
-3. 달라진 것 (before → after, 숫자):
-4. 증빙 링크:
-5. 막힌 것 + 필요한 지원:
-```
-
-**D가 발표할 W5 요약:**
-
-| 역할 | W5 핵심 성과 |
-|---|---|
-| B | koelectra-v1 확정 · test F1 0.2940 · p95 276ms |
-| D | Qwen3 3ep adapter v1 확정 · verdict 90% |
-| C | LOO 기여도 엔진 v1 완성 · IAA 2차 50.0% |
-| E | 분석 웹앱 3화면 연결 · 수동 업로드 경로 |
-| A | 라벨 품질관리 · 네거티브 보강 · label-schema §4-1 나이 어미 경고 |
-
----
-
-## W5 이월 항목
+## W6 이월 항목
 
 | 항목 | 담당 | 상태 |
 |---|---|---|
-| PR #268 `risk_total` clamp 수정 | C | **머지 완료** (9/22 · [#268](../../pull/268)) |
-| #261 span_to_condition() 구현 | C | **W6 핵심** — #272 열림(9/22) · 리뷰 수정 대기(9/23) → #269 |
-| w05 태그 | D(PM) | **완료** (9/22 · `c792573` · [compare](../../compare/w04...w05)) |
-| 활동 메타 — 남은 조각 | E | **완료** — #271 머지 (9/22) · 후속 #275 (9/23) |
+| [#272](../../pull/272) 조건 변환기 리뷰 반영 | C | CHANGES_REQUESTED 9/23 → **월~화** |
+| [#269](../../pull/269) 증류 타깃 재생성 · main 반영 | C | #272 머지 뒤 재생성 · 재검증 → 머지 |
+| 검산표 20명 + 검산 소견 3가지 | C | #269 본문 — 방법은 [W6 README C 절](../../blob/w06/README.md) |
+| [#273](../../issues/273) 네거티브 컨트롤 용어 정정 | A | **(가) 진행** — A 9/23 회신 · 정정 PR |
+| [#272 리뷰](../../pull/272) 7번 — 같은 단계 지역 후보가 여럿일 때 `geo_code` | D(PM) | 결정 (제안: `geo_code` 빼고 `value` 원문) |
+| 기여도 근사기 학습 → C 평가 | D → C | **W8로 이동** (#269 머지 뒤 · 9/25 결정) |
+| 밈·유행어 시그니처 사전 `data/dict/signatures/meme.json` (B 매뉴얼 W5~W7 산출물) | B | **W8로 이동** (9/26 결정) |
 
 ---
 
-## 전원 공통 — 주간보고서 (수 9/23 23:59)
+## 전원 공통 — 팀 회의 · 주간보고서
 
-근무일이 3일뿐이라 내부 마감을 수요일로 당긴다. 원고는 드라이브 — PM(재현)에게 **수 9/23 23:59** 까지.
+- **화 21:00 팀 회의** 30분 — 등급별 F1(B) · #272 진행(C) 확인
+- **수 9/30 23:59** 주간보고 원고 → PM (드라이브). PM 이 원고와 GitHub 기록으로 **검토용 HWP** 를 만들어 공유 → 검토·서명 → 제출
 
 ```
 1. 이번 주 내 목표:
@@ -113,525 +104,143 @@ D(PM)이 W5 성과를 발표한다. 개인 5줄 보고를 **일요일 9/20 저�
 
 ---
 
-## A · 이은선 — 문서 정비 (비동기)
+## A · 이은선 — 용어 정정 · exp8 축약판 지원
 
-> 전체 매뉴얼 [docs/roles/A-data.md](docs/roles/A-data.md)
+> 전체 매뉴얼 [docs/roles/A-data.md](docs/roles/A-data.md) — W8부터 결과 문서(중간점검) 리드
 
-W6 A 역할은 연휴 비동기. 시간이 날 때 아래를 처리한다.
-
-### decisions.md 최신화
-
-W5에서 확정된 결정을 [docs/decisions.md](docs/decisions.md)에 추가한다.
-
-- #261 스팬→condition 변환 규칙 (resolution 산정·subject·REL 처리) — 9/19
-- #263 koelectra-v1 체크포인트 확정 (checkpoint-epoch-10·임계값 0.7)
-- #264 Qwen3 3ep adapter v1 확정 (verdict 90%)
-
-```bash
-# 현재 마지막 DEC 번호 확인
-grep "DEC-0" docs/decisions.md | tail -5
-```
-
-### (선택) W7 대비 — [docs/roles/A-data.md](docs/roles/A-data.md)
-
-W7 A 역할: "exp8 축약판 지원". 필요한 라벨 추가 작업이 있는지 미리 파악한다.
+1. **[#273](../../issues/273) 용어 정정 PR** — 9/23 (가)로 정해졌다(A 회신). 이슈 본문 표의 5곳을 고친다. `docs/persona-design.md` 는 CODEOWNERS 경로라 PR 로 올리고, 나머지 문서와 커밋을 나눈다.
+2. **exp8 축약판 지원** — E 가 고를 페르소나 1명의 골드 라벨·단서 점검. 범위는 월요일에 E 와 맞춘다.
+3. (선택) [#241](../../issues/241) 나이 표현 변이 — C 의 나이 파서 보완(#272)과 같이 보면 좋다.
 
 ### 완료 기준
 
-- [x] decisions.md — W5 결정 3건 추가 — [#270](../../pull/270) 머지 (9/23 · DEC-007~009 · Codex 2차 검토 5군데 반영)
+- [ ] #273 정정 PR 머지
+- [ ] exp8 축약판 페르소나·라벨 지원 — E 확인
 
 ---
 
-## B · 최진필 — E 실 엔진 연결 준비 (비동기)
+## B · 최진필 — 1단 F1 확정 · 성능 리포트
 
-> 전체 매뉴얼 [docs/roles/B-detector.md](docs/roles/B-detector.md) · [howto/b-finetune.md](docs/roles/howto/b-finetune.md)
+> 전체 매뉴얼 [docs/roles/B-detector.md](docs/roles/B-detector.md) §W7
 
-### 현황
-
-v1 체크포인트 확정 완료 (#263 · 9/18):
-- 경로: `experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10`
-- 임계값: 0.7 · 내부 eval F1 0.4839 · test F1 0.2940 · p95 276ms
-- 학습 잡 비동기 → **불필요 확정** (1ep=16.57초 · #262)
-
-### E에게 infer.py 사용법 공유 (월~화 · 이슈 코멘트 한 개)
-
-E가 W7에 `engines/real.py`를 구현할 때 필요한 정보를 이슈 코멘트로 남긴다. 아래 다섯 줄이면 된다.
-
-```bash
-# 1) 체크포인트 — B 데스크톱 로컬. 공유 방법(드라이브 zip / 별도 저장소)은 코멘트에서 정한다
-experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10
-
-# 2) 실행 예시 — 플래그명은 --min-span-score (기본값 0.7 · registry 등록값과 같음)
-python experiments/exp06-finetune/infer.py \
-  --checkpoint-dir experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10 \
-  --post '{"post_id":"test","body":"신갈저수지 조황입니다"}' \
-  --min-span-score 0.7 --device cpu
-
-# 3) 출력 계약: docs/contracts/span.schema.json  (입력은 infer.py input_channels() 가 받는 post 레코드)
-```
-
-**반드시 함께 적을 제한** ([registry.md](models/registry.md) 46~47행): 모델은 **경계·유형만** 예측한다. 출력의 `level=implicit`·`subject=self`는 호환용 고정값이지 판정이 아니다 (`infer.py:27-29`, `resolver` 미지정 시 `RuntimeWarning`). E가 real.py에서 이 값을 그대로 위험도 계산에 넘기면 등급·주체 분기가 전부 무력화되므로, **W7 연결 때 의미 판정 resolver(D 2단 또는 규칙)를 어디서 붙일지 함께 정한다.** C의 `span_to_condition()` 검증도 이 때문에 골드(검수된 level·subject)로 한다.
+1. **월~화 — 등급별 F1 선측정 → PM 보고.** 모델은 등급(`level`)을 예측하지 않으므로 **정답 스팬의 등급으로 나눠** 잰다. test 239편은 저장된 예측을 재채점하면 되고 추론을 다시 돌릴 필요가 없다. **재현율은 정답 등급별로 바로 나오지만, 어떤 정답과도 안 겹친 예측(FP — 지금 286개)은 등급이 없다.** FP 를 어느 등급에 넣을지(F1 산식)를 **월요일에 PM 과 정하고**, 화요일에 등급별 TP·FP·FN·재현율·F1 을 산식과 함께 보고한다. 산식이 안 정해지면 등급별 F1 은 「미산출」로 두고 등급별 재현율과 전체 정밀도·F1 을 보고한다. 암묵 F1 은 **M1 IAA 측정치의 80%**가 목표다 — 기준으로 쓴 IAA 의 버전·값과 비율을 같이 적는다.
+2. **CPU 지연 중앙값** — 실제 test 글 기준. 지금 있는 값은 합성 입력 3종의 p95(최대 276ms)뿐이다.
+3. **추가 탐지율 확정치** — 기존 도구가 놓친 스팬 중 v1 이 잡는 비율 (매뉴얼 §W7 표).
+4. **성능 리포트** — 1~3을 중간점검에 그대로 넣을 표 한 장. 수치는 `models/registry.md` 에도 갱신.
+5. E 가 요청하면 체크포인트를 비공개 경로로 전달 ([#266](../../issues/266)).
+6. 밈·유행어 시그니처 사전(매뉴얼 W5~W7 산출물)은 **W8** 로 옮겼다.
 
 ### 완료 기준
 
-- [x] E에게 체크포인트 경로·`--min-span-score 0.7`·level/subject 고정값 제한을 이슈 코멘트로 공유 — [#266 보충 댓글](../../issues/266#issuecomment-5771322810) (9/22) · E 회신: W7(9/28~) `real.py` 연동, 체크포인트는 그때 요청
+- [ ] 등급별 TP·FP·FN·재현율·F1 + 산식 — **화 9/29 PM 보고** (암묵은 IAA 대비 비율 포함)
+- [ ] CPU 지연 중앙값(실제 글) · 추가 탐지율 확정치
+- [ ] 성능 리포트 표 1장 (금)
+- [ ] 체크포인트 전달 (E 요청 시)
 
 ---
 
-## C · 신정현 — 증류 타깃 세트
+## C · 신정현 — 이월 마무리 → 위험도 상관 · [필수] 조치 재현
 
-> 전체 매뉴얼 [docs/roles/C-specificity.md](docs/roles/C-specificity.md) · [howto/c-engine.md](docs/roles/howto/c-engine.md)
+> 전체 매뉴얼 [docs/roles/C-specificity.md](docs/roles/C-specificity.md) §W7
 
-### ⭐ 이번 주 C 의 핵심 — 증류 타깃을 완성한다
+**월~화 — 이월 먼저**
 
-이 PR이 머지되면 **w05 태그**를 단다. 근무일 3일이라 순서가 중요하다 — **월 #268 → 월~화 변환기 → 화~수 생성기·PR.** 수요일까지 PR이 안 올라가면 연휴 뒤 월 9/28에 이어서 한다.
+1. **[#272](../../pull/272) 리뷰 반영** — 필수는 `age_band` 의 `value` 를 계약 enum(5세 구간)에 맞추는 것. 나머지는 AGE·COMMUTE·FAM·배우자·시설 별칭 오분류와 스키마 검증 테스트. 재현 명령은 리뷰 본문에 있다.
+2. **[#269](../../pull/269) 타깃 재생성 · 재검증** — #272 수정으로 AGE·COMMUTE·FAM 의 resolution 이 바뀌므로 타깃을 **다시 생성**한다. 수정 전후 `baseline_risk`·`delta` 를 비교하고 계약·SFT 조인을 다시 확인한다. 지금의 79/79 · 77/77 은 수정 전 값이다.
+3. **검산표 20명 + 검산 소견 3가지** — 재생성한 타깃으로 #269 본문에. 방법은 [W6 README C 절](../../blob/w06/README.md).
+4. **#269 머지** — 재검증과 검산표가 끝나면. #272 가 머지되면 #269 는 main 을 향한다.
+5. (선택) `d5e6d8f` 의 `perf` 를 허용 type 으로 reword — #269 lint.
 
-```
-골드 스팬 (type·level·subject·text)
-   │  span_to_condition()          ← 월~화 · clues.py (신규)
-   ▼
-condition {axis, kind, value|geo_code, resolution, confidence, source_post_ids}
-   │  risk_total()                 ← PR #268 (clamp 1건 고치면 머지)
-   ▼
-0~100 위험도  ──▶  leave_one_out(risk_fn=…)   ← loo.py (이미 머지 #251)
-   ▼
-data/corpus/v0/gold/contribution/<pid>.json    ← 화~수 · gen_contribution_targets.py (신규)
-```
+**수~금 — W7 본 과제**
 
-### 월 — PR #268 clamp 수정 재제출
-
-[PR #268 리뷰 (9/19 · CHANGES_REQUESTED)](../../pull/268) 필수 1건: `engine.py:98`이 `specificity.schema.json` 계약상 유효한 `resolution`(정수 0~4)을 축별 표에 없는 값이라 `ValueError`로 거부한다. 예: `{"axis":"sex","resolution":2}`.
-
-**주의 — 지금의 `not in RESOLUTION[axis]` 검사는 범위 검사도 겸하고 있다.** 그냥 clamp로 바꾸면 5 같은 값도 흡수된다. 범위 검사를 남기고 그 뒤에 clamp한다:
-
-```python
-# src/kopl/c2_specificity/engine.py — 93~105행 부근
-if isinstance(resolution, bool) or not isinstance(resolution, int):
-    raise TypeError(f"conditions[{index}].resolution은 정수여야 합니다.")
-if not 0 <= resolution <= 4:                       # 계약 범위 — 그대로 거부
-    raise ValueError(f"resolution은 0~4여야 합니다: {resolution!r}")
-resolution = min(resolution, max(RESOLUTION[axis]))   # 축 최대 단계로 clamp (sex 2→1, age 4→3)
-levels[axis] = max(levels[axis], resolution)
-```
-
-테스트: `tests/test_c2_risk.py`는 현재 **10개 케이스**(일반 4 + parametrize 6). sex clamp 기대값을 맞추고, **음수 · 5 · 비정수 거부** 케이스를 추가한다.
-
-```bash
-PYTHONIOENCODING=utf-8 python -m pytest tests/test_c2_risk.py -v
-```
-
-권장 2건(선택): `confidence`가 점수에 곱해지지 않음을 고정하는 테스트 1개 · `risk_by_axis` docstring에 「계약 필드 검증은 호출자 책임」 한 줄.
-
-### 월~화 — `span_to_condition()` 구현
-
-[#261 결정 코멘트 (9/19)](../../issues/261#issuecomment-5737937465) 기준. 파일은 `src/kopl/c2_specificity/clues.py`(신규), 상수는 `model.py`에 모은다.
-
-**출력은 `specificity.schema.json`의 `condition` 전체 필드**여야 한다 — `risk_total`은 `axis`·`resolution`만 보지만, 같은 객체가 W7에 `specificity()`(k 계산)로도 들어간다:
-
-```python
-# src/kopl/c2_specificity/clues.py
-from __future__ import annotations
-
-# 스팬 type → C2 axis. REL_HOME·REL_WORK 는 축이 아니라 수식자 (아래 build_conditions 에서 처리)
-TYPE_TO_AXIS = {
-    "LOC_ADMIN": "location", "LOC_FACILITY": "location",
-    "AGE": "age", "SEX": "sex", "JOB": "occupation",
-    "FAM": "family", "COMMUTE": "commute", "INCOME": "income",
-}
-LEVEL_CONFIDENCE = {"explicit": 1.0, "implicit": 0.8, "inferential": 0.5}
-
-
-def span_to_condition(span: dict, post_id: str) -> dict | None:
-    """골드 스팬 한 개 → condition 한 개. 조건이 안 되면 None.
-
-    None 인 경우: subject == "other" · REL_HOME/REL_WORK · LOC_ADMIN 미해석 · LOC_FACILITY 코드 없음
-    """
-    if span["subject"] == "other" or span["type"] not in TYPE_TO_AXIS:
-        return None
-    axis = TYPE_TO_AXIS[span["type"]]
-    conf = LEVEL_CONFIDENCE[span["level"]]
-    if span["subject"] == "unknown":
-        conf *= 0.5
-    resolution, kind, value, geo_code = _resolve(span)   # 아래 표
-    if resolution is None:
-        return None
-    cond = {"axis": axis, "kind": kind, "resolution": resolution,
-            "confidence": round(conf, 2), "source_post_ids": [post_id]}
-    if geo_code:
-        cond["geo_code"] = geo_code
-    else:
-        cond["value"] = value
-    return cond
-```
-
-**`_resolve()` — 축별 resolution 표** (첫 열은 입력 `span.type`, 출력 axis는 위 매핑):
-
-| span.type | resolution | kind | value / geo_code |
-|---|---|---|---|
-| LOC_ADMIN | `engine.resolve(text)` 로 후보 코드 → 사전 `regions[code]["level"]`: `sido`→1 · `sigungu`→2 · `emd`→3. **코드 자릿수로 판별하지 않는다** (사전 코드는 전부 10자리). 후보 0개 → None. 후보 여럿이면 가장 넓은 level | `administrative_area` | `geo_code` |
-| LOC_FACILITY | `facilities.py` 해석기가 코드를 주면 4, 없으면 None | `facility` | `geo_code` |
-| AGE | 정확 나이(`서른여덟`·`38`) 파싱되면 3, 세대 표현(`30대`·`마흔 넘어`) 1, 파싱 불가 1 | `age_exact` / `age_band` | span.text |
-| SEX | 항상 1. **배우자 호칭(`남편`·`아내`)이면 `family` 1 조건을 하나 더 만든다** (label-schema §3-2) | `sex` | span.text |
-| JOB | explicit 2 · implicit/inferential 1. **3(직장 특정)은 라벨만으로 금지** | `job_group` | span.text |
-| FAM | 학년·자녀 수 정규식(`초3`·`둘째`) 맞으면 3 · explicit/implicit 2 · inferential 1 | `family_status` | span.text |
-| COMMUTE | 노선·역 이름 있으면 2, 나머지 1 | `commute_mode` | span.text |
-| INCOME | 항상 1 | `income_band` | span.text |
-| REL_HOME · REL_WORK | **조건 안 만듦 → None.** `build_conditions()` 에서 수식자로 처리 | — | — |
-
-**`build_conditions(post_ids)` — 글 묶음 → condition 목록.** 스팬을 전부 변환한 뒤 두 가지 후처리:
-
-- **REL_HOME(self)** 가 있는 글의 `location` 조건은 `confidence` 를 1.0으로 올린다
-- **REL_WORK** 가 있는 글은 `location` 조건은 그대로 두고 `{"axis":"commute","kind":"commute_mode","value":"REL_WORK","resolution":1,"confidence":0.5}` 를 추가한다
-
-같은 축 조건이 여러 개여도 된다 — `risk_total` 이 축별 max(resolution) 하나만 쓴다 (규칙 1).
-
-**`span_id`는 condition에 넣지 않는다** — `specificity.schema.json`의 condition이 `additionalProperties: false`라 계약 검증에서 깨진다. `contributions[].clue_ids`·`top_spans`는 아래 생성기에서 `clue_index`/`span_index`로 `leave_one_out()`에 넘긴다 (#261 9/20 정정).
-
-**입력은 골드로 한다.** B `infer.py` 출력은 `level=implicit`·`subject=self` 고정값이라 이 분기가 작동하지 않는다 (B 섹션 참고). 골드 파일은 최상위 `gold/*_spans.jsonl`(`reviewed: true` 만) **하나뿐이다.** `gold/blind/`·`gold/detect/`(교사 출력)·`iaa*/`·`stage2/`는 쓰지 않는다.
-
-> ⚠️ **blind 를 합치지 않는다.** blind 200 은 같은 글을 C 가 독립 라벨링한 별도 정본이라 최상위와 `span_id` 가 그대로 겹친다 (실측 `A07_b16_s01`). 합치면 중복으로 생성이 중단된다. — 9/21 이전 문구는 「합친다」로 잘못 적혀 있었다. PM 정정 2026-09-22.
-
-```bash
-# 스팬 한 개로 손 검산 — 결과가 표와 맞는지
-PYTHONIOENCODING=utf-8 python -c "
-from kopl.c2_specificity.clues import span_to_condition
-print(span_to_condition({'type':'AGE','level':'explicit','subject':'self','text':'서른여덟'}, 'A01_b03'))
-# → {'axis':'age','kind':'age_exact','resolution':3,'confidence':1.0,'source_post_ids':['A01_b03'],'value':'서른여덟'}
-"
-```
-
-### 화~수 — `gen_contribution_targets.py` + PR
-
-`loo.py`의 `risk_fn`(정렬된 post_id 튜플 → 0~100)에 `risk_total`을 붙인다. `leave_one_out()`이 이미 `contribution.schema.json` 형식을 그대로 반환하므로 어댑터는 `risk_fn` 하나다.
-
-```python
-# scripts/gen_contribution_targets.py
-"""인물별 LOO 기여도 = D 2단 학습의 증류 타깃.
-
-  python scripts/gen_contribution_targets.py \
-    --gold     data/corpus/v0/gold \
-    --personas data/corpus/v0/personas \
-    --out      data/corpus/v0/gold/contribution \
-    --exclude-posts data/corpus/v0/splits/test.jsonl
-"""
-import hashlib, json
-from pathlib import Path
-from kopl.c2_specificity import risk_total
-from kopl.c2_specificity.clues import span_to_condition   # + build_conditions
-from kopl.c3_contribution.loo import leave_one_out
-
-
-def user_ref_for(persona_id: str) -> str:
-    # scripts/seed_sns.py 와 같은 규칙 — SNS 의 user_ref 와 반드시 일치해야 E 가 조인할 수 있다
-    return "u_" + hashlib.sha256(persona_id.encode("utf-8")).hexdigest()[:12]
-
-
-def load_spans(gold: Path, persona_id: str, exclude: set[str]) -> dict[str, list[dict]]:
-    """post_id → 스팬 목록. 최상위 reviewed 만. 첫 줄은 헤더.
-
-    blind/ 는 합치지 않는다 — 같은 글의 독립 라벨이라 span_id 가 겹친다.
-    exclude 는 test split 의 post_id 집합 (아래 ⚠️ 참고).
-    """
-    by_post: dict[str, list[dict]] = {}
-    f = gold / f"{persona_id}_spans.jsonl"
-    if not f.exists():
-        return by_post
-    for line in f.read_text(encoding="utf-8").splitlines()[1:]:
-        rec = json.loads(line)
-        if "reviewed" in rec and not rec["reviewed"]:
-            continue
-        if rec["post_id"] in exclude:
-            continue
-        by_post.setdefault(rec["post_id"], []).extend(rec.get("spans", []))
-    return by_post
-
-
-def main(gold: Path, personas: Path, out: Path, exclude_file: Path | None) -> None:
-    out.mkdir(parents=True, exist_ok=True)
-    exclude = {json.loads(l)["post_id"]                # splits/test.jsonl — D 와 글 집합을 맞춘다
-               for l in exclude_file.read_text(encoding="utf-8").splitlines()
-               if l.strip()} if exclude_file else set()
-    for pfile in sorted(personas.glob("*.json")):
-        pid = pfile.stem
-        spans = load_spans(gold, pid, exclude)
-        if not spans:
-            continue                                   # 골드 없는 인물은 건너뛴다 (건너뛴 목록은 PR 에 적는다)
-
-        def risk_fn(post_ids: tuple[str, ...]) -> float:
-            conds = build_conditions({p: spans[p] for p in post_ids})
-            return risk_total(conds)                   # conds 가 비면 0.0 — 전부-제거 케이스
-
-        # contribution 계약의 clue_ids · top_spans 는 condition 이 아니라 여기서 채운다
-        clue_index = {p: [s["span_id"] for s in ss] for p, ss in spans.items()}
-        span_index = {p: [{"span_id": s["span_id"], "text_id": s["text_id"]} for s in ss]
-                      for p, ss in spans.items()}            # loo.py 가 앞 3개만 쓴다
-        result = leave_one_out(user_ref=user_ref_for(pid), post_ids=sorted(spans),
-                               risk_fn=risk_fn, clue_index=clue_index, span_index=span_index)
-        (out / f"{pid}.json").write_text(
-            json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-```
-
-실행 → 계약 검증 → 검산:
-
-```bash
-python scripts/gen_contribution_targets.py --gold data/corpus/v0/gold \
-  --personas data/corpus/v0/personas --out data/corpus/v0/gold/contribution \
-  --exclude-posts data/corpus/v0/splits/test.jsonl
-
-# 계약 (전 파일)
-for f in data/corpus/v0/gold/contribution/*.json; do
-  check-jsonschema --schemafile docs/contracts/contribution.schema.json "$f" || echo "FAIL $f"
-done
-
-# 검산표 — PR 본문에 20명 붙인다: persona.ground_truth 대비 축별 max(resolution) 이 말이 되는지
-PYTHONIOENCODING=utf-8 python -c "
-import json, glob
-for f in sorted(glob.glob('data/corpus/v0/gold/contribution/*.json'))[:20]:
-    r = json.load(open(f, encoding='utf-8')); pid = f.split('/')[-1][:-5]
-    gt = json.load(open(f'data/corpus/v0/personas/{pid}.json', encoding='utf-8'))['ground_truth']
-    top = r['output']['contributions'][0]
-    print(pid, 'baseline', r['output']['baseline_risk'], 'top', top['post_id'], top['delta'], '| GT', gt['location'], gt['age'], gt['occupation'])
-"
-```
-
-**검산에서 볼 것 3가지**: ① `baseline_risk` 가 인물 간에 갈리는가 (전부 같은 값이면 변환기가 resolution 을 못 만드는 것) ② rank 1 글이 실제로 지명·나이 단서가 든 글인가 ③ `greedy_path` 가 2~3개 안에서 `residual_risk`(=0) 근처로 내려가는가. 셋 중 하나라도 이상하면 PR 본문에 그대로 적는다 — 고치는 건 W7 튜닝 몫이다.
-
-> ⚠️ **test split(#244) 글은 뺀다** — `--exclude-posts data/corpus/v0/splits/test.jsonl`. 증류 타깃은 **모델이 입력으로 보는 글 집합에 대한 LOO** 여야 한다. D 의 `make_sft_v1.py` 는 test 글을 빼고 학습 예시를 만들기 때문에, 타깃에 test 글이 섞이면 글 집합이 달라 `recommendation` 이 통째로 버려진다 (실측 조인 28/77 → 제외 후 77/77). — 9/21 이전 문구는 「test 글도 생성한다, 빼는 건 D 가」로 반대로 적혀 있었다. PM 정정 2026-09-22.
-
-### 만들 것
-
-```
-src/kopl/c2_specificity/clues.py               span_to_condition() · build_conditions() · TYPE_TO_AXIS
-src/kopl/c2_specificity/model.py                LEVEL_CONFIDENCE 등 상수 추가 (PR #268 파일)
-src/kopl/c2_specificity/test_clues.py           축별 표 케이스 (최소 축마다 1개 + REL 2개 + other/unknown)
-scripts/gen_contribution_targets.py             전 인물 실행 스크립트
-data/corpus/v0/gold/contribution/<pid>.json     증류 타깃 세트 (커밋한다 — D 학습 입력)
-```
+6. **기여도 v1 확정** — 상관 측정 결과로 `model.py` 의 `WEIGHTS` 등 튜닝값을 확정하고 PR 에 기록한다 (매뉴얼의 `ALPHA` 는 아직 코드에 없다).
+7. **위험도 상관 측정** — 우리 점수 vs LLM 추론 성공률, Spearman + p값, 윈도우 70개 이상.
+8. **[필수] 조치 3단계 −54~61% 재현** — D 의 조치 시뮬레이션 + C 재계산 함수 ([#124](../../issues/124) ③). 수요일에 D 와 입출력을 맞춘다.
+9. 근사기 vs LOO 평가는 **W8** — D 의 근사기 학습이 W8로 옮겨졌다.
 
 ### 완료 기준
 
-- [x] `loo.py` LOO 기여도 — 단위 테스트 통과 (#251 머지 · 9/16 · CI guard pass)
-- [x] PR #268 — 범위 검사 유지 + clamp · 거부 케이스 3개 추가 · 재제출 → 머지 (9/22)
-- [ ] `span_to_condition()` + `build_conditions()` — 표 그대로 · `test_clues.py` 통과 · condition 전체 필드 (화) — #272 (9/22) · **리뷰 수정 대기**: condition 전체 필드 중 `age_band` value 가 계약 enum 위반
-- [x] `gen_contribution_targets.py` — test split 제외 후 생성(`--exclude-posts`) · 건너뛴 인물 목록을 PR 본문에 기재 · `check-jsonschema` 전 파일 통과 (수) — [#269](../../pull/269) 브랜치 기준: 79명 생성·계약 79/79 통과·SFT 조인 77/77 (9/22~23). main 머지는 #272 뒤
-- [ ] PR — 검산표 20명 + 건너뛴 인물 목록 + 검산 3가지 소견 (수 9/23 · 늦으면 월 9/28)
+- [ ] #272 머지 → #269 타깃 재생성·재검증 → 머지 (화~수)
+- [ ] 검산표 20명 + 소견 3가지 (#269 본문)
+- [ ] 기여도 v1 확정 — 최종 튜닝값·선택 근거를 PR 에 기록
+- [ ] 위험도 상관 — Spearman 수치 + p값 · 윈도우 ≥ 70
+- [ ] [필수] 조치 3단계 하락률 (D와)
 
 ---
 
-## D · 박재현 — PM 역할
+## D · 박재현 — 외부 LLM 일치율 · [필수] 조치 재현 + PM
 
-> 전체 매뉴얼 [docs/roles/D-stage2.md](docs/roles/D-stage2.md)
+> 전체 매뉴얼 [docs/roles/D-stage2.md](docs/roles/D-stage2.md) §W7
 
-### 현황
+**기술**
 
-QLoRA 3ep adapter v1 확정 (verdict 90% · dev_loss 0.0044 · #264 · 9/18). 추가 학습 불필요. W6는 PM 역할 집중.
+1. **외부 LLM 대비 속성 적중 일치율** — 확정된 Qwen3 v1(`checkpoint-epoch-3`, #264)과 외부 LLM 을 같은 글로 비교한다. [목표] ≥ 0.8. **측정 대상부터 정한다**: 계약상 속성 **값**은 산출하지 않으므로(`stage2-io.schema.json` · `models/registry.md` 136행) 「적중」을 7속성 `verdict`(·`granularity`) 일치로 볼지, 외부 모델·공통 입력·채점 기준·기권/파싱 실패 처리와 함께 정해서 적는다. exp04(Claude vs GPT 교차모델) 일치율이 아니고, #264 의 verdict 90% 도 dev 정답과 비교한 값이다 (roadmap §5).
+2. **[필수] 조치 3단계 −54~61% 재현** — C 와 (#124 ③).
+3. 근사기(추천 포함 재학습 → C 평가)는 **W8** — #269 머지 뒤.
 
-### 월 9/21 11:15 — KISIA 줌 주간보고회 발표
+**PM**
 
-W5 성과 발표. [위 팀 회의 §0](#0-전원-공통--월-921-1115-kisia-줌-주간보고회) 표 참고.
-
-### 수 9/23 23:59 — 주간보고서 취합
-
-팀원 5명 보고 수합 + KISIA 제출.
-
-### 목 9/24 21:00 — 멘토링 (연휴 첫날 · 진행 여부 확인)
-
-정례 목요일이 연휴 첫날이다. 9/17 멘토링에서 「추석 고려해 조율」하기로 했으므로 **월요일에 멘토님께 날짜를 확인**하고 확정되면 여기 갱신한다.
-
-**안건 (정해지면):**
-1. W6 진행 공유 — C 증류 타깃 진행 상황
-2. E 활동 메타 마무리 보고
-3. W7 대응 — B 1단 F1 확정·C 기여도 v1 확정·D Qwen3 v1 확정
-
-### w05 태그 — 완료 (9/22)
-
-`w05` → `c792573` (PR #268 머지 커밋). 원격 태그는 `w01 w02 w04 w05`. compare 링크는 주간활동보고서 「활동 내용」에 넣는다:
-
-https://github.com/jaepaly/KISIA_Project/compare/w04...w05
-
-다음 주부터는 `bash scripts/tag_week.sh w06` 한 줄이면 된다 (태그 + push + compare 링크 출력).
-
-### PM 몫
-
-| 언제 | 무엇 |
-|---|---|
-| 일 9/20 저녁 | 팀원 보고 5줄 취합 (KISIA 줌 전날) |
-| **월 9/21 11:15** | KISIA 줌 주간보고회 발표 |
-| 월 9/21 | 멘토님께 멘토링 날짜 확인 (목 9/24 = 연휴) |
-| **수 9/23 23:59** | 주간보고서 최종 제출 |
-| 9/22 | w05 태그 — **완료** (`c792573`) |
+- 화 17:00 KISIA 줌 주간보고회 (W6 성과)
+- 화 — B 등급별 F1 결과 판단
+- #272 리뷰 7번 결정
+- level/subject 판정 위치 — E 의 실 엔진 연동에 맞춰 E 와 결정
+- 오프라인 멘토링 — 일시·장소 공지
+- 주간보고서: 원고 취합 → 검토용 HWP → 서명 → 제출 · `w07` 태그
 
 ### 완료 기준
 
-- [x] 월 9/21 KISIA 줌 발표 완료
-- [x] 멘토링 날짜 확정 · README 갱신
-- [x] 주간보고서 수 9/23 23:59 제출
-- [x] w05 태그 — 9/22 `c792573` · [compare](../../compare/w04...w05)
+- [ ] 외부 LLM 일치율 수치 + 측정 방법
+- [ ] [필수] 조치 3단계 수치 (C와)
+- [ ] #272 리뷰 7번 결정
+- [ ] 주간보고서 제출 · `w07` 태그
 
 ---
 
-## E · 이지희 — 활동 메타 필드
+## E · 이지희 — exp8 축약판 · 중간점검 초안 · 실 엔진 연동 착수
 
-> 전체 매뉴얼 [docs/roles/E-system.md](docs/roles/E-system.md) · [howto/e-integration.md](docs/roles/howto/e-integration.md)
+> 전체 매뉴얼 [docs/roles/E-system.md](docs/roles/E-system.md) §exp8 축약판
 
-### ⭐ 이번 주 E 의 핵심 — 활동 메타의 **남은 조각**을 채운다
+1. **exp8 축약판** — 조치 곡선 1종: 페르소나 1명, 조치 유형별 (효과, 부담) 점 몇 개 → **그래프 1장 + `experiments/exp08-actions/results/metrics.json`**. 목적은 「측정 방법이 돌아간다」를 보이는 것이다 (전체판은 W9 C). 위험도 재계산은 C 함수를 쓴다.
+2. **중간점검 초안** — 원고는 **팀 드라이브**에 쓰고 저장소에는 올리지 않는다 (DEC-003 · [submissions/README](submissions/README.md)). 원고에만 있고 `docs/` 에 없는 내용은 `docs/` 정본에 먼저 옮긴다. 양식 골격 + 지금까지 확정된 수치까지 채우고, 이번 주 측정값은 W8에 넣는다.
+3. **실 엔진 연동 착수** — B 에게 체크포인트 요청 ([#266](../../issues/266)). `level`·`subject` 는 임시 고정값이라 위험도 계산에 그대로 넘기지 않는다 — 판정 위치는 D 와 결정.
 
-활동 메타 3종(닉네임·위치태그·작성시각)과 공개/비공개는 조치 ②③ 시연의 재료다 ([roadmap §4](docs/roadmap.md) · 선행 PoC에서 활동 메타 관리가 위험도 감소 1위). **골격은 W3에 이미 다 들어가 있다** — 이번 주는 비어 있는 것만 채운다.
+### 완료 기준
 
-```
-W3: 스키마·토글·표시 ✅ → W5: 3화면 연결 ✅ → W6: 시딩 위치태그 · 시간대 분포 · 작성 시 공개범위
-                                              → W7: exp8 축약판 · 중간점검 초안 → W9: 에디터 실시간 경고 (D와)
-```
-
-**이미 돼 있는 것 — 다시 만들지 않는다:**
-
-| 항목 | 어디에 |
-|---|---|
-| `geo_tag` · `visibility` · `created_at` 컬럼 | `apps/sns/schema.sql` 25~27행 |
-| 글별 공개/비공개 전환 | `app.py:127` `POST /posts/<id>/visibility` · `post.html:26` · `profile.html:27` 버튼 |
-| 비공개 글은 `/api/export` 에서 제외 | `app.py:181~189` |
-| 작성 화면 위치태그·작성시각 입력 | `templates/new.html` 28~38행 |
-| 닉네임·위치태그·작성시각 표시 | `post.html:10~12` · `profile.html:24~25` |
-
-**비어 있는 것 3가지** ([howto/e-sns.md §6](docs/roles/howto/e-sns.md)):
-
-1. 시딩 글의 `geo_tag` 가 **전부 NULL** (`scripts/seed_sns.py:163` 이 `None` 을 넣는다) → 조치 화면에서 「이 태그를 지우면 −n」을 보여줄 재료가 없다
-2. 프로필에 **시간대 분포 막대** 없음 — 글마다 시각만 찍힌다. 새벽에 몰린 막대가 시연에서 가장 잘 먹힌다
-3. 작성 화면에 **최초 공개범위 선택** 없음 — `app.py:113` 이 `'public'` 고정 (전환은 게시 후에만 가능)
-
-### 월 — 시딩 `geo_tag` 채우기
-
-인물 `ground_truth.location` 은 `"서울특별시 마포구 망원동"` 꼴이다. 위치태그는 **시군구 수준까지만** 넣는다 — 스키마 예시(`'용인시 기흥구'`)와 맞추고, 읍면동은 본문 단서와 결합했을 때만 좁혀지게 남겨둔다.
-
-```python
-# scripts/seed_sns.py — seed_persona() 안, iter_posts 루프 위에 추가
-def geo_tag_for(persona: dict) -> str | None:
-    loc = (persona.get("ground_truth") or {}).get("location") or ""
-    parts = loc.split()
-    return " ".join(parts[1:-1]) if len(parts) >= 3 else (loc or None)   # "서울특별시 마포구 망원동" → "마포구"
-
-# 루프 안 — 인물별 seed 고정 rng 로 글의 30% 에만 태그 (전부 달면 시연에서 「지우기」가 재미없다)
-tag = geo_tag_for(persona)
-geo_tag = tag if (tag and not record.get("negative_control") and rng.random() < 0.30) else None
-# INSERT 의 마지막 인자 None → geo_tag
-```
-
-`INSERT OR IGNORE` 라 **이미 시딩된 DB는 안 바뀐다.** `--reset` 으로 다시 넣는다:
-
-```bash
-python scripts/seed_sns.py --corpus data/corpus/v0/posts --personas data/corpus/v0/personas \
-  --db data/interim/sns.db --reset
-sqlite3 data/interim/sns.db "SELECT COUNT(*), COUNT(geo_tag) FROM posts WHERE source='seed';"
-# 두 번째 숫자가 첫 번째의 10~12% 면 정상 — 잡담(negative_control, 코퍼스의 64%)엔 안 달고 나머지의 30% 에만 달기 때문.
-# 잡담 제외 기준으로는 25~35%. (9/22 정정 — 종전 「전체의 25~35%」는 NC 를 설계값 10~15% 로 가정한 오기. #271 참고)
-```
-
-### 화 — 프로필 시간대 분포 막대
-
-`e-sns.md §5` 검증 SQL 3번을 그대로 화면에 올린다. 라우트에서 24칸 집계를 넘기고, 템플릿은 CSS 막대만 — JS 없음.
-
-```python
-# apps/sns/app.py — profile() 안, posts 조회 다음에
-rows = db().execute(
-    "SELECT CAST(substr(created_at,12,2) AS INTEGER) AS h, COUNT(*) AS n"
-    " FROM posts WHERE author_id = ? GROUP BY h", (a["author_id"],)).fetchall()
-hours = [0] * 24
-for r in rows:
-    hours[r["h"]] = r["n"]
-peak = max(hours) or 1
-return render_template("profile.html", a=a, posts=posts, hours=hours, peak=peak)
-```
-
-```html
-<!-- apps/sns/templates/profile.html — 「글 n편 · 가입」 줄 아래 -->
-<p class="post-meta" style="margin-top:12px;">시간대별 글 수</p>
-<div style="display:flex;align-items:flex-end;gap:2px;height:60px;">
-  {% for n in hours %}
-    <div title="{{ loop.index0 }}시 {{ n }}편"
-         style="flex:1;background:{% if loop.index0 < 6 %}#c0392b{% else %}#7f8c8d{% endif %};
-                height:{{ (n * 100 / peak)|int }}%;min-height:1px;"></div>
-  {% endfor %}
-</div>
-<div style="display:flex;font-size:11px;color:#888;"><span style="flex:1">0시</span><span style="flex:1">6시</span><span style="flex:1">12시</span><span style="flex:1">18시</span></div>
-```
-
-새벽(0~5시)만 색을 다르게 둔 이유: 시연에서 「이 사람은 새벽에 쓴다」가 한눈에 보여야 한다. `typical_active_hours` 가 「평일 밤 10시 이후」인 인물(A01)의 프로필을 열어 22~23시 막대가 솟는지 확인.
-
-### 수 — 작성 시 공개범위 선택 + 회귀 확인
-
-```html
-<!-- apps/sns/templates/new.html — created_at 입력 아래 -->
-<label for="visibility">공개 범위</label>
-<select name="visibility" id="visibility">
-  <option value="public">공개</option>
-  <option value="private">비공개</option>
-</select>
-```
-
-```python
-# apps/sns/app.py — create_post()
-visibility = f.get("visibility", "public")
-if visibility not in ("public", "private"):
-    abort(400)
-# INSERT 의 'public' 리터럴을 ? 로 바꾸고 visibility 를 인자에 추가
-```
-
-회귀 확인 — 비공개 글이 export 에서 빠지는 것은 W3 기능이지만, INSERT 를 건드렸으니 다시 돌린다:
-
-```bash
-python -m pytest apps/sns/test_export.py -v          # 기존 테스트 + 「private 로 만든 글은 export 에 없다」 케이스 1개 추가
-sqlite3 data/interim/sns.db < scripts/check_seed.sql  # 빈 시각 0건 · 시간대 2개 이상
-```
-
-### 만들 것
-
-```
-scripts/seed_sns.py                    geo_tag_for() · 30% 태그 · --reset 재시딩
-apps/sns/app.py                        profile(): hours/peak · create_post(): visibility
-apps/sns/templates/profile.html        시간대 분포 막대
-apps/sns/templates/new.html            공개 범위 select
-apps/sns/test_export.py                private 제외 케이스 1개
-```
-
-### 완료 기준 (e-sns.md §9 W6)
-
-- [x] 닉네임·위치태그·작성시각이 본문/프로필에 보인다 (W3)
-- [x] 잡담 제외 시딩 글의 25~35% (전체 기준 10~12%) 에 시군구 수준 `geo_tag` 가 들어 있다 — #271 · 9/22 · 333/3092 = 10.8% (잡담 제외 29.9%)
-- [x] 프로필에 시간대 분포 막대가 보인다 — A01 17편 전부 22시 (#271 · 9/22)
-- [x] 작성 화면에서 비공개로 올린 글이 `/api/export` 에 없다 — 공개범위 select + 회귀 테스트, `test_export.py` 14 passed (#271 · 9/22)
+- [ ] exp8 축약판 그래프 1장 + `metrics.json`
+- [ ] 중간점검 초안 (양식 골격 + 확정 수치)
+- [ ] 실 엔진 연동 착수 — 체크포인트 수령 · 판정 위치 결정
 
 ---
 
 ## 이번 주 일정
 
-| 요일 | 시각 | 누가 | 무엇 |
-|---|---|---|---|
-| **월 9/21** | 11:15 | D(PM) | KISIA 줌 주간보고회 발표 |
-| 월 | | D(PM) | 멘토님께 멘토링 날짜 확인 (목 9/24 = 연휴 첫날) |
-| 월 | | C | PR #268 — 범위 검사 유지 + clamp · 거부 케이스 추가 · 재제출 |
-| 월 | | E | `seed_sns.py` geo_tag 30% · `--reset` 재시딩 |
-| 월~화 | | C | `clues.py` span_to_condition() · build_conditions() · test_clues.py |
-| 월~화 | | B | E에게 체크포인트·`--min-span-score`·level/subject 제한 이슈 코멘트 |
-| 화 | | E | 프로필 시간대 분포 막대 |
-| 화~수 | | C | `gen_contribution_targets.py` · 전 인물 · 계약 검증 · 검산표 20명 · PR |
-| 수 | | E | 작성 시 공개범위 select · test_export 케이스 |
-| 수 | | A | decisions.md W5 결정 3건 (비동기 · 연휴 뒤여도 됨) |
-| **수 9/23 23:59** | | 팀원 5명 | 주간보고서 5줄 PM에게 |
-| **목 9/24 ~ 일 9/27** | | 전원 | **추석 연휴 — 작업 없음** (멘토링은 날짜 확정 후 여기 갱신) |
-| C PR 머지 후 | | D | w05 태그 (+ w04 push) · 연휴 걸치면 월 9/28 |
+| 언제 | 누가 | 무엇 |
+|---|---|---|
+| 월 | A · E | exp8 축약판 범위 — 페르소나·조치 유형 |
+| 월 | B · D(PM) | 등급별 F1 산식 — FP 처리 확정 |
+| 월~화 | B | 등급별 F1 선측정 → **화 PM 보고** |
+| 월~화 | C | #272 수정·머지 → #269 타깃 재생성·재검증 · 검산표 |
+| 월~화 | D | 외부 LLM 일치율 — 측정 대상 정의 · 하네스 |
+| **화 9/29 17:00** | D(PM) | KISIA 줌 주간보고회 (W6 성과) |
+| **화 21:00** | 전원 | 팀 회의 30분 |
+| 수 | C · D | [필수] 조치 3단계 재현 — 입출력 맞추기 |
+| **수 9/30 23:59** | 팀원 5명 | 주간보고 원고 → PM |
+| PM 공지 | 팀 | 오프라인 멘토링 |
+| **금 10/2** | B · C · E | 성능 리포트 · 상관 수치 · exp8 축약판·중간점검 초안 |
+| **금 10/2** | D(PM) | 주간보고서 제출 · `w07` 태그 |
 
 ---
 
 ## 이번 주 반드시 지킬 것
 
-**① C는 span_to_condition()에서 REL 축을 조건으로 만들지 않는다.**
-REL_HOME·REL_WORK는 수식자다. REL_HOME(self)는 동글의 location confidence를 1.0으로 올리고, REL_WORK는 location 그대로 + commute 1(conf 0.5)만 추가한다.
+**① 숫자에는 방법·측정일·데이터 버전·체크포인트를 같이 적는다.**
+W8 중간점검과 W10 최종 성능표가 이 숫자를 그대로 가져간다. 방법이 안 남은 숫자는 다시 재야 한다.
 
-**② E는 `apps/sns/` 골격을 다시 만들지 않는다.**
-스키마·토글·표시는 W3에 끝났다. 이번 주는 시딩 `geo_tag`·시간대 막대·작성 시 공개범위 세 조각만. `data/interim/sns.db`는 커밋하지 않는다 (`--reset`으로 언제든 재생성).
+**② test 로 튜닝하지 않는다.**
+임계값·가중치 조정은 내부 eval 로만 한다 (exp06 README · #256). test 는 확정값을 한 번 재는 데만 쓴다.
 
-**③ D는 w05 태그를 C PR 머지 전에 달지 않는다.**
-증류 타깃 세트가 포함된 커밋이 main에 들어온 뒤에 태그를 단다.
+**③ C·D 의 [필수] 재현은 #269 머지 뒤에 돈다.**
+조건 변환기와 증류 타깃이 main 에 있어야 두 사람이 같은 입력을 쓴다. #272 가 늦어지면 화요일 팀 회의에서 순서를 다시 잡는다.
 
 ---
 
@@ -639,15 +248,15 @@ REL_HOME·REL_WORK는 수식자다. REL_HOME(self)는 동글의 location confide
 
 | 상황 | 어떻게 |
 |---|---|
+| 등급별 F1 에서 예측 스팬의 등급을 정할 수 없다 | 모델은 등급을 예측하지 않는다. 재현율은 정답 등급별로 센다. 어떤 정답과도 안 겹친 예측(FP)은 등급이 없어서, 정밀도를 「매칭된 정답의 등급」으로만 세면 FP 가 빠져 부풀려진다 — FP 처리(F1 산식)는 월요일에 PM 과 정한다 |
+| `age_band` 로 못 좁히는 나이 표현 (경로당 · 야자 · 「40대」) | 좁히지 않는다 — `kind` 를 따로 두고(예: `age_hint`) `value` 는 원문, resolution 1 그대로 ([#272 리뷰](../../pull/272) 제안) |
 | LOC_ADMIN 코드가 시도인지 읍면동인지 모르겠다 | `engine.resolve(text)` 는 코드 **목록**을 준다. 계층은 사전 `regions[code]["level"]` (`sido`·`sigungu`·`emd`) 로 본다 — **자릿수로 판별하지 않는다**, 사전 코드는 전부 10자리 |
-| 지명 후보가 여러 개 나온다 (동명이인) | 가장 넓은 level 을 쓴다 (좁게 잡으면 위험도 과대). 애매하면 `resolve_info()` 결과를 PR 에 적고 W7 튜닝으로 |
-| 조건 계약 검증에서 `value` 또는 `geo_code` 필수라고 나온다 | `specificity.schema.json` condition 은 `anyOf[value, geo_code]`. LOC 축은 `geo_code`, 나머지는 `value`(스팬 텍스트) |
-| PR #268 테스트 cp949 오류 | `PYTHONIOENCODING=utf-8 python -m pytest` |
-| clamp 수정 후 기존 테스트 기댓값 불일치 | sex `resolution=2` 가 이제 거부 대신 1 로 clamp 된다. `test_c2_risk.py` 의 거부 기대 케이스를 clamp 기대로 바꾸고, 5·음수·비정수 거부 케이스를 새로 넣는다 |
-| `--reset` 했는데 geo_tag 가 여전히 NULL | `seed_persona()` 의 INSERT 마지막 인자가 아직 `None` 인지 확인 (`scripts/seed_sns.py:163`) |
-| 시간대 막대가 전부 같은 높이 | `scatter_created_at()` 이 안 돈 것 — `check_seed.sql` 3번 쿼리로 시간대가 2개 이상 갈리는지 확인 |
+| 지명 후보가 여러 개 나온다 (동명이인) | 가장 넓은 level 을 쓴다 (좁게 잡으면 위험도 과대). `geo_code` 를 어느 것으로 할지는 #272 리뷰 7번 결정을 따른다 |
+| 조건 계약 검증에서 `value` 또는 `geo_code` 필수라고 나온다 | `specificity.schema.json` condition 은 `anyOf[value, geo_code]` — 둘 중 하나는 있어야 한다. 확정된 지역·시설 코드가 있으면 `geo_code`, 코드가 불확실한 시설은 `value` 원문, 후보가 여럿인 지명은 #272 리뷰 7번 결정을 따른다 |
+| exp8 축약판에서 위험도를 다시 계산하는 법을 모르겠다 | 남은 글로 `risk_total(build_conditions(...))` 을 다시 부른다 — `risk_total` 은 `c2_specificity`, `build_conditions` 는 #272 머지 뒤. 글을 내린 순서별 위험도는 `c3_contribution/loo.py` 의 `leave_one_out()` 출력 `greedy_path` (`remove` · `risk_after`). 모르면 C 에게 |
+| LLM 을 불러야 하는데 키가 없다 | PM 에게 받는다. 키는 `.claude/settings.local.json` 처럼 커밋 안 되는 곳에만 둔다 ([AGENTS.md](AGENTS.md) 금지 사항) |
+| 테스트가 cp949 오류로 죽는다 | `PYTHONIOENCODING=utf-8 python -m pytest` |
 | `check-jsonschema` 명령이 없다 | `pip install check-jsonschema` |
-| SNS 서버 포트 3000 이 안 켜진다 | [howto/e-sns.md §1·§8](docs/roles/howto/e-sns.md) 확인 또는 E에게 |
 | PR 머지가 안 된다 | 리뷰어에게 요청 — 재촉하지 말고 한 번만 |
 
 ---
@@ -670,7 +279,7 @@ KISIA_Project/
 │  └─ RULES-DO-NOT.md             절대 하면 안 되는 것
 ├─ src/kopl/
 │  ├─ c1_span/                    1단 탐지 (B)
-│  ├─ c2_specificity/             특정성 엔진 (C) · clues.py (W6 신규)
+│  ├─ c2_specificity/             특정성 엔진 (C) · clues.py (#272 머지 대기)
 │  ├─ c3_contribution/            기여도 엔진 (C · W5 신규)
 │  ├─ c4_stage2/                  2단 추론·가명화 (D · W5 신규)
 │  └─ c5_corpus/                  코퍼스 생성·교사 라벨 (D · A)
@@ -680,7 +289,7 @@ KISIA_Project/
 │  ├─ corpus/v0/gold/             골드셋 검수분 (417편 587스팬)
 │  ├─ corpus/v0/gold/blind/       blind 분 ✅ (C · #229 머지 완료 9/14 · 159편 267스팬)
 │  ├─ corpus/v0/gold/iaa/         IAA 배정 + A·C 라벨링
-│  ├─ corpus/v0/gold/contribution/ 증류 타깃 세트 (C · W5 신규)
+│  ├─ corpus/v0/gold/contribution/ 증류 타깃 세트 (C · 79명 · #269 머지 대기)
 │  ├─ corpus/v0/splits/           train/test 분리 (A · W5 신규)
 │  ├─ realism/cards/              리얼리즘 카드 18장
 │  └─ dict/admin/                 행정구역·인구 사전
@@ -688,7 +297,9 @@ KISIA_Project/
 │  ├─ exp01-baseline/             베이스라인 3종 + LLM 상한 (W4 완성)
 │  ├─ exp05-model-size/           Qwen3 크기 비교 (W3 완료)
 │  ├─ exp06-finetune/             1단 파인튜닝 (B · W4~)
-│  └─ exp07-qwen3-finetune/       2단 QLoRA (D · W4~)
+│  ├─ exp07-qwen3-finetune/       2단 QLoRA (D · W4~)
+│  ├─ exp08-stage2-sft/           2단 SFT 데이터 빌더 (D · W5~)
+│  └─ exp08-actions/              exp8 축약판 조치 곡선 (E · W7 신규)
 ├─ apps/
 │  ├─ sns/                        가상 SNS (v0 + 시딩 완료)
 │  └─ analyzer/                   분석 웹앱 (E · W5 신규)
@@ -699,21 +310,20 @@ KISIA_Project/
 
 ---
 
-## 현재 미결 (9/23 기준)
+## 현재 미결 (9/25 기준)
 
 **PR**
-- [x] PR #268 C `risk_total` + clamp 수정 — 머지 (9/22)
-- [ ] [#272](../../pull/272) span_to_condition() + build_conditions() (C) — **CHANGES_REQUESTED 9/23**: `age_band` value 계약 enum 위반(골드 50/155) · AGE/COMMUTE/FAM/배우자/시설 별칭 오분류 · 스키마 테스트 부탁. 수정 커밋 대기
-- [ ] [#269](../../pull/269) 증류 타깃 생성기 수정 (blind 합침 제거 · test 제외) — **C 리뷰 대기** · base `C/c2/span-to-condition`, #272 머지 뒤 자동으로 main 재조준
-- [x] [#270](../../pull/270) decisions.md DEC-007~009 (A) — Codex 2차 검토 5군데 반영 · 머지 (9/23)
-- [x] [#271](../../pull/271) E 활동 메타 — 머지 (9/22)
-- [x] [#275](../../pull/275) Pretendard self-host (#274) — 머지 (9/23)
+- [ ] [#272](../../pull/272) 조건 변환기 (C) — CHANGES_REQUESTED 9/23 · W7 월~화
+- [ ] [#269](../../pull/269) 증류 타깃 (C) — #272 머지 뒤 재생성·재검증 → 머지 · lint(`perf` 커밋)
 
-**이슈 — W6**
-- [ ] #261 span_to_condition() 구현 → C3 어댑터 → 증류 타깃 PR — #272 · #269 로 진행 중 (위 PR 항목)
-- [ ] [#273](../../issues/273) 「네거티브 컨트롤 전체의 10~15%」 용어 정정 — A·D 결정 대기 · 연휴 뒤 9/28
-- [x] [#274](../../issues/274) 폰트 CDN 제3자 로드 — #275 로 해결 (9/23)
-- [x] w05 태그 (9/22)
+**결정 — W7**
+- [ ] [#272 리뷰](../../pull/272) 7번 — 같은 단계 지역 후보가 여럿일 때 `geo_code` — D(PM)
+- [ ] level/subject 판정 위치 — D · E (실 엔진 연동)
+
+**이슈**
+- [ ] #261 C2↔C3 연결 — #272 · #269 머지로 종결
+- [ ] [#273](../../issues/273) 네거티브 컨트롤 용어 정정 — (가) 진행 · A 정정 PR (9/23 회신)
+- [ ] [#266](../../issues/266) 체크포인트 인계 — E 요청 시 (W7)
 
 **장기**
 - [ ] [#206](../../issues/206) #201 후속 추적 — 각자 인물 JSON 확인
