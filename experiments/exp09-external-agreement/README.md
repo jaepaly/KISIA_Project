@@ -107,16 +107,16 @@ McNemar (규칙 기준 정답 여부): Qwen 만 맞힌 칸 67 · Claude 만 맞�
 3. **불일치는 Qwen 의 오류가 아니라 등급 정의 차이다.** Qwen 은 학습 규칙을 0.927 로 따르고(McNemar 67 vs 13), 불일치의 2/3 가 narrowed↔weak_signal 경계 한 곳에 몰려 있다. 「암묵 단서 1개 = narrowed」 라는 **우리 규칙이 외부 모델 감각보다 공격적**이라는 뜻이기도 하다 — 경계를 프롬프트·label-schema 에 명시할지, 규칙을 바꿀지는 별도 결정이다.
 4. 로컬 1명당 26.6초 (RTX 3060 · 4bit) · 외부 18.4초.
 
-## 파일럿 (5명 · 35칸)
+## 파일럿 (5명 · 35칸 · 게이트웨이)
 
 | | 값 |
 |---|---|
-| Qwen vs Claude 일치 | 31/35 = 0.886 |
+| Qwen vs Claude 일치 | 32/35 = 0.914 |
 | Qwen vs 규칙 | 35/35 |
-| Claude vs 규칙 | 31/35 |
-| 불일치 4건 | 전부 **암묵 단서 1개 칸** — Qwen·규칙 `narrowed`, Claude `weak_signal` |
+| Claude vs 규칙 | 32/35 |
+| 불일치 3건 | 전부 occupation **암묵 단서 1개 칸** — Qwen·규칙 `narrowed`, Claude `weak_signal` |
 
-프롬프트에 narrowed 와 weak_signal 의 경계가 적혀 있지 않다. 불일치는 Qwen 이 틀린 것이 아니라 **외부 모델이 verdict 정의를 더 보수적으로 읽은 것**이다.
+파일럿에서 본 불일치 유형이 본 실행 불일치의 2/3 를 차지했다 (위 결과).
 
 ## 한계
 
