@@ -26,3 +26,37 @@ RESOLUTION: dict[str, dict[int, float]] = {
 
 # W6~W7에서 튜닝할 때 한 곳만 바꾸도록 별도 상수로 둔다.
 WEIGHTS: dict[str, float] = {axis: 1.0 for axis in AXES}
+
+
+# 골드 단서 등급은 해상도가 아니라 탐지 신뢰도로만 변환한다 (#261).
+LEVEL_CONFIDENCE: dict[str, float] = {
+    "explicit": 1.0,
+    "implicit": 0.8,
+    "inferential": 0.5,
+}
+
+REGION_LEVEL_RESOLUTION: dict[str, int] = {
+    "sido": 1,
+    "sigungu": 2,
+    "emd": 3,
+}
+
+# docs/contracts/specificity.schema.json allOf age_band 제약의 정본 enum.
+AGE_BAND_VALUES: frozenset[str] = frozenset({
+    "0-4", "5-9", "10-14", "15-19", "20-24", "25-29",
+    "30-34", "35-39", "40-44", "45-49", "50-54", "55-59",
+    "60-64", "65-69", "70-74", "75-79", "80-84", "85-89",
+    "90-94", "95-99", "100+",
+})
+
+SPOUSE_TERMS = (
+    "남편",
+    "아내",
+    "와이프",
+    "배우자",
+    "신랑",
+    "신부",
+    "집사람",
+    "영감",
+    "처남",
+)
