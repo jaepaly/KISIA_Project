@@ -1,0 +1,25 @@
+{
+  "posts": 239,
+  "kinds": {
+    "clue": 159,
+    "noise": 80
+  },
+  "personas": 105,
+  "seen_in_sft": 59,
+  "cells": 735,
+  "body_spans": 319,
+  "dropped_non_body_spans": {
+    "title": 25,
+    "photo_caption": 14
+  },
+  "system_prompt_sha256": "a667503fbe18e4edba8c87cd34919bb2d58d64270eda5a7d135c8ad4ef05e72c",
+  "user_ref_format": "u_ + sha256(persona_id)[:8] (v1_train 과 같은 자릿수)",
+  "sha256": {
+    "data/corpus/v0/splits/test.jsonl": "9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad",
+    "data/corpus/v0/gold/iaa/_assignment.json": "ade9c8b03ff497341ea9b420dea6c32a43dc59140e64e68ccbbd16b778d32f21",
+    "experiments/exp08-stage2-sft/data/v1_train.jsonl": "a9700fac7cdb5f4182fe59aceb49b95b5e08c17f9a7f9e822c120786ffd25204",
+    "experiments/exp08-stage2-sft/data/v1_dev.jsonl": "6f6e5264c6cd6938d187c2a79451ed391383b9795cb15eb5da76c6d0ddbdca2f",
+    "experiments/exp08-stage2-sft/results/adapter/adapter_config.json": "799301af3507db5688ab90cd4fce75f0e2cb37bee329369adcd89d147ced6787",
+    "experiments/exp08-stage2-sft/results/adapter/adapter_model.safetensors": "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
+  }
+}
