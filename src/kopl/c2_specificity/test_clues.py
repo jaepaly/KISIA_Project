@@ -334,3 +334,57 @@ def test_conditions_satisfy_contract_schema() -> None:
         cond = span_to_condition(s, "p1")
         if cond is not None:
             _validate(cond)
+
+def test_ambiguous_admin_location_keeps_original_value() -> None:
+    jung_gu = span_to_condition(
+        span("LOC_ADMIN", "중구", level="explicit"),
+        "p1",
+    )
+    mangwon = span_to_condition(
+        span("LOC_ADMIN", "망원동", level="explicit"),
+        "p1",
+    )
+
+    assert jung_gu is not None
+    assert "geo_code" not in jung_gu
+    assert jung_gu["value"] == "중구"
+    assert jung_gu["resolution"] == 2
+
+    assert mangwon is not None
+    assert "geo_code" not in mangwon
+    assert mangwon["value"] == "망원동"
+    assert mangwon["resolution"] == 3
+
+
+def test_two_digit_birth_year_is_exact_age() -> None:
+    condition = span_to_condition(
+        span("AGE", "88년생", level="explicit"),
+        "p1",
+    )
+
+    assert condition is not None
+    assert condition["kind"] == "age_exact"
+    assert condition["resolution"] == 3
+
+
+def test_marriage_implying_sex_terms_add_family_condition() -> None:
+    for text in ["영감이", "영감은", "영감도", "영감하고", "처남이"]:
+        conditions = build_conditions(
+            [span("SEX", text, level="implicit")],
+            "p1",
+        )
+        married = [
+            condition
+            for condition in conditions
+            if condition.get("value") == "married"
+        ]
+        assert len(married) == 1, text
+
+    age_conditions = build_conditions(
+        [span("AGE", "영감", level="implicit")],
+        "p1",
+    )
+    assert all(
+        condition.get("value") != "married"
+        for condition in age_conditions
+    )

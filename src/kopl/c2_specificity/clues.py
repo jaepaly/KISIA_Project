@@ -17,7 +17,9 @@ TYPE_TO_AXIS = {
 }
 
 # 4자리 연도 + 년생: "1988년생" → age_exact
-_BIRTH_YEAR_RE = re.compile(r"\d{4}\s*년생")
+_BIRTH_YEAR_RE = re.compile(
+    r"(?<!\d)(?:\d{2}|\d{4})\s*년생(?!\d)"
+)
 # 숫자 범위 표현: "20~29세" → age_hint (단일 5세 구간 불가)
 _AGE_RANGE_RE = re.compile(r"\d+\s*[~∼\-]\s*\d+\s*(?:살|세)")
 # 고유어 정확 나이:
@@ -61,9 +63,11 @@ _FAMILY_DETAIL_RE = re.compile(
 )
 # 숫자 기반 노선·버스 번호만 (역 이름은 사전 조회로 판단)
 _COMMUTE_ROUTE_NUMBER_RE = re.compile(r"\d+\s*호선|\d+\s*번(?:\s*버스)?")
-# 배우자 호칭 + 허용 후위: 조사 또는 공백·문자열 끝만 허용 ("신부님"·"신랑감" 배제)
+
+# 배우자 호칭 + 허용 후위: 조사 또는 공백·문자열 끝만 허용
+# ("신부님"·"신랑감" 배제, "영감하고" 허용)
 _SPOUSE_JOSA = (
-    r"(?:[이가은는을를과와도의]|로|으로|에서?|한테서?|이?랑|이?고|이?나|이?다"
+    r"(?:하고|[이가은는을를과와도의]|로|으로|에서?|한테서?|이?랑|이?고|이?나|이?다"
     r"|이?라도|까지|부터|만|\s|$)"
 )
 _SPOUSE_TERM_RE = re.compile(
@@ -144,20 +148,28 @@ def _commute_is_specific_route(text: str) -> bool:
 def _admin_condition(
     text: str,
     dictionary: RegionDictionary,
-) -> tuple[int, str, str] | None:
+) -> tuple[int, str, str | None, str | None] | None:
     codes = dictionary.resolve(text)
     if not codes:
         return None
+
     resolved: list[tuple[int, str]] = []
     for code in codes:
         level = str(dictionary.regions.get(code, {}).get("level", ""))
         resolution = REGION_LEVEL_RESOLUTION.get(level)
         if resolution is not None:
             resolved.append((resolution, code))
+
     if not resolved:
         return None
-    resolution, code = min(resolved, key=lambda item: (item[0], item[1]))
-    return resolution, "administrative_area", code
+
+    resolution = min(item[0] for item in resolved)
+
+    if len(resolved) > 1:
+        return resolution, "administrative_area", text, None
+
+    _, code = resolved[0]
+    return resolution, "administrative_area", None, code
 
 
 def _facility_code(text: str) -> str | None:
@@ -192,8 +204,8 @@ def _resolved_fields(
         result = _admin_condition(text, dictionary)
         if result is None:
             return None
-        resolution, kind, code = result
-        return resolution, kind, None, code
+        resolution, kind, value, code = result
+        return resolution, kind, value, code
     if span_type == "LOC_FACILITY":
         code = _facility_code(text)
         if code is None:
