@@ -1,7 +1,7 @@
-"""Evaluate the official post test split, excluding the approved legacy IAA IDs.
+"""승인된 기존 IAA 글 ID를 제외하고 공식 test 분할을 평가한다.
 
-No split/gold/checkpoint is modified. Gold never enters the inference call.
-Boundary/type only: legacy level/subject placeholders are not evaluated.
+분할·골드·체크포인트는 수정하지 않으며, 추론 호출에 골드를 전달하지 않는다.
+경계·유형만 평가하며 기존 level/subject 임시 고정값은 평가하지 않는다.
 """
 from __future__ import annotations
 
@@ -63,7 +63,7 @@ def prepare(root: Path, bio_path: Path, *, expected_iaa_count=16):
     selected = {pid: row for pid, row in tests.items() if pid not in excluded}
     gold, provenance, redundant = {}, {}, []
     source_files = []
-    # Blind takes precedence for clue posts; reviewed top-level gold is used for noise.
+    # 단서 글은 blind 정답을 우선하고, 잡담 글은 gold 최상위의 검수 정본을 사용한다.
     for source, files in [('blind', sorted((root / 'gold/blind').glob('*_spans.jsonl'))),
                           ('reviewed', sorted((root / 'gold').glob('*_spans.jsonl')))]:
         seen = set()
@@ -148,10 +148,10 @@ LEVELS = ('explicit', 'implicit', 'inferential')
 
 
 def level_breakdown(truth, guessed, levels, overall):
-    """Attribute one-to-one partial matches to GOLD levels, never predicted levels.
+    """일대일 부분 일치 결과를 예측 등급이 아닌 정답 스팬의 등급별로 집계한다.
 
-    Keep the legacy scorer's descending (IoU, gold index, prediction index)
-    greedy matching, including ties. Unmatched predictions remain ungraded FP.
+    기존 채점기의 (IoU, 정답 인덱스, 예측 인덱스) 내림차순 탐욕 매칭을
+    동점 처리까지 유지한다. 매칭되지 않은 예측은 등급 없는 FP로 남긴다.
     """
     counts = {level: {'tp': 0, 'fn': 0} for level in LEVELS}
     for key in truth.keys() | guessed.keys():
@@ -174,7 +174,7 @@ def level_breakdown(truth, guessed, levels, overall):
     for level, c in counts.items():
         tp, fn = c['tp'], c['fn']
         support = tp + fn
-        # A missing gold grade is not evidence of zero performance.
+        # 해당 등급의 정답이 없으면 성능을 0으로 단정하지 않는다.
         recall = tp / support if support else None
         proxy = (2 * precision * recall / (precision + recall)
                  if recall and precision else 0.0) if support else None
@@ -233,7 +233,7 @@ def score_subset(posts, gold, predictions):
 
 
 def fp_breakdown(metrics, by_kind):
-    """Expose ungraded partial FP by kind/type without dropping any FP."""
+    """부분 일치 채점의 등급 없는 FP를 빠짐없이 글 종류·스팬 유형별로 집계한다."""
     return {'total': metrics['overall']['fp'],
             'by_type': {k: v['fp'] for k, v in metrics['by_type'].items()},
             'by_kind': {k: v['overall']['fp'] for k, v in by_kind.items()},
@@ -313,7 +313,7 @@ def main():
     predictions, outputs = {}, []
     started = time.perf_counter()
     for index, (pid, row) in enumerate(sorted(posts.items()), 1):
-        # Only official source text, never gold or clue-plan metadata.
+        # 공식 원문만 전달하며, 골드나 clue_plan 메타데이터는 추론에 사용하지 않는다.
         raw = detector.predict_raw({'post_id': pid, 'texts': row['texts']})
         predictions[pid] = raw['candidates']
         outputs.append(raw)

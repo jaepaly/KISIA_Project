@@ -1,4 +1,4 @@
-"""Model-free regression tests for test selection and scoring."""
+"""모델 없이 평가 대상 선택과 채점 로직을 검증하는 회귀 테스트."""
 import json
 from pathlib import Path
 import tempfile
@@ -102,7 +102,7 @@ class EvaluationTests(unittest.TestCase):
         spans = [span(0, 'explicit'), span(3, 'implicit'), span(6, 'implicit'),
                  span(9, 'inferential')]
         gold = {'p': {'texts': {'body': 'x' * 20}, 'spans': spans}}
-        # Two TP, two FP, two FN; prediction level is deliberately wrong.
+        # TP·FP·FN은 각각 2개이며, 예측의 level은 의도적으로 틀리게 넣는다.
         pred = {'p': [{**spans[0], 'level': 'inferential'}, spans[1],
                       span(12, 'explicit'), span(15, 'explicit')]}
         result = score_subset(['p'], gold, pred)
