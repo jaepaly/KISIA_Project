@@ -16,6 +16,8 @@ import subprocess
 import tempfile
 import time
 from pathlib import Path
+from urllib.parse import urlparse
+import hashlib
 
 HERE = Path(__file__).resolve().parent
 ATTRS = ("age", "sex", "location", "occupation", "family", "commute", "income")
@@ -52,6 +54,10 @@ def gateway_env(env_file: Path) -> dict[str, str]:
             found[m.group(1)] = m.group(2).strip().strip("\"'")
     if set(found) != {"ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL"}:
         raise SystemExit(f"{env_file}: ANTHROPIC_API_KEY · ANTHROPIC_BASE_URL 둘 다 있어야 한다")
+    url = urlparse(found["ANTHROPIC_BASE_URL"])
+    # 공식 엔드포인트면 개인 API 키일 수 있다 — 팀 게이트웨이(별도 호스트 · https)만 허용
+    if url.scheme != "https" or not url.hostname or url.hostname.endswith("anthropic.com"):
+        raise SystemExit("ANTHROPIC_BASE_URL 이 팀 게이트웨이(https · anthropic.com 아님)가 아니다")
     env = {k: v for k, v in os.environ.items() if not k.startswith(("ANTHROPIC_", "CLAUDE_CODE_"))}
     env.update(found)
     return env
@@ -81,16 +87,19 @@ def main() -> int:
             out_path.open("a", encoding="utf-8") as f:
         # 빈 설정 폴더 — 개인 claude.ai 로그인이 API 키보다 우선하므로 격리해야 게이트웨이로 나간다 (실측 9/28)
         env["CLAUDE_CONFIG_DIR"] = cfg
-        st = json.loads(subprocess.run(["claude", "auth", "status"], capture_output=True, text=True,
-                                       encoding="utf-8", env=env, cwd=cwd).stdout)
-        if st.get("authMethod") != "api_key":
-            raise SystemExit(f"게이트웨이 키로 인증되지 않음: authMethod={st.get('authMethod')}")
+        sp = subprocess.run(["claude", "auth", "status"], capture_output=True, text=True,
+                            encoding="utf-8", env=env, cwd=cwd)
+        st = json.loads(sp.stdout) if sp.returncode == 0 else {}
+        if st.get("authMethod") != "api_key" or st.get("apiKeySource") != "ANTHROPIC_API_KEY":
+            raise SystemExit(f"게이트웨이 키로 인증되지 않음: authMethod={st.get('authMethod')} rc={sp.returncode}")
+        # URL 자체는 남기지 않고 해시만 — 같은 게이트웨이로 돌았는지 재현 확인용
+        url_sha = hashlib.sha256(env["ANTHROPIC_BASE_URL"].encode()).hexdigest()[:12]
         for r in rows:
             if r["persona_id"] in done:
                 continue
             t0 = time.time()
             rec = {"persona_id": r["persona_id"], "model": a.model, "route": "kisia-gateway",
-                   "findings": None, "error": None}
+                   "gateway_url_sha256_12": url_sha, "findings": None, "error": None}
             try:
                 p = subprocess.run(
                     ["claude", "-p", "--model", a.model, "--tools", "", "--setting-sources", "",
@@ -99,6 +108,8 @@ def main() -> int:
                     input=r["user"], capture_output=True, text=True, encoding="utf-8",
                     timeout=a.timeout, cwd=cwd, env=env,
                 )
+                if p.returncode != 0:
+                    raise RuntimeError(f"claude rc={p.returncode}: {p.stderr[:160]}")
                 d = json.loads(p.stdout)
                 so = d.get("structured_output")
                 if d.get("is_error") or not isinstance(so, dict) or "findings" not in so:

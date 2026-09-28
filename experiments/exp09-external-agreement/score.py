@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import random
@@ -87,7 +88,10 @@ def macro_f1(ref, pred):
 
 
 def binary(ref, pred):
-    """양성 = specified·narrowed. invalid 예측은 음성으로 두지 않고 오답으로 센다."""
+    """양성 = specified·narrowed. invalid 예측은 음성으로 두지 않고 오답으로 센다. invalid 기준값 칸은 뺀다."""
+    excluded = sum(r == INVALID for r in ref)
+    pairs = [(r, p) for r, p in zip(ref, pred) if r != INVALID]
+    ref, pred = [r for r, _ in pairs], [p for _, p in pairs]
     tp = sum(r in POS and p in POS for r, p in zip(ref, pred))
     fn = sum(r in POS and p not in POS for r, p in zip(ref, pred))
     fp = sum(r not in POS and p in POS for r, p in zip(ref, pred))
@@ -96,7 +100,7 @@ def binary(ref, pred):
     fp_all = fp + bad_neg
     den = math.sqrt((tp + fp_all) * (tp + fn) * (tn + fp_all) * (tn + fn))
     return {
-        "tp": tp, "fp": fp_all, "fn": fn, "tn": tn,
+        "tp": tp, "fp": fp_all, "fn": fn, "tn": tn, "excluded_invalid_reference": excluded,
         "specificity": tn / (tn + fp_all) if tn + fp_all else None,
         "fpr": fp_all / (tn + fp_all) if tn + fp_all else None,
         "f1": 2 * tp / (2 * tp + fp_all + fn) if tp else 0.0,
@@ -113,7 +117,7 @@ def mcnemar(ref, a, b):
         return {"a_only_correct": 0, "b_only_correct": 0, "p": 1.0}
     k = min(b01, b10)
     p = min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n)
-    return {"a_only_correct": b01, "b_only_correct": b10, "p": round(p, 4)}
+    return {"a_only_correct": b01, "b_only_correct": b10, "p": p}
 
 
 def r4(x):
@@ -172,7 +176,8 @@ def main() -> int:
 
     def ci(xs):
         xs = sorted(xs)
-        return [r4(xs[int(0.025 * len(xs))]), r4(xs[int(0.975 * len(xs)) - 1])] if xs else None
+        # nearest-rank: k = ceil(q·B), 0-기준 인덱스 k-1
+        return [r4(xs[math.ceil(0.025 * len(xs)) - 1]), r4(xs[math.ceil(0.975 * len(xs)) - 1])] if xs else None
 
     seen = {p for p in personas if inputs[p]["seen_in_sft"]}
     has_clue = {p for p in personas if inputs[p]["kinds"].get("clue")}
@@ -181,6 +186,21 @@ def main() -> int:
             max(1, len(evidence(qwen.get(c[0]), c[1]) | evidence(ext.get(c[0]), c[1])))
             for c in cells if c[2] not in ("abstain", INVALID) and c[3] not in ("abstain", INVALID)]
     manifest = json.loads((data / "manifest.json").read_text(encoding="utf-8"))
+
+    def contract_violations(recs: dict) -> dict:
+        """계약 Finding: abstain 이면 confidence ≤ 0.25 · evidence 비어 있음 · granularity null (stage2-io.schema.json)."""
+        bad = Counter()
+        for p in personas:
+            for at, f in (((recs.get(p) or {}).get("findings")) or {}).items():
+                if isinstance(f, dict) and f.get("verdict") == "abstain":
+                    bad["abstain_confidence_gt_0.25"] += (f.get("confidence") or 0) > 0.25
+                    bad["abstain_evidence_nonempty"] += bool(f.get("evidence"))
+                    bad["abstain_granularity_not_null"] += f.get("granularity") is not None
+        return dict(bad)
+
+    def file_digest(path: Path) -> dict:
+        b = path.read_bytes()
+        return {"sha256": hashlib.sha256(b).hexdigest(), "rows": sum(1 for l in b.decode("utf-8").splitlines() if l.strip())}
 
     res = {
         "target": "agreement >= 0.8 ([목표] roadmap §5)",
@@ -201,6 +221,16 @@ def main() -> int:
         "models": {"qwen": next(iter(qwen.values()))["model"], "external": next(iter(ext.values()))["model"],
                    "external_served": sorted({m for r in ext.values() for m in r.get("served_model") or []})},
         "cost_usd_external": r4(sum(r.get("cost_usd") or 0 for r in ext.values())),
+        "contract_finding_violations": {"qwen": contract_violations(qwen), "external": contract_violations(ext)},
+        "raw_outputs": {f: file_digest(data / f) for f in ("inputs.jsonl", f"qwen{sfx}.jsonl", f"external{sfx}.jsonl")},
+        "external_routes": sorted({f"{r.get('route')}:{r.get('gateway_url_sha256_12')}" for r in ext.values()}),
+        "invalid_policy": {
+            "agreement": "invalid 는 불일치 (invalid-invalid 포함)",
+            "kappa_ac1": "한쪽이라도 invalid 인 칸 제외",
+            "mcc": "invalid 를 다섯 번째 클래스로 포함",
+            "macro_f1": "4개 verdict 중 기준·예측 어디에도 없는 클래스는 평균에서 제외 (observed-class macro)",
+            "binary": "invalid 예측 = 오답, invalid 기준값 칸 = 제외",
+        },
         "sec": {"qwen_mean": r4(sum(r["sec"] for r in qwen.values()) / len(qwen)),
                 "external_mean": r4(sum(r["sec"] for r in ext.values()) / len(ext))},
         "bootstrap": {"reps": a.boot, "seed": a.seed, "unit": "persona"},

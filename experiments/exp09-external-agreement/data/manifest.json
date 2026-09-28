@@ -13,6 +13,7 @@
     "photo_caption": 14
   },
   "system_prompt_sha256": "a667503fbe18e4edba8c87cd34919bb2d58d64270eda5a7d135c8ad4ef05e72c",
+  "user_ref_format": "u_ + sha256(persona_id)[:8] (v1_train 과 같은 자릿수)",
   "sha256": {
     "data/corpus/v0/splits/test.jsonl": "9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad",
     "data/corpus/v0/gold/iaa/_assignment.json": "ade9c8b03ff497341ea9b420dea6c32a43dc59140e64e68ccbbd16b778d32f21",

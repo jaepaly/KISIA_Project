@@ -6,6 +6,7 @@
 - 입력 형태는 Qwen v1 이 학습한 그대로 ({user_ref, profile: null, posts: [{post_id, spans}]}) — 계약 Stage2Input 이 아니다
 - body 스팬만 쓴다 (v1 은 body 만 학습). 빠진 title·photo_caption 스팬 수는 manifest 에 남긴다
 - system 프롬프트는 v1_train.jsonl 첫 예시의 것 (소스의 현재 SYSTEM 이 아니라 실제 학습본)
+- user_ref 도 v1_train 의 자릿수 그대로 (현재 make_sft_v1.user_ref 는 12자리라 학습 형식과 다르다)
 """
 from __future__ import annotations
 
@@ -74,7 +75,13 @@ def main() -> int:
     first = json.loads((EXP08 / "data/v1_train.jsonl").read_text(encoding="utf-8").splitlines()[0])
     system = first["messages"][0]["content"]
     seen_refs = train_refs()
-    ref_len = len(next(iter(seen_refs)))
+    ref_lens = {len(r) for r in seen_refs}
+    if len(ref_lens) != 1:
+        raise SystemExit(f"v1_train user_ref 길이가 섞여 있다: {ref_lens}")
+    ref_len = ref_lens.pop()
+    # 어댑터가 학습한 형식 그대로 — 현재 make_sft_v1.user_ref()(12자리)가 아니라 학습 파일의 자릿수
+    def train_ref(persona: str) -> str:
+        return "u_" + hashlib.sha256(persona.encode()).hexdigest()[: ref_len - 2]
 
     selected, gold = select_posts()
     by_persona: dict[str, list[str]] = {}
@@ -96,16 +103,19 @@ def main() -> int:
                 raise SystemExit(f"{pid}: 가명화 후 스팬 수가 달라짐 {len(body_spans)} → {len(tokenized)}")
             posts.append({"post_id": pid, "spans": tokenized})
             pairs.append((pid, tokenized))
-        user_ref = sft.user_ref(persona)
+        user_ref = train_ref(persona)
         rows.append({
             "persona_id": persona,
-            "seen_in_sft": ("u_" + hashlib.sha256(persona.encode()).hexdigest()[: ref_len - 2]) in seen_refs,
+            "seen_in_sft": user_ref in seen_refs,
             "kinds": dict(Counter(selected[p]["kind"] for p in post_ids)),
             "system": system,
             "user": json.dumps({"user_ref": user_ref, "profile": None, "posts": posts}, ensure_ascii=False),
             "rule_target": sft.findings_from_spans(pairs),
         })
 
+    refs = [json.loads(r["user"])["user_ref"] for r in rows]
+    if len(set(refs)) != len(refs):
+        raise SystemExit("user_ref 충돌")
     with (out / "inputs.jsonl").open("w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
@@ -121,6 +131,7 @@ def main() -> int:
         "body_spans": sum(len(json.loads(r["user"])["posts"][i]["spans"]) for r in rows for i in range(len(json.loads(r["user"])["posts"]))),
         "dropped_non_body_spans": dict(dropped),
         "system_prompt_sha256": hashlib.sha256(system.encode()).hexdigest(),
+        "user_ref_format": f"u_ + sha256(persona_id)[:{ref_len - 2}] (v1_train 과 같은 자릿수)",
         "sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): sha256(p) for p in [
             CORPUS / "splits/test.jsonl", CORPUS / "gold/iaa/_assignment.json",
             EXP08 / "data/v1_train.jsonl", EXP08 / "data/v1_dev.jsonl",
