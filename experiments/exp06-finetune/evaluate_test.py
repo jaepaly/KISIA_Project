@@ -1,7 +1,7 @@
-"""Evaluate the official post test split, excluding the approved legacy IAA IDs.
+"""승인된 기존 IAA 글 ID를 제외하고 공식 test 분할을 평가한다.
 
-No split/gold/checkpoint is modified. Gold never enters the inference call.
-Boundary/type only: legacy level/subject placeholders are not evaluated.
+분할·골드·체크포인트는 수정하지 않으며, 추론 호출에 골드를 전달하지 않는다.
+경계·유형만 평가하며 기존 level/subject 임시 고정값은 평가하지 않는다.
 """
 from __future__ import annotations
 
@@ -63,7 +63,7 @@ def prepare(root: Path, bio_path: Path, *, expected_iaa_count=16):
     selected = {pid: row for pid, row in tests.items() if pid not in excluded}
     gold, provenance, redundant = {}, {}, []
     source_files = []
-    # Blind takes precedence for clue posts; reviewed top-level gold is used for noise.
+    # 단서 글은 blind 정답을 우선하고, 잡담 글은 gold 최상위의 검수 정본을 사용한다.
     for source, files in [('blind', sorted((root / 'gold/blind').glob('*_spans.jsonl'))),
                           ('reviewed', sorted((root / 'gold').glob('*_spans.jsonl')))]:
         seen = set()
@@ -144,15 +144,101 @@ def exact_span_sets(truth, guessed):
             'match_policy': 'identical start/end/type; one-to-one unique spans per channel'}
 
 
+LEVELS = ('explicit', 'implicit', 'inferential')
+
+
+def level_breakdown(truth, guessed, levels, overall):
+    """일대일 부분 일치 결과를 예측 등급이 아닌 정답 스팬의 등급별로 집계한다.
+
+    기존 채점기의 (IoU, 정답 인덱스, 예측 인덱스) 내림차순 탐욕 매칭을
+    동점 처리까지 유지한다. 매칭되지 않은 예측은 등급 없는 FP로 남긴다.
+    """
+    counts = {level: {'tp': 0, 'fn': 0} for level in LEVELS}
+    for key in truth.keys() | guessed.keys():
+        actual, predicted = sorted(truth.get(key, set())), sorted(guessed.get(key, set()))
+        candidates = sorted(
+            ((train.span_iou(g, p), i, j)
+             for i, g in enumerate(actual) for j, p in enumerate(predicted)
+             if g[2] == p[2] and train.span_iou(g, p) >= 0.5), reverse=True)
+        used_gold, used_pred = set(), set()
+        for _, i, j in candidates:
+            if i not in used_gold and j not in used_pred:
+                used_gold.add(i)
+                used_pred.add(j)
+        for i, span in enumerate(actual):
+            counts[levels[key][span]]['tp' if i in used_gold else 'fn'] += 1
+    if any(sum(c[k] for c in counts.values()) != overall[k] for k in ('tp', 'fn')):
+        raise DataError('Level matching differs from original partial scorer')
+    precision, fp = overall['precision'], overall['fp']
+    result = {}
+    for level, c in counts.items():
+        tp, fn = c['tp'], c['fn']
+        support = tp + fn
+        # 해당 등급의 정답이 없으면 성능을 0으로 단정하지 않는다.
+        recall = tp / support if support else None
+        proxy = (2 * precision * recall / (precision + recall)
+                 if recall and precision else 0.0) if support else None
+        conservative = 2 * tp / (2 * tp + fp + fn) if support else None
+        result[level] = {
+            **c, 'gold_spans': support, 'recall': recall,
+            'proxy_f1': proxy,
+            'proxy_allocated_fp': fp * tp / overall['tp'] if overall['tp'] else None,
+            'conservative_fp': fp, 'conservative_f1': conservative,
+        }
+    return {
+        'by_level': result,
+        'level_policy': {
+            'source': 'gold level; model level/subject are not evaluated',
+            'matching': 'type equal, IoU >= 0.5; descending (IoU, gold index, prediction index), one-to-one',
+            'proxy_formula': '2 * overall_precision * level_recall / (overall_precision + level_recall)',
+            'proxy_assumption': 'Allocate FP proportionally to level TP; shared overall precision. Not level prediction F1.',
+            'conservative_formula': '2 * level_tp / (2 * level_tp + overall_fp + level_fn)',
+            'conservative_policy': 'Freeze global matches; remove predictions matched to other gold levels; retain every unmatched FP for each level.',
+            'zero_policy': 'No gold support: recall/F1 null. Supported level with TP=0: F1=0. Total TP=0: proportional FP allocation undefined (null).',
+        },
+        'implicit_iaa_comparison': {
+            'version': 'IAA v2, common 16 posts',
+            'source': 'docs/evidence/iaa-v2-comparison.md',
+            'baseline_partial_f1': 0.444,
+            'baseline_policy': 'Use published rounded 44.4% per PM decision',
+            'target_ratio': 0.8, 'target_f1': 0.444 * 0.8,
+            'proxy_ratio': result['implicit']['proxy_f1'] / 0.444 if result['implicit']['proxy_f1'] is not None else None,
+            'conservative_ratio': result['implicit']['conservative_f1'] / 0.444 if result['implicit']['conservative_f1'] is not None else None,
+            'limitation': 'Different samples and metric definitions; proxy comparison is not level classification agreement.',
+        },
+    }
+
+
 def score_subset(posts, gold, predictions):
     truth, guessed = {}, {}
+    levels = {}
     for pid in posts:
         for tid in gold[pid]['texts']:
+            levels[(pid, tid)] = {}
+            for s in gold[pid]['spans']:
+                if s['text_id'] != tid:
+                    continue
+                identity = (s['start'], s['end'], s['type'])
+                if s.get('level') not in LEVELS:
+                    raise DataError(f'Missing/invalid gold level: {pid}/{tid}')
+                if identity in levels[(pid, tid)]:
+                    raise DataError(f'Duplicate gold span identity: {pid}/{tid}')
+                levels[(pid, tid)][identity] = s['level']
             truth[(pid, tid)] = {(s['start'], s['end'], s['type']) for s in gold[pid]['spans'] if s['text_id'] == tid}
             guessed[(pid, tid)] = {(s['start'], s['end'], s['type']) for s in predictions[pid] if s['text_id'] == tid}
     result = train.score_span_sets(truth, guessed)
     result['exact'] = exact_span_sets(truth, guessed)
+    result.update(level_breakdown(truth, guessed, levels, result['overall']))
     return result
+
+
+def fp_breakdown(metrics, by_kind):
+    """부분 일치 채점의 등급 없는 FP를 빠짐없이 글 종류·스팬 유형별로 집계한다."""
+    return {'total': metrics['overall']['fp'],
+            'by_type': {k: v['fp'] for k, v in metrics['by_type'].items()},
+            'by_kind': {k: v['overall']['fp'] for k, v in by_kind.items()},
+            'by_kind_and_type': {k: {t: c['fp'] for t, c in v['by_type'].items()}
+                                 for k, v in by_kind.items()}}
 
 
 def rescore_saved(directory, posts, gold, audit):
@@ -185,6 +271,7 @@ def rescore_saved(directory, posts, gold, audit):
     report['by_kind'] = {kind: score_subset([p for p, r in posts.items() if r['kind'] == kind], gold, predictions)
                          for kind in sorted({r['kind'] for r in posts.values()})}
     report['rescored_at_utc'] = datetime.now(timezone.utc).isoformat()
+    report['fp_breakdown'] = fp_breakdown(scored, report['by_kind'])
     report['rescore_source'] = str(directory)
     report['model_inference_repeated'] = False
     return report
@@ -200,7 +287,7 @@ def main():
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--threads', type=int, default=4)
     parser.add_argument('--min-span-score', type=float, default=0.7)
-    parser.add_argument('--rescore-from', type=Path, help='Add exact metrics using saved predictions; no model execution')
+    parser.add_argument('--rescore-from', type=Path, help='Add exact, gold-level and FP metrics using saved predictions; no model execution')
     args = parser.parse_args()
     posts, gold, audit = prepare(args.corpus_dir, args.bio_data)
     print(json.dumps(audit, ensure_ascii=False, indent=2))
@@ -226,7 +313,7 @@ def main():
     predictions, outputs = {}, []
     started = time.perf_counter()
     for index, (pid, row) in enumerate(sorted(posts.items()), 1):
-        # Only official source text, never gold or clue-plan metadata.
+        # 공식 원문만 전달하며, 골드나 clue_plan 메타데이터는 추론에 사용하지 않는다.
         raw = detector.predict_raw({'post_id': pid, 'texts': row['texts']})
         predictions[pid] = raw['candidates']
         outputs.append(raw)
@@ -252,6 +339,7 @@ def main():
         'inference_seconds_excluding_model_load_and_save': elapsed,
         'latency_benchmark': False,
     }
+    report['fp_breakdown'] = fp_breakdown(report['metrics'], report['by_kind'])
     args.output_dir.mkdir(parents=True, exist_ok=False)
     (args.output_dir / 'predictions.jsonl').write_text(''.join(json.dumps(r, ensure_ascii=False) + '\n' for r in outputs), encoding='utf-8')
     (args.output_dir / 'metrics.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

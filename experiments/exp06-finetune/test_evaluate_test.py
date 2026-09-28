@@ -1,10 +1,10 @@
-"""Model-free regression tests for test selection and scoring."""
+"""모델 없이 평가 대상 선택과 채점 로직을 검증하는 회귀 테스트."""
 import json
 from pathlib import Path
 import tempfile
 import unittest
 
-from evaluate_test import prepare as prepare_data, score_subset, legacy_iaa_ids, exact_span_sets
+from evaluate_test import prepare as prepare_data, score_subset, legacy_iaa_ids, exact_span_sets, rescore_saved
 from prepare_bio import DataError
 
 
@@ -83,7 +83,7 @@ class EvaluationTests(unittest.TestCase):
             legacy_iaa_ids({'글': [{'persona_id': 'X', 'post': 'b03'}]}, {'X_b03'})
 
     def test_partial_boundary_is_not_exact(self):
-        gold = {'p': {'texts': {'body': '집 근처'}, 'spans': [{'start': 0, 'end': 4, 'type': 'REL_HOME', 'text_id': 'body'}]}}
+        gold = {'p': {'texts': {'body': '집 근처'}, 'spans': [{'start': 0, 'end': 4, 'type': 'REL_HOME', 'text_id': 'body', 'level': 'explicit'}]}}
         pred = {'p': [{'start': 0, 'end': 3, 'type': 'REL_HOME', 'text_id': 'body'}]}
         metrics = score_subset(['p'], gold, pred)
         self.assertEqual(metrics['overall']['f1'], 1.0)
@@ -94,6 +94,84 @@ class EvaluationTests(unittest.TestCase):
         pred = {('p', 'body'): {(0, 4, 'REL_HOME'), (0, 4, 'AGE')}}
         metrics = exact_span_sets(truth, pred)['overall']
         self.assertEqual((metrics['tp'], metrics['fp'], metrics['fn']), (1, 1, 0))
+
+    def test_level_formulas_and_iaa(self):
+        def span(start, level):
+            return {'start': start, 'end': start + 2, 'type': 'AGE',
+                    'text_id': 'body', 'level': level}
+        spans = [span(0, 'explicit'), span(3, 'implicit'), span(6, 'implicit'),
+                 span(9, 'inferential')]
+        gold = {'p': {'texts': {'body': 'x' * 20}, 'spans': spans}}
+        # TP·FP·FN은 각각 2개이며, 예측의 level은 의도적으로 틀리게 넣는다.
+        pred = {'p': [{**spans[0], 'level': 'inferential'}, spans[1],
+                      span(12, 'explicit'), span(15, 'explicit')]}
+        result = score_subset(['p'], gold, pred)
+        self.assertEqual(result['overall']['f1'], 0.5)
+        explicit, implicit, inferential = (result['by_level'][k]
+                                          for k in ('explicit', 'implicit', 'inferential'))
+        self.assertAlmostEqual(explicit['proxy_f1'], 2 / 3)
+        self.assertEqual(explicit['conservative_f1'], 0.5)
+        self.assertEqual(implicit['recall'], 0.5)
+        self.assertEqual(implicit['proxy_f1'], 0.5)
+        self.assertEqual(implicit['conservative_f1'], 0.4)
+        self.assertEqual(inferential['proxy_f1'], 0)
+        self.assertEqual(sum(c['proxy_allocated_fp'] for c in result['by_level'].values()), 2)
+        self.assertAlmostEqual(result['implicit_iaa_comparison']['proxy_ratio'], 0.5 / 0.444)
+
+    def test_partial_tie_uses_existing_global_matching(self):
+        gold = {'p': {'texts': {'body': 'abcdef'}, 'spans': [
+            {'start': 0, 'end': 4, 'type': 'AGE', 'text_id': 'body', 'level': 'explicit'},
+            {'start': 2, 'end': 6, 'type': 'AGE', 'text_id': 'body', 'level': 'implicit'}]}}
+        pred = {'p': [{'start': 0, 'end': 6, 'type': 'AGE', 'text_id': 'body'}]}
+        result = score_subset(['p'], gold, pred)
+        self.assertEqual(result['by_level']['implicit']['tp'], 1)
+        self.assertEqual(result['by_level']['explicit']['fn'], 1)
+        self.assertIsNone(result['by_level']['inferential']['proxy_f1'])
+        self.assertEqual(result['exact']['overall']['tp'], 0)
+
+    def test_zero_tp_and_no_predictions(self):
+        posts, gold, _ = prepare(self.root, self.bio)
+        for pred in ({p: [] for p in posts},
+                     {p: [{**self.span, 'type': 'AGE'}] for p in posts}):
+            result = score_subset(posts, gold, pred)
+            self.assertEqual(result['by_level']['inferential']['proxy_f1'], 0)
+            self.assertEqual(result['by_level']['inferential']['conservative_f1'], 0)
+            self.assertIsNone(result['by_level']['inferential']['proxy_allocated_fp'])
+
+    def test_invalid_or_duplicate_gold_level_fails(self):
+        posts, gold, _ = prepare(self.root, self.bio)
+        pred = {p: [] for p in posts}
+        gold['X_b01']['spans'][0]['level'] = 'unknown'
+        with self.assertRaisesRegex(DataError, 'gold level'):
+            score_subset(posts, gold, pred)
+        gold['X_b01']['spans'][0]['level'] = 'explicit'
+        gold['X_b01']['spans'].append(dict(gold['X_b01']['spans'][0]))
+        with self.assertRaisesRegex(DataError, 'Duplicate gold'):
+            score_subset(posts, gold, pred)
+
+    def test_saved_rescore_preserves_source_and_reports_fp(self):
+        posts, gold, audit = prepare(self.root, self.bio)
+        predictions = {'X_b01': [self.span], 'X_b02': [{**self.span, 'type': 'AGE'}]}
+        overall = score_subset(posts, gold, predictions)['overall']
+        report = {'audit': audit, 'metrics': {'overall': overall}, 'checkpoint': 'original'}
+        self.write('saved/predictions.jsonl', [
+            {'post_id': p, 'texts': gold[p]['texts'], 'candidates': predictions[p]} for p in posts])
+        path = self.root / 'saved/metrics.json'
+        original = json.dumps(report)
+        path.write_text(original, encoding='utf-8')
+        result = rescore_saved(path.parent, posts, gold, audit)
+        self.assertEqual(result['metrics']['overall'], overall)
+        self.assertEqual(result['checkpoint'], 'original')
+        self.assertFalse(result['model_inference_repeated'])
+        self.assertEqual(result['fp_breakdown']['by_kind'], {'clue': 0, 'noise': 1})
+        self.assertEqual(result['fp_breakdown']['by_type']['AGE'], 1)
+        self.assertEqual(path.read_text(encoding='utf-8'), original)
+        with self.assertRaisesRegex(DataError, 'hashes differ'):
+            rescore_saved(path.parent, posts, gold, {'input_sha256': {}})
+        report['metrics']['overall']['tp'] = 99
+        path.write_text(json.dumps(report), encoding='utf-8')
+        with self.assertRaisesRegex(DataError, 'Original partial metric changed'):
+            rescore_saved(path.parent, posts, gold, audit)
 
 
 if __name__ == '__main__':
