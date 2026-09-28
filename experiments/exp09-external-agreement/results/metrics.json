@@ -1,0 +1,406 @@
+{
+  "target": "agreement >= 0.8 ([목표] roadmap §5)",
+  "definition": "7속성 × 인물 4종 verdict micro 정확 일치. 파싱 실패 = 불일치. 공유 골드 스팬 조건부",
+  "personas": 105,
+  "missing_outputs": [],
+  "parse_success": {
+    "qwen": 1.0,
+    "external": 1.0
+  },
+  "overall": {
+    "cells": 735,
+    "agreement": 0.8762,
+    "agreement_dual_valid": 0.8762,
+    "agreement_non_abstain": 0.5495,
+    "non_abstain_cells": 202,
+    "kappa": 0.7151,
+    "gwet_ac1": 0.8554,
+    "qwen_vs_external": {
+      "macro_f1": 0.712,
+      "mcc": 0.7288,
+      "binary": {
+        "tp": 70,
+        "fp": 61,
+        "fn": 5,
+        "tn": 599,
+        "specificity": 0.9075757575757576,
+        "fpr": 0.09242424242424242,
+        "f1": 0.6796116504854369,
+        "mcc": 0.6651162061092601
+      }
+    },
+    "qwen_vs_rule": {
+      "agreement": 0.9265,
+      "macro_f1": 0.7958,
+      "mcc": 0.8302,
+      "binary": {
+        "tp": 129,
+        "fp": 2,
+        "fn": 31,
+        "tn": 573,
+        "specificity": 0.9965217391304347,
+        "fpr": 0.0034782608695652175,
+        "f1": 0.8865979381443299,
+        "mcc": 0.8656291476500138
+      }
+    },
+    "external_vs_rule": {
+      "agreement": 0.8531,
+      "macro_f1": 0.6345,
+      "mcc": 0.6893,
+      "binary": {
+        "tp": 71,
+        "fp": 4,
+        "fn": 89,
+        "tn": 571,
+        "specificity": 0.9930434782608696,
+        "fpr": 0.006956521739130435,
+        "f1": 0.6042553191489362,
+        "mcc": 0.5954803836834415
+      }
+    },
+    "mcnemar_vs_rule_qwen_vs_external": {
+      "a_only_correct": 67,
+      "b_only_correct": 13,
+      "p": 0.0
+    },
+    "always_abstain_vs_rule": 0.732,
+    "agreement_ci95": [
+      0.8585,
+      0.8939
+    ],
+    "kappa_ci95": [
+      0.6766,
+      0.7518
+    ]
+  },
+  "strata": {
+    "seen_in_sft": {
+      "cells": 413,
+      "agreement": 0.8523,
+      "agreement_dual_valid": 0.8523,
+      "agreement_non_abstain": 0.5674,
+      "non_abstain_cells": 141,
+      "kappa": 0.7097,
+      "gwet_ac1": 0.8225,
+      "qwen_vs_external": {
+        "macro_f1": 0.721,
+        "mcc": 0.7248,
+        "binary": {
+          "tp": 49,
+          "fp": 38,
+          "fn": 4,
+          "tn": 322,
+          "specificity": 0.8944444444444445,
+          "fpr": 0.10555555555555556,
+          "f1": 0.7,
+          "mcc": 0.6717229837870249
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 0.908,
+        "macro_f1": 0.7897,
+        "mcc": 0.8177,
+        "binary": {
+          "tp": 85,
+          "fp": 2,
+          "fn": 20,
+          "tn": 306,
+          "specificity": 0.9935064935064936,
+          "fpr": 0.006493506493506494,
+          "f1": 0.8854166666666666,
+          "mcc": 0.85749878923027
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.8184,
+        "macro_f1": 0.6336,
+        "mcc": 0.6711,
+        "binary": {
+          "tp": 49,
+          "fp": 4,
+          "fn": 56,
+          "tn": 304,
+          "specificity": 0.987012987012987,
+          "fpr": 0.012987012987012988,
+          "f1": 0.620253164556962,
+          "mcc": 0.5906498871960002
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 45,
+        "b_only_correct": 8,
+        "p": 0.0
+      },
+      "always_abstain_vs_rule": 0.6731
+    },
+    "unseen_in_sft": {
+      "cells": 322,
+      "agreement": 0.9068,
+      "agreement_dual_valid": 0.9068,
+      "agreement_non_abstain": 0.5082,
+      "non_abstain_cells": 61,
+      "kappa": 0.7122,
+      "gwet_ac1": 0.8957,
+      "qwen_vs_external": {
+        "macro_f1": 0.6818,
+        "mcc": 0.7247,
+        "binary": {
+          "tp": 21,
+          "fp": 23,
+          "fn": 1,
+          "tn": 277,
+          "specificity": 0.9233333333333333,
+          "fpr": 0.07666666666666666,
+          "f1": 0.6363636363636364,
+          "mcc": 0.6448486380068695
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 0.9503,
+        "macro_f1": 0.7968,
+        "mcc": 0.8484,
+        "binary": {
+          "tp": 44,
+          "fp": 0,
+          "fn": 11,
+          "tn": 267,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8888888888888888,
+          "mcc": 0.8765530923686295
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.8975,
+        "macro_f1": 0.6299,
+        "mcc": 0.7124,
+        "binary": {
+          "tp": 22,
+          "fp": 0,
+          "fn": 33,
+          "tn": 267,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.5714285714285714,
+          "mcc": 0.5966573556070519
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 22,
+        "b_only_correct": 5,
+        "p": 0.0015
+      },
+      "always_abstain_vs_rule": 0.8075
+    },
+    "has_clue_post": {
+      "cells": 700,
+      "agreement": 0.8729,
+      "agreement_dual_valid": 0.8729,
+      "agreement_non_abstain": 0.5459,
+      "non_abstain_cells": 196,
+      "kappa": 0.7116,
+      "gwet_ac1": 0.8512,
+      "qwen_vs_external": {
+        "macro_f1": 0.7098,
+        "mcc": 0.7256,
+        "binary": {
+          "tp": 70,
+          "fp": 59,
+          "fn": 5,
+          "tn": 566,
+          "specificity": 0.9056,
+          "fpr": 0.0944,
+          "f1": 0.6862745098039216,
+          "mcc": 0.6692450715694306
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 0.9229,
+        "macro_f1": 0.7869,
+        "mcc": 0.8241,
+        "binary": {
+          "tp": 127,
+          "fp": 2,
+          "fn": 31,
+          "tn": 540,
+          "specificity": 0.996309963099631,
+          "fpr": 0.0036900369003690036,
+          "f1": 0.8850174216027874,
+          "mcc": 0.8627075159712732
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.8486,
+        "macro_f1": 0.629,
+        "mcc": 0.6848,
+        "binary": {
+          "tp": 71,
+          "fp": 4,
+          "fn": 87,
+          "tn": 538,
+          "specificity": 0.992619926199262,
+          "fpr": 0.007380073800738007,
+          "f1": 0.6094420600858369,
+          "mcc": 0.5974025289166789
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 65,
+        "b_only_correct": 13,
+        "p": 0.0
+      },
+      "always_abstain_vs_rule": 0.7271
+    },
+    "noise_only": {
+      "cells": 35,
+      "agreement": 0.9429,
+      "agreement_dual_valid": 0.9429,
+      "agreement_non_abstain": 0.6667,
+      "non_abstain_cells": 6,
+      "kappa": 0.8056,
+      "gwet_ac1": 0.9367,
+      "qwen_vs_external": {
+        "macro_f1": 0.6,
+        "mcc": 0.8148,
+        "binary": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "tn": 33,
+          "specificity": 0.9428571428571428,
+          "fpr": 0.05714285714285714,
+          "f1": 0.0,
+          "mcc": null
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 1.0,
+        "macro_f1": 1.0,
+        "mcc": 1.0,
+        "binary": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 33,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 1.0,
+          "mcc": 1.0
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.9429,
+        "macro_f1": 0.6,
+        "mcc": 0.8148,
+        "binary": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "tn": 33,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.0,
+          "mcc": null
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 2,
+        "b_only_correct": 0,
+        "p": 0.5
+      },
+      "always_abstain_vs_rule": 0.8286
+    }
+  },
+  "per_attr": {
+    "age": 0.981,
+    "sex": 0.8286,
+    "location": 0.8095,
+    "occupation": 0.8476,
+    "family": 0.7524,
+    "commute": 0.9619,
+    "income": 0.9524
+  },
+  "confusion_qwen_rows_external_cols": {
+    "specified": {
+      "specified": 31,
+      "narrowed": 3,
+      "weak_signal": 0,
+      "abstain": 0,
+      "invalid": 0
+    },
+    "narrowed": {
+      "specified": 6,
+      "narrowed": 30,
+      "weak_signal": 60,
+      "abstain": 1,
+      "invalid": 0
+    },
+    "weak_signal": {
+      "specified": 1,
+      "narrowed": 3,
+      "weak_signal": 50,
+      "abstain": 1,
+      "invalid": 0
+    },
+    "abstain": {
+      "specified": 0,
+      "narrowed": 1,
+      "weak_signal": 15,
+      "abstain": 533,
+      "invalid": 0
+    },
+    "invalid": {
+      "specified": 0,
+      "narrowed": 0,
+      "weak_signal": 0,
+      "abstain": 0,
+      "invalid": 0
+    }
+  },
+  "evidence_jaccard_both_positive": {
+    "cells": 184,
+    "mean": 0.9659
+  },
+  "models": {
+    "qwen": "Qwen/Qwen3-4B+v1-adapter",
+    "external": "claude-sonnet-4-6",
+    "external_served": [
+      "claude-sonnet-4-6"
+    ]
+  },
+  "cost_usd_external": 2.1921,
+  "sec": {
+    "qwen_mean": 26.6,
+    "external_mean": 18.441
+  },
+  "bootstrap": {
+    "reps": 2000,
+    "seed": 20260928,
+    "unit": "persona"
+  },
+  "inputs_manifest": {
+    "posts": 239,
+    "kinds": {
+      "clue": 159,
+      "noise": 80
+    },
+    "personas": 105,
+    "seen_in_sft": 59,
+    "cells": 735,
+    "body_spans": 319,
+    "dropped_non_body_spans": {
+      "title": 25,
+      "photo_caption": 14
+    },
+    "system_prompt_sha256": "a667503fbe18e4edba8c87cd34919bb2d58d64270eda5a7d135c8ad4ef05e72c",
+    "sha256": {
+      "data/corpus/v0/splits/test.jsonl": "9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad",
+      "data/corpus/v0/gold/iaa/_assignment.json": "ade9c8b03ff497341ea9b420dea6c32a43dc59140e64e68ccbbd16b778d32f21",
+      "experiments/exp08-stage2-sft/data/v1_train.jsonl": "a9700fac7cdb5f4182fe59aceb49b95b5e08c17f9a7f9e822c120786ffd25204",
+      "experiments/exp08-stage2-sft/data/v1_dev.jsonl": "6f6e5264c6cd6938d187c2a79451ed391383b9795cb15eb5da76c6d0ddbdca2f",
+      "experiments/exp08-stage2-sft/results/adapter/adapter_config.json": "799301af3507db5688ab90cd4fce75f0e2cb37bee329369adcd89d147ced6787",
+      "experiments/exp08-stage2-sft/results/adapter/adapter_model.safetensors": "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
+    }
+  }
+}

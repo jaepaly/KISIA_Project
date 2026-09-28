@@ -1,0 +1,406 @@
+{
+  "target": "agreement >= 0.8 ([목표] roadmap §5)",
+  "definition": "7속성 × 인물 4종 verdict micro 정확 일치. 파싱 실패 = 불일치. 공유 골드 스팬 조건부",
+  "personas": 5,
+  "missing_outputs": [],
+  "parse_success": {
+    "qwen": 1.0,
+    "external": 1.0
+  },
+  "overall": {
+    "cells": 35,
+    "agreement": 0.9143,
+    "agreement_dual_valid": 0.9143,
+    "agreement_non_abstain": 0.625,
+    "non_abstain_cells": 8,
+    "kappa": 0.7803,
+    "gwet_ac1": 0.9016,
+    "qwen_vs_external": {
+      "macro_f1": 0.7429,
+      "mcc": 0.7953,
+      "binary": {
+        "tp": 4,
+        "fp": 3,
+        "fn": 0,
+        "tn": 28,
+        "specificity": 0.9032258064516129,
+        "fpr": 0.0967741935483871,
+        "f1": 0.7272727272727273,
+        "mcc": 0.7184212081070996
+      }
+    },
+    "qwen_vs_rule": {
+      "agreement": 1.0,
+      "macro_f1": 1.0,
+      "mcc": 1.0,
+      "binary": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "tn": 28,
+        "specificity": 1.0,
+        "fpr": 0.0,
+        "f1": 1.0,
+        "mcc": 1.0
+      }
+    },
+    "external_vs_rule": {
+      "agreement": 0.9143,
+      "macro_f1": 0.7429,
+      "mcc": 0.7953,
+      "binary": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 3,
+        "tn": 28,
+        "specificity": 1.0,
+        "fpr": 0.0,
+        "f1": 0.7272727272727273,
+        "mcc": 0.7184212081070996
+      }
+    },
+    "mcnemar_vs_rule_qwen_vs_external": {
+      "a_only_correct": 3,
+      "b_only_correct": 0,
+      "p": 0.25
+    },
+    "always_abstain_vs_rule": 0.7714,
+    "agreement_ci95": [
+      0.8571,
+      0.9714
+    ],
+    "kappa_ci95": [
+      0.5625,
+      0.9251
+    ]
+  },
+  "strata": {
+    "seen_in_sft": {
+      "cells": 14,
+      "agreement": 0.9286,
+      "agreement_dual_valid": 0.9286,
+      "agreement_non_abstain": 0.6667,
+      "non_abstain_cells": 3,
+      "kappa": 0.8056,
+      "gwet_ac1": 0.9187,
+      "qwen_vs_external": {
+        "macro_f1": 0.6667,
+        "mcc": 0.817,
+        "binary": {
+          "tp": 2,
+          "fp": 1,
+          "fn": 0,
+          "tn": 11,
+          "specificity": 0.9166666666666666,
+          "fpr": 0.08333333333333333,
+          "f1": 0.8,
+          "mcc": 0.7817359599705717
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 1.0,
+        "macro_f1": 1.0,
+        "mcc": 1.0,
+        "binary": {
+          "tp": 3,
+          "fp": 0,
+          "fn": 0,
+          "tn": 11,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 1.0,
+          "mcc": 1.0
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.9286,
+        "macro_f1": 0.6667,
+        "mcc": 0.817,
+        "binary": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 1,
+          "tn": 11,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8,
+          "mcc": 0.7817359599705717
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 1,
+        "b_only_correct": 0,
+        "p": 1.0
+      },
+      "always_abstain_vs_rule": 0.7857
+    },
+    "unseen_in_sft": {
+      "cells": 21,
+      "agreement": 0.9048,
+      "agreement_dual_valid": 0.9048,
+      "agreement_non_abstain": 0.6,
+      "non_abstain_cells": 5,
+      "kappa": 0.764,
+      "gwet_ac1": 0.8901,
+      "qwen_vs_external": {
+        "macro_f1": 0.75,
+        "mcc": 0.7816,
+        "binary": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 0,
+          "tn": 17,
+          "specificity": 0.8947368421052632,
+          "fpr": 0.10526315789473684,
+          "f1": 0.6666666666666666,
+          "mcc": 0.6688560540599386
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 1.0,
+        "macro_f1": 1.0,
+        "mcc": 1.0,
+        "binary": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "tn": 17,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 1.0,
+          "mcc": 1.0
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.9048,
+        "macro_f1": 0.75,
+        "mcc": 0.7816,
+        "binary": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 2,
+          "tn": 17,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.6666666666666666,
+          "mcc": 0.6688560540599386
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 2,
+        "b_only_correct": 0,
+        "p": 0.5
+      },
+      "always_abstain_vs_rule": 0.7619
+    },
+    "has_clue_post": {
+      "cells": 35,
+      "agreement": 0.9143,
+      "agreement_dual_valid": 0.9143,
+      "agreement_non_abstain": 0.625,
+      "non_abstain_cells": 8,
+      "kappa": 0.7803,
+      "gwet_ac1": 0.9016,
+      "qwen_vs_external": {
+        "macro_f1": 0.7429,
+        "mcc": 0.7953,
+        "binary": {
+          "tp": 4,
+          "fp": 3,
+          "fn": 0,
+          "tn": 28,
+          "specificity": 0.9032258064516129,
+          "fpr": 0.0967741935483871,
+          "f1": 0.7272727272727273,
+          "mcc": 0.7184212081070996
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": 1.0,
+        "macro_f1": 1.0,
+        "mcc": 1.0,
+        "binary": {
+          "tp": 7,
+          "fp": 0,
+          "fn": 0,
+          "tn": 28,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 1.0,
+          "mcc": 1.0
+        }
+      },
+      "external_vs_rule": {
+        "agreement": 0.9143,
+        "macro_f1": 0.7429,
+        "mcc": 0.7953,
+        "binary": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 3,
+          "tn": 28,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.7272727272727273,
+          "mcc": 0.7184212081070996
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 3,
+        "b_only_correct": 0,
+        "p": 0.25
+      },
+      "always_abstain_vs_rule": 0.7714
+    },
+    "noise_only": {
+      "cells": 0,
+      "agreement": null,
+      "agreement_dual_valid": null,
+      "agreement_non_abstain": null,
+      "non_abstain_cells": 0,
+      "kappa": null,
+      "gwet_ac1": null,
+      "qwen_vs_external": {
+        "macro_f1": null,
+        "mcc": null,
+        "binary": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "specificity": null,
+          "fpr": null,
+          "f1": 0.0,
+          "mcc": null
+        }
+      },
+      "qwen_vs_rule": {
+        "agreement": null,
+        "macro_f1": null,
+        "mcc": null,
+        "binary": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "specificity": null,
+          "fpr": null,
+          "f1": 0.0,
+          "mcc": null
+        }
+      },
+      "external_vs_rule": {
+        "agreement": null,
+        "macro_f1": null,
+        "mcc": null,
+        "binary": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 0,
+          "specificity": null,
+          "fpr": null,
+          "f1": 0.0,
+          "mcc": null
+        }
+      },
+      "mcnemar_vs_rule_qwen_vs_external": {
+        "a_only_correct": 0,
+        "b_only_correct": 0,
+        "p": 1.0
+      },
+      "always_abstain_vs_rule": null
+    }
+  },
+  "per_attr": {
+    "age": 1.0,
+    "sex": 1.0,
+    "location": 1.0,
+    "occupation": 0.4,
+    "family": 1.0,
+    "commute": 1.0,
+    "income": 1.0
+  },
+  "confusion_qwen_rows_external_cols": {
+    "specified": {
+      "specified": 2,
+      "narrowed": 0,
+      "weak_signal": 0,
+      "abstain": 0,
+      "invalid": 0
+    },
+    "narrowed": {
+      "specified": 0,
+      "narrowed": 2,
+      "weak_signal": 3,
+      "abstain": 0,
+      "invalid": 0
+    },
+    "weak_signal": {
+      "specified": 0,
+      "narrowed": 0,
+      "weak_signal": 1,
+      "abstain": 0,
+      "invalid": 0
+    },
+    "abstain": {
+      "specified": 0,
+      "narrowed": 0,
+      "weak_signal": 0,
+      "abstain": 27,
+      "invalid": 0
+    },
+    "invalid": {
+      "specified": 0,
+      "narrowed": 0,
+      "weak_signal": 0,
+      "abstain": 0,
+      "invalid": 0
+    }
+  },
+  "evidence_jaccard_both_positive": {
+    "cells": 8,
+    "mean": 0.9375
+  },
+  "models": {
+    "qwen": "Qwen/Qwen3-4B+v1-adapter",
+    "external": "claude-sonnet-4-6",
+    "external_served": [
+      "claude-sonnet-4-6"
+    ]
+  },
+  "cost_usd_external": 0.1041,
+  "sec": {
+    "qwen_mean": 24.54,
+    "external_mean": 17.68
+  },
+  "bootstrap": {
+    "reps": 200,
+    "seed": 20260928,
+    "unit": "persona"
+  },
+  "inputs_manifest": {
+    "posts": 239,
+    "kinds": {
+      "clue": 159,
+      "noise": 80
+    },
+    "personas": 105,
+    "seen_in_sft": 59,
+    "cells": 735,
+    "body_spans": 319,
+    "dropped_non_body_spans": {
+      "title": 25,
+      "photo_caption": 14
+    },
+    "system_prompt_sha256": "a667503fbe18e4edba8c87cd34919bb2d58d64270eda5a7d135c8ad4ef05e72c",
+    "sha256": {
+      "data/corpus/v0/splits/test.jsonl": "9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad",
+      "data/corpus/v0/gold/iaa/_assignment.json": "ade9c8b03ff497341ea9b420dea6c32a43dc59140e64e68ccbbd16b778d32f21",
+      "experiments/exp08-stage2-sft/data/v1_train.jsonl": "a9700fac7cdb5f4182fe59aceb49b95b5e08c17f9a7f9e822c120786ffd25204",
+      "experiments/exp08-stage2-sft/data/v1_dev.jsonl": "6f6e5264c6cd6938d187c2a79451ed391383b9795cb15eb5da76c6d0ddbdca2f",
+      "experiments/exp08-stage2-sft/results/adapter/adapter_config.json": "799301af3507db5688ab90cd4fce75f0e2cb37bee329369adcd89d147ced6787",
+      "experiments/exp08-stage2-sft/results/adapter/adapter_model.safetensors": "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
+    }
+  }
+}
