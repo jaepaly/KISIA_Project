@@ -1,4 +1,7 @@
-"""Read-only inference parity check using INTERNAL eval only; never opens test/gold."""
+"""저장된 내부 eval 예측과 infer.py의 재추론 결과가 같은지 확인한다.
+
+내부 eval만 사용해 읽기 전용으로 확인하며 test/gold는 열지 않는다.
+"""
 import argparse
 from collections import defaultdict
 import json
@@ -70,7 +73,7 @@ def main():
             triple = (span["start"], span["end"], span["type"])
             if (key, triple) in scores:
                 max_score_diff = max(max_score_diff, abs(span["score"] - train.mean_span_score(scores[(key, triple)])))
-    # Real-model multichannel/profile/long-input smoke checks, independent of gold.
+    # 골드와 무관하게 실제 모델의 다중 채널·프로필·긴 입력 동작을 간단히 확인한다.
     longest = max(sources.values(), key=len)
     record = {"post_id": "smoke_b01", "texts": {"title": "집 근처", "body": longest,
               "photo_caption:2": "가족 사진", "photo_caption:10": "퇴근길"}}
