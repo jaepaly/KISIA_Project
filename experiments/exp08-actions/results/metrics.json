@@ -1,0 +1,114 @@
+{
+  "experiment": "exp08-actions (축약판)",
+  "measured_at": "2026-09-29",
+  "persona": "D12",
+  "data_version": "corpus v0 · gold/D12_spans.jsonl",
+  "engine": "kopl.c2_specificity — clues.build_conditions + risk_total",
+  "git_commit": "fe94236",
+  "n_posts": 30,
+  "assumption": "조치 대상 단서는 완전히 제거된다 (잔존 단서는 W9 전체판에서 다룬다)",
+  "burden_source": "docs/plan.md §2 조치 메뉴 (1=낮음 · 2=중간 · 3=높음)",
+  "unpublish_target_posts": [
+    "D12_b06"
+  ],
+  "curve": [
+    {
+      "step": 0,
+      "applied": [],
+      "risk": 57.1,
+      "n_conditions": 16,
+      "risk_by_axis": {
+        "location": 55.0,
+        "age": 100.0,
+        "sex": 60.0,
+        "occupation": 40.0,
+        "family": 55.0,
+        "commute": 40.0,
+        "income": 50.0
+      }
+    },
+    {
+      "step": 1,
+      "applied": [
+        "rewrite"
+      ],
+      "risk": 19.3,
+      "n_conditions": 8,
+      "risk_by_axis": {
+        "location": 55.0,
+        "age": 0.0,
+        "sex": 0.0,
+        "occupation": 40.0,
+        "family": 0.0,
+        "commute": 40.0,
+        "income": 0.0
+      }
+    },
+    {
+      "step": 2,
+      "applied": [
+        "rewrite",
+        "activity_meta"
+      ],
+      "risk": 11.4,
+      "n_conditions": 2,
+      "risk_by_axis": {
+        "location": 0.0,
+        "age": 0.0,
+        "sex": 0.0,
+        "occupation": 40.0,
+        "family": 0.0,
+        "commute": 40.0,
+        "income": 0.0
+      }
+    },
+    {
+      "step": 3,
+      "applied": [
+        "rewrite",
+        "activity_meta",
+        "unpublish"
+      ],
+      "risk": 0.0,
+      "n_conditions": 0,
+      "risk_by_axis": {
+        "location": 0.0,
+        "age": 0.0,
+        "sex": 0.0,
+        "occupation": 0.0,
+        "family": 0.0,
+        "commute": 0.0,
+        "income": 0.0
+      }
+    }
+  ],
+  "per_action": [
+    {
+      "action": "rewrite",
+      "label": "리라이트",
+      "burden": 3,
+      "burden_label": "높음",
+      "risk_alone": 19.3,
+      "effect_alone": 37.8,
+      "effect_in_sequence": 37.8
+    },
+    {
+      "action": "activity_meta",
+      "label": "활동 메타 관리",
+      "burden": 2,
+      "burden_label": "중간",
+      "risk_alone": 49.3,
+      "effect_alone": 7.8,
+      "effect_in_sequence": 7.9
+    },
+    {
+      "action": "unpublish",
+      "label": "비공개",
+      "burden": 1,
+      "burden_label": "낮음",
+      "risk_alone": 57.1,
+      "effect_alone": 0.0,
+      "effect_in_sequence": 11.4
+    }
+  ]
+}
