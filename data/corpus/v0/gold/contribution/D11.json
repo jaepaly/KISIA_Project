@@ -6,6 +6,7 @@
     "post_ids": [
       "D11_b02",
       "D11_b07",
+      "D11_b21",
       "D11_b22",
       "D11_b29",
       "D11_b30"
@@ -48,10 +49,25 @@
         ]
       },
       {
-        "post_id": "D11_b22",
+        "post_id": "D11_b21",
         "risk_without": 11.43,
         "delta": 0.0,
         "rank": 3,
+        "clue_ids": [
+          "D11_b21_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D11_b21_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D11_b22",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 4,
         "clue_ids": [
           "D11_b22_s01"
         ],
@@ -66,7 +82,7 @@
         "post_id": "D11_b29",
         "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 5,
         "clue_ids": [
           "D11_b29_s01"
         ],
@@ -81,7 +97,7 @@
         "post_id": "D11_b30",
         "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 6,
         "clue_ids": [
           "D11_b30_s01"
         ],

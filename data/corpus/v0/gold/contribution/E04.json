@@ -4,7 +4,6 @@
   "input": {
     "user_ref": "u_bf3d2191e215",
     "post_ids": [
-      "E04_b04",
       "E04_b07"
     ],
     "method": "loo"
@@ -33,14 +32,6 @@
             "text_id": "body"
           }
         ]
-      },
-      {
-        "post_id": "E04_b04",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 2,
-        "clue_ids": [],
-        "top_spans": []
       }
     ],
     "user_scoped": [],

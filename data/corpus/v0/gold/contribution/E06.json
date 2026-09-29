@@ -7,7 +7,6 @@
       "E06_b13",
       "E06_b18",
       "E06_b19",
-      "E06_b26",
       "E06_b27"
     ],
     "method": "loo"
@@ -73,25 +72,10 @@
         ]
       },
       {
-        "post_id": "E06_b26",
-        "risk_without": 11.43,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "E06_b26_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E06_b26_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E06_b27",
         "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 5,
+        "rank": 4,
         "clue_ids": [
           "E06_b27_s01"
         ],

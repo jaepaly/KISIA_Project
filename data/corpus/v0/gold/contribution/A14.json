@@ -2,9 +2,9 @@
   "schema_version": "1.0",
   "engine_version": "c3-0.1.0",
   "input": {
-    "user_ref": "u_22e0d443f4e8",
+    "user_ref": "u_cc1e22142e7d",
     "post_ids": [
-      "D06_b12"
+      "A14_b30"
     ],
     "method": "loo"
   },
@@ -14,19 +14,12 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D06_b12",
+        "post_id": "A14_b30",
         "risk_without": 0.0,
         "delta": 0.0,
         "rank": 1,
-        "clue_ids": [
-          "D06_b12_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D06_b12_s01",
-            "text_id": "body"
-          }
-        ]
+        "clue_ids": [],
+        "top_spans": []
       }
     ],
     "user_scoped": [],

@@ -4,9 +4,10 @@
   "input": {
     "user_ref": "u_3a7d0915bebc",
     "post_ids": [
+      "D16_b01",
       "D16_b04",
+      "D16_b14",
       "D16_b15",
-      "D16_b27",
       "D16_b30"
     ],
     "method": "loo"
@@ -37,10 +38,25 @@
         ]
       },
       {
-        "post_id": "D16_b04",
+        "post_id": "D16_b01",
         "risk_without": 11.43,
         "delta": 0.0,
         "rank": 2,
+        "clue_ids": [
+          "D16_b01_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D16_b01_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D16_b04",
+        "risk_without": 11.43,
+        "delta": 0.0,
+        "rank": 3,
         "clue_ids": [
           "D16_b04_s01"
         ],
@@ -52,17 +68,17 @@
         ]
       },
       {
-        "post_id": "D16_b27",
+        "post_id": "D16_b14",
         "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 4,
         "clue_ids": [
-          "D16_b27_s01"
+          "D16_b14_s01"
         ],
         "top_spans": [
           {
-            "span_id": "D16_b27_s01",
-            "text_id": "title"
+            "span_id": "D16_b14_s01",
+            "text_id": "body"
           }
         ]
       },
@@ -70,7 +86,7 @@
         "post_id": "D16_b30",
         "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 4,
+        "rank": 5,
         "clue_ids": [
           "D16_b30_s01"
         ],

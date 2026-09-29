@@ -8,26 +8,44 @@
       "B06_b04",
       "B06_b06",
       "B06_b07",
-      "B06_b09",
       "B06_b13",
       "B06_b14",
-      "B06_b15",
       "B06_b21",
       "B06_b22",
-      "B06_b23"
+      "B06_b28"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 33.57,
+    "baseline_risk": 42.14,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "B06_b07",
-        "risk_without": 25.0,
-        "delta": -8.57,
+        "post_id": "B06_b21",
+        "risk_without": 27.86,
+        "delta": -14.29,
         "rank": 1,
+        "clue_ids": [
+          "B06_b21_s01",
+          "B06_b21_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B06_b21_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "B06_b21_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B06_b07",
+        "risk_without": 33.57,
+        "delta": -8.57,
+        "rank": 2,
         "clue_ids": [
           "B06_b07_s01",
           "B06_b07_s02",
@@ -49,28 +67,8 @@
         ]
       },
       {
-        "post_id": "B06_b21",
-        "risk_without": 27.86,
-        "delta": -5.71,
-        "rank": 2,
-        "clue_ids": [
-          "B06_b21_s01",
-          "B06_b21_s02"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B06_b21_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "B06_b21_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B06_b02",
-        "risk_without": 33.57,
+        "risk_without": 42.14,
         "delta": 0.0,
         "rank": 3,
         "clue_ids": [
@@ -95,7 +93,7 @@
       },
       {
         "post_id": "B06_b04",
-        "risk_without": 33.57,
+        "risk_without": 42.14,
         "delta": 0.0,
         "rank": 4,
         "clue_ids": [
@@ -110,7 +108,7 @@
       },
       {
         "post_id": "B06_b06",
-        "risk_without": 33.57,
+        "risk_without": 42.14,
         "delta": 0.0,
         "rank": 5,
         "clue_ids": [
@@ -124,25 +122,10 @@
         ]
       },
       {
-        "post_id": "B06_b09",
-        "risk_without": 33.57,
+        "post_id": "B06_b13",
+        "risk_without": 42.14,
         "delta": 0.0,
         "rank": 6,
-        "clue_ids": [
-          "B06_b09_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B06_b09_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "B06_b13",
-        "risk_without": 33.57,
-        "delta": 0.0,
-        "rank": 7,
         "clue_ids": [
           "B06_b13_s01"
         ],
@@ -155,9 +138,9 @@
       },
       {
         "post_id": "B06_b14",
-        "risk_without": 33.57,
+        "risk_without": 42.14,
         "delta": 0.0,
-        "rank": 8,
+        "rank": 7,
         "clue_ids": [
           "B06_b14_s01"
         ],
@@ -169,25 +152,10 @@
         ]
       },
       {
-        "post_id": "B06_b15",
-        "risk_without": 33.57,
-        "delta": 0.0,
-        "rank": 9,
-        "clue_ids": [
-          "B06_b15_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "B06_b15_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "B06_b22",
-        "risk_without": 33.57,
+        "risk_without": 42.14,
         "delta": 0.0,
-        "rank": 10,
+        "rank": 8,
         "clue_ids": [
           "B06_b22_s01"
         ],
@@ -199,17 +167,17 @@
         ]
       },
       {
-        "post_id": "B06_b23",
-        "risk_without": 33.57,
+        "post_id": "B06_b28",
+        "risk_without": 42.14,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 9,
         "clue_ids": [
-          "B06_b23_s01"
+          "B06_b28_s01"
         ],
         "top_spans": [
           {
-            "span_id": "B06_b23_s01",
-            "text_id": "title"
+            "span_id": "B06_b28_s01",
+            "text_id": "body"
           }
         ]
       }
@@ -217,11 +185,11 @@
     "user_scoped": [],
     "greedy_path": [
       {
-        "remove": "B06_b07",
-        "risk_after": 25.0
+        "remove": "B06_b21",
+        "risk_after": 27.86
       },
       {
-        "remove": "B06_b21",
+        "remove": "B06_b07",
         "risk_after": 15.71
       }
     ],

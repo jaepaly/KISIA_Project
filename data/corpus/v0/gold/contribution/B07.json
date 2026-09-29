@@ -5,7 +5,11 @@
     "user_ref": "u_db625c3f1a4e",
     "post_ids": [
       "B07_b14",
-      "B07_b16"
+      "B07_b16",
+      "B07_b18",
+      "B07_b23",
+      "B07_b28",
+      "B07_b29"
     ],
     "method": "loo"
   },
@@ -16,8 +20,8 @@
     "contributions": [
       {
         "post_id": "B07_b14",
-        "risk_without": 8.57,
-        "delta": -11.43,
+        "risk_without": 14.29,
+        "delta": -5.71,
         "rank": 1,
         "clue_ids": [
           "B07_b14_s01",
@@ -36,8 +40,8 @@
       },
       {
         "post_id": "B07_b16",
-        "risk_without": 11.43,
-        "delta": -8.57,
+        "risk_without": 20.0,
+        "delta": 0.0,
         "rank": 2,
         "clue_ids": [
           "B07_b16_s01"
@@ -48,17 +52,92 @@
             "text_id": "body"
           }
         ]
+      },
+      {
+        "post_id": "B07_b18",
+        "risk_without": 20.0,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "B07_b18_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B07_b18_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b23",
+        "risk_without": 20.0,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "B07_b23_s01",
+          "B07_b23_s02",
+          "B07_b23_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B07_b23_s01",
+            "text_id": "title"
+          },
+          {
+            "span_id": "B07_b23_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "B07_b23_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b28",
+        "risk_without": 20.0,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "B07_b28_s01",
+          "B07_b28_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B07_b28_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "B07_b28_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B07_b29",
+        "risk_without": 20.0,
+        "delta": 0.0,
+        "rank": 6,
+        "clue_ids": [
+          "B07_b29_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B07_b29_s01",
+            "text_id": "body"
+          }
+        ]
       }
     ],
     "user_scoped": [],
     "greedy_path": [
       {
         "remove": "B07_b14",
-        "risk_after": 8.57
+        "risk_after": 14.29
       },
       {
-        "remove": "B07_b16",
-        "risk_after": 0.0
+        "remove": "B07_b23",
+        "risk_after": 8.57
       }
     ],
     "approx_error": null,

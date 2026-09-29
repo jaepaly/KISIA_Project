@@ -9,7 +9,6 @@
       "A15_b05",
       "A15_b06",
       "A15_b11",
-      "A15_b12",
       "A15_b13",
       "A15_b17",
       "A15_b19",
@@ -110,25 +109,10 @@
         "top_spans": []
       },
       {
-        "post_id": "A15_b12",
-        "risk_without": 20.0,
-        "delta": 0.0,
-        "rank": 7,
-        "clue_ids": [
-          "A15_b12_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "A15_b12_s01",
-            "text_id": "title"
-          }
-        ]
-      },
-      {
         "post_id": "A15_b13",
         "risk_without": 20.0,
         "delta": 0.0,
-        "rank": 8,
+        "rank": 7,
         "clue_ids": [
           "A15_b13_s01",
           "A15_b13_s02"
@@ -148,7 +132,7 @@
         "post_id": "A15_b17",
         "risk_without": 20.0,
         "delta": 0.0,
-        "rank": 9,
+        "rank": 8,
         "clue_ids": [
           "A15_b17_s01",
           "A15_b17_s02"
@@ -168,7 +152,7 @@
         "post_id": "A15_b19",
         "risk_without": 20.0,
         "delta": 0.0,
-        "rank": 10,
+        "rank": 9,
         "clue_ids": [
           "A15_b19_s01",
           "A15_b19_s02"
@@ -188,7 +172,7 @@
         "post_id": "A15_b30",
         "risk_without": 20.0,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 10,
         "clue_ids": [
           "A15_b30_s01"
         ],

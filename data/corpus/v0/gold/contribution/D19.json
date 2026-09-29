@@ -4,46 +4,61 @@
   "input": {
     "user_ref": "u_039d35a39f1d",
     "post_ids": [
-      "D19_b19",
+      "D19_b05",
       "D19_b21",
       "D19_b27",
-      "D19_b30"
+      "D19_b28"
     ],
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 5.71,
+    "baseline_risk": 11.43,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D19_b19",
-        "risk_without": 0.0,
+        "post_id": "D19_b05",
+        "risk_without": 5.71,
         "delta": -5.71,
         "rank": 1,
         "clue_ids": [
-          "D19_b19_s01"
+          "D19_b05_s01"
         ],
         "top_spans": [
           {
-            "span_id": "D19_b19_s01",
+            "span_id": "D19_b05_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D19_b28",
+        "risk_without": 5.71,
+        "delta": -5.71,
+        "rank": 2,
+        "clue_ids": [
+          "D19_b28_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D19_b28_s01",
             "text_id": "body"
           }
         ]
       },
       {
         "post_id": "D19_b21",
-        "risk_without": 5.71,
+        "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 3,
         "clue_ids": [],
         "top_spans": []
       },
       {
         "post_id": "D19_b27",
-        "risk_without": 5.71,
+        "risk_without": 11.43,
         "delta": 0.0,
-        "rank": 3,
+        "rank": 4,
         "clue_ids": [
           "D19_b27_s01"
         ],
@@ -53,27 +68,16 @@
             "text_id": "body"
           }
         ]
-      },
-      {
-        "post_id": "D19_b30",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 4,
-        "clue_ids": [
-          "D19_b30_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D19_b30_s01",
-            "text_id": "body"
-          }
-        ]
       }
     ],
     "user_scoped": [],
     "greedy_path": [
       {
-        "remove": "D19_b19",
+        "remove": "D19_b05",
+        "risk_after": 5.71
+      },
+      {
+        "remove": "D19_b28",
         "risk_after": 0.0
       }
     ],

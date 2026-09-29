@@ -5,7 +5,8 @@
     "user_ref": "u_1d23f6eee87d",
     "post_ids": [
       "A25_b06",
-      "A25_b07"
+      "A25_b07",
+      "A25_b11"
     ],
     "method": "loo"
   },
@@ -34,6 +35,14 @@
         "risk_without": 7.86,
         "delta": 0.0,
         "rank": 2,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "A25_b11",
+        "risk_without": 7.86,
+        "delta": 0.0,
+        "rank": 3,
         "clue_ids": [],
         "top_spans": []
       }

@@ -4,7 +4,6 @@
   "input": {
     "user_ref": "u_903479e126a3",
     "post_ids": [
-      "D23_b18",
       "D23_b27"
     ],
     "method": "loo"
@@ -15,25 +14,10 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D23_b18",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 1,
-        "clue_ids": [
-          "D23_b18_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D23_b18_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D23_b27",
-        "risk_without": 5.71,
-        "delta": 0.0,
-        "rank": 2,
+        "risk_without": 0.0,
+        "delta": -5.71,
+        "rank": 1,
         "clue_ids": [
           "D23_b27_s01"
         ],
@@ -46,7 +30,12 @@
       }
     ],
     "user_scoped": [],
-    "greedy_path": [],
+    "greedy_path": [
+      {
+        "remove": "D23_b27",
+        "risk_after": 0.0
+      }
+    ],
     "approx_error": null,
     "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
   }

@@ -215,6 +215,8 @@ def test_generate_targets_writes_only_personas_with_gold(
     personas.mkdir()
     (personas / "A01.json").write_text("{}", encoding="utf-8")
     (personas / "A02.json").write_text("{}", encoding="utf-8")
+    out.mkdir()
+    (out / "A02.json").write_text('{"stale": true}\n', encoding="utf-8")
     write_jsonl(
         gold / "A01_spans.jsonl",
         [
@@ -230,6 +232,7 @@ def test_generate_targets_writes_only_personas_with_gold(
 
     assert generated == 1
     assert skipped == ["A02"]
+    assert not (out / "A02.json").exists()
     payload = json.loads((out / "A01.json").read_text(encoding="utf-8"))
     assert payload["schema_version"] == "1.0"
     assert payload["input"]["method"] == "loo"

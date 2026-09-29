@@ -123,11 +123,15 @@ def generate_target(
         raise ValueError(f"{persona_id}: reviewed 골드 게시글이 없습니다.")
 
     def risk_fn(selected: tuple[str, ...]) -> float:
-        selected_spans = {
-            post_id: spans_by_post[post_id]
+        conditions = [
+            condition
             for post_id in selected
-        }
-        return risk_total(build_conditions(selected_spans))
+            for condition in build_conditions(
+                spans_by_post[post_id],
+                post_id,
+            )
+        ]
+        return risk_total(conditions)
 
     clue_index, span_index = build_evidence_indexes(spans_by_post)
     return leave_one_out(
@@ -145,10 +149,11 @@ def generate_targets(
     out: Path,
     excluded_posts: set[str] | None = None,
 ) -> tuple[int, list[str]]:
-    """골드가 있는 모든 인물의 타깃 파일을 쓰고 생성 수와 제외 목록을 반환한다."""
+    """골드가 있는 모든 인물의 기여도 파일을 생성하고 제외 목록을 반환한다."""
     excluded = excluded_posts or set()
     out.mkdir(parents=True, exist_ok=True)
     generated = 0
+    generated_paths: set[Path] = set()
     skipped: list[str] = []
 
     for persona_path in sorted(personas.glob("*.json")):
@@ -168,7 +173,14 @@ def generate_targets(
             json.dumps(result, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+        generated_paths.add(destination)
         generated += 1
+
+    # 이전 실행에서 생성됐지만 이번 대상에서는 빠진 결과를 제거한다.
+    # 모든 대상 생성이 성공한 뒤 실행하므로 중간 실패 시 기존 결과는 보존된다.
+    for stale_path in out.glob("*.json"):
+        if stale_path not in generated_paths:
+            stale_path.unlink()
 
     return generated, skipped
 

@@ -4,8 +4,9 @@
   "input": {
     "user_ref": "u_744d1ff06654",
     "post_ids": [
-      "B02_b05",
-      "B02_b10"
+      "B02_b01",
+      "B02_b10",
+      "B02_b18"
     ],
     "method": "loo"
   },
@@ -15,16 +16,16 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "B02_b05",
+        "post_id": "B02_b01",
         "risk_without": 5.71,
         "delta": 0.0,
         "rank": 1,
         "clue_ids": [
-          "B02_b05_s01"
+          "B02_b01_s01"
         ],
         "top_spans": [
           {
-            "span_id": "B02_b05_s01",
+            "span_id": "B02_b01_s01",
             "text_id": "body"
           }
         ]
@@ -45,6 +46,26 @@
           },
           {
             "span_id": "B02_b10_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "B02_b18",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "B02_b18_s01",
+          "B02_b18_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "B02_b18_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "B02_b18_s02",
             "text_id": "body"
           }
         ]

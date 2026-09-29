@@ -4,8 +4,7 @@
   "input": {
     "user_ref": "u_72ce87717c0c",
     "post_ids": [
-      "D13_b08",
-      "D13_b20"
+      "D13_b08"
     ],
     "method": "loo"
   },
@@ -28,14 +27,6 @@
             "text_id": "body"
           }
         ]
-      },
-      {
-        "post_id": "D13_b20",
-        "risk_without": 0.0,
-        "delta": 0.0,
-        "rank": 2,
-        "clue_ids": [],
-        "top_spans": []
       }
     ],
     "user_scoped": [],

@@ -4,17 +4,17 @@
   "input": {
     "user_ref": "u_334908efbe3f",
     "post_ids": [
+      "E10_b01",
       "E10_b04",
       "E10_b06",
-      "E10_b13",
       "E10_b16",
       "E10_b18",
-      "E10_b19",
       "E10_b21",
+      "E10_b22",
       "E10_b23",
-      "E10_b24",
-      "E10_b27",
+      "E10_b26",
       "E10_b28",
+      "E10_b29",
       "E10_b30"
     ],
     "method": "loo"
@@ -25,10 +25,25 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "E10_b04",
+        "post_id": "E10_b01",
         "risk_without": 23.57,
         "delta": 0.0,
         "rank": 1,
+        "clue_ids": [
+          "E10_b01_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E10_b01_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b04",
+        "risk_without": 23.57,
+        "delta": 0.0,
+        "rank": 2,
         "clue_ids": [
           "E10_b04_s01"
         ],
@@ -43,7 +58,7 @@
         "post_id": "E10_b06",
         "risk_without": 23.57,
         "delta": 0.0,
-        "rank": 2,
+        "rank": 3,
         "clue_ids": [
           "E10_b06_s01",
           "E10_b06_s02",
@@ -61,21 +76,6 @@
           },
           {
             "span_id": "E10_b06_s03",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E10_b13",
-        "risk_without": 23.57,
-        "delta": 0.0,
-        "rank": 3,
-        "clue_ids": [
-          "E10_b13_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E10_b13_s01",
             "text_id": "body"
           }
         ]
@@ -132,25 +132,10 @@
         ]
       },
       {
-        "post_id": "E10_b19",
-        "risk_without": 23.57,
-        "delta": 0.0,
-        "rank": 6,
-        "clue_ids": [
-          "E10_b19_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E10_b19_s01",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "E10_b21",
         "risk_without": 23.57,
         "delta": 0.0,
-        "rank": 7,
+        "rank": 6,
         "clue_ids": [
           "E10_b21_s01",
           "E10_b21_s02",
@@ -168,6 +153,21 @@
           },
           {
             "span_id": "E10_b21_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b22",
+        "risk_without": 23.57,
+        "delta": 0.0,
+        "rank": 7,
+        "clue_ids": [
+          "E10_b22_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E10_b22_s01",
             "text_id": "body"
           }
         ]
@@ -193,36 +193,21 @@
         ]
       },
       {
-        "post_id": "E10_b24",
+        "post_id": "E10_b26",
         "risk_without": 23.57,
         "delta": 0.0,
         "rank": 9,
         "clue_ids": [
-          "E10_b24_s01",
-          "E10_b24_s02"
+          "E10_b26_s01",
+          "E10_b26_s02"
         ],
         "top_spans": [
           {
-            "span_id": "E10_b24_s01",
+            "span_id": "E10_b26_s01",
             "text_id": "body"
           },
           {
-            "span_id": "E10_b24_s02",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
-        "post_id": "E10_b27",
-        "risk_without": 23.57,
-        "delta": 0.0,
-        "rank": 10,
-        "clue_ids": [
-          "E10_b27_s01"
-        ],
-        "top_spans": [
-          {
-            "span_id": "E10_b27_s01",
+            "span_id": "E10_b26_s02",
             "text_id": "body"
           }
         ]
@@ -231,13 +216,38 @@
         "post_id": "E10_b28",
         "risk_without": 23.57,
         "delta": 0.0,
-        "rank": 11,
+        "rank": 10,
         "clue_ids": [
           "E10_b28_s01"
         ],
         "top_spans": [
           {
             "span_id": "E10_b28_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E10_b29",
+        "risk_without": 23.57,
+        "delta": 0.0,
+        "rank": 11,
+        "clue_ids": [
+          "E10_b29_s01",
+          "E10_b29_s02",
+          "E10_b29_s03"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E10_b29_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E10_b29_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E10_b29_s03",
             "text_id": "body"
           }
         ]

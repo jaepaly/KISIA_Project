@@ -19,36 +19,10 @@
     "risk_after": null,
     "contributions": [
       {
-        "post_id": "D17_b20",
-        "risk_without": 35.71,
-        "delta": -12.14,
-        "rank": 1,
-        "clue_ids": [
-          "D17_b20_s01",
-          "D17_b20_s02",
-          "D17_b20_s03",
-          "D17_b20_s04"
-        ],
-        "top_spans": [
-          {
-            "span_id": "D17_b20_s01",
-            "text_id": "body"
-          },
-          {
-            "span_id": "D17_b20_s02",
-            "text_id": "body"
-          },
-          {
-            "span_id": "D17_b20_s03",
-            "text_id": "body"
-          }
-        ]
-      },
-      {
         "post_id": "D17_b05",
         "risk_without": 39.29,
         "delta": -8.57,
-        "rank": 2,
+        "rank": 1,
         "clue_ids": [
           "D17_b05_s01",
           "D17_b05_s02",
@@ -73,7 +47,7 @@
         "post_id": "D17_b12",
         "risk_without": 39.29,
         "delta": -8.57,
-        "rank": 3,
+        "rank": 2,
         "clue_ids": [
           "D17_b12_s01",
           "D17_b12_s02",
@@ -91,6 +65,32 @@
           },
           {
             "span_id": "D17_b12_s03",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D17_b20",
+        "risk_without": 40.0,
+        "delta": -7.86,
+        "rank": 3,
+        "clue_ids": [
+          "D17_b20_s01",
+          "D17_b20_s02",
+          "D17_b20_s03",
+          "D17_b20_s04"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D17_b20_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b20_s02",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D17_b20_s03",
             "text_id": "body"
           }
         ]
@@ -149,12 +149,12 @@
     "user_scoped": [],
     "greedy_path": [
       {
-        "remove": "D17_b20",
-        "risk_after": 35.71
+        "remove": "D17_b05",
+        "risk_after": 39.29
       },
       {
-        "remove": "D17_b05",
-        "risk_after": 21.43
+        "remove": "D17_b20",
+        "risk_after": 25.71
       },
       {
         "remove": "D17_b12",

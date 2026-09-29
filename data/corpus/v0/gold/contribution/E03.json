@@ -9,14 +9,14 @@
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 10.71,
+    "baseline_risk": 5.71,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
         "post_id": "E03_b10",
         "risk_without": 0.0,
-        "delta": -10.71,
+        "delta": -5.71,
         "rank": 1,
         "clue_ids": [
           "E03_b10_s01",
