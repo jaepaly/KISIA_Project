@@ -1,4 +1,7 @@
-"""Window merge regression tests; no model download or GPU required."""
+"""학습기의 창 병합·점수 필터·결정적 실행 설정을 검증한다.
+
+모델 다운로드나 GPU는 필요하지 않다.
+"""
 import unittest
 import os
 import hashlib

@@ -1,4 +1,7 @@
-"""Read-only checkpoint evaluation; write review candidates under ignored runs/."""
+"""내부 eval의 예측을 골드와 비교해 오탐·미탐 사례를 찾는다.
+
+체크포인트는 읽기 전용으로 평가하고 검토 후보를 Git에서 제외된 runs/에 저장한다.
+"""
 from __future__ import annotations
 
 import argparse
@@ -47,7 +50,7 @@ def main():
     from torch.utils.data import DataLoader
     from transformers import AutoModelForTokenClassification, AutoTokenizer
 
-    # Use the recorded split instead of guessing its seed or evaluation ratio.
+    # 시드나 평가 비율을 추측하지 않고 체크포인트에 기록된 분할을 사용한다.
     state = json.loads((args.checkpoint / "trainer_state.json").read_text(encoding="utf-8"))
     expected = state["eval"]
     split_name = expected["split"]
@@ -106,13 +109,13 @@ def main():
                                                    expected.get("min_span_score", 0.0)))
     pred_by_text = train.filter_span_predictions(unfiltered_predictions, span_scores, args.min_span_score)
     metrics = train.score_span_sets(gold_by_text, pred_by_text)
-    # Exploratory validation only: do not alter checkpoint, gold, or train.py.
+    # 탐색용 검증이며 체크포인트, 골드, train.py는 변경하지 않는다.
     threshold_sweep = []
     for threshold in (0.0, 0.5, 0.6, 0.7, 0.8, 0.9):
         filtered = train.filter_span_predictions(unfiltered_predictions, span_scores, threshold)
         threshold_sweep.append({"threshold": threshold,
                                 "metrics": train.score_span_sets(gold_by_text, filtered)})
-    # Support both old (raw union) and new (overlap-resolved) checkpoints.
+    # 기존(원시 합집합) 체크포인트와 새(겹침 해소) 체크포인트를 모두 지원한다.
     if not any(all(candidate["overall"][name] == expected["overall"][name]
                    for name in ("tp", "fp", "fn")) for candidate in (raw_metrics, recorded_policy_metrics)):
         raise train.TrainError(f"Evaluation did not reproduce recorded counts: "

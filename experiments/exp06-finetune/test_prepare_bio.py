@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""문자 스팬의 BIO 정렬·복원과 창 경계에서의 스팬 처리를 검증한다."""
 from __future__ import annotations
 
 import importlib.util
