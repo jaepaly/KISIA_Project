@@ -558,7 +558,7 @@ def main() -> int:
             "channels": "title · body · photo_caption 스팬 전부 (profile_bio 는 표본 밖)",
         },
         "main_rewrite_mode": MAIN_REWRITE_MODE,
-        "engine_src": str(eng.src),
+        "engine_src": eng.src.relative_to(ROOT).as_posix() if eng.src.is_relative_to(ROOT) else "external",
         "scopes": scopes,
     }
     (out / "results" / "preview.json").write_text(json.dumps(preview, ensure_ascii=False, indent=2), encoding="utf-8")

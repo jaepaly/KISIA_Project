@@ -34,7 +34,7 @@
     "channels": "title · body · photo_caption 스팬 전부 (profile_bio 는 표본 밖)"
   },
   "main_rewrite_mode": "explicit",
-  "engine_src": "C:\\Users\\dor12\\OneDrive\\바탕 화면\\AI보안기술개발\\KISIA_Project\\src",
+  "engine_src": "src",
   "scopes": {
     "sample": {
       "summary": {
