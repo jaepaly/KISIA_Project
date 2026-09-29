@@ -45,7 +45,7 @@ python scripts/corpus_audit.py
 # c1 / c2 를 건드렸으면
 python -m kopl.c1_span.test_span
 python -m kopl.c2_specificity.test_engine
-python -m kopl.c2_specificity.test_geo_resolution   # 지금 3/18 이 정상 — #115 구현 대기
+python -m kopl.c2_specificity.test_geo_resolution   # 19/19 전통과 — #272 머지로 #115 완료 (2026-09-29)
 
 # 계약 예시 JSON 을 바꿨으면 반드시 스키마 대조
 check-jsonschema --schemafile docs/contracts/<해당>.schema.json <파일>
