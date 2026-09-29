@@ -1,0 +1,648 @@
+{
+  "sample_check_vs_exp09": {
+    "posts": 239,
+    "kinds": {
+      "clue": 159,
+      "noise": 80
+    },
+    "personas": 105,
+    "body_spans": 319,
+    "matches_exp09": true,
+    "mismatches": []
+  },
+  "geo_seed": {
+    "posts": 3092,
+    "tagged": 333
+  },
+  "full_skipped": {
+    "persona_included": 87,
+    "posts_reviewed": 424,
+    "posts_unreviewed": 1918,
+    "persona_no_top_level_gold": 18
+  },
+  "rules": {
+    "order": [
+      "unpublish",
+      "activity_meta",
+      "rewrite"
+    ],
+    "unpublish": "LOO greedy_path 앞 k편 (위험도를 실제로 낮추는 글만) · k = min(max(1, round(n·3/19)), n−1)",
+    "activity_meta": "공개로 남은 글의 위치태그 condition 전부 제거 (활동 시간대는 축이 없어 제외)",
+    "rewrite_explicit": "공개로 남은 글의 명시(explicit) 단서 스팬만 교체 = condition 제거 · 암묵·추론 단서는 남는다",
+    "rewrite_weaken": "공개로 남은 글의 단서 스팬마다 해상도 한 단계 낮춤 (나이 정확→5세 구간) · 0 이면 제거",
+    "rewrite_remove": "공개로 남은 글의 단서 스팬 condition 전부 제거 — 누적 경로에서는 정의상 0 (상한)",
+    "channels": "title · body · photo_caption 스팬 전부 (profile_bio 는 표본 밖)"
+  },
+  "main_rewrite_mode": "explicit",
+  "engine_src": "C:\\Users\\dor12\\OneDrive\\바탕 화면\\AI보안기술개발\\KISIA_Project\\src",
+  "scopes": {
+    "sample": {
+      "summary": {
+        "personas": 105,
+        "baseline_zero": 6,
+        "evaluated": 99,
+        "posts": 239,
+        "posts_per_persona": {
+          "n": 105,
+          "mean": 2.28,
+          "median": 2,
+          "p25": 1.0,
+          "p75": 3.0,
+          "min": 1,
+          "max": 6
+        },
+        "baseline_risk": {
+          "n": 99,
+          "mean": 17.73,
+          "median": 15.0,
+          "p25": 7.86,
+          "p75": 24.64,
+          "min": 4.29,
+          "max": 48.57
+        },
+        "unpublish": {
+          "k_max": {
+            "0": 31,
+            "1": 68
+          },
+          "hidden": {
+            "0": 35,
+            "1": 64
+          },
+          "stalled": 4,
+          "hidden_share_of_posts": {
+            "n": 99,
+            "mean": 25.1,
+            "median": 33.33,
+            "p25": 0.0,
+            "p75": 50.0,
+            "min": 0.0,
+            "max": 50.0
+          }
+        },
+        "geo": {
+          "personas_with_tag": 43,
+          "meta_step_changed_risk": 24,
+          "meta_solo_changed_risk": 41
+        },
+        "rewrite=explicit": {
+          "cumulative_drop_pct": {
+            "n": 99,
+            "mean": 58.82,
+            "median": 58.62,
+            "p25": 36.55,
+            "p75": 100.0,
+            "min": 0.0,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 62.28,
+          "mean_risk_path": {
+            "baseline": 17.73,
+            "after_unpublish": 10.12,
+            "after_meta": 8.22,
+            "after_rewrite": 6.69
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 11.57,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 0.0,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 7.31,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 0.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 18.43,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 31.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 15.66,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 26.94,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 49,
+            "within_54_61": 13,
+            "below_54": 37
+          }
+        },
+        "rewrite=weaken": {
+          "cumulative_drop_pct": {
+            "n": 99,
+            "mean": 89.76,
+            "median": 100.0,
+            "p25": 82.07,
+            "p75": 100.0,
+            "min": 15.05,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 90.43,
+          "mean_risk_path": {
+            "baseline": 17.73,
+            "after_unpublish": 10.12,
+            "after_meta": 8.22,
+            "after_rewrite": 1.7
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 11.57,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 0.0,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 38.25,
+              "median": 39.98,
+              "p25": 20.5,
+              "p75": 49.97,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 18.43,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 31.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 61.74,
+              "median": 59.58,
+              "p25": 45.42,
+              "p75": 79.78,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 88,
+            "below_54": 8,
+            "within_54_61": 3
+          }
+        },
+        "rewrite=remove": {
+          "cumulative_drop_pct": {
+            "n": 99,
+            "mean": 100.0,
+            "median": 100.0,
+            "p25": 100.0,
+            "p75": 100.0,
+            "min": 100.0,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 100.0,
+          "mean_risk_path": {
+            "baseline": 17.73,
+            "after_unpublish": 10.12,
+            "after_meta": 8.22,
+            "after_rewrite": 0.0
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 11.57,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 0.0,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 48.49,
+              "median": 44.4,
+              "p25": 21.05,
+              "p75": 72.79,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 99,
+              "mean": 39.94,
+              "median": 42.85,
+              "p25": 0.0,
+              "p75": 59.32,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 99,
+              "mean": 18.43,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 31.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "rewrite": {
+              "n": 99,
+              "mean": 80.76,
+              "median": 100.0,
+              "p25": 67.64,
+              "p75": 100.0,
+              "min": 0.0,
+              "max": 100.0
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 99
+          }
+        }
+      },
+      "notes": {
+        "clue_span:body": 228,
+        "clue_span:photo_caption": 3,
+        "clue_span:title": 18,
+        "geo_tag:homonym_unresolved": 5,
+        "geo_tag:not_found": 3,
+        "geo_tag:unique": 41,
+        "span_missing_level_or_subject": 0
+      },
+      "schema": "ok (747 conditions)"
+    },
+    "full": {
+      "summary": {
+        "personas": 87,
+        "baseline_zero": 0,
+        "evaluated": 87,
+        "posts": 2342,
+        "posts_per_persona": {
+          "n": 87,
+          "mean": 26.92,
+          "median": 30,
+          "p25": 22.0,
+          "p75": 30.0,
+          "min": 15,
+          "max": 30
+        },
+        "baseline_risk": {
+          "n": 87,
+          "mean": 48.32,
+          "median": 50.0,
+          "p25": 41.78,
+          "p75": 56.43,
+          "min": 19.29,
+          "max": 75.0
+        },
+        "unpublish": {
+          "k_max": {
+            "2": 1,
+            "3": 23,
+            "4": 2,
+            "5": 61
+          },
+          "hidden": {
+            "0": 1,
+            "1": 15,
+            "2": 19,
+            "3": 30,
+            "4": 10,
+            "5": 12
+          },
+          "stalled": 56,
+          "hidden_share_of_posts": {
+            "n": 87,
+            "mean": 10.71,
+            "median": 10.0,
+            "p25": 6.67,
+            "p75": 15.0,
+            "min": 0.0,
+            "max": 18.75
+          }
+        },
+        "geo": {
+          "personas_with_tag": 82,
+          "meta_step_changed_risk": 44,
+          "meta_solo_changed_risk": 52
+        },
+        "rewrite=explicit": {
+          "cumulative_drop_pct": {
+            "n": 87,
+            "mean": 66.63,
+            "median": 67.09,
+            "p25": 56.64,
+            "p75": 78.24,
+            "min": 28.21,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 66.81,
+          "mean_risk_path": {
+            "baseline": 48.32,
+            "after_unpublish": 22.6,
+            "after_meta": 18.6,
+            "after_rewrite": 16.03
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 9.12,
+              "median": 11.96,
+              "p25": 0.0,
+              "p75": 16.29,
+              "min": 0.0,
+              "max": 29.74
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 4.9,
+              "median": 0.0,
+              "p25": 0.0,
+              "p75": 12.8,
+              "min": 0.0,
+              "max": 34.68
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 11.29,
+              "median": 13.74,
+              "p25": 0.0,
+              "p75": 18.63,
+              "min": 0.0,
+              "max": 40.75
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 30.09,
+              "median": 31.4,
+              "p25": 24.99,
+              "p75": 38.61,
+              "min": 0.0,
+              "max": 70.0
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 57,
+            "below_54": 18,
+            "within_54_61": 12
+          }
+        },
+        "rewrite=weaken": {
+          "cumulative_drop_pct": {
+            "n": 87,
+            "mean": 93.8,
+            "median": 100.0,
+            "p25": 89.44,
+            "p75": 100.0,
+            "min": 67.37,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 93.3,
+          "mean_risk_path": {
+            "baseline": 48.32,
+            "after_unpublish": 22.6,
+            "after_meta": 18.6,
+            "after_rewrite": 3.24
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 9.12,
+              "median": 11.96,
+              "p25": 0.0,
+              "p75": 16.29,
+              "min": 0.0,
+              "max": 29.74
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 32.08,
+              "median": 31.48,
+              "p25": 23.9,
+              "p75": 41.25,
+              "min": 0.0,
+              "max": 71.79
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 11.29,
+              "median": 13.74,
+              "p25": 0.0,
+              "p75": 18.63,
+              "min": 0.0,
+              "max": 40.75
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 65.4,
+              "median": 66.21,
+              "p25": 59.67,
+              "p75": 70.13,
+              "min": 48.09,
+              "max": 85.2
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 87
+          }
+        },
+        "rewrite=remove": {
+          "cumulative_drop_pct": {
+            "n": 87,
+            "mean": 100.0,
+            "median": 100.0,
+            "p25": 100.0,
+            "p75": 100.0,
+            "min": 100.0,
+            "max": 100.0
+          },
+          "pooled_drop_pct": 100.0,
+          "mean_risk_path": {
+            "baseline": 48.32,
+            "after_unpublish": 22.6,
+            "after_meta": 18.6,
+            "after_rewrite": 0.0
+          },
+          "step_share_of_baseline_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 9.12,
+              "median": 11.96,
+              "p25": 0.0,
+              "p75": 16.29,
+              "min": 0.0,
+              "max": 29.74
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 38.27,
+              "median": 37.84,
+              "p25": 26.67,
+              "p75": 48.76,
+              "min": 0.0,
+              "max": 73.68
+            }
+          },
+          "solo_drop_pct": {
+            "unpublish": {
+              "n": 87,
+              "mean": 52.61,
+              "median": 53.74,
+              "p25": 37.32,
+              "p75": 66.45,
+              "min": 0.0,
+              "max": 100.0
+            },
+            "activity_meta": {
+              "n": 87,
+              "mean": 11.29,
+              "median": 13.74,
+              "p25": 0.0,
+              "p75": 18.63,
+              "min": 0.0,
+              "max": 40.75
+            },
+            "rewrite": {
+              "n": 87,
+              "mean": 83.53,
+              "median": 84.28,
+              "p25": 80.86,
+              "p75": 86.24,
+              "min": 59.25,
+              "max": 100.0
+            }
+          },
+          "vs_poc_54_61": {
+            "above_61": 87
+          }
+        }
+      },
+      "notes": {
+        "clue_span:body": 1412,
+        "clue_span:photo_caption": 37,
+        "clue_span:title": 90,
+        "geo_tag:homonym_unresolved": 22,
+        "geo_tag:not_found": 3,
+        "geo_tag:unique": 210,
+        "span_missing_level_or_subject": 0
+      },
+      "schema": "ok (4859 conditions)"
+    }
+  }
+}
