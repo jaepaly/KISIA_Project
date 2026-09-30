@@ -1,114 +1,115 @@
 {
   "experiment": "exp08-actions (축약판)",
-  "measured_at": "2026-09-29",
+  "measured_at": "2026-09-30",
   "persona": "D12",
-  "data_version": "corpus v0 · gold/D12_spans.jsonl",
-  "engine": "kopl.c2_specificity — clues.build_conditions + risk_total",
-  "git_commit": "fe94236",
-  "n_posts": 30,
-  "assumption": "조치 대상 단서는 완전히 제거된다 (잔존 단서는 W9 전체판에서 다룬다)",
+  "source": "experiments/exp10-action-repro/data/inputs_full.jsonl 의 D12 행 (build_inputs.py 로 재생성)",
+  "definitions": {
+    "order": "비공개 → 위치태그 제거 → 리라이트 (exp10 과 같음)",
+    "unpublish": "C3 leave_one_out 탐욕 경로 앞 k편 · k_max = round(n×3/19)",
+    "activity_meta": "scripts/seed_sns.py 가 붙인 실제 geo_tag condition 제거",
+    "rewrite": "명시(explicit) 단서 스팬만 교체 — 본 지표 (weaken·remove 는 참고)"
+  },
+  "data": {
+    "corpus": "v0 · 전체 이력",
+    "n_posts": 30,
+    "label_source": {
+      "reviewed": 10,
+      "teacher": 20
+    },
+    "test_split_sha256_prefix": "9662a167"
+  },
+  "git_commit": "6bed1bf",
   "burden_source": "docs/plan.md §2 조치 메뉴 (1=낮음 · 2=중간 · 3=높음)",
-  "unpublish_target_posts": [
-    "D12_b06"
-  ],
+  "unpublish": {
+    "post_ids": [
+      "D12_b04",
+      "D12_b09",
+      "D12_b23",
+      "D12_b13"
+    ],
+    "k_max": 5,
+    "stalled": true
+  },
+  "geo_tags": {
+    "D12_b06": "울주군",
+    "D12_b17": "울주군"
+  },
   "curve": [
     {
       "step": 0,
       "applied": [],
-      "risk": 57.1,
-      "n_conditions": 16,
-      "risk_by_axis": {
-        "location": 55.0,
-        "age": 100.0,
-        "sex": 60.0,
-        "occupation": 40.0,
-        "family": 55.0,
-        "commute": 40.0,
-        "income": 50.0
-      }
+      "risk": 57.14
     },
     {
       "step": 1,
       "applied": [
-        "rewrite"
+        "unpublish"
       ],
-      "risk": 19.3,
-      "n_conditions": 8,
-      "risk_by_axis": {
-        "location": 55.0,
-        "age": 0.0,
-        "sex": 0.0,
-        "occupation": 40.0,
-        "family": 0.0,
-        "commute": 40.0,
-        "income": 0.0
-      }
+      "risk": 19.29
     },
     {
       "step": 2,
       "applied": [
-        "rewrite",
+        "unpublish",
         "activity_meta"
       ],
-      "risk": 11.4,
-      "n_conditions": 2,
-      "risk_by_axis": {
-        "location": 0.0,
-        "age": 0.0,
-        "sex": 0.0,
-        "occupation": 40.0,
-        "family": 0.0,
-        "commute": 40.0,
-        "income": 0.0
-      }
+      "risk": 19.29
     },
     {
       "step": 3,
       "applied": [
-        "rewrite",
+        "unpublish",
         "activity_meta",
-        "unpublish"
+        "rewrite"
       ],
-      "risk": 0.0,
-      "n_conditions": 0,
-      "risk_by_axis": {
-        "location": 0.0,
-        "age": 0.0,
-        "sex": 0.0,
-        "occupation": 0.0,
-        "family": 0.0,
-        "commute": 0.0,
-        "income": 0.0
-      }
+      "risk": 11.43
     }
   ],
   "per_action": [
-    {
-      "action": "rewrite",
-      "label": "리라이트",
-      "burden": 3,
-      "burden_label": "높음",
-      "risk_alone": 19.3,
-      "effect_alone": 37.8,
-      "effect_in_sequence": 37.8
-    },
-    {
-      "action": "activity_meta",
-      "label": "활동 메타 관리",
-      "burden": 2,
-      "burden_label": "중간",
-      "risk_alone": 49.3,
-      "effect_alone": 7.8,
-      "effect_in_sequence": 7.9
-    },
     {
       "action": "unpublish",
       "label": "비공개",
       "burden": 1,
       "burden_label": "낮음",
-      "risk_alone": 57.1,
-      "effect_alone": 0.0,
-      "effect_in_sequence": 11.4
+      "risk_solo": 19.29,
+      "effect_solo": 37.85,
+      "effect_in_sequence": 37.85
+    },
+    {
+      "action": "activity_meta",
+      "label": "위치태그 제거",
+      "burden": 2,
+      "burden_label": "중간",
+      "risk_solo": 57.14,
+      "effect_solo": 0.0,
+      "effect_in_sequence": 0.0
+    },
+    {
+      "action": "rewrite",
+      "label": "리라이트(명시)",
+      "burden": 3,
+      "burden_label": "높음",
+      "risk_solo": 42.86,
+      "effect_solo": 14.28,
+      "effect_in_sequence": 7.86
     }
-  ]
+  ],
+  "rewrite_modes_reference": {
+    "cumulative_after_rewrite": {
+      "explicit": 11.43,
+      "weaken": 2.86,
+      "remove": 0.0
+    },
+    "solo": {
+      "explicit": 42.86,
+      "weaken": 17.86,
+      "remove": 7.86
+    }
+  },
+  "contrast_hand_picked": {
+    "post_id": "D12_b06",
+    "risk_after_hiding_only_this": 57.14,
+    "effect": 0.0,
+    "note": "exp8 초판이 손으로 고른 비공개 대상. 단서(야간·울주·공단 정문·차로)가 전부 다른 글에도 있어 한 편만 숨기면 효과가 없다"
+  }
 }
