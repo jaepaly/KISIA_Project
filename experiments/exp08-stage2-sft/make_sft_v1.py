@@ -73,10 +73,14 @@ def user_ref(pid: str) -> str:
 
 
 def load_test_ids() -> set[str]:
-    path = SPLITS / "test.jsonl"
+    # 저장소에 고정된 목록(#282)을 읽는다 — gitignore 된 test.jsonl 이 없을 때 빈 집합으로 넘어가 test 가 학습에 섞이지 않게
+    path = SPLITS / "test_post_ids.json"
     if not path.exists():
-        return set()
-    return {json.loads(l)["post_id"] for l in path.read_text(encoding="utf-8").splitlines() if l.strip()}
+        raise SystemExit(f"고정 test 목록이 없다: {path}")
+    ids = json.loads(path.read_text(encoding="utf-8"))["post_ids"]
+    if not ids or len(ids) != len(set(ids)):
+        raise SystemExit(f"고정 test 목록이 비었거나 중복이 있다: {path}")
+    return set(ids)
 
 
 def load_post_bodies(pid: str) -> dict[str, str]:
