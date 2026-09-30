@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_d6f62ec0a4c3",
+    "post_ids": [
+      "E08_b01",
+      "E08_b04",
+      "E08_b06",
+      "E08_b11",
+      "E08_b16",
+      "E08_b19",
+      "E08_b24"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 19.29,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "E08_b11",
+        "risk_without": 13.57,
+        "delta": -5.71,
+        "rank": 1,
+        "clue_ids": [
+          "E08_b11_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b11_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b19",
+        "risk_without": 13.57,
+        "delta": -5.71,
+        "rank": 2,
+        "clue_ids": [
+          "E08_b19_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b19_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b01",
+        "risk_without": 19.29,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "E08_b01_s01",
+          "E08_b01_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b01_s01",
+            "text_id": "title"
+          },
+          {
+            "span_id": "E08_b01_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b04",
+        "risk_without": 19.29,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "E08_b04_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b04_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b06",
+        "risk_without": 19.29,
+        "delta": 0.0,
+        "rank": 5,
+        "clue_ids": [
+          "E08_b06_s01",
+          "E08_b06_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b06_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "E08_b06_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b16",
+        "risk_without": 19.29,
+        "delta": 0.0,
+        "rank": 6,
+        "clue_ids": [
+          "E08_b16_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b16_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "E08_b24",
+        "risk_without": 19.29,
+        "delta": 0.0,
+        "rank": 7,
+        "clue_ids": [
+          "E08_b24_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "E08_b24_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "E08_b11",
+        "risk_after": 13.57
+      },
+      {
+        "remove": "E08_b19",
+        "risk_after": 7.86
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

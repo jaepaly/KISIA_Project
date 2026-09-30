@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_d41180453672",
+    "post_ids": [
+      "D09_b08",
+      "D09_b11",
+      "D09_b17",
+      "D09_b24"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 5.71,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "D09_b08",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 1,
+        "clue_ids": [
+          "D09_b08_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D09_b08_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b11",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 2,
+        "clue_ids": [
+          "D09_b11_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D09_b11_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b17",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [
+          "D09_b17_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D09_b17_s01",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D09_b24",
+        "risk_without": 5.71,
+        "delta": 0.0,
+        "rank": 4,
+        "clue_ids": [
+          "D09_b24_s01"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D09_b24_s01",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_74be068977da",
+    "post_ids": [
+      "A17_b11"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 0.0,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "A17_b11",
+        "risk_without": 0.0,
+        "delta": 0.0,
+        "rank": 1,
+        "clue_ids": [],
+        "top_spans": []
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}
