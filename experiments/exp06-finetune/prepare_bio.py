@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """검수 골드의 문자 스팬을 KoELECTRA용 BIO 데이터로 변환한다.
 
+텍스트 채널을 토큰 창으로 나누고 BIO 정렬·왕복 검증 결과를 저장한다.
 정본 입력은 ``data/corpus/v0/gold/*_spans.jsonl`` 이다. ``detect/``의
 교사 원본과 ``blind/``의 최종 평가는 읽지 않는다. blind·IAA 배정 글은
 ``scripts/split_train_test.py``가 만든 split을 기준으로 학습에서 제외한다.

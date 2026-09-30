@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""KoELECTRA BIO token-classification 학습기.
+"""KoELECTRA BIO 토큰 분류 모델을 학습·평가하고 체크포인트를 저장한다.
 
 기본 실행은 BIO 학습 예제를 persona 단위로 train/eval 분리해 1 epoch를 학습한다.
 ``--overfit 100``은 같은 100개 예제로 학습·평가하여 파이프라인이 작은
@@ -176,12 +176,12 @@ def span_iou(left: tuple[int, int, str], right: tuple[int, int, str]) -> float:
 def resolve_overlapping_spans(
     spans: Iterable[tuple[int, int, str]],
 ) -> set[tuple[int, int, str]]:
-    """Resolve window conflicts within ONE text channel, longest span first.
+    """한 텍스트 채널 안에서 긴 스팬부터 창 간 충돌을 해소한다.
 
-    Identical spans are deduplicated; any positive overlap conflicts even when
-    types differ. Adjacent spans remain separate. Never union or extend spans:
-    that would invent boundaries not predicted by any window. Ties use start,
-    end, then type for deterministic, gold-independent selection (contract §6).
+    동일한 스팬은 중복 제거하고, 유형이 달라도 한 글자 이상 겹치면 충돌로 본다.
+    인접한 스팬은 분리한다. 창에서 예측하지 않은 경계를 만들지 않도록 스팬을
+    합치거나 늘리지 않는다. 동률이면 start, end, type 순서로 정해 골드와
+    무관하게 결정적으로 선택한다(계약 §6).
     """
     accepted: list[tuple[int, int, str]] = []
     for span in sorted(set(spans), key=lambda s: (-(s[1] - s[0]), s[0], s[1], s[2])):
@@ -249,11 +249,11 @@ def mean_span_score(values: Sequence[float]) -> float:
 
 
 def filter_span_predictions(pred_by_text: dict, span_scores: dict, min_span_score: float) -> dict:
-    """Resolve overlaps first, then filter. No gold labels influence selection.
+    """겹침을 먼저 해소한 뒤 점수로 거른다. 골드 라벨은 선택에 영향을 주지 않는다.
 
-    Scores are mean predicted-token probabilities per window, averaged over
-    windows predicting the identical span; they are NOT calibrated accuracy.
-    Never resurrect a shorter span when the longest span fails the threshold.
+    점수는 창별 예측 토큰 확률의 평균을 동일 스팬을 예측한 창 사이에서 다시
+    평균한 값이며, 보정된 정확도가 아니다. 가장 긴 스팬이 임계값을 통과하지
+    못해도 더 짧은 스팬을 다시 살리지 않는다.
     """
     if not 0 <= min_span_score <= 1:
         raise TrainError("--min-span-score must be between 0 and 1.")
@@ -351,7 +351,7 @@ def set_seed(seed: int) -> None:
 
 
 def configure_determinism(enabled: bool) -> None:
-    """Strict opt-in; call before CUDA initialization. Default behavior is unchanged."""
+    """엄격한 결정적 실행 옵션이며 CUDA 초기화 전에 호출한다. 기본 동작은 유지한다."""
     if not enabled:
         return
     import torch
@@ -376,7 +376,7 @@ def file_sha256(path: Path) -> str:
 
 def build_run_config(args: Any, train_rows: Sequence[dict], eval_rows: Sequence[dict],
                      model: Any) -> dict[str, Any]:
-    """Record reproducibility inputs, never credentials or arbitrary environment variables."""
+    """재현에 필요한 입력만 기록하며 자격증명이나 임의의 환경 변수는 기록하지 않는다."""
     import torch
     import transformers
 

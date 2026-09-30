@@ -1,4 +1,7 @@
-"""Compare epochs 1..10 on INTERNAL eval only. Never opens test or gold files."""
+"""저장된 epoch 1~10 체크포인트를 동일한 내부 eval 기준으로 비교한다.
+
+선정에 필요한 F1 표를 만들며 test나 gold 파일은 열지 않는다.
+"""
 import argparse
 from collections import defaultdict
 from datetime import datetime, timezone
