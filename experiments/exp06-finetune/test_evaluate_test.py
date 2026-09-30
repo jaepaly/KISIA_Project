@@ -1,4 +1,7 @@
-"""모델 없이 평가 대상 선택과 채점 로직을 검증하는 회귀 테스트."""
+"""평가기의 IAA 제외·누수 검사와 partial/exact·등급별 채점을 검증한다.
+
+작은 테스트 데이터만 사용하며 모델 실행은 필요하지 않다.
+"""
 import json
 from pathlib import Path
 import tempfile

@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_1d23f6eee87d",
+    "post_ids": [
+      "A25_b06",
+      "A25_b07",
+      "A25_b11"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 7.86,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "A25_b06",
+        "risk_without": 0.0,
+        "delta": -7.86,
+        "rank": 1,
+        "clue_ids": [
+          "A25_b06_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "A25_b06_s02",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "A25_b07",
+        "risk_without": 7.86,
+        "delta": 0.0,
+        "rank": 2,
+        "clue_ids": [],
+        "top_spans": []
+      },
+      {
+        "post_id": "A25_b11",
+        "risk_without": 7.86,
+        "delta": 0.0,
+        "rank": 3,
+        "clue_ids": [],
+        "top_spans": []
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "A25_b06",
+        "risk_after": 0.0
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

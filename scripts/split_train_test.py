@@ -15,15 +15,43 @@ negative_control 글 중 일부를 seed로 뽑아 test에 추가한다. blind는
     python scripts/split_train_test.py --dry-run   먼저 통계만 확인
     python scripts/split_train_test.py              실제 분리 + 파일 저장
 
-seed는 train 내부를 섞는 데, 그리고 잡담 표본을 뽑는 데 쓴다.
+#282 — test 는 고정 목록(splits/test_post_ids.json)을 쓴다. 잡담 표본은
+「그 시점의 검수 정본」에서 뽑으므로, 골드가 바뀐 뒤 다시 뽑으면 seed 가
+같아도 다른 글이 나온다. 그래서 목록 자체를 저장소에 고정했다. 새로 뽑아야
+할 때(코퍼스 버전이 바뀔 때)만 --resample 을 쓰고, 그 결과로 목록 파일을
+PR 로 교체한다.
+
+seed는 train 내부를 섞는 데, 그리고 (--resample 일 때) 잡담 표본을 뽑는 데 쓴다.
 """
 from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import random
 from pathlib import Path
+
+
+def post_key(post_id: str) -> tuple[str, str]:
+    """post_id(<persona>_<post>) → (persona_id, post)."""
+    persona, _, post = post_id.rpartition("_")
+    if not persona or not post:
+        raise SystemExit(f"post_id 형식이 아니다: {post_id}")
+    return persona, post
+
+
+def load_fixed_ids(path: Path) -> tuple[set[tuple[str, str]], dict]:
+    """고정 test 목록(#282). 중복·빈 목록은 실패로 멈춘다."""
+    if not path.is_file():
+        raise SystemExit(f"고정 test 목록이 없다: {path} — 새로 뽑으려면 --resample")
+    d = json.loads(path.read_text(encoding="utf-8-sig"))
+    ids = d.get("post_ids") or []
+    if not ids or len(ids) != len(set(ids)):
+        raise SystemExit(f"고정 test 목록이 비었거나 중복이 있다: {path}")
+    if d.get("count") not in (None, len(ids)):
+        raise SystemExit(f"고정 test 목록 count({d.get('count')})와 실제 개수({len(ids)})가 다르다")
+    return {post_key(i) for i in ids}, d
 
 
 def load_assignment(path: Path) -> set[tuple[str, str]]:
@@ -73,14 +101,30 @@ def main() -> int:
                      help="검수 정본에서 test로 추가할 잡담(noise) 글 수 (#235 선택지 가)")
     ap.add_argument("--no-noise", action="store_true",
                      help="잡담 표본 추가를 끈다 (W4까지의 옛 동작)")
+    ap.add_argument("--fixed-ids", default="data/corpus/v0/splits/test_post_ids.json",
+                     help="고정 test 목록 (#282). 기본은 이 목록을 그대로 쓴다")
+    ap.add_argument("--resample", action="store_true",
+                     help="고정 목록을 무시하고 배정+잡담 표본을 새로 뽑는다 (코퍼스 버전이 바뀔 때만)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
-    test_keys = load_assignment(Path(a.blind_assignment)) | load_assignment(Path(a.iaa_assignment))
-    print(f"test 전용 배정(blind+IAA): {len(test_keys)}건")
+    assigned = load_assignment(Path(a.blind_assignment)) | load_assignment(Path(a.iaa_assignment))
+    print(f"test 전용 배정(blind+IAA): {len(assigned)}건")
+    test_keys = set(assigned)
 
     noise_added = 0
-    if not a.no_noise:
+    fixed_meta: dict | None = None
+    if not a.resample:
+        test_keys, fixed_meta = load_fixed_ids(Path(a.fixed_ids))
+        missing_assigned = assigned - test_keys
+        if missing_assigned:
+            raise SystemExit(
+                f"🔴 blind·IAA 배정 {len(missing_assigned)}건이 고정 test 목록에 없다 — "
+                f"배정이 바뀌었으면 --resample 로 새 목록을 만들어 PR 로 교체한다: {sorted(missing_assigned)[:5]}"
+            )
+        noise_added = len(test_keys - assigned)
+        print(f"고정 test 목록(#282): {len(test_keys)}건 = 배정 {len(assigned)} + 그 밖 {noise_added} ({a.fixed_ids})")
+    elif not a.no_noise:
         candidates = load_noise_candidates(Path(a.gold_dir)) - test_keys
         rng_noise = random.Random(a.seed)
         sample_size = min(a.noise_sample_size, len(candidates))
@@ -156,6 +200,15 @@ def main() -> int:
         return 1
     print("누수 검사 통과 — train·test 겹침 없음")
 
+    test_sha = hashlib.sha256(test_path.read_bytes()).hexdigest()
+    expected = (fixed_meta or {}).get("test_jsonl_sha256")
+    if expected and test_sha != expected:
+        # 글 목록은 같고 본문이 바뀐 경우다 (예: 코퍼스 손상 수정). 평가 대상 글은 그대로다.
+        print(f"🟡 test.jsonl 지문이 고정 목록 기록과 다르다 — 목록은 같고 posts 본문이 바뀌었다\n"
+              f"   기록 {expected[:12]}… · 지금 {test_sha[:12]}…")
+    else:
+        print(f"test.jsonl 지문 {test_sha[:12]}…" + (" — 고정 목록 기록과 일치" if expected else ""))
+
     meta = {
         "seed": a.seed,
         "train_count": len(train_recs),
@@ -173,7 +226,9 @@ def main() -> int:
         ),
         "blind_assignment": a.blind_assignment,
         "iaa_assignment": a.iaa_assignment,
-        "decision_issue": "#235",
+        "fixed_ids": None if a.resample else a.fixed_ids,
+        "test_sha256": test_sha,
+        "decision_issue": "#235 · #282",
     }
     (out_dir / "split_meta.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8"

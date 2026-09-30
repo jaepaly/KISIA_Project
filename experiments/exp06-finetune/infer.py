@@ -1,9 +1,11 @@
-"""Local BIO inference. Raw candidates are NOT span.schema.json output.
+"""학습된 체크포인트로 글·프로필의 스팬을 찾아 계약 형식으로 반환한다.
 
-The 21-label model does not predict level/subject. Contract output temporarily
-preserves the W2 detector's implicit/self placeholders, NOT semantic predictions.
-An explicit resolver overrides this legacy policy. No gold lookup exists.
-Offsets refer to NFC-normalized input channels.
+로컬 BIO 추론기의 원시 후보는 span.schema.json 계약 출력이 아니다.
+
+21개 라벨 모델은 level/subject를 예측하지 않는다. 계약 출력에는 W2 탐지기의
+implicit/self 임시값을 잠정 유지하며, 이는 의미 판정 결과가 아니다.
+별도 판정 함수를 전달하면 이 기존 정책을 대체한다. 골드 조회는 하지 않는다.
+offset은 NFC로 정규화된 입력 채널을 기준으로 한다.
 """
 from __future__ import annotations
 
@@ -25,7 +27,7 @@ class InferenceError(ValueError):
 
 
 def legacy_attributes(texts: dict, candidate: dict) -> dict:
-    """Compatibility placeholders only; even third-party clues become self."""
+    """호환을 위한 임시값이며 타인 단서도 self로 표시된다."""
     return {"level": "implicit", "subject": "self"}
 
 
@@ -64,7 +66,7 @@ def input_channels(record: dict) -> tuple[str, str, dict[str, str]]:
 
 
 class SpanDetector:
-    """Load a local checkpoint once; reuse for many records (CPU by default)."""
+    """로컬 체크포인트를 한 번 로드해 여러 레코드에 재사용한다(CPU 기본)."""
     def __init__(self, checkpoint_dir: str | Path, *, device: str = "cpu",
                  min_span_score: float = 0.7, max_length: int = 256, stride: int = 64,
                  batch_size: int = 16, model_version: str | None = None):
@@ -147,7 +149,7 @@ class SpanDetector:
 
 
 def format_contract(raw: dict, resolver: Callable) -> dict:
-    """Resolver(texts, candidate_copy) -> {level, subject}. No fallback labels."""
+    """판정 함수는 (texts, candidate_copy)에서 {level, subject}를 반환한다. 대체 라벨은 없다."""
     from kopl.c1_span.schema import validate_span_output
     from jsonschema import Draft202012Validator
     spans = []

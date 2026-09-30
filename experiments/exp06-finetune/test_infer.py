@@ -1,4 +1,7 @@
-"""Inference contract adapter tests; resolver below is a test fixture, not production logic."""
+"""추론 입력의 채널·정규화와 출력 계약·의미 검증을 확인한다.
+
+아래 판정 함수는 테스트용이며 운영 로직이 아니다.
+"""
 import unittest
 from unittest.mock import patch
 import infer
