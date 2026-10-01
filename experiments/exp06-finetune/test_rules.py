@@ -1,7 +1,8 @@
 """W7 명시 단서 규칙의 경계·약칭·오탐 가드를 검증한다."""
 import unittest
 
-from rules import ExplicitRules, age_spans
+import infer
+from rules import ExplicitRules, age_spans, merge_with_model
 
 
 class FakeRegions:
@@ -38,6 +39,63 @@ class RuleTests(unittest.TestCase):
         rules = ExplicitRules(FakeRegions(), excluded_aliases={'화성'})
         self.assertEqual(rules.location_spans('화성 여행, 화성시 방문'),
                          {(7, 10, 'LOC_ADMIN')})
+
+    def test_longest_first_merge_keeps_original_untouched(self):
+        class FixedRules:
+            def predict_channel(self, text):
+                return {(0, 4, 'LOC_ADMIN')}
+
+        original = [{'text_id': 'body', 'start': 0, 'end': 2, 'text': '서울',
+                     'type': 'LOC_ADMIN', 'score': 0.91, 'span_id': 'old_s01'}]
+        merged, stats = merge_with_model('p_b01', {'body': '서울에서'}, original, FixedRules())
+        self.assertEqual(merged, [{'start': 0, 'end': 4, 'text': '서울에서',
+                                   'type': 'LOC_ADMIN', 'text_id': 'body', 'span_id': 'p_b01_s01'}])
+        self.assertEqual((stats['selected_rule_only'], stats['suppressed_by_overlap']), (1, 1))
+        self.assertEqual(original[0]['span_id'], 'old_s01')
+
+    def test_same_span_preserves_model_score_without_source_field(self):
+        class FixedRules:
+            def predict_channel(self, text):
+                return {(0, 3, 'AGE')}
+
+        model = [{'text_id': 'body', 'start': 0, 'end': 3, 'text': '23살',
+                  'type': 'AGE', 'score': 0.8}]
+        merged, stats = merge_with_model('p_b01', {'body': '23살'}, model, FixedRules())
+        self.assertEqual(merged[0]['score'], 0.8)
+        self.assertEqual(set(merged[0]), {'start', 'end', 'text', 'type', 'score', 'text_id', 'span_id'})
+        self.assertEqual(stats['selected_both'], 1)
+
+    def test_channel_order_and_no_cross_channel_conflict(self):
+        class FixedRules:
+            def predict_channel(self, text):
+                return {(0, 3, 'AGE')}
+
+        texts = {'photo_caption:10': '23살', 'body': '23살', 'photo_caption:2': '23살'}
+        merged, stats = merge_with_model('p_b01', texts, [], FixedRules())
+        self.assertEqual([s['text_id'] for s in merged],
+                         ['body', 'photo_caption:2', 'photo_caption:10'])
+        self.assertEqual([s['span_id'] for s in merged],
+                         ['p_b01_s01', 'p_b01_s02', 'p_b01_s03'])
+        self.assertEqual(stats['selected_rule_only'], 3)
+
+    def test_model_candidate_with_wrong_offset_fails(self):
+        with self.assertRaisesRegex(ValueError, '문자 경계'):
+            merge_with_model('p_b01', {'body': '서울'},
+                             [{'text_id': 'body', 'start': 0, 'end': 2, 'text': '부천',
+                               'type': 'LOC_ADMIN'}], ExplicitRules(FakeRegions()))
+
+    def test_merged_candidate_passes_existing_contract(self):
+        class FixedRules:
+            def predict_channel(self, text):
+                return {(0, 3, 'AGE')}
+
+        texts = {'body': '23살'}
+        merged, _ = merge_with_model('p_b01', texts, [], FixedRules())
+        raw = {'record_type': 'post', 'post_id': 'p_b01', 'model_version': 'test',
+               'texts': texts, 'candidates': merged}
+        result = infer.format_contract(raw, lambda _texts, _span:
+                                       {'level': 'explicit', 'subject': 'self'})
+        self.assertEqual(result['spans'][0]['text'], '23살')
 
 
 if __name__ == '__main__':
