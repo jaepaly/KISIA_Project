@@ -55,6 +55,7 @@ def test_correlation_is_positive() -> None:
     assert result["n"] == 4
     assert result["rho"] == pytest.approx(1.0)
 
+
 def test_e03_current_location_is_primary_score() -> None:
     rows = [
         {
@@ -73,3 +74,29 @@ def test_e03_current_location_is_primary_score() -> None:
 
     assert result["success_count"] == 1
     assert result["success_count_e03_ground_truth_location"] == 0
+
+
+def test_baseline_checks_match_committed_results() -> None:
+    details = score.load_details(
+        HERE / "results" / "teacher_all_scored.csv"
+    )
+    windows = score.aggregate_windows(details)
+
+    result = score.baseline_checks(windows)
+
+    assert result["rho_window_size_baseline"] == pytest.approx(
+        0.804,
+        abs=0.001,
+    )
+    assert result["partial_rho_given_window_size"] == pytest.approx(
+        0.412,
+        abs=0.001,
+    )
+    assert result["within_window_rho"][19] == pytest.approx(
+        -0.18,
+        abs=0.01,
+    )
+    assert result["within_window_shuffle"]["p_one_sided"] == pytest.approx(
+        0.0015,
+        abs=0.0001,
+    )

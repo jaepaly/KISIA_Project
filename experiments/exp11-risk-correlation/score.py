@@ -153,6 +153,73 @@ def persona_permutation_p(
     }
 
 
+def baseline_checks(
+    rows: list[dict[str, Any]],
+    *,
+    n_perm: int = 10_000,
+    seed: int = 20_261_002,
+) -> dict[str, Any]:
+    """글 수 효과를 분리해 위험도의 추가 설명력을 측정한다."""
+    window_sizes = np.asarray(
+        [float(row["window_size"]) for row in rows],
+        dtype=float,
+    )
+    risks = np.asarray(
+        [float(row["our_risk"]) for row in rows],
+        dtype=float,
+    )
+    scores = np.asarray(
+        [float(row["success_count"]) for row in rows],
+        dtype=float,
+    )
+
+    rho_risk_score = float(spearmanr(risks, scores).statistic)
+    rho_window_score = float(spearmanr(window_sizes, scores).statistic)
+    rho_window_risk = float(spearmanr(window_sizes, risks).statistic)
+    denominator = np.sqrt(
+        (1 - rho_window_risk**2) * (1 - rho_window_score**2)
+    )
+    partial_rho = (
+        rho_risk_score - rho_window_risk * rho_window_score
+    ) / denominator
+
+    groups = {
+        int(value): np.flatnonzero(window_sizes == value)
+        for value in np.unique(window_sizes)
+    }
+    within_window_rho = {
+        window_size: (
+            float(spearmanr(risks[indices], scores[indices]).statistic)
+            if len(set(risks[indices])) > 1
+            and len(set(scores[indices])) > 1
+            else None
+        )
+        for window_size, indices in groups.items()
+    }
+
+    rng = np.random.default_rng(seed)
+    hits = 0
+    for _ in range(n_perm):
+        permuted_risks = risks.copy()
+        for indices in groups.values():
+            permuted_risks[indices] = rng.permutation(risks[indices])
+        hits += (
+            float(spearmanr(permuted_risks, scores).statistic)
+            >= rho_risk_score
+        )
+
+    return {
+        "rho_window_size_baseline": rho_window_score,
+        "partial_rho_given_window_size": float(partial_rho),
+        "within_window_rho": within_window_rho,
+        "within_window_shuffle": {
+            "repetitions": n_perm,
+            "seed": seed,
+            "p_one_sided": (hits + 1) / (n_perm + 1),
+        },
+    }
+
+
 def build_metrics(windows: list[dict[str, Any]]) -> dict[str, Any]:
     persona_ids = sorted({row["persona_id"] for row in windows})
     per_person = {
@@ -196,6 +263,7 @@ def build_metrics(windows: list[dict[str, Any]]) -> dict[str, Any]:
             "leave_one_persona_out": leave_one_out,
             "persona_stratified_permutation": persona_permutation_p(windows),
         },
+        "window_size_baseline": baseline_checks(windows),
         "e03_ground_truth_location_sensitivity": {
             "pooled": correlation(
                 windows, "success_count_e03_ground_truth_location"
@@ -258,6 +326,19 @@ def main() -> int:
     print(f"전체  rho={primary['pooled']['rho']:.3f} p={primary['pooled']['p']:.3g}")
     print(f"튜닝  rho={primary['tune']['rho']:.3f} p={primary['tune']['p']:.3g}")
     print(f"보고  rho={primary['report']['rho']:.3f} p={primary['report']['p']:.3g}")
+    baseline = metrics["window_size_baseline"]
+    print(
+        "글 수 기준선 "
+        f"rho={baseline['rho_window_size_baseline']:.3f}"
+    )
+    print(
+        "글 수 통제 부분상관 "
+        f"rho={baseline['partial_rho_given_window_size']:.3f}"
+    )
+    print(
+        "같은 글 수 층화 순열검정 "
+        f"p={baseline['within_window_shuffle']['p_one_sided']:.4g}"
+    )
     return 0
 
 
