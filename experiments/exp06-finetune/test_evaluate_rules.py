@@ -2,7 +2,7 @@
 import unittest
 
 import evaluate_test
-from evaluate_rules import headline, score_augmented
+from evaluate_rules import PROFILES, check_baseline, headline, score_augmented
 from prepare_bio import DataError
 
 
@@ -42,6 +42,29 @@ class RuleEvaluationTests(unittest.TestCase):
     def test_saved_prediction_ids_must_match(self):
         with self.assertRaisesRegex(DataError, 'ID'):
             score_augmented(self.posts, self.gold, {'p1': self.rows['p1']}, FixedRules())
+
+    def test_baseline_guard_for_each_profile(self):
+        for name, profile in PROFILES.items():
+            with self.subTest(profile=name):
+                tp, fp, fn = profile['overall_counts']
+                report = {'model_version': profile['model_version'], 'min_span_score': 0.7,
+                          'metrics': {'overall': {'tp': tp, 'fp': fp, 'fn': fn}}}
+                check_baseline(report, profile)
+                report['metrics']['overall']['fp'] += 1
+                with self.assertRaisesRegex(DataError, '점수'):
+                    check_baseline(report, profile)
+
+    def test_baseline_guard_rejects_wrong_model_or_threshold(self):
+        profile = PROFILES['w7_teacher']
+        tp, fp, fn = profile['overall_counts']
+        report = {'model_version': 'wrong/checkpoint-epoch-10', 'min_span_score': 0.7,
+                  'metrics': {'overall': {'tp': tp, 'fp': fp, 'fn': fn}}}
+        with self.assertRaisesRegex(DataError, '체크포인트'):
+            check_baseline(report, profile)
+        report['model_version'] = profile['model_version']
+        report['min_span_score'] = 0.3
+        with self.assertRaisesRegex(DataError, '임계값'):
+            check_baseline(report, profile)
 
 
 if __name__ == '__main__':
