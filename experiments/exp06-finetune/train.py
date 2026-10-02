@@ -84,7 +84,8 @@ def validate_examples(rows: Sequence[dict[str, Any]], label_count: int) -> None:
 
 
 def split_examples(
-    rows: Sequence[dict[str, Any]], *, eval_ratio: float, seed: int, overfit: int
+    rows: Sequence[dict[str, Any]], *, eval_ratio: float, seed: int, overfit: int,
+    eval_reviewed_only: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str]:
     if overfit:
         if overfit > len(rows):
@@ -92,7 +93,10 @@ def split_examples(
         sample = list(rows[:overfit])
         return sample, sample, f"overfit:{overfit}"
 
-    persona_ids = sorted({str(row["persona_id"]) for row in rows})
+    if eval_reviewed_only and any(not isinstance(row.get("reviewed"), bool) for row in rows):
+        raise TrainError("--eval-reviewed-only에는 reviewed 필드가 있는 BIO가 필요합니다.")
+    eligible = [row for row in rows if row["reviewed"]] if eval_reviewed_only else rows
+    persona_ids = sorted({str(row["persona_id"]) for row in eligible})
     if len(persona_ids) < 2:
         raise TrainError("persona 단위 train/eval 분리를 하려면 인물이 2명 이상 필요합니다.")
     rng = random.Random(seed)
@@ -100,10 +104,11 @@ def split_examples(
     eval_count = max(1, round(len(persona_ids) * eval_ratio))
     eval_ids = set(persona_ids[:eval_count])
     train_rows = [row for row in rows if row["persona_id"] not in eval_ids]
-    eval_rows = [row for row in rows if row["persona_id"] in eval_ids]
+    eval_rows = [row for row in eligible if row["persona_id"] in eval_ids]
     if not train_rows or not eval_rows:
         raise TrainError("train/eval 중 하나가 비었습니다.")
-    return train_rows, eval_rows, f"persona_holdout:{eval_ratio:.3f}"
+    label = "persona_holdout_reviewed_only" if eval_reviewed_only else "persona_holdout"
+    return train_rows, eval_rows, f"{label}:{eval_ratio:.3f}"
 
 
 class BioDataset:
@@ -392,7 +397,8 @@ def build_run_config(args: Any, train_rows: Sequence[dict], eval_rows: Sequence[
         "training_code_sha256": file_sha256(Path(__file__)),
         "settings": {key: getattr(args, key) for key in (
             "model", "epochs", "batch_size", "learning_rate", "weight_decay", "o_weight",
-            "eval_ratio", "seed", "overfit", "fp16", "min_span_score", "deterministic")},
+            "eval_ratio", "seed", "overfit", "fp16", "min_span_score", "deterministic",
+            "eval_reviewed_only")},
         "train": split_info(train_rows), "eval": split_info(eval_rows),
         "environment": {
             "python": platform.python_version(), "os": platform.system(),
@@ -430,6 +436,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="CrossEntropyLoss에서 O 라벨의 가중치 (과도한 O 쏠림 진단 시 0.01 등으로 낮춤)",
     )
     parser.add_argument("--eval-ratio", type=float, default=0.1)
+    parser.add_argument("--eval-reviewed-only", action="store_true",
+                        help="두 데이터셋에서 검수 골드 인물만 같은 seed로 dev에 뽑고, dev에는 검수 예제만 넣는다")
     parser.add_argument("--seed", type=int, default=20260911)
     parser.add_argument("--overfit", type=int, default=0, metavar="N")
     parser.add_argument("--resume-from-checkpoint", nargs="?", const="latest")
@@ -462,7 +470,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     rows = read_jsonl(args.data)
     validate_examples(rows, len(labels))
     train_rows, eval_rows, split_name = split_examples(
-        rows, eval_ratio=args.eval_ratio, seed=args.seed, overfit=args.overfit
+        rows, eval_ratio=args.eval_ratio, seed=args.seed, overfit=args.overfit,
+        eval_reviewed_only=args.eval_reviewed_only,
     )
     set_seed(args.seed)
 

@@ -157,13 +157,117 @@ AMD Ryzen 5 9600X 6-Core Processor, CPU 4스레드.
 등급·주체는 기존 고정값이고 실제 판정 로직의 실행 비용은 포함하지 않는다.
 임시 측정 스크립트는 사용자 요청대로 측정 후 삭제했다.
 
+### W7 교사 라벨 재학습 진단 (2026-10-02)
+
+`corpus-v0 p2.3` · `monologg/koelectra-base-v3-discriminator` · RTX 5070에서
+새 split의 검수 331편과 검수+미검수 교사 2,281편을 각각 새로 학습했다.
+두 run 모두 seed 20260911, `o_weight=0.02`, LR `5e-5`, batch 16,
+10 epochs, FP16, `--deterministic`, 내부 eval 임계값 0.7이다.
+`--eval-reviewed-only`로 **같은 검수 eval 111개 창·8명**을 사용하고,
+교사 레코드는 eval 인물의 train에서도 제외했다. 공식 test는 이 진단에 쓰지 않았다.
+`test.jsonl` SHA-256은 기존 `9662a167…`와 일치한다.
+
+| 학습 BIO | LR | SHA-256 | 학습 창 | 내부 eval 최고 partial F1 | epoch 10 F1 |
+|---|---:|---|---:|---:|---:|
+| 검수만 | `5e-5` | `5ae14a7f7d14fc7b208fa505bf893a9dbdad9fb7493b9faf3e5074fee95d8bb2` | 762 | 0.3514 (epoch 10; TP 13·FP 21·FN 27) | 0.3514 |
+| 검수+교사 | `5e-5` | `fcdd0da11e3cec5f01447c8cf864f60d0af84659e3e7bd35e003747e49199e6f` | 5,798 | 0.3765 (epoch 3; TP 16·FP 29·FN 24) | **0.0000** |
+| 검수만 (진단) | `1e-5` | 위 검수 BIO와 같음 | 762 | 0.0000 (epoch 1~10) | **0.0000** |
+| 검수+교사 (진단) | `1e-5` | 위 검수+교사 BIO와 같음 | 5,798 | **0.4444** (epoch 10; TP 18·FP 23·FN 22) | **0.4444** |
+
+교사 run은 epoch 5 중간부터 train loss가 급증했다. 저장된 epoch 3·5·10
+체크포인트를 검수 내부 eval에서 임계값 0·0.3·0.7로 다시 봤다.
+epoch 3은 임계값 0에서 후보 68개, 0.7에서 45개였으나,
+epoch 5와 10은 **임계값 0에서도 후보 0개**였다. 두 체크포인트 모두
+유효 토큰 17,148개가 전부 `O` argmax였고 비유한 logit은 0개였다.
+따라서 0.7 점수 필터만의 문제가 아니라 후반의 `O` 예측 쏠림이다.
+저장된 epoch 3 가중치 SHA-256은
+`5a171fe91028c4d8bd3e453ee3ba18a5228f98caab45889d1063c6f6085531f1`이다.
+
+학습 BIO 점검에서는 교사 창의 양성 토큰 비율이 4,188/(637,422+4,188)
+≈0.65%, 검수 창은 1,152/(85,207+1,152)≈1.33%였다.
+스팬이 없는 창도 교사 3,544/5,036(70.4%), 검수 343/762(45.0%)로 달랐다.
+이 차이와 교사 run의 더 많은 최적화 step(3,630 vs 480)이 `O` 쏠림에
+기여했을 수 있지만, **급격한 손실 상승의 단일 원인은 아직 확인되지 않았다**.
+epoch 3의 소폭 개선만으로 교사 라벨 보강의 효과를 확정하지 않는다.
+
+같은 교사 BIO로 **학습률만 `5e-5`에서 `1e-5`로 낮춰** 10 epochs를 다시
+돌렸다(`runs/w7_teacher_lr1e-5_diagnostic`). 두 run의 데이터·라벨·train/eval
+예제 SHA-256과 나머지 설정은 같고 학습률만 다르다. `1e-5`에서는 train loss가
+epoch 1의 1.0737에서 epoch 10의 0.0608까지 내려갔고, 내부 eval partial F1은
+epoch 6 0.3889 → epoch 8 0.4198 → epoch 9 0.4301 → **epoch 10 0.4444**
+(TP 18·FP 23·FN 22)였다. epoch 10 가중치 SHA-256은
+`d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be`다.
+이는 **같은 데이터에서 높은 학습률이 후반 `O` 쏠림에 관여했다는 강한 근거**다.
+다만 FP16·가중 손실과의 상호작용까지 단독으로 분리한 실험은 아니며,
+공식 test 성능이나 최종 모델 채택을 뜻하지 않는다.
+
+검수 BIO도 `1e-5`로 10 epochs 학습해 설정을 맞췄다
+(`runs/w7_reviewed_lr1e-5_control`). 같은 검수 eval 111개 창에서
+train loss는 2.4686 → 0.6620으로 꾸준히 감소했지만, 임계값 0.7의
+partial F1은 epoch 1~10 모두 0.0000이었다. epoch 10 가중치 SHA-256은
+`02945b038418ce0eab65a04ecab452ca540ac6826a00284ecffe1578415e75d9`다.
+두 `1e-5` run은 데이터 외 설정과 eval 예제 지문이 같지만, 데이터 크기로 인해
+총 업데이트가 검수 480 step vs 교사 포함 3,630 step으로 다르다.
+따라서 교사 포함 run의 0.4444를 **교사 라벨의 순수 효과로 해석하지 않는다**.
+검수 `1e-5`의 0.0000도 높은 임계값에서의 결과이며, 임계값 0에서
+비`O` 예측이 없는지까지는 이 run에 대해 확인하지 않았다.
+
+재현 명령(출력 폴더가 이미 있으면 다른 새 이름으로 바꾼다):
+
+```powershell
+python experiments/exp06-finetune/diagnose_teacher_run.py --run-dir experiments/exp06-finetune/runs/w7_teacher_augmented --data experiments/exp06-finetune/runs/bio_w7_teacher/train.jsonl --device cpu --output-dir experiments/exp06-finetune/runs/w7_teacher_diagnosis
+python experiments/exp06-finetune/audit_teacher_bio.py --data experiments/exp06-finetune/runs/bio_w7_teacher/train.jsonl --output-dir experiments/exp06-finetune/runs/w7_teacher_label_audit
+```
+
+진단 결과는 각각 `runs/w7_teacher_diagnosis/metrics.json`과
+`runs/w7_teacher_label_audit/metrics.json`에 로컬 저장했다.
+
+### W7 재학습 후보 공식 test 비교 (2026-10-02)
+
+내부 eval 결과를 보고 **test 평가 전에** 검수만 `5e-5` epoch 10과
+검수+교사 `1e-5` epoch 10을 후보로 정했다. 두 모델 모두 0.7 임계값으로
+공식 test 255편 중 기존 IAA 16편을 제외한 239편·358골드 스팬에서 평가했다.
+`test.jsonl` SHA-256은
+`9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad`다.
+주 지표는 type 일치·IoU ≥ 0.5·1:1 partial F1, exact F1은 참고치다.
+명시 proxy F1은 전체 정밀도와 명시 정답 재현율을 공유하는 #276 산식이다.
+
+| 구성 | 명시 TP/FN | 명시 재현율 | 명시 proxy F1 | 전체 TP/FP/FN | 전체 정밀도 | 전체 partial F1 | exact F1 | noise FP |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 기존 v1 | 15/97 | 0.1339 | 0.1811 | 111/286/247 | 0.2796 | 0.2940 | 0.1616 | 58 |
+| 기존 v1+규칙 | 42/70 | 0.3750 | 0.3382 | 138/310/220 | 0.3080 | 0.3424 | 0.1911 | 61 |
+| 새 검수만 · `5e-5` | 33/79 | 0.2946 | 0.3299 | 142/237/216 | 0.3747 | 0.3853 | 0.1927 | 48 |
+| 새 검수+교사 · `1e-5` | 81/31 | 0.7232 | 0.5142 | 211/318/147 | 0.3989 | **0.4758** | **0.2300** | **44** |
+| 새 검수+교사+규칙 | 82/30 | 0.7321 | 0.5117 | 212/327/146 | 0.3933 | 0.4727 | 0.2297 | 47 |
+
+새 검수 모델은 `runs/w7_reviewed_only/checkpoint-epoch-10`
+(가중치 SHA-256 `882b20edee40514369a3353c74ed54d95ee09af33757b99b7d996abd68a6500c`),
+새 교사 모델은 `runs/w7_teacher_lr1e-5_diagnostic/checkpoint-epoch-10`
+(가중치 SHA-256 `d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be`)이다.
+두 입력 BIO SHA-256은 위 내부 eval 표와 같다. test·train 글 ID 교집합은 0건이다.
+저장 예측에 규칙을 합칠 때는 모델 재추론이나 원본 파일 수정 없이
+`evaluate_rules.py --profile w7_teacher`로 별도 채점했다.
+
+교사 모델에 규칙을 더하자 명시 TP는 81→82지만 FP도 318→327로 늘어
+전체 F1은 0.0031 낮아졌다. **이번 test에서는 교사 모델 단독이 더 낫다.**
+다만 새 검수/교사 모델은 학습률(`5e-5`/`1e-5`)과 업데이트 수(480/3,630)가
+달라, 차이를 교사 라벨만의 효과로 분리할 수 없다. 기존 v1과도 split 및 학습
+설정이 달라 직접적인 인과 비교가 아니다. 보강 유형과 규칙 방향은 #283의
+test 오류를 보고 정했으므로 이 수치는 **test 분석을 반영한 개선 결과**다.
+여기서 임계값·규칙·체크포인트를 test 점수로 다시 고르지 않으며,
+최종 운용 모델 교체는 별도 결정이 필요하다. 원본 예측과 상세 지표는
+로컬 `runs/w7_test_reviewed_5e-5/`, `runs/w7_test_teacher_1e-5/`,
+`runs/w7_test_teacher_1e-5_plus_rules/`에만 저장돼 있다.
+
 검수 골드의 문자 offset 스팬을 KoELECTRA 토큰 분류용 BIO 라벨로 바꾸고,
 100건 과적합 테스트와 첫 1 epoch 학습이 끝까지 실행되는지 확인한다.
 이번 구현은 그중 **BIO 변환·토큰 정렬·역변환 검증**을 담당한다.
 
 ## 데이터 경계
 
-- 학습 라벨 정본: `data/corpus/v0/gold/*_spans.jsonl`의 `reviewed: true` 레코드만
+- 기본 학습 라벨: `data/corpus/v0/gold/*_spans.jsonl`의 `reviewed: true` 레코드.
+  W7 실험의 `--include-unreviewed` 옵션에서만 같은 최상위 골드의 미검수
+  교사 라벨을 추가한다.
 - 사용 금지: `gold/detect/` 교사 원본
 - 최종 평가 전용: `gold/blind/`, `gold/iaa/`
 - `scripts/split_train_test.py`가 만든 `splits/train.jsonl`·`test.jsonl`을 읽어

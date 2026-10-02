@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -15,6 +17,46 @@ SPEC.loader.exec_module(bio)
 
 
 class BioAlignmentTest(unittest.TestCase):
+    def test_teacher_option_respects_split_and_skips_invalid_record(self) -> None:
+        def record(post_id: str, reviewed: bool, *, overlapping: bool = False) -> dict:
+            spans = [{
+                "span_id": f"{post_id}_s01", "text_id": "body", "start": 0,
+                "end": 2, "text": "서울", "type": "LOC_ADMIN",
+                "level": "explicit", "subject": "self",
+            }]
+            if overlapping:
+                spans.append({**spans[0], "span_id": f"{post_id}_s02"})
+            return {
+                "post_id": post_id, "persona_id": post_id.split("_")[0],
+                "reviewed": reviewed, "texts": {"body": "서울에서"}, "spans": spans,
+            }
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "A01_spans.jsonl"
+            rows = [
+                record("A01_b01", True), record("A01_b02", False),
+                record("A01_b03", False, overlapping=True), record("A01_b04", False),
+            ]
+            path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in rows) + "\n",
+                            encoding="utf-8")
+            train_ids = {"A01_b01", "A01_b02", "A01_b03"}
+            test_ids = {"A01_b04"}
+
+            reviewed_channels, reviewed_stats = bio.load_training_channels(
+                Path(directory), train_ids, test_ids
+            )
+            self.assertEqual([channel["post_id"] for channel in reviewed_channels], ["A01_b01"])
+            self.assertEqual(reviewed_stats["reviewed_records_accepted"], 1)
+
+            all_channels, all_stats = bio.load_training_channels(
+                Path(directory), train_ids, test_ids, include_unreviewed=True
+            )
+            self.assertEqual([channel["post_id"] for channel in all_channels],
+                             ["A01_b01", "A01_b02"])
+            self.assertEqual(all_stats["teacher_records_accepted"], 1)
+            self.assertEqual(all_stats["teacher_records_invalid"], 1)
+            self.assertEqual(all_stats["test_records_excluded"], 1)
+
     def test_overlap_alignment_and_decode(self) -> None:
         text = "집 근처 신갈저수지에서"
         offsets = [(0, 0), (0, 1), (2, 4), (5, 7), (7, 10), (10, 12), (0, 0)]
