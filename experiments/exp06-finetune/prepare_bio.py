@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -137,7 +138,11 @@ def validate_channel(
 
 
 def load_training_channels(
-    gold_dir: Path, train_ids: set[str], test_ids: set[str]
+    gold_dir: Path,
+    train_ids: set[str],
+    test_ids: set[str],
+    *,
+    include_unreviewed: bool = False,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     files = sorted(gold_dir.glob("*_spans.jsonl"))
     if not files:
@@ -145,16 +150,22 @@ def load_training_channels(
 
     channels: list[dict[str, Any]] = []
     seen_posts: set[str] = set()
-    stats: collections.Counter[str] = collections.Counter()
+    stats: collections.Counter[str] = collections.Counter({
+        "reviewed_records_accepted": 0,
+        "teacher_records_accepted": 0,
+        "teacher_records_invalid": 0,
+    })
 
     for path in files:
         for line_number, record in read_jsonl(path):
             if "schema_version" in record and "post_id" not in record:
                 continue
             stats["records_total"] += 1
-            if record.get("reviewed") is not True:
+            reviewed = record.get("reviewed") is True
+            if not reviewed:
                 stats["records_unreviewed"] += 1
-                continue
+                if not include_unreviewed:
+                    continue
 
             post_id = record.get("post_id")
             persona_id = record.get("persona_id")
@@ -162,11 +173,17 @@ def load_training_channels(
             spans = record.get("spans")
             source = f"{path}:{line_number}"
             if not isinstance(post_id, str) or not isinstance(persona_id, str):
+                if not reviewed:
+                    stats["teacher_records_invalid"] += 1
+                    continue
                 raise DataError(f"{source}: post_id/persona_id가 없다")
             if post_id in seen_posts:
                 raise DataError(f"검수 정본의 중복 post_id: {post_id}")
             seen_posts.add(post_id)
             if not isinstance(texts, dict) or not isinstance(spans, list):
+                if not reviewed:
+                    stats["teacher_records_invalid"] += 1
+                    continue
                 raise DataError(f"{source}: texts 또는 spans 형식 오류")
 
             if post_id in test_ids:
@@ -177,34 +194,44 @@ def load_training_channels(
                 # 향후 profile 레코드는 글 단위 split에 없으므로 별도 합의 전 학습하지 않는다.
                 raise DataError(f"{source}: train/test 어디에도 없는 post_id: {post_id}")
 
-            grouped: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
-            for span in spans:
-                if not isinstance(span, dict) or not isinstance(span.get("text_id"), str):
-                    raise DataError(f"{source}: 스팬 또는 text_id 형식 오류: {span}")
-                grouped[span["text_id"]].append(span)
-            unknown_channels = set(grouped) - set(texts)
-            if unknown_channels:
-                raise DataError(f"{source}: texts에 없는 채널: {sorted(unknown_channels)}")
+            record_channels: list[dict[str, Any]] = []
+            try:
+                grouped: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
+                for span in spans:
+                    if not isinstance(span, dict) or not isinstance(span.get("text_id"), str):
+                        raise DataError(f"{source}: 스팬 또는 text_id 형식 오류: {span}")
+                    grouped[span["text_id"]].append(span)
+                unknown_channels = set(grouped) - set(texts)
+                if unknown_channels:
+                    raise DataError(f"{source}: texts에 없는 채널: {sorted(unknown_channels)}")
 
-            for text_id in sorted(texts, key=channel_sort_key):
-                text = texts[text_id]
-                if not isinstance(text_id, str) or not isinstance(text, str):
-                    raise DataError(f"{source}: 텍스트 채널 형식 오류: {text_id!r}")
-                channel_spans = validate_channel(
-                    source=source, text_id=text_id, text=text, spans=grouped.get(text_id, [])
-                )
-                channels.append(
-                    {
-                        "post_id": post_id,
-                        "persona_id": persona_id,
-                        "text_id": text_id,
-                        "text": text,
-                        "spans": channel_spans,
-                    }
-                )
-                stats["channels"] += 1
-                stats["spans"] += len(channel_spans)
+                for text_id in sorted(texts, key=channel_sort_key):
+                    text = texts[text_id]
+                    if not isinstance(text_id, str) or not isinstance(text, str):
+                        raise DataError(f"{source}: 텍스트 채널 형식 오류: {text_id!r}")
+                    channel_spans = validate_channel(
+                        source=source, text_id=text_id, text=text, spans=grouped.get(text_id, [])
+                    )
+                    record_channels.append(
+                        {
+                            "post_id": post_id,
+                            "persona_id": persona_id,
+                            "reviewed": reviewed,
+                            "text_id": text_id,
+                            "text": text,
+                            "spans": channel_spans,
+                        }
+                    )
+            except DataError:
+                if reviewed:
+                    raise
+                stats["teacher_records_invalid"] += 1
+                continue
+            channels.extend(record_channels)
+            stats["channels"] += len(record_channels)
+            stats["spans"] += sum(len(channel["spans"]) for channel in record_channels)
             stats["train_records"] += 1
+            stats["reviewed_records_accepted" if reviewed else "teacher_records_accepted"] += 1
 
     return channels, dict(stats)
 
@@ -356,6 +383,7 @@ def encode_channels(
                 "example_id": f"{channel['post_id']}:{channel['text_id']}:{window_index}",
                 "post_id": channel["post_id"],
                 "persona_id": channel["persona_id"],
+                "reviewed": channel.get("reviewed", True),
                 "text_id": channel["text_id"],
                 "window_index": window_index,
                 "text": channel["text"],
@@ -412,6 +440,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max-length", type=int, default=256)
     parser.add_argument("--stride", type=int, default=64)
     parser.add_argument("--validate-only", action="store_true", help="토크나이저 없이 정본·분할·offset만 검사")
+    parser.add_argument("--include-unreviewed", action="store_true",
+                        help="train split의 미검수 교사 라벨도 학습에 포함한다")
     return parser.parse_args(argv)
 
 
@@ -423,13 +453,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise DataError("--stride는 0 이상 max-length 미만이어야 한다")
 
     train_ids, test_ids = load_split_ids(args.split_dir)
-    channels, source_metrics = load_training_channels(args.gold_dir, train_ids, test_ids)
+    channels, source_metrics = load_training_channels(
+        args.gold_dir, train_ids, test_ids, include_unreviewed=args.include_unreviewed
+    )
     print(
-        "검수 정본: "
+        "학습 원본: "
         f"학습 {source_metrics.get('train_records', 0)}편 / {source_metrics.get('spans', 0)}스팬 / "
         f"{source_metrics.get('channels', 0)}채널 · "
         f"test 격리 {source_metrics.get('test_records_excluded', 0)}편 / "
         f"{source_metrics.get('test_spans_excluded', 0)}스팬"
+    )
+    print(
+        f"검수 {source_metrics.get('reviewed_records_accepted', 0)}편 · "
+        f"교사 {source_metrics.get('teacher_records_accepted', 0)}편 · "
+        f"교사 형식 오류 제외 {source_metrics.get('teacher_records_invalid', 0)}편"
     )
     if args.validate_only:
         print("정본·분할·offset 검증 통과 (--validate-only)")
@@ -451,7 +488,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             "gold_glob": str(args.gold_dir / "*_spans.jsonl"),
             "teacher_detect_used": False,
             "blind_or_iaa_used_for_training": False,
+            "include_unreviewed": args.include_unreviewed,
             **source_metrics,
+            "reviewed_fraction": (
+                source_metrics["reviewed_records_accepted"] / source_metrics["train_records"]
+                if source_metrics["train_records"] else 0.0
+            ),
+            "teacher_fraction": (
+                source_metrics["teacher_records_accepted"] / source_metrics["train_records"]
+                if source_metrics["train_records"] else 0.0
+            ),
         },
         "tokenizer": {
             "id": args.tokenizer,
@@ -465,6 +511,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     write_jsonl(args.out_dir / "train.jsonl", examples)
+    metrics["source"]["bio_sha256"] = hashlib.sha256(
+        (args.out_dir / "train.jsonl").read_bytes()
+    ).hexdigest()
     write_json(args.out_dir / "labels.json", {"labels": LABELS, "label2id": LABEL2ID})
     write_json(args.out_dir / "metrics.json", metrics)
     print(

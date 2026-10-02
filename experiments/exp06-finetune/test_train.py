@@ -113,5 +113,38 @@ class DeterminismTest(unittest.TestCase):
             self.assertEqual(train.file_sha256(path), hashlib.sha256(b"test\n").hexdigest())
 
 
+class ReviewedEvalSplitTest(unittest.TestCase):
+    def test_same_reviewed_eval_with_additional_teacher_personas(self):
+        reviewed = [
+            {"example_id": f"R{i}", "persona_id": f"P{i}", "reviewed": True}
+            for i in range(20)
+        ]
+        teacher = [
+            {"example_id": f"U{i}", "persona_id": f"P{i}", "reviewed": False}
+            for i in range(20)
+        ] + [
+            {"example_id": "U20", "persona_id": "P20", "reviewed": False}
+        ]
+        base_train, base_eval, _ = train.split_examples(
+            reviewed, eval_ratio=0.1, seed=42, overfit=0, eval_reviewed_only=True
+        )
+        mixed_train, mixed_eval, _ = train.split_examples(
+            reviewed + teacher, eval_ratio=0.1, seed=42, overfit=0,
+            eval_reviewed_only=True,
+        )
+        self.assertEqual([row["example_id"] for row in base_eval],
+                         [row["example_id"] for row in mixed_eval])
+        eval_personas = {row["persona_id"] for row in base_eval}
+        self.assertTrue(eval_personas.isdisjoint({row["persona_id"] for row in mixed_train}))
+        self.assertEqual(len(base_train), 18)
+        self.assertEqual(len(mixed_train), 37)
+
+    def test_missing_reviewed_marker_rejected(self):
+        with self.assertRaises(train.TrainError):
+            train.split_examples([{"persona_id": "P1"}, {"persona_id": "P2"}],
+                                 eval_ratio=0.5, seed=42, overfit=0,
+                                 eval_reviewed_only=True)
+
+
 if __name__ == "__main__":
     unittest.main()
