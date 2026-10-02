@@ -1,4 +1,4 @@
-﻿persona_id,split,window_size,our_risk,success_count,success_rate,success_count_e03_current_location
+﻿persona_id,split,window_size,our_risk,success_count,success_rate,success_count_e03_ground_truth_location
 A10,report,1,0.0,1,0.142857,1
 A10,report,2,0.0,2,0.285714,2
 A10,report,3,0.0,2,0.285714,2
@@ -56,12 +56,12 @@ D21,tune,8,20.0,4,0.571429,4
 D21,tune,12,20.0,5,0.714286,5
 D21,tune,19,27.14,5,0.714286,5
 E03,report,1,0.0,0,0.0,0
-E03,report,2,5.71,2,0.285714,3
-E03,report,3,5.71,2,0.285714,3
-E03,report,5,5.71,2,0.285714,3
-E03,report,8,5.71,2,0.285714,3
-E03,report,12,11.43,2,0.285714,3
-E03,report,19,35.0,5,0.714286,6
+E03,report,2,5.71,3,0.428571,2
+E03,report,3,5.71,3,0.428571,2
+E03,report,5,5.71,3,0.428571,2
+E03,report,8,5.71,3,0.428571,2
+E03,report,12,11.43,3,0.428571,2
+E03,report,19,35.0,6,0.857143,5
 E14,tune,1,0.0,0,0.0,0
 E14,tune,2,4.29,2,0.285714,2
 E14,tune,3,4.29,4,0.571429,4

@@ -84,9 +84,16 @@ def aggregate_windows(details: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "risk/split이 일관되지 않습니다"
             )
 
-        success = sum(bool(row["correct"]) for row in rows)
-        alternative = sum(
+        # 주 분석: 현 거주지 기준.
+        # 해외 인물 E01~E05는 ground_truth.location의 국내 연고지가 아니라
+        # ground_truth의 다른 항목에서 확인되는 현 거주 도시로 채점한다.
+        success = sum(
             bool(row["correct_e03_current_location"]) for row in rows
+        )
+
+        # 민감도 분석: 기존 ground_truth.location을 그대로 적용한 결과.
+        ground_truth_location = sum(
+            bool(row["correct"]) for row in rows
         )
         windows.append(
             {
@@ -96,7 +103,7 @@ def aggregate_windows(details: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "our_risk": risks.pop(),
                 "success_count": success,
                 "success_rate": round(success / len(ATTRS), 6),
-                "success_count_e03_current_location": alternative,
+                "success_count_e03_ground_truth_location": ground_truth_location,
             }
         )
     return windows
@@ -165,10 +172,12 @@ def build_metrics(windows: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "scoring": {
             "primary": (
-                "persona ground_truth와 의미 비교; "
-                "E03 location은 강릉 기준"
+                "현 거주지와 의미 비교; 해외 인물 E01~E05는 "
+                "ground_truth의 다른 항목에서 확인되는 현 거주 도시 기준"
             ),
-            "alternative": "E03 location만 현재 거주지 상하이 기준",
+            "alternative": (
+                "E03 location만 persona ground_truth.location의 강릉 기준"
+            ),
         },
         "primary": {
             "pooled": correlation(windows),
@@ -187,13 +196,13 @@ def build_metrics(windows: list[dict[str, Any]]) -> dict[str, Any]:
             "leave_one_persona_out": leave_one_out,
             "persona_stratified_permutation": persona_permutation_p(windows),
         },
-        "e03_current_location_sensitivity": {
+        "e03_ground_truth_location_sensitivity": {
             "pooled": correlation(
-                windows, "success_count_e03_current_location"
+                windows, "success_count_e03_ground_truth_location"
             ),
             "report": correlation(
                 [row for row in windows if row["persona_id"] in REPORT],
-                "success_count_e03_current_location",
+                "success_count_e03_ground_truth_location",
             ),
         },
     }

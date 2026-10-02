@@ -54,3 +54,22 @@ def test_correlation_is_positive() -> None:
     result = score.correlation(rows)
     assert result["n"] == 4
     assert result["rho"] == pytest.approx(1.0)
+
+def test_e03_current_location_is_primary_score() -> None:
+    rows = [
+        {
+            "persona_id": "E03",
+            "split": "report",
+            "window_size": 19,
+            "our_risk": 35.0,
+            "attribute": attribute,
+            "correct": False,
+            "correct_e03_current_location": attribute == "location",
+        }
+        for attribute in score.ATTRS
+    ]
+
+    result = score.aggregate_windows(rows)[0]
+
+    assert result["success_count"] == 1
+    assert result["success_count_e03_ground_truth_location"] == 0
