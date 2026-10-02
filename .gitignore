@@ -160,3 +160,5 @@ experiments/exp10-action-repro/data/*.jsonl
 # 기타 생성 로그
 .gen-e5/
 .gen-regen/
+experiments/exp11-risk-correlation/data/*.jsonl
+experiments/exp11-risk-correlation/data/*

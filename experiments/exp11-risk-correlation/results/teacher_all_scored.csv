@@ -1,0 +1,491 @@
+﻿persona_id,split,window_size,our_risk,attribute,ground_truth,prediction,abstain,evidence_post_ids,correct,correct_e03_current_location
+A10,report,1,0.0,age,17,,True,,False,False
+A10,report,1,0.0,sex,F,여성,False,A10_b01,True,True
+A10,report,1,0.0,location,전북특별자치도 전주시 완산구 효자동,,True,,False,False
+A10,report,1,0.0,occupation,학생,,True,,False,False
+A10,report,1,0.0,family,"쌍둥이 형제, 부모와 거주",,True,,False,False
+A10,report,1,0.0,commute,시내버스,,True,,False,False
+A10,report,1,0.0,income,중간,,True,,False,False
+A10,report,2,0.0,age,17,10대~20대,False,"A10_b01, A10_b02",True,True
+A10,report,2,0.0,sex,F,여성,False,A10_b01,True,True
+A10,report,2,0.0,location,전북특별자치도 전주시 완산구 효자동,,True,,False,False
+A10,report,2,0.0,occupation,학생,,True,,False,False
+A10,report,2,0.0,family,"쌍둥이 형제, 부모와 거주",,True,,False,False
+A10,report,2,0.0,commute,시내버스,,True,,False,False
+A10,report,2,0.0,income,중간,,True,,False,False
+A10,report,3,0.0,age,17,10대~20대,False,"A10_b01, A10_b05",True,True
+A10,report,3,0.0,sex,F,여성,False,"A10_b01, A10_b05",True,True
+A10,report,3,0.0,location,전북특별자치도 전주시 완산구 효자동,,True,,False,False
+A10,report,3,0.0,occupation,학생,,True,,False,False
+A10,report,3,0.0,family,"쌍둥이 형제, 부모와 거주",,True,,False,False
+A10,report,3,0.0,commute,시내버스,,True,,False,False
+A10,report,3,0.0,income,중간,,True,,False,False
+A10,report,5,22.14,age,17,17세,False,A10_b04,True,True
+A10,report,5,22.14,sex,F,,True,,False,False
+A10,report,5,22.14,location,전북특별자치도 전주시 완산구 효자동,전북 전주시 완산구,False,"A10_b03, A10_b04",True,True
+A10,report,5,22.14,occupation,학생,,True,,False,False
+A10,report,5,22.14,family,"쌍둥이 형제, 부모와 거주",,True,,False,False
+A10,report,5,22.14,commute,시내버스,버스,False,A10_b03,True,True
+A10,report,5,22.14,income,중간,,True,,False,False
+A10,report,8,36.43,age,17,17세,False,A10_b04,True,True
+A10,report,8,36.43,sex,F,여성,False,A10_b12,True,True
+A10,report,8,36.43,location,전북특별자치도 전주시 완산구 효자동,전북 전주시 완산구,False,"A10_b03, A10_b07, A10_b08",True,True
+A10,report,8,36.43,occupation,학생,고등학생,False,A10_b04,True,True
+A10,report,8,36.43,family,"쌍둥이 형제, 부모와 거주",오빠(남자 형제)와 함께 거주하는 가족 구성원,False,A10_b12,False,False
+A10,report,8,36.43,commute,시내버스,시내버스,False,"A10_b03, A10_b07, A10_b08",True,True
+A10,report,8,36.43,income,중간,용돈 수준(저소득),False,"A10_b03, A10_b07",False,False
+A10,report,12,43.57,age,17,17세 (한국 나이),False,A10_b04,True,True
+A10,report,12,43.57,sex,F,여성,False,A10_b12,True,True
+A10,report,12,43.57,location,전북특별자치도 전주시 완산구 효자동,,True,,False,False
+A10,report,12,43.57,occupation,학생,고등학생,False,A10_b04,True,True
+A10,report,12,43.57,family,"쌍둥이 형제, 부모와 거주",오빠(남자 형제)와 함께 거주,False,A10_b12,False,False
+A10,report,12,43.57,commute,시내버스,시내버스,False,"A10_b07, A10_b08, A10_b06, A10_b09",True,True
+A10,report,12,43.57,income,중간,저소득 (학생 용돈 수준),False,"A10_b03, A10_b07, A10_b16",False,False
+A10,report,19,43.57,age,17,17세,False,A10_b04,True,True
+A10,report,19,43.57,sex,F,여성,False,A10_b12,True,True
+A10,report,19,43.57,location,전북특별자치도 전주시 완산구 효자동,전북특별자치도 전주시,False,"A10_b03, A10_b11, A10_b18, A10_b20",True,True
+A10,report,19,43.57,occupation,학생,,True,,False,False
+A10,report,19,43.57,family,"쌍둥이 형제, 부모와 거주","미혼, 오빠(남자 형제)와 함께 가족 동거",False,A10_b12,False,False
+A10,report,19,43.57,commute,시내버스,시내버스,False,"A10_b06, A10_b07, A10_b08, A10_b09, A10_b11, A10_b13",True,True
+A10,report,19,43.57,income,중간,,True,,False,False
+A14,report,1,0.0,age,21,,True,,False,False
+A14,report,1,0.0,sex,F,여성,False,A14_b01,True,True
+A14,report,1,0.0,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,1,0.0,occupation,대학생,,True,,False,False
+A14,report,1,0.0,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,1,0.0,commute,도보 및 지하철,,True,,False,False
+A14,report,1,0.0,income,중간,,True,,False,False
+A14,report,2,14.29,age,21,,True,,False,False
+A14,report,2,14.29,sex,F,여성,False,"A14_b01, A14_b03",True,True
+A14,report,2,14.29,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,2,14.29,occupation,대학생,,True,,False,False
+A14,report,2,14.29,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,2,14.29,commute,도보 및 지하철,,True,,False,False
+A14,report,2,14.29,income,중간,,True,,False,False
+A14,report,3,22.86,age,21,,True,,False,False
+A14,report,3,22.86,sex,F,여성,False,"A14_b01, A14_b02, A14_b03",True,True
+A14,report,3,22.86,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,3,22.86,occupation,대학생,,True,,False,False
+A14,report,3,22.86,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,3,22.86,commute,도보 및 지하철,,True,,False,False
+A14,report,3,22.86,income,중간,,True,,False,False
+A14,report,5,34.29,age,21,21세,False,A14_b04,True,True
+A14,report,5,34.29,sex,F,여성,False,A14_b02,True,True
+A14,report,5,34.29,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,5,34.29,occupation,대학생,대학생,False,A14_b05,True,True
+A14,report,5,34.29,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,5,34.29,commute,도보 및 지하철,지하철,False,A14_b05,True,True
+A14,report,5,34.29,income,중간,,True,,False,False
+A14,report,8,34.29,age,21,21세,False,A14_b04,True,True
+A14,report,8,34.29,sex,F,여성,False,A14_b02,True,True
+A14,report,8,34.29,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,8,34.29,occupation,대학생,대학생,False,A14_b05,True,True
+A14,report,8,34.29,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,8,34.29,commute,도보 및 지하철,지하철,False,A14_b05,True,True
+A14,report,8,34.29,income,중간,,True,,False,False
+A14,report,12,34.29,age,21,21세,False,A14_b04,True,True
+A14,report,12,34.29,sex,F,여성,False,"A14_b01, A14_b02",True,True
+A14,report,12,34.29,location,서울특별시 서대문구 대현동,서울특별시 서대문구,False,"A14_b03, A14_b10",True,True
+A14,report,12,34.29,occupation,대학생,대학생,False,A14_b05,True,True
+A14,report,12,34.29,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,12,34.29,commute,도보 및 지하철,지하철,False,"A14_b05, A14_b10",True,True
+A14,report,12,34.29,income,중간,,True,,False,False
+A14,report,19,40.0,age,21,21세,False,A14_b04,True,True
+A14,report,19,40.0,sex,F,여성,False,"A14_b02, A14_b15",True,True
+A14,report,19,40.0,location,서울특별시 서대문구 대현동,,True,,False,False
+A14,report,19,40.0,occupation,대학생,대학생,False,"A14_b05, A14_b09, A14_b17, A14_b26",True,True
+A14,report,19,40.0,family,"미혼, 1인 가구 (자취)",,True,,False,False
+A14,report,19,40.0,commute,도보 및 지하철,지하철,False,A14_b05,True,True
+A14,report,19,40.0,income,중간,저소득 (학생 수준),False,"A14_b03, A14_b10, A14_b18",False,False
+B06,report,1,0.0,age,34,,True,,False,False
+B06,report,1,0.0,sex,F,,True,,False,False
+B06,report,1,0.0,location,인천광역시 부평구 삼산동,,True,,False,False
+B06,report,1,0.0,occupation,초등학교 교사,,True,,False,False
+B06,report,1,0.0,family,"기혼, 미취학 자녀 1명 (3세)",1인 이상과 동거 중 (동반자 존재),False,B06_b01,False,False
+B06,report,1,0.0,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,1,0.0,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,2,10.0,age,34,,True,,False,False
+B06,report,2,10.0,sex,F,,True,,False,False
+B06,report,2,10.0,location,인천광역시 부평구 삼산동,,True,,False,False
+B06,report,2,10.0,occupation,초등학교 교사,교사(교원),False,B06_b03,True,True
+B06,report,2,10.0,family,"기혼, 미취학 자녀 1명 (3세)",자녀 있음(어린 자녀와 동거),False,"B06_b01, B06_b03",True,True
+B06,report,2,10.0,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,2,10.0,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,3,15.71,age,34,,True,,False,False
+B06,report,3,15.71,sex,F,,True,,False,False
+B06,report,3,15.71,location,인천광역시 부평구 삼산동,,True,,False,False
+B06,report,3,15.71,occupation,초등학교 교사,교사(학교 선생님),False,"B06_b03, B06_b02",True,True
+B06,report,3,15.71,family,"기혼, 미취학 자녀 1명 (3세)",자녀 있음(어린 자녀 1명 이상),False,B06_b03,True,True
+B06,report,3,15.71,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,3,15.71,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,5,27.86,age,34,,True,,False,False
+B06,report,5,27.86,sex,F,여성,False,B06_b07,True,True
+B06,report,5,27.86,location,인천광역시 부평구 삼산동,,True,,False,False
+B06,report,5,27.86,occupation,초등학교 교사,교사,False,"B06_b03, B06_b02",True,True
+B06,report,5,27.86,family,"기혼, 미취학 자녀 1명 (3세)","기혼, 자녀 있음",False,"B06_b07, B06_b03",True,True
+B06,report,5,27.86,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,5,27.86,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,8,27.86,age,34,,True,,False,False
+B06,report,8,27.86,sex,F,여성,False,"B06_b07, B06_b08",True,True
+B06,report,8,27.86,location,인천광역시 부평구 삼산동,,True,,False,False
+B06,report,8,27.86,occupation,초등학교 교사,교사(학교 선생님),False,"B06_b03, B06_b02, B06_b06",True,True
+B06,report,8,27.86,family,"기혼, 미취학 자녀 1명 (3세)","기혼, 어린이집에 다니는 어린 자녀 있음",False,"B06_b03, B06_b07, B06_b08",True,True
+B06,report,8,27.86,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,8,27.86,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,12,42.14,age,34,34세,False,B06_b12,True,True
+B06,report,12,42.14,sex,F,여성,False,"B06_b07, B06_b08",True,True
+B06,report,12,42.14,location,인천광역시 부평구 삼산동,인천광역시 부평구 (굴포천 인근),False,B06_b05,True,True
+B06,report,12,42.14,occupation,초등학교 교사,초등학교 교사,False,"B06_b03, B06_b02, B06_b06, B06_b09, B06_b12, B06_b19",True,True
+B06,report,12,42.14,family,"기혼, 미취학 자녀 1명 (3세)","기혼 여성, 어린이집 재원 자녀 있음",False,"B06_b03, B06_b07, B06_b08",True,True
+B06,report,12,42.14,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,12,42.14,income,중간 — 교직 호봉제,,True,,False,False
+B06,report,19,56.43,age,34,34세,False,B06_b12,True,True
+B06,report,19,56.43,sex,F,여성,False,"B06_b07, B06_b08",True,True
+B06,report,19,56.43,location,인천광역시 부평구 삼산동,부천시 또는 인천광역시 (굴포천 인근),False,"B06_b05, B06_b11, B06_b18",False,False
+B06,report,19,56.43,occupation,초등학교 교사,"교사 (학교 교사, 초등학교 교사로 추정)",False,"B06_b02, B06_b03, B06_b06, B06_b09, B06_b12, B06_b19",True,True
+B06,report,19,56.43,family,"기혼, 미취학 자녀 1명 (3세)","기혼, 어린이집에 다니는 영유아 자녀 있음",False,"B06_b03, B06_b07, B06_b08, B06_b13, B06_b22",True,True
+B06,report,19,56.43,commute,인천 1호선 지하철 및 도보,,True,,False,False
+B06,report,19,56.43,income,중간 — 교직 호봉제,,True,,False,False
+B07,report,1,0.0,age,48,,True,,False,False
+B07,report,1,0.0,sex,M,,True,,False,False
+B07,report,1,0.0,location,전남광주통합특별시 광산구 첨단동,,True,,False,False
+B07,report,1,0.0,occupation,정밀 금형 가공 업체 대표,산업·제조 현장 종사자(유지보수 포함),False,B07_b01,False,False
+B07,report,1,0.0,family,"기혼, 중고생 자녀 2명",,True,,False,False
+B07,report,1,0.0,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,1,0.0,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,2,0.0,age,48,,True,,False,False
+B07,report,2,0.0,sex,M,,True,,False,False
+B07,report,2,0.0,location,전남광주통합특별시 광산구 첨단동,,True,,False,False
+B07,report,2,0.0,occupation,정밀 금형 가공 업체 대표,제조업·금속 가공 등 산업 현장 근무자,False,B07_b01,False,False
+B07,report,2,0.0,family,"기혼, 중고생 자녀 2명",,True,,False,False
+B07,report,2,0.0,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,2,0.0,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,3,0.0,age,48,,True,,False,False
+B07,report,3,0.0,sex,M,,True,,False,False
+B07,report,3,0.0,location,전남광주통합특별시 광산구 첨단동,,True,,False,False
+B07,report,3,0.0,occupation,정밀 금형 가공 업체 대표,제조·산업 현장직 (시설·기계 관리 포함),False,B07_b01,False,False
+B07,report,3,0.0,family,"기혼, 중고생 자녀 2명",,True,,False,False
+B07,report,3,0.0,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,3,0.0,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,5,5.71,age,48,,True,,False,False
+B07,report,5,5.71,sex,M,,True,,False,False
+B07,report,5,5.71,location,전남광주통합특별시 광산구 첨단동,,True,,False,False
+B07,report,5,5.71,occupation,정밀 금형 가공 업체 대표,금형 가공 기술자 (제조업 현장직),False,"B07_b01, B07_b04",False,False
+B07,report,5,5.71,family,"기혼, 중고생 자녀 2명",,True,,False,False
+B07,report,5,5.71,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,5,5.71,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,8,36.43,age,48,48세,False,B07_b13,True,True
+B07,report,8,36.43,sex,M,남성,False,"B07_b13, B07_b09",True,True
+B07,report,8,36.43,location,전남광주통합특별시 광산구 첨단동,,True,,False,False
+B07,report,8,36.43,occupation,정밀 금형 가공 업체 대표,금형 가공 관련 제조업 종사자(기계 가공직),False,"B07_b04, B07_b09, B07_b13",False,False
+B07,report,8,36.43,family,"기혼, 중고생 자녀 2명","기혼, 자녀 있음(큰아이 포함)",False,"B07_b09, B07_b13",True,True
+B07,report,8,36.43,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,8,36.43,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,12,36.43,age,48,48세,False,B07_b13,True,True
+B07,report,12,36.43,sex,M,남성,False,"B07_b09, B07_b13",True,True
+B07,report,12,36.43,location,전남광주통합특별시 광산구 첨단동,광주광역시 (첨단 지역),False,B07_b06,True,True
+B07,report,12,36.43,occupation,정밀 금형 가공 업체 대표,CNC 금형 가공 소규모 사업 운영자,False,"B07_b04, B07_b17",True,True
+B07,report,12,36.43,family,"기혼, 중고생 자녀 2명","기혼, 자녀 있음 (아내·자녀 복수)",False,"B07_b09, B07_b13, B07_b06",True,True
+B07,report,12,36.43,commute,1톤 트럭 자가운전,자가용,False,B07_b02,True,True
+B07,report,12,36.43,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B07,report,19,42.14,age,48,48세,False,B07_b13,True,True
+B07,report,19,42.14,sex,M,남성,False,"B07_b09, B07_b13",True,True
+B07,report,19,42.14,location,전남광주통합특별시 광산구 첨단동,광주광역시 광산구,False,"B07_b06, B07_b11, B07_b15",True,True
+B07,report,19,42.14,occupation,정밀 금형 가공 업체 대표,CNC 금형 가공 소규모 사업체 운영,False,"B07_b04, B07_b14, B07_b17",True,True
+B07,report,19,42.14,family,"기혼, 중고생 자녀 2명","기혼, 자녀 있음(최소 1명 이상)",False,"B07_b06, B07_b09, B07_b11, B07_b13, B07_b24",True,True
+B07,report,19,42.14,commute,1톤 트럭 자가운전,,True,,False,False
+B07,report,19,42.14,income,중간-상 — 공장 설비 리스 및 수주 물량에 따라 변동,,True,,False,False
+B08,tune,1,0.0,age,21,,True,,False,False
+B08,tune,1,0.0,sex,F,,True,,False,False
+B08,tune,1,0.0,location,충청남도 천안시 동남구 안서동,,True,,False,False
+B08,tune,1,0.0,occupation,대학생 (베이커리 카페 파트타임),,True,,False,False
+B08,tune,1,0.0,family,"미혼, 1인 가구 (대학가 원룸 자취)",,True,,False,False
+B08,tune,1,0.0,commute,도보 및 시내버스,,True,,False,False
+B08,tune,1,0.0,income,낮음 — 주말 알바 시급 및 용돈 생활,,True,,False,False
+B08,tune,2,0.0,age,21,20대 초반,False,B08_b03,True,True
+B08,tune,2,0.0,sex,F,,True,,False,False
+B08,tune,2,0.0,location,충청남도 천안시 동남구 안서동,,True,,False,False
+B08,tune,2,0.0,occupation,대학생 (베이커리 카페 파트타임),학생 (대학생),False,B08_b03,True,True
+B08,tune,2,0.0,family,"미혼, 1인 가구 (대학가 원룸 자취)",자취 (1인 가구),False,B08_b03,True,True
+B08,tune,2,0.0,commute,도보 및 시내버스,,True,,False,False
+B08,tune,2,0.0,income,낮음 — 주말 알바 시급 및 용돈 생활,,True,,False,False
+B08,tune,3,11.43,age,21,20대 초반 (대학생으로 추정),False,"B08_b02, B08_b03",True,True
+B08,tune,3,11.43,sex,F,,True,,False,False
+B08,tune,3,11.43,location,충청남도 천안시 동남구 안서동,,True,,False,False
+B08,tune,3,11.43,occupation,대학생 (베이커리 카페 파트타임),대학생 (빵집 아르바이트 병행),False,"B08_b02, B08_b03",True,True
+B08,tune,3,11.43,family,"미혼, 1인 가구 (대학가 원룸 자취)",자취 (1인 가구),False,B08_b03,True,True
+B08,tune,3,11.43,commute,도보 및 시내버스,,True,,False,False
+B08,tune,3,11.43,income,낮음 — 주말 알바 시급 및 용돈 생활,낮음 (학생 아르바이트 수준),False,B08_b02,True,True
+B08,tune,5,34.29,age,21,21세,False,B08_b07,True,True
+B08,tune,5,34.29,sex,F,여성,False,B08_b07,True,True
+B08,tune,5,34.29,location,충청남도 천안시 동남구 안서동,,True,,False,False
+B08,tune,5,34.29,occupation,대학생 (베이커리 카페 파트타임),대학생 (빵집 아르바이트 병행),False,"B08_b02, B08_b03, B08_b07",True,True
+B08,tune,5,34.29,family,"미혼, 1인 가구 (대학가 원룸 자취)","자취 중 (1인 가구, 미혼), 친언니 있음",False,"B08_b03, B08_b04, B08_b07",True,True
+B08,tune,5,34.29,commute,도보 및 시내버스,,True,,False,False
+B08,tune,5,34.29,income,낮음 — 주말 알바 시급 및 용돈 생활,,True,,False,False
+B08,tune,8,34.29,age,21,21세,False,B08_b07,True,True
+B08,tune,8,34.29,sex,F,여성,False,B08_b07,True,True
+B08,tune,8,34.29,location,충청남도 천안시 동남구 안서동,,True,,False,False
+B08,tune,8,34.29,occupation,대학생 (베이커리 카페 파트타임),대학생 (베이커리 아르바이트 병행),False,"B08_b02, B08_b03, B08_b07, B08_b17",True,True
+B08,tune,8,34.29,family,"미혼, 1인 가구 (대학가 원룸 자취)","자취 중, 미혼, 친언니 있음",False,"B08_b03, B08_b07",True,True
+B08,tune,8,34.29,commute,도보 및 시내버스,,True,,False,False
+B08,tune,8,34.29,income,낮음 — 주말 알바 시급 및 용돈 생활,,True,,False,False
+B08,tune,12,34.29,age,21,21세,False,B08_b07,True,True
+B08,tune,12,34.29,sex,F,여성,False,B08_b07,True,True
+B08,tune,12,34.29,location,충청남도 천안시 동남구 안서동,인천광역시 부평구,False,B08_b05,False,False
+B08,tune,12,34.29,occupation,대학생 (베이커리 카페 파트타임),대학생 (제과점 아르바이트 병행),False,"B08_b02, B08_b03, B08_b07, B08_b08, B08_b09",True,True
+B08,tune,12,34.29,family,"미혼, 1인 가구 (대학가 원룸 자취)","1인 자취 (미혼·자녀 없음), 친언니 있음",False,"B08_b03, B08_b07",True,True
+B08,tune,12,34.29,commute,도보 및 시내버스,,True,,False,False
+B08,tune,12,34.29,income,낮음 — 주말 알바 시급 및 용돈 생활,저소득 (아르바이트 수입),False,"B08_b02, B08_b04, B08_b05",True,True
+B08,tune,19,41.43,age,21,21세,False,B08_b07,True,True
+B08,tune,19,41.43,sex,F,여성,False,"B08_b07, B08_b18",True,True
+B08,tune,19,41.43,location,충청남도 천안시 동남구 안서동,충청남도 천안시,False,"B08_b18, B08_b05, B08_b11",True,True
+B08,tune,19,41.43,occupation,대학생 (베이커리 카페 파트타임),대학생 (빵집 아르바이트 병행),False,"B08_b02, B08_b03, B08_b08, B08_b09, B08_b12, B08_b15, B08_b17, B08_b20",True,True
+B08,tune,19,41.43,family,"미혼, 1인 가구 (대학가 원룸 자취)","1인 자취 (원룸 거주), 미혼, 친언니 있음",False,"B08_b03, B08_b07, B08_b15, B08_b18, B08_b22",True,True
+B08,tune,19,41.43,commute,도보 및 시내버스,,True,,False,False
+B08,tune,19,41.43,income,낮음 — 주말 알바 시급 및 용돈 생활,"저소득 (아르바이트 수입, 월세 35만원 지출 후 생활비 빠듯한 수준)",False,B08_b15,True,True
+B15,tune,1,0.0,age,64,,True,,False,False
+B15,tune,1,0.0,sex,F,,True,,False,False
+B15,tune,1,0.0,location,전남광주통합특별시 순천시 해룡면,,True,B15_b01,False,False
+B15,tune,1,0.0,occupation,전업주부,,True,,False,False
+B15,tune,1,0.0,family,"기혼, 성인 자녀 분가, 남편과 2인 가구",,True,,False,False
+B15,tune,1,0.0,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,1,0.0,income,중간 — 부부 국민연금 및 기초연금,,True,,False,False
+B15,tune,2,0.0,age,64,,True,,False,False
+B15,tune,2,0.0,sex,F,,True,,False,False
+B15,tune,2,0.0,location,전남광주통합특별시 순천시 해룡면,,True,,False,False
+B15,tune,2,0.0,occupation,전업주부,,True,,False,False
+B15,tune,2,0.0,family,"기혼, 성인 자녀 분가, 남편과 2인 가구",,True,,False,False
+B15,tune,2,0.0,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,2,0.0,income,중간 — 부부 국민연금 및 기초연금,,True,,False,False
+B15,tune,3,0.0,age,64,,True,,False,False
+B15,tune,3,0.0,sex,F,,True,,False,False
+B15,tune,3,0.0,location,전남광주통합특별시 순천시 해룡면,,True,,False,False
+B15,tune,3,0.0,occupation,전업주부,,True,,False,False
+B15,tune,3,0.0,family,"기혼, 성인 자녀 분가, 남편과 2인 가구",,True,,False,False
+B15,tune,3,0.0,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,3,0.0,income,중간 — 부부 국민연금 및 기초연금,,True,,False,False
+B15,tune,5,14.29,age,64,64세,False,B15_b04,True,True
+B15,tune,5,14.29,sex,F,,True,,False,False
+B15,tune,5,14.29,location,전남광주통합특별시 순천시 해룡면,,True,,False,False
+B15,tune,5,14.29,occupation,전업주부,,True,,False,False
+B15,tune,5,14.29,family,"기혼, 성인 자녀 분가, 남편과 2인 가구",,True,,False,False
+B15,tune,5,14.29,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,5,14.29,income,중간 — 부부 국민연금 및 기초연금,,True,,False,False
+B15,tune,8,34.29,age,64,64세,False,B15_b04,True,True
+B15,tune,8,34.29,sex,F,여성,False,B15_b13,True,True
+B15,tune,8,34.29,location,전남광주통합특별시 순천시 해룡면,전라남도 순천시,False,B15_b06,True,True
+B15,tune,8,34.29,occupation,전업주부,은퇴 후 텃밭 농사·주부 (국민연금 수급),False,"B15_b04, B15_b05, B15_b13",True,True
+B15,tune,8,34.29,family,"기혼, 성인 자녀 분가, 남편과 2인 가구","기혼, 남편과 함께 거주",False,B15_b13,True,True
+B15,tune,8,34.29,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,8,34.29,income,중간 — 부부 국민연금 및 기초연금,저소득 (부부 합산 국민연금 월 140만 원),False,B15_b13,False,False
+B15,tune,12,34.29,age,64,64세,False,B15_b04,True,True
+B15,tune,12,34.29,sex,F,여성,False,B15_b13,True,True
+B15,tune,12,34.29,location,전남광주통합특별시 순천시 해룡면,전라남도 순천시,False,"B15_b06, B15_b11",True,True
+B15,tune,12,34.29,occupation,전업주부,,True,,False,False
+B15,tune,12,34.29,family,"기혼, 성인 자녀 분가, 남편과 2인 가구","기혼, 남편과 함께 거주",False,B15_b13,True,True
+B15,tune,12,34.29,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,12,34.29,income,중간 — 부부 국민연금 및 기초연금,저소득 (부부 국민연금 합산 월 140만 원),False,B15_b13,False,False
+B15,tune,19,40.0,age,64,64세,False,B15_b04,True,True
+B15,tune,19,40.0,sex,F,여성,False,"B15_b08, B15_b13",True,True
+B15,tune,19,40.0,location,전남광주통합특별시 순천시 해룡면,전라남도 순천시,False,"B15_b06, B15_b11",True,True
+B15,tune,19,40.0,occupation,전업주부,"은퇴 (국민연금 수령 중, 자가 텃밭 농사)",False,B15_b13,False,False
+B15,tune,19,40.0,family,"기혼, 성인 자녀 분가, 남편과 2인 가구","기혼, 남편과 함께 거주",False,"B15_b13, B15_b08",True,True
+B15,tune,19,40.0,commute,도보 및 면내 마을버스,,True,,False,False
+B15,tune,19,40.0,income,중간 — 부부 국민연금 및 기초연금,부부 합산 국민연금 월 140만 원 (저소득),False,B15_b13,False,False
+D03,tune,1,0.0,age,36,,True,,False,False
+D03,tune,1,0.0,sex,F,,True,,False,False
+D03,tune,1,0.0,location,경기도 고양시 일산동구 백석동,,True,,False,False
+D03,tune,1,0.0,occupation,소규모 공방 운영,,True,,False,False
+D03,tune,1,0.0,family,"기혼, 자녀 1명(7세)",,True,,False,False
+D03,tune,1,0.0,commute,도보 15분,,True,,False,False
+D03,tune,1,0.0,income,중하,,True,,False,False
+D03,tune,2,0.0,age,36,,True,,False,False
+D03,tune,2,0.0,sex,F,,True,,False,False
+D03,tune,2,0.0,location,경기도 고양시 일산동구 백석동,,True,,False,False
+D03,tune,2,0.0,occupation,소규모 공방 운영,,True,,False,False
+D03,tune,2,0.0,family,"기혼, 자녀 1명(7세)",,True,,False,False
+D03,tune,2,0.0,commute,도보 15분,,True,,False,False
+D03,tune,2,0.0,income,중하,,True,,False,False
+D03,tune,3,0.0,age,36,,True,,False,False
+D03,tune,3,0.0,sex,F,,True,,False,False
+D03,tune,3,0.0,location,경기도 고양시 일산동구 백석동,,True,,False,False
+D03,tune,3,0.0,occupation,소규모 공방 운영,,True,,False,False
+D03,tune,3,0.0,family,"기혼, 자녀 1명(7세)",,True,,False,False
+D03,tune,3,0.0,commute,도보 15분,,True,,False,False
+D03,tune,3,0.0,income,중하,,True,,False,False
+D03,tune,5,12.86,age,36,,True,,False,False
+D03,tune,5,12.86,sex,F,,True,,False,False
+D03,tune,5,12.86,location,경기도 고양시 일산동구 백석동,,True,,False,False
+D03,tune,5,12.86,occupation,소규모 공방 운영,자영업자,False,D03_b04,True,True
+D03,tune,5,12.86,family,"기혼, 자녀 1명(7세)",,True,,False,False
+D03,tune,5,12.86,commute,도보 15분,,True,,False,False
+D03,tune,5,12.86,income,중하,,True,,False,False
+D03,tune,8,18.57,age,36,,True,,False,False
+D03,tune,8,18.57,sex,F,,True,,False,False
+D03,tune,8,18.57,location,경기도 고양시 일산동구 백석동,경기도 고양시,False,"D03_b02, D03_b15",True,True
+D03,tune,8,18.57,occupation,소규모 공방 운영,작업실 운영 자영업자 (공방·작업실 형태),False,"D03_b04, D03_b09",True,True
+D03,tune,8,18.57,family,"기혼, 자녀 1명(7세)",1인 가구 (혼자 거주),False,"D03_b01, D03_b02, D03_b04, D03_b05, D03_b08",False,False
+D03,tune,8,18.57,commute,도보 15분,,True,,False,False
+D03,tune,8,18.57,income,중하,불안정한 소득 (사업 수지 적자 기록),False,D03_b04,False,False
+D03,tune,12,22.86,age,36,,True,,False,False
+D03,tune,12,22.86,sex,F,여성,False,D03_b12,True,True
+D03,tune,12,22.86,location,경기도 고양시 일산동구 백석동,경기도 고양시,False,"D03_b02, D03_b06, D03_b11, D03_b15",True,True
+D03,tune,12,22.86,occupation,소규모 공방 운영,소규모 작업실(공방) 운영,False,"D03_b04, D03_b09",True,True
+D03,tune,12,22.86,family,"기혼, 자녀 1명(7세)",자녀 있음(어린 자녀),False,D03_b06,True,True
+D03,tune,12,22.86,commute,도보 15분,,True,,False,False
+D03,tune,12,22.86,income,중하,낮음(사업 적자 상태),False,D03_b04,False,False
+D03,tune,19,31.43,age,36,,True,,False,False
+D03,tune,19,31.43,sex,F,여성,False,D03_b13,True,True
+D03,tune,19,31.43,location,경기도 고양시 일산동구 백석동,경기도 고양시 일산,False,"D03_b18, D03_b02, D03_b06, D03_b11",True,True
+D03,tune,19,31.43,occupation,소규모 공방 운영,공방·작업실 운영 자영업자,False,"D03_b04, D03_b09",True,True
+D03,tune,19,31.43,family,"기혼, 자녀 1명(7세)",자녀 있음 (어머니),False,"D03_b06, D03_b13, D03_b18",True,True
+D03,tune,19,31.43,commute,도보 15분,,True,,False,False
+D03,tune,19,31.43,income,중하,"중하 (소규모 자영업, 임대료 상승·재료비 지출로 수지 적자 발생)",False,D03_b04,True,True
+D21,tune,1,0.0,age,35,,True,,False,False
+D21,tune,1,0.0,sex,M,,True,,False,False
+D21,tune,1,0.0,location,세종특별자치시 부강면,,True,,False,False
+D21,tune,1,0.0,occupation,물류센터 야간 분류,,True,,False,False
+D21,tune,1,0.0,family,"미혼, 형 1명",,True,,False,False
+D21,tune,1,0.0,commute,자차 10분,,True,,False,False
+D21,tune,1,0.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,2,0.0,age,35,20대,False,"D21_b01, D21_b02",False,False
+D21,tune,2,0.0,sex,M,,True,,False,False
+D21,tune,2,0.0,location,세종특별자치시 부강면,,True,,False,False
+D21,tune,2,0.0,occupation,물류센터 야간 분류,,True,,False,False
+D21,tune,2,0.0,family,"미혼, 형 1명",,True,,False,False
+D21,tune,2,0.0,commute,자차 10분,,True,,False,False
+D21,tune,2,0.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,3,0.0,age,35,,True,,False,False
+D21,tune,3,0.0,sex,M,,True,,False,False
+D21,tune,3,0.0,location,세종특별자치시 부강면,,True,,False,False
+D21,tune,3,0.0,occupation,물류센터 야간 분류,,True,,False,False
+D21,tune,3,0.0,family,"미혼, 형 1명",,True,,False,False
+D21,tune,3,0.0,commute,자차 10분,,True,,False,False
+D21,tune,3,0.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,5,0.0,age,35,,True,,False,False
+D21,tune,5,0.0,sex,M,,True,,False,False
+D21,tune,5,0.0,location,세종특별자치시 부강면,,True,,False,False
+D21,tune,5,0.0,occupation,물류센터 야간 분류,,True,,False,False
+D21,tune,5,0.0,family,"미혼, 형 1명",,True,,False,False
+D21,tune,5,0.0,commute,자차 10분,,True,,False,False
+D21,tune,5,0.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,8,20.0,age,35,,True,,False,False
+D21,tune,8,20.0,sex,M,남성,False,D21_b10,True,True
+D21,tune,8,20.0,location,세종특별자치시 부강면,,True,,False,False
+D21,tune,8,20.0,occupation,물류센터 야간 분류,제조·물류 분류 라인 근무자 (야간 근무 포함),False,D21_b04,True,True
+D21,tune,8,20.0,family,"미혼, 형 1명","미혼 1인 거주, 형·형수 있음",False,"D21_b02, D21_b10, D21_b12",True,True
+D21,tune,8,20.0,commute,자차 10분,자가용,False,"D21_b04, D21_b06",True,True
+D21,tune,8,20.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,12,20.0,age,35,,True,,False,False
+D21,tune,12,20.0,sex,M,남성,False,D21_b10,True,True
+D21,tune,12,20.0,location,세종특별자치시 부강면,세종특별자치시,False,"D21_b07, D21_b04",True,True
+D21,tune,12,20.0,occupation,물류센터 야간 분류,물류센터 야간 분류 작업자,False,"D21_b04, D21_b07",True,True
+D21,tune,12,20.0,family,"미혼, 형 1명",미혼 1인 가구 (기혼 형 있음),False,D21_b10,True,True
+D21,tune,12,20.0,commute,자차 10분,자가용,False,"D21_b04, D21_b06, D21_b07",True,True
+D21,tune,12,20.0,income,야간수당 포함 중,,True,,False,False
+D21,tune,19,27.14,age,35,20대 후반~30대 초반 추정,False,"D21_b10, D21_b04, D21_b07",False,False
+D21,tune,19,27.14,sex,M,남성,False,D21_b10,True,True
+D21,tune,19,27.14,location,세종특별자치시 부강면,세종특별자치시,False,"D21_b07, D21_b17",True,True
+D21,tune,19,27.14,occupation,물류센터 야간 분류,물류센터 분류 작업자 (야간 근무),False,"D21_b04, D21_b07",True,True
+D21,tune,19,27.14,family,"미혼, 형 1명",미혼 1인 가구 (기혼 형 있음),False,D21_b10,True,True
+D21,tune,19,27.14,commute,자차 10분,자가용,False,"D21_b04, D21_b06, D21_b07, D21_b18",True,True
+D21,tune,19,27.14,income,야간수당 포함 중,저소득,False,"D21_b17, D21_b08",False,False
+E03,report,1,0.0,age,31,,True,,False,False
+E03,report,1,0.0,sex,F,,True,,False,False
+E03,report,1,0.0,location,강원특별자치도 강릉시,,True,,False,False
+E03,report,1,0.0,occupation,자동차 부품회사 상하이 주재원,,True,,False,False
+E03,report,1,0.0,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,1,0.0,commute,지하철 (현지 노선 환승),,True,,False,False
+E03,report,1,0.0,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,2,5.71,age,31,,True,,False,False
+E03,report,2,5.71,sex,F,,True,,False,False
+E03,report,2,5.71,location,강원특별자치도 강릉시,중국 상하이,False,E03_b02,False,True
+E03,report,2,5.71,occupation,자동차 부품회사 상하이 주재원,직장인(회사원),False,E03_b02,True,True
+E03,report,2,5.71,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,2,5.71,commute,지하철 (현지 노선 환승),지하철,False,E03_b02,True,True
+E03,report,2,5.71,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,3,5.71,age,31,,True,,False,False
+E03,report,3,5.71,sex,F,,True,,False,False
+E03,report,3,5.71,location,강원특별자치도 강릉시,중국 상하이,False,E03_b02,False,True
+E03,report,3,5.71,occupation,자동차 부품회사 상하이 주재원,직장인(회사원),False,E03_b02,True,True
+E03,report,3,5.71,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,3,5.71,commute,지하철 (현지 노선 환승),지하철,False,E03_b02,True,True
+E03,report,3,5.71,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,5,5.71,age,31,,True,,False,False
+E03,report,5,5.71,sex,F,,True,,False,False
+E03,report,5,5.71,location,강원특별자치도 강릉시,중국 상하이,False,"E03_b02, E03_b04",False,True
+E03,report,5,5.71,occupation,자동차 부품회사 상하이 주재원,회사원(직장인),False,"E03_b02, E03_b03",True,True
+E03,report,5,5.71,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,5,5.71,commute,지하철 (현지 노선 환승),지하철,False,E03_b02,True,True
+E03,report,5,5.71,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,8,5.71,age,31,,True,,False,False
+E03,report,8,5.71,sex,F,,True,,False,False
+E03,report,8,5.71,location,강원특별자치도 강릉시,중국 상하이,False,"E03_b02, E03_b06",False,True
+E03,report,8,5.71,occupation,자동차 부품회사 상하이 주재원,회사원(직장인),False,"E03_b02, E03_b06",True,True
+E03,report,8,5.71,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,8,5.71,commute,지하철 (현지 노선 환승),지하철,False,"E03_b02, E03_b10",True,True
+E03,report,8,5.71,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,12,11.43,age,31,,True,,False,False
+E03,report,12,11.43,sex,F,,True,,False,False
+E03,report,12,11.43,location,강원특별자치도 강릉시,중국 상하이,False,"E03_b02, E03_b06",False,True
+E03,report,12,11.43,occupation,자동차 부품회사 상하이 주재원,회사원(직장인),False,"E03_b02, E03_b06, E03_b08",True,True
+E03,report,12,11.43,family,"기혼, 남편과 상하이 거주. 자녀 없음",,True,,False,False
+E03,report,12,11.43,commute,지하철 (현지 노선 환승),지하철,False,"E03_b02, E03_b10",True,True
+E03,report,12,11.43,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E03,report,19,35.0,age,31,31세,False,E03_b19,True,True
+E03,report,19,35.0,sex,F,여성,False,E03_b07,True,True
+E03,report,19,35.0,location,강원특별자치도 강릉시,중국 상하이,False,"E03_b02, E03_b06, E03_b12, E03_b14, E03_b18",False,True
+E03,report,19,35.0,occupation,자동차 부품회사 상하이 주재원,회사원(직장인),False,"E03_b02, E03_b06, E03_b08, E03_b18",True,True
+E03,report,19,35.0,family,"기혼, 남편과 상하이 거주. 자녀 없음","기혼(배우자 있음, 본가와 별거 거주)",False,"E03_b11, E03_b04",True,True
+E03,report,19,35.0,commute,지하철 (현지 노선 환승),지하철,False,"E03_b02, E03_b14, E03_b12",True,True
+E03,report,19,35.0,income,중상 — 맞벌이 + 뜨개 도안 판매 부수입,,True,,False,False
+E14,tune,1,0.0,age,39,,True,,False,False
+E14,tune,1,0.0,sex,F,,True,,False,False
+E14,tune,1,0.0,location,인천광역시 계양구,,True,,False,False
+E14,tune,1,0.0,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",,True,,False,False
+E14,tune,1,0.0,family,"기혼, 자녀 하나(미취학)",,True,,False,False
+E14,tune,1,0.0,commute,"집 안 작업실, 배송은 주 2회 우체국",,True,,False,False
+E14,tune,1,0.0,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,2,4.29,age,39,,True,,False,False
+E14,tune,2,4.29,sex,F,,True,,False,False
+E14,tune,2,4.29,location,인천광역시 계양구,인천광역시 계양구 (작전역 인근),False,E14_b02,True,True
+E14,tune,2,4.29,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",,True,,False,False
+E14,tune,2,4.29,family,"기혼, 자녀 하나(미취학)",어린이집에 다니는 영유아 자녀 있음 (유모차 사용 중),False,E14_b02,True,True
+E14,tune,2,4.29,commute,"집 안 작업실, 배송은 주 2회 우체국",,True,,False,False
+E14,tune,2,4.29,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,3,4.29,age,39,20대 후반~30대,False,"E14_b02, E14_b04",True,True
+E14,tune,3,4.29,sex,F,여성,False,E14_b04,True,True
+E14,tune,3,4.29,location,인천광역시 계양구,인천광역시 계양구,False,E14_b02,True,True
+E14,tune,3,4.29,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",전업주부,False,"E14_b01, E14_b02, E14_b04",False,False
+E14,tune,3,4.29,family,"기혼, 자녀 하나(미취학)",어린이집에 다니는 어린 자녀(유모차 사용 연령) 있음,False,"E14_b02, E14_b04",True,True
+E14,tune,3,4.29,commute,"집 안 작업실, 배송은 주 2회 우체국",,True,,False,False
+E14,tune,3,4.29,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,5,10.0,age,39,,True,,False,False
+E14,tune,5,10.0,sex,F,여성,False,"E14_b04, E14_b05, E14_b06",True,True
+E14,tune,5,10.0,location,인천광역시 계양구,인천광역시 계양구 (작전역 인근),False,E14_b02,True,True
+E14,tune,5,10.0,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",재택 재봉 주문 제작업 (홈 기반 봉제 자영업),False,"E14_b05, E14_b06",True,True
+E14,tune,5,10.0,family,"기혼, 자녀 하나(미취학)",어린이집에 다니는 어린 자녀 있음 (유모차 사용 연령대의 영·유아),False,"E14_b02, E14_b04",True,True
+E14,tune,5,10.0,commute,"집 안 작업실, 배송은 주 2회 우체국",재택근무 (별도 통근 없음),False,"E14_b05, E14_b06",True,True
+E14,tune,5,10.0,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,8,18.57,age,39,,True,,False,False
+E14,tune,8,18.57,sex,F,여성,False,"E14_b03, E14_b04, E14_b05",True,True
+E14,tune,8,18.57,location,인천광역시 계양구,인천광역시 계양구 (작전역 인근),False,"E14_b02, E14_b03",True,True
+E14,tune,8,18.57,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",재봉·봉제 재택 자영업 (주문 제작),False,"E14_b05, E14_b06, E14_b11",True,True
+E14,tune,8,18.57,family,"기혼, 자녀 하나(미취학)","기혼, 영유아 자녀 있음 (어린이집 재원 중)",False,"E14_b02, E14_b03, E14_b04, E14_b11, E14_b13",True,True
+E14,tune,8,18.57,commute,"집 안 작업실, 배송은 주 2회 우체국",재택근무 (별도 통근 없음),False,"E14_b05, E14_b11",True,True
+E14,tune,8,18.57,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,12,22.14,age,39,,True,,False,False
+E14,tune,12,22.14,sex,F,여성,False,"E14_b03, E14_b07, E14_b08, E14_b11, E14_b13",True,True
+E14,tune,12,22.14,location,인천광역시 계양구,인천광역시 계양구 (작전역 인근),False,"E14_b02, E14_b03, E14_b15",True,True
+E14,tune,12,22.14,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",재택 봉제·주문 제작 사업자,False,"E14_b05, E14_b06, E14_b07, E14_b11",True,True
+E14,tune,12,22.14,family,"기혼, 자녀 하나(미취학)","기혼, 영유아 자녀 있음 (남편과 어린이집 다니는 자녀)",False,"E14_b02, E14_b03, E14_b04, E14_b07, E14_b11, E14_b13",True,True
+E14,tune,12,22.14,commute,"집 안 작업실, 배송은 주 2회 우체국",도보(유모차) — 우체국 등 업무 이동 시 유모차를 끌고 걸어서 이동,False,"E14_b02, E14_b07",True,True
+E14,tune,12,22.14,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
+E14,tune,19,22.14,age,39,,True,,False,False
+E14,tune,19,22.14,sex,F,여성,False,"E14_b03, E14_b11, E14_b13, E14_b25, E14_b04, E14_b08",True,True
+E14,tune,19,22.14,location,인천광역시 계양구,인천광역시 계양구 (작전역 인근),False,"E14_b02, E14_b03, E14_b09, E14_b15",True,True
+E14,tune,19,22.14,occupation,"육아 겸업, 소규모 공방(온라인 판매) 운영",재봉 수공예품 제작·판매업 (자택 운영),False,"E14_b05, E14_b06, E14_b10, E14_b11, E14_b16, E14_b27",True,True
+E14,tune,19,22.14,family,"기혼, 자녀 하나(미취학)","기혼, 어린 자녀 1명 (어린이집 재원, 낮잠·유모차 사용 연령)",False,"E14_b02, E14_b03, E14_b04, E14_b07, E14_b08, E14_b09, E14_b11, E14_b12, E14_b13, E14_b25",True,True
+E14,tune,19,22.14,commute,"집 안 작업실, 배송은 주 2회 우체국",,True,,False,False
+E14,tune,19,22.14,income,"부업 소득 소소, 남편 소득이 주 수입",,True,,False,False
