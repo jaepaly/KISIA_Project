@@ -259,6 +259,26 @@ test 오류를 보고 정했으므로 이 수치는 **test 분석을 반영한 �
 로컬 `runs/w7_test_reviewed_5e-5/`, `runs/w7_test_teacher_1e-5/`,
 `runs/w7_test_teacher_1e-5_plus_rules/`에만 저장돼 있다.
 
+[#294](../../../../pull/294) 리뷰 후속으로 저장 예측을 재추론 없이 분석했다.
+`analyze_expression_overlap.py`는 실제 학습 글에서 같은 유형·NFC 원문 표기가
+나왔는지에 따라 정답을 나누고, 기존 partial 탐욕 1:1 매칭과 TP가 같은지
+검사한다. test 글·내부 eval 인물은 출현 목록에서 제외한다.
+앞뒤 공백만 제거하고 조사로 보이는 끝 글자도 자르지 않는다.
+교사 후보의 명시 정답은 전체 학습 인물 기준 동일 표기 있음 26/32(0.8125),
+없음 55/80(0.6875)이었다. 전체 정답은 각각 82/106(0.7736),
+129/252(0.5119)이다. **교사 학습 글에도 같은 원문 표기가 없는 명시 정답
+80개**를 공통으로 비교하면 검수만 모델 15/80(0.1875), 교사 모델
+55/80(0.6875)였다. 이는 동일 표기 비교이지 미지의 인물·사실에 대한
+일반화 증거가 아니다. 분리 기준·같은 인물 기준 수치와 PM 간이 집계와의
+차이는 [모델 레지스트리](../../models/registry.md)에 적었다.
+
+```powershell
+$env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src"; python experiments/exp06-finetune/analyze_expression_overlap.py --output-dir experiments/exp06-finetune/runs/w7_expression_overlap_exact
+```
+
+결과는 로컬 `runs/w7_expression_overlap_exact/metrics.json`에 저장된다.
+기존 경로가 있으면 `--output-dir`에 새 `runs/` 하위 경로를 지정한다.
+
 검수 골드의 문자 offset 스팬을 KoELECTRA 토큰 분류용 BIO 라벨로 바꾸고,
 100건 과적합 테스트와 첫 1 epoch 학습이 끝까지 실행되는지 확인한다.
 이번 구현은 그중 **BIO 변환·토큰 정렬·역변환 검증**을 담당한다.
