@@ -116,7 +116,7 @@ McNemar (규칙 기준 정답 여부): Qwen 만 맞힌 칸 72 · Claude 만 맞�
 
 ## 판정 기준을 외부 프롬프트에 넣은 재측정 (#279 · 2026-10-03)
 
-#279 에서 「규칙은 그대로 두고 정의만 적는다」(가)로 정했다. 그 정의 문장(계약 `stage2-io` verdict 설명과 같은 문장)을 **외부 LLM system 프롬프트 끝에만** 덧붙여 다시 돌렸다. Qwen 출력·스팬·모델(`claude-sonnet-4-6`)·게이트웨이는 그대로다.
+#279 에서 「규칙은 그대로 두고 정의만 적는다」(가)로 정했다. 그 정의 문장을 **외부 LLM system 프롬프트 끝에만** 덧붙여 다시 돌렸다 (`run_external.py` `VERDICT_DEFINITION` — 측정 뒤 계약 문장에는 「속성마다 그 속성 유형의 스팬만」 전제와 REL_HOME 매핑 차이를 보탰다. 측정 재현을 위해 이 상수는 측정 때 문장 그대로 둔다). Qwen 출력·스팬·모델(`claude-sonnet-4-6`)·게이트웨이는 그대로다.
 
 ```bash
 python experiments/exp09-external-agreement/run_external.py --variant verdictdef --env-file <팀 게이트웨이 .env>
@@ -137,7 +137,7 @@ python experiments/exp09-external-agreement/score.py --variant verdictdef   # re
 
 1. **기존 불일치의 대부분은 「정의가 없어서」였다.** 경계를 적어 주자 narrowed↔weak_signal 불일치 64칸이 3칸이 됐다.
 2. **대신 이 수치는 더 이상 「독립 판정과의 일치」가 아니다.** 외부 LLM 이 우리 규칙을 받아 0.985 로 따랐으므로, 0.921 은 사실상 「Qwen 이 규칙을 얼마나 재현하는가」(0.929)에 가깝다. 중간점검의 본 지표는 **기존 0.864(정의 없음)** 로 두고, 이 값은 #279 결정의 근거로만 쓴다.
-3. **남은 불일치는 Qwen 쪽이다** — 외부가 specified/narrowed 로 올린 칸을 Qwen 이 한 단계 낮게 본 경우(narrowed→specified 12 · weak_signal→narrowed 17)가 많다. 속성별로는 location 이 0.714 로 가장 낮다. 2단 재학습(v2 · 새 프롬프트) 때 이 칸을 본다.
+3. **남은 불일치(58칸)의 대부분은 Qwen 이 규칙을 재현하지 못한 칸이다** — 외부만 규칙과 맞은 칸 49 · Qwen 만 맞은 칸 8 · 둘 다 틀린 칸 1. 외부가 specified/narrowed 로 올린 칸을 Qwen 이 한 단계 낮게 본 경우(Qwen narrowed·외부 specified 12 · Qwen weak_signal·외부 narrowed 17)가 많다. 속성별로는 location 이 0.714 로 가장 낮다. 2단 재학습(v2 · 새 프롬프트) 때 이 칸을 본다.
 
 ## 파일럿 (5명 · 35칸 · 게이트웨이 · user_ref 12자리 — 본 실행 전 설정 동결용)
 
