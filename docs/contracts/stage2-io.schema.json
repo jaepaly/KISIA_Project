@@ -412,7 +412,7 @@
       "properties": {
         "verdict": {
           "type": "string",
-          "description": "무엇이 특정 가능한지까지만 판정한다. 실제 값은 산출하지 않는다. 화면 문구는 E가 매핑한다.\n\n[판정 기준] 본인(subject=self) 스팬만 센다 — explicit 이 하나라도 있으면 specified · 아니면 implicit 이 하나라도 있으면 narrowed · 아니면 inferential 만 있는데 서로 다른 글 2편 이상이면 narrowed · inferential 이 글 1편뿐이면 weak_signal · 단서가 없으면 abstain (#279). implicit 은 label-schema §4-1 의 「문맥상 거의 확정」 정의라 단서 하나로도 narrowed 다.",
+          "description": "무엇이 특정 가능한지까지만 판정한다. 실제 값은 산출하지 않는다. 화면 문구는 E가 매핑한다.\n\n[판정 기준] 속성마다 그 속성에 매핑된 유형(label-schema §3-2 — 단, 2단 v1 학습 규칙은 REL_HOME 을 family 로 센다)의 본인(subject=self) 스팬만 센다 — explicit 이 하나라도 있으면 specified · 아니면 implicit 이 하나라도 있으면 narrowed · 아니면 inferential 만 있는데 서로 다른 글 2편 이상이면 narrowed · inferential 이 글 1편뿐이면 weak_signal · 단서가 없으면 abstain (#279). implicit 은 label-schema §4-1 의 「문맥상 거의 확정」 정의라 단서 하나로도 narrowed 다.",
           "enum": ["specified", "narrowed", "weak_signal", "abstain"]
         },
         "granularity": {
