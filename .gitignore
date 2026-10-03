@@ -162,3 +162,4 @@ experiments/exp10-action-repro/data/*.jsonl
 .gen-regen/
 experiments/exp11-risk-correlation/data/*.jsonl
 experiments/exp11-risk-correlation/data/*
+experiments/exp12-action-llm/data/*.jsonl
