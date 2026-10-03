@@ -36,23 +36,9 @@ PROFILES = {
     },
 }
 
-# 한 어절 끝의 조사 한 개만 제거한다. 형태소 분석이 아닌 보수적 표기 비교다.
-PARTICLES = tuple(sorted((
-    '으로부터', '에게서', '으로', '에서', '에게', '께서', '부터', '까지',
-    '처럼', '보다', '하고', '이랑', '랑', '과', '와', '은', '는',
-    '이', '가', '을', '를', '에', '의', '도', '만', '로',
-), key=len, reverse=True))
-
-
 def surface(text: str) -> str:
-    """NFC·끝 공백을 맞춘 뒤 길이 2자 이상이 남는 끝 조사 한 개만 뗀다."""
-    value = unicodedata.normalize('NFC', text).strip()
-    for particle in PARTICLES:
-        if value.endswith(particle):
-            base = value[:-len(particle)].rstrip()
-            if len(base) >= 2:
-                return base
-    return value
+    """어휘 일부를 조사로 오인하지 않도록 원문 NFC와 앞뒤 공백만 정규화한다."""
+    return unicodedata.normalize('NFC', text).strip()
 
 
 def matched_gold_ids(gold: dict, predictions: dict) -> set[tuple[str, str, int, int, str]]:
@@ -141,7 +127,7 @@ def split_recall(gold: dict, matched: set, all_keys: set, same_keys: set) -> dic
     return dict(result)
 
 
-def analyze(profile: dict) -> dict:
+def analyze(profile: dict) -> tuple[dict, dict, set, set]:
     posts, gold, audit = evaluate_test.prepare(Path('data/corpus/v0'), profile['bio'])
     if audit['input_sha256'][str(Path('data/corpus/v0/splits/test.jsonl'))] != TEST_SHA256:
         raise DataError('공식 test 지문이 변경됐습니다.')
@@ -172,13 +158,36 @@ def analyze(profile: dict) -> dict:
             if (sum(v['gold'] for v in rows.values()) != expected_gold
                     or sum(v['tp'] for v in rows.values()) != expected_tp):
                 raise DataError('동일 표현 분석의 정답 수/TP가 공식 점수와 다릅니다.')
-    return {
+    report = {
         'model_version': saved['model_version'], 'checkpoint': saved['checkpoint'],
         'checkpoint_sha256': saved['checkpoint_sha256'], 'source': source,
         'matching': 'official partial: same type, IoU >= 0.5, greedy one-to-one',
-        'surface_policy': 'NFC, strip surrounding whitespace, remove at most one trailing Korean particle; base >= 2 chars',
+        'surface_policy': 'Exact original text after NFC and surrounding-whitespace stripping; no particle removal',
         'scope': 'actual BIO training posts only; exclude held-out eval personas and every official test post',
         'result': result,
+    }
+    return report, gold, matched, all_keys
+
+
+def fixed_cohort_recall(gold: dict, reference_keys: set,
+                        matches: dict[str, set]) -> dict:
+    """교사 학습 글에도 원문 동일 표기가 없는 명시 정답을 두 모델에 공통 적용한다."""
+    cohort = {
+        (pid, span['text_id'], span['start'], span['end'], span['type'])
+        for pid, row in gold.items() for span in row['spans']
+        if span['level'] == 'explicit'
+        and (span['type'], surface(span['text'])) not in reference_keys
+    }
+    if not cohort:
+        raise DataError('고정 비교 묶음에 명시 정답이 없습니다.')
+    return {
+        'definition': 'teacher training posts: explicit gold without same type and exact NFC surface',
+        'gold': len(cohort),
+        'profiles': {
+            name: {'tp': len(cohort & matched), 'fn': len(cohort - matched),
+                   'recall': len(cohort & matched) / len(cohort)}
+            for name, matched in matches.items()
+        },
     }
 
 
@@ -190,11 +199,19 @@ def main() -> None:
         parser.error('입력 지문 비교를 위해 저장소 루트에서 실행하세요.')
     if not args.output_dir.resolve().is_relative_to(RUNS.resolve()) or args.output_dir.exists():
         parser.error('기존 결과를 덮어쓰지 않도록 새 runs/ 출력 경로를 지정하세요.')
+    analyses = {name: analyze(profile) for name, profile in PROFILES.items()}
+    gold = analyses['teacher'][1]
+    if {pid: row['spans'] for pid, row in analyses['reviewed'][1].items()} != {
+            pid: row['spans'] for pid, row in gold.items()}:
+        raise DataError('두 모델의 test 정답 묶음이 달라 고정 비교를 할 수 없습니다.')
     report = {
         'measured_at_utc': datetime.now(timezone.utc).isoformat(),
         'data_version': 'corpus-v0 p2.3', 'test_sha256': TEST_SHA256,
         'test_posts': 239, 'test_gold_spans': 358,
-        'profiles': {name: analyze(profile) for name, profile in PROFILES.items()},
+        'profiles': {name: item[0] for name, item in analyses.items()},
+        'fixed_cohort': fixed_cohort_recall(
+            gold, analyses['teacher'][3],
+            {name: item[2] for name, item in analyses.items()}),
         'limitations': [
             'Surface equality is a heuristic, not a guarantee of memorization or generalization.',
             'Post holdout is not persona holdout; similar wording and shared facts remain possible.',
@@ -206,6 +223,7 @@ def main() -> None:
     target.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     for name, item in report['profiles'].items():
         print(json.dumps({'profile': name, 'result': item['result']}, ensure_ascii=False))
+    print(json.dumps({'fixed_cohort': report['fixed_cohort']}, ensure_ascii=False))
     print(f'Saved: {target}')
 
 
