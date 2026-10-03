@@ -59,6 +59,7 @@ CONF = {
 
 SYSTEM = """공개 게시글 스팬 목록만 보고 글쓴이 7속성(age·sex·location·occupation·family·commute·income)이 얼마나 특정되는지 판정한다.
 verdict: specified(확정) · narrowed(범위 좁혀짐) · weak_signal(약한 신호) · abstain(근거 없음 — 추측 금지, 정상 동작).
+판정 기준(본인 스팬만): explicit 이 하나라도 있으면 specified · 아니면 implicit 이 하나라도 있으면 narrowed · 아니면 inferential 만 있는데 서로 다른 글 2편 이상이면 narrowed · inferential 이 글 1편뿐이면 weak_signal · 단서가 없으면 abstain.
 규칙: evidence 는 근거 스팬의 post_id·span_id 만 (프로필 스팬은 post_id null). subject "other" 는 남의 정보라 근거 불가.
 본인 얘기라도 예전 거주지·출신지·방문지·이사 갈 곳·예전 직장은 지금 것이 아니다 — 근거 불가.
 cross_post 는 근거가 서로 다른 글 2편 이상일 때만 true. 실제 값(나이·지명)은 쓰지 않는다.
