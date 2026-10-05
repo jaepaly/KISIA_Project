@@ -157,6 +157,38 @@ AMD Ryzen 5 9600X 6-Core Processor, CPU 4스레드.
 등급·주체는 기존 고정값이고 실제 판정 로직의 실행 비용은 포함하지 않는다.
 임시 측정 스크립트는 사용자 요청대로 측정 후 삭제했다.
 
+### W8 실제 test 글 CPU 지연 분포 측정
+
+등록 v1의 공식 test 255편에서 기존 IAA 16편을 제외한 239편을 길이순으로
+정렬하고, 동일 폭 20개 구간의 중앙 글을 하나씩 뽑는다. 정답 등급·유형은
+표본 선택과 추론에 사용하지 않는다. 각 글을 CPU에서 한 편씩 워밍업 5회 후
+50회 반복하며, **글별 중앙값 20개의 중앙값·nearest-rank p95·최대값**을
+보고한다. **20은 test 글 수이며 학습 epoch가 아니다. 새 학습은 하지 않는다.**
+토큰화·모델·후처리·계약 검증을 포함하고 모델 로딩은 제외한다.
+추론의 `level`·`subject`는 여전히 임시 고정값이며 별도 판정 비용은 포함하지 않는다.
+
+```powershell
+$env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src"; python experiments/exp06-finetune/measure_cpu_latency.py --checkpoint-dir experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10 --output-dir experiments/exp06-finetune/runs/w8_cpu_latency_v1_20261005 --samples 20 --warmup 5 --repeats 50 --threads 4 --min-span-score 0.7 --cpu-name "AMD Ryzen 5 9600X"
+```
+
+출력은 gitignore된 `runs/w8_cpu_latency_v1_20261005/metrics.json`에
+글 ID·길이·개별 반복 시간·입력 및 체크포인트 지문과 함께 저장한다.
+기존 폴더가 있으면 덮어쓰지 않는다.
+
+실측(2026-10-05 · corpus-v0 p2.3 · 등록 v1
+`v1_lr5e-5/checkpoint-epoch-10` · 모델 SHA-256 `3c2d9867e672…` ·
+test SHA-256 `9662a167f530…` · Ryzen 5 9600X · CPU 4스레드 · 임계값 0.7):
+
+| 길이별 test 표본 | 각 글 워밍업/반복 | 글별 중앙값의 중앙값 | 글별 중앙값의 p95 | 글별 중앙값의 최대 | 300ms 미만 글 |
+|---:|---:|---:|---:|---:|---:|
+| 20편 (192~2,726자) | 5회/50회 | **172.92ms** | **1,006.61ms** | **1,495.25ms** | 15/20편 |
+
+모델 로딩 9.05초는 제외했다. 중앙값은 300ms 미만이지만 긴 글의 지연이
+목표를 크게 넘으므로 **모든 글에서 <300ms를 달성했다고 볼 수 없다**.
+이는 길이별 표본 20편의 분포이며 서비스 입력 전체를 대표한다는 보장도 없다.
+한 편 반복 예비값(10/3 · `E12_b07` 중앙값 122.73ms)과 표본·집계 단위가
+다르므로 속도가 바뀌었다는 근거로 비교하지 않는다.
+
 ### W7 교사 라벨 재학습 진단 (2026-10-02)
 
 `corpus-v0 p2.3` · `monologg/koelectra-base-v3-discriminator` · RTX 5070에서
