@@ -764,3 +764,44 @@ def specificity_document(user_ref: str, conditions: Sequence[Mapping[str, Any]])
         "input": {"user_ref": user_ref, "conditions": [dict(c) for c in conditions]},
         "output": estimate_k(conditions),
     }
+
+
+# ── 글별 기여 — 「이 글을 내리면 후보가 몇 명이 되나」 ─────────────────────────
+
+def k_by_post(posts: Sequence[Mapping[str, Any]], *, max_unpublish: int = 3) -> dict[str, Any]:
+    """[{post_id, spans, geo_tag?}] → 글별 「내렸을 때 k」 + 내리는 순서(greedy).
+
+    ``estimate_k`` 는 조건을 빼도 k 가 줄지 않으므로(방어적 최소 · 단조) 글을 빼면 k 는 같거나 커진다.
+    - ``per_post``: 그 글 하나만 내렸을 때의 k (클수록 그 글이 사람을 많이 좁히고 있다)
+    - ``greedy``: k 를 가장 많이 늘리는 글부터 하나씩 내린 경로 (최대 ``max_unpublish`` 편, 최소 1편은 공개로 남김)
+    화면 문구 예: 「이 글 3편을 비공개하면 후보가 312명 → 4,210명」
+    """
+    ids = [str(p["post_id"]) for p in posts]
+    by_id = {str(p["post_id"]): p for p in posts}
+    conds = {pid: conditions_from_posts([by_id[pid]]) for pid in ids}
+
+    def k_of(keep: Sequence[str]) -> float | None:
+        return estimate_k([c for pid in keep for c in conds[pid]])["k"]
+
+    base = k_of(ids)
+    per_post = []
+    for pid in ids:
+        without = k_of([x for x in ids if x != pid])
+        per_post.append({"post_id": pid, "k_without": without,
+                         "gain": None if (base is None or without is None) else round(without / base, 4)})
+    per_post.sort(key=lambda r: -(r["gain"] or 0))
+
+    keep = list(ids)
+    current = base
+    greedy = []
+    limit = min(max_unpublish, max(0, len(ids) - 1))
+    while len(greedy) < limit and current is not None:
+        cands = [(k_of([x for x in keep if x != pid]), pid) for pid in keep]
+        cands = [(k, pid) for k, pid in cands if k is not None and k > current * (1 + 1e-9)]
+        if not cands:
+            break
+        k_next, pid = max(cands, key=lambda x: (x[0], x[1]))
+        keep.remove(pid)
+        current = k_next
+        greedy.append({"remove": pid, "k_after": k_next})
+    return {"k": base, "per_post": per_post, "greedy": greedy}

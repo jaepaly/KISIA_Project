@@ -343,3 +343,19 @@ def test_park_is_not_resolved_as_station():
     from kopl.c2_specificity.k_engine import _default_index
     codes, how = _default_index().resolve_text("체육공원", facility=True)
     assert how != "station"
+
+
+def test_k_by_post_removal_never_lowers_k_and_ranks_identifying_posts():
+    from kopl.c2_specificity.k_engine import k_by_post
+    posts = [
+        {"post_id": "a", "spans": [S("역삼동", "LOC_ADMIN")]},
+        {"post_id": "b", "spans": [S("마흔여덟", "AGE"), S("남편", "SEX")]},
+        {"post_id": "c", "spans": []},
+        {"post_id": "d", "spans": [S("간호사", "JOB")]},
+    ]
+    out = k_by_post(posts)
+    assert all(r["k_without"] >= out["k"] for r in out["per_post"])
+    assert out["per_post"][0]["post_id"] == "a"            # 동네를 짚는 글이 가장 크게 좁힌다
+    assert [r for r in out["per_post"] if r["post_id"] == "c"][0]["gain"] == 1.0   # 단서 없는 글은 k 그대로
+    ks = [out["k"]] + [g["k_after"] for g in out["greedy"]]
+    assert ks == sorted(ks) and len(out["greedy"]) <= 3
