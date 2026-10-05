@@ -21,7 +21,13 @@ _AGE_PATTERNS = (
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _TENS + r"(?:\s*" + _ONES + r")?(?:\s*(?:살|세))?" + _AGE_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _ONES + r"(?:\s*살|\s+세)" + _AGE_ENDING),
 )
+# 수 뒤에 단위가 오면 나이가 아니다 — 「서른 번」 「마흔 명」.
 _QUANTITY_FOLLOWERS = re.compile(r"\s*(?:번|개|명|분|마리|원|장|그릇|잔)")
+# 기간·횟수 단위도 같다 — 「서른 해보다」(근속 30년) 「쉰 날」(쉬다 + 날) 「스무 해 동안」 「스물세 권이나」 (인스턴스 테스트 10/5).
+# 단위 글자가 다른 말의 첫 글자일 수 있어(「벌써」 「해서」 「주고」) 뒤가 조사·끝일 때만 단위로 본다
+_DURATION_FOLLOWERS = re.compile(
+    r"\s*(?:해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|줄|칸|층|평|켤레|통)"
+    r"(?=$|[^가-힣]|(?:보다|동안|이나|나|만|도|은|는|이|가|을|를|에|째|쯤|씩|간|의|하고|까지|부터|이나마)(?:$|[^가-힣]))")
 _WORD = re.compile(r"[가-힣]+")
 _REGION_SUFFIXES = ("특별자치시", "특별자치도", "특별시", "광역시", "도", "시", "군", "구")
 _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에게서", "에서는", "으로", "에서",
@@ -41,7 +47,7 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
             start, end = match.span()
             if end < len(text) and re.match(r"[가-힣A-Za-z0-9]", text[end]):
                 continue
-            if _QUANTITY_FOLLOWERS.match(text, end):
+            if _QUANTITY_FOLLOWERS.match(text, end) or _DURATION_FOLLOWERS.match(text, end):
                 continue
             found.add((start, end, "AGE"))
     return found
