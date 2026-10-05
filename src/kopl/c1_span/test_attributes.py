@@ -150,3 +150,20 @@ def test_resident_rule_actually_matches_copula_forms():
     assert m and _COPULA_AFTER.match(" 사는 아빠라서 주말이"[m.end():])
     assert _RESIDENT_AFTER.match(" 사는 사람인데요") is None   # 「사람」은 특정한 타인이 아니다 — 거주 규칙 대상 아님(기본 self)
     assert _r("나는 동탄 사는 친구에게 갔다", "동탄", "LOC_FACILITY")["subject"] == "other"
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # 인스턴스 재측정(10/5) — 1단이 꾸밈말까지 스팬에 넣은 경우 · 나이와 사람 사이 꾸밈말
+    ("동탄 사는 친구가 놀러 왔다", "동탄 사는", "LOC_ADMIN", "other"),
+    ("아홉 살 된 아들이 학교 간다", "아홉 살", "AGE", "other"),
+    ("아홉 살짜리 아들이 떼를 쓴다", "아홉 살", "AGE", "other"),
+    ("아홉 살인 아들이 학교 간다", "아홉 살", "AGE", "other"),
+    ("아홉 살 된 아들이 학교 간다", "아홉 살 된", "AGE", "other"),
+    # 본인 그대로
+    ("나는 동탄 사는 직장인이야", "동탄 사는", "LOC_ADMIN", "self"),
+    ("나는 동탄 사는 아빠야", "동탄", "LOC_ADMIN", "self"),          # 자기소개 — 지명 규칙에도 같은 예외
+    ("나는 동탄 사는 친구를 만났다", "동탄", "LOC_ADMIN", "other"),
+    ("마흔여덟 된 나는 요즘 무릎이 아프다", "마흔여덟", "AGE", "self"),
+])
+def test_subject_modifier_between_clue_and_person(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
