@@ -57,6 +57,24 @@ class BioAlignmentTest(unittest.TestCase):
             self.assertEqual(all_stats["teacher_records_invalid"], 1)
             self.assertEqual(all_stats["test_records_excluded"], 1)
 
+    def test_extra_gold_dir_is_train_only_and_rejects_split_collision(self) -> None:
+        """#310 — 학습 전용 추가 데이터: 분할에 없는 글만 받고, 기존 분할과 post_id 가 겹치면 멈춘다."""
+        span = {"span_id": "AUG1_0001_s01", "text_id": "body", "start": 0, "end": 2, "text": "합정",
+                "type": "LOC_ADMIN", "level": "explicit", "subject": "self"}
+        good = {"post_id": "AUG1_0001", "persona_id": "AUG1", "reviewed": False,
+                "texts": {"body": "합정동 산책"}, "spans": [span]}
+        bad = {"post_id": "AUG1_0002", "persona_id": "AUG1", "reviewed": False,
+               "texts": {"body": "합"}, "spans": [{**span, "span_id": "AUG1_0002_s01"}]}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "AUG1_spans.jsonl"
+            path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in (good, bad)) + "\n", encoding="utf-8")
+            channels, stats = bio.load_extra_channels([Path(directory)], {"A01_b01"}, {"A01_b02"})
+            self.assertEqual([c["post_id"] for c in channels], ["AUG1_0001"])
+            self.assertEqual(stats["augment_records_accepted"], 1)
+            self.assertEqual(stats["augment_records_invalid"], 1)
+            with self.assertRaises(bio.DataError):
+                bio.load_extra_channels([Path(directory)], {"AUG1_0001"}, set())
+
     def test_overlap_alignment_and_decode(self) -> None:
         text = "집 근처 신갈저수지에서"
         offsets = [(0, 0), (0, 1), (2, 4), (5, 7), (7, 10), (10, 12), (0, 0)]
