@@ -28,6 +28,16 @@ _QUANTITY_FOLLOWERS = re.compile(r"\s*(?:번|개|명|분|마리|원|장|그릇|�
 _DURATION_FOLLOWERS = re.compile(
     r"\s*(?:해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|줄|칸|층|평|켤레|통)"
     r"(?=$|[^가-힣]|(?:보다|동안|이나|나|만|도|은|는|이|가|을|를|에|째|쯤|씩|간|의|하고|까지|부터|이나마)(?:$|[^가-힣]))")
+# 「나이 48에」 — 숫자 나이는 「살·세」가 없으면 위 패턴이 못 잡는다. 「나이」 바로 뒤의 두 자리 수만 (스팬은 수 + 어미)
+_AGE_AFTER_NAI = re.compile(r"(?<![가-힣A-Za-z0-9])나이(?:는|가|도)?\s*(?P<age>[1-9][0-9]"
+                            r"(?:에는|에|때|입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)?)(?![0-9가-힣])")
+# 소득 금액 — 금액은 물건값과 섞이므로 같은 문장에 수입을 뜻하는 말이 있을 때만 (「월급 삼백이십만 원」 「연금 백사십만 원」)
+_KNUM = r"(?:[일이삼사오육칠팔구]?천)?(?:[일이삼사오육칠팔구]?백)?(?:[일이삼사오육칠팔구]?십)?[일이삼사오육칠팔구]?"
+_AMOUNT = re.compile(r"(?<![가-힣A-Za-z0-9])(?:(?:\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?|" + _KNUM + r")\s*(?:만|억)\s*원?"
+                     r"|\d{1,3}(?:,\d{3}){2,}\s*원)")
+_INCOME_CONTEXT = re.compile(r"월급|연봉|급여|실수령|월수입|수입|시급|일당|벌이|벌어|번다|벌었|받는|받아|받은|받았|들어오|들어온|"
+                             r"들어왔|연금|수당|매출|순수익|정산|인센티브|성과급|보너스")
+_SENTENCE = re.compile(r"[^.!?\n]+")
 _WORD = re.compile(r"[가-힣]+")
 _REGION_SUFFIXES = ("특별자치시", "특별자치도", "특별시", "광역시", "도", "시", "군", "구")
 _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에게서", "에서는", "으로", "에서",
@@ -50,6 +60,23 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
             if _QUANTITY_FOLLOWERS.match(text, end) or _DURATION_FOLLOWERS.match(text, end):
                 continue
             found.add((start, end, "AGE"))
+    for match in _AGE_AFTER_NAI.finditer(text):
+        found.add((match.start("age"), match.end("age"), "AGE"))
+    return found
+
+
+def income_spans(text: str) -> set[tuple[int, int, str]]:
+    """수입을 뜻하는 말이 있는 문장 안의 금액 — 「월급 삼백이십만 원」. 물건값(「커피 4,500원」)은 문장에 수입 말이 없어 빠진다."""
+    found: set[tuple[int, int, str]] = set()
+    for sentence in _SENTENCE.finditer(text):
+        if not _INCOME_CONTEXT.search(sentence.group()):
+            continue
+        for match in _AMOUNT.finditer(sentence.group()):
+            value = match.group().rstrip()
+            if value.strip() in ("만", "억", "만 원", "억 원", "만원", "억원"):
+                continue
+            start = sentence.start() + match.start()
+            found.add((start, start + len(value), "INCOME"))
     return found
 
 
@@ -92,7 +119,7 @@ class ExplicitRules:
         return found
 
     def predict_channel(self, text: str) -> set[tuple[int, int, str]]:
-        return age_spans(text) | self.location_spans(text)
+        return age_spans(text) | self.location_spans(text) | income_spans(text)
 
 
 def merge_with_model(
