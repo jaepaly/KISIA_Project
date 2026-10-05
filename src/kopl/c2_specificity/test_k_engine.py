@@ -336,3 +336,10 @@ def test_never_below_direct_crosstab_on_real_table():
         k = estimate_k([C("location", "administrative_area", geo=e, res=3), C("age", "age_band", b),
                         C("sex", "sex", "여자" if sx == "F" else "남자", res=1)])["k"]
         assert k >= direct - 1e-6, (e, b, sx, direct, k)
+
+
+def test_park_is_not_resolved_as_station():
+    """「체육공원」은 같은 이름의 역(체육공원역)이 아니다 — 시설 이름만으로 역 동네를 짚지 않는다."""
+    from kopl.c2_specificity.k_engine import _default_index
+    codes, how = _default_index().resolve_text("체육공원", facility=True)
+    assert how != "station"

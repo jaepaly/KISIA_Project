@@ -108,7 +108,9 @@ def _candidates(t: str) -> list[tuple[str, bool]]:
 def _station(t: str) -> str | None:
     from .facilities import station_lookup
 
-    for cand in (t, t + "역") if not t.endswith("역") else (t,):
+    if "역" not in t:
+        return None  # 「체육공원」 같은 시설을 같은 이름의 역(체육공원역)으로 오인하지 않게 — 「역」이 들어간 표현만
+    for cand in (t,):
         hit = station_lookup(cand)
         if hit is not None and not hit.ambiguous and hit.emd:
             return hit.emd
