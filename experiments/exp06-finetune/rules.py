@@ -50,6 +50,14 @@ _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에�
 TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주"})
 
 
+_AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)$")
+
+
+def _is_bare_number(matched: str) -> bool:
+    """「서른」 「쉰」처럼 단위·어미 없이 수만 있나. 「스물세」의 「세」는 수(3)라 맨몸이다."""
+    return not _AGE_CLOSED.search(matched)
+
+
 def age_spans(text: str) -> set[tuple[int, int, str]]:
     """나이 표현을 찾되 수량 표현과 긴 단어의 일부는 버린다."""
     found: set[tuple[int, int, str]] = set()
@@ -58,8 +66,10 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
             start, end = match.span()
             if end < len(text) and re.match(r"[가-힣A-Za-z0-9]", text[end]):
                 continue
-            if _QUANTITY_FOLLOWERS.match(text, end) or _DURATION_FOLLOWERS.match(text, end):
+            if _QUANTITY_FOLLOWERS.match(text, end):
                 continue
+            if _is_bare_number(text[start:end]) and _DURATION_FOLLOWERS.match(text, end):
+                continue  # 「서른 해」 「쉰 날」만 — 「23살이고 일을」 「서른 살이고 해가」는 나이가 이미 끝났다 (#309 리뷰)
             found.add((start, end, "AGE"))
     for match in _AGE_AFTER_NAI.finditer(text):
         found.add((match.start("age"), match.end("age"), "AGE"))

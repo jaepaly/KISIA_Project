@@ -49,6 +49,22 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in income_spans(text)}
         self.assertEqual(found, {'삼백이십만 원', '140만 원', '300.5만 원', '80만 원', '70만 원', '1,300.5만 원'})
 
+    def test_closed_age_is_not_filtered_by_next_word(self):
+        """#309 리뷰(B): 나이가 「살·어미」로 끝났으면 다음 낱말(일을 · 해가)은 단위가 아니다."""
+        cases = {
+            '나는 23살이고 일을 시작했어요': '23살이고',
+            '나는 스물셋인데 일을 시작했어요': '스물셋인데',
+            '나는 서른 살이고 해가 지면 산책해요': '서른 살이고',
+            '나는 서른이고 해가 지면 걷는다': '서른이고',
+            '마흔둘인데 날이 좋아서': '마흔둘인데',
+        }
+        for text, age in cases.items():
+            found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+            self.assertEqual(found, {age}, text)
+        # 맨몸 수 + 단위는 여전히 뺀다
+        for text in ('시청에서 보낸 서른 해보다', '씨감자 묻고 쉰 날', '책이 스물세 권이나'):
+            self.assertEqual({t for t in age_spans(text)}, set(), text)
+
     def test_age_line_idiom_kept(self):
         """「서른 줄에 접어들다」는 나이 — 단위 「줄」로 빼지 않는다 (Codex 검토 10/5)."""
         text = '어느새 서른 줄에 접어들었네. 이제 마흔 줄에 들어섰어'
