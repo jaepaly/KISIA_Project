@@ -369,3 +369,14 @@ def test_sigungu_short_wins_over_same_named_dong(word, sigungu):
     got, how = idx.resolve_text(word)
     want, _ = idx.resolve_text(sigungu)
     assert how.startswith("short_alias") and want <= got
+
+
+@pytest.mark.parametrize("multi,narrow", [("수원 영통구에", "영통구"), ("경기 수원 영통구", "영통구"), ("용인 기흥구", "기흥구"),
+                                          ("대전 유성구 전민동", "전민동")])
+def test_multi_token_place_uses_narrowest_word(multi, narrow):
+    """여러 단어 지명은 단어마다 해석해 교집합 — 첫 단어(수원 전체)로 넓히지 않는다 (인스턴스 테스트 10/5)."""
+    from kopl.c2_specificity.k_engine import _default_index
+    idx = _default_index()
+    got, _ = idx.resolve_text(multi)
+    want, _ = idx.resolve_text(narrow)
+    assert got and got == want
