@@ -222,3 +222,18 @@ def test_suggest_golden_instance(before, text, after, stype, expected):
     out = _s(before, text, after, stype)
     assert (out[0] if out else None) == expected, out
     assert "김해시" not in out
+
+
+@pytest.mark.parametrize("before,text,after", [
+    ("시청에서 보낸 ", "서른", " 해보다 길었다"),
+    ("씨감자 묻고 ", "쉰", " 날"),
+    ("책이 ", "스물세", " 권이나 쌓였다"),
+])
+def test_age_before_unit_abstains(before, text, after):
+    """뒤에 단위가 오면 나이가 아니다 — 「보낸 30대 초반 해보다」 같은 후보를 내지 않는다 (인스턴스 B18)."""
+    assert _s(before, text, after, "AGE") == []
+
+
+def test_age_with_unit_like_word_still_rewrites():
+    """「벌써」의 「벌」은 단위(옷 한 벌)가 아니다 — 나이로 바꿔 쓴다."""
+    assert _s("", "스물다섯인데", " 벌써 이렇게", "AGE")[:1] == ["20대 후반인데"]
