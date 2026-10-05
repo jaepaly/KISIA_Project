@@ -42,9 +42,16 @@ class RuleTests(unittest.TestCase):
 
     def test_income_amount_needs_income_context(self):
         from rules import income_spans
-        text = '이번 달 월급 삼백이십만 원 들어왔다. 커피는 4,500원. 연금 140만 원 받는다. 집값이 3억이라니'
+        text = ('이번 달 월급 삼백이십만 원 들어왔다. 커피는 4,500원. 연금 140만 원 받는다. 집값이 3억이라니. '
+                '월급 300.5만 원 받았어. 택배로 5만 원짜리 받았다. 월세 60만 원 들어갔다')
         found = {text[start:end] for start, end, kind in income_spans(text)}
-        self.assertEqual(found, {'삼백이십만 원', '140만 원'})
+        self.assertEqual(found, {'삼백이십만 원', '140만 원', '300.5만 원'})
+
+    def test_age_line_idiom_kept(self):
+        """「서른 줄에 접어들다」는 나이 — 단위 「줄」로 빼지 않는다 (Codex 검토 10/5)."""
+        text = '어느새 서른 줄에 접어들었네. 이제 마흔 줄에 들어섰어'
+        found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+        self.assertEqual(found, {'서른', '마흔'})
 
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
