@@ -158,3 +158,10 @@ def test_generation_error_falls_back_in_auto() -> None:
     assert "CUDA out of memory" in out["provenance"]["model_version"]
     with pytest.raises(RuntimeError):
         analyze(USER, _posts(), model=Boom(), mode="model")
+
+
+def test_no_posts_gives_empty_result() -> None:
+    out = analyze(USER, [], mode="rules")
+    _validator()(out)
+    assert out["recommendation"]["actions"] == []
+    assert all(f["verdict"] == "abstain" for f in out["findings"].values())
