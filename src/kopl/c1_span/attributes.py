@@ -170,7 +170,7 @@ def _owned_by_me(before: str) -> bool:
             return all((_core(w) == w or w.endswith("인")) and not re.fullmatch(_OTHERS, _core(w)) for w in chain)
     return False
 # 스팬 바로 뒤가 사람을 꾸미는 자리 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
-_MODIFIER = r"(?:사는|살던|사시는|살고\s*있는|있는|다니는|일하는|하는|된|먹은|짜리|인|이던|였던|난)"
+_MODIFIER = r"(?:사는|살던|사시는|살고\s*있는|있는|다니는|일하는|하는|된|먹은|짜리|인|이던|였던)"  # 「난」은 1인칭(나는)과 겹쳐 뺀다
 _PERSON_AFTER = re.compile(r"^\s*(?:에\s*)?" + _MODIFIER + r"?\s*" + _OTHERS
                            + r"(?:들|님)?(?:이|가|은|는|도|과|와|랑|이랑|하고|의|을|를|한테|에게|께)?(?![가-힣])")
 _COPULA_AFTER = re.compile(r"(?:들)?(?:야|이야|예요|이에요|입니다|이고|인데요|인데|임|이다|이었어|였어|이거든|거든|라서|이라서|이라|라)(?![가-힣])")

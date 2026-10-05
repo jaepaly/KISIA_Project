@@ -164,6 +164,8 @@ def test_resident_rule_actually_matches_copula_forms():
     ("나는 동탄 사는 아빠야", "동탄", "LOC_ADMIN", "self"),          # 자기소개 — 지명 규칙에도 같은 예외
     ("나는 동탄 사는 친구를 만났다", "동탄", "LOC_ADMIN", "other"),
     ("마흔여덟 된 나는 요즘 무릎이 아프다", "마흔여덟", "AGE", "self"),
+    ("서른 살인데 난 아들이 아직 없어", "서른 살인데", "AGE", "self"),      # Codex — 「난」은 1인칭
+    ("내 직업은 회사원 난 아들이랑 저녁 먹으러 감", "회사원", "JOB", "self"),
 ])
 def test_subject_modifier_between_clue_and_person(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
