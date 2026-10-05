@@ -397,3 +397,13 @@ def test_multi_token_codex_regressions(multi, narrow):
     got, _ = idx.resolve_text(multi)
     want, _ = idx.resolve_text(narrow)
     assert got == want
+
+
+def test_collision_name_real_path_keeps_both_readings():
+    """Codex 검토(10/5) — 실제 조건 경로에서도 「안동」 단독 스팬이 김해시 안동 하나로 고정되지 않는다 (조사 유무와 같은 결과)."""
+    from kopl.c2_specificity.k_engine import conditions_from_posts, estimate_k
+    ks = []
+    for text in ("안동", "안동에서"):
+        c = conditions_from_posts([{"post_id": "p", "spans": [S(text, "LOC_ADMIN")]}])
+        ks.append(estimate_k(c)["k"])
+    assert ks[0] == ks[1]

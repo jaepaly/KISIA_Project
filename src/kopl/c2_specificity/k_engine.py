@@ -284,6 +284,16 @@ class _Index:
                 out |= {n for n in self.station_near.get(c, ()) if n in self.population}
         return out, how
 
+    def is_short_collision(self, text: str) -> bool:
+        """「안동 · 안동에서」 — 시군구·시도 약칭과 같은 이름의 읍면동이 있어 한쪽으로 단정할 수 없는 말인가."""
+        t = unicodedata.normalize("NFC", text).strip()
+        for cand in [t, *(c for c, _ in _candidates(t))]:
+            if cand in self.short:
+                codes = set(self.d.resolve_info(cand).get("codes") or [])
+                if codes and codes != set(self.short[cand]):
+                    return True
+        return False
+
     def _resolve_tokens(self, t: str, *, facility: bool) -> tuple[set[str], str] | None:
         """「수원 영통구에 · 대전 유성구 전민동」 — 단어마다 해석해 교집합. 첫 단어만 보면 수원 전체(44개 동)가 된다.
 
@@ -498,11 +508,16 @@ def conditions_from_posts(posts: Sequence[Mapping[str, Any]]) -> list[dict[str, 
         pid = str(post["post_id"])
         spans = list(post.get("spans") or [])
         home = any(s.get("type") == "REL_HOME" and s.get("subject") == "self" for s in spans)
-        conds = list(build_conditions(spans, pid, dictionary=d))
+        idx = _default_index()
+        # 「안동」 — 약칭과 같은 이름의 동이 있는 지명은 build_conditions 가 동 코드(김해시 안동) 하나로 고정한다.
+        # 이 스팬들은 빼고 아래 해석기(약칭·동 둘 다 후보)로 보낸다
+        collision = {id(s) for s in spans if s.get("type") in ("LOC_ADMIN", "LOC_FACILITY")
+                     and idx.is_short_collision(str(s.get("text", "")))}
+        conds = list(build_conditions([s for s in spans if id(s) not in collision], pid, dictionary=d))
         for s in spans:
             if s.get("type") not in ("LOC_ADMIN", "LOC_FACILITY") or s.get("subject") == "other":
                 continue
-            if build_conditions([s], pid, dictionary=d):
+            if id(s) not in collision and build_conditions([s], pid, dictionary=d):
                 continue  # build_conditions 가 이미 조건으로 만든 위치 스팬
             level = str(s.get("level"))
             if level not in LEVEL_CONFIDENCE:
