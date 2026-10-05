@@ -359,3 +359,13 @@ def test_k_by_post_removal_never_lowers_k_and_ranks_identifying_posts():
     assert [r for r in out["per_post"] if r["post_id"] == "c"][0]["gain"] == 1.0   # 단서 없는 글은 k 그대로
     ks = [out["k"]] + [g["k_after"] for g in out["greedy"]]
     assert ks == sorted(ks) and len(out["greedy"]) <= 3
+
+
+@pytest.mark.parametrize("word,sigungu", [("안동", "안동시"), ("하동", "하동군"), ("강동", "강동구"), ("영동", "영동군")])
+def test_sigungu_short_wins_over_same_named_dong(word, sigungu):
+    """「안동」은 안동시 — 같은 이름의 동(김해시 안동)으로 좁히지 않는다 (인스턴스 테스트 B18_b10)."""
+    from kopl.c2_specificity.k_engine import _default_index
+    idx = _default_index()
+    got, how = idx.resolve_text(word)
+    want, _ = idx.resolve_text(sigungu)
+    assert how.startswith("short_alias") and want <= got
