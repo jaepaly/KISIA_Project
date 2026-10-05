@@ -207,6 +207,10 @@ _SCOPE_NEXT = {"쪽", "방면", "읍내", "시내", "외곽", "토박이"}
 _PLACE_NEXT = {"옆자리", "자리", "건물", "옥상", "식당", "주차장", "앞", "근처", "로비", "엘리베이터"}
 # 역 이름 뒤에 와도 되는 말 — 그 밖의 명사를 꾸미는 역 이름(「OO역 상가거리」)은 넓히지 않는다
 _STATION_OK_NEXT = {"근처", "인근", "부근", "앞", "뒤", "옆", "쪽", "출구", "방향", "주변"}
+# 수 뒤 단위 — 나이가 아니라 기간·횟수 (exp06 rules._DURATION_FOLLOWERS 와 같은 목록 · 뒤가 조사·끝일 때만)
+_UNIT_AFTER = re.compile(
+    r"^\s*(?:번|개|명|분|마리|원|장|그릇|잔|해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|줄|칸|층|평|켤레|통)"
+    r"(?=$|[^가-힣]|(?:보다|동안|이나|나|만|도|은|는|이|가|을|를|에|째|쯤|씩|간|의|하고|까지|부터)(?:$|[^가-힣]))")
 _KIN_NOUNS = {"딸내미", "딸", "아들", "동생", "여동생", "남동생", "아이", "애", "손주", "손자", "손녀", "조카", "형", "누나", "언니", "오빠"}
 _QUOTES = "‘’'\"“”「」『』《》<>"
 
@@ -303,6 +307,8 @@ def suggest(span: Mapping[str, Any], channel_text: str | None = None, *, limit: 
     if stype == "AGE" and (re.match(r"^\s*(?:살|세)(?![가-힣])", after) or re.match(r"^\s*(?:나\s*)?먹", after)
                            or sp.particle in ("이나", "나") and re.match(r"^\s*먹", after)):
         return []  # 「삼십구 살 때」(단위가 밖) · 「서른셋 먹고도」(나이를 먹다) — 구간 밖을 고쳐야 자연스럽다
+    if stype == "AGE" and not sp.particle and _UNIT_AFTER.match(after):
+        return []  # 「서른 해보다」 「쉰 날」 — 뒤에 단위가 오면 나이가 아니라 수량이다 (1단 규칙 오탐 · 인스턴스 10/5)
     window = before[-20:]
     place_before = any(_is_place_word(w) or _starts_with_place(w) for w in re.split(r"[\s,.!?…]+", window) if w)
     if stype == "FAM" and nxt in _KIN_NOUNS:
