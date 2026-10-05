@@ -222,13 +222,16 @@ class _Index:
         return hit
 
     def _lookup(self, t: str) -> tuple[list[str], str]:
-        # 시군구·시도 약칭이 먼저다 — 「안동」은 사람들이 쓰면 안동시지 김해시 안동(동)이 아니다.
-        # 약칭과 같은 이름의 읍면동이 7개(성동·강동·남동·일산동·영동·안동·하동) 있어, 사전 정확 일치를 먼저 보면 엉뚱한 동 하나로 좁힌다
-        if t in self.short:
-            codes = list(self.short[t])
-            return codes, "short_alias" if len(codes) == 1 else "short_alias_homonym"
+        # 시군구·시도 약칭과 같은 이름의 읍면동이 7개(성동·강동·남동·일산동·영동·안동·하동) 있다. 「안동」은 안동시일 수도
+        # 김해시 안동일 수도 있어 한쪽으로 단정하지 않고 **둘 다** 후보로 둔다 — 한 동으로 좁히지도(k 과소) 엉뚱한 시로
+        # 옮기지도 않는다. 「울산 일산동」처럼 앞 단어가 있으면 _resolve_tokens 의 교집합이 맞는 쪽을 고른다
         info = self.d.resolve_info(t)
         codes = list(info.get("codes") or [])
+        if t in self.short:
+            short = list(self.short[t])
+            if codes and set(codes) != set(short):
+                return sorted(set(codes) | set(short)), "short_alias_homonym"
+            return short, "short_alias" if len(short) == 1 else "short_alias_homonym"
         if codes:
             return codes, str(info.get("resolution"))
         if t in self.short:
@@ -293,6 +296,8 @@ class _Index:
             got, h = self.resolve_text(tok, facility=facility)
             if not got:
                 continue
+            if cur is not None and h in ("stem", "prefix"):
+                continue  # 뒤 단어의 어간·앞머리 추정은 쓰지 않는다 — 「서울 중앙」의 「중앙」이 관악구 중앙동 하나가 된다
             if cur is None:
                 cur, how = got, h
             elif cur & got:
