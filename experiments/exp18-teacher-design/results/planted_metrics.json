@@ -1,0 +1,98 @@
+{
+ "planted_opus48": {
+  "posts": 80,
+  "predicted_spans": 189,
+  "recall_self": 0.924,
+  "recall_all": 0.834,
+  "recall_by_type": {
+   "AGE/other": "6/12",
+   "AGE/self": "28/29",
+   "COMMUTE/self": "6/6",
+   "FAM/self": "7/7",
+   "INCOME/self": "9/12",
+   "JOB/other": "0/2",
+   "JOB/self": "15/15",
+   "LOC_ADMIN/other": "5/12",
+   "LOC_ADMIN/self": "27/30",
+   "LOC_FACILITY/self": "16/18",
+   "SEX/self": "2/2"
+  },
+  "recall_by_variant": {
+   "가족": "7/7",
+   "공원": "3/3",
+   "금액": "9/12",
+   "노선": "3/3",
+   "동": "3/6",
+   "반말어미": "8/8",
+   "배우자": "2/2",
+   "버스": "3/3",
+   "상가": "3/3",
+   "숫자나이": "11/11",
+   "시구": "24/24",
+   "시장": "3/3",
+   "암묵": "3/3",
+   "역": "7/9",
+   "직업명": "12/12",
+   "타인거주": "5/12",
+   "타인나이": "6/12",
+   "타인직업": "0/2",
+   "한글수사": "9/10"
+  },
+  "trap_other": {
+   "planted": 26,
+   "caught": 11,
+   "judged_other": 11,
+   "judged_self": 0
+  },
+  "distractor_age_fp": "2/15",
+  "unplanned_spans_per_post": 0.75
+ },
+ "planted_opus55": {
+  "posts": 80,
+  "predicted_spans": 216,
+  "recall_self": 0.916,
+  "recall_all": 0.897,
+  "recall_by_type": {
+   "AGE/other": "7/12",
+   "AGE/self": "29/29",
+   "COMMUTE/self": "6/6",
+   "FAM/self": "6/7",
+   "INCOME/self": "10/12",
+   "JOB/other": "2/2",
+   "JOB/self": "15/15",
+   "LOC_ADMIN/other": "12/12",
+   "LOC_ADMIN/self": "25/30",
+   "LOC_FACILITY/self": "16/18",
+   "SEX/self": "2/2"
+  },
+  "recall_by_variant": {
+   "가족": "6/7",
+   "공원": "3/3",
+   "금액": "10/12",
+   "노선": "3/3",
+   "동": "6/6",
+   "반말어미": "8/8",
+   "배우자": "2/2",
+   "버스": "3/3",
+   "상가": "3/3",
+   "숫자나이": "11/11",
+   "시구": "19/24",
+   "시장": "3/3",
+   "암묵": "3/3",
+   "역": "7/9",
+   "직업명": "12/12",
+   "타인거주": "12/12",
+   "타인나이": "7/12",
+   "타인직업": "2/2",
+   "한글수사": "10/10"
+  },
+  "trap_other": {
+   "planted": 26,
+   "caught": 21,
+   "judged_other": 21,
+   "judged_self": 0
+  },
+  "distractor_age_fp": "4/15",
+  "unplanned_spans_per_post": 0.96
+ }
+}
