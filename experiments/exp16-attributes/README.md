@@ -44,9 +44,9 @@
 
 | 표현 | 개발셋 | blind | 계약 §4-1 |
 |---|---|---|---|
-| 남편 · 아내 · 영감 (SEX) | explicit 17 · implicit 17 (안에서도 갈림) | implicit 25/25 | 「오빠인 나 → sex implicit」 |
-| 손주 · 며느리 · 셋째 (FAM) | explicit | implicit | 「큰애가 → family implicit」 |
-| 통근 셔틀 · 학원버스 (COMMUTE) | explicit | inferential | — |
+| 남편 · 아내 · 영감 · 할멈 (SEX) | explicit 14 · implicit 17 (안에서도 갈림) | implicit 9/9 | 「오빠인 나 → sex implicit」 |
+| 손주 · 며느리 · 첫째~셋째 (FAM) | explicit 18 · inferential 11 · implicit 4 | implicit 8/8 | 「큰애가 → family implicit」 |
+| 통근 셔틀 · 학원버스 · 통근버스 (COMMUTE) | explicit 4 · inferential 4 | inferential 3 · implicit 2 | — |
 
 계약 예시와 blind 쪽을 따랐다. **A·C 가 개발셋 관례를 정리해야 할 항목**이다.
 
