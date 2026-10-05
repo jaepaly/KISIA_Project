@@ -1,6 +1,7 @@
 """exp17 채점 — 1단 구성의 예측을 「심은 단서」 정답에 대 본다.
 
     python experiments/exp17-planted-eval/score.py preds_a.jsonl [preds_b.jsonl ...]
+    python experiments/exp17-planted-eval/score.py --data experiments/exp17b-heldout-eval/data/posts.jsonl preds.jsonl
 
 예측 파일: 줄마다 {"post_id", "spans": [{text_id, start, end, type, level?, subject?}, ...]} (span.schema 출력 그대로 가능)
 
@@ -31,18 +32,25 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
     hit, tot = Counter(), Counter()
     by_variant_hit, by_variant_tot = Counter(), Counter()
     trap = Counter()
+    grp_hit, grp_tot = Counter(), Counter()
     distract_fp = unplanned = n_pred = 0
     for g in gold:
         p = [dict(x, text_id=x.get("text_id", "body")) for x in preds.get(g["post_id"], [])]
         n_pred += len(p)
         for c in g["planted"]:
+            if c.get("excluded"):
+                continue  # 전수 검토에서 정답이 틀어진 단서 (exp17b README §검토)
             key = f"{c['type']}/{c['subject']}"
             tot[key] += 1
             by_variant_tot[c["variant"]] += 1
             m = [x for x in p if overlap(dict(c, text_id="body"), x)]
+            if "group" in c:
+                grp_tot[c["group"]] += 1
             if m:
                 hit[key] += 1
                 by_variant_hit[c["variant"]] += 1
+                if "group" in c:
+                    grp_hit[c["group"]] += 1
             if c["subject"] == "other":
                 trap["planted"] += 1
                 if m:
@@ -60,6 +68,7 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
         "recall_all": round(sum(hit.values()) / max(1, sum(tot.values())), 3),
         "recall_by_type": {k: f"{hit[k]}/{tot[k]}" for k in sorted(tot)},
         "recall_by_variant": {k: f"{by_variant_hit[k]}/{by_variant_tot[k]}" for k in sorted(by_variant_tot)},
+        "recall_by_group": {k: f"{grp_hit[k]}/{grp_tot[k]}" for k in sorted(grp_tot)},
         "trap_other": {"planted": trap["planted"], "caught": trap["caught"], "judged_other": trap["judged_other"],
                        "judged_self": trap["judged_self"]},
         "distractor_age_fp": f"{distract_fp}/{sum(len(g['distractors']) for g in gold)}",
@@ -77,7 +86,10 @@ def load_preds(path: str) -> dict[str, list[dict]]:
 
 
 def main(argv: list[str]) -> int:
-    gold = [json.loads(l) for l in DATA.open(encoding="utf-8") if l.strip()]
+    data = DATA
+    if argv[:1] == ["--data"]:
+        data, argv = Path(argv[1]), argv[2:]
+    gold = [json.loads(l) for l in data.open(encoding="utf-8") if l.strip()]
     rows = {Path(p).stem: evaluate(gold, load_preds(p)) for p in argv}
     print(json.dumps(rows, ensure_ascii=False, indent=1))
     return 0
