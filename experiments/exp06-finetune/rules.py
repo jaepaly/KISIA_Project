@@ -133,6 +133,24 @@ class ExplicitRules:
         return age_spans(text) | self.location_spans(text) | income_spans(text)
 
 
+_NUMERAL = r"(?:\d{1,3}|" + _TENS + r"(?:\s*" + _ONES + r")?|" + _ONES + r")"
+_UNIT_WORD = r"(?:번|개|명|분|마리|원|장|그릇|잔|해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|칸|층|평|켤레|통)"
+_NUMERAL_WITH_UNIT = re.compile(_NUMERAL + r"\s*" + _UNIT_WORD + r"(?:\s*(?:동안|넘게|째|쯤|씩|이나|나|만|도|은|는|이|가|을|를|의))?")
+
+
+def is_quantity_age(text: str, start: int, end: int) -> bool:
+    """모델이 AGE 로 낸 스팬이 실은 수량·기간인가 — 「스무 해」(스팬에 단위) · 「서른」+「 해 동안」(뒤에 단위).
+
+    규칙 후보는 age_spans 가 이미 거른다. 재학습 모델은 이 거름이 없어 exp17 숫자 함정 7/15 를 나이로 잡았다.
+    """
+    span = text[start:end].strip()
+    if _NUMERAL_WITH_UNIT.fullmatch(span):
+        return True
+    if not re.fullmatch(_NUMERAL, span):
+        return False  # 「서른 살이고」처럼 나이가 이미 닫혔으면 뒤 낱말을 보지 않는다
+    return bool(_QUANTITY_FOLLOWERS.match(text, end) or _DURATION_FOLLOWERS.match(text, end))
+
+
 def merge_with_model(
     post_id: str,
     texts: dict[str, str],
@@ -148,6 +166,7 @@ def merge_with_model(
         raise ValueError("post_id가 필요합니다.")
     by_channel: dict[str, dict[tuple[int, int, str], dict]] = {tid: {} for tid in texts}
     model_keys: set[tuple[str, int, int, str]] = set()
+    quantity_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -157,6 +176,9 @@ def merge_with_model(
         key = (tid, start, end, kind)
         if key in model_keys:
             raise ValueError(f"모델 후보가 중복됐습니다: {post_id}/{tid}")
+        if kind == "AGE" and is_quantity_age(texts[tid], start, end):
+            quantity_dropped += 1  # 「서른 해 동안」 — 나이가 아니라 기간
+            continue
         model_keys.add(key)
         span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
         if "score" in candidate:
@@ -189,5 +211,6 @@ def merge_with_model(
         "selected_rule_only": len(selected_keys & (rule_keys - model_keys)),
         "selected_both": len(selected_keys & model_keys & rule_keys),
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
+        "model_age_quantity_dropped": quantity_dropped,
     }
     return output, stats
