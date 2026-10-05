@@ -21,7 +21,24 @@ _AGE_PATTERNS = (
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _TENS + r"(?:\s*" + _ONES + r")?(?:\s*(?:살|세))?" + _AGE_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _ONES + r"(?:\s*살|\s+세)" + _AGE_ENDING),
 )
+# 수 뒤에 단위가 오면 나이가 아니다 — 「서른 번」 「마흔 명」.
 _QUANTITY_FOLLOWERS = re.compile(r"\s*(?:번|개|명|분|마리|원|장|그릇|잔)")
+# 기간·횟수 단위도 같다 — 「서른 해보다」(근속 30년) 「쉰 날」(쉬다 + 날) 「스무 해 동안」 「스물세 권이나」 (인스턴스 테스트 10/5).
+# 단위 글자가 다른 말의 첫 글자일 수 있어(「벌써」 「해서」 「주고」) 뒤가 조사·끝일 때만 단위로 본다
+_DURATION_FOLLOWERS = re.compile(
+    r"\s*(?:해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|칸|층|평|켤레|통)"  # 「줄」은 뺀다 — 「서른 줄에 접어들다」는 나이
+    r"(?=$|[^가-힣]|(?:보다|동안|이나|나|만|도|은|는|이|가|을|를|에|째|쯤|씩|간|의|하고|까지|부터|이나마)(?:$|[^가-힣]))")
+# 「나이 48에」 — 숫자 나이는 「살·세」가 없으면 위 패턴이 못 잡는다. 「나이」 바로 뒤의 두 자리 수만 (스팬은 수 + 어미)
+_AGE_AFTER_NAI = re.compile(r"(?<![가-힣A-Za-z0-9])나이(?:는|가|도)?\s*(?P<age>[1-9][0-9]"
+                            r"(?:에는|에|때|입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)?)(?![0-9가-힣])")
+# 소득 금액 — 금액은 물건값과 섞이므로 같은 문장에 수입을 뜻하는 말이 있을 때만 (「월급 삼백이십만 원」 「연금 백사십만 원」)
+_KNUM = r"(?:[일이삼사오육칠팔구]?천)?(?:[일이삼사오육칠팔구]?백)?(?:[일이삼사오육칠팔구]?십)?[일이삼사오육칠팔구]?"
+_AMOUNT = re.compile(r"(?<![가-힣A-Za-z0-9])(?:(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?|" + _KNUM + r")\s*(?:만|억)\s*원?"
+                     r"|\d{1,3}(?:,\d{3}){2,}\s*원)")
+# 수입 명사와 「벌다」만 — 「받다·들어오다」는 택배·월세·대출 문장에도 와서 뺀다 (Codex 검토 10/5)
+_INCOME_CONTEXT = re.compile(r"월급|연봉|급여|실수령|월수입|수입|시급|일당|벌이|벌어|번다|벌었|연금|수당|매출|순수익|정산|"
+                             r"인센티브|성과급|보너스|알바비|원고료|강사료|강의료|출연료|상여금|사례비|품삯|용돈|월세 수입")  # 「보수·상여」는 뜻이 갈려 뺀다
+_SENTENCE = re.compile(r"(?:[^.!?\n]|(?<=\d)\.(?=\d))+")  # 「300.5만 원」의 점은 문장 끝이 아니다
 _WORD = re.compile(r"[가-힣]+")
 _REGION_SUFFIXES = ("특별자치시", "특별자치도", "특별시", "광역시", "도", "시", "군", "구")
 _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에게서", "에서는", "으로", "에서",
@@ -31,6 +48,14 @@ _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에�
 # train 검수 골드 331편에서 일반 명사·동사로 쓰여 불일치한 행정구역명/약칭.
 # 실제 지명으로도 쓰일 수 있어 v1+규칙 결과의 한계로 기록한다.
 TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주"})
+
+
+_AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)$")
+
+
+def _is_bare_number(matched: str) -> bool:
+    """「서른」 「쉰」처럼 단위·어미 없이 수만 있나. 「스물세」의 「세」는 수(3)라 맨몸이다."""
+    return not _AGE_CLOSED.search(matched)
 
 
 def age_spans(text: str) -> set[tuple[int, int, str]]:
@@ -43,7 +68,26 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
                 continue
             if _QUANTITY_FOLLOWERS.match(text, end):
                 continue
+            if _is_bare_number(text[start:end]) and _DURATION_FOLLOWERS.match(text, end):
+                continue  # 「서른 해」 「쉰 날」만 — 「23살이고 일을」 「서른 살이고 해가」는 나이가 이미 끝났다 (#309 리뷰)
             found.add((start, end, "AGE"))
+    for match in _AGE_AFTER_NAI.finditer(text):
+        found.add((match.start("age"), match.end("age"), "AGE"))
+    return found
+
+
+def income_spans(text: str) -> set[tuple[int, int, str]]:
+    """수입을 뜻하는 말이 있는 문장 안의 금액 — 「월급 삼백이십만 원」. 물건값(「커피 4,500원」)은 문장에 수입 말이 없어 빠진다."""
+    found: set[tuple[int, int, str]] = set()
+    for sentence in _SENTENCE.finditer(text):
+        if not _INCOME_CONTEXT.search(sentence.group()):
+            continue
+        for match in _AMOUNT.finditer(sentence.group()):
+            value = match.group().rstrip()
+            if value.strip() in ("만", "억", "만 원", "억 원", "만원", "억원"):
+                continue
+            start = sentence.start() + match.start()
+            found.add((start, start + len(value), "INCOME"))
     return found
 
 
@@ -86,7 +130,7 @@ class ExplicitRules:
         return found
 
     def predict_channel(self, text: str) -> set[tuple[int, int, str]]:
-        return age_spans(text) | self.location_spans(text)
+        return age_spans(text) | self.location_spans(text) | income_spans(text)
 
 
 def merge_with_model(
