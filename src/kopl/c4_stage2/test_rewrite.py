@@ -212,3 +212,13 @@ def test_suggest_golden_round3(before, text, after, stype, expected):
     out = _s(before, text, after, stype)
     assert (out[0] if out else None) == expected, out
     assert "중년" not in " ".join(out) or "나이" not in after
+
+
+@pytest.mark.parametrize("before,text,after,stype,expected", [
+    ("", "안동", " 옥동에서 붓을", "LOC_ADMIN", "경북"),       # 안동시 → 경북 (김해시 안동으로 가지 않는다 · 인스턴스 B18_b10)
+    ("", "전주도", " 요즘 비가 와", "LOC_ADMIN", None),        # 「전북도」는 도 이름처럼 읽힌다
+])
+def test_suggest_golden_instance(before, text, after, stype, expected):
+    out = _s(before, text, after, stype)
+    assert (out[0] if out else None) == expected, out
+    assert "김해시" not in out
