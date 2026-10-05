@@ -222,6 +222,11 @@ class _Index:
         return hit
 
     def _lookup(self, t: str) -> tuple[list[str], str]:
+        # 시군구·시도 약칭이 먼저다 — 「안동」은 사람들이 쓰면 안동시지 김해시 안동(동)이 아니다.
+        # 약칭과 같은 이름의 읍면동이 7개(성동·강동·남동·일산동·영동·안동·하동) 있어, 사전 정확 일치를 먼저 보면 엉뚱한 동 하나로 좁힌다
+        if t in self.short:
+            codes = list(self.short[t])
+            return codes, "short_alias" if len(codes) == 1 else "short_alias_homonym"
         info = self.d.resolve_info(t)
         codes = list(info.get("codes") or [])
         if codes:
