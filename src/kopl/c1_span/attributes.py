@@ -170,7 +170,8 @@ def _owned_by_me(before: str) -> bool:
             return all((_core(w) == w or w.endswith("인")) and not re.fullmatch(_OTHERS, _core(w)) for w in chain)
     return False
 # 스팬 바로 뒤가 사람을 꾸미는 자리 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
-_PERSON_AFTER = re.compile(r"^\s*(?:에\s*)?(?:사는|살던|사시는|있는|다니는|일하는|하는)?\s*" + _OTHERS
+_MODIFIER = r"(?:사는|살던|사시는|살고\s*있는|있는|다니는|일하는|하는|된|먹은|짜리|인|이던|였던)"  # 「난」은 1인칭(나는)과 겹쳐 뺀다
+_PERSON_AFTER = re.compile(r"^\s*(?:에\s*)?" + _MODIFIER + r"?\s*" + _OTHERS
                            + r"(?:들|님)?(?:이|가|은|는|도|과|와|랑|이랑|하고|의|을|를|한테|에게|께)?(?![가-힣])")
 _COPULA_AFTER = re.compile(r"(?:들)?(?:야|이야|예요|이에요|입니다|이고|인데요|인데|임|이다|이었어|였어|이거든|거든|라서|이라서|이라|라)(?![가-힣])")
 _RESIDENT_AFTER = re.compile(r"^\s*(?:에\s*)?(?:사는|살던|사시는|살고\s*있는)\s*" + _OTHERS
@@ -213,6 +214,15 @@ def _sentence_window(text: str, start: int, end: int) -> tuple[str, str]:
     return left[cut:], right[: m.start()] if m else right
 
 
+def _person_end(after: str, m: "re.Match[str]") -> int:
+    """_PERSON_AFTER 매치에서 사람 명사가 끝나는 자리 (붙은 조사 앞) — 자기소개(이다) 판정용."""
+    rm = _RESIDENT_AFTER.match(after)
+    if rm:
+        return rm.end()
+    body = re.match(r"^\s*(?:에\s*)?" + _MODIFIER + r"?\s*" + _OTHERS, after)
+    return body.end() if body else m.end()
+
+
 def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
     if channel_text is None or start is None or end is None:
         return "self"
@@ -223,10 +233,18 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
     # ① 스팬 바로 뒤가 타인 → 그 사람의 속성 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
     #    관계·시설 단서(「[옆집] 아주머니」 「[이웃] 엄마들」)는 내 관계라 제외. 「[거래처] 사장님」은 내 일의 상대
     #    조사가 붙은 스팬은 사람을 꾸미지 않는다 — 「[역삼동에서] 친구를 만났다」(만난 곳) · 단 「[동탄에] 사는 친구」
+    # 1단이 꾸밈말까지 스팬에 넣으면(「[동탄 사는] 친구가」 「[아홉 살 된] 아들」) 꾸밈말을 떼고 같은 규칙을 쓴다
+    mod = re.search(r"\s*" + _MODIFIER + r"$", text.strip())
+    if mod and len(text.strip()) - len(mod.group(0)) >= 2:
+        after = mod.group(0) + after
+        text = text.strip()[: len(text.strip()) - len(mod.group(0))]
+        core = _core(text)
     bare = _core(text) == text.strip()
     m = _PERSON_AFTER.match(after) if stype in ("AGE", "LOC_ADMIN", "JOB", "INCOME") else None
-    if m and not bare and not re.match(r"^\s*(?:사는|살던|사시는|있는|다니는|일하는)", after):
+    if m and not bare and not re.match(r"^\s*" + _MODIFIER, after):
         m = None
+    if m and _FIRST_PERSON.search(before) and _COPULA_AFTER.match(after[_person_end(after, m):]):
+        m = None  # 「나는 동탄 사는 아빠야」 — 자기소개 (시설 규칙과 같은 예외)
     if m and not (stype == "JOB" and _COUNTERPART.search(m.group(0))):
         return "other"
     # 장소 단서도 「사는 · 살던 + 사람」이 바로 뒤면 그 사람의 거주지 — 1단이 「동탄」을 시설로 잡아도.
