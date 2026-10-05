@@ -67,9 +67,13 @@ def _short_index() -> dict[str, list[str]]:
 
 
 def _region_codes(text: str) -> list[str]:
-    """시군구·시도 약칭이 먼저다 — 「안동」은 안동시지 김해시 안동(동)이 아니다 (k_engine._lookup 과 같은 순서)."""
+    """약칭과 정식 이름을 둘 다 본다 — 「안동」은 안동시와 김해시 안동 둘 다 후보라 상위가 갈려 넓히지 않는다(기권).
+
+    약칭만 보면 「울산 일산동」의 일산동이 고양시가 되고, 정식 이름만 보면 「안동」이 김해시가 된다 (Codex 검토 10/5).
+    """
     t = unicodedata.normalize("NFC", text).strip()
-    return list(_short_index().get(t, ())) or list(_dict().resolve_info(t).get("codes") or [])
+    codes = list(_dict().resolve_info(t).get("codes") or [])
+    return sorted(set(codes) | set(_short_index().get(t, ())))
 
 
 def _is_place_word(word: str) -> bool:
@@ -209,7 +213,7 @@ _PLACE_NEXT = {"옆자리", "자리", "건물", "옥상", "식당", "주차장",
 _STATION_OK_NEXT = {"근처", "인근", "부근", "앞", "뒤", "옆", "쪽", "출구", "방향", "주변"}
 # 수 뒤 단위 — 나이가 아니라 기간·횟수 (exp06 rules._DURATION_FOLLOWERS 와 같은 목록 · 뒤가 조사·끝일 때만)
 _UNIT_AFTER = re.compile(
-    r"^\s*(?:번|개|명|분|마리|원|장|그릇|잔|해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|줄|칸|층|평|켤레|통)"
+    r"^\s*(?:번|개|명|분|마리|원|장|그릇|잔|해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|칸|층|평|켤레|통)"
     r"(?=$|[^가-힣]|(?:보다|동안|이나|나|만|도|은|는|이|가|을|를|에|째|쯤|씩|간|의|하고|까지|부터)(?:$|[^가-힣]))")
 _KIN_NOUNS = {"딸내미", "딸", "아들", "동생", "여동생", "남동생", "아이", "애", "손주", "손자", "손녀", "조카", "형", "누나", "언니", "오빠"}
 _QUOTES = "‘’'\"“”「」『』《》<>"

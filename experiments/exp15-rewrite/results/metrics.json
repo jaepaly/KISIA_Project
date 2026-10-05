@@ -1,8 +1,8 @@
 {
   "spans": 2379,
-  "covered": 659,
-  "coverage": 0.277,
-  "candidates": 883,
+  "covered": 652,
+  "coverage": 0.2741,
+  "candidates": 876,
   "junction_errors": 0,
   "junction_error_examples": [],
   "by_type_level": {
@@ -83,13 +83,13 @@
     },
     "LOC_ADMIN/explicit": {
       "spans": 205,
-      "covered": 83,
-      "rate": 0.405
+      "covered": 77,
+      "rate": 0.376
     },
     "LOC_ADMIN/inferential": {
       "spans": 77,
-      "covered": 10,
-      "rate": 0.13
+      "covered": 9,
+      "rate": 0.117
     },
     "LOC_FACILITY/explicit": {
       "spans": 14,
