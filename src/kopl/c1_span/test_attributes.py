@@ -129,3 +129,13 @@ def test_subject_facility_residence_of_other(sentence, span, stype, expected):
 def test_first_person_resident_is_self(sentence, span):
     """Codex 검토(10/5): 1인칭 주어가 있으면 「동탄 사는 + 사람」도 본인."""
     assert _r(sentence, span, "LOC_FACILITY")["subject"] == "self"
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    ("나는 동탄 사는 친구를 만났다", "동탄", "other"),     # Codex 2차 — 친구의 거주지
+    ("나는 동탄 사는 아빠를 만났다", "동탄", "other"),
+    ("나는 동탄 사는 아빠야", "동탄", "self"),            # 자기소개
+    ("저는 동탄 사는 직장인입니다", "동탄", "self"),
+])
+def test_first_person_self_intro_vs_modifier(sentence, span, expected):
+    assert _r(sentence, span, "LOC_FACILITY")["subject"] == expected
