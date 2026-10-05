@@ -44,7 +44,8 @@ class RuleTests(unittest.TestCase):
         from rules import income_spans
         text = ('이번 달 월급 삼백이십만 원 들어왔다. 커피는 4,500원. 연금 140만 원 받는다. 집값이 3억이라니. '
                 '월급 300.5만 원 받았어. 택배로 5만 원짜리 받았다. 월세 60만 원 들어갔다. '
-                '알바비로 80만 원 받았다. 원고료 70만 원 들어왔다. 연봉 1,300.5만 원')
+                '알바비로 80만 원 받았다. 원고료 70만 원 들어왔다. 연봉 1,300.5만 원. '
+                '보수 정당에 90만 원 기부했다. 건물 보수에 91만 원 썼다. 상여 운구 비용으로 92만 원 냈다')
         found = {text[start:end] for start, end, kind in income_spans(text)}
         self.assertEqual(found, {'삼백이십만 원', '140만 원', '300.5만 원', '80만 원', '70만 원', '1,300.5만 원'})
 
