@@ -511,13 +511,25 @@ def conditions_from_posts(posts: Sequence[Mapping[str, Any]]) -> list[dict[str, 
         idx = _default_index()
         # 「안동」 — 약칭과 같은 이름의 동이 있는 지명은 build_conditions 가 동 코드(김해시 안동) 하나로 고정한다.
         # 이 스팬들은 빼고 아래 해석기(약칭·동 둘 다 후보)로 보낸다
-        collision = {id(s) for s in spans if s.get("type") in ("LOC_ADMIN", "LOC_FACILITY")
-                     and idx.is_short_collision(str(s.get("text", "")))}
-        conds = list(build_conditions([s for s in spans if id(s) not in collision], pid, dictionary=d))
+        collision = [s for s in spans if s.get("type") in ("LOC_ADMIN", "LOC_FACILITY")
+                     and idx.is_short_collision(str(s.get("text", "")))]
+        conds = list(build_conditions([s for s in spans if not any(s is c for c in collision)], pid, dictionary=d))
+        collision_ids: set[int] = set()  # build_conditions 가 조건을 만든 겹침 스팬 — 못 만든 것(「안동에서」)은 아래 해석기로
+        for s in collision:
+            # 해상도·위험도(risk_total)는 build_conditions 그대로 둬 추천 엔진·exp10 과 같게, 동 코드만 떼고 원문 값으로 —
+            # k 는 약칭·동 둘 다 후보로 계산된다 (Codex 3차)
+            made = build_conditions([s], pid, dictionary=d)
+            for c in made:
+                if c.get("axis") == "location" and c.get("geo_code"):
+                    c.pop("geo_code")
+                    c["value"] = str(s.get("text", ""))
+                conds.append(c)
+            if made:
+                collision_ids.add(id(s))
         for s in spans:
             if s.get("type") not in ("LOC_ADMIN", "LOC_FACILITY") or s.get("subject") == "other":
                 continue
-            if id(s) not in collision and build_conditions([s], pid, dictionary=d):
+            if id(s) in collision_ids or (not any(s is c for c in collision) and build_conditions([s], pid, dictionary=d)):
                 continue  # build_conditions 가 이미 조건으로 만든 위치 스팬
             level = str(s.get("level"))
             if level not in LEVEL_CONFIDENCE:
