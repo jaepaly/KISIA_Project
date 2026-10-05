@@ -67,8 +67,9 @@ def _short_index() -> dict[str, list[str]]:
 
 
 def _region_codes(text: str) -> list[str]:
+    """시군구·시도 약칭이 먼저다 — 「안동」은 안동시지 김해시 안동(동)이 아니다 (k_engine._lookup 과 같은 순서)."""
     t = unicodedata.normalize("NFC", text).strip()
-    return list(_dict().resolve_info(t).get("codes") or []) or list(_short_index().get(t, ()))
+    return list(_short_index().get(t, ())) or list(_dict().resolve_info(t).get("codes") or [])
 
 
 def _is_place_word(word: str) -> bool:
@@ -335,6 +336,9 @@ def suggest(span: Mapping[str, Any], channel_text: str | None = None, *, limit: 
         new = josa.replace(text, word, after, copula_in=copula_in, loc=loc, hada=hada_slot)
         if new is None or new == text:
             continue
+        if kind == "widen" and stype == "LOC_ADMIN" and re.match(re.escape(word) + r"도(?![가-힣])", new) \
+                and (word in _SIDO_SHORT.values() or word in {a for al in _SIDO_ALIASES.values() for a in al})                 and not word.endswith("도"):
+            continue  # 「전주도 → 전북도」 — 조사 「도」가 붙어 도 이름(전라북도)처럼 읽힌다
         words = new.split()
         if any(a == b or josa.split_tail(b).core == a for a, b in zip(words, words[1:])):
             continue  # 「아이 아이가」
