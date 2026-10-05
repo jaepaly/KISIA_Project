@@ -11,11 +11,11 @@ function loadScan() {
 
 async function showEngineBadge(elId) {
   try {
-    const r = await fetch("/api/engine-mode");
+    const r = await fetch("../api/engine-mode");
     const d = await r.json();
-    document.getElementById(elId).textContent = `engine: ${d.mode}`;
+    document.getElementById(elId).textContent = d.mode === "real" ? "엔진 · 실제" : "엔진 · 목";
   } catch (e) {
-    document.getElementById(elId).textContent = "engine: unknown";
+    document.getElementById(elId).textContent = "엔진 · 확인 불가";
   }
 }
 
@@ -24,6 +24,11 @@ const VERDICT_LABEL = {
   narrowed: "좁혀짐",
   weak_signal: "약한 신호",
   abstain: "판단 보류",
+};
+
+const GRAIN_LABEL = {
+  sido: "시도", sigungu: "시군구", eupmyeondong: "읍면동",
+  exact: "정확", range: "범위", decade: "연령대",
 };
 
 const ATTR_LABEL = {

@@ -2,21 +2,32 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>2화면 — 진단</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>진단 — 파도풀</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>2화면 — 위험도 진단</h1>
-<nav>
-  <a href="/static/scan.html">스캔</a>
-  <a href="/static/diagnosis.html">진단</a>
-  <a href="/static/action.html">조치</a>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">파도풀 <span class="brand-sub">올리기 전에, 내가 몇 명 중 한 명인지</span></div>
+    <div class="engine" id="badge"></div>
+  </div>
+</header>
+
+<nav class="steps">
+  <a href="scan.html"><span class="n">1</span>스캔</a>
+  <a href="diagnosis.html" aria-current="step"><span class="n">2</span>진단</a>
+  <a href="action.html"><span class="n">3</span>조치</a>
 </nav>
 
+<main>
+<h1>AI가 추정한 당신</h1>
+<p class="lede">모아 둔 글에서 무엇이 읽히는지, 그래서 몇 명 중 한 명까지 좁혀지는지 보여줍니다.</p>
 <div id="content">불러오는 중...</div>
-<footer id="badge"></footer>
+</main>
 
-<script src="/static/common.js"></script>
+<footer>엔진 판정은 참고용입니다. 최종 판단과 조치는 사용자가 합니다.</footer>
+
+<script src="common.js"></script>
 <script>
 showEngineBadge("badge");
 
@@ -31,10 +42,10 @@ function renderSpecificity(spec) {
 function renderFindings(findings) {
   return Object.entries(findings).map(([attr, f]) => {
     if (f.verdict === "abstain") {
-      return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge abstain">판단 보류</span> (근거 부족, confidence ${f.confidence})</div>`;
+      return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge abstain">판단 보류</span> (근거 부족 · 신뢰도 ${f.confidence})</div>`;
     }
     return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge found">${VERDICT_LABEL[f.verdict] || f.verdict}</span>
-      ${f.granularity ? `(${f.granularity})` : ""} confidence ${f.confidence}</div>`;
+      ${f.granularity ? `<span class="muted">${GRAIN_LABEL[f.granularity] || f.granularity} 수준</span>` : ""} <span class="muted">· 신뢰도 ${f.confidence}</span></div>`;
   }).join("");
 }
 
@@ -45,7 +56,7 @@ function highlight(body, spans) {
   const sorted = [...spans].sort((a, b) => a.start - b.start);
   for (const s of sorted) {
     out += (body || "").slice(last, s.start);
-    out += `<span class="span-hit" title="${s.type} / ${s.level} / ${s.subject}">${(body || "").slice(s.start, s.end)}</span>`;
+    out += `<span class="span-hit" data-type="${s.type}" title="${s.type} / ${s.level} / ${s.subject}">${(body || "").slice(s.start, s.end)}</span>`;
     last = s.end;
   }
   out += (body || "").slice(last);
@@ -54,29 +65,36 @@ function highlight(body, spans) {
 
 function renderPosts(data) {
   if (!data.posts.length) {
-    return `<div class="card">탐지된 글이 없습니다 (네거티브 컨트롤 — 위험도 계산 대상 0편).</div>`;
+    return `<div class="card"><p class="empty">탐지된 글이 없습니다 — 위험도 계산 대상 0편</p></div>`;
   }
   return data.posts.map(p => {
     const spans = (data.spans[p.post_id] || { spans: [] }).spans;
-    const spanNote = spans.length ? "" : "<p><i>탐지된 단서 없음</i></p>";
-    return `<div class="card"><p>${highlight(p.body, spans)}</p>${spanNote}</div>`;
+    const spanNote = spans.length ? "" : `<p class="muted">탐지된 단서 없음</p>`;
+    return `<div class="card"><p class="post-body">${highlight(p.body, spans)}</p>${spanNote}</div>`;
   }).join("");
 }
 
 const data = loadScan();
 const el = document.getElementById("content");
 if (!data) {
-  el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="/static/scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
+  el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
 } else {
   el.innerHTML = `
-    <h2>${data.user_ref}</h2>
-    ${renderSpecificity(data.specificity)}
-    <p>기준 위험도: <b>${data.contribution.output.baseline_risk}</b></p>
+    <div class="card">
+      <h2>${data.user_ref}</h2>
+      <p class="score"><b>${data.contribution.output.baseline_risk}</b><span class="unit">/ 100 · 기준 위험도</span></p>
+      ${renderSpecificity(data.specificity)}
+    </div>
     <h3>7속성 판정</h3>
     ${renderFindings(data.stage2.output.findings)}
-    <h3>글 (탐지된 단서 하이라이트)</h3>
+    <h3>글에서 읽힌 단서</h3>
+    <p class="legend">
+      <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
+      <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
+      <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
+    </p>
     ${renderPosts(data)}
-    <p><a href="/static/action.html">→ 조치 화면으로</a></p>
+    <p><a href="action.html">조치 화면으로 →</a></p>
   `;
 }
 </script>

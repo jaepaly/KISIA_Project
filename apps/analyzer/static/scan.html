@@ -2,45 +2,61 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>1화면 — 스캔</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>스캔 — 파도풀</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>1화면 — 글 목록 · 스캔 요청</h1>
-<nav>
-  <a href="/static/scan.html">스캔</a>
-  <a href="/static/diagnosis.html">진단</a>
-  <a href="/static/action.html">조치</a>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">파도풀 <span class="brand-sub">올리기 전에, 내가 몇 명 중 한 명인지</span></div>
+    <div class="engine" id="badge"></div>
+  </div>
+</header>
+
+<nav class="steps">
+  <a href="scan.html" aria-current="step"><span class="n">1</span>스캔</a>
+  <a href="diagnosis.html"><span class="n">2</span>진단</a>
+  <a href="action.html"><span class="n">3</span>조치</a>
 </nav>
 
+<main>
+<h1>내 글 불러오기</h1>
+<p class="lede">분석할 글을 가져옵니다. 가상 SNS 계정에서 바로 끌어오거나, 다른 서비스에서 내보낸 파일을 올릴 수 있습니다.</p>
 <div class="card">
-  <h2>가상 SNS 계정으로 스캔</h2>
-  <p><code>user_ref</code> (예: <code>u_3f2a91c4</code>)</p>
-  <input id="userRef" type="text" placeholder="u_...">
-  <button id="scanBtn">스캔 시작</button>
-  <p id="scanMsg"></p>
+  <h2>가상 SNS 계정에서 가져오기</h2>
+  <p class="hint">계정 식별자를 넣으면 그 계정의 글을 모두 읽어 옵니다. 예: <code>u_3f2a91c4</code></p>
+  <div class="row">
+    <input id="userRef" type="text" placeholder="u_...">
+    <button id="scanBtn">스캔 시작</button>
+  </div>
+  <p id="scanMsg" class="muted"></p>
 </div>
 
 <div class="card">
-  <h2>글 직접 분석 (수동 업로드)</h2>
-  <p>.txt(줄마다 글 한 편) 또는 .json(내보내기 형식) — 서버는 메모리에서만 읽고 디스크에 저장하지 않는다.</p>
-  <input id="uploadFile" type="file" accept=".txt,.json">
-  <button id="uploadBtn">업로드하고 분석</button>
-  <p id="uploadMsg"></p>
+  <h2>다른 서비스에서 내보낸 파일 올리기</h2>
+  <p class="hint">블로그나 SNS 에서 내려받은 <code>.txt</code>(줄마다 글 한 편) 또는 <code>.json</code> 을 올립니다.
+    올린 글은 메모리에서만 읽고 디스크에 저장하지 않습니다.</p>
+  <div class="row">
+    <input id="uploadFile" type="file" accept=".txt,.json">
+    <button id="uploadBtn">올리고 분석</button>
+  </div>
+  <p id="uploadMsg" class="muted"></p>
 </div>
 
 <div id="postList"></div>
 
-<footer id="badge"></footer>
+</main>
 
-<script src="/static/common.js"></script>
+<footer>엔진 판정은 참고용입니다. 최종 판단과 조치는 사용자가 합니다.</footer>
+
+<script src="common.js"></script>
 <script>
 showEngineBadge("badge");
 
 async function runScan(user_ref) {
   const msg = document.getElementById("scanMsg");
   msg.textContent = "스캔 중...";
-  const r = await fetch(`/scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
+  const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
   if (!r.ok) {
     const detail = await r.text();
     msg.textContent = `실패: ${r.status} ${detail}`;
@@ -50,7 +66,7 @@ async function runScan(user_ref) {
   const data = await r.json();
   saveScan(data);
   msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
-  location.href = "/static/diagnosis.html";
+  location.href = "diagnosis.html";
 }
 
 document.getElementById("scanBtn").onclick = () => {
@@ -66,7 +82,7 @@ document.getElementById("uploadBtn").onclick = async () => {
   msg.textContent = "분석 중...";
   const form = new FormData();
   form.append("file", f);
-  const r = await fetch("/upload", { method: "POST", body: form });
+  const r = await fetch("../upload", { method: "POST", body: form });
   if (!r.ok) {
     msg.textContent = `실패: ${r.status} ${await r.text()}`;
     msg.className = "error";
@@ -75,13 +91,20 @@ document.getElementById("uploadBtn").onclick = async () => {
   const data = await r.json();
   saveScan(data);
   msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
-  location.href = "/static/diagnosis.html";
+  location.href = "diagnosis.html";
 };
+
+// Veilo 프로필에서 ?u= 를 달고 넘어오면 바로 돌린다
+const _u = new URLSearchParams(location.search).get("u");
+if (_u) {
+  document.getElementById("userRef").value = _u;
+  runScan(_u);
+}
 
 const cached = loadScan();
 if (cached) {
   document.getElementById("postList").innerHTML =
-    `<p>가장 최근 스캔: <b>${cached.user_ref}</b> — 글 ${cached.posts.length}편 (진단/조치 화면에서 이어볼 수 있습니다)</p>`;
+    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${cached.user_ref}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
 }
 </script>
 </body>
