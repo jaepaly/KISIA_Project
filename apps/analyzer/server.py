@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -35,57 +35,34 @@ def engine_mode():
     return {"mode": os.getenv("ENGINE_MODE", "mock")}
 
 
-_AXIS_BY_TYPE = {
-    "LOC_FACILITY": "location", "LOC_ADMIN": "location",
-    "REL_HOME": "location", "REL_WORK": "location",
-    "AGE": "age", "SEX": "sex", "JOB": "occupation",
-    "FAM": "family", "COMMUTE": "commute", "INCOME": "income",
-}
+def _detect_input(post: dict) -> dict:
+    """1단 입력 — 제목·본문·사진 캡션 (export 의 photos 는 [{"caption": ...}]).
 
-
-def _derive_conditions(spans_by_post: dict[str, dict], all_post_ids: list[str]) -> list[dict]:
-    """탐지된 스팬 유형에서 특정성 엔진에 넘길 조건을 만든다.
-
-    실제 조건 산출은 C 몫이다. 여기서는 목 엔진이 요구하는 최소 형태(계약의
-    conditions minItems 1)만 채운다.
+    빈 캡션도 자리를 지킨다 — 빼면 뒤 캡션의 번호(photo_caption:N)가 화면과 어긋난다.
     """
-    by_axis: dict[str, list[str]] = {}
-    for post_id, result in spans_by_post.items():
-        for span in result["spans"]:
-            axis = _AXIS_BY_TYPE.get(span["type"])
-            if axis:
-                by_axis.setdefault(axis, []).append(post_id)
+    captions = [(ph.get("caption") if isinstance(ph, dict) else ph) or "" for ph in post.get("photos") or []]
+    record = {"post_id": post["post_id"], "title": post.get("title"), "body": post.get("body") or "",
+              "photo_captions": captions}
+    return {k: v for k, v in record.items() if v not in (None, [])}
 
-    if not by_axis:
-        # 네거티브 컨트롤 — 탐지된 단서가 하나도 없다. axis를 location이 아닌
-        # 값으로 둬 mock.specificity가 UNKNOWN(산출 불가)을 내도록 한다.
-        return [{
-            "axis": "occupation", "kind": "none_detected", "value": "MOCK_NONE",
-            "resolution": 0, "confidence": 0.0,
-            "source_post_ids": all_post_ids or ["mock_post"],
-        }]
 
-    conditions = []
-    for axis, post_ids in by_axis.items():
-        cond = {
-            "axis": axis, "kind": "mock_detected", "value": "MOCK",
-            "resolution": 1, "confidence": 0.5,
-            "source_post_ids": sorted(set(post_ids)),
-        }
-        if axis == "location":
-            cond["geo_code"] = "4146351000"
-        conditions.append(cond)
-    return conditions
+def _check_posts(posts: list[dict]) -> None:
+    """글 0편은 허용한다 — 「글 0편인 작성자도 화면이 에러 없이」(e-integration §4). 중복·빈 ID 는 막는다."""
+    ids = [p.get("post_id") for p in posts]
+    if any(not isinstance(i, str) or not i for i in ids):
+        raise HTTPException(status_code=400, detail="모든 글에 post_id 가 있어야 합니다")
+    dup = sorted({i for i in ids if ids.count(i) > 1})
+    if dup:
+        raise HTTPException(status_code=400, detail=f"같은 post_id 가 여러 번 있습니다: {', '.join(dup[:5])}")
 
 
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
-    spans_by_post = {
-        p["post_id"]: engine.detect_spans({"post_id": p["post_id"], "body": p.get("body", "")})
-        for p in posts
-    }
-    conditions = _derive_conditions(spans_by_post, [p["post_id"] for p in posts])
+    _check_posts(posts)
+    spans_by_post = {p["post_id"]: engine.detect_spans(_detect_input(p)) for p in posts}
+    # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
+    conditions = engine.conditions(posts, spans_by_post)
     spec = engine.specificity({"user_ref": user_ref, "conditions": conditions})
-    contrib = engine.contribution(user_ref, posts)
+    contrib = engine.contribution(user_ref, posts, spans_by_post=spans_by_post)
 
     baseline = contrib["output"]["baseline_risk"]
     target = round(max(baseline - 40.0, 0.0), 1)
@@ -97,6 +74,7 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
         "spans": spans_by_post,
         "specificity": spec,
         "contribution": contrib,
+        "k_by_post": engine.per_post_k(posts, spans_by_post),
         "stage2": stage2,
     }
 
@@ -110,13 +88,37 @@ def scan(user_ref: str):
     return _run_pipeline(user_ref, export.get("posts", []))
 
 
+# 업로드 상한 — 멀티파트 해석기는 1MiB(1,048,576B)를 넘는 파일을 임시 파일(디스크)로 넘긴다. 받은 본문 전체를
+# 그보다 작게 묶어 「메모리에서 읽고 버린다」를 지킨다. 헤더(Content-Length)는 속일 수 있으니 실제로 받은 바이트를 센다
+MAX_UPLOAD_BYTES = 1_040_000
+
+
+async def _read_capped(request: Request) -> bytes:
+    body = bytearray()
+    async for chunk in request.stream():
+        body += chunk
+        if len(body) > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail="파일이 너무 큽니다 (약 1MB 이하)")
+    return bytes(body)
+
+
 @app.post("/upload")
-async def upload_and_scan(file: UploadFile = File(...)):
+async def upload_and_scan(request: Request):
     """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다."""
+    body = await _read_capped(request)
+
+    async def _replay() -> dict:
+        return {"type": "http.request", "body": body, "more_body": False}
+
+    form = await Request(request.scope, _replay).form()  # 상한 아래라 해석기도 메모리에서만 다룬다
+    file = form.get("file")
+    if file is None or not hasattr(file, "read"):
+        raise HTTPException(status_code=400, detail="file 필드가 필요합니다")
     content = await file.read()
+    await form.close()
     try:
-        export = file_adapter.load_from_bytes(content, file.filename or "upload.txt")
-    except ValueError as exc:
+        export = file_adapter.load_from_bytes(content, getattr(file, "filename", None) or "upload.txt")
+    except (ValueError, UnicodeDecodeError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _run_pipeline(export["user_ref"], export.get("posts", []))
 

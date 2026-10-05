@@ -81,7 +81,7 @@ document.getElementById("uploadBtn").onclick = async () => {
 const cached = loadScan();
 if (cached) {
   document.getElementById("postList").innerHTML =
-    `<p>가장 최근 스캔: <b>${cached.user_ref}</b> — 글 ${cached.posts.length}편 (진단/조치 화면에서 이어볼 수 있습니다)</p>`;
+    `<p>가장 최근 스캔: <b>${esc(cached.user_ref)}</b> — 글 ${cached.posts.length}편 (진단/조치 화면에서 이어볼 수 있습니다)</p>`;
 }
 </script>
 </body>

@@ -19,7 +19,7 @@ import unicodedata
 from collections import OrderedDict
 from pathlib import Path
 
-from .mock import contribution, specificity  # noqa: F401 — 아직 안 온 것은 목을 그대로 쓴다
+from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
 
 _ROOT = Path(__file__).resolve().parents[3]
 _EXP06 = _ROOT / "experiments" / "exp06-finetune"
