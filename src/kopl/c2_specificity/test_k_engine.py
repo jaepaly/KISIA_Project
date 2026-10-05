@@ -368,7 +368,7 @@ def test_sigungu_short_wins_over_same_named_dong(word, sigungu):
     idx = _default_index()
     got, how = idx.resolve_text(word)
     want, _ = idx.resolve_text(sigungu)
-    assert how.startswith("short_alias") and want <= got
+    assert how == "short_alias_homonym" and want <= got and len(got) > len(want)   # 같은 이름의 동도 후보로 남는다
 
 
 @pytest.mark.parametrize("multi,narrow", [("수원 영통구에", "영통구"), ("경기 수원 영통구", "영통구"), ("용인 기흥구", "기흥구"),
@@ -387,3 +387,13 @@ def test_bare_number_age_span_narrows():
     from kopl.c2_specificity.k_engine import age_bands
     assert age_bands({"axis": "age", "kind": "age_mention", "value": "48에"}) == age_bands({"axis": "age", "kind": "age_exact", "value": "48살"})
     assert age_bands({"axis": "age", "kind": "age_mention", "value": "2024년"}) is None
+
+
+@pytest.mark.parametrize("multi,narrow", [("울산 일산동에서", "울산 동구 일산동"), ("서울 중앙 쪽에", "서울")])
+def test_multi_token_codex_regressions(multi, narrow):
+    """Codex 검토(10/5): 「울산 일산동」은 울산의 일산동(고양 아님) · 「서울 중앙」은 중앙동 하나로 좁히지 않는다."""
+    from kopl.c2_specificity.k_engine import _default_index
+    idx = _default_index()
+    got, _ = idx.resolve_text(multi)
+    want, _ = idx.resolve_text(narrow)
+    assert got == want
