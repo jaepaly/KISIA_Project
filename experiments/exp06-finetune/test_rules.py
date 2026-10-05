@@ -71,6 +71,22 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'서른', '마흔'})
 
+    def test_model_age_quantity_is_dropped_in_merge(self):
+        """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
+        from rules import is_quantity_age
+        cases = {
+            ('시청에서 보낸 서른 해 동안', '서른'): True,
+            ('스무 해 넘게 살았다', '스무 해'): True,
+            ('책이 스물세 권이나', '스물세 권이나'): True,
+            ('나는 서른 살이고 해가 지면', '서른 살이고'): False,
+            ('스물다섯인데 벌써', '스물다섯인데'): False,
+            ('마흔둘인데 날이 좋다', '마흔둘인데'): False,
+            ('올해 서른 줄에 접어들었다', '서른'): False,
+        }
+        for (text, span), expected in cases.items():
+            start = text.index(span)
+            self.assertEqual(is_quantity_age(text, start, start + len(span)), expected, (text, span))
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'
