@@ -61,6 +61,51 @@ def detect_spans(post: dict) -> dict:
     }
 
 
+_AXIS_BY_TYPE = {
+    "LOC_FACILITY": "location", "LOC_ADMIN": "location",
+    "REL_HOME": "location", "REL_WORK": "location",
+    "AGE": "age", "SEX": "sex", "JOB": "occupation",
+    "FAM": "family", "COMMUTE": "commute", "INCOME": "income",
+}
+
+
+def conditions(posts: list[dict], spans_by_post: dict[str, dict]) -> list[dict]:
+    """목 조건 — 계약(conditions minItems 1) 최소 형태만. 값은 의미 없다."""
+    all_post_ids = [p["post_id"] for p in posts]
+    by_axis: dict[str, list[str]] = {}
+    for post_id, result in spans_by_post.items():
+        for span in result["spans"]:
+            axis = _AXIS_BY_TYPE.get(span["type"])
+            if axis:
+                by_axis.setdefault(axis, []).append(post_id)
+
+    if not by_axis:
+        # 네거티브 컨트롤 — 탐지된 단서가 하나도 없다. axis를 location이 아닌
+        # 값으로 둬 specificity가 UNKNOWN(산출 불가)을 내도록 한다.
+        return [{
+            "axis": "occupation", "kind": "none_detected", "value": "MOCK_NONE",
+            "resolution": 0, "confidence": 0.0,
+            "source_post_ids": all_post_ids or ["mock_post"],
+        }]
+
+    out = []
+    for axis, post_ids in by_axis.items():
+        cond = {
+            "axis": axis, "kind": "mock_detected", "value": "MOCK",
+            "resolution": 1, "confidence": 0.5,
+            "source_post_ids": sorted(set(post_ids)),
+        }
+        if axis == "location":
+            cond["geo_code"] = "4146351000"
+        out.append(cond)
+    return out
+
+
+def per_post_k(posts: list[dict], spans_by_post: dict[str, dict]) -> None:
+    """목에는 글별 k 가 없다 — 화면은 이 칸이 비면 표시하지 않는다."""
+    return None
+
+
 def specificity(payload: dict) -> dict:
     """C(c2) 자리. specificity.schema.json 준수.
 
@@ -102,7 +147,8 @@ def specificity(payload: dict) -> dict:
     }
 
 
-def contribution(user_ref: str, posts: list[dict], removed_post_ids: list[str] | None = None) -> dict:
+def contribution(user_ref: str, posts: list[dict], removed_post_ids: list[str] | None = None, *,
+                 spans_by_post: dict | None = None) -> dict:
     """C(c3) 자리. contribution.schema.json 준수.
 
     글이 많을수록 baseline_risk 가 오르는 형태만 흉내낸다.

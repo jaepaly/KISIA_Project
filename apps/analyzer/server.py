@@ -35,57 +35,20 @@ def engine_mode():
     return {"mode": os.getenv("ENGINE_MODE", "mock")}
 
 
-_AXIS_BY_TYPE = {
-    "LOC_FACILITY": "location", "LOC_ADMIN": "location",
-    "REL_HOME": "location", "REL_WORK": "location",
-    "AGE": "age", "SEX": "sex", "JOB": "occupation",
-    "FAM": "family", "COMMUTE": "commute", "INCOME": "income",
-}
-
-
-def _derive_conditions(spans_by_post: dict[str, dict], all_post_ids: list[str]) -> list[dict]:
-    """탐지된 스팬 유형에서 특정성 엔진에 넘길 조건을 만든다.
-
-    실제 조건 산출은 C 몫이다. 여기서는 목 엔진이 요구하는 최소 형태(계약의
-    conditions minItems 1)만 채운다.
-    """
-    by_axis: dict[str, list[str]] = {}
-    for post_id, result in spans_by_post.items():
-        for span in result["spans"]:
-            axis = _AXIS_BY_TYPE.get(span["type"])
-            if axis:
-                by_axis.setdefault(axis, []).append(post_id)
-
-    if not by_axis:
-        # 네거티브 컨트롤 — 탐지된 단서가 하나도 없다. axis를 location이 아닌
-        # 값으로 둬 mock.specificity가 UNKNOWN(산출 불가)을 내도록 한다.
-        return [{
-            "axis": "occupation", "kind": "none_detected", "value": "MOCK_NONE",
-            "resolution": 0, "confidence": 0.0,
-            "source_post_ids": all_post_ids or ["mock_post"],
-        }]
-
-    conditions = []
-    for axis, post_ids in by_axis.items():
-        cond = {
-            "axis": axis, "kind": "mock_detected", "value": "MOCK",
-            "resolution": 1, "confidence": 0.5,
-            "source_post_ids": sorted(set(post_ids)),
-        }
-        if axis == "location":
-            cond["geo_code"] = "4146351000"
-        conditions.append(cond)
-    return conditions
+def _detect_input(post: dict) -> dict:
+    """1단 입력 — 제목·본문·사진 캡션 (export 의 photos 는 [{"caption": ...}])."""
+    captions = [ph.get("caption") if isinstance(ph, dict) else ph for ph in post.get("photos") or []]
+    record = {"post_id": post["post_id"], "title": post.get("title"), "body": post.get("body") or "",
+              "photo_captions": [c for c in captions if c]}
+    return {k: v for k, v in record.items() if v not in (None, [])}
 
 
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
-    spans_by_post = {
-        p["post_id"]: engine.detect_spans({"post_id": p["post_id"], "body": p.get("body", "")})
-        for p in posts
-    }
-    conditions = _derive_conditions(spans_by_post, [p["post_id"] for p in posts])
+    spans_by_post = {p["post_id"]: engine.detect_spans(_detect_input(p)) for p in posts}
+    # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
+    conditions = engine.conditions(posts, spans_by_post)
     spec = engine.specificity({"user_ref": user_ref, "conditions": conditions})
-    contrib = engine.contribution(user_ref, posts)
+    contrib = engine.contribution(user_ref, posts, spans_by_post=spans_by_post)
 
     baseline = contrib["output"]["baseline_risk"]
     target = round(max(baseline - 40.0, 0.0), 1)
@@ -97,6 +60,7 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
         "spans": spans_by_post,
         "specificity": spec,
         "contribution": contrib,
+        "k_by_post": engine.per_post_k(posts, spans_by_post),
         "stage2": stage2,
     }
 
