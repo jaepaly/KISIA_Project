@@ -215,7 +215,8 @@ def test_suggest_golden_round3(before, text, after, stype, expected):
 
 
 @pytest.mark.parametrize("before,text,after,stype,expected", [
-    ("", "안동", " 옥동에서 붓을", "LOC_ADMIN", "경북"),       # 안동시 → 경북 (김해시 안동으로 가지 않는다 · 인스턴스 B18_b10)
+    ("", "안동", " 옥동에서 붓을", "LOC_ADMIN", None),         # 안동시·김해시 안동 둘 다 — 기권 (김해시로 넓히지 않는다 · B18_b10)
+    ("", "일산동에서", " 대왕암공원까지", "LOC_ADMIN", None),   # 울산 일산동·고양 일산동구 — 기권 (Codex 10/5)
     ("", "전주도", " 요즘 비가 와", "LOC_ADMIN", None),        # 「전북도」는 도 이름처럼 읽힌다
 ])
 def test_suggest_golden_instance(before, text, after, stype, expected):
@@ -237,3 +238,8 @@ def test_age_before_unit_abstains(before, text, after):
 def test_age_with_unit_like_word_still_rewrites():
     """「벌써」의 「벌」은 단위(옷 한 벌)가 아니다 — 나이로 바꿔 쓴다."""
     assert _s("", "스물다섯인데", " 벌써 이렇게", "AGE")[:1] == ["20대 후반인데"]
+
+
+def test_age_line_idiom_still_rewrites():
+    """「서른 줄에」는 나이 — 단위로 보고 기권하지 않는다 (Codex 10/5)."""
+    assert _s("어느새 ", "서른", " 줄에 접어들었네", "AGE")
