@@ -380,3 +380,10 @@ def test_multi_token_place_uses_narrowest_word(multi, narrow):
     got, _ = idx.resolve_text(multi)
     want, _ = idx.resolve_text(narrow)
     assert got and got == want
+
+
+def test_bare_number_age_span_narrows():
+    """「나이 48에」 — 1단 규칙이 「48에」만 AGE 로 잡는다. 살·세가 없어도 나이로 좁힌다 (인스턴스 비교 측정 10/5)."""
+    from kopl.c2_specificity.k_engine import age_bands
+    assert age_bands({"axis": "age", "kind": "age_mention", "value": "48에"}) == age_bands({"axis": "age", "kind": "age_exact", "value": "48살"})
+    assert age_bands({"axis": "age", "kind": "age_mention", "value": "2024년"}) is None

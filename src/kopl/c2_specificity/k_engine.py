@@ -342,6 +342,7 @@ _NATIVE_RE = re.compile(r"(열|스물|스무|서른|마흔|쉰|예순|일흔|여
 _NATIVE_UNIT_ONLY_RE = re.compile(r"(?<![가-힣])(하나|다섯|여섯|일곱|여덟|아홉|한|두|세|네)\s*(?:살|세)")
 _SINO_RE = re.compile(r"([일이삼사오육칠팔구])?십([일이삼사오육칠팔구])?\s*(?:살|세)")
 _ARABIC_RE = re.compile(r"(?<!\d)(\d{1,3})\s*(?:살|세)(?!\d)")
+_BARE_NUMBER_RE = re.compile(r"([1-9][0-9]?)\s*(?:에는|에|때|입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만|이었다|였다)?")
 _BIRTH_RE = re.compile(r"(?<!\d)(\d{4}|\d{2})\s*년생")
 _MAN_RE = re.compile(r"만\s*\d|만\s*(?:열|스물|서른|마흔|쉰|예순|일흔|여든|아흔)")
 _DECADE_RE = re.compile(r"(?<!\d)(\d{1,2})0\s*대")
@@ -379,6 +380,9 @@ def _exact_age(text: str) -> tuple[int, bool] | None:
         return (age, False) if 0 <= age <= 120 else None
     m = _ARABIC_RE.search(text)
     if m:
+        return int(m.group(1)), man
+    m = _BARE_NUMBER_RE.fullmatch(text.strip())
+    if m:  # 「나이 48에」의 「48에」 — 나이 스팬이 수(+조사)뿐이면 그 수가 나이다
         return int(m.group(1)), man
     m = _SINO_RE.search(text)
     if m:
