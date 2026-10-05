@@ -172,3 +172,37 @@ def test_upload_limits_keep_file_in_memory():
     assert streamed.status_code == 413
     empty = c.post("/upload", files={"file": ("a.txt", b"")})
     assert empty.status_code == 200 and empty.json()["posts"] == []
+
+
+def test_c1_rules_merge_catches_explicit_age_and_place(monkeypatch):
+    """C1_RULES=1 — 모델이 놓친 「마흔여덟이고 · 수원 · 영통구에」를 명시 규칙이 잡는다 (인스턴스 테스트 문장)."""
+    sys.path.insert(0, str(ROOT / "experiments" / "exp06-finetune"))
+    pytest.importorskip("torch")      # rules → train 이 torch 를 import 한다 (CI 에는 없다)
+    pytest.importorskip("jsonschema")
+    from apps.analyzer.engines import c1_rules
+
+    def resolve(texts, candidate):  # level·subject 판정은 #306 — 여기서는 병합 경로만 본다
+        return {"level": "explicit", "subject": "self"}
+
+    text = "올해 마흔여덟이고 수원 영통구에 삽니다"
+
+    class Empty:  # 모델이 아무것도 못 찾은 경우
+        def predict_raw(self, record):
+            return {"output_kind": "raw_bio_candidates_not_contract", "model_version": "v1", "record_type": "post",
+                    "post_id": record["post_id"], "texts": {"body": record["body"]}, "candidates": []}
+
+        def detect(self, record, resolver):
+            raise AssertionError("규칙이 켜져 있으면 predict_raw 경로를 써야 한다")
+
+    monkeypatch.setattr(c1_rules, "_ENABLED", True)
+    out = c1_rules.detect(Empty(), {"post_id": "p1", "body": text}, resolve)
+    got = {(s["text"], s["type"]) for s in out["spans"]}
+    assert ("마흔여덟이고", "AGE") in got and ("영통구에", "LOC_ADMIN") in got
+    assert out["model_version"] == "v1+rules"
+
+    monkeypatch.setattr(c1_rules, "_ENABLED", False)
+
+    class Plain(Empty):
+        def detect(self, record, resolver):
+            return {"spans": []}
+    assert c1_rules.detect(Plain(), {"post_id": "p1", "body": text}, resolve) == {"spans": []}

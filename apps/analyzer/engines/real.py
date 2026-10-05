@@ -19,6 +19,7 @@ from pathlib import Path
 
 from .mock import stage2  # noqa: F401 — 아직 안 온 것은 목을 그대로 쓴다
 from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
+from . import c1_rules as _c1_rules
 
 _ROOT = Path(__file__).resolve().parents[3]
 _EXP06 = _ROOT / "experiments" / "exp06-finetune"
@@ -63,4 +64,4 @@ def detect_spans(post: dict) -> dict:
     """B(c1) 자리. span.schema.json 준수 — infer.format_contract 가 스키마 검사까지 한다."""
     record = {key: post[key] for key in ("post_id", "title", "body", "photo_captions")
               if post.get(key) is not None}
-    return _DETECTOR.detect(record, resolver=_attributes)
+    return _c1_rules.detect(_DETECTOR, record, _attributes)  # C1_RULES=1 이면 명시 규칙 병합 (기본 꺼짐)
