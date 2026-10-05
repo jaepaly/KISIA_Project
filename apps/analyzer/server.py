@@ -88,20 +88,29 @@ def scan(user_ref: str):
     return _run_pipeline(user_ref, export.get("posts", []))
 
 
-# 업로드 상한 — 멀티파트 해석기는 1MiB 를 넘는 파일을 임시 파일(디스크)로 넘긴다. 그보다 작게 묶어
-# 「메모리에서 읽고 버린다」를 지킨다. 한글 약 30만 자 — 블로그 글 수백 편
-MAX_UPLOAD_BYTES = 1_000_000
+# 업로드 상한 — 멀티파트 해석기는 1MiB(1,048,576B)를 넘는 파일을 임시 파일(디스크)로 넘긴다. 받은 본문 전체를
+# 그보다 작게 묶어 「메모리에서 읽고 버린다」를 지킨다. 헤더(Content-Length)는 속일 수 있으니 실제로 받은 바이트를 센다
+MAX_UPLOAD_BYTES = 1_040_000
+
+
+async def _read_capped(request: Request) -> bytes:
+    body = bytearray()
+    async for chunk in request.stream():
+        body += chunk
+        if len(body) > MAX_UPLOAD_BYTES:
+            raise HTTPException(status_code=413, detail="파일이 너무 큽니다 (약 1MB 이하)")
+    return bytes(body)
 
 
 @app.post("/upload")
 async def upload_and_scan(request: Request):
     """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다."""
-    length = request.headers.get("content-length")
-    if length is None or not length.isdigit():
-        raise HTTPException(status_code=411, detail="업로드 크기(Content-Length)가 필요합니다")
-    if int(length) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=413, detail="파일이 너무 큽니다 (1MB 이하)")
-    form = await request.form()
+    body = await _read_capped(request)
+
+    async def _replay() -> dict:
+        return {"type": "http.request", "body": body, "more_body": False}
+
+    form = await Request(request.scope, _replay).form()  # 상한 아래라 해석기도 메모리에서만 다룬다
     file = form.get("file")
     if file is None or not hasattr(file, "read"):
         raise HTTPException(status_code=400, detail="file 필드가 필요합니다")

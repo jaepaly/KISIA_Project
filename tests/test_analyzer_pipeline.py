@@ -157,7 +157,18 @@ def test_upload_limits_keep_file_in_memory():
     from fastapi.testclient import TestClient
     from apps.analyzer import server
     c = TestClient(server.app)
-    big = c.post("/upload", files={"file": ("a.txt", b"a" * 1_000_001)})
+    big = c.post("/upload", files={"file": ("a.txt", b"a" * 1_048_577)})
     assert big.status_code == 413
+    ok = c.post("/upload", files={"file": ("a.txt", "첫 글\n둘째 글".encode("utf-8"))})
+    assert ok.status_code == 200 and len(ok.json()["posts"]) == 2
+
+    def chunks():  # 길이를 미리 밝히지 않는 전송(chunked) — 헤더가 아니라 받은 바이트로 막는다
+        boundary = b"--b0"
+        yield boundary + b'\r\nContent-Disposition: form-data; name="file"; filename="a.txt"\r\n\r\n'
+        for _ in range(11):
+            yield b"a" * 100_000
+        yield b"\r\n" + boundary + b"--\r\n"
+    streamed = c.post("/upload", content=chunks(), headers={"content-type": "multipart/form-data; boundary=b0"})
+    assert streamed.status_code == 413
     empty = c.post("/upload", files={"file": ("a.txt", b"")})
     assert empty.status_code == 200 and empty.json()["posts"] == []
