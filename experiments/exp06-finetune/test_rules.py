@@ -27,6 +27,13 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'스물셋임', '23살이고', '세 살', '88년생'})
 
+    def test_duration_and_count_units_are_not_age(self):
+        """「서른 해보다」(근속 30년) · 「쉰 날」(쉬다) — 기간·횟수 단위 앞의 수는 나이가 아니다 (인스턴스 테스트 10/5)."""
+        text = ('시청에서 보낸 서른 해보다, 씨감자 묻고 쉰 날, 스무 해 동안, 마흔 군데. 책이 스물세 권이나. '
+                '서른하나 되던 해, 쉰셋이에요, 스물다섯인데 벌써, 스물하나인데 벌써 해가')
+        found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+        self.assertEqual(found, {'서른하나', '쉰셋이에요', '스물다섯인데', '스물하나인데'})
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'
