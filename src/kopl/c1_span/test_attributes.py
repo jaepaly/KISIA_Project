@@ -136,6 +136,17 @@ def test_first_person_resident_is_self(sentence, span):
     ("나는 동탄 사는 아빠를 만났다", "동탄", "other"),
     ("나는 동탄 사는 아빠야", "동탄", "self"),            # 자기소개
     ("저는 동탄 사는 직장인입니다", "동탄", "self"),
+    ("나는 동탄 사는 아빠라서 주말이 바쁘다", "동탄", "self"),   # Codex 3차 — 활용형도 자기소개로 맞힘
+    ("저는 동탄 사는 사람인데요", "동탄", "self"),
 ])
 def test_first_person_self_intro_vs_modifier(sentence, span, expected):
     assert _r(sentence, span, "LOC_FACILITY")["subject"] == expected
+
+
+def test_resident_rule_actually_matches_copula_forms():
+    """Codex 3차 — 「아빠라서」 「사람인데요」가 기본값이 아니라 자기소개 규칙으로 self 가 되는지, 「친구에게」는 other 인지."""
+    from kopl.c1_span.attributes import _COPULA_AFTER, _RESIDENT_AFTER
+    m = _RESIDENT_AFTER.match(" 사는 아빠라서 주말이")
+    assert m and _COPULA_AFTER.match(" 사는 아빠라서 주말이"[m.end():])
+    assert _RESIDENT_AFTER.match(" 사는 사람인데요") is None   # 「사람」은 특정한 타인이 아니다 — 거주 규칙 대상 아님(기본 self)
+    assert _r("나는 동탄 사는 친구에게 갔다", "동탄", "LOC_FACILITY")["subject"] == "other"
