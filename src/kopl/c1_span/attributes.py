@@ -172,6 +172,7 @@ def _owned_by_me(before: str) -> bool:
 # 스팬 바로 뒤가 사람을 꾸미는 자리 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
 _PERSON_AFTER = re.compile(r"^\s*(?:에\s*)?(?:사는|살던|사시는|있는|다니는|일하는|하는)?\s*" + _OTHERS
                            + r"(?:들|님)?(?:이|가|은|는|도|과|와|랑|이랑|하고|의|을|를|한테|에게|께)?(?![가-힣])")
+_RESIDENT_AFTER = re.compile(r"^\s*(?:에\s*)?(?:사는|살던|사시는|살고\s*있는)\s*" + _OTHERS + r"(?![가-힣]{2})")
 # 스팬 자체가 타인 직업인 — 「[옆 반 선생님과]」 「[단골 건축주가]」(일의 의뢰인). 「단골 손님 · 사장님」은 내 일의 상대라 본인 직업 단서다
 _OTHER_WORKER = re.compile(r"옆\s*반|건축주")
 # 내 일·생활의 상대 — 이들이 주어여도 직업·통근·시설·가족 단서는 내 것이다 (「사장님이 [라떼아트]에 한마디」)
@@ -224,6 +225,10 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
     if m and not bare and not re.match(r"^\s*(?:사는|살던|사시는|있는|다니는|일하는)", after):
         m = None
     if m and not (stype == "JOB" and _COUNTERPART.search(m.group(0))):
+        return "other"
+    # 장소 단서도 「사는 · 살던 + 사람」이 바로 뒤면 그 사람의 거주지 — 1단이 「동탄」을 시설로 잡아도.
+    # 「[단골 카페] 사장님」(거주 동사 없음)과 「[옆집] 사는 언니」(옆집 = 내 집 기준 관계)는 본인 단서로 둔다
+    if stype == "LOC_FACILITY" and _RESIDENT_AFTER.match(after):
         return "other"
     # ② 스팬 자체가 타인 직업인
     if stype == "JOB" and _OTHER_WORKER.search(core) and not re.search(r"알바|일기", core) \

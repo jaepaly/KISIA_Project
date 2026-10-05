@@ -112,3 +112,14 @@ def test_subject_codex_round2(sentence, span, stype, expected):
 ])
 def test_level_codex_round2(stype, text, expected):
     assert level_of(stype, text) == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # 인스턴스 테스트 10/5 — 1단이 「동탄」을 시설로 잡은 경우
+    ("동탄 사는 친구가 놀러 왔다.", "동탄", "LOC_FACILITY", "other"),
+    ("광교 호수공원 근처 사는 동생이 왔다.", "광교 호수공원 근처", "LOC_FACILITY", "other"),
+    ("단골 카페 사장님이 쿠키를 줬다.", "단골 카페", "LOC_FACILITY", "self"),
+    ("옆집 사는 언니가 반찬을 줬다.", "옆집", "REL_HOME", "self"),        # 옆집 = 내 집 기준 관계
+])
+def test_subject_facility_residence_of_other(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
