@@ -127,3 +127,37 @@ def test_upload_user_ref_matches_contract():
     data = file_adapter.load_from_bytes("첫 글\n둘째 글".encode("utf-8"), "a.txt")
     assert re.fullmatch(r"u_[0-9a-f]{8,}", data["user_ref"])
     assert {p["user_ref"] for p in data["posts"]} == {data["user_ref"]}
+
+
+# ── Codex 검토 반례
+def test_zero_posts_render_without_error():
+    """e-integration §4 「글 0편인 작성자 — 화면이 에러 없이」."""
+    jsonschema = pytest.importorskip("jsonschema")
+    out = _run("u_0000aaaa", [], {})
+    for name, doc in (("specificity", out["spec"]), ("contribution", out["contrib"])):
+        schema = json.loads((ROOT / "docs" / "contracts" / f"{name}.schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator(schema).validate(doc)
+    assert out["spec"]["output"]["k"] is None
+
+
+def test_server_rejects_duplicate_post_ids_and_keeps_caption_index():
+    pytest.importorskip("fastapi")
+    from fastapi import HTTPException
+    from apps.analyzer import server
+    with pytest.raises(HTTPException) as e:
+        server._check_posts([_post("p1"), _post("p1")])
+    assert e.value.status_code == 400
+    rec = server._detect_input({"post_id": "p1", "body": "", "photos": [{"caption": ""}, {"caption": "역삼동"}]})
+    assert rec["photo_captions"] == ["", "역삼동"]                # 빈 캡션도 자리 유지 → photo_caption:1
+
+
+def test_upload_limits_keep_file_in_memory():
+    """1MB 초과는 413 — 멀티파트 해석기가 디스크 임시 파일로 넘기기 전에 막는다. 빈 업로드는 에러 없이."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    c = TestClient(server.app)
+    big = c.post("/upload", files={"file": ("a.txt", b"a" * 1_000_001)})
+    assert big.status_code == 413
+    empty = c.post("/upload", files={"file": ("a.txt", b"")})
+    assert empty.status_code == 200 and empty.json()["posts"] == []

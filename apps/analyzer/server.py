@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -36,14 +36,28 @@ def engine_mode():
 
 
 def _detect_input(post: dict) -> dict:
-    """1단 입력 — 제목·본문·사진 캡션 (export 의 photos 는 [{"caption": ...}])."""
-    captions = [ph.get("caption") if isinstance(ph, dict) else ph for ph in post.get("photos") or []]
+    """1단 입력 — 제목·본문·사진 캡션 (export 의 photos 는 [{"caption": ...}]).
+
+    빈 캡션도 자리를 지킨다 — 빼면 뒤 캡션의 번호(photo_caption:N)가 화면과 어긋난다.
+    """
+    captions = [(ph.get("caption") if isinstance(ph, dict) else ph) or "" for ph in post.get("photos") or []]
     record = {"post_id": post["post_id"], "title": post.get("title"), "body": post.get("body") or "",
-              "photo_captions": [c for c in captions if c]}
+              "photo_captions": captions}
     return {k: v for k, v in record.items() if v not in (None, [])}
 
 
+def _check_posts(posts: list[dict]) -> None:
+    """글 0편은 허용한다 — 「글 0편인 작성자도 화면이 에러 없이」(e-integration §4). 중복·빈 ID 는 막는다."""
+    ids = [p.get("post_id") for p in posts]
+    if any(not isinstance(i, str) or not i for i in ids):
+        raise HTTPException(status_code=400, detail="모든 글에 post_id 가 있어야 합니다")
+    dup = sorted({i for i in ids if ids.count(i) > 1})
+    if dup:
+        raise HTTPException(status_code=400, detail=f"같은 post_id 가 여러 번 있습니다: {', '.join(dup[:5])}")
+
+
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
+    _check_posts(posts)
     spans_by_post = {p["post_id"]: engine.detect_spans(_detect_input(p)) for p in posts}
     # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
     conditions = engine.conditions(posts, spans_by_post)
@@ -74,13 +88,28 @@ def scan(user_ref: str):
     return _run_pipeline(user_ref, export.get("posts", []))
 
 
+# 업로드 상한 — 멀티파트 해석기는 1MiB 를 넘는 파일을 임시 파일(디스크)로 넘긴다. 그보다 작게 묶어
+# 「메모리에서 읽고 버린다」를 지킨다. 한글 약 30만 자 — 블로그 글 수백 편
+MAX_UPLOAD_BYTES = 1_000_000
+
+
 @app.post("/upload")
-async def upload_and_scan(file: UploadFile = File(...)):
+async def upload_and_scan(request: Request):
     """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다."""
+    length = request.headers.get("content-length")
+    if length is None or not length.isdigit():
+        raise HTTPException(status_code=411, detail="업로드 크기(Content-Length)가 필요합니다")
+    if int(length) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="파일이 너무 큽니다 (1MB 이하)")
+    form = await request.form()
+    file = form.get("file")
+    if file is None or not hasattr(file, "read"):
+        raise HTTPException(status_code=400, detail="file 필드가 필요합니다")
     content = await file.read()
+    await form.close()
     try:
-        export = file_adapter.load_from_bytes(content, file.filename or "upload.txt")
-    except ValueError as exc:
+        export = file_adapter.load_from_bytes(content, getattr(file, "filename", None) or "upload.txt")
+    except (ValueError, UnicodeDecodeError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _run_pipeline(export["user_ref"], export.get("posts", []))
 

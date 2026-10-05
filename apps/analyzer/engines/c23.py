@@ -52,6 +52,14 @@ def contribution(user_ref: str, posts: Sequence[Mapping[str, Any]], removed_post
     """글별 LOO 기여도 (contribution.schema.json). ``spans_by_post`` 가 없으면 단서 0 으로 계산된다."""
     kposts = {p["post_id"]: p for p in _k_posts(posts, spans_by_post or {})}
     ids = sorted(kposts)
+    if not ids:  # 글 0편 — 계약(post_ids·contributions minItems 1)을 지키는 빈 결과
+        return {"schema_version": "1.0", "engine_version": "c3-loo-empty",
+                "input": {"user_ref": user_ref, "post_ids": ["none"], "method": "loo"},
+                "output": {"baseline_risk": 0.0, "residual_risk": 0.0,
+                           "contributions": [{"post_id": "none", "risk_without": 0.0, "delta": 0.0, "rank": 1,
+                                              "clue_ids": [], "top_spans": []}],
+                           "user_scoped": [], "greedy_path": [], "approx_error": None,
+                           "note": "글이 없어 기여도를 계산하지 않았다"}}
     cache: dict[tuple[str, ...], float] = {}
 
     def risk_of(selected: Sequence[str]) -> float:
