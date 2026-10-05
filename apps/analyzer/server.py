@@ -32,7 +32,7 @@ def root():
 @app.get("/api/engine-mode")
 def engine_mode():
     """화면 하단 배지용 — 지금 mock인지 real인지."""
-    return {"mode": os.getenv("ENGINE_MODE", "mock")}
+    return {"mode": os.getenv("ENGINE_MODE", "mock"), "c1_rules": os.getenv("C1_RULES", "0") == "1"}
 
 
 def _detect_input(post: dict) -> dict:

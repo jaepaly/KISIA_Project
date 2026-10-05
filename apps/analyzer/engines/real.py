@@ -20,6 +20,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
+from . import c1_rules as _c1_rules
 
 _ROOT = Path(__file__).resolve().parents[3]
 _EXP06 = _ROOT / "experiments" / "exp06-finetune"
@@ -97,7 +98,7 @@ def detect_spans(post: dict) -> dict:
     record = {key: post[key] for key in ("post_id", "title", "body") if post.get(key) is not None}
     if post.get("photo_captions") is not None or post.get("photos"):
         record["photo_captions"] = _captions(post)
-    result = _DETECTOR.detect(record, resolver=_attributes)
+    result = _c1_rules.detect(_DETECTOR, record, _attributes)  # C1_RULES=1 이면 명시 규칙 병합 (기본 꺼짐)
     with _SPAN_CACHE_LOCK:
         _SPAN_CACHE[record["post_id"]] = (record, result)
         _SPAN_CACHE.move_to_end(record["post_id"])

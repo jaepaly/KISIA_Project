@@ -13,7 +13,7 @@ async function showEngineBadge(elId) {
   try {
     const r = await fetch("/api/engine-mode");
     const d = await r.json();
-    document.getElementById(elId).textContent = `engine: ${d.mode}`;
+    document.getElementById(elId).textContent = `engine: ${d.mode}${d.c1_rules ? " · 1단 명시 규칙 병합" : ""}`;
   } catch (e) {
     document.getElementById(elId).textContent = "engine: unknown";
   }
