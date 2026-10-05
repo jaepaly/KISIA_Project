@@ -245,6 +245,10 @@ class _Index:
         """
         t = unicodedata.normalize("NFC", text).strip()
         codes, how = self._lookup(t)
+        if not codes and fuzzy and " " in t:
+            multi = self._resolve_tokens(t, facility=facility)
+            if multi is not None:
+                return multi
         if not codes and fuzzy:
             cands = [(t, True), *_candidates(t)]
             for cand, loose in cands:
@@ -276,6 +280,26 @@ class _Index:
             if how == "station":
                 out |= {n for n in self.station_near.get(c, ()) if n in self.population}
         return out, how
+
+    def _resolve_tokens(self, t: str, *, facility: bool) -> tuple[set[str], str] | None:
+        """「수원 영통구에 · 대전 유성구 전민동」 — 단어마다 해석해 교집합. 첫 단어만 보면 수원 전체(44개 동)가 된다.
+
+        해석되지 않는 단어(「쪽 · 근처 · 1번 출구」)는 건너뛴다. 앞 단어와 겹치지 않는 단어는 무시한다 —
+        서로 다른 곳을 나열한 말일 수 있어 좁히지 않는다. ``how`` 는 마지막으로 좁힌 단어의 단계 (추정이면 추정).
+        """
+        cur: set[str] | None = None
+        how = "not_found"
+        for tok in t.split():
+            got, h = self.resolve_text(tok, facility=facility)
+            if not got:
+                continue
+            if cur is None:
+                cur, how = got, h
+            elif cur & got:
+                cur, how = cur & got, h
+        if cur is None:
+            return None
+        return cur, how
 
     def _prefix(self, t: str) -> list[str]:
         """「천안고속터미널 · 순천만 · 전주천」 — 앞머리가 시도·시군구 약칭인 장소. 가장 긴 앞머리 하나.
