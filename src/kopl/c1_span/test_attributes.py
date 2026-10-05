@@ -123,3 +123,9 @@ def test_level_codex_round2(stype, text, expected):
 ])
 def test_subject_facility_residence_of_other(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span", [("나는 동탄 사는 아빠야", "동탄"), ("나도 선릉역 사는 친구야", "선릉역")])
+def test_first_person_resident_is_self(sentence, span):
+    """Codex 검토(10/5): 1인칭 주어가 있으면 「동탄 사는 + 사람」도 본인."""
+    assert _r(sentence, span, "LOC_FACILITY")["subject"] == "self"

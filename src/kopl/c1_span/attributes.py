@@ -228,7 +228,7 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
         return "other"
     # 장소 단서도 「사는 · 살던 + 사람」이 바로 뒤면 그 사람의 거주지 — 1단이 「동탄」을 시설로 잡아도.
     # 「[단골 카페] 사장님」(거주 동사 없음)과 「[옆집] 사는 언니」(옆집 = 내 집 기준 관계)는 본인 단서로 둔다
-    if stype == "LOC_FACILITY" and _RESIDENT_AFTER.match(after):
+    if stype == "LOC_FACILITY" and _RESIDENT_AFTER.match(after) and not _FIRST_PERSON.search(before):  # 「나는 동탄 사는 아빠야」
         return "other"
     # ② 스팬 자체가 타인 직업인
     if stype == "JOB" and _OTHER_WORKER.search(core) and not re.search(r"알바|일기", core) \
