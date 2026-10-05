@@ -29,6 +29,7 @@ from typing import Any
 
 from .anonymize import anonymize
 from .recommend import recommend
+from .rewrite import rewrites_for
 from .rules import ATTRS, TYPE_TO_ATTR, findings_from_spans
 
 SCHEMA_VERSION = "0.1.0"
@@ -263,7 +264,9 @@ def analyze(
         "schema_version": SCHEMA_VERSION,
         "findings": findings,
         "recommendation": recommend(user_ref=user_ref, posts=rec_posts, target_risk=target_risk),
-        "rewrites": [],
+        # 바꿔 쓰기 후보 — 추천 엔진 리라이트 조치와 같은 대상(본인 명시 단서). 확실한 후보만 (rewrite.py) · 원문은 담지 않는다
+        "rewrites": rewrites_for([{"post_id": p["post_id"], "texts": p.get("texts") or {}, "spans": list(p.get("spans") or [])}
+                                  for p in posts]),
         "provenance": {
             "measured_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "model_version": version,
