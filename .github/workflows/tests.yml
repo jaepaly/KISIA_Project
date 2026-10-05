@@ -1,0 +1,44 @@
+name: tests
+
+# =============================================================
+#  PR 마다 단위 테스트를 돌린다 — 지금까지는 커밋 형식(commit-lint)만 자동이었다.
+#
+#  무거운 것(torch · transformers · GPU)이 필요 없는 테스트만 모았다.
+#  c1 모델 추론·학습(exp06)과 2단 Qwen 실행은 체크포인트가 저장소에 없어 여기서 돌 수 없다.
+#
+#  같은 이름의 test_*.py 가 여러 폴더에 있어 --import-mode=importlib 로 모은다.
+#  로컬에서 똑같이:
+#    PYTHONPATH=src python -m pytest -q --import-mode=importlib <아래 경로들>
+# =============================================================
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 의존성 (가벼운 것만)
+        run: python -m pip install --disable-pip-version-check pytest jsonschema numpy scipy "Flask>=3.0"
+
+      - name: 단위 테스트
+        env:
+          PYTHONPATH: src
+          PYTHONIOENCODING: utf-8
+        run: |
+          paths="src/kopl/c1_span/test_span.py src/kopl/c2_specificity src/kopl/c4_stage2 src/kopl/c5_corpus tests apps/sns/test_export.py experiments/exp09-external-agreement experiments/exp11-risk-correlation"
+          existing=""
+          for p in $paths; do [ -e "$p" ] && existing="$existing $p"; done
+          python -m pytest -q --import-mode=importlib $existing
