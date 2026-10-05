@@ -407,3 +407,12 @@ def test_collision_name_real_path_keeps_both_readings():
         c = conditions_from_posts([{"post_id": "p", "spans": [S(text, "LOC_ADMIN")]}])
         ks.append(estimate_k(c)["k"])
     assert ks[0] == ks[1]
+
+
+def test_collision_name_keeps_risk_resolution():
+    """Codex 3차 — 겹치는 지명도 위험도(해상도)는 build_conditions 와 같다 (추천 엔진·exp10 과 일치)."""
+    from kopl.c2_specificity.clues import build_conditions
+    from kopl.c2_specificity.engine import risk_total
+    from kopl.c2_specificity.k_engine import _default_index, conditions_from_posts
+    span = S("안동", "LOC_ADMIN")
+    assert risk_total(conditions_from_posts([{"post_id": "p", "spans": [span]}])) ==         risk_total(build_conditions([span], "p", dictionary=_default_index().d))
