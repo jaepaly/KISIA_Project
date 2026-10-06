@@ -33,23 +33,32 @@ jobs:
       - name: 의존성 (가벼운 것만)
         run: python -m pip install --disable-pip-version-check pytest jsonschema numpy scipy "Flask>=3.0"
 
-      - name: 단위 테스트
+      - name: 단위 테스트 (src · tests · 앱)
         env:
           PYTHONPATH: src
           PYTHONIOENCODING: utf-8
-        # 필수 경로는 없으면 실패한다 — 폴더 이름이 바뀌거나 지워졌는데 검사 범위만 줄어든 채 통과하는 걸 막는다 (#305 리뷰).
-        # 실험 폴더는 브랜치에 따라 없을 수 있어 선택 — 있으면 돌린다.
+        # 필수 경로는 없으면 실패한다 — 폴더 이름이 바뀌거나 지워졌는데 검사 범위만 줄어든 채 통과하는 걸 막는다 (#305 리뷰)
         run: |
           required="src/kopl/c1_span/test_span.py src/kopl/c1_span/test_attributes.py src/kopl/c2_specificity src/kopl/c4_stage2 src/kopl/c5_corpus tests apps/sns/test_export.py"
-          optional="experiments/exp09-external-agreement experiments/exp11-risk-correlation experiments/exp17-planted-eval/test_score.py"
           missing=""
           for p in $required; do [ -e "$p" ] || missing="$missing $p"; done
           if [ -n "$missing" ]; then
             echo "::error::필수 테스트 경로가 없다:$missing — 옮겼다면 이 워크플로의 required 도 같이 고친다"
             exit 1
           fi
-          existing=""
-          for p in $optional; do
-            if [ -e "$p" ]; then existing="$existing $p"; else echo "::notice::선택 경로 없음(건너뜀): $p"; fi
+          python -m pytest -q --import-mode=importlib $required
+
+      - name: 실험 테스트 (폴더마다 따로)
+        env:
+          PYTHONIOENCODING: utf-8
+        # 실험 폴더는 자기 폴더 모듈(rules · infer · train · score …)을 이름으로 불러와 한데 모으면 섞인다 —
+        # 폴더마다 PYTHONPATH 를 그 폴더로 잡고 따로 돌린다. torch 없이 도는 것만 (exp06 은 모델을 부르지 않는 테스트).
+        # 브랜치에 따라 없을 수 있어 선택 — 없으면 notice 후 건너뛴다
+        run: |
+          status=0
+          for d in experiments/exp06-finetune experiments/exp08-stage2-sft experiments/exp09-external-agreement experiments/exp11-risk-correlation experiments/exp17-planted-eval; do
+            if [ ! -d "$d" ]; then echo "::notice::선택 경로 없음(건너뜀): $d"; continue; fi
+            echo "── $d"
+            PYTHONPATH="src:$d" python -m pytest -q --import-mode=importlib "$d" || status=1
           done
-          python -m pytest -q --import-mode=importlib $required $existing
+          exit $status
