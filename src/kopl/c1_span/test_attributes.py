@@ -228,3 +228,15 @@ def test_counterpart_predicate_must_follow_span(sentence, span, stype, expected)
 ])
 def test_counterpart_predicate_about_me_or_directive_stays_self(sentence, span, stype):
     assert _r(sentence, span, stype)["subject"] == "self"
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    # #308 리뷰(E) — 「X네」(그 집)는 주어 쪽 사람의 가족
+    ("같이 화투 치던 양반이 딸네 있는 여수로 갔다", "딸네", "other"),
+    ("옆집 아주머니가 아들네 갔다 오셨다", "아들네", "other"),
+    ("사장님이 우리 딸네 왔다 가셨다", "딸네", "self"),
+    # 「X네」가 아닌 가족 단서는 그대로 (「아내가 아이 데리러」 류)
+    ("사장님이 아이를 봐주면 일하고 올 수 있다", "아이를", "self"),
+])
+def test_household_ne_belongs_to_actor(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected

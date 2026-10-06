@@ -292,6 +292,10 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
             word = last.group(0)
             explicit_title = stype == "JOB" and level_of(stype, text) == "explicit"
             own_predicate = _own_predicate(after)
+            # 「양반이 [딸네] 있는 여수로」 — 「X네」(그 집)는 주어 쪽 사람의 가족이다. 「우리 딸네」처럼 1인칭이 바로 앞이면 내 것 (#308 리뷰)
+            if stype == "FAM" and re.match(r"^[가-힣]{1,3}네(?![가-힣])|^[가-힣]{1,3}네(?:에|로|서|집)", text) \
+                    and not re.search(r"(?:우리|내|제|저희)\s*$", before):
+                own_predicate = True
             if _COUNTERPART.search(word) and stype in ("JOB", "COMMUTE", "LOC_FACILITY", "FAM") and not explicit_title \
                     and not own_predicate:
                 return "self"  # 단 「사장님이 [약사라서]」 — 직업명 자체는 그 사람 것 · 「사장님은 [2호선으로] 출근한다」는 그 사람 것
