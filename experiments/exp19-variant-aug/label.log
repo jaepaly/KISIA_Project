@@ -1,0 +1,2 @@
+{'ANTHROPIC_API_KEY': True, 'ANTHROPIC_BASE_URL': True}
+{"posts": 300, "teacher": 656, "planted_added": 2, "distractor_removed": 2, "calls": 300}
