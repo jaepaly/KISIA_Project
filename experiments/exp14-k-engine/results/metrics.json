@@ -1,0 +1,153 @@
+{
+  "sample": "exp11 10명 × 창 7개 = 70 · 최상위 골드 스팬 · 위치태그 없음",
+  "criteria": {
+    "k_dropped_w1_to_w19": "10/10 (기준 ≥ 8)",
+    "monotonic_non_increasing": "10/10 (기준 10/10)",
+    "distinct_k_at_w19": "10/10 (기준 ≥ 9)",
+    "w19_not_narrowed_by_location": 6,
+    "w19_location_contains_truth": "4/4 (위치로 좁혀진 인물 중 — k 의 후보 동네가 실제 사는 곳을 포함 · E03 제외)",
+    "all_windows_location_contains_truth": "8/8",
+    "all_windows_supported_contains_truth": "8/8 (참고 — 가장 뒷받침 많은 위치 묶음)",
+    "windows_with_multiple_location_states": 1
+  },
+  "w19": {
+    "B08": {
+      "k": 297421.08,
+      "k_level": "ACCEPTABLE",
+      "success": 6,
+      "risk": 41.43
+    },
+    "D03": {
+      "k": 171635.21,
+      "k_level": "ACCEPTABLE",
+      "success": 5,
+      "risk": 31.43
+    },
+    "E14": {
+      "k": 7700461.56,
+      "k_level": "ACCEPTABLE",
+      "success": 4,
+      "risk": 22.14
+    },
+    "B15": {
+      "k": 307006.62,
+      "k_level": "ACCEPTABLE",
+      "success": 4,
+      "risk": 40.0
+    },
+    "D21": {
+      "k": 108240.56,
+      "k_level": "ACCEPTABLE",
+      "success": 5,
+      "risk": 27.14
+    },
+    "A14": {
+      "k": 6456041.1,
+      "k_level": "ACCEPTABLE",
+      "success": 4,
+      "risk": 40.0
+    },
+    "E03": {
+      "k": 132696.76,
+      "k_level": "ACCEPTABLE",
+      "success": 6,
+      "risk": 35.0
+    },
+    "B06": {
+      "k": 4069.46,
+      "k_level": "ACCEPTABLE",
+      "success": 4,
+      "risk": 56.43
+    },
+    "B07": {
+      "k": 245568.49,
+      "k_level": "ACCEPTABLE",
+      "success": 5,
+      "risk": 42.14
+    },
+    "A10": {
+      "k": 6930.54,
+      "k_level": "ACCEPTABLE",
+      "success": 4,
+      "risk": 43.57
+    }
+  },
+  "k_vs_llm": {
+    "all": {
+      "n": 70,
+      "rho_k_success": 0.8225,
+      "partial_rho_given_window_size": 0.4376,
+      "rho_window_size_baseline": 0.804,
+      "within_window_rho": {
+        "1": null,
+        "2": 0.5263,
+        "3": 0.7788,
+        "5": 0.3654,
+        "8": 0.5601,
+        "12": 0.1639,
+        "19": 0.1316
+      },
+      "within_window_shuffle_p": 0.000999900009999
+    },
+    "tuning": {
+      "n": 35,
+      "rho_k_success": 0.8731,
+      "partial_rho_given_window_size": 0.5927,
+      "rho_window_size_baseline": 0.8011,
+      "within_window_rho": {
+        "1": null,
+        "2": 0.3953,
+        "3": 0.9682,
+        "5": 0.6156,
+        "8": 0.7379,
+        "12": 0.2887,
+        "19": 0.6325
+      },
+      "within_window_shuffle_p": 0.0022997700229977
+    },
+    "report": {
+      "n": 35,
+      "rho_k_success": 0.788,
+      "partial_rho_given_window_size": 0.2675,
+      "rho_window_size_baseline": 0.8435,
+      "within_window_rho": {
+        "1": null,
+        "2": 0.5526,
+        "3": 0.5526,
+        "5": -0.2236,
+        "8": 0.4472,
+        "12": 0.1026,
+        "19": -0.2236
+      },
+      "within_window_shuffle_p": 0.1116888311168883
+    }
+  },
+  "risk_vs_llm_exp11": {
+    "rho": 0.8133,
+    "partial_rho_given_window_size": 0.4123
+  },
+  "alpha_sensitivity_tuning_only": [
+    {
+      "alpha": 0.4,
+      "rho": 0.8692,
+      "partial": 0.5792
+    },
+    {
+      "alpha": 0.6,
+      "rho": 0.8731,
+      "partial": 0.5927
+    },
+    {
+      "alpha": 0.8,
+      "rho": 0.8731,
+      "partial": 0.5927
+    },
+    {
+      "alpha": 1.0,
+      "rho": 0.8885,
+      "partial": 0.6432
+    }
+  ],
+  "floor_applied_windows": 0,
+  "monotonic_violations": {}
+}

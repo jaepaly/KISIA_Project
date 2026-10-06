@@ -397,6 +397,7 @@
       "abstain_granularity_not_null": 0
     }
   },
+  "external_variant": "base",
   "raw_outputs": {
     "inputs.jsonl": {
       "sha256": "9ac6607fe22c91dbe1ccc642ecca127bff4b17c69b34add2771082ff9a076d84",
