@@ -15,6 +15,7 @@
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import Counter
@@ -136,12 +137,13 @@ def load_preds(path: str, expected_ids: set[str] | None = None) -> dict[str, lis
 
 
 def main(argv: list[str]) -> int:
-    data = DATA
-    if argv[:1] == ["--data"]:
-        data, argv = Path(argv[1]), argv[2:]
-    gold = [json.loads(l) for l in data.open(encoding="utf-8") if l.strip()]
+    ap = argparse.ArgumentParser(description="exp17 · exp17b 채점 — 심은 단서 정답에 1단 예측을 대 본다")
+    ap.add_argument("preds", nargs="+", help="예측 파일 (1개 이상)")
+    ap.add_argument("--data", type=Path, default=DATA, help="정답 posts.jsonl (기본: exp17)")
+    a = ap.parse_args(argv)
+    gold = [json.loads(l) for l in a.data.open(encoding="utf-8") if l.strip()]
     ids = {g["post_id"] for g in gold}
-    rows = {Path(p).stem: evaluate(gold, load_preds(p, ids)) for p in argv}
+    rows = {Path(p).stem: evaluate(gold, load_preds(p, ids)) for p in a.preds}
     print(json.dumps(rows, ensure_ascii=False, indent=1))
     return 0
 
