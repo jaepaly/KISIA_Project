@@ -1,6 +1,7 @@
 """exp17 채점 — 1단 구성의 예측을 「심은 단서」 정답에 대 본다.
 
     python experiments/exp17-planted-eval/score.py preds_a.jsonl [preds_b.jsonl ...]
+    python experiments/exp17-planted-eval/score.py --data experiments/exp17b-heldout-eval/data/posts.jsonl preds.jsonl
 
 예측 파일: 줄마다 {"post_id", "spans": [{text_id, start, end, type, level?, subject?}, ...]} (span.schema 출력 그대로 가능)
 
@@ -14,6 +15,7 @@
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import Counter
@@ -58,21 +60,27 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
     hit, tot = Counter(), Counter()
     by_variant_hit, by_variant_tot = Counter(), Counter()
     trap = Counter()
+    grp_hit, grp_tot = Counter(), Counter()
     distract_fp = unplanned = n_pred = 0
     for g in gold:
         p = sorted((dict(x, text_id=x.get("text_id", "body")) for x in preds.get(g["post_id"], [])), key=_key)
         n_pred += len(p)
-        order = sorted(range(len(g["planted"])), key=lambda i: _key(dict(g["planted"][i], text_id="body")))
-        planted = [dict(g["planted"][i], text_id="body") for i in order]
+        scored = [c for c in g["planted"] if not c.get("excluded")]  # 전수 검토에서 정답이 틀어진 단서 (exp17b README §검토)
+        order = sorted(range(len(scored)), key=lambda i: _key(dict(scored[i], text_id="body")))
+        planted = [dict(scored[i], text_id="body") for i in order]
         matched = match_one_to_one(planted, p)
-        for i, c in enumerate(g["planted"][k] for k in order):
+        for i, c in enumerate(scored[k] for k in order):
             key = f"{c['type']}/{c['subject']}"
             tot[key] += 1
             by_variant_tot[c["variant"]] += 1
             m = p[matched[i]] if i in matched else None
+            if "group" in c:
+                grp_tot[c["group"]] += 1
             if m is not None:
                 hit[key] += 1
                 by_variant_hit[c["variant"]] += 1
+                if "group" in c:
+                    grp_hit[c["group"]] += 1
             if c["subject"] == "other":
                 trap["planted"] += 1
                 # 매칭과 별개로, 같은 유형으로 겹친 예측 중 하나라도 self 면 k 를 잘못 좁힌다 (Codex 10/6)
@@ -97,6 +105,7 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
         "recall_all": round(sum(hit.values()) / max(1, sum(tot.values())), 3),
         "recall_by_type": {k: f"{hit[k]}/{tot[k]}" for k in sorted(tot)},
         "recall_by_variant": {k: f"{by_variant_hit[k]}/{by_variant_tot[k]}" for k in sorted(by_variant_tot)},
+        "recall_by_group": {k: f"{grp_hit[k]}/{grp_tot[k]}" for k in sorted(grp_tot)},
         "trap_other": {"planted": trap["planted"], "caught": trap["caught"], "judged_other": trap["judged_other"],
                        "judged_self": trap["judged_self"], "judged_unknown": trap["judged_unknown"]},
         "distractor_age_fp": f"{distract_fp}/{sum(len(g['distractors']) for g in gold)}",
@@ -128,9 +137,13 @@ def load_preds(path: str, expected_ids: set[str] | None = None) -> dict[str, lis
 
 
 def main(argv: list[str]) -> int:
-    gold = [json.loads(l) for l in DATA.open(encoding="utf-8") if l.strip()]
+    ap = argparse.ArgumentParser(description="exp17 · exp17b 채점 — 심은 단서 정답에 1단 예측을 대 본다")
+    ap.add_argument("preds", nargs="+", help="예측 파일 (1개 이상)")
+    ap.add_argument("--data", type=Path, default=DATA, help="정답 posts.jsonl (기본: exp17)")
+    a = ap.parse_args(argv)
+    gold = [json.loads(l) for l in a.data.open(encoding="utf-8") if l.strip()]
     ids = {g["post_id"] for g in gold}
-    rows = {Path(p).stem: evaluate(gold, load_preds(p, ids)) for p in argv}
+    rows = {Path(p).stem: evaluate(gold, load_preds(p, ids)) for p in a.preds}
     print(json.dumps(rows, ensure_ascii=False, indent=1))
     return 0
 

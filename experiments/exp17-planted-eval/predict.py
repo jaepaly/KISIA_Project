@@ -34,6 +34,7 @@ def main() -> int:
     ap.add_argument("--rules-only", action="store_true")
     ap.add_argument("--threshold", type=float, default=0.7)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--data", default=str(HERE / "data" / "posts.jsonl"), help="평가셋 (exp17b 는 experiments/exp17b-heldout-eval/data/posts.jsonl)")
     a = ap.parse_args()
 
     import rules
@@ -46,7 +47,7 @@ def main() -> int:
     explicit = rules.ExplicitRules() if (a.rules or a.rules_only) else None
 
     with open(a.out, "w", encoding="utf-8") as f:
-        for line in (HERE / "data" / "posts.jsonl").open(encoding="utf-8"):
+        for line in Path(a.data).open(encoding="utf-8"):
             post = json.loads(line)
             texts = post["texts"]
             if detector is not None:

@@ -102,3 +102,18 @@ def test_matched_prediction_not_counted_as_distractor_fp():
     preds = {"P1": [{"text_id": "body", "start": 0, "end": 8, "type": "AGE"}]}
     out = evaluate(gold, preds)
     assert out["recall_all"] == 1.0 and out["distractor_age_fp"] == "0/1"
+
+
+def test_excluded_clue_is_not_scored_and_does_not_consume_prediction():
+    """exp17b — 제외 단서는 채점에서 빠지고, 예측을 빼앗지도 않는다 (#314)."""
+    excluded = dict(_clue(0, 5), excluded=True)
+    gold = _gold([excluded, _clue(1, 5)])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 5, "type": "LOC_ADMIN"}]}
+    out = evaluate(gold, preds)
+    assert out["recall_all"] == 1.0 and out["unplanned_spans_per_post"] == 0
+
+
+def test_recall_by_group():
+    gold = _gold([dict(_clue(0, 4), group="aimed"), dict(_clue(10, 14), group="unaimed")])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "LOC_ADMIN"}]}
+    assert evaluate(gold, preds)["recall_by_group"] == {"aimed": "1/1", "unaimed": "0/1"}
