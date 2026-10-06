@@ -288,3 +288,10 @@ def test_real_place_before_any_type_is_residual(before, text, after, stype):
     for place in ("서울 ", "부산 "):
         res = _r(place + before, text, after, stype)
         assert res and all(res), (place, text, res)
+
+
+
+def test_common_noun_alias_before_facility_is_residual():
+    """「구리 [한강공원에서]」 — 장소 단서 앞에서는 일반 명사 약칭도 지명이다 (Codex 10/6)."""
+    res = _r("주말에 구리 ", "한강공원에서", " 산책했다", "LOC_FACILITY")
+    assert res and all(res)

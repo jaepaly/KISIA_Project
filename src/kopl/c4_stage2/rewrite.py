@@ -95,11 +95,11 @@ _COMMON_NOUN_ALIASES = frozenset({
 })
 
 
-def _neighbor_place(word: str) -> bool:
+def _neighbor_place(word: str, stype: str = "") -> bool:
     """스팬 바로 앞 말이 지명인가 — 「일산」(일산동구·일산서구)처럼 방위 구의 앞부분만 쓰는 말까지 본다."""
     w = josa.split_tail(word, loc=True).core
-    if w in _COMMON_NOUN_ALIASES:
-        return False  # 「수영 [강사로]」 — 약칭이 일반 명사와 같으면 앞말로는 지명이라 단정하지 않는다 (Codex 10/6)
+    if w in _COMMON_NOUN_ALIASES and stype not in ("LOC_FACILITY", "COMMUTE"):
+        return False  # 「수영 [강사로]」 — 약칭이 일반 명사와 같으면 지명이라 단정하지 않는다. 장소·통근 단서 앞(「구리 [한강공원]」)은 지명 (Codex 10/6)
     return _is_place_word(w) or _starts_with_place(w) or (
         len(w) >= 2 and any(_region_codes(w + d) for d in ("동구", "서구", "남구", "북구")))
 
@@ -370,7 +370,7 @@ def suggest(span: Mapping[str, Any], channel_text: str | None = None, *, limit: 
         if any(a == b or josa.split_tail(b).core == a for a, b in zip(words, words[1:])):
             continue  # 「아이 아이가」
         seen.add(word)
-        if prv and _neighbor_place(prv):
+        if prv and _neighbor_place(prv, stype):
             residual = True  # 바로 앞 지명이 남는다 — 「일산 [한 공원]」은 단서가 약해질 뿐 사라지지 않는다 (#304 리뷰)
         out.append({"suggestion": new, "core": word, "note": note, "kind": kind, "residual": residual})
         if len(out) >= limit:

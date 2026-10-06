@@ -267,3 +267,12 @@ def test_household_ne_needs_actor_predicate(sentence, span, expected):
 ])
 def test_household_ne_conjugations_and_me(sentence, span, expected):
     assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    ("옆집 아주머니가 딸네에 매일 간다", "딸네에", "other"),
+    ("사장님이 언니네로 가려는 나를 데려다주셨다", "언니네로", "self"),
+])
+def test_household_ne_adverb_and_me_word(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected
