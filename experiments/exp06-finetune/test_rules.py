@@ -95,6 +95,11 @@ class RuleTests(unittest.TestCase):
             ('마흔 명이 왔다', '마흔'): True,
             ('서른 개월 동안', '서른'): True,
             ('서른 개월', '서른 개월'): True,
+            ('마흔 명에게 선물을 줬다', '마흔'): True,
+            ('스무 개였다', '스무'): True,
+            ('스무 개쯤은 필요하다', '스무'): True,
+            ('서른 일하면서 배웠다', '서른'): False,
+            ('스물 해서 먹었다', '스물'): False,
         }
         for (text, span), expected in cases.items():
             start = text.index(span)
