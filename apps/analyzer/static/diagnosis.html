@@ -25,31 +25,43 @@ function renderSpecificity(spec) {
   if (o.k === null) {
     return `<p><span class="badge unknown">산출 불가</span> 현재 조건으로는 k(추정 후보 수)를 계산할 수 없습니다.</p>`;
   }
-  return `<p><span class="badge found">${o.k_level}</span> 추정 후보 약 <b>${o.k}</b>명 (${o.basis.source}, ${o.basis.as_of} 기준)</p>`;
+  return `<p><span class="badge found">${esc(o.k_level)}</span> 글을 모두 엮으면 추정 후보 <b>${fmtK(o.k)}</b>
+    <span class="note">(${esc(o.basis.source)}, ${esc(o.basis.as_of)} 기준)</span></p>`;
+}
+
+// 「이 글을 내리면 후보가 몇 명이 되나」 — 엔진이 글별 k 를 줄 때만 (목에는 없다)
+function postK(data, postId) {
+  const kp = data.k_by_post;
+  if (!kp || kp.k === null) return "";
+  const row = kp.per_post.find(r => r.post_id === postId);
+  if (!row || row.k_without === null || !(row.gain > 1.0001)) return "";
+  return `<p class="post-k">이 글을 비공개하면 후보 ${fmtK(kp.k)} → ${fmtK(row.k_without)}</p>`;
 }
 
 function renderFindings(findings) {
   return Object.entries(findings).map(([attr, f]) => {
     if (f.verdict === "abstain") {
-      return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge abstain">판단 보류</span> (근거 부족, confidence ${f.confidence})</div>`;
+      return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge abstain">판단 보류</span> (근거 부족, confidence ${esc(f.confidence)})</div>`;
     }
-    return `<div class="card"><b>${ATTR_LABEL[attr] || attr}</b> — <span class="badge found">${VERDICT_LABEL[f.verdict] || f.verdict}</span>
-      ${f.granularity ? `(${f.granularity})` : ""} confidence ${f.confidence}</div>`;
+    return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || f.verdict)}</span>
+      ${f.granularity ? `(${esc(f.granularity)})` : ""} confidence ${esc(f.confidence)}</div>`;
   }).join("");
 }
 
-function highlight(body, spans) {
-  if (!spans.length) return body || "";
+// 스팬 위치는 채널(text_id) 기준이다 — 제목·캡션 스팬을 본문 위치에 칠하지 않는다
+function highlight(text, spans) {
   let out = "";
   let last = 0;
   const sorted = [...spans].sort((a, b) => a.start - b.start);
   for (const s of sorted) {
-    out += (body || "").slice(last, s.start);
-    out += `<span class="span-hit" title="${s.type} / ${s.level} / ${s.subject}">${(body || "").slice(s.start, s.end)}</span>`;
+    if (s.start < last) continue;  // 겹치는 스팬은 앞의 것만
+    out += esc(cpSlice(text, last, s.start));
+    const other = s.subject === "other";
+    const tip = `${TYPE_LABEL[s.type] || s.type} · ${s.level}${other ? " · 다른 사람 정보 — 내 후보 수 계산에는 안 들어감" : ""}`;
+    out += `<span class="${other ? "span-other" : "span-hit"}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}</span>`;
     last = s.end;
   }
-  out += (body || "").slice(last);
-  return out;
+  return out + esc(cpSlice(text, last));
 }
 
 function renderPosts(data) {
@@ -59,7 +71,13 @@ function renderPosts(data) {
   return data.posts.map(p => {
     const spans = (data.spans[p.post_id] || { spans: [] }).spans;
     const spanNote = spans.length ? "" : "<p><i>탐지된 단서 없음</i></p>";
-    return `<div class="card"><p>${highlight(p.body, spans)}</p>${spanNote}</div>`;
+    const others = spans.filter(s => s.subject === "other").length;
+    const body = channelsOf(p).map(([tid, text]) => {
+      const label = tid === "title" ? "제목" : tid === "body" ? "" : "사진 설명";
+      return `<p>${label ? `<span class="channel">${label}</span>` : ""}${highlight(text, spans.filter(s => s.text_id === tid))}</p>`;
+    }).join("");
+    const otherNote = others ? `<p class="note">파란 표시 ${others}개는 다른 사람(가족·지인)의 정보로 읽혀 내 후보 수 계산에서 뺐습니다. 그 사람에게는 노출될 수 있는 정보입니다.</p>` : "";
+    return `<div class="card">${body}${spanNote}${otherNote}${postK(data, p.post_id)}</div>`;
   }).join("");
 }
 
@@ -69,12 +87,13 @@ if (!data) {
   el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="/static/scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
 } else {
   el.innerHTML = `
-    <h2>${data.user_ref}</h2>
+    <h2>${esc(data.user_ref)}</h2>
     ${renderSpecificity(data.specificity)}
-    <p>기준 위험도: <b>${data.contribution.output.baseline_risk}</b></p>
+    <p>기준 위험도: <b>${esc(data.contribution.output.baseline_risk)}</b></p>
     <h3>7속성 판정</h3>
     ${renderFindings(data.stage2.output.findings)}
     <h3>글 (탐지된 단서 하이라이트)</h3>
+    <p class="legend"><span class="span-hit">빨강</span> 내 정보로 읽히는 단서 · <span class="span-other">파랑</span> 다른 사람 정보로 읽히는 단서</p>
     ${renderPosts(data)}
     <p><a href="/static/action.html">→ 조치 화면으로</a></p>
   `;
