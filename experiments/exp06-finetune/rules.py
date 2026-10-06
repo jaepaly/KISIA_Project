@@ -21,8 +21,9 @@ _AGE_PATTERNS = (
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _TENS + r"(?:\s*" + _ONES + r")?(?:\s*(?:살|세))?" + _AGE_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _ONES + r"(?:\s*살|\s+세)" + _AGE_ENDING),
 )
-# 수 뒤에 단위가 오면 나이가 아니다 — 「서른 번」 「마흔 명」.
-_QUANTITY_FOLLOWERS = re.compile(r"\s*(?:번|개|명|분|마리|원|장|그릇|잔)")
+# 수 뒤에 단위가 오면 나이가 아니다 — 「서른 번」 「마흔 명에게」 「스무 개짜리」. 줄바꿈은 건너지 않는다 —
+# 「나이는 서른⏎개발자로」의 「개」는 다음 줄 첫 글자다 (Codex 10/6)
+_QUANTITY_FOLLOWERS = re.compile(r"[ \t]*(?:번|개월|개|명|분|마리|원|장|그릇|잔)")
 # 기간·횟수 단위도 같다 — 「서른 해보다」(근속 30년) 「쉰 날」(쉬다 + 날) 「스무 해 동안」 「스물세 권이나」 (인스턴스 테스트 10/5).
 # 단위 글자가 다른 말의 첫 글자일 수 있어(「벌써」 「해서」 「주고」) 뒤가 조사·끝일 때만 단위로 본다
 _DURATION_FOLLOWERS = re.compile(
@@ -133,6 +134,26 @@ class ExplicitRules:
         return age_spans(text) | self.location_spans(text) | income_spans(text)
 
 
+_NUMERAL = r"(?:\d{1,3}|" + _TENS + r"(?:\s*" + _ONES + r")?|" + _ONES + r")"
+_UNIT_WORD = r"(?:번|개|명|분|마리|원|장|그릇|잔|해|날|년|달|주|일|시간|가지|곳|군데|권|벌|채|그루|송이|칸|층|평|켤레|통)"
+# 스팬 끝에 붙은 조사·어미까지 — 「스무 해에」 「스무 해였다」 「쉰 날간」 (Codex 10/6). 아무 글자나 열면 「스물 일곱」을
+# 「스물 + 일(단위) + 곱」으로 읽으므로 목록만 허용한다
+_UNIT_TAIL = (r"(?:동안|넘게|째|쯤|씩|이나|나|만|도|은|는|이|가|을|를|의|에|에는|에서|에도|간|간의|보다|까지|부터|하고|어치"
+              r"|였다|였고|였는데|였지|이었다|이었고|이다|이고|이라|인데|째인)")
+_NUMERAL_WITH_UNIT = re.compile(_NUMERAL + r"\s*" + _UNIT_WORD + r"(?:\s*" + _UNIT_TAIL + r")?")
+
+
+def is_quantity_age(text: str, start: int, end: int) -> bool:
+    """모델이 AGE 로 낸 스팬이 실은 수량·기간인가 — 「스무 해」(스팬에 단위) · 「서른」+「 해 동안」(뒤에 단위).
+
+    규칙 후보는 age_spans 가 이미 거른다. 재학습 모델은 이 거름이 없어 exp17 숫자 함정 7/15 를 나이로 잡았다.
+    """
+    span = text[start:end].strip()
+    if re.fullmatch(_NUMERAL, span):  # 수만 — 「스물 일곱」은 여기서 나이로 읽힌다(단위 「일」로 보지 않음)
+        return bool(_QUANTITY_FOLLOWERS.match(text, end) or _DURATION_FOLLOWERS.match(text, end))
+    return bool(_NUMERAL_WITH_UNIT.fullmatch(span))  # 「스무 해」 「스무 해에」 — 그 밖(「서른 살이고」)은 나이
+
+
 def merge_with_model(
     post_id: str,
     texts: dict[str, str],
@@ -148,6 +169,7 @@ def merge_with_model(
         raise ValueError("post_id가 필요합니다.")
     by_channel: dict[str, dict[tuple[int, int, str], dict]] = {tid: {} for tid in texts}
     model_keys: set[tuple[str, int, int, str]] = set()
+    quantity_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -157,6 +179,9 @@ def merge_with_model(
         key = (tid, start, end, kind)
         if key in model_keys:
             raise ValueError(f"모델 후보가 중복됐습니다: {post_id}/{tid}")
+        if kind == "AGE" and is_quantity_age(texts[tid], start, end):
+            quantity_dropped += 1  # 「서른 해 동안」 — 나이가 아니라 기간
+            continue
         model_keys.add(key)
         span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
         if "score" in candidate:
@@ -189,5 +214,6 @@ def merge_with_model(
         "selected_rule_only": len(selected_keys & (rule_keys - model_keys)),
         "selected_both": len(selected_keys & model_keys & rule_keys),
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
+        "model_age_quantity_dropped": quantity_dropped,
     }
     return output, stats

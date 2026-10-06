@@ -71,6 +71,45 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'서른', '마흔'})
 
+    def test_model_age_quantity_is_dropped_in_merge(self):
+        """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
+        from rules import is_quantity_age
+        cases = {
+            ('시청에서 보낸 서른 해 동안', '서른'): True,
+            ('스무 해 넘게 살았다', '스무 해'): True,
+            ('책이 스물세 권이나', '스물세 권이나'): True,
+            ('나는 서른 살이고 해가 지면', '서른 살이고'): False,
+            ('스물다섯인데 벌써', '스물다섯인데'): False,
+            ('마흔둘인데 날이 좋다', '마흔둘인데'): False,
+            ('올해 서른 줄에 접어들었다', '서른'): False,
+            # Codex 10/6 — 줄바꿈 뒤 다른 말의 첫 글자를 단위로 읽지 않는다
+            ('나이는 서른\n개발자로 일해요', '서른'): False,
+            ('올해 서른\n원하는 일을 시작했어요', '서른'): False,
+            ('스물 일곱에 결혼했다', '스물 일곱에'): False,
+            ('스물 일곱', '스물 일곱'): False,
+            # 스팬 끝에 조사·어미가 붙은 수량
+            ('스무 해에 걸쳐', '스무 해에'): True,
+            ('그게 벌써 스무 해였다', '스무 해였다'): True,
+            ('쉰 날간 여행했다', '쉰 날간'): True,
+            ('서른 번째 생일', '서른'): True,
+            ('마흔 명이 왔다', '마흔'): True,
+            ('서른 개월 동안', '서른'): True,
+            ('아기는 생후 18개월이에요', '18개월'): False,
+            ('그곳에서 스무\n해 동안 일했다', '스무'): True,
+            ('마흔 명에게 선물을 줬다', '마흔'): True,
+            ('스무 개였다', '스무'): True,
+            ('스무 개쯤은 필요하다', '스무'): True,
+            ('서른 일하면서 배웠다', '서른'): False,
+            ('스물 해서 먹었다', '스물'): False,
+            ('올해 서른 주도적으로 살아보려고 한다', '서른'): False,
+            ('스무 개짜리 묶음을 샀다', '스무'): True,
+            ('마흔 명당 한 명을 뽑는다', '마흔'): True,
+            ('서른 분께 인사했다', '서른'): True,
+        }
+        for (text, span), expected in cases.items():
+            start = text.index(span)
+            self.assertEqual(is_quantity_age(text, start, start + len(span)), expected, (text, span))
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'
