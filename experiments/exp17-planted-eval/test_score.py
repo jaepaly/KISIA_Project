@@ -67,3 +67,38 @@ def test_missing_spans_field_fails_but_empty_list_is_ok(tmp_path):
     with pytest.raises(ValueError, match="spans"):
         load_preds(_write(tmp_path, [{"post_id": "P1"}]), {"P1"})
     assert load_preds(_write(tmp_path, [{"post_id": "P1", "spans": []}]), {"P1"}) == {"P1": []}
+
+
+def test_tie_order_does_not_depend_on_input_order():
+    """정답 순서를 뒤집어도 결과가 같다 — 좌표순 정렬 후 매칭 (Codex 10/6)."""
+    a, b = _clue(0, 2), _clue(1, 3)
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 1, "type": "LOC_ADMIN"},
+                    {"text_id": "body", "start": 0, "end": 3, "type": "LOC_ADMIN"}]}
+    assert evaluate(_gold([a, b]), preds)["recall_all"] == evaluate(_gold([b, a]), preds)["recall_all"]
+
+
+def test_duplicate_span_in_post_fails(tmp_path):
+    row = {"text_id": "body", "start": 0, "end": 5, "type": "LOC_ADMIN"}
+    with pytest.raises(ValueError, match="두 번"):
+        load_preds(_write(tmp_path, [{"post_id": "P1", "spans": [row, dict(row)]}]), {"P1"})
+
+
+def test_trap_self_leak_counted_even_if_other_matched():
+    gold = _gold([_clue(0, 4, subject="other")])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "LOC_ADMIN", "subject": "other"},
+                    {"text_id": "body", "start": 0, "end": 5, "type": "LOC_ADMIN", "subject": "self"}]}
+    assert evaluate(gold, preds)["trap_other"]["judged_self"] == 1
+
+
+def test_trap_unknown_subject_is_not_self():
+    gold = _gold([_clue(0, 4, subject="other")])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "LOC_ADMIN"}]}
+    trap = evaluate(gold, preds)["trap_other"]
+    assert trap["judged_self"] == 0 and trap["judged_unknown"] == 1
+
+
+def test_matched_prediction_not_counted_as_distractor_fp():
+    gold = _gold([_clue(0, 4, typ="AGE")], distractors=[{"start": 4, "end": 8}])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 8, "type": "AGE"}]}
+    out = evaluate(gold, preds)
+    assert out["recall_all"] == 1.0 and out["distractor_age_fp"] == "0/1"

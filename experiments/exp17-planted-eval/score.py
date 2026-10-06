@@ -36,8 +36,13 @@ def iou(a: dict, b: dict) -> float:
     return inter / union if inter > 0 else 0.0
 
 
+def _key(x: dict) -> tuple:
+    return (x.get("text_id", "body"), x["start"], x["end"], x["type"])
+
+
 def match_one_to_one(gold: list[dict], pred: list[dict]) -> dict[int, int]:
-    """정답 인덱스 → 예측 인덱스. 같은 채널·유형 + IoU ≥ 0.5 쌍을 (IoU, 정답, 예측) 내림차순으로 탐욕 1:1 매칭."""
+    """정답 인덱스 → 예측 인덱스. 같은 채널·유형 + IoU ≥ 0.5 쌍을 (IoU, 정답, 예측) 내림차순으로 탐욕 1:1 매칭.
+    호출 쪽이 정답·예측을 좌표순으로 정렬해 넘긴다 — 공식 채점기와 동률 처리가 같아진다."""
     cands = sorted(((iou(g, x), i, j) for i, g in enumerate(gold) for j, x in enumerate(pred) if overlap(g, x)),
                    reverse=True)
     used_pred: set[int] = set()
@@ -55,11 +60,12 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
     trap = Counter()
     distract_fp = unplanned = n_pred = 0
     for g in gold:
-        p = [dict(x, text_id=x.get("text_id", "body")) for x in preds.get(g["post_id"], [])]
+        p = sorted((dict(x, text_id=x.get("text_id", "body")) for x in preds.get(g["post_id"], [])), key=_key)
         n_pred += len(p)
-        planted = [dict(c, text_id="body") for c in g["planted"]]
+        order = sorted(range(len(g["planted"])), key=lambda i: _key(dict(g["planted"][i], text_id="body")))
+        planted = [dict(g["planted"][i], text_id="body") for i in order]
         matched = match_one_to_one(planted, p)
-        for i, c in enumerate(g["planted"]):
+        for i, c in enumerate(g["planted"][k] for k in order):
             key = f"{c['type']}/{c['subject']}"
             tot[key] += 1
             by_variant_tot[c["variant"]] += 1
@@ -69,11 +75,18 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
                 by_variant_hit[c["variant"]] += 1
             if c["subject"] == "other":
                 trap["planted"] += 1
+                # 매칭과 별개로, 같은 유형으로 겹친 예측 중 하나라도 self 면 k 를 잘못 좁힌다 (Codex 10/6)
+                leak = any(x.get("subject") == "self" and overlap(planted[i], x) for x in p)
                 if m is not None:
                     trap["caught"] += 1
-                    trap["judged_other" if m.get("subject") == "other" else "judged_self"] += 1
+                if leak:
+                    trap["judged_self"] += 1
+                elif m is not None:
+                    trap["judged_other" if m.get("subject") == "other" else "judged_unknown"] += 1
+        used = set(matched.values())  # 정답과 짝지어진 예측은 함정 오탐으로 다시 세지 않는다
         for d in g["distractors"]:
-            if any(x["type"] == "AGE" and overlap({**d, "type": "AGE", "text_id": "body"}, x) for x in p):
+            if any(j not in used and x["type"] == "AGE" and overlap({**d, "type": "AGE", "text_id": "body"}, x)
+                   for j, x in enumerate(p)):
                 distract_fp += 1
         planted_any = [dict(c, text_id="body") for c in g["planted"]] + [dict(d, text_id="body") for d in g["distractors"]]
         unplanned += sum(1 for x in p if not any(overlap(x, c, same_type=False) for c in planted_any))
@@ -85,7 +98,7 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
         "recall_by_type": {k: f"{hit[k]}/{tot[k]}" for k in sorted(tot)},
         "recall_by_variant": {k: f"{by_variant_hit[k]}/{by_variant_tot[k]}" for k in sorted(by_variant_tot)},
         "trap_other": {"planted": trap["planted"], "caught": trap["caught"], "judged_other": trap["judged_other"],
-                       "judged_self": trap["judged_self"]},
+                       "judged_self": trap["judged_self"], "judged_unknown": trap["judged_unknown"]},
         "distractor_age_fp": f"{distract_fp}/{sum(len(g['distractors']) for g in gold)}",
         "unplanned_spans_per_post": round(unplanned / max(1, len(gold)), 2),
     }
@@ -104,6 +117,9 @@ def load_preds(path: str, expected_ids: set[str] | None = None) -> dict[str, lis
         spans = r.get("spans")
         if not isinstance(spans, list):
             raise ValueError(f"{path}:{n}: {pid} 에 spans 목록이 없다 — 탐지가 없으면 \"spans\": []")
+        keys = [_key(x) for x in spans]
+        if len(keys) != len(set(keys)):
+            raise ValueError(f"{path}:{n}: {pid} 에 같은 스팬이 두 번 있다 — 공식 채점기처럼 거부한다")
         out[pid] = spans
     if expected_ids is not None and set(out) != expected_ids:
         missing, extra = sorted(expected_ids - set(out)), sorted(set(out) - expected_ids)
