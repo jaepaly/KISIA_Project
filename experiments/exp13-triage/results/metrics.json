@@ -1,0 +1,155 @@
+{
+  "personas": 92,
+  "spans": "gold self spans (1단 오차 제외)",
+  "rules_all_personas": {
+    "all": {
+      "posts": 2472,
+      "prompt_tokens": 185987,
+      "text_tokens": 1100139
+    },
+    "span": {
+      "posts": 1224,
+      "prompt_tokens": 163523,
+      "text_tokens": 585837,
+      "prompt_token_cut_pct": 12.1,
+      "text_token_cut_pct": 46.7,
+      "rules": {
+        "nonabstain": 525,
+        "kept_same": 525,
+        "lost_to_abstain": 0,
+        "agree_all": 644,
+        "new_nonabstain": 0,
+        "personas_valid": 92,
+        "recall": 1.0,
+        "agreement_7attr": 1.0
+      }
+    },
+    "anchor": {
+      "posts": 491,
+      "prompt_tokens": 89471,
+      "text_tokens": 235997,
+      "prompt_token_cut_pct": 51.9,
+      "text_token_cut_pct": 78.5,
+      "rules": {
+        "nonabstain": 525,
+        "kept_same": 525,
+        "lost_to_abstain": 0,
+        "agree_all": 644,
+        "new_nonabstain": 0,
+        "personas_valid": 92,
+        "recall": 1.0,
+        "agreement_7attr": 1.0
+      }
+    }
+  },
+  "model_subset": {
+    "personas": [
+      "A07",
+      "A17",
+      "A19",
+      "A23",
+      "A25",
+      "B01",
+      "B10",
+      "B13",
+      "B21",
+      "D04",
+      "D14",
+      "D20",
+      "E06",
+      "E15",
+      "E20"
+    ],
+    "seed": 20261004,
+    "max_new_tokens": 1600,
+    "personas_done": 15,
+    "rules": {
+      "all": {
+        "posts": 418,
+        "prompt_tokens": 30942,
+        "text_tokens": 229964
+      },
+      "span": {
+        "posts": 197,
+        "prompt_tokens": 26964,
+        "text_tokens": 109134,
+        "prompt_token_cut_pct": 12.9,
+        "text_token_cut_pct": 52.5,
+        "rules": {
+          "nonabstain": 86,
+          "kept_same": 86,
+          "lost_to_abstain": 0,
+          "agree_all": 105,
+          "new_nonabstain": 0,
+          "personas_valid": 15,
+          "recall": 1.0,
+          "agreement_7attr": 1.0
+        }
+      },
+      "anchor": {
+        "posts": 81,
+        "prompt_tokens": 14668,
+        "text_tokens": 42035,
+        "prompt_token_cut_pct": 52.6,
+        "text_token_cut_pct": 81.7,
+        "rules": {
+          "nonabstain": 86,
+          "kept_same": 86,
+          "lost_to_abstain": 0,
+          "agree_all": 105,
+          "new_nonabstain": 0,
+          "personas_valid": 15,
+          "recall": 1.0,
+          "agreement_7attr": 1.0
+        }
+      }
+    },
+    "model": {
+      "all": {
+        "posts": 418,
+        "prompt_tokens": 30942,
+        "text_tokens": 229964
+      },
+      "span": {
+        "posts": 197,
+        "prompt_tokens": 26964,
+        "text_tokens": 109134,
+        "prompt_token_cut_pct": 12.9,
+        "text_token_cut_pct": 52.5,
+        "model": {
+          "nonabstain": 72,
+          "kept_same": 61,
+          "lost_to_abstain": 1,
+          "agree_all": 80,
+          "new_nonabstain": 7,
+          "personas_valid": 14,
+          "recall": 0.8472,
+          "agreement_7attr": 0.8163
+        }
+      },
+      "anchor": {
+        "posts": 81,
+        "prompt_tokens": 14668,
+        "text_tokens": 42035,
+        "prompt_token_cut_pct": 52.6,
+        "text_token_cut_pct": 81.7,
+        "model": {
+          "nonabstain": 72,
+          "kept_same": 52,
+          "lost_to_abstain": 3,
+          "agree_all": 70,
+          "new_nonabstain": 8,
+          "personas_valid": 14,
+          "recall": 0.7222,
+          "agreement_7attr": 0.7143
+        }
+      }
+    },
+    "invalid": 1,
+    "sec_mean": {
+      "all": 105.2,
+      "span": 88.5,
+      "anchor": 44.4
+    }
+  }
+}
