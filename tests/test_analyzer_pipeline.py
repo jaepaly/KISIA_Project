@@ -218,3 +218,12 @@ def test_contribution_clue_ids_are_real_span_ids():
     assert by_post["p2"]["clue_ids"] == ["p2_s01"]
     for c in contrib["output"]["contributions"]:
         assert set(c["clue_ids"]) >= {s["span_id"] for s in c["top_spans"]}
+
+
+
+def test_contribution_tolerates_duplicate_spans():
+    """같은 스팬이 두 번 와도(1단·규칙 병합 중복 등) 기여도가 깨지지 않는다 (Codex 10/6)."""
+    s = _span("p1", 1, "마흔여덟", "AGE")
+    contrib = _run("u_0000aaaa", POSTS[:2], {"p1": [s, dict(s)]})["contrib"]
+    row = next(c for c in contrib["output"]["contributions"] if c["post_id"] == "p1")
+    assert row["clue_ids"] == ["p1_s01"] and row["top_spans"] == [{"span_id": "p1_s01", "text_id": "body"}]

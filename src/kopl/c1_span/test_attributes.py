@@ -240,3 +240,44 @@ def test_counterpart_predicate_about_me_or_directive_stays_self(sentence, span, 
 ])
 def test_household_ne_belongs_to_actor(sentence, span, expected):
     assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    # Codex 10/6 — 조사가 붙어도 주어 쪽 가족
+    ("옆집 아주머니가 딸네는 자주 가셨다", "딸네는", "other"),
+    ("옆집 아주머니가 딸네를 다녀오셨다", "딸네를", "other"),
+    # 술어가 주어 자신의 이동·거주가 아니면 내 가족 그대로
+    ("사장님이 언니네 데려다주셔서 오랜만에 언니를 만났다", "언니네", "self"),
+    ("사장님이 동생네 김치를 보내 주셨다", "동생네", "self"),
+])
+def test_household_ne_needs_actor_predicate(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    # Codex 10/6 재검토 — 흔한 활용형
+    ("옆집 아주머니가 딸네로 가요", "딸네로", "other"),
+    ("옆집 아주머니가 딸네에 갑니다", "딸네에", "other"),
+    ("옆집 아주머니가 딸네에서 살았다", "딸네에서", "other"),
+    # 사이에 명사가 끼거나 술어가 나를 꾸미면 내 가족
+    ("사장님이 언니네 가족이 있는 곳까지 나를 데려다주셨다", "언니네", "self"),
+    ("사장님이 언니네 있는 나를 데려다주셨다", "언니네", "self"),
+])
+def test_household_ne_conjugations_and_me(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    ("옆집 아주머니가 딸네에 매일 간다", "딸네에", "other"),
+    ("사장님이 언니네로 가려는 나를 데려다주셨다", "언니네로", "self"),
+])
+def test_household_ne_adverb_and_me_word(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+def test_household_ne_me_in_next_clause_is_not_modifier():
+    """「[딸네로] 가셨는데 나를 보고」 — 다음 절의 「나를」은 술어가 꾸미는 말이 아니다 (Codex 10/6)."""
+    assert _r("옆집 아주머니가 딸네로 가셨는데 나를 보고 손을 흔드셨다", "딸네로", "FAM")["subject"] == "other"
