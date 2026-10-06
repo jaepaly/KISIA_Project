@@ -269,3 +269,10 @@ def test_place_right_before_is_residual(before, text, after, stype):
     """바로 앞 지명이 남으면 단서가 약해질 뿐 사라지지 않는다 — residual (#304 리뷰)."""
     res = _r(before, text, after, stype)
     assert res and all(res)
+
+
+
+def test_place_like_modifier_on_job_is_not_residual():
+    """「수영 [강사로]」 — 수영(수영구)은 여기서 운동이다. 직업 단서에는 앞 지명 검사를 하지 않는다 (Codex 10/6)."""
+    res = _r("이번에 수영 ", "강사로", " 취직했다", "JOB")
+    assert res and not any(res)

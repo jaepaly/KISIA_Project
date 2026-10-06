@@ -71,7 +71,8 @@ def contribution(user_ref: str, posts: Sequence[Mapping[str, Any]], removed_post
     mine = {pid: [s for s in kposts[pid]["spans"] if s.get("subject") != "other"] for pid in ids}
     # clue_ids 와 top_spans 는 같은 본인 스팬을 가리킨다 (#303 리뷰 — W8 완료 조건)
     clue_index = {pid: list(dict.fromkeys(s["span_id"] for s in mine[pid])) for pid in ids}
-    span_index = {pid: [{"span_id": s["span_id"], "text_id": s["text_id"]} for s in mine[pid]] for pid in ids}
+    span_index = {pid: [{"span_id": sid, "text_id": tid}
+                        for sid, tid in dict.fromkeys((s["span_id"], s["text_id"]) for s in mine[pid])] for pid in ids}
     return leave_one_out(user_ref=user_ref, post_ids=ids, risk_fn=risk_of, clue_index=clue_index, span_index=span_index,
                          removed_post_ids=removed_post_ids, max_greedy_remove=min(max_greedy_remove, max(len(ids) - 1, 0)))
 

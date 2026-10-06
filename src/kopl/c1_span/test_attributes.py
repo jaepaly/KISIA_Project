@@ -240,3 +240,16 @@ def test_counterpart_predicate_about_me_or_directive_stays_self(sentence, span, 
 ])
 def test_household_ne_belongs_to_actor(sentence, span, expected):
     assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    # Codex 10/6 — 조사가 붙어도 주어 쪽 가족
+    ("옆집 아주머니가 딸네는 자주 가셨다", "딸네는", "other"),
+    ("옆집 아주머니가 딸네를 다녀오셨다", "딸네를", "other"),
+    # 술어가 주어 자신의 이동·거주가 아니면 내 가족 그대로
+    ("사장님이 언니네 데려다주셔서 오랜만에 언니를 만났다", "언니네", "self"),
+    ("사장님이 동생네 김치를 보내 주셨다", "동생네", "self"),
+])
+def test_household_ne_needs_actor_predicate(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected

@@ -361,7 +361,8 @@ def suggest(span: Mapping[str, Any], channel_text: str | None = None, *, limit: 
         if any(a == b or josa.split_tail(b).core == a for a, b in zip(words, words[1:])):
             continue  # 「아이 아이가」
         seen.add(word)
-        if prv and _neighbor_place(prv):
+        if prv and stype in ("LOC_FACILITY", "COMMUTE") and _neighbor_place(prv):
+            # 장소·통근 단서만 — 「수영 [강사로]」의 수영은 운동이다 (Codex 10/6)
             residual = True  # 바로 앞 지명이 남는다 — 「일산 [한 공원]」은 단서가 약해질 뿐 사라지지 않는다 (#304 리뷰)
         out.append({"suggestion": new, "core": word, "note": note, "kind": kind, "residual": residual})
         if len(out) >= limit:
