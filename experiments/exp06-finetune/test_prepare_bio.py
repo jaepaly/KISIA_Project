@@ -75,6 +75,19 @@ class BioAlignmentTest(unittest.TestCase):
             with self.assertRaises(bio.DataError):
                 bio.load_extra_channels([Path(directory)], {"AUG1_0001"}, set())
 
+    def test_extra_gold_malformed_records_are_counted_not_crashed(self) -> None:
+        """#313 리뷰 — post_id 가 문자열이 아니거나 채널 값이 문자열이 아니면 멈추지 않고 제외해 센다."""
+        good = {"post_id": "AUG1_0001", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": []}
+        bad_id = {"post_id": [], "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": []}
+        bad_text = {"post_id": "AUG1_0003", "persona_id": "AUG1", "texts": {"body": 123}, "spans": []}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "AUG1_spans.jsonl"
+            path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in (good, bad_id, bad_text)) + "\n",
+                            encoding="utf-8")
+            channels, stats = bio.load_extra_channels([Path(directory)], set(), set())
+            self.assertEqual([c["post_id"] for c in channels], ["AUG1_0001"])
+            self.assertEqual(stats["augment_records_invalid"], 2)
+
     def test_overlap_alignment_and_decode(self) -> None:
         text = "집 근처 신갈저수지에서"
         offsets = [(0, 0), (0, 1), (2, 4), (5, 7), (7, 10), (10, 12), (0, 0)]

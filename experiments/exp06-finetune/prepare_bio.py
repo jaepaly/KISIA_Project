@@ -260,15 +260,17 @@ def load_extra_channels(
                 source = f"{path}:{line_number}"
                 post_id, persona_id = record.get("post_id"), record.get("persona_id")
                 texts, spans = record.get("texts"), record.get("spans")
+                # 형식 검사를 집합 조회보다 먼저 — post_id: [] 는 해시가 안 돼 TypeError 로 멈췄다 (#313 리뷰)
+                if not isinstance(post_id, str) or not isinstance(persona_id, str) \
+                        or not isinstance(texts, dict) or not isinstance(spans, list) \
+                        or not all(isinstance(k, str) and isinstance(v, str) for k, v in texts.items()):
+                    stats["augment_records_invalid"] += 1  # 채널 값이 문자열이 아니면(texts: {"body": 123}) 제외
+                    continue
                 if post_id in train_ids or post_id in test_ids:
                     raise DataError(f"{source}: 추가 데이터의 post_id 가 기존 분할과 겹친다: {post_id}")
                 if post_id in seen:
                     raise DataError(f"{source}: 추가 데이터의 중복 post_id: {post_id}")
                 seen.add(post_id)
-                if not isinstance(post_id, str) or not isinstance(persona_id, str) \
-                        or not isinstance(texts, dict) or not isinstance(spans, list):
-                    stats["augment_records_invalid"] += 1
-                    continue
                 try:
                     grouped: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
                     for span in spans:
