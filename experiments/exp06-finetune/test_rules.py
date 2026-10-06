@@ -100,6 +100,10 @@ class RuleTests(unittest.TestCase):
             ('스무 개쯤은 필요하다', '스무'): True,
             ('서른 일하면서 배웠다', '서른'): False,
             ('스물 해서 먹었다', '스물'): False,
+            ('올해 서른 주도적으로 살아보려고 한다', '서른'): False,
+            ('스무 개짜리 묶음을 샀다', '스무'): True,
+            ('마흔 명당 한 명을 뽑는다', '마흔'): True,
+            ('서른 분께 인사했다', '서른'): True,
         }
         for (text, span), expected in cases.items():
             start = text.index(span)
