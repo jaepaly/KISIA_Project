@@ -260,10 +260,16 @@ def analyze(
         findings = findings_from_spans(entries)
     rec_posts = [{"post_id": p["post_id"], "spans": list(p.get("spans") or []), "geo_tag": p.get("geo_tag")}
                  for p in posts]
+    if rec_posts:
+        recommendation = recommend(user_ref=user_ref, posts=rec_posts, target_risk=target_risk)
+    else:  # 글이 없는 계정 — 오류 대신 「위험 없음 · 조치 없음」
+        recommendation = {"actions": [], "projected": {"current_risk": 0.0, "projected_risk": 0.0,
+                                                       "reduction_pct": None, "target_met": True},
+                          "optimality_gap_pct": None}
     return {
         "schema_version": SCHEMA_VERSION,
         "findings": findings,
-        "recommendation": recommend(user_ref=user_ref, posts=rec_posts, target_risk=target_risk),
+        "recommendation": recommendation,
         # 바꿔 쓰기 후보 — 추천 엔진 리라이트 조치와 같은 대상(본인 명시 단서). 확실한 후보만 (rewrite.py) · 원문은 담지 않는다
         "rewrites": rewrites_for([{"post_id": p["post_id"], "texts": p.get("texts") or {}, "spans": list(p.get("spans") or [])}
                                   for p in posts]),
