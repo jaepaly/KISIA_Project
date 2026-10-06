@@ -169,3 +169,62 @@ def test_resident_rule_actually_matches_copula_forms():
 ])
 def test_subject_modifier_between_clue_and_person(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # #306 리뷰(B) — 상대 호칭이 주어여도 술어가 그 사람의 속성이면 타인
+    ("사장님은 부산역 앞에 산다", "부산역", "LOC_FACILITY", "other"),
+    ("손님은 야간조로 일한다", "야간조로", "JOB", "other"),
+    ("사장님은 2호선으로 출근한다", "2호선으로", "COMMUTE", "other"),
+    # 내 일·생활의 상대가 내 일에 대해 말하는 경우는 그대로 본인
+    ("사장님이 라떼아트에 한마디 했다", "라떼아트에", "JOB", "self"),
+    ("단골 손님이 사진을 찾으러 왔다", "사진을", "JOB", "self"),
+    ("옆집 아주머니가 회관 윷놀이 때 같은 편 하자고 했다", "회관", "LOC_FACILITY", "self"),
+])
+def test_counterpart_with_own_predicate_is_other(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype", [
+    # Codex 검토 — 다른 절·명사의 술어로 타인이 되지 않는다
+    ("사장님이 라떼아트에 한마디, 난 일하러 감ㅋㅋ", "라떼아트에", "JOB"),
+    ("사장님이 라떼아트에 한마디, 내가 다니는 카페임", "라떼아트에", "JOB"),
+    ("사장님이 라떼아트에 한마디 하더니 근무표 줌", "라떼아트에", "JOB"),
+    ("사장님이 라떼아트에 한마디, 출근길부터 연습했는데ㅠ", "라떼아트에", "JOB"),
+    ("손님이 포스에 한마디 할 때 근무표 알림 옴", "포스에", "JOB"),
+    ("사장님이 2호선으로 오라길래 출근길 검색함", "2호선으로", "COMMUTE"),
+    ("아주머니가 아이를 봐줘서 난 일하러 감", "아이를", "FAM"),
+])
+def test_counterpart_other_clause_predicate_stays_self(sentence, span, stype):
+    assert _r(sentence, span, stype)["subject"] == "self"
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # Codex 2차 — 연결 어미 뒤 다른 주체의 술어는 보지 않는다 (self 유지)
+    ("사장님이 라떼아트에 한마디 해줘서 일하고 왔다", "라떼아트에", "JOB", "self"),
+    ("손님이 포스에 불평해서 일하는 내내 신경 쓰였다", "포스에", "JOB", "self"),
+    ("사장님이 라떼아트에 한마디 할 때 일하는 동료가 웃었다", "라떼아트에", "JOB", "self"),
+    ("사장님이 라떼아트에 한마디 하고 일하는 내 모습을 찍어줬다", "라떼아트에", "JOB", "self"),
+    ("사장님이 2호선으로 오라고 해서 출근하고 보니 휴무였다", "2호선으로", "COMMUTE", "self"),
+    ("아주머니가 아이를 봐주면 일하고 올 수 있다", "아이를", "FAM", "self"),
+    # 높임·합쇼체도 그 사람 속성
+    ("사장님은 부산역 근처에 삽니다", "부산역", "LOC_FACILITY", "other"),
+    ("손님은 야간조로 일하신다", "야간조로", "JOB", "other"),
+])
+def test_counterpart_predicate_must_follow_span(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype", [
+    # Codex 3차 — 술어가 1인칭을 꾸미거나, 시키는·옮기는 말이면 본인 유지
+    ("사장님이 야간조로 일하는 나를 불렀다", "야간조로", "JOB"),
+    ("손님이 야간조로 일하는 내 모습을 찍었다", "야간조로", "JOB"),
+    ("사장님이 2호선으로 출근하는 내게 연락했다", "2호선으로", "COMMUTE"),
+    ("손님이 부산역 앞에 사는 내게 길을 물었다", "부산역", "LOC_FACILITY"),
+    ("사장님이 부산역 근처에 살고 있는 나를 찾아왔다", "부산역", "LOC_FACILITY"),
+    ("사장님이 야간조로 일해 보라고 했다", "야간조로", "JOB"),
+    ("사장님이 2호선으로 출근하세요 하고 말했다", "2호선으로", "COMMUTE"),
+    ("사장님이 야간조로 일하세요 하고 말했다", "야간조로", "JOB"),
+])
+def test_counterpart_predicate_about_me_or_directive_stays_self(sentence, span, stype):
+    assert _r(sentence, span, stype)["subject"] == "self"

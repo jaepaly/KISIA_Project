@@ -174,6 +174,33 @@ _MODIFIER = r"(?:사는|살던|사시는|살고\s*있는|있는|다니는|일하
 _PERSON_AFTER = re.compile(r"^\s*(?:에\s*)?" + _MODIFIER + r"?\s*" + _OTHERS
                            + r"(?:들|님)?(?:이|가|은|는|도|과|와|랑|이랑|하고|의|을|를|한테|에게|께)?(?![가-힣])")
 _COPULA_AFTER = re.compile(r"(?:들)?(?:야|이야|예요|이에요|입니다|이고|인데요|인데|임|이다|이었어|였어|이거든|거든|라서|이라서|이라|라)(?![가-힣])")
+# 스팬 뒤 술어가 주어 자신의 속성을 말하면(살다·일하다·출근하다·다니다) 단서는 그 주어의 것 — 상대 호칭 예외를 쓰지 않는다
+# (#306 리뷰: 「사장님은 [부산역] 앞에 산다」 「손님은 [야간조로] 일한다」 「사장님은 [2호선으로] 출근한다」)
+_OWN_VERB = (r"(?:산다|사는|삽니다|사신다|사십니다|사셔|살아|살고|살면서|살더라"
+             r"|일한다|일해|일하고|일하는|일합니다|일하신다|일하십니다|일했|일하며"
+             r"|(?:출근|퇴근|근무|통근|운영)(?:한다|해|하고|하는|합니다|하신다|하십니다|했|하며)"
+             r"|다닌다|다니는|다닙니다|다니신다|다녀|다니고)")  # 「-세요」는 명령과 높임이 갈리지 않아 뺀다
+# 스팬 **바로 뒤**의 술어만 — 사이에는 위치 말(앞에·근처에·쪽으로…)만 허용한다.
+# 「사장님은 [부산역] 앞에 산다」 ○ · 「사장님이 [라떼아트에] 한마디 해줘서 일하고 왔다」 ✗ (바로 뒤가 「한마디」)
+_OWN_PREDICATE = re.compile(
+    r"^\s*(?:(?:앞|뒤|옆|근처|쪽|동네|근방|인근|부근)(?:에서|에|으로|로)?\s*)?(?:에서|에|으로|로)?\s*" + _OWN_VERB
+    + r"(?![가-힣]*[표길])")
+
+
+# 술어가 1인칭을 꾸미면(「일하는 나를」) 그 속성은 나 · 시키거나 옮긴 말이면(「일해 보라고」 「출근하라고」) 주어 것이 아니다
+_ME_AFTER = re.compile(r"\s*(?:있는\s*)?(?:나|내|저|제)(?:를|게|가|는|의|한테|에게)?(?![가-힣])")
+_DIRECTIVE_AFTER = re.compile(r"\s*(?:보라|봐|봐라|라고|래|하라|하고\s*말|고\s*했|달라)")
+
+
+def _own_predicate(after: str) -> bool:
+    """스팬 바로 뒤의 술어가 주어 자신의 속성(살다·일하다·출근하다·다니다)인가 (#306 리뷰)."""
+    m = _OWN_PREDICATE.match(after)
+    if not m:
+        return False
+    rest = after[m.end():]
+    return not (_ME_AFTER.match(rest) or _DIRECTIVE_AFTER.match(rest))
+
+
 _RESIDENT_AFTER = re.compile(r"^\s*(?:에\s*)?(?:사는|살던|사시는|살고\s*있는)\s*" + _OTHERS
                              + r"(?=(?:들|님)?(?:이|가|은|는|을|를|과|와|랑|이랑|하고|에게|한테|께|의|도|만|야|이야|예요|이에요|입니다"
                              r"|이고|인데요|인데|임|이다|이었어|였어|이거든|거든|라서|이라서|이라|라)?(?![가-힣]))")
@@ -264,8 +291,10 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
         if not _FIRST_PERSON.search(before[last.end():]):
             word = last.group(0)
             explicit_title = stype == "JOB" and level_of(stype, text) == "explicit"
-            if _COUNTERPART.search(word) and stype in ("JOB", "COMMUTE", "LOC_FACILITY", "FAM") and not explicit_title:
-                return "self"  # 단 「사장님이 [약사라서]」 — 직업명 자체는 그 사람 것
+            own_predicate = _own_predicate(after)
+            if _COUNTERPART.search(word) and stype in ("JOB", "COMMUTE", "LOC_FACILITY", "FAM") and not explicit_title \
+                    and not own_predicate:
+                return "self"  # 단 「사장님이 [약사라서]」 — 직업명 자체는 그 사람 것 · 「사장님은 [2호선으로] 출근한다」는 그 사람 것
             if stype == "FAM" and not re.search(r"친구|동창|동기|선배|후배|동료|지인|아는|이웃|옆집|앞집|윗집|아랫집|원장|사장|손님|양반|반장|선생|아주머니|아저씨|그분|걔|그 사람", word):
                 return "self"  # 「아내가 [아이] 데리러」 — 내 가족 구성이다
             if stype == "SEX" and re.search(r"남편|아내|와이프|신랑", word) and level_of(stype, text) != "explicit":
