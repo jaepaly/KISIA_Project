@@ -31,7 +31,8 @@ jobs:
           python-version: "3.11"
 
       - name: 의존성 (가벼운 것만)
-        run: python -m pip install --disable-pip-version-check pytest jsonschema numpy scipy "Flask>=3.0"
+        # fastapi · python-multipart · httpx — 분석 앱 서버 테스트(업로드 크기 제한 · 중복 글 ID 거부)가 건너뛰지 않게
+        run: python -m pip install --disable-pip-version-check pytest jsonschema numpy scipy "Flask>=3.0" fastapi python-multipart httpx
 
       - name: 단위 테스트 (src · tests · 앱)
         env:
