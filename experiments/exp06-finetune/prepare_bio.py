@@ -236,6 +236,13 @@ def load_training_channels(
     return channels, dict(stats)
 
 
+def _extra_span_ok(span: Any) -> bool:
+    """추가 데이터 스팬의 필드 타입 — span_id · text_id · type 은 빈 아닌 문자열, start · end 는 bool 아닌 정수."""
+    return (isinstance(span, dict)
+            and all(isinstance(span.get(k), str) and span.get(k) for k in ("span_id", "text_id", "type"))
+            and all(isinstance(span.get(k), int) and not isinstance(span.get(k), bool) for k in ("start", "end")))
+
+
 def load_extra_channels(
     extra_dirs: Sequence[Path],
     train_ids: set[str],
@@ -261,16 +268,16 @@ def load_extra_channels(
                 post_id, persona_id = record.get("post_id"), record.get("persona_id")
                 texts, spans = record.get("texts"), record.get("spans")
                 # 형식 검사를 집합 조회보다 먼저 — post_id: [] 는 해시가 안 돼 TypeError 로 멈췄다 (#313 리뷰)
-                if not isinstance(post_id, str) or not isinstance(persona_id, str) \
-                        or not isinstance(texts, dict) or not isinstance(spans, list) \
-                        or not all(isinstance(k, str) and isinstance(v, str) for k, v in texts.items()):
-                    stats["augment_records_invalid"] += 1  # 채널 값이 문자열이 아니면(texts: {"body": 123}) 제외
+                if not (isinstance(post_id, str) and post_id and isinstance(persona_id, str) and persona_id
+                        and isinstance(texts, dict) and texts and isinstance(spans, list)
+                        and all(isinstance(k, str) and isinstance(v, str) for k, v in texts.items())
+                        and all(_extra_span_ok(sp) for sp in spans)):
+                    stats["augment_records_invalid"] += 1  # 채널 값·스팬 필드 타입이 틀리거나 빈 값이면 제외 (#313 리뷰)
                     continue
                 if post_id in train_ids or post_id in test_ids:
                     raise DataError(f"{source}: 추가 데이터의 post_id 가 기존 분할과 겹친다: {post_id}")
                 if post_id in seen:
                     raise DataError(f"{source}: 추가 데이터의 중복 post_id: {post_id}")
-                seen.add(post_id)
                 try:
                     grouped: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
                     for span in spans:
@@ -287,6 +294,7 @@ def load_extra_channels(
                 except (DataError, KeyError, TypeError):
                     stats["augment_records_invalid"] += 1
                     continue
+                seen.add(post_id)  # 받아들인 레코드만 — 제외된 레코드가 같은 ID 의 정상 레코드를 막지 않게 (Codex 10/6)
                 channels.extend(record_channels)
                 stats["augment_records_accepted"] += 1
                 stats["augment_spans"] += sum(len(c["spans"]) for c in record_channels)
