@@ -88,6 +88,13 @@ def _starts_with_place(word: str) -> bool:
     return any(word.startswith(k) and len(k) >= 2 for k in (word[:n] for n in range(2, min(len(word), 5) + 1)) if k in idx)
 
 
+def _neighbor_place(word: str) -> bool:
+    """스팬 바로 앞 말이 지명인가 — 「일산」(일산동구·일산서구)처럼 방위 구의 앞부분만 쓰는 말까지 본다."""
+    w = josa.split_tail(word, loc=True).core
+    return _is_place_word(w) or _starts_with_place(w) or (
+        len(w) >= 2 and any(_region_codes(w + d) for d in ("동구", "서구", "남구", "북구")))
+
+
 def _ladder_from_full(toks: list[str], seen: set[str]) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     for n in range(len(toks) - 1, 0, -1):
@@ -174,7 +181,8 @@ _TOKEN_RULES: list[tuple[tuple[str, ...], re.Pattern, list[tuple[str, str]]]] = 
                           + r"(?!\s*(?:딸내미|딸|아들|동생|여동생|남동생|아이|애|손주|손자|손녀|조카|형|누나|언니|오빠))"),
      [("아이", "몇째·성별 지움")]),
     (("FAM",), re.compile(_B + r"(?:손주|손자|손녀)" + _E), [("아이", "관계 지움")]),
-    (("SEX", "FAM"), re.compile(_B + r"(?:언니|누나|오빠|형님|처남|시누이?)" + _E), [("지인", "관계 지움")]),
+    (("SEX", "FAM"), re.compile(_B + r"(?:처남|시누이?)" + _E), [("가족", "관계 지움")]),  # 반드시 가족이다 — 「지인」은 뜻이 바뀐다 (#304 리뷰)
+    (("SEX", "FAM"), re.compile(_B + r"(?:언니|누나|오빠|형님)" + _E), [("지인", "관계 지움")]),  # 남을 부르는 말로도 쓴다
     (("COMMUTE",), re.compile(_B + r"(?:\d+\s*번\s*버스|마을버스|광역버스|시내버스|통근버스|셔틀버스)" + _E),
      [("버스", "노선 지움")]),
     (("COMMUTE",), re.compile(r"\d+\s*호선(?:\s*지하철)?" + _E), [("지하철", "노선 지움")]),
@@ -353,6 +361,8 @@ def suggest(span: Mapping[str, Any], channel_text: str | None = None, *, limit: 
         if any(a == b or josa.split_tail(b).core == a for a, b in zip(words, words[1:])):
             continue  # 「아이 아이가」
         seen.add(word)
+        if prv and _neighbor_place(prv):
+            residual = True  # 바로 앞 지명이 남는다 — 「일산 [한 공원]」은 단서가 약해질 뿐 사라지지 않는다 (#304 리뷰)
         out.append({"suggestion": new, "core": word, "note": note, "kind": kind, "residual": residual})
         if len(out) >= limit:
             break

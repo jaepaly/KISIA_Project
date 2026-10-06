@@ -243,3 +243,29 @@ def test_age_with_unit_like_word_still_rewrites():
 def test_age_line_idiom_still_rewrites():
     """「서른 줄에」는 나이 — 단위로 보고 기권하지 않는다 (Codex 10/5)."""
     assert _s("어느새 ", "서른", " 줄에 접어들었네", "AGE")
+
+
+@pytest.mark.parametrize("before,text,after,expected", [
+    ("주말에는 ", "시누이가", " 찻잔 세트를", "가족이"),
+    ("", "처남이", " 동탄 살아서", "가족이"),
+    ("", "언니가", " 놀러 왔다", "지인이"),
+])
+def test_in_law_stays_family(before, text, after, expected):
+    """처남·시누이는 반드시 가족 — 「지인」으로 바꾸면 뜻이 바뀐다 (#304 리뷰)."""
+    assert _s(before, text, after, "FAM")[:1] == [expected]
+
+
+def _r(before, text, after, stype):
+    full = before + text + after
+    return [c["residual"] for c in suggest({"text": text, "type": stype, "start": len(before),
+                                             "end": len(before) + len(text)}, full)]
+
+
+@pytest.mark.parametrize("before,text,after,stype", [
+    ("밖으로 나갔습니다. 일산 ", "호수공원", " 산책로는", "LOC_FACILITY"),
+    ("걷는 사이 곡성 ", "마을버스를", " 또 놓쳤다", "COMMUTE"),
+])
+def test_place_right_before_is_residual(before, text, after, stype):
+    """바로 앞 지명이 남으면 단서가 약해질 뿐 사라지지 않는다 — residual (#304 리뷰)."""
+    res = _r(before, text, after, stype)
+    assert res and all(res)
