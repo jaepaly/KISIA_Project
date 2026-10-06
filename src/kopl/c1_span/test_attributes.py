@@ -276,3 +276,8 @@ def test_household_ne_conjugations_and_me(sentence, span, expected):
 ])
 def test_household_ne_adverb_and_me_word(sentence, span, expected):
     assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+def test_household_ne_me_in_next_clause_is_not_modifier():
+    """「[딸네로] 가셨는데 나를 보고」 — 다음 절의 「나를」은 술어가 꾸미는 말이 아니다 (Codex 10/6)."""
+    assert _r("옆집 아주머니가 딸네로 가셨는데 나를 보고 손을 흔드셨다", "딸네로", "FAM")["subject"] == "other"
