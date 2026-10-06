@@ -13,11 +13,52 @@ async function showEngineBadge(elId) {
   try {
     const r = await fetch("/api/engine-mode");
     const d = await r.json();
-    document.getElementById(elId).textContent = `engine: ${d.mode}`;
+    document.getElementById(elId).textContent = `engine: ${d.mode}${d.c1_rules ? " · 1단 명시 규칙 병합" : ""}`;
   } catch (e) {
     document.getElementById(elId).textContent = "engine: unknown";
   }
 }
+
+// 글 원문·사용자 입력은 반드시 이스케이프해서 넣는다 — 업로드한 글에 <script> 가 있어도 실행되지 않게
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// 스팬 오프셋은 유니코드 문자(코드포인트) 단위다 — JS 문자열 slice 는 UTF-16 이라 이모지 뒤에서 어긋난다
+function cpSlice(text, start, end) {
+  return Array.from(text || "").slice(start, end).join("");
+}
+
+// 후보 수 — 「약 4,069명」
+function fmtK(k) {
+  if (k === null || k === undefined) return "산출 불가";
+  return `약 ${Math.round(k).toLocaleString("ko-KR")}명`;
+}
+
+// 글의 채널별 원문 — 스팬의 text_id 와 같은 이름 (title · body · photo_caption:N)
+function channelsOf(post) {
+  const out = [];
+  if (post.title) out.push(["title", post.title]);
+  out.push(["body", post.body || ""]);
+  (post.photos || []).forEach((ph, i) => {
+    const cap = ph && typeof ph === "object" ? ph.caption : ph;
+    if (cap) out.push([`photo_caption:${i}`, cap]);
+  });
+  return out;
+}
+
+// 사용자에게 보여 줄 글 이름 — 제목, 없으면 본문 첫 구절 (글 ID 는 사람이 못 알아본다)
+function postLabel(post) {
+  if (!post) return "";
+  if (post.title) return post.title;
+  const body = (post.body || "").replace(/\s+/g, " ").trim();
+  return body.length > 24 ? body.slice(0, 24) + "…" : body;
+}
+
+const TYPE_LABEL = {
+  LOC_ADMIN: "지역", LOC_FACILITY: "장소", REL_HOME: "집 근처", REL_WORK: "직장 근처", AGE: "나이", SEX: "성별",
+  JOB: "직업", FAM: "가족", COMMUTE: "통근", INCOME: "소득",
+};
 
 const VERDICT_LABEL = {
   specified: "특정됨",

@@ -16,11 +16,11 @@ import os
 import sys
 import threading
 import unicodedata
-import warnings
 from collections import OrderedDict
 from pathlib import Path
 
-from .mock import contribution, specificity  # noqa: F401 — 아직 안 온 것은 목을 그대로 쓴다
+from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
+from . import c1_rules as _c1_rules
 
 _ROOT = Path(__file__).resolve().parents[3]
 _EXP06 = _ROOT / "experiments" / "exp06-finetune"
@@ -41,14 +41,16 @@ from kopl.c4_stage2.infer import _get_model as _load_stage2  # noqa: E402
 _STAGE2_MODE = os.getenv("STAGE2_MODE", "auto")
 _STAGE2_TARGET = float(os.getenv("STAGE2_TARGET_RISK", "40"))
 
+from kopl.c1_span.attributes import resolve as resolve_attributes  # noqa: E402
+
 
 def _attributes(texts: dict, candidate: dict) -> dict:
-    """level·subject 판정 자리. 판정 위치 결정 전이라 임시값을 그대로 쓴다 (#266).
+    """level·subject 판정 — 규칙 판정기 (kopl.c1_span.attributes · exp16).
 
-    모델은 level·subject 를 예측하지 않는다 — 타인 단서(「남편이 … 개발자로 일해요」)도
-    self 로 나온다. 위험도 계산에 넘기기 전에 이 함수를 실제 판정으로 바꾼다.
+    모델은 level·subject 를 예측하지 않는다. 임시값(implicit/self)을 쓰면 타인 단서(「친구가 [화정에서]」)도
+    본인 것으로 k 를 좁히고, 「본인 명시 단서」를 다루는 추천·바꿔 쓰기가 한 번도 돌지 않는다.
     """
-    return infer.legacy_attributes(texts, candidate)
+    return resolve_attributes(texts, candidate)
 
 
 def _load_detector() -> "infer.SpanDetector":
@@ -59,8 +61,6 @@ def _load_detector() -> "infer.SpanDetector":
             "B 에게 받은 파일(config.json · model.safetensors · tokenizer*.json)을 이 폴더에 두거나 "
             "C1_CHECKPOINT_DIR 로 위치를 지정한다 (#266). 목 엔진으로 돌리려면 ENGINE_MODE=mock.")
     detector = infer.SpanDetector(checkpoint, device="cpu", min_span_score=_MIN_SPAN_SCORE)
-    warnings.warn("c1 실제 모델 연결 — level·subject 는 아직 임시값(implicit/self)이다 (#266)",
-                  RuntimeWarning, stacklevel=2)
     return detector
 
 
@@ -98,7 +98,7 @@ def detect_spans(post: dict) -> dict:
     record = {key: post[key] for key in ("post_id", "title", "body") if post.get(key) is not None}
     if post.get("photo_captions") is not None or post.get("photos"):
         record["photo_captions"] = _captions(post)
-    result = _DETECTOR.detect(record, resolver=_attributes)
+    result = _c1_rules.detect(_DETECTOR, record, _attributes)  # C1_RULES=1 이면 명시 규칙 병합 (기본 꺼짐)
     with _SPAN_CACHE_LOCK:
         _SPAN_CACHE[record["post_id"]] = (record, result)
         _SPAN_CACHE.move_to_end(record["post_id"])
@@ -133,7 +133,7 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_tar
     - findings 는 2단 모델(GPU·어댑터가 없거나 출력이 깨지면 규칙 폴백 — provenance.model_version 에 이유)
     - recommendation 은 추천 엔진 v1. 현재 위험도는 C2 로 직접 계산하고, 목표는 서버가 넘긴 값이 아니라
       STAGE2_TARGET_RISK(기본 40 · 0~100 절대값)를 쓴다 — 서버의 목표는 아직 목 기여도에서 나온다
-    - 스팬의 level·subject 는 아직 임시값이다 (_attributes · #266) — 판정이 들어오면 결과가 바뀐다
+    - 스팬의 level·subject 는 규칙 판정기(_attributes · #306)로 붙는다
     """
     entries = []
     try:

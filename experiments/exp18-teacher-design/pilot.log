@@ -1,0 +1,43 @@
+{'ANTHROPIC_API_KEY': True, 'ANTHROPIC_BASE_URL': True}
+대상 69
+{
+ "teacher_detect": {
+  "human_spans": 109,
+  "tp": 57,
+  "fn": 52,
+  "fp": 3,
+  "recall": 0.523,
+  "precision": 0.95,
+  "missed_by_type": {
+   "FAM": 4,
+   "COMMUTE": 12,
+   "AGE": 2,
+   "JOB": 17,
+   "INCOME": 11,
+   "LOC_ADMIN": 1,
+   "REL_WORK": 2,
+   "REL_HOME": 2,
+   "LOC_FACILITY": 1
+  }
+ },
+ "teacher_design": {
+  "human_spans": 109,
+  "tp": 56,
+  "fn": 53,
+  "fp": 58,
+  "recall": 0.514,
+  "precision": 0.491,
+  "missed_by_type": {
+   "FAM": 5,
+   "COMMUTE": 7,
+   "LOC_ADMIN": 5,
+   "INCOME": 10,
+   "REL_WORK": 4,
+   "JOB": 13,
+   "SEX": 5,
+   "LOC_FACILITY": 1,
+   "REL_HOME": 2,
+   "AGE": 1
+  }
+ }
+}

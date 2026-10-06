@@ -1,0 +1,254 @@
+{
+  "main_column": "correct_e03_current_location",
+  "personas": 10,
+  "cells": 280,
+  "judged_by": {
+    "exp11_same_prediction": 88,
+    "manual": 87,
+    "abstain": 105
+  },
+  "per_condition": {
+    "c0_baseline": {
+      "llm_success_mean": 4.9,
+      "location_success": 10,
+      "engine_risk_mean": 43.07
+    },
+    "c1_unpublish": {
+      "llm_success_mean": 3.6,
+      "location_success": 8,
+      "engine_risk_mean": 17.5
+    },
+    "c2_meta": {
+      "llm_success_mean": 3.7,
+      "location_success": 7,
+      "engine_risk_mean": 15.14
+    },
+    "c3_rewrite": {
+      "llm_success_mean": 4.0,
+      "location_success": 8,
+      "engine_risk_mean": 12.79
+    }
+  },
+  "steps": {
+    "c0_baseline→c1_unpublish": {
+      "personas_with_change": 10,
+      "down": 8,
+      "same": 0,
+      "up": 2,
+      "mean_delta": -1.3,
+      "engine_risk_mean_delta": -25.57
+    },
+    "c1_unpublish→c2_meta": {
+      "personas_with_change": 5,
+      "down": 1,
+      "same": 3,
+      "up": 1,
+      "mean_delta": 0.0,
+      "engine_risk_mean_delta": -4.71
+    },
+    "c2_meta→c3_rewrite": {
+      "personas_with_change": 5,
+      "down": 0,
+      "same": 4,
+      "up": 1,
+      "mean_delta": 0.2,
+      "engine_risk_mean_delta": -4.71
+    }
+  },
+  "total_c0_to_c3": {
+    "c0_mean": 4.9,
+    "c3_mean": 4.0,
+    "down": 6,
+    "same": 1,
+    "up": 3,
+    "llm_reduction_pct": 18.4,
+    "engine_reduction_pct": 70.3
+  },
+  "same_input_recall": {
+    "pairs": 10,
+    "abs_delta_mean": 0.3,
+    "nonzero": 3
+  },
+  "per_persona": {
+    "A10": {
+      "c0_baseline": {
+        "llm": 5,
+        "risk": 43.57
+      },
+      "c1_unpublish": {
+        "llm": 3,
+        "risk": 13.57
+      },
+      "c2_meta": {
+        "llm": 3,
+        "risk": 13.57
+      },
+      "c3_rewrite": {
+        "llm": 3,
+        "risk": 5.71
+      }
+    },
+    "A14": {
+      "c0_baseline": {
+        "llm": 5,
+        "risk": 40.0
+      },
+      "c1_unpublish": {
+        "llm": 4,
+        "risk": 28.57
+      },
+      "c2_meta": {
+        "llm": 5,
+        "risk": 28.57
+      },
+      "c3_rewrite": {
+        "llm": 6,
+        "risk": 28.57
+      }
+    },
+    "B06": {
+      "c0_baseline": {
+        "llm": 5,
+        "risk": 56.43
+      },
+      "c1_unpublish": {
+        "llm": 4,
+        "risk": 35.71
+      },
+      "c2_meta": {
+        "llm": 4,
+        "risk": 27.86
+      },
+      "c3_rewrite": {
+        "llm": 5,
+        "risk": 27.86
+      }
+    },
+    "B07": {
+      "c0_baseline": {
+        "llm": 5,
+        "risk": 50.0
+      },
+      "c1_unpublish": {
+        "llm": 4,
+        "risk": 26.43
+      },
+      "c2_meta": {
+        "llm": 3,
+        "risk": 18.57
+      },
+      "c3_rewrite": {
+        "llm": 4,
+        "risk": 18.57
+      }
+    },
+    "B08": {
+      "c0_baseline": {
+        "llm": 6,
+        "risk": 49.29
+      },
+      "c1_unpublish": {
+        "llm": 4,
+        "risk": 18.57
+      },
+      "c2_meta": {
+        "llm": 4,
+        "risk": 18.57
+      },
+      "c3_rewrite": {
+        "llm": 4,
+        "risk": 11.43
+      }
+    },
+    "B15": {
+      "c0_baseline": {
+        "llm": 4,
+        "risk": 40.0
+      },
+      "c1_unpublish": {
+        "llm": 2,
+        "risk": 5.71
+      },
+      "c2_meta": {
+        "llm": 2,
+        "risk": 5.71
+      },
+      "c3_rewrite": {
+        "llm": 2,
+        "risk": 5.71
+      }
+    },
+    "D03": {
+      "c0_baseline": {
+        "llm": 6,
+        "risk": 39.29
+      },
+      "c1_unpublish": {
+        "llm": 3,
+        "risk": 10.0
+      },
+      "c2_meta": {
+        "llm": 3,
+        "risk": 10.0
+      },
+      "c3_rewrite": {
+        "llm": 3,
+        "risk": 10.0
+      }
+    },
+    "D21": {
+      "c0_baseline": {
+        "llm": 5,
+        "risk": 39.29
+      },
+      "c1_unpublish": {
+        "llm": 2,
+        "risk": 5.71
+      },
+      "c2_meta": {
+        "llm": 3,
+        "risk": 5.71
+      },
+      "c3_rewrite": {
+        "llm": 3,
+        "risk": 5.71
+      }
+    },
+    "E03": {
+      "c0_baseline": {
+        "llm": 4,
+        "risk": 42.86
+      },
+      "c1_unpublish": {
+        "llm": 5,
+        "risk": 10.0
+      },
+      "c2_meta": {
+        "llm": 5,
+        "risk": 10.0
+      },
+      "c3_rewrite": {
+        "llm": 5,
+        "risk": 10.0
+      }
+    },
+    "E14": {
+      "c0_baseline": {
+        "llm": 4,
+        "risk": 30.0
+      },
+      "c1_unpublish": {
+        "llm": 5,
+        "risk": 20.71
+      },
+      "c2_meta": {
+        "llm": 5,
+        "risk": 12.86
+      },
+      "c3_rewrite": {
+        "llm": 5,
+        "risk": 4.29
+      }
+    }
+  }
+}
