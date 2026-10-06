@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\eval\experiments\exp17-planted-eval\generate.py", line 104, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\eval\experiments\exp17-planted-eval\generate.py", line 87, in main
+    body = client.complete(SYSTEM, prompt(spec)).strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\eval\src\kopl\c5_corpus\llm.py", line 173, in complete
+    raise LLMError(f"{self.version} 호출 실패: {last}")
+kopl.c5_corpus.llm.LLMError: gemini:gemini-3.6-flash 호출 실패: HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota ex
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+    ⚠ 응답이 끊겼다 (finishReason=MAX_TOKENS)
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+{"kept": 68, "dropped": 0, "calls": 67, "usage": {"input_tokens": 16532, "output_tokens": 4849, "in_chars": 26322, "out_chars": 8105, "thinking_tokens": 0}}
