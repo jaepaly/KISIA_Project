@@ -227,3 +227,13 @@ def test_contribution_tolerates_duplicate_spans():
     contrib = _run("u_0000aaaa", POSTS[:2], {"p1": [s, dict(s)]})["contrib"]
     row = next(c for c in contrib["output"]["contributions"] if c["post_id"] == "p1")
     assert row["clue_ids"] == ["p1_s01"] and row["top_spans"] == [{"span_id": "p1_s01", "text_id": "body"}]
+
+
+def test_contribution_recompute_removed_posts():
+    """비공개 조합 재계산 — 단서 글을 내리면 risk_after 가 0 이 된다 (#316 에서 옮김 · C 작성)."""
+    spans = {"p1": [_span("p1", 1, "신갈동", "LOC_ADMIN")], "p2": []}
+    posts = [_post("p1"), _post("p2")]
+    spans_by_post = {p["post_id"]: {"spans": spans.get(p["post_id"], [])} for p in posts}
+    out = c23.contribution("u_deadbeef", posts, spans_by_post=spans_by_post, removed_post_ids=["p1"])["output"]
+    assert out["baseline_risk"] > 0
+    assert out["risk_after"] == 0.0
