@@ -7,6 +7,14 @@ nav a { margin-right: 1rem; }
 .badge.found { background: #ffe3e3; color: #a11; }
 .badge.unknown { background: #fff3cd; color: #856404; }
 .span-hit { background: #ffe3e3; padding: 0 2px; border-radius: 2px; }
+.span-other { background: #e3ecff; padding: 0 2px; border-radius: 2px; }
+.legend { font-size: 0.85rem; color: #555; }
+.channel { font-size: 0.75rem; color: #888; margin-right: 0.4rem; }
+.post-k { font-size: 0.85rem; color: #a11; }
+.rewrite { margin: 0.4rem 0; }
+.rewrite mark { background: #e6f4ea; padding: 0 2px; }
+.rewrite del { color: #a11; }
+.note { font-size: 0.85rem; color: #666; }
 button { cursor: pointer; padding: 0.5rem 1rem; }
 input[type=text] { padding: 0.4rem; width: 220px; }
 footer { margin-top: 2rem; font-size: 0.8rem; color: #888; }
