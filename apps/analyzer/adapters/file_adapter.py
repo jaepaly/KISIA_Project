@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 
 
 def load_from_bytes(content: bytes, filename: str) -> dict:
@@ -20,14 +21,15 @@ def load_from_bytes(content: bytes, filename: str) -> dict:
         return data
 
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    user_ref = "u_" + uuid.uuid4().hex[:12]  # 계약 형식 (^u_[0-9a-f]{8,}$) — 「u_upload00」은 16진수가 아니라 LOO 가 거부한다
     return {
         "schema_version": "1.0",
-        "user_ref": "u_upload00",
+        "user_ref": user_ref,
         "nickname": None,
         "profile_bio": None,
         "posts": [{
             "post_id": f"upload_{i:03d}",
-            "user_ref": "u_upload00",
+            "user_ref": user_ref,
             "title": None,
             "body": line,
             "photos": [],
