@@ -71,8 +71,10 @@ function renderUnpublishPath(data) {
   if (!kp || kp.k === null || !kp.greedy.length) return "";
   const posts = Object.fromEntries(data.posts.map(p => [p.post_id, p]));
   const steps = kp.greedy.map(g => `<li>「${esc(postLabel(posts[g.remove]) || g.remove)}」 비공개 → 후보 ${fmtK(g.k_after)}</li>`).join("");
-  return `<h3>어떤 글부터 내리면 좋을까</h3>
-    <div class="card"><p>지금 후보 ${fmtK(kp.k)}</p><ol>${steps}</ol></div>`;
+  // 기준이 위 「추천 조치」(위험 점수)와 달라 1순위가 다를 수 있다 — 화면에 기준을 적는다 (#299 리뷰)
+  return `<h3>어떤 글부터 내리면 좋을까 <small>— 후보 수 기준</small></h3>
+    <div class="card"><p>나와 같은 조건의 사람(후보)이 빨리 늘어나는 순서입니다. 위 「추천 조치」는 위험 점수 기준이라 순서가 다를 수 있습니다.</p>
+    <p>지금 후보 ${fmtK(kp.k)}</p><ol>${steps}</ol></div>`;
 }
 
 async function rescan(user_ref) {
@@ -92,9 +94,9 @@ function render() {
   const rec = data.stage2.output.recommendation;
   el.innerHTML = `
     <h2>${esc(data.user_ref)}</h2>
-    <p class="card"><b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
-      (감소 ${esc(rec.projected.reduction_pct)}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
-    <h3>추천 조치</h3>
+    <p class="card">위험 점수 <b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
+      (감소 ${rec.projected.reduction_pct === null || rec.projected.reduction_pct === undefined ? "—" : esc(rec.projected.reduction_pct) + "%"}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
+    <h3>추천 조치 <small>— 위험 점수 기준</small></h3>
     ${renderActions(rec.actions)}
     ${renderUnpublishPath(data)}
     ${renderRewrites(data)}
