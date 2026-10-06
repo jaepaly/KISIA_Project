@@ -206,3 +206,15 @@ def test_c1_rules_merge_catches_explicit_age_and_place(monkeypatch):
         def detect(self, record, resolver):
             return {"spans": []}
     assert c1_rules.detect(Plain(), {"post_id": "p1", "body": text}, resolve) == {"spans": []}
+
+
+def test_contribution_clue_ids_are_real_span_ids():
+    """기여도 항목의 clue_ids · top_spans 가 실제 본인 span_id 를 가리킨다 — 타인 단서는 빠진다 (#303 리뷰)."""
+    spans = {"p1": [_span("p1", 1, "마흔여덟", "AGE"), _span("p1", 2, "화정에서", "LOC_ADMIN", subject="other")],
+             "p2": [_span("p2", 1, "해운대구", "LOC_ADMIN")]}
+    contrib = _run("u_0000aaaa", POSTS[:2], spans)["contrib"]
+    by_post = {c["post_id"]: c for c in contrib["output"]["contributions"]}
+    assert by_post["p1"]["clue_ids"] == ["p1_s01"]
+    assert by_post["p2"]["clue_ids"] == ["p2_s01"]
+    for c in contrib["output"]["contributions"]:
+        assert set(c["clue_ids"]) >= {s["span_id"] for s in c["top_spans"]}
