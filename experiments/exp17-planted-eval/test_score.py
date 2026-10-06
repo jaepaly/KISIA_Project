@@ -1,12 +1,15 @@
 """exp17 채점기 — 1:1 매칭과 post_id 검사 (#311 리뷰)."""
+import importlib.util
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from score import evaluate, load_preds  # noqa: E402
+# 다른 실험에도 score.py 가 있어(exp09) 이름으로 import 하면 CI 에서 섞인다 — 파일 경로로 불러온다
+_spec = importlib.util.spec_from_file_location("exp17_score", Path(__file__).resolve().parent / "score.py")
+_score = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_score)
+evaluate, load_preds = _score.evaluate, _score.load_preds
 
 
 def _gold(planted, distractors=()):
