@@ -193,9 +193,14 @@ _DIRECTIVE_AFTER = re.compile(r"\s*(?:보라|봐|봐라|라고|래|하라|하고
 
 
 _HOUSEHOLD = re.compile(r"^[가-힣]{1,3}네(?:는|가|를|도|에|에서|로|서|집|집에|집으로)?$")
-# 「X네」 뒤 술어 — 그 집이 어디 있다 · 주어가 그 집에 가다 · 다녀오다 (부사 한 단어까지 허용: 「자주 가셨다」)
+# 「X네」 뒤 술어 — 그 집이 어디 있다 · 주어가 그 집에 가다·살다·다녀오다. 사이에는 부사만 허용 (Codex 10/6)
+_HOUSEHOLD_ADVERB = r"(?:자주|가끔|종종|또|다시|먼저|늘|매주|매달|매년|요즘|잠깐|잠시|이번에|얼른|곧잘)"
 _HOUSEHOLD_PRED = re.compile(
-    r"^\s*(?:[가-힣]+\s+)?(?:있는|있어|있고|있다|사는|살아|살고|산다|가셨|가시|가신|갔|가서|가고|간다|가는|다녀|놀러|들르|들렀)")
+    r"^\s*(?:" + _HOUSEHOLD_ADVERB + r"\s+)?"
+    r"(?:있[가-힣]*|살[았아고면며]|산다|사는|삽니다|사세요|사신|사셔|사시"
+    r"|가(?:요|서|고|는|야|려|면|자|셨|시|신|십)|간다|갑니다|갔|다녀|놀러|들르|들렀|들러)")
+# 「사장님이 [언니네] 있는 나를 데려다주셨다」 — 술어가 1인칭을 꾸미면 내 쪽 말이다
+_HOUSEHOLD_ME_AFTER = re.compile(r"^\s*(?:나|저|내|제)(?:를|을|에게|한테|의|가|는|도)?(?![가-힣])")
 
 
 def _own_predicate(after: str) -> bool:
@@ -301,7 +306,8 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
             # 「양반이 [딸네] 있는 여수로」 「아주머니가 [딸네는] 자주 가셨다」 — 「X네」(그 집)에 주어가 가거나 그 집이
             # 어디 있다는 술어가 오면 주어 쪽 사람의 가족이다 (#308 리뷰). 「사장님이 [언니네] 데려다주셔서」는 내 언니 —
             # 술어가 주어 자신의 이동·거주가 아니면 그대로 둔다 (Codex 10/6). 「우리 딸네」처럼 1인칭이 바로 앞이면 내 것
-            if stype == "FAM" and _HOUSEHOLD.match(text) and _HOUSEHOLD_PRED.match(after) \
+            hp = _HOUSEHOLD_PRED.match(after) if stype == "FAM" and _HOUSEHOLD.match(text) else None
+            if hp and not _HOUSEHOLD_ME_AFTER.match(after[hp.end():]) \
                     and not re.search(r"(?:우리|내|제|저희)\s*$", before):
                 own_predicate = True
             if _COUNTERPART.search(word) and stype in ("JOB", "COMMUTE", "LOC_FACILITY", "FAM") and not explicit_title \

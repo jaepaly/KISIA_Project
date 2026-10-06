@@ -276,3 +276,15 @@ def test_place_like_modifier_on_job_is_not_residual():
     """「수영 [강사로]」 — 수영(수영구)은 여기서 운동이다. 직업 단서에는 앞 지명 검사를 하지 않는다 (Codex 10/6)."""
     res = _r("이번에 수영 ", "강사로", " 취직했다", "JOB")
     assert res and not any(res)
+
+
+
+@pytest.mark.parametrize("before,text,after,stype", [
+    ("", "회사에서", " 일한다", "REL_WORK"),
+    ("", "간호사로", " 일한다", "JOB"),
+])
+def test_real_place_before_any_type_is_residual(before, text, after, stype):
+    """「서울 [회사에서]」 「부산 [간호사로]」 — 실제 지명이 앞에 남으면 타입과 상관없이 residual (Codex 10/6 재검토)."""
+    for place in ("서울 ", "부산 "):
+        res = _r(place + before, text, after, stype)
+        assert res and all(res), (place, text, res)

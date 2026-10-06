@@ -253,3 +253,17 @@ def test_household_ne_belongs_to_actor(sentence, span, expected):
 ])
 def test_household_ne_needs_actor_predicate(sentence, span, expected):
     assert _r(sentence, span, "FAM")["subject"] == expected
+
+
+
+@pytest.mark.parametrize("sentence,span,expected", [
+    # Codex 10/6 재검토 — 흔한 활용형
+    ("옆집 아주머니가 딸네로 가요", "딸네로", "other"),
+    ("옆집 아주머니가 딸네에 갑니다", "딸네에", "other"),
+    ("옆집 아주머니가 딸네에서 살았다", "딸네에서", "other"),
+    # 사이에 명사가 끼거나 술어가 나를 꾸미면 내 가족
+    ("사장님이 언니네 가족이 있는 곳까지 나를 데려다주셨다", "언니네", "self"),
+    ("사장님이 언니네 있는 나를 데려다주셨다", "언니네", "self"),
+])
+def test_household_ne_conjugations_and_me(sentence, span, expected):
+    assert _r(sentence, span, "FAM")["subject"] == expected
