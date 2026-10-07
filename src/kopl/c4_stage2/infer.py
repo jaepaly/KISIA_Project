@@ -220,6 +220,24 @@ def _dict_version() -> str:
 
 # ── 공개 API ────────────────────────────────────────────────────────────
 
+def _app_conditions(spans: Sequence[Mapping[str, Any]], post_id: str) -> list[dict[str, Any]]:
+    """추천 엔진의 조건 생성을 분석 앱(c23)과 같게 — 약칭·동 겹침 · 사전 밖 지명 · 장소 관계 불명 신뢰도 (#299 후속).
+
+    기본값(build_conditions)은 exp10 재현용으로 recommend() 에 그대로 남는다. 앱 경로만 이 함수를 넘긴다 —
+    화면의 위험도와 추천 조치가 본 「현재 위험」이 같은 숫자가 되게.
+    """
+    from kopl.c2_specificity.k_engine import conditions_from_posts
+
+    return conditions_from_posts([{"post_id": post_id, "spans": list(spans)}])
+
+
+def _app_geo_condition(tag: str, post_id: str) -> dict[str, Any] | None:
+    """위치태그 → 조건. 앱(conditions_from_posts 의 geo_tag)과 같은 함수."""
+    from kopl.c2_specificity.k_engine import geo_tag_condition
+
+    return geo_tag_condition(str(tag), post_id)
+
+
 def analyze(
     user_ref: str,
     posts: Sequence[Mapping[str, Any]],
@@ -261,7 +279,8 @@ def analyze(
     rec_posts = [{"post_id": p["post_id"], "spans": list(p.get("spans") or []), "geo_tag": p.get("geo_tag")}
                  for p in posts]
     if rec_posts:
-        recommendation = recommend(user_ref=user_ref, posts=rec_posts, target_risk=target_risk)
+        recommendation = recommend(user_ref=user_ref, posts=rec_posts, target_risk=target_risk,
+                                   conditions_fn=_app_conditions, geo_condition_fn=_app_geo_condition)
     else:  # 글이 없는 계정 — 오류 대신 「위험 없음 · 조치 없음」
         recommendation = {"actions": [], "projected": {"current_risk": 0.0, "projected_risk": 0.0,
                                                        "reduction_pct": None, "target_met": True},

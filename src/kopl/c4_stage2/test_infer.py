@@ -165,3 +165,25 @@ def test_no_posts_gives_empty_result() -> None:
     _validator()(out)
     assert out["recommendation"]["actions"] == []
     assert all(f["verdict"] == "abstain" for f in out["findings"].values())
+
+
+def test_recommendation_risk_matches_app_conditions() -> None:
+    """추천 엔진의 「현재 위험」이 분석 앱(c23 · conditions_from_posts)의 위험도와 같다 (#299 후속).
+
+    「동탄」 「일산」 「수원 영통구」처럼 사전 정식 이름이 아닌 지명은 build_conditions 가 조건을 못 만들어 위험 0 으로 셌다 —
+    화면은 7.86 인데 추천 엔진은 0 을 보고 조치를 안 냈다.
+    """
+    from kopl.c2_specificity.engine import risk_total
+    from kopl.c2_specificity.k_engine import conditions_from_posts
+
+    body = "동탄에서 마흔여덟 생일을 보냈다"
+    st, ag = body.index("동탄에서"), body.index("마흔여덟")
+    posts = [{"post_id": "p1", "texts": {"body": body}, "geo_tag": None, "spans": [
+        {"span_id": "p1_s01", "text_id": "body", "start": st, "end": st + 4, "text": "동탄에서",
+         "type": "LOC_ADMIN", "level": "explicit", "subject": "self"},
+        {"span_id": "p1_s02", "text_id": "body", "start": ag, "end": ag + 4, "text": "마흔여덟",
+         "type": "AGE", "level": "explicit", "subject": "self"},
+    ]}, {"post_id": "p2", "texts": {"body": "오늘은 쉬는 날"}, "geo_tag": None, "spans": []}]
+    app = round(float(risk_total(conditions_from_posts(posts))), 2)
+    out = analyze(USER, posts, mode="rules", target_risk=100.0)
+    assert out["recommendation"]["projected"]["current_risk"] == app

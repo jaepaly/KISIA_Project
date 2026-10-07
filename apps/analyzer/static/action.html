@@ -23,13 +23,29 @@ showEngineBadge("badge");
 const BURDEN_LABEL = { low: "낮음", medium: "보통", high: "높음" };
 const ACTION_LABEL = { unpublish: "비공개 전환", activity_meta: "활동 메타 수정", rewrite: "표현 리라이트" };
 
-function renderActions(actions) {
-  if (!actions.length) return "<p>추천할 조치가 없습니다.</p>";
+function targetLabel(t, posts) {
+  if (t.kind === "post") return `「${postLabel(posts[t.ref]) || t.ref}」`;
+  if (t.kind === "meta_field" && t.ref === "geo_tag") return "위치태그";
+  return `${t.kind}:${t.ref}`;
+}
+
+function renderActions(actions, data) {
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  if (!actions.length) {
+    // 목표(기본 40)보다 이미 낮으면 조치가 비는 게 정상이다 — 빈 화면 대신 이유를 보여 준다 (#319 리뷰 1번)
+    const r = data.stage2.output.recommendation.projected;
+    const target = (data.stage2.input && data.stage2.input.risk && data.stage2.input.risk.target);
+    if (r.target_met && target !== undefined && target !== null) {
+      return `<p>지금 위험 점수 ${esc(r.current_risk)}가 목표 ${esc(target)}보다 낮아 <b>추가 조치가 필요하지 않습니다.</b>
+        더 줄이고 싶으면 아래 「어떤 글부터 내리면 좋을까」와 「표현 바꿔 쓰기」를 참고하세요.</p>`;
+    }
+    return "<p>추천할 조치가 없습니다.</p>";
+  }
   return actions.map(a => `
     <div class="card">
       <b>${esc(ACTION_LABEL[a.action_type] || a.action_type)}</b>
       <span class="badge">부담 ${esc(BURDEN_LABEL[a.burden] || a.burden)}</span>
-      <p>대상: ${esc(a.targets.map(t => `${t.kind}:${t.ref}`).join(", "))}</p>
+      <p>대상: ${a.targets.map(t => esc(targetLabel(t, posts))).join(", ")}</p>
       <p>예상 변화: ${esc(a.projected_delta)}</p>
       ${a.rationale ? `<p><i>${esc(a.rationale)}</i></p>` : ""}
     </div>
@@ -71,8 +87,10 @@ function renderUnpublishPath(data) {
   if (!kp || kp.k === null || !kp.greedy.length) return "";
   const posts = Object.fromEntries(data.posts.map(p => [p.post_id, p]));
   const steps = kp.greedy.map(g => `<li>「${esc(postLabel(posts[g.remove]) || g.remove)}」 비공개 → 후보 ${fmtK(g.k_after)}</li>`).join("");
-  return `<h3>어떤 글부터 내리면 좋을까</h3>
-    <div class="card"><p>지금 후보 ${fmtK(kp.k)}</p><ol>${steps}</ol></div>`;
+  // 기준이 위 「추천 조치」(위험 점수)와 달라 1순위가 다를 수 있다 — 화면에 기준을 적는다 (#299 리뷰)
+  return `<h3>어떤 글부터 내리면 좋을까 <small>— 후보 수 기준</small></h3>
+    <div class="card"><p>나와 같은 조건의 사람(후보)이 빨리 늘어나는 순서입니다. 위 「추천 조치」는 위험 점수 기준이라 순서가 다를 수 있습니다.</p>
+    <p>지금 후보 ${fmtK(kp.k)}</p><ol>${steps}</ol></div>`;
 }
 
 async function rescan(user_ref) {
@@ -92,10 +110,10 @@ function render() {
   const rec = data.stage2.output.recommendation;
   el.innerHTML = `
     <h2>${esc(data.user_ref)}</h2>
-    <p class="card"><b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
-      (감소 ${esc(rec.projected.reduction_pct)}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
-    <h3>추천 조치</h3>
-    ${renderActions(rec.actions)}
+    <p class="card">위험 점수 <b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
+      (감소 ${rec.projected.reduction_pct === null || rec.projected.reduction_pct === undefined ? "—" : esc(rec.projected.reduction_pct) + "%"}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
+    <h3>추천 조치 <small>— 위험 점수 기준</small></h3>
+    ${renderActions(rec.actions, data)}
     ${renderUnpublishPath(data)}
     ${renderRewrites(data)}
     <p>비공개 전환은 가상 SNS 쪽 글 화면에서 직접 실행합니다 — 분석기는 '무엇을' 할지만 말합니다.</p>
