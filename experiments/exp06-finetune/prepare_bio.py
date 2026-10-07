@@ -236,6 +236,71 @@ def load_training_channels(
     return channels, dict(stats)
 
 
+def _extra_span_ok(span: Any) -> bool:
+    """추가 데이터 스팬의 필드 타입 — span_id · text_id · type 은 빈 아닌 문자열, start · end 는 bool 아닌 정수."""
+    return (isinstance(span, dict)
+            and all(isinstance(span.get(k), str) and span.get(k) for k in ("span_id", "text_id", "type"))
+            and all(isinstance(span.get(k), int) and not isinstance(span.get(k), bool) for k in ("start", "end")))
+
+
+def load_extra_channels(
+    extra_dirs: Sequence[Path],
+    train_ids: set[str],
+    test_ids: set[str],
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """학습 전용 추가 데이터(예: exp19 변이 글 · #310) — 분할 파일에 없는 글을 학습에만 더한다.
+
+    코퍼스 v0 의 분할(train/test)은 그대로 두고, 추가 글은 test 와 섞이지 않게 **post_id 가 기존 분할에 없어야** 한다.
+    형식이 깨진 레코드는 교사 라벨처럼 건너뛰고 센다.
+    """
+    channels: list[dict[str, Any]] = []
+    stats: collections.Counter[str] = collections.Counter()
+    seen: set[str] = set()
+    for directory in extra_dirs:
+        files = sorted(Path(directory).glob("*_spans.jsonl"))
+        if not files:
+            raise DataError(f"추가 데이터가 없다: {directory}/*_spans.jsonl")
+        for path in files:
+            for line_number, record in read_jsonl(path):
+                if "schema_version" in record and "post_id" not in record:
+                    continue
+                source = f"{path}:{line_number}"
+                post_id, persona_id = record.get("post_id"), record.get("persona_id")
+                texts, spans = record.get("texts"), record.get("spans")
+                # 형식 검사를 집합 조회보다 먼저 — post_id: [] 는 해시가 안 돼 TypeError 로 멈췄다 (#313 리뷰)
+                if not (isinstance(post_id, str) and post_id and isinstance(persona_id, str) and persona_id
+                        and isinstance(texts, dict) and texts and isinstance(spans, list)
+                        and all(isinstance(k, str) and isinstance(v, str) for k, v in texts.items())
+                        and all(_extra_span_ok(sp) for sp in spans)):
+                    stats["augment_records_invalid"] += 1  # 채널 값·스팬 필드 타입이 틀리거나 빈 값이면 제외 (#313 리뷰)
+                    continue
+                if post_id in train_ids or post_id in test_ids:
+                    raise DataError(f"{source}: 추가 데이터의 post_id 가 기존 분할과 겹친다: {post_id}")
+                if post_id in seen:
+                    raise DataError(f"{source}: 추가 데이터의 중복 post_id: {post_id}")
+                try:
+                    grouped: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
+                    for span in spans:
+                        grouped[span["text_id"]].append(span)
+                    if set(grouped) - set(texts):
+                        raise DataError(f"{source}: texts에 없는 채널")
+                    record_channels = [
+                        {"post_id": post_id, "persona_id": persona_id, "reviewed": False, "text_id": text_id,
+                         "text": texts[text_id],
+                         "spans": validate_channel(source=source, text_id=text_id, text=texts[text_id],
+                                                   spans=grouped.get(text_id, []))}
+                        for text_id in sorted(texts, key=channel_sort_key)
+                    ]
+                except (DataError, KeyError, TypeError):
+                    stats["augment_records_invalid"] += 1
+                    continue
+                seen.add(post_id)  # 받아들인 레코드만 — 제외된 레코드가 같은 ID 의 정상 레코드를 막지 않게 (Codex 10/6)
+                channels.extend(record_channels)
+                stats["augment_records_accepted"] += 1
+                stats["augment_spans"] += sum(len(c["spans"]) for c in record_channels)
+    return channels, dict(stats)
+
+
 def align_bio(
     offsets: Sequence[Sequence[int]], spans: Sequence[dict[str, Any]]
 ) -> tuple[list[int], set[str]]:
@@ -442,6 +507,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--validate-only", action="store_true", help="토크나이저 없이 정본·분할·offset만 검사")
     parser.add_argument("--include-unreviewed", action="store_true",
                         help="train split의 미검수 교사 라벨도 학습에 포함한다")
+    parser.add_argument("--extra-gold-dir", type=Path, action="append", default=[],
+                        help="학습 전용 추가 데이터 폴더(*_spans.jsonl) — 분할에 없는 글을 학습에만 더한다 (여러 번 가능)")
     return parser.parse_args(argv)
 
 
@@ -456,6 +523,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     channels, source_metrics = load_training_channels(
         args.gold_dir, train_ids, test_ids, include_unreviewed=args.include_unreviewed
     )
+    if args.extra_gold_dir:
+        extra_channels, extra_metrics = load_extra_channels(args.extra_gold_dir, train_ids, test_ids)
+        channels.extend(extra_channels)
+        source_metrics = {**source_metrics, **extra_metrics}
+        print(f"추가 데이터: {extra_metrics.get('augment_records_accepted', 0)}편 / "
+              f"{extra_metrics.get('augment_spans', 0)}스팬 · 형식 오류 제외 {extra_metrics.get('augment_records_invalid', 0)}편")
     print(
         "학습 원본: "
         f"학습 {source_metrics.get('train_records', 0)}편 / {source_metrics.get('spans', 0)}스팬 / "
@@ -489,6 +562,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "teacher_detect_used": False,
             "blind_or_iaa_used_for_training": False,
             "include_unreviewed": args.include_unreviewed,
+            "extra_gold_dirs": [str(d) for d in args.extra_gold_dir],
             **source_metrics,
             "reviewed_fraction": (
                 source_metrics["reviewed_records_accepted"] / source_metrics["train_records"]

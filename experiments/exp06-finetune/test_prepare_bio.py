@@ -57,6 +57,56 @@ class BioAlignmentTest(unittest.TestCase):
             self.assertEqual(all_stats["teacher_records_invalid"], 1)
             self.assertEqual(all_stats["test_records_excluded"], 1)
 
+    def test_extra_gold_dir_is_train_only_and_rejects_split_collision(self) -> None:
+        """#310 — 학습 전용 추가 데이터: 분할에 없는 글만 받고, 기존 분할과 post_id 가 겹치면 멈춘다."""
+        span = {"span_id": "AUG1_0001_s01", "text_id": "body", "start": 0, "end": 2, "text": "합정",
+                "type": "LOC_ADMIN", "level": "explicit", "subject": "self"}
+        good = {"post_id": "AUG1_0001", "persona_id": "AUG1", "reviewed": False,
+                "texts": {"body": "합정동 산책"}, "spans": [span]}
+        bad = {"post_id": "AUG1_0002", "persona_id": "AUG1", "reviewed": False,
+               "texts": {"body": "합"}, "spans": [{**span, "span_id": "AUG1_0002_s01"}]}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "AUG1_spans.jsonl"
+            path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in (good, bad)) + "\n", encoding="utf-8")
+            channels, stats = bio.load_extra_channels([Path(directory)], {"A01_b01"}, {"A01_b02"})
+            self.assertEqual([c["post_id"] for c in channels], ["AUG1_0001"])
+            self.assertEqual(stats["augment_records_accepted"], 1)
+            self.assertEqual(stats["augment_records_invalid"], 1)
+            with self.assertRaises(bio.DataError):
+                bio.load_extra_channels([Path(directory)], {"AUG1_0001"}, set())
+
+    def test_extra_gold_malformed_records_are_counted_not_crashed(self) -> None:
+        """#313 리뷰 — post_id 가 문자열이 아니거나 채널 값이 문자열이 아니면 멈추지 않고 제외해 센다."""
+        good = {"post_id": "AUG1_0001", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": []}
+        bad_id = {"post_id": [], "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": []}
+        bad_text = {"post_id": "AUG1_0003", "persona_id": "AUG1", "texts": {"body": 123}, "spans": []}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "AUG1_spans.jsonl"
+            path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in (good, bad_id, bad_text)) + "\n",
+                            encoding="utf-8")
+            channels, stats = bio.load_extra_channels([Path(directory)], set(), set())
+            self.assertEqual([c["post_id"] for c in channels], ["AUG1_0001"])
+            self.assertEqual(stats["augment_records_invalid"], 2)
+
+    def test_extra_gold_span_types_empty_values_and_dedupe_order(self) -> None:
+        """Codex 10/6 — 스팬 필드 타입 · 빈 값은 제외, 제외된 레코드는 같은 ID 의 정상 레코드를 막지 않는다."""
+        span = {"span_id": "AUG1_0001_s01", "text_id": "body", "start": 0, "end": 2, "text": "합정",
+                "type": "LOC_ADMIN", "level": "explicit", "subject": "self"}
+        rows = [
+            {"post_id": "AUG1_0001", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": [{**span, "span_id": []}]},
+            {"post_id": "AUG1_0001", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": [span]},
+            {"post_id": "", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": []},
+            {"post_id": "AUG1_0003", "persona_id": "AUG1", "texts": {}, "spans": []},
+            {"post_id": "AUG1_0004", "persona_id": "AUG1", "texts": {"body": "합정동"}, "spans": [{**span, "start": True}]},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "AUG1_spans.jsonl"
+            path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n", encoding="utf-8")
+            channels, stats = bio.load_extra_channels([Path(directory)], set(), set())
+            self.assertEqual([c["post_id"] for c in channels], ["AUG1_0001"])
+            self.assertEqual(stats["augment_records_accepted"], 1)
+            self.assertEqual(stats["augment_records_invalid"], 4)
+
     def test_overlap_alignment_and_decode(self) -> None:
         text = "집 근처 신갈저수지에서"
         offsets = [(0, 0), (0, 1), (2, 4), (5, 7), (7, 10), (10, 12), (0, 0)]
