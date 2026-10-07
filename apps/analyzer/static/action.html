@@ -23,13 +23,29 @@ showEngineBadge("badge");
 const BURDEN_LABEL = { low: "낮음", medium: "보통", high: "높음" };
 const ACTION_LABEL = { unpublish: "비공개 전환", activity_meta: "활동 메타 수정", rewrite: "표현 리라이트" };
 
-function renderActions(actions) {
-  if (!actions.length) return "<p>추천할 조치가 없습니다.</p>";
+function targetLabel(t, posts) {
+  if (t.kind === "post") return `「${postLabel(posts[t.ref]) || t.ref}」`;
+  if (t.kind === "meta_field" && t.ref === "geo_tag") return "위치태그";
+  return `${t.kind}:${t.ref}`;
+}
+
+function renderActions(actions, data) {
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  if (!actions.length) {
+    // 목표(기본 40)보다 이미 낮으면 조치가 비는 게 정상이다 — 빈 화면 대신 이유를 보여 준다 (#319 리뷰 1번)
+    const r = data.stage2.output.recommendation.projected;
+    const target = (data.stage2.input && data.stage2.input.risk && data.stage2.input.risk.target);
+    if (r.target_met && target !== undefined && target !== null) {
+      return `<p>지금 위험 점수 ${esc(r.current_risk)}가 목표 ${esc(target)}보다 낮아 <b>추가 조치가 필요하지 않습니다.</b>
+        더 줄이고 싶으면 아래 「어떤 글부터 내리면 좋을까」와 「표현 바꿔 쓰기」를 참고하세요.</p>`;
+    }
+    return "<p>추천할 조치가 없습니다.</p>";
+  }
   return actions.map(a => `
     <div class="card">
       <b>${esc(ACTION_LABEL[a.action_type] || a.action_type)}</b>
       <span class="badge">부담 ${esc(BURDEN_LABEL[a.burden] || a.burden)}</span>
-      <p>대상: ${esc(a.targets.map(t => `${t.kind}:${t.ref}`).join(", "))}</p>
+      <p>대상: ${a.targets.map(t => esc(targetLabel(t, posts))).join(", ")}</p>
       <p>예상 변화: ${esc(a.projected_delta)}</p>
       ${a.rationale ? `<p><i>${esc(a.rationale)}</i></p>` : ""}
     </div>
@@ -97,7 +113,7 @@ function render() {
     <p class="card">위험 점수 <b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
       (감소 ${rec.projected.reduction_pct === null || rec.projected.reduction_pct === undefined ? "—" : esc(rec.projected.reduction_pct) + "%"}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
     <h3>추천 조치 <small>— 위험 점수 기준</small></h3>
-    ${renderActions(rec.actions)}
+    ${renderActions(rec.actions, data)}
     ${renderUnpublishPath(data)}
     ${renderRewrites(data)}
     <p>비공개 전환은 가상 SNS 쪽 글 화면에서 직접 실행합니다 — 분석기는 '무엇을' 할지만 말합니다.</p>
