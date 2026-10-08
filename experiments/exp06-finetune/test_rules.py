@@ -129,6 +129,8 @@ class RuleTests(unittest.TestCase):
             '총개수는 스물이다': set(),
             '스물에 한 번 당첨된다': set(),
             '점수는 마흔이다': set(),
+            '제 나이는 총 마흔 살입니다': {'마흔 살입니다'},
+            '나는 마흔 살이고 한 번도 못 가봤다': {'마흔 살이고'},
         }
         for text, expected in cases.items():
             found = {text[s:e] for s, e, _ in age_spans(text)}
@@ -149,6 +151,7 @@ class RuleTests(unittest.TestCase):
             '경북 구미는 맞벌이 가구가 많다': {'구미는'},
             '전남 진도는 빠르게 인구가 줄고 있다': {'진도는'},
             '음식이 구미에 맞는다': set(),
+            '경기도에 있는 화성 토양을 조사했다': {'경기도에', '화성'},
         }
         for text, expected in cases.items():
             found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}

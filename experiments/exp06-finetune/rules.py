@@ -65,7 +65,7 @@ _HOMONYM_IDIOM = {
     "진도": re.compile(r"(?:가|를|도|는|만)?\s*(?:나가|나갔|나간|나갈|나감|안\s*나|못\s*나|빼|뺐|뺀|뺄|따라가|따라잡|맞추|맞춰"
                      r"|진행|체크)"),
     "구미": re.compile(r"(?:가|를|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|안\s*당)|에\s*맞(?:는|게|다|아|지|춰|추)"),
-    "화성": re.compile(r"\s*(?:탐사|착륙|궤도|표면|이주|기지|로버|토양|탐험)|의\s*(?:대기|표면|위성|궤도|하늘)"
+    "화성": re.compile(r"\s*(?:탐사|착륙|궤도|이주|로버|탐험)|의\s*(?:대기|위성|궤도)"  # 우주 탐사 말만 — 「화성 토양」은 화성시일 수 있다
                      r"|을\s*(?:탐사|탐험)|에\s*(?:착륙|가는\s*로켓|사람을)"),
 }
 
@@ -78,6 +78,7 @@ def _is_bare_number(matched: str) -> bool:
     return not _AGE_CLOSED.search(matched)
 
 
+_HAS_AGE_UNIT = re.compile(r"살|세|년생")
 # 「스물에 한 번 당첨」 — 뒤에 빈도가 오면 나이가 아니다
 _FREQUENCY_AFTER = re.compile(r"\s*(?:한|두|세|네|몇|여러)\s*(?:번|차례)")
 # 「총개수는 스물이다」 「점수는 마흔이다」 — 개수·점수를 말하는 말 바로 뒤의 수는 나이가 아니다
@@ -97,8 +98,9 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
                 continue
             if _is_bare_number(text[start:end]) and _DURATION_FOLLOWERS.match(text, end):
                 continue  # 「서른 해」 「쉰 날」만 — 「23살이고 일을」 「서른 살이고 해가」는 나이가 이미 끝났다 (#309 리뷰)
-            if _FREQUENCY_AFTER.match(text, end) or _COUNT_BEFORE.search(text[max(0, start - 12):start]):
-                continue  # 「스물에 한 번」 「총개수는 스물이다」 (#322 ② · Codex 10/8)
+            if not _HAS_AGE_UNIT.search(text[start:end]) and (
+                    _FREQUENCY_AFTER.match(text, end) or _COUNT_BEFORE.search(text[max(0, start - 12):start])):
+                continue  # 「스물에 한 번」 「총개수는 스물이다」 — 「살·세」가 붙은 「총 마흔 살」은 나이 그대로 (#322 ② · Codex 10/8)
             found.add((start, end, "AGE"))
     for match in _AGE_AFTER_NAI.finditer(text):
         found.add((match.start("age"), match.end("age"), "AGE"))
