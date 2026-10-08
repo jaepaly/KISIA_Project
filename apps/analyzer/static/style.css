@@ -145,6 +145,46 @@ code{
 .error{color:var(--red)}
 .empty{color:var(--ink3); text-align:center; padding:28px 0}
 
+/* ── 링크형 버튼 · 보조 버튼 ───────────────── */
+.btn{
+  display:inline-block; padding:9px 16px; border-radius:10px; text-decoration:none;
+  background:var(--earth); color:#fff; font-size:14px; font-weight:600; white-space:nowrap;
+  transition:filter .15s, transform .15s;
+}
+.btn:hover{filter:brightness(.95); transform:translateY(-1px); color:#fff}
+button.ghost{background:var(--panel); color:var(--ink2); border-color:var(--line); font-size:13px; padding:7px 14px}
+button.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:none}
+.row.between{justify-content:space-between}
+.row.between h2{margin:0}
+.row.sec{margin-top:28px}
+.row.sec h3{margin:0}
+
+/* ── 진단: 접히는 글 카드 ──────────────────── */
+.card.post{padding:0; overflow:hidden}
+.card.post.quiet{background:var(--panel2); box-shadow:none}
+.post-head{
+  width:100%; display:flex; align-items:center; gap:10px; text-align:left;
+  padding:14px 18px; background:transparent; border:0; border-radius:0;
+  color:var(--ink); font:inherit; font-size:14.5px; cursor:pointer;
+}
+.post-head:hover{background:var(--earth-soft); filter:none}
+.post-head .post-title{flex:1; min-width:0; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.post-head .post-types{color:var(--ink3); font-size:12px; white-space:nowrap}
+.post-head .chev{color:var(--ink3); font-size:18px; line-height:1; transition:transform .2s}
+.post-head[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.post-head[aria-expanded="true"]{border-bottom:1px solid var(--line)}
+.post-detail{padding:14px 18px 18px}
+.post-detail > :last-child{margin-bottom:0}
+
+/* ── 하단 고정 CTA ────────────────────────── */
+.cta-bar{
+  position:fixed; left:0; right:0; bottom:0; z-index:20;
+  background:rgba(255,253,250,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--line); box-shadow:0 -8px 24px -18px rgba(62,58,54,.3);
+}
+.cta-in{max-width:var(--shell); margin:0 auto; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+body:has(.cta-bar:not([hidden])) main{padding-bottom:96px}
+
 footer{
   max-width:var(--shell); margin:0 auto; padding:0 20px 36px;
   font-size:12px; color:var(--ink3);
