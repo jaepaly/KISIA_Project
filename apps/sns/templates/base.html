@@ -24,6 +24,16 @@
   </div>
   {% block body %}{% endblock %}
   <script src="/static/veilo.js"></script>
+  <script>
+    // 헤더 스크롤 shadow
+    (function () {
+      const top = document.getElementById("utTop");
+      if (!top) return;
+      const apply = () => top.classList.toggle("scrolled", window.scrollY > 8);
+      apply();
+      window.addEventListener("scroll", apply, { passive: true });
+    })();
+  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

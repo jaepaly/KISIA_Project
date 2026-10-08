@@ -116,7 +116,12 @@ document.getElementById("padoBtn").onclick = async () => {
     return;
   }
   btn.disabled = true;
-  out.innerHTML = '<p style="color:var(--ut-ink3);">읽는 중…</p>';
+  out.innerHTML = '<p style="color:var(--ut-ink3);">읽는 중<span id="padoDots"></span></p>';
+  let _di = 0;
+  const _dt = setInterval(() => {
+    const el = document.getElementById("padoDots");
+    if (el) el.textContent = [".", "..", "..."][_di++ % 3];
+  }, 420);
   try {
     const fd = new FormData();
     fd.append("file", new File([body.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
@@ -149,7 +154,7 @@ document.getElementById("padoBtn").onclick = async () => {
       : '<p style="color:var(--ut-ink3);">읽히는 단서가 없습니다. 이대로 올려도 괜찮아 보입니다.</p>';
   } catch {
     out.innerHTML = '<p style="color:var(--ut-ink3);">점검에 실패했습니다. 잠시 뒤 다시 눌러 주세요.</p>';
-  } finally { btn.disabled = false; }
+  } finally { clearInterval(_dt); btn.disabled = false; }
 };
 </script>
 {% endblock %}
