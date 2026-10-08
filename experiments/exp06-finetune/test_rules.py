@@ -110,6 +110,43 @@ class RuleTests(unittest.TestCase):
             start = text.index(span)
             self.assertEqual(is_quantity_age(text, start, start + len(span)), expected, (text, span))
 
+    def test_age_endings_gap_322(self):
+        """#322 ② — 「에 · 이다 · 이었다 · 인」으로 끝나는 한글 나이를 잡는다. 수량·단위 앞은 그대로 거른다."""
+        cases = {
+            '마흔여덟에 퇴직했다': {'마흔여덟에'},
+            '스물 일곱에 결혼했다': {'스물 일곱에'},
+            '그때 나는 마흔여덟이다': {'마흔여덟이다'},
+            '그해 서른셋이었다': {'서른셋이었다'},
+            '스물다섯인 동생': {'스물다섯인'},
+            '서른 살에 이사했다': {'서른 살에'},
+            '마흔에는 달라질 줄 알았다': {'마흔에는'},
+            # 거르는 것은 그대로
+            '시청에서 보낸 서른 해 동안': set(),
+            '마흔 명에게 선물을 줬다': set(),
+            '쉰 날이 지났다': set(),
+            '다시 셌지만 스물셋에서 그만뒀다': set(),
+        }
+        for text, expected in cases.items():
+            found = {text[s:e] for s, e, _ in age_spans(text)}
+            self.assertEqual(found, expected, text)
+
+    def test_location_homonym_idiom_322(self):
+        """#322 ② — 지명과 같은 꼴의 관용 표현은 거르고, 진짜 지명은 남긴다."""
+        rules = ExplicitRules()
+        cases = {
+            '요즘 진도가 안 나간다': set(),
+            '수학 진도 나가기가 힘들다': set(),
+            '오늘따라 구미가 당기는 메뉴': set(),
+            '화성 탐사 다큐를 봤다': set(),
+            '화성에서 온 남자': set(),
+            '진도에 놀러 갔다': {'진도에'},
+            '구미에서 일한다': {'구미에서'},
+            '화성에 산다': {'화성에'},
+        }
+        for text, expected in cases.items():
+            found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}
+            self.assertEqual(found, expected, text)
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'

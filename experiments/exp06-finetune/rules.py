@@ -15,7 +15,14 @@ import train
 
 _TENS = r"(?:스무|스물|서른|마흔|쉰|예순|일흔|여든|아흔)"
 _ONES = r"(?:다섯|여섯|일곱|여덟|아홉|하나|둘|셋|넷|한|두|세|네)"
-_AGE_ENDING = r"(?:입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)?"
+# 나이 뒤 조사·어미 — 「마흔여덟에 퇴직」 「마흔여덟이다」 「서른셋이었다」 「스물다섯인 동생」 (#322 ②).
+# 「에서」는 뺀다 — 「(나무를 세다) 스물셋에서 그만뒀다」처럼 셈에 더 자주 붙는다 (검수 골드 학습용에서 확인).
+# 정규식 대안은 앞에서부터 맞으므로 **긴 것부터** 둔다 — 「이」가 먼저 맞으면 「이다」의 「다」에서 단어 경계에 걸려 통째로 버려진다
+_AGE_ENDINGS = sorted({
+    "입니다", "이에요", "이었다", "이었고", "이었는데", "이었지", "였다", "였고", "였는데", "이다", "이고", "인데", "이야",
+    "이지", "이라", "이던", "에는", "에도", "부터", "까지", "즈음", "쯤", "에", "인", "임", "은", "는", "이", "가",
+    "도", "만"}, key=lambda e: (-len(e), e))
+_AGE_ENDING = r"(?:" + "|".join(_AGE_ENDINGS) + r")?"
 _AGE_PATTERNS = (
     re.compile(r"(?<![가-힣A-Za-z0-9])(?:[1-9][0-9]?\s*(?:살|세)|[0-9]{2}년생)" + _AGE_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _TENS + r"(?:\s*" + _ONES + r")?(?:\s*(?:살|세))?" + _AGE_ENDING),
@@ -49,9 +56,18 @@ _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에�
 # train 검수 골드 331편에서 일반 명사·동사로 쓰여 불일치한 행정구역명/약칭.
 # 실제 지명으로도 쓰일 수 있어 v1+규칙 결과의 한계로 기록한다.
 TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주"})
+# 지명과 같은 꼴의 일반 명사 — 단어째 빼면 「진도에 놀러 갔다」 「구미에서 일한다」까지 놓치므로, **바로 뒤가 관용 표현일 때만** 거른다 (#322 ②).
+# pattern.match(text, pos) 로 쓰므로 ^ 를 붙이지 않는다 — ^ 는 pos 가 아니라 문자열 맨 앞에서만 맞는다
+_HOMONYM_IDIOM = {
+    "진도": re.compile(r"(?:가|를|도|는|만)?\s*(?:나가|나갔|나간|나갈|나감|안\s*나|못\s*나|빼|뺐|뺀|뺄|따라가|따라잡|맞추|맞춰"
+                     r"|느리|느려|빠르|빨라|진행|체크)"),
+    "구미": re.compile(r"(?:가|를|에|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|맞|안\s*당)"),
+    "화성": re.compile(r"(?:\s*(?:탐사|착륙|궤도|표면|이주|기지|로버|토양|탐험)|에서\s*온|의\s*(?:대기|표면|위성|궤도|하늘)"
+                     r"|을\s*(?:탐사|탐험)|에\s*(?:착륙|가는\s*로켓|사람을))"),
+}
 
 
-_AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:입니다|이에요|이고|인데|이야|이지|이라|임|은|는|이|가|도|만)$")
+_AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:" + "|".join(_AGE_ENDINGS) + r")$")
 
 
 def _is_bare_number(matched: str) -> bool:
@@ -122,6 +138,9 @@ class ExplicitRules:
                 if particle and not word.endswith(particle):
                     continue
                 name = word[:-len(particle)] if particle else word
+                idiom = _HOMONYM_IDIOM.get(name)
+                if idiom and idiom.match(text, match.start() + len(name)):
+                    break  # 「진도가 안 나간다」 「구미가 당기는」 「화성 탐사」 — 지명이 아니다
                 if name in self.names and self.dictionary.resolve(name):
                     found.add((match.start(), match.end(), "LOC_ADMIN"))
                     break
