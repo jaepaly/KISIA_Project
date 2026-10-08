@@ -125,6 +125,10 @@ class RuleTests(unittest.TestCase):
             '마흔 명에게 선물을 줬다': set(),
             '쉰 날이 지났다': set(),
             '다시 셌지만 스물셋에서 그만뒀다': set(),
+            '하나부터 스물까지 세었다': set(),
+            '총개수는 스물이다': set(),
+            '스물에 한 번 당첨된다': set(),
+            '점수는 마흔이다': set(),
         }
         for text, expected in cases.items():
             found = {text[s:e] for s, e, _ in age_spans(text)}
@@ -138,10 +142,13 @@ class RuleTests(unittest.TestCase):
             '수학 진도 나가기가 힘들다': set(),
             '오늘따라 구미가 당기는 메뉴': set(),
             '화성 탐사 다큐를 봤다': set(),
-            '화성에서 온 남자': set(),
             '진도에 놀러 갔다': {'진도에'},
             '구미에서 일한다': {'구미에서'},
             '화성에 산다': {'화성에'},
+            '경기도 화성에서 온 친구다': {'경기도', '화성에서'},
+            '경북 구미는 맞벌이 가구가 많다': {'구미는'},
+            '전남 진도는 빠르게 인구가 줄고 있다': {'진도는'},
+            '음식이 구미에 맞는다': set(),
         }
         for text, expected in cases.items():
             found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}

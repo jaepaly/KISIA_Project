@@ -16,11 +16,11 @@ import train
 _TENS = r"(?:스무|스물|서른|마흔|쉰|예순|일흔|여든|아흔)"
 _ONES = r"(?:다섯|여섯|일곱|여덟|아홉|하나|둘|셋|넷|한|두|세|네)"
 # 나이 뒤 조사·어미 — 「마흔여덟에 퇴직」 「마흔여덟이다」 「서른셋이었다」 「스물다섯인 동생」 (#322 ②).
-# 「에서」는 뺀다 — 「(나무를 세다) 스물셋에서 그만뒀다」처럼 셈에 더 자주 붙는다 (검수 골드 학습용에서 확인).
+# 「에서 · 부터 · 까지」는 뺀다 — 「(나무를 세다) 스물셋에서 그만뒀다」 「하나부터 스물까지」처럼 셈에 더 자주 붙는다 (Codex 10/8).
 # 정규식 대안은 앞에서부터 맞으므로 **긴 것부터** 둔다 — 「이」가 먼저 맞으면 「이다」의 「다」에서 단어 경계에 걸려 통째로 버려진다
 _AGE_ENDINGS = sorted({
     "입니다", "이에요", "이었다", "이었고", "이었는데", "이었지", "였다", "였고", "였는데", "이다", "이고", "인데", "이야",
-    "이지", "이라", "이던", "에는", "에도", "부터", "까지", "즈음", "쯤", "에", "인", "임", "은", "는", "이", "가",
+    "이지", "이라", "이던", "에는", "에도", "즈음", "쯤", "에", "인", "임", "은", "는", "이", "가",
     "도", "만"}, key=lambda e: (-len(e), e))
 _AGE_ENDING = r"(?:" + "|".join(_AGE_ENDINGS) + r")?"
 _AGE_PATTERNS = (
@@ -57,13 +57,16 @@ _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에�
 # 실제 지명으로도 쓰일 수 있어 v1+규칙 결과의 한계로 기록한다.
 TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주"})
 # 지명과 같은 꼴의 일반 명사 — 단어째 빼면 「진도에 놀러 갔다」 「구미에서 일한다」까지 놓치므로, **바로 뒤가 관용 표현일 때만** 거른다 (#322 ②).
-# pattern.match(text, pos) 로 쓰므로 ^ 를 붙이지 않는다 — ^ 는 pos 가 아니라 문자열 맨 앞에서만 맞는다
+# pattern.match(text, pos) 로 쓰므로 ^ 를 붙이지 않는다 — ^ 는 pos 가 아니라 문자열 맨 앞에서만 맞는다.
+# 바로 앞이 도 이름이면(「경기도 화성」 「경북 구미」 「전남 진도」) 거르지 않는다 (Codex 10/8)
+_PROVINCE_BEFORE = re.compile(r"(?:경기도?|강원도?|충청[남북]도|충[남북]|전라[남북]도|전[남북]|경상[남북]도|경[남북]|제주도?|"
+                              r"[가-힣]+특별자치도)\s*$")
 _HOMONYM_IDIOM = {
     "진도": re.compile(r"(?:가|를|도|는|만)?\s*(?:나가|나갔|나간|나갈|나감|안\s*나|못\s*나|빼|뺐|뺀|뺄|따라가|따라잡|맞추|맞춰"
-                     r"|느리|느려|빠르|빨라|진행|체크)"),
-    "구미": re.compile(r"(?:가|를|에|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|맞|안\s*당)"),
-    "화성": re.compile(r"(?:\s*(?:탐사|착륙|궤도|표면|이주|기지|로버|토양|탐험)|에서\s*온|의\s*(?:대기|표면|위성|궤도|하늘)"
-                     r"|을\s*(?:탐사|탐험)|에\s*(?:착륙|가는\s*로켓|사람을))"),
+                     r"|진행|체크)"),
+    "구미": re.compile(r"(?:가|를|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|안\s*당)|에\s*맞(?:는|게|다|아|지|춰|추)"),
+    "화성": re.compile(r"\s*(?:탐사|착륙|궤도|표면|이주|기지|로버|토양|탐험)|의\s*(?:대기|표면|위성|궤도|하늘)"
+                     r"|을\s*(?:탐사|탐험)|에\s*(?:착륙|가는\s*로켓|사람을)"),
 }
 
 
@@ -73,6 +76,13 @@ _AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:" + "|".join(_AGE_ENDING
 def _is_bare_number(matched: str) -> bool:
     """「서른」 「쉰」처럼 단위·어미 없이 수만 있나. 「스물세」의 「세」는 수(3)라 맨몸이다."""
     return not _AGE_CLOSED.search(matched)
+
+
+# 「스물에 한 번 당첨」 — 뒤에 빈도가 오면 나이가 아니다
+_FREQUENCY_AFTER = re.compile(r"\s*(?:한|두|세|네|몇|여러)\s*(?:번|차례)")
+# 「총개수는 스물이다」 「점수는 마흔이다」 — 개수·점수를 말하는 말 바로 뒤의 수는 나이가 아니다
+_COUNT_BEFORE = re.compile(r"(?:개수|갯수|총|합계|합이|점수|등수|숫자|번호|순위|인원|횟수|회차|페이지|쪽수|몇\s*개)"
+                           r"\s*(?:는|은|가|이|도|만|로|으로)?\s*$")
 
 
 def age_spans(text: str) -> set[tuple[int, int, str]]:
@@ -87,6 +97,8 @@ def age_spans(text: str) -> set[tuple[int, int, str]]:
                 continue
             if _is_bare_number(text[start:end]) and _DURATION_FOLLOWERS.match(text, end):
                 continue  # 「서른 해」 「쉰 날」만 — 「23살이고 일을」 「서른 살이고 해가」는 나이가 이미 끝났다 (#309 리뷰)
+            if _FREQUENCY_AFTER.match(text, end) or _COUNT_BEFORE.search(text[max(0, start - 12):start]):
+                continue  # 「스물에 한 번」 「총개수는 스물이다」 (#322 ② · Codex 10/8)
             found.add((start, end, "AGE"))
     for match in _AGE_AFTER_NAI.finditer(text):
         found.add((match.start("age"), match.end("age"), "AGE"))
@@ -139,7 +151,8 @@ class ExplicitRules:
                     continue
                 name = word[:-len(particle)] if particle else word
                 idiom = _HOMONYM_IDIOM.get(name)
-                if idiom and idiom.match(text, match.start() + len(name)):
+                if idiom and idiom.match(text, match.start() + len(name)) \
+                        and not _PROVINCE_BEFORE.search(text[max(0, match.start() - 10):match.start()]):
                     break  # 「진도가 안 나간다」 「구미가 당기는」 「화성 탐사」 — 지명이 아니다
                 if name in self.names and self.dictionary.resolve(name):
                     found.add((match.start(), match.end(), "LOC_ADMIN"))
