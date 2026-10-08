@@ -63,9 +63,17 @@ TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이�
 _PROVINCE_BEFORE = re.compile(r"(?:경기도?|강원도?|충청[남북]도|충[남북]|전라[남북]도|전[남북]|경상[남북]도|경[남북]|제주도?|"
                               r"[가-힣]+특별자치도)\s*$")
 _SIDO_SHORT = {"경북": "경상북도", "경남": "경상남도", "충북": "충청북도", "충남": "충청남도", "전남": "전남광주통합특별시"}
+# 일반어로 훨씬 자주 쓰는 지명 — 거꾸로 「지명 문맥이 있을 때만」 지명으로 본다 (실제 글 시험 10/8 · #322 ②).
+# 「업무 진도는」 「공부 진도가 밀렸다」 「목표 달성을」은 지명이 아니다. 뒤에 「군·대교·여행」이나 이동·거주 말이 오거나,
+# 앞에 도·광역시 이름이 오면(「전남 진도」 「대구 달성」) 지명
+_PLACE_MOVE = r"(?:에|에서|로|으로)\s*(?:가|갔|간|갈|놀러|여행|살|사는|산다|살아|내려|이사|왔|와|오|있|도착|들러|들렀|출장|발령|근무)"
+_CONTEXT_ONLY_PLACES = {
+    "진도": re.compile(r"(?:군|항)|\s*(?:대교|여행|아리랑|개(?![가-힣]))|" + _PLACE_MOVE),  # 「진도 항상」은 「항」 앞 띄어쓰기를 안 받아 거른다
+    "달성": re.compile(r"군|\s*(?:공원|습지)|" + _PLACE_MOVE),
+}
+_PACE_BEFORE = re.compile(r"(?:^|[^가-힣])(?:이|그|저|지금|이런|그런|요즘)\s*$")  # 「이 진도로 가면」 — 속도 이야기
+_CITY_BEFORE = re.compile(r"(?:대구|대구시|대구광역시)\s*$")
 _HOMONYM_IDIOM = {
-    "진도": re.compile(r"(?:가|를|도|는|만)?\s*(?:나가|나갔|나간|나갈|나감|안\s*나|못\s*나|빼|뺐|뺀|뺄|따라가|따라잡|맞추|맞춰"
-                     r"|진행|체크)"),
     "구미": re.compile(r"(?:가|를|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|안\s*당)|에\s*맞(?:는|게|다|아|지|춰|추)"),
     "화성": re.compile(r"\s*(?:탐사|착륙|궤도|이주|로버|탐험)|의\s*(?:대기|위성|궤도)"  # 우주 탐사 말만 — 「화성 토양」은 화성시일 수 있다
                      r"|을\s*(?:탐사|탐험)|에\s*(?:착륙|가는\s*로켓|사람을)"),
@@ -159,6 +167,12 @@ class ExplicitRules:
                 if particle and not word.endswith(particle):
                     continue
                 name = word[:-len(particle)] if particle else word
+                place_ctx = _CONTEXT_ONLY_PLACES.get(name)
+                if place_ctx is not None:
+                    window = text[max(0, match.start() - 10):match.start()]
+                    if _PACE_BEFORE.search(window) or not (place_ctx.match(text, match.start() + len(name))
+                                                           or _PROVINCE_BEFORE.search(window) or _CITY_BEFORE.search(window)):
+                        break  # 「업무 진도는」 「목표 달성을」 — 지명 문맥이 없으면 일반어
                 idiom = _HOMONYM_IDIOM.get(name)
                 if idiom and idiom.match(text, match.start() + len(name)) \
                         and not _PROVINCE_BEFORE.search(text[max(0, match.start() - 10):match.start()]):
@@ -172,7 +186,8 @@ class ExplicitRules:
                 # 법정동 이름 — 「봉천동 · 망원동」은 행정동 목록(names)에 없지만 사전이 해석한다 (#322 ② · exp17 놓침 6/12).
                 # 세 글자 이상 · 「~동 · ~읍」만 — 「~리 · ~면 · ~가」는 「모서리 · 목소리」처럼 일반어와 같은 마을 이름이 많아
                 # 오탐이 5→75 로 늘었다. 「판교」처럼 「동」 없는 줄임말도 일반어 오탐(「방학이」)이 커서 넣지 않는다
-                if len(name) >= 3 and name[-1] in "동읍" and name not in self.excluded_aliases                         and self.dictionary.resolve(name):
+                if len(name) >= 3 and name[-1] in "동읍" and name not in self.excluded_aliases \
+                        and self.dictionary.resolve(name):
                     found.add((match.start(), match.end(), "LOC_ADMIN"))
                     break
         return found
