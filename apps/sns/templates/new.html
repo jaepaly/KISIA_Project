@@ -106,55 +106,12 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/pado.js"></script>
 <script>
-const PADO_BASE = "/check";
-document.getElementById("padoBtn").onclick = async () => {
-  const btn = document.getElementById("padoBtn"), out = document.getElementById("padoOut");
-  const body = (document.getElementById("body") || {}).value || "";
-  if (!body.trim()) {
-    out.innerHTML = '<p style="color:var(--ut-ink3);">본문을 먼저 써 주세요.</p>';
-    return;
-  }
-  btn.disabled = true;
-  out.innerHTML = '<p style="color:var(--ut-ink3);">읽는 중<span id="padoDots"></span></p>';
-  let _di = 0;
-  const _dt = setInterval(() => {
-    const el = document.getElementById("padoDots");
-    if (el) el.textContent = [".", "..", "..."][_di++ % 3];
-  }, 420);
-  try {
-    const fd = new FormData();
-    fd.append("file", new File([body.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
-    const r = await fetch(`${PADO_BASE}/upload`, { method: "POST", body: fd });
-    if (!r.ok) throw new Error(await r.text());
-    const d = await r.json();
-    const post = (d.posts || [])[0] || {};
-    const spans = ((d.spans || {})[post.post_id] || { spans: [] }).spans || [];
-    const k = ((d.specificity || {}).output || {});
-    const TYPE_COLOR = {
-      AGE: "#CFE6F7", SEX: "#F3D9E6", JOB: "#D6ECD9", FAM: "#E5D9F2",
-      COMMUTE: "#E1EEEC", INCOME: "#FDE8C9", LOC_ADMIN: "#F9E0B8", LOC_FACILITY: "#EDE8F7"
-    };
-    let marked = "", last = 0;
-    for (const s of [...spans].sort((a, b) => a.start - b.start)) {
-      marked += (post.body || "").slice(last, s.start)
-             + `<mark style="background:${TYPE_COLOR[s.type] || "#F9E0B8"};border-radius:3px;
-                            padding:1px 2px;" title="${s.type}">`
-             + (post.body || "").slice(s.start, s.end) + "</mark>";
-      last = s.end;
-    }
-    marked += (post.body || "").slice(last);
-    out.innerHTML = spans.length
-      ? `<p style="margin:0 0 8px;"><b style="font-size:20px;">${spans.length}</b>곳에서 단서가 읽힙니다`
-        + (k.k ? ` · 약 <b>${Number(k.k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")
-        + `</p><div style="white-space:pre-wrap;background:var(--ut-bg);border-radius:10px;
-                           padding:12px 14px;line-height:1.85;font-size:13px;">${marked}</div>`
-        + `<a class="fx-link" href="${PADO_BASE}/static/scan.html" style="display:inline-block;margin-top:10px;
-              font-size:13px;color:var(--ut-earth-ink);">파도풀에서 자세히 보기 →</a>`
-      : '<p style="color:var(--ut-ink3);">읽히는 단서가 없습니다. 이대로 올려도 괜찮아 보입니다.</p>';
-  } catch {
-    out.innerHTML = '<p style="color:var(--ut-ink3);">점검에 실패했습니다. 잠시 뒤 다시 눌러 주세요.</p>';
-  } finally { clearInterval(_dt); btn.disabled = false; }
-};
+padoWidget({
+  btn: document.getElementById("padoBtn"),
+  out: document.getElementById("padoOut"),
+  getText: () => document.getElementById("body").value
+});
 </script>
 {% endblock %}

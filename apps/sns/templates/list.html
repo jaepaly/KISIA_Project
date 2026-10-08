@@ -39,39 +39,13 @@
   </aside>
 
   <main class="ut-main">
-    <div class="ut-wrap">
+    <div class="ut-wrap" id="feed">
       {% if not posts %}
       <p style="color:var(--ut-ink3);text-align:center;padding:48px 0;">
         아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.
       </p>
       {% endif %}
-
-      {% for p in posts %}
-      <div class="ut-card rv" data-href="/posts/{{ p.post_id }}">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-right:22px;">
-          <span class="ut-title"
-                style="font-weight:700;font-size:16px;color:var(--ut-ink);flex:1;letter-spacing:-.01em;">
-            {{ p.title or "(제목 없음)" }}
-          </span>
-          {% if p.visibility == 'private' %}
-          <span style="font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;
-                       border-radius:99px;padding:2px 10px;white-space:nowrap;flex:0 0 auto;">비공개</span>
-          {% endif %}
-        </div>
-        {% if p.body %}
-        <p style="font-size:13px;color:var(--ut-ink2);margin:7px 0 0;line-height:1.6;
-                  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-          {{ p.body | truncate(100, True, '…') }}
-        </p>
-        {% endif %}
-        <div style="font-size:12px;color:var(--ut-ink3);margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <a class="fx-link" href="/u/{{ p.user_ref }}"
-             style="color:var(--ut-earth-ink);font-weight:600;">{{ p.nickname }}</a>
-          <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
-          {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
-        </div>
-      </div>
-      {% endfor %}
+      {% include "_cards.html" %}
     </div>
   </main>
 </div>

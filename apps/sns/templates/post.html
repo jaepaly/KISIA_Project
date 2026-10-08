@@ -22,7 +22,7 @@
           {% endif %}
         </div>
 
-        <div style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
+        <div id="postBody" style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
 
         {% if photos %}
         <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;">
@@ -58,7 +58,35 @@
           </form>
         </div>
       </div>
+
+      {# ── 파도풀 — 이 글 한 편 점검 ── #}
+      <div class="ut-card rv" style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-weight:700;font-size:15px;color:var(--ut-ink);">🌊 파도풀</span>
+          <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
+                       border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
+        </div>
+        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">이 글 한 편이 {{ p.nickname }}님을 얼마나 드러내는지 봅니다. 계정 전체는 결과 아래 링크에서.</p>
+        <button type="button" id="padoBtn" class="fx-wave"
+                style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
+                       height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
+          이 글 점검
+        </button>
+        <div id="padoOut" style="margin-top:14px;font-size:14px;"></div>
+      </div>
     </div>
   </main>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/pado.js"></script>
+<script>
+padoWidget({
+  btn: document.getElementById("padoBtn"),
+  out: document.getElementById("padoOut"),
+  getText: () => document.getElementById("postBody").textContent,
+  userRef: {{ p.user_ref | tojson }}
+});
+</script>
 {% endblock %}

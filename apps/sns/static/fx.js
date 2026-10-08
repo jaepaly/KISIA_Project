@@ -27,11 +27,51 @@
     if (e.metaKey || e.ctrlKey) { window.open(card.dataset.href, "_blank"); return; }
     location.href = card.dataset.href;
   });
-  document.querySelectorAll(".ut-card[data-href]").forEach((c) => {
-    c.tabIndex = 0;
-    c.setAttribute("role", "link");
-    c.addEventListener("keydown", (e) => { if (e.key === "Enter") location.href = c.dataset.href; });
-  });
+  function wireCards(root) {
+    (root || document).querySelectorAll(".ut-card[data-href]:not([tabindex])").forEach((c) => {
+      c.tabIndex = 0;
+      c.setAttribute("role", "link");
+      c.addEventListener("keydown", (e) => { if (e.key === "Enter") location.href = c.dataset.href; });
+    });
+  }
+  wireCards();
+
+  // ── 피드 무한 스크롤 — .fx-more 가 보이면 다음 장을 받아 이어 붙인다. 실패하면 버튼이 남는다 ──
+  function initMore() {
+    const more = document.querySelector(".fx-more[data-next]");
+    if (!more || more.dataset.busy) return;
+    const btn = more.querySelector("button");
+    async function load() {
+      if (more.dataset.busy) return;
+      more.dataset.busy = "1";
+      btn.classList.add("fx-busy");
+      try {
+        const url = more.dataset.next + (more.dataset.next.includes("?") ? "&" : "?") + "partial=1";
+        const r = await fetch(url, { headers: { "X-Requested-With": "fetch" } });
+        if (!r.ok) throw new Error(r.status);
+        const tpl = document.createElement("template");
+        tpl.innerHTML = await r.text();
+        const frag = tpl.content;
+        wireCards(frag);
+        const fresh = Array.from(frag.querySelectorAll(".rv"));
+        more.replaceWith(frag);
+        // veilo.js 의 관찰자는 처음 있던 카드만 본다 — 새 카드는 여기서 한 박자씩 띄워 드러낸다
+        requestAnimationFrame(() => fresh.forEach((el, i) => setTimeout(() => el.classList.add("in"), RM ? 0 : i * 45)));
+        initMore();
+      } catch {
+        delete more.dataset.busy;
+        btn.classList.remove("fx-busy");
+        btn.textContent = "다시 시도";
+      }
+    }
+    btn.addEventListener("click", load);
+    if (RM || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((ents) => {
+      if (ents.some((x) => x.isIntersecting)) { io.disconnect(); load(); }
+    }, { rootMargin: "0px 0px 600px 0px" });
+    io.observe(more);
+  }
+  initMore();
 
   // ── 공개/비공개 토글 — 누르면 아이콘이 톡 튀고 나서 넘어간다 ──
   document.querySelectorAll('form[action$="/visibility"] button').forEach((b) => {
