@@ -12,6 +12,7 @@ from pathlib import Path
 import infer
 import train
 from evaluate_test import exact_span_sets
+from internal_eval import restore_eval
 
 
 def main():
@@ -30,11 +31,11 @@ def main():
     for epoch, state in enumerate(states, 1):
         if state['completed_epochs'] != epoch or any(state['eval'][k] != baseline[k] for k in ('seed', 'split')):
             raise ValueError('Epoch split/seed mismatch')
-    if not baseline['split'].startswith('persona_holdout:'):
-        raise ValueError('Internal persona holdout required')
-    rows = train.read_jsonl(args.data)
-    _, eval_rows, _ = train.split_examples(rows, eval_ratio=float(baseline['split'].split(':')[1]),
-                                           seed=baseline['seed'], overfit=0)
+    eval_rows, eval_digest = restore_eval(args.data, baseline)
+    for state in states[1:]:
+        _, digest = restore_eval(args.data, state['eval'])
+        if digest != eval_digest:
+            raise ValueError('Epoch internal eval hash mismatch')
     sources, gold = {}, defaultdict(set)
     for row in eval_rows:
         key = (row['post_id'], row['text_id'])
@@ -62,6 +63,7 @@ def main():
     report = {'measured_at_utc': datetime.now(timezone.utc).isoformat(), 'data_version': 'corpus-v0 p2.3',
               'data_sha256': train.file_sha256(args.data), 'seed': baseline['seed'],
               'split': baseline['split'], 'eval_windows': len(eval_rows), 'eval_channels': len(sources),
+              'eval_example_ids_sha256': eval_digest,
               'device': args.device, 'threads': args.threads, 'min_span_score': 0.7,
               'merge_policy': 'longest_first_no_overlap_v1', 'test_opened': False,
               'selection_caveat': 'Post-test internal-eval comparison; never compare additional epochs on the opened test.',

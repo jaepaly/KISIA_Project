@@ -11,6 +11,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import train
+from internal_eval import restore_eval
 
 
 def match_spans(gold, pred):
@@ -45,6 +46,8 @@ def main():
     args = parser.parse_args()
     if args.batch_size < 1 or not 0 <= args.min_span_score <= 1:
         raise train.TrainError("Invalid batch size or span-score threshold.")
+    if args.output_dir.exists():
+        raise train.TrainError('Choose a new output directory; existing analysis is not overwritten.')
 
     import torch
     from torch.utils.data import DataLoader
@@ -54,14 +57,14 @@ def main():
     state = json.loads((args.checkpoint / "trainer_state.json").read_text(encoding="utf-8"))
     expected = state["eval"]
     split_name = expected["split"]
-    if not split_name.startswith("persona_holdout:"):
-        raise train.TrainError("Only persona_holdout checkpoints are supported.")
     labels, label2id = train.load_labels(args.labels)
+    config = expected.get('run_config')
+    if config and train.file_sha256(args.labels) != config['labels_sha256']:
+        raise train.TrainError('BIO labels hash differs from checkpoint.')
     id2label = dict(enumerate(labels))
     rows = train.read_jsonl(args.data)
     train.validate_examples(rows, len(labels))
-    _, eval_rows, _ = train.split_examples(
-        rows, eval_ratio=float(split_name.split(":")[1]), seed=expected["seed"], overfit=0)
+    eval_rows, eval_digest = restore_eval(args.data, expected)
     tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, local_files_only=True, use_fast=True)
     model = AutoModelForTokenClassification.from_pretrained(args.checkpoint, local_files_only=True)
     if model.config.label2id != label2id:
@@ -162,6 +165,7 @@ def main():
     assert sum(e["category"] == "FN" for e in errors) == metrics["overall"]["fn"]
     summary = {"checkpoint": str(args.checkpoint), "data_sha256": hashlib.sha256(args.data.read_bytes()).hexdigest(),
                "seed": expected["seed"], "split": split_name, "eval_examples": len(eval_rows),
+               "eval_example_ids_sha256": eval_digest,
                "eval_personas": sorted({r["persona_id"] for r in eval_rows}), "metrics": metrics,
                "raw_metrics": raw_metrics, "merge_policy": "longest_first_no_overlap_v1",
                "merged_unfiltered_metrics": merged_metrics, "min_span_score": args.min_span_score,
@@ -169,6 +173,10 @@ def main():
                "exploratory_threshold_sweep": threshold_sweep,
                "hints": {c: dict(Counter(e["hint"] for e in errors if e["category"] == c))
                          for c in ("FP", "FN")},
+               "errors_by_type": {c: dict(sorted(Counter(e['span']['type'] for e in errors
+                                                         if e['category'] == c).items()))
+                                  for c in ('FP', 'FN')},
+               "test_opened": False,
                "note": "Hints are geometric candidates, not confirmed causes. Confidence is mean "
                        "argmax token probability, averaged over windows; not calibrated."}
     targets = [args.output_dir / name for name in ("errors.jsonl", "predictions.jsonl", "summary.json")]
