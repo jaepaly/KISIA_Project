@@ -81,9 +81,13 @@ def _top_ids(rows: list[dict[str, Any]], k: int = 3) -> set[str]:
 
 
 def _gold_top_ids_with_ties(rows: list[dict[str, Any]], k: int = 3) -> set[str]:
-    ordered = sorted((abs(row["delta"]) for row in rows), reverse=True)
+    # 기여 0 인 글은 후보에서 뺀다 — 0 끼리 동률로 묶으면 0 아닌 글이 3편 미만인 인물은 글 전체가 정답이 돼
+    # 어떤 예측도 만점을 받는다 (실측: 평가 대상 66명 중 63명이 0 아닌 글 3편 미만)
+    ordered = sorted((abs(row["delta"]) for row in rows if row["delta"] != 0), reverse=True)
+    if not ordered:
+        return set()
     threshold = ordered[min(k, len(ordered)) - 1]
-    return {row["post_id"] for row in rows if abs(row["delta"]) >= threshold}
+    return {row["post_id"] for row in rows if row["delta"] != 0 and abs(row["delta"]) >= threshold}
 
 
 def _sign(value: float) -> int:
@@ -128,10 +132,15 @@ def evaluate(gold_dir: Path, prediction_dir: Path) -> dict[str, Any]:
                 raise ValueError(f"{persona_id}: 유한한 Spearman rho를 계산하지 못했습니다")
             rho_status = "ok"
 
-        denominator = min(3, len(post_ids))
-        predicted_top = _top_ids(predicted_rows)
-        top3_rank = len(_top_ids(gold_rows) & predicted_top) / denominator
-        top3_tie_aware = len(_gold_top_ids_with_ties(gold_rows) & predicted_top) / denominator
+        # 글이 3편 이하면 「상위 3편」이 곧 전체라 누구나 만점 — top-3 는 4편 이상인 인물만 잰다
+        top3_rank: float | None = None
+        top3_tie_aware: float | None = None
+        if len(post_ids) > 3:
+            predicted_top = _top_ids(predicted_rows)
+            top3_rank = len(_top_ids(gold_rows) & predicted_top) / 3
+            gold_top = _gold_top_ids_with_ties(gold_rows)
+            if gold_top:
+                top3_tie_aware = len(gold_top & predicted_top) / min(3, len(gold_top))
         signed_errors = [pred_by_id[pid]["delta"] - gold_by_id[pid]["delta"] for pid in post_ids]
         people.append({
             "persona_id": persona_id,
@@ -153,6 +162,8 @@ def evaluate(gold_dir: Path, prediction_dir: Path) -> dict[str, Any]:
     if not rhos:
         raise ValueError("순위 상관을 계산할 수 있는 비상수 정답 인물이 없습니다")
     macro_rho = mean(rhos)
+    top3_ranks = [row["top3_rank_agreement"] for row in people if row["top3_rank_agreement"] is not None]
+    top3_ties = [row["top3_tie_aware_recall"] for row in people if row["top3_tie_aware_recall"] is not None]
     return {
         "n_personas": len(people),
         "n_personas_for_spearman": len(rhos),
@@ -162,8 +173,10 @@ def evaluate(gold_dir: Path, prediction_dir: Path) -> dict[str, Any]:
         ),
         "excluded_zero_baseline": excluded_zero_baseline,
         "macro_spearman_rho_abs_delta": macro_rho,
-        "macro_top3_rank_agreement": mean(row["top3_rank_agreement"] for row in people),
-        "macro_top3_tie_aware_recall": mean(row["top3_tie_aware_recall"] for row in people),
+        "n_personas_for_top3": len(top3_ranks),
+        "n_personas_for_top3_tie_aware": len(top3_ties),
+        "macro_top3_rank_agreement": mean(top3_ranks) if top3_ranks else None,
+        "macro_top3_tie_aware_recall": mean(top3_ties) if top3_ties else None,
         "macro_sign_accuracy": mean(row["sign_accuracy"] for row in people),
         "macro_signed_delta_mae": mean(row["signed_delta_mae"] for row in people),
         "target_spearman_ge_0_8": macro_rho + 1e-12 >= 0.8,

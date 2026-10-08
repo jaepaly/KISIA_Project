@@ -71,6 +71,25 @@ def test_top3_reports_contract_and_tie_aware_scores(tmp_path: Path) -> None:
     assert person["top3_tie_aware_recall"] == 1.0
 
 
+def test_top3_skips_three_or_fewer_posts_and_zero_ties(tmp_path: Path) -> None:
+    gold, predictions = tmp_path / "gold", tmp_path / "predictions"
+    # 3편 이하는 상위 3편이 곧 전체 — top-3 를 재지 않는다
+    write_gold(gold / "A01.json", 10.0, {"p1": -3, "p2": -2, "p3": -1})
+    write_prediction(predictions / "A01.json", {"p1": -1, "p2": -2, "p3": -3})
+    # 0 아닌 글이 하나뿐 — 기여 0 인 글끼리의 동률이 정답 후보가 되면 안 된다
+    write_gold(gold / "A02.json", 10.0, {"q1": -5, "q2": 0, "q3": 0, "q4": 0, "q5": 0})
+    write_prediction(predictions / "A02.json", {"q1": -0.1, "q2": -3, "q3": -2, "q4": -1, "q5": 0})
+
+    result = score.evaluate(gold, predictions)
+    people = {row["persona_id"]: row for row in result["people"]}
+
+    assert people["A01"]["top3_rank_agreement"] is None
+    assert people["A01"]["top3_tie_aware_recall"] is None
+    assert people["A02"]["top3_tie_aware_recall"] == 0.0
+    assert result["n_personas_for_top3"] == 1
+    assert result["macro_top3_tie_aware_recall"] == 0.0
+
+
 @pytest.mark.parametrize("bad_delta", ["1", None, float("inf"), True])
 def test_prediction_delta_must_be_finite_number(tmp_path: Path, bad_delta) -> None:
     path = tmp_path / "A01.json"
