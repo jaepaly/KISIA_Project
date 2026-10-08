@@ -85,6 +85,7 @@ def main() -> None:
     ap.add_argument("--ckpt-every", type=int, default=5)
     ap.add_argument("--stop-at", type=int, default=0, help="시험용 — 이 업데이트에서 체크포인트만 남기고 멈춘다 (이어 하기 확인)")
     ap.add_argument("--out-dir", type=Path, default=None, help="산출 폴더 (기본 results/)")
+    ap.add_argument("--data-dir", type=Path, default=None, help="학습 데이터 폴더 (기본 data/)")
     a = ap.parse_args()
     torch.manual_seed(a.seed); random.seed(a.seed)
     global RESULTS
@@ -93,8 +94,9 @@ def main() -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
 
     tok = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=True)
-    train, tr_drop = load(tok, DATA / "train.jsonl", a.max_len)
-    dev, dv_drop = load(tok, DATA / "dev.jsonl", a.max_len)
+    data_dir = a.data_dir or DATA
+    train, tr_drop = load(tok, data_dir / "train.jsonl", a.max_len)
+    dev, dv_drop = load(tok, data_dir / "dev.jsonl", a.max_len)
     if a.limit:
         train, dev = train[: a.limit], dev[: max(4, a.limit // 8)]
     print(f"train {len(train)} (버림 {tr_drop}) · dev {len(dev)} (버림 {dv_drop}) · max_len {a.max_len}")

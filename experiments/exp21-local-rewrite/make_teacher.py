@@ -28,16 +28,21 @@ sys.path[:0] = [str(ROOT), str(ROOT / "src"), str(HERE)]
 from kopl.c4_stage2.rewrite import suggest  # noqa: E402
 from rewrite_llm import FEW_SHOT_ASSISTANT, FEW_SHOT_USER, SYSTEM, TYPE_KO, build_messages, check, make_items  # noqa: E402
 
-BATCH = 6
+BATCH = 6  # v2 캐시(teach_full)는 6편씩 — 정제 때 배치 경계가 같아야 한다
 MAX_SPANS = 8
+MAX_CHARS = 1400   # v3: 900 → 1400 (학습 max-len 1280 과 짝)
 
 
-def load_posts() -> list[dict]:
+def load_posts(all_spans: bool = True, with_aug: bool = True) -> list[dict]:
+    """v3: 규칙이 처리하는 단서까지(all_spans) · 변이 글 AUG1(학습 전용 · #313) 포함 — 교사 데이터를 약 2.3배로"""
     corpus = DATA / "corpus" / "v0"
-    test = set(json.loads((corpus / "splits" / "test_post_ids.json").read_text(encoding="utf-8")))
+    test = set(json.loads((corpus / "splits" / "test_post_ids.json").read_text(encoding="utf-8"))["post_ids"])  # 메타 dict — 목록은 post_ids
     eval_ids = set(json.loads((HERE / "eval_post_ids.json").read_text(encoding="utf-8")))
     posts = []
-    for f in sorted((corpus / "gold").glob("*_spans.jsonl")):
+    files = sorted((corpus / "gold").glob("*_spans.jsonl"))
+    if with_aug:
+        files += sorted((DATA / "corpus" / "aug" / "v1").glob("*_spans.jsonl"))
+    for f in files:
         recs = [json.loads(x) for x in f.read_text(encoding="utf-8").splitlines() if x.strip()]
         recs = [r for r in recs if "post_id" in r]
         if any(r["post_id"] in eval_ids for r in recs):
@@ -47,8 +52,8 @@ def load_posts() -> list[dict]:
                 continue
             body = r["texts"].get("body") or ""
             spans = [s for s in r["spans"] if s["text_id"] == "body" and s.get("subject") == "self"
-                     and not suggest(s, body)]
-            if spans and len(body) <= 900:
+                     and (all_spans or not suggest(s, body))]
+            if spans and len(body) <= MAX_CHARS:
                 posts.append({"post_id": r["post_id"], "persona": f.stem.split("_")[0], "text": body,
                               "spans": spans[:MAX_SPANS]})
     return posts
@@ -85,11 +90,14 @@ def collect(n_posts: int, cache: Path, seed: int) -> None:
         print(f"batch {b // BATCH} 완료", flush=True)
 
 
-def build(cache: Path, dev_frac: float = 0.1) -> None:
+def build(cache: Path, out: Path, dev_frac: float = 0.1) -> None:
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     from apps.analyzer.engines import real
 
     posts = json.loads((cache / "posts.json").read_text(encoding="utf-8"))
+    # test 글은 정제 단계에서도 다시 뺀다 — 10/8 전 캐시는 test 목록을 잘못 읽어(메타 dict) test 가 섞여 있다
+    test = set(json.loads((DATA / "corpus" / "v0" / "splits" / "test_post_ids.json").read_text(encoding="utf-8"))["post_ids"])
+    n_test = sum(1 for p in posts if p["post_id"] in test)  # 답을 배치 번호로 맞춘 뒤에 뺀다 (먼저 빼면 답이 밀린다)
     answers: dict[str, dict] = {}
     for b in range(0, len(posts), BATCH):
         f = cache / f"batch_{b // BATCH:03d}.txt"
@@ -107,6 +115,8 @@ def build(cache: Path, dev_frac: float = 0.1) -> None:
     stats = {"posts": 0, "items": 0, "kept": 0, "null_teacher": 0, "null_filtered": 0, "null_residual": 0}
     rows_by_persona: dict[str, list] = {}
     for post in posts:
+        if post["post_id"] in test:
+            continue
         ans = answers.get(post["post_id"])
         if ans is None:
             continue
@@ -139,8 +149,8 @@ def build(cache: Path, dev_frac: float = 0.1) -> None:
     personas = sorted(rows_by_persona)
     random.Random(20261008).shuffle(personas)
     n_dev = max(1, int(len(personas) * dev_frac))
-    out = HERE / "data"
-    out.mkdir(exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
+    stats["test_posts_removed"] = n_test
     for name, group in (("dev", personas[:n_dev]), ("train", personas[n_dev:])):
         rows = [r for p in group for r in rows_by_persona[p]]
         (out / f"{name}.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n",
@@ -152,12 +162,13 @@ def build(cache: Path, dev_frac: float = 0.1) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n-posts", type=int, default=400)
+    ap.add_argument("--n-posts", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=21)
     ap.add_argument("--cache", type=Path, required=True)
     ap.add_argument("--build", action="store_true")
+    ap.add_argument("--out", type=Path, default=HERE / "data", help="정제 결과 폴더 (train.jsonl · dev.jsonl · stats.json)")
     a = ap.parse_args()
-    build(a.cache) if a.build else collect(a.n_posts, a.cache, a.seed)
+    build(a.cache, a.out) if a.build else collect(a.n_posts, a.cache, a.seed)
     return 0
 
 
