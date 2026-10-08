@@ -1,0 +1,6 @@
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+{"kept": 80, "dropped": 0, "calls": 78, "usage": {"input_tokens": 19422, "output_tokens": 5611, "in_chars": 30818, "out_chars": 9366, "thinking_tokens": 0}}

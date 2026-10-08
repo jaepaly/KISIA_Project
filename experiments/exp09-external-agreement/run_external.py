@@ -5,6 +5,7 @@
 - `claude -p --tools "" --setting-sources ""` : 도구·프로젝트 설정 없이 순수 생성만
 - temperature 는 CLI 에서 지정할 수 없다 (README 한계). 재시도 없음 — 실패는 invalid 로 남긴다
 - 이미 결과가 있는 인물은 건너뛴다 (중단 후 이어 돌리기)
+- `--variant verdictdef` : system 프롬프트 끝에 verdict 판정 기준(#279)을 덧붙여 external_verdictdef.jsonl 로 (Qwen 입력은 그대로)
 """
 from __future__ import annotations
 
@@ -20,6 +21,11 @@ from urllib.parse import urlparse
 import hashlib
 
 HERE = Path(__file__).resolve().parent
+# #279 (가) — 계약 stage2-io verdict 설명 · 필드-대조표 §4 · make_sft_v1.SYSTEM 과 같은 문장
+VERDICT_DEFINITION = ("판정 기준(본인 스팬만): explicit 이 하나라도 있으면 specified · 아니면 implicit 이 하나라도 있으면 narrowed · "
+                      "아니면 inferential 만 있는데 서로 다른 글 2편 이상이면 narrowed · inferential 이 글 1편뿐이면 weak_signal · "
+                      "단서가 없으면 abstain.")
+VARIANTS = {"base": "", "verdictdef": VERDICT_DEFINITION}
 ATTRS = ("age", "sex", "location", "occupation", "family", "commute", "income")
 FINDING = {
     "type": "object",
@@ -70,13 +76,16 @@ def main() -> int:
                     help="팀 게이트웨이 키가 든 .env (ANTHROPIC_API_KEY · ANTHROPIC_BASE_URL). 개인 계정으로 돌지 않게 필수")
     ap.add_argument("--pilot", action="store_true")
     ap.add_argument("--timeout", type=int, default=180)
+    ap.add_argument("--variant", choices=sorted(VARIANTS), default="base",
+                    help="base = 학습 프롬프트 그대로 · verdictdef = verdict 판정 기준(#279)을 프롬프트 끝에 덧붙임")
     a = ap.parse_args()
     data = HERE / "data"
     rows = [json.loads(l) for l in (data / "inputs.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
     if a.pilot:
         keep = set(json.loads((data / "pilot_ids.json").read_text(encoding="utf-8")))
         rows = [r for r in rows if r["persona_id"] in keep]
-    out_path = data / ("external_pilot.jsonl" if a.pilot else "external.jsonl")
+    vsfx = "" if a.variant == "base" else f"_{a.variant}"
+    out_path = data / (f"external_pilot{vsfx}.jsonl" if a.pilot else f"external{vsfx}.jsonl")
     done = set()
     if out_path.exists():
         done = {json.loads(l)["persona_id"] for l in out_path.read_text(encoding="utf-8").splitlines() if l.strip()}
@@ -98,13 +107,16 @@ def main() -> int:
             if r["persona_id"] in done:
                 continue
             t0 = time.time()
+            system = r["system"] + ("\n" + VARIANTS[a.variant] if VARIANTS[a.variant] else "")
             rec = {"persona_id": r["persona_id"], "model": a.model, "route": "kisia-gateway",
-                   "gateway_url_sha256_12": url_sha, "findings": None, "error": None}
+                   "gateway_url_sha256_12": url_sha, "variant": a.variant,
+                   "system_sha256_12": hashlib.sha256(system.encode()).hexdigest()[:12],
+                   "findings": None, "error": None}
             try:
                 p = subprocess.run(
                     ["claude", "-p", "--model", a.model, "--tools", "", "--setting-sources", "",
                      "--no-session-persistence", "--output-format", "json",
-                     "--system-prompt", r["system"], "--json-schema", schema],
+                     "--system-prompt", system, "--json-schema", schema],
                     input=r["user"], capture_output=True, text=True, encoding="utf-8",
                     timeout=a.timeout, cwd=cwd, env=env,
                 )

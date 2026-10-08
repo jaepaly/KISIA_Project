@@ -104,7 +104,7 @@ if (_u) {
 const cached = loadScan();
 if (cached) {
   document.getElementById("postList").innerHTML =
-    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${cached.user_ref}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
+    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${esc(cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
 }
 </script>
 </body>

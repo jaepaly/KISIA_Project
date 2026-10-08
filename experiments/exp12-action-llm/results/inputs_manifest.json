@@ -1,0 +1,188 @@
+{
+  "rows": 40,
+  "personas": 10,
+  "window": 19,
+  "conditions": [
+    "c0_baseline",
+    "c1_unpublish",
+    "c2_meta",
+    "c3_rewrite"
+  ],
+  "rewrite_mode": "explicit",
+  "unpublish_fraction": 0.15789473684210525,
+  "geo_tags": {
+    "posts": 3092,
+    "tagged": 333
+  },
+  "repo_commit": "186aecc4cefe6fac137e9f5c05647284bc66bc31",
+  "inputs_sha256": "ae707a8bace55939265f0e93c215b81e7a2050f11c1155ea839e3048ce17206d",
+  "per_persona": [
+    {
+      "persona_id": "B08",
+      "posts": 19,
+      "hidden": [
+        "B08_b05",
+        "B08_b07",
+        "B08_b18"
+      ],
+      "tagged_public": 0,
+      "rewrite_spans": 1,
+      "risk": {
+        "c0_baseline": 49.29,
+        "c1_unpublish": 18.57,
+        "c2_meta": 18.57,
+        "c3_rewrite": 11.43
+      }
+    },
+    {
+      "persona_id": "D03",
+      "posts": 19,
+      "hidden": [
+        "D03_b02",
+        "D03_b04",
+        "D03_b13"
+      ],
+      "tagged_public": 0,
+      "rewrite_spans": 0,
+      "risk": {
+        "c0_baseline": 39.29,
+        "c1_unpublish": 10.0,
+        "c2_meta": 10.0,
+        "c3_rewrite": 10.0
+      }
+    },
+    {
+      "persona_id": "E14",
+      "posts": 19,
+      "hidden": [
+        "E14_b05",
+        "E14_b08"
+      ],
+      "tagged_public": 3,
+      "rewrite_spans": 8,
+      "risk": {
+        "c0_baseline": 30.0,
+        "c1_unpublish": 20.71,
+        "c2_meta": 12.86,
+        "c3_rewrite": 4.29
+      }
+    },
+    {
+      "persona_id": "B15",
+      "posts": 19,
+      "hidden": [
+        "B15_b04",
+        "B15_b08",
+        "B15_b13"
+      ],
+      "tagged_public": 0,
+      "rewrite_spans": 0,
+      "risk": {
+        "c0_baseline": 40.0,
+        "c1_unpublish": 5.71,
+        "c2_meta": 5.71,
+        "c3_rewrite": 5.71
+      }
+    },
+    {
+      "persona_id": "D21",
+      "posts": 19,
+      "hidden": [
+        "D21_b04",
+        "D21_b10",
+        "D21_b17"
+      ],
+      "tagged_public": 0,
+      "rewrite_spans": 0,
+      "risk": {
+        "c0_baseline": 39.29,
+        "c1_unpublish": 5.71,
+        "c2_meta": 5.71,
+        "c3_rewrite": 5.71
+      }
+    },
+    {
+      "persona_id": "A14",
+      "posts": 19,
+      "hidden": [
+        "A14_b04",
+        "A14_b05"
+      ],
+      "tagged_public": 1,
+      "rewrite_spans": 2,
+      "risk": {
+        "c0_baseline": 40.0,
+        "c1_unpublish": 28.57,
+        "c2_meta": 28.57,
+        "c3_rewrite": 28.57
+      }
+    },
+    {
+      "persona_id": "E03",
+      "posts": 19,
+      "hidden": [
+        "E03_b08",
+        "E03_b14",
+        "E03_b19"
+      ],
+      "tagged_public": 0,
+      "rewrite_spans": 1,
+      "risk": {
+        "c0_baseline": 42.86,
+        "c1_unpublish": 10.0,
+        "c2_meta": 10.0,
+        "c3_rewrite": 10.0
+      }
+    },
+    {
+      "persona_id": "B06",
+      "posts": 19,
+      "hidden": [
+        "B06_b12",
+        "B06_b18"
+      ],
+      "tagged_public": 3,
+      "rewrite_spans": 0,
+      "risk": {
+        "c0_baseline": 56.43,
+        "c1_unpublish": 35.71,
+        "c2_meta": 27.86,
+        "c3_rewrite": 27.86
+      }
+    },
+    {
+      "persona_id": "B07",
+      "posts": 19,
+      "hidden": [
+        "B07_b09",
+        "B07_b13",
+        "B07_b14"
+      ],
+      "tagged_public": 2,
+      "rewrite_spans": 0,
+      "risk": {
+        "c0_baseline": 50.0,
+        "c1_unpublish": 26.43,
+        "c2_meta": 18.57,
+        "c3_rewrite": 18.57
+      }
+    },
+    {
+      "persona_id": "A10",
+      "posts": 19,
+      "hidden": [
+        "A10_b04",
+        "A10_b12",
+        "A10_b16"
+      ],
+      "tagged_public": 3,
+      "rewrite_spans": 2,
+      "risk": {
+        "c0_baseline": 43.57,
+        "c1_unpublish": 13.57,
+        "c2_meta": 13.57,
+        "c3_rewrite": 5.71
+      }
+    }
+  ]
+}

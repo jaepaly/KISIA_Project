@@ -27,6 +27,89 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'스물셋임', '23살이고', '세 살', '88년생'})
 
+    def test_duration_and_count_units_are_not_age(self):
+        """「서른 해보다」(근속 30년) · 「쉰 날」(쉬다) — 기간·횟수 단위 앞의 수는 나이가 아니다 (인스턴스 테스트 10/5)."""
+        text = ('시청에서 보낸 서른 해보다, 씨감자 묻고 쉰 날, 스무 해 동안, 마흔 군데. 책이 스물세 권이나. '
+                '서른하나 되던 해, 쉰셋이에요, 스물다섯인데 벌써, 스물하나인데 벌써 해가')
+        found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+        self.assertEqual(found, {'서른하나', '쉰셋이에요', '스물다섯인데', '스물하나인데'})
+
+    def test_numeric_age_after_nai(self):
+        """「나이 48에」 — 살·세 없는 숫자 나이 (인스턴스 비교 측정 10/5 · 네 구성 모두 못 잡던 표현)."""
+        text = '나이 48에 처음 배운다. 나이는 35인데. 나이 3개월 차 아님, 2024년 나이'
+        found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+        self.assertEqual(found, {'48에', '35인데'})
+
+    def test_income_amount_needs_income_context(self):
+        from rules import income_spans
+        text = ('이번 달 월급 삼백이십만 원 들어왔다. 커피는 4,500원. 연금 140만 원 받는다. 집값이 3억이라니. '
+                '월급 300.5만 원 받았어. 택배로 5만 원짜리 받았다. 월세 60만 원 들어갔다. '
+                '알바비로 80만 원 받았다. 원고료 70만 원 들어왔다. 연봉 1,300.5만 원. '
+                '보수 정당에 90만 원 기부했다. 건물 보수에 91만 원 썼다. 상여 운구 비용으로 92만 원 냈다')
+        found = {text[start:end] for start, end, kind in income_spans(text)}
+        self.assertEqual(found, {'삼백이십만 원', '140만 원', '300.5만 원', '80만 원', '70만 원', '1,300.5만 원'})
+
+    def test_closed_age_is_not_filtered_by_next_word(self):
+        """#309 리뷰(B): 나이가 「살·어미」로 끝났으면 다음 낱말(일을 · 해가)은 단위가 아니다."""
+        cases = {
+            '나는 23살이고 일을 시작했어요': '23살이고',
+            '나는 스물셋인데 일을 시작했어요': '스물셋인데',
+            '나는 서른 살이고 해가 지면 산책해요': '서른 살이고',
+            '나는 서른이고 해가 지면 걷는다': '서른이고',
+            '마흔둘인데 날이 좋아서': '마흔둘인데',
+        }
+        for text, age in cases.items():
+            found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+            self.assertEqual(found, {age}, text)
+        # 맨몸 수 + 단위는 여전히 뺀다
+        for text in ('시청에서 보낸 서른 해보다', '씨감자 묻고 쉰 날', '책이 스물세 권이나'):
+            self.assertEqual({t for t in age_spans(text)}, set(), text)
+
+    def test_age_line_idiom_kept(self):
+        """「서른 줄에 접어들다」는 나이 — 단위 「줄」로 빼지 않는다 (Codex 검토 10/5)."""
+        text = '어느새 서른 줄에 접어들었네. 이제 마흔 줄에 들어섰어'
+        found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+        self.assertEqual(found, {'서른', '마흔'})
+
+    def test_model_age_quantity_is_dropped_in_merge(self):
+        """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
+        from rules import is_quantity_age
+        cases = {
+            ('시청에서 보낸 서른 해 동안', '서른'): True,
+            ('스무 해 넘게 살았다', '스무 해'): True,
+            ('책이 스물세 권이나', '스물세 권이나'): True,
+            ('나는 서른 살이고 해가 지면', '서른 살이고'): False,
+            ('스물다섯인데 벌써', '스물다섯인데'): False,
+            ('마흔둘인데 날이 좋다', '마흔둘인데'): False,
+            ('올해 서른 줄에 접어들었다', '서른'): False,
+            # Codex 10/6 — 줄바꿈 뒤 다른 말의 첫 글자를 단위로 읽지 않는다
+            ('나이는 서른\n개발자로 일해요', '서른'): False,
+            ('올해 서른\n원하는 일을 시작했어요', '서른'): False,
+            ('스물 일곱에 결혼했다', '스물 일곱에'): False,
+            ('스물 일곱', '스물 일곱'): False,
+            # 스팬 끝에 조사·어미가 붙은 수량
+            ('스무 해에 걸쳐', '스무 해에'): True,
+            ('그게 벌써 스무 해였다', '스무 해였다'): True,
+            ('쉰 날간 여행했다', '쉰 날간'): True,
+            ('서른 번째 생일', '서른'): True,
+            ('마흔 명이 왔다', '마흔'): True,
+            ('서른 개월 동안', '서른'): True,
+            ('아기는 생후 18개월이에요', '18개월'): False,
+            ('그곳에서 스무\n해 동안 일했다', '스무'): True,
+            ('마흔 명에게 선물을 줬다', '마흔'): True,
+            ('스무 개였다', '스무'): True,
+            ('스무 개쯤은 필요하다', '스무'): True,
+            ('서른 일하면서 배웠다', '서른'): False,
+            ('스물 해서 먹었다', '스물'): False,
+            ('올해 서른 주도적으로 살아보려고 한다', '서른'): False,
+            ('스무 개짜리 묶음을 샀다', '스무'): True,
+            ('마흔 명당 한 명을 뽑는다', '마흔'): True,
+            ('서른 분께 인사했다', '서른'): True,
+        }
+        for (text, span), expected in cases.items():
+            start = text.index(span)
+            self.assertEqual(is_quantity_age(text, start, start + len(span)), expected, (text, span))
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'

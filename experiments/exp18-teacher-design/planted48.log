@@ -1,0 +1,2 @@
+{'ANTHROPIC_API_KEY': True, 'ANTHROPIC_BASE_URL': True}
+{"calls": 80, "usage": {"input_tokens": 141321, "output_tokens": 9720, "in_chars": 157845, "out_chars": 19351}}
