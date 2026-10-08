@@ -11,6 +11,7 @@
 <body>
   <div class="ut-top" id="utTop">
     <div class="ut-top-in">
+      <button class="ut-menu" id="utMenuBtn" aria-label="메뉴 열기">☰</button>
       <a class="ut-logo" href="/">
         <img class="sym" src="/static/veilo-symbol.svg" alt="" width="28" height="28">
         <span class="wm">Veilo</span>
@@ -22,7 +23,21 @@
       </nav>
     </div>
   </div>
+
+  {# 모바일 사이드바 딤 오버레이 #}
+  <div class="ut-scrim" id="utScrim" hidden></div>
+
   {% block body %}{% endblock %}
+
+  {# 모바일 하단 탭바 #}
+  <nav class="ut-tabs">
+    <a href="/" class="{% if request.path == '/' %}on{% endif %}">
+      <span class="ic">🏠</span>홈
+    </a>
+    <a href="/new" class="{% if request.path == '/new' %}on{% endif %}">
+      <span class="ic">✏️</span>글쓰기
+    </a>
+  </nav>
   <script src="/static/veilo.js"></script>
   <script>
     // 헤더 스크롤 shadow
@@ -32,6 +47,19 @@
       const apply = () => top.classList.toggle("scrolled", window.scrollY > 8);
       apply();
       window.addEventListener("scroll", apply, { passive: true });
+    })();
+
+    // 모바일 사이드바 드로어 열기/닫기
+    (function () {
+      const btn = document.getElementById("utMenuBtn");
+      const scrim = document.getElementById("utScrim");
+      const side = document.querySelector(".ut-side");
+      if (!btn || !side) return;
+      function open() { side.classList.add("open"); scrim.hidden = false; document.body.style.overflow = "hidden"; }
+      function close() { side.classList.remove("open"); scrim.hidden = true; document.body.style.overflow = ""; }
+      btn.addEventListener("click", open);
+      scrim.addEventListener("click", close);
+      side.querySelectorAll("a[href]").forEach(a => a.addEventListener("click", close));
     })();
   </script>
   {% block scripts %}{% endblock %}
