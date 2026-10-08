@@ -5,15 +5,15 @@
 <div class="ut-shell no-rail">
   <main class="ut-main">
     <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
-      <a class="ut-back" href="javascript:history.back()">← 뒤로</a>
+      <a class="ut-back fx-link" href="javascript:history.back()">← 뒤로</a>
 
       <div class="ut-card rv {% if p.visibility == 'private' %}dim{% endif %}">
         <h1 style="font-size:22px;margin:0 0 10px;letter-spacing:-.02em;">
           {{ p.title or "(제목 없음)" }}
         </h1>
         <div style="font-size:13px;color:var(--ut-ink3);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
-          <a href="/u/{{ p.user_ref }}"
-             style="color:var(--ut-earth-ink);font-weight:600;text-decoration:none;">{{ p.nickname }}</a>
+          <a class="fx-link" href="/u/{{ p.user_ref }}"
+             style="color:var(--ut-earth-ink);font-weight:600;">{{ p.nickname }}</a>
           <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
           {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
           {% if p.visibility == 'private' %}

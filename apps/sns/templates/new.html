@@ -93,7 +93,7 @@
                        border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
         </div>
         <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">올리기 전에, 이 글이 나를 얼마나 드러내는지 봅니다.</p>
-        <button type="button" id="padoBtn"
+        <button type="button" id="padoBtn" class="fx-wave"
                 style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
                        height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
           이 글 점검
@@ -149,7 +149,7 @@ document.getElementById("padoBtn").onclick = async () => {
         + (k.k ? ` · 약 <b>${Number(k.k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")
         + `</p><div style="white-space:pre-wrap;background:var(--ut-bg);border-radius:10px;
                            padding:12px 14px;line-height:1.85;font-size:13px;">${marked}</div>`
-        + `<a href="${PADO_BASE}/static/scan.html" style="display:inline-block;margin-top:10px;
+        + `<a class="fx-link" href="${PADO_BASE}/static/scan.html" style="display:inline-block;margin-top:10px;
               font-size:13px;color:var(--ut-earth-ink);">파도풀에서 자세히 보기 →</a>`
       : '<p style="color:var(--ut-ink3);">읽히는 단서가 없습니다. 이대로 올려도 괜찮아 보입니다.</p>';
   } catch {
