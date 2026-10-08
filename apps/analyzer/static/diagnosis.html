@@ -137,6 +137,7 @@ if (!data) {
 } else {
   const nPosts = data.posts.length;
   const nHit = data.posts.filter(p => ((data.spans[p.post_id] || { spans: [] }).spans).some(s => s.subject !== "other")).length;
+  const nFound = Object.values(data.stage2.output.findings || {}).filter(f => f.verdict !== "abstain").length;
   el.innerHTML = `
     <div class="card">
       <div class="row between">
@@ -146,19 +147,24 @@ if (!data) {
       <p class="score"><b>${esc(data.contribution.output.baseline_risk)}</b><span class="unit">/ 100 · 기준 위험도</span></p>
       ${renderSpecificity(data.specificity)}
     </div>
-    <h3>7속성 판정</h3>
-    ${renderFindings(data.stage2.output.findings)}
+    <details class="card more sec">
+      <summary>7속성 판정 <small>— ${nFound}개 속성이 특정되거나 좁혀짐 · ${7 - nFound}개 판단 보류</small></summary>
+      ${renderFindings(data.stage2.output.findings)}
+    </details>
     <div class="row between sec">
       <h3>글에서 읽힌 단서 <small>— 글 ${nPosts}편 중 ${nHit}편에서 읽힘 · 제목을 누르면 펼쳐집니다</small></h3>
       <button type="button" id="toggleAll" class="ghost">모두 펼치기</button>
     </div>
-    <p class="legend">
-      <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
-      <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
-      <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
-      <span style="background:#FDE8C9">소득</span>
-      <span class="span-other">다른 사람 정보</span>
-    </p>
+    <details class="more">
+      <summary>색 범례</summary>
+      <p class="legend">
+        <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
+        <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
+        <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
+        <span style="background:#FDE8C9">소득</span>
+        <span class="span-other">다른 사람 정보</span>
+      </p>
+    </details>
     ${renderPosts(data)}
   `;
   wirePosts();
