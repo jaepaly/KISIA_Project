@@ -1,44 +1,64 @@
 {% extends "base.html" %}
 {% block title %}{{ p.title or "글" }} — Veilo{% endblock %}
-{% block content %}
 
-<p><a href="/">← 목록으로</a></p>
+{% block body %}
+<div class="ut-shell no-rail">
+  <main class="ut-main">
+    <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
+      <a class="ut-back" href="javascript:history.back()">← 뒤로</a>
 
-<div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
-  <h1>{{ p.title or "(제목 없음)" }}</h1>
-  <div class="post-meta">
-    <a href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
-    · {{ p.created_at[:16].replace('T', ' ') }}
-    {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
-    {% if p.visibility == 'private' %}· <span class="badge private">비공개</span>{% endif %}
-  </div>
+      <div class="ut-card rv {% if p.visibility == 'private' %}dim{% endif %}">
+        <h1 style="font-size:22px;margin:0 0 10px;letter-spacing:-.02em;">
+          {{ p.title or "(제목 없음)" }}
+        </h1>
+        <div style="font-size:13px;color:var(--ut-ink3);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+          <a href="/u/{{ p.user_ref }}"
+             style="color:var(--ut-earth-ink);font-weight:600;text-decoration:none;">{{ p.nickname }}</a>
+          <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
+          {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
+          {% if p.visibility == 'private' %}
+          <span style="font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;
+                       border-radius:99px;padding:2px 10px;">비공개</span>
+          {% endif %}
+        </div>
 
-  <p style="white-space: pre-wrap; margin-top: 16px;">{{ p.body }}</p>
+        <div style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
 
-  {% if photos %}
-    <div style="margin-top: 16px;">
-      {% for ph in photos %}
-        <p style="color:#888; font-size:0.9em;">📷 사진 {{ ph.idx + 1 }} — {{ ph.caption }}</p>
-      {% endfor %}
+        {% if photos %}
+        <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;">
+          {% for ph in photos %}
+          <figure style="margin:0;border:1px solid var(--ut-line);border-radius:12px;
+                         background:var(--ut-panel2);padding:10px 12px;min-width:160px;flex:1;">
+            <div style="font-size:24px;text-align:center;padding:10px 0;">🖼</div>
+            <figcaption style="font-size:12px;color:var(--ut-ink2);">
+              <span style="font-size:10px;color:var(--ut-ink3);border:1px solid var(--ut-line);
+                           border-radius:99px;padding:0 6px;margin-right:5px;">사진 {{ ph.idx + 1 }}</span>
+              {{ ph.caption }}
+            </figcaption>
+          </figure>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+                    padding-top:16px;border-top:1px solid var(--ut-line);">
+          <form method="post" action="/posts/{{ p.post_id }}/visibility" style="display:inline;">
+            <input type="hidden" name="back" value="/posts/{{ p.post_id }}">
+            <button type="submit" class="ghost" style="font-size:13px;padding:8px 16px;">
+              {% if p.visibility == 'public' %}🔒 비공개로 전환{% else %}🌐 공개로 전환{% endif %}
+            </button>
+          </form>
+          <form method="post" action="/posts/{{ p.post_id }}/edit"
+                style="display:flex;gap:6px;align-items:center;flex:1;min-width:200px;">
+            <input type="text" name="geo_tag" value="{{ p.geo_tag or '' }}"
+                   placeholder="📍 위치 태그 (예: 용인시 기흥구)"
+                   style="flex:1;height:38px;font-size:13px;padding:0 10px;
+                          border:1px solid var(--ut-line);border-radius:8px;background:var(--ut-panel2);">
+            <button type="submit" class="ghost" style="font-size:13px;padding:8px 14px;white-space:nowrap;">위치 저장</button>
+          </form>
+        </div>
+      </div>
     </div>
-  {% endif %}
-
-  <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-    <form class="inline" method="post" action="/posts/{{ p.post_id }}/visibility">
-      <input type="hidden" name="back" value="/posts/{{ p.post_id }}">
-      <button type="submit" class="ghost">
-        {% if p.visibility == 'public' %}🔒 비공개로 전환{% else %}🌐 공개로 전환{% endif %}
-      </button>
-    </form>
-
-    <form class="inline" method="post" action="/posts/{{ p.post_id }}/edit"
-          style="display:flex; gap:6px; align-items:center;">
-      <input type="text" name="geo_tag" value="{{ p.geo_tag or '' }}"
-             placeholder="📍 위치 태그 (예: 용인시 기흥구)"
-             style="font-size:0.9em; padding:4px 8px; border:1px solid #ccc; border-radius:4px; width:200px;">
-      <button type="submit" class="ghost" style="font-size:0.85em;">위치 저장</button>
-    </form>
-  </div>
+  </main>
 </div>
-
 {% endblock %}

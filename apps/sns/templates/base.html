@@ -2,70 +2,28 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Veilo{% endblock %}</title>
-  <!-- self-host (#274) — jsDelivr CDN 런타임 로드를 걷어내 방문자 IP가 제3자로 안 나가게 한다 -->
   <link rel="stylesheet" href="/static/fonts/pretendard.css">
-  <style>
-    /* Veilo 공식 디자인 토큰 — 디자이너 핸드오프 v1.1 그대로 */
-    :root {
-      --ink: #3E3A36;      /* Charcoal — 기본 텍스트 */
-      --sub: #A89B91;      /* Taupe — 보더/muted UI */
-      --line: #A89B91;
-      --bg: #F8F3ED;       /* Ivory — 메인 배경 */
-      --card: #ffffff;
-      --sand: #D9C9B8;     /* Secondary / surface */
-      --accent: #D8896F;   /* Terracotta — Primary/CTA/강조 */
-      --accent-ink: #F8F3ED;
-      --radius: 16px;      /* Card radius 14~18px 권장 */
-    }
-    * { box-sizing: border-box; }
-    a { color: var(--accent); }
-    a:visited { color: var(--accent); }
-    body { font-family: "Pretendard", -apple-system, "Malgun Gothic", sans-serif;
-           max-width: 720px; margin: 0 auto; padding: 20px 16px 60px;
-           color: var(--ink); background: var(--bg); line-height: 1.6; }
-    header { display: flex; justify-content: space-between; align-items: center;
-              margin-bottom: 24px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
-    header a.logo { font-weight: 800; font-size: 1.25em; color: var(--ink);
-                    text-decoration: none; letter-spacing: -0.02em; }
-    header nav a { margin-left: 14px; color: var(--sub); text-decoration: none;
-                   font-size: 0.9em; font-weight: 600; transition: color .15s; }
-    header nav a:hover { color: var(--accent); }
-    h1 { font-size: 1.3em; letter-spacing: -0.02em; margin-bottom: 16px; }
-    .post-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-                 padding: 16px 18px; margin-bottom: 12px;
-                 box-shadow: 0 1px 2px rgba(43,43,43,0.04); transition: box-shadow .15s, transform .15s; }
-    .post-card:hover { box-shadow: 0 4px 14px rgba(43,43,43,0.08); }
-    .post-card.private { background: var(--sand); color: var(--sub); box-shadow: none; }
-    .post-title { font-weight: 700; text-decoration: none; color: var(--ink); }
-    a.post-title:hover { color: var(--accent); }
-    .post-meta { font-size: 0.82em; color: var(--sub); margin-top: 6px; }
-    .badge { display: inline-block; font-size: 0.72em; padding: 2px 8px;
-             border-radius: 999px; background: var(--sand); color: var(--sub); font-weight: 600; }
-    .badge.private { background: var(--ink); color: #fff; }
-    form.inline { display: inline; }
-    input, textarea, select { width: 100%; padding: 10px 12px; margin: 4px 0 14px;
-      border: 1px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 1em;
-      background: var(--card); transition: border-color .15s, box-shadow .15s; }
-    input:focus, textarea:focus, select:focus {
-      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,111,74,0.15); }
-    label { font-size: 0.85em; color: var(--sub); font-weight: 700; }
-    button { padding: 10px 18px; border: none; border-radius: 8px; background: var(--accent);
-             color: var(--accent-ink); cursor: pointer; font-size: 0.92em; font-weight: 700;
-             transition: filter .15s; }
-    button:hover { filter: brightness(0.93); }
-    button.ghost { background: var(--sand); color: var(--ink); }
-    button:disabled { background: var(--line); color: var(--sub); cursor: not-allowed; }
-    .empty { color: var(--sub); text-align: center; padding: 40px 0; }
-  </style>
+  <link rel="stylesheet" href="/static/veilo.css">
+  {% block head %}{% endblock %}
 </head>
 <body>
-  <header>
-    <a class="logo" href="/">Veilo</a>
-    <nav>
-      <a href="/new">✏️ 글쓰기</a>
-    </nav>
-  </header>
-  {% block content %}{% endblock %}
+  <div class="ut-top" id="utTop">
+    <div class="ut-top-in">
+      <a class="ut-logo" href="/">
+        <img class="sym" src="/static/veilo-symbol.svg" alt="" width="28" height="28">
+        <span class="wm">Veilo</span>
+      </a>
+      <nav class="ut-nav">
+        {% block nav %}
+        <a href="/new" class="write">✏️ 글쓰기</a>
+        {% endblock %}
+      </nav>
+    </div>
+  </div>
+  {% block body %}{% endblock %}
+  <script src="/static/veilo.js"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

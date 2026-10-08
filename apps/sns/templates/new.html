@@ -1,87 +1,122 @@
 {% extends "base.html" %}
 {% block title %}글 작성 — Veilo{% endblock %}
-{% block content %}
 
-<h1>글 작성</h1>
+{% block body %}
+<div class="ut-shell no-rail">
+  <main class="ut-main">
+    <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
+      <div class="ut-h"><h1>글 작성</h1></div>
 
-{% if not authors %}
-  <p class="empty">
-    작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다
-    (W4 시딩 전이라면 테스트용으로 하나 넣어보세요).
-  </p>
-{% endif %}
+      {% if not authors %}
+      <div class="ut-card" style="color:var(--ut-ink3);">
+        작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다.
+      </div>
+      {% endif %}
 
-<form method="post" action="/posts">
-  <label for="author_id">작성자</label>
-  <select name="author_id" id="author_id" required>
-    {% for a in authors %}
-      <option value="{{ a.author_id }}">{{ a.nickname }}</option>
-    {% endfor %}
-  </select>
+      <div class="ut-card rv">
+        <form method="post" action="/posts">
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자</label>
+            <select name="author_id" required
+                    style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                           background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
+              {% for a in authors %}
+              <option value="{{ a.author_id }}">{{ a.nickname }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-  <label for="title">제목 (선택)</label>
-  <input type="text" name="title" id="title">
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">제목 (선택)</label>
+            <input type="text" name="title" id="title"
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <label for="body">본문</label>
-  <textarea name="body" id="body" rows="8" required></textarea>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">본문</label>
+            <textarea name="body" id="body" rows="8" required
+                      style="border:1px solid var(--ut-line);border-radius:10px;
+                             background:var(--ut-panel2);font:inherit;font-size:14px;
+                             padding:12px 14px;resize:vertical;line-height:1.7;"></textarea>
+          </div>
 
-  <label for="geo_tag">위치 태그 (선택)</label>
-  <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 용인시 기흥구">
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">위치 태그 (선택)</label>
+            <input type="text" name="geo_tag"
+                   placeholder="예: 용인시 기흥구"
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <label for="captions">사진 캡션 (선택, 한 줄에 하나씩 — 순서대로 사진 0, 1, 2...로 들어갑니다)</label>
-  <textarea name="captions" id="captions" rows="3" placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"></textarea>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">
+              사진 캡션 (선택, 한 줄에 하나씩)
+            </label>
+            <textarea name="captions" rows="3"
+                      placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"
+                      style="border:1px solid var(--ut-line);border-radius:10px;
+                             background:var(--ut-panel2);font:inherit;font-size:13px;
+                             padding:10px 14px;resize:vertical;"></textarea>
+          </div>
 
-  <label for="created_at">
-    작성 시각 — 실제 SNS엔 없는 기능이지만 여기서는 직접 바꿀 수 있습니다
-    (새벽 시간대에 쓰는 패턴 등을 시연하려면 필요합니다)
-  </label>
-  <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">
+              작성 시각
+            </label>
+            <input type="datetime-local" name="created_at" value="{{ now }}" required
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <label for="visibility">공개 범위</label>
-  <select name="visibility" id="visibility">
-    <option value="public">공개</option>
-    <option value="private">비공개</option>
-  </select>
+          <div style="margin-bottom:20px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">공개 범위</label>
+            <select name="visibility"
+                    style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                           background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
+              <option value="public">🌐 공개</option>
+              <option value="private">🔒 비공개</option>
+            </select>
+          </div>
 
-  <button type="submit" {% if not authors %}disabled{% endif %}>올리기</button>
-</form>
+          <button type="submit" {% if not authors %}disabled{% endif %}
+                  style="width:100%;height:48px;font-size:15px;">올리기</button>
+        </form>
+      </div>
 
-{# ── 파도풀 임베드 — 진단은 분석 앱(/check)이 하고 여기서는 띄우기만 한다 ── #}
-<style>
-  .pado{border:1px solid #E6DCD0;border-radius:16px;background:#FFFDFA;padding:16px 18px;margin:18px 0;
-        box-shadow:0 1px 2px rgba(62,58,54,.04)}
-  .pado-h{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-  .pado-name{font-weight:700;font-size:15px;color:#3E3A36}
-  .pado-tag{font-size:11px;font-weight:600;color:#B8664B;background:#F6E6DD;border-radius:999px;padding:2px 8px}
-  .pado-sub{font-size:13px;color:#A89B91;margin:0 0 12px}
-  .pado-btn{padding:9px 16px;border:1px solid #D8896F;border-radius:10px;background:#D8896F;color:#fff;
-            font:inherit;font-size:14px;font-weight:600;cursor:pointer}
-  .pado-btn:disabled{opacity:.5;cursor:default}
-  .pado-out{margin-top:14px;font-size:14px}
-  .pado-k{font-size:26px;font-weight:700;color:#3E3A36;letter-spacing:-.02em}
-  .pado-body{white-space:pre-wrap;line-height:1.85;background:#F8F3ED;border-radius:10px;padding:12px 14px;margin:10px 0 0}
-  .pado-hit{border-radius:4px;padding:1px 3px;background:#F9E0B8;box-shadow:inset 0 -1px 0 rgba(62,58,54,.12)}
-  .pado-hit[data-t="AGE"]{background:#CFE6F7}.pado-hit[data-t="SEX"]{background:#F3D9E6}
-  .pado-hit[data-t="JOB"]{background:#D6ECD9}.pado-hit[data-t="FAM"]{background:#E5D9F2}
-  .pado-hit[data-t="COMMUTE"]{background:#E1EEEC}
-  .pado-more{display:inline-block;margin-top:10px;color:#B8664B;font-size:13px}
-  .pado-muted{color:#A89B91;font-size:13px}
-</style>
-
-<div class="pado">
-  <div class="pado-h"><span class="pado-name">파도풀</span><span class="pado-tag">개인정보 점검</span></div>
-  <p class="pado-sub">올리기 전에, 이 글이 나를 얼마나 드러내는지 봅니다.</p>
-  <button type="button" class="pado-btn" id="padoBtn">이 글 점검</button>
-  <div class="pado-out" id="padoOut"></div>
+      {# ── 파도풀 위젯 ── #}
+      <div class="ut-card rv" id="padoCard"
+           style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-weight:700;font-size:15px;color:var(--ut-ink);">🌊 파도풀</span>
+          <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
+                       border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
+        </div>
+        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">올리기 전에, 이 글이 나를 얼마나 드러내는지 봅니다.</p>
+        <button type="button" id="padoBtn"
+                style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
+                       height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
+          이 글 점검
+        </button>
+        <div id="padoOut" style="margin-top:14px;font-size:14px;"></div>
+      </div>
+    </div>
+  </main>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
 const PADO_BASE = "/check";
 document.getElementById("padoBtn").onclick = async () => {
   const btn = document.getElementById("padoBtn"), out = document.getElementById("padoOut");
   const body = (document.getElementById("body") || {}).value || "";
-  if (!body.trim()) { out.innerHTML = '<p class="pado-muted">본문을 먼저 써 주세요.</p>'; return; }
-  btn.disabled = true; out.innerHTML = '<p class="pado-muted">읽는 중…</p>';
+  if (!body.trim()) {
+    out.innerHTML = '<p style="color:var(--ut-ink3);">본문을 먼저 써 주세요.</p>';
+    return;
+  }
+  btn.disabled = true;
+  out.innerHTML = '<p style="color:var(--ut-ink3);">읽는 중…</p>';
   try {
     const fd = new FormData();
     fd.append("file", new File([body.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
@@ -90,25 +125,31 @@ document.getElementById("padoBtn").onclick = async () => {
     const d = await r.json();
     const post = (d.posts || [])[0] || {};
     const spans = ((d.spans || {})[post.post_id] || { spans: [] }).spans || [];
-    const k = (d.specificity || {}).output || {};
+    const k = ((d.specificity || {}).output || {});
+    const TYPE_COLOR = {
+      AGE: "#CFE6F7", SEX: "#F3D9E6", JOB: "#D6ECD9", FAM: "#E5D9F2",
+      COMMUTE: "#E1EEEC", INCOME: "#FDE8C9", LOC_ADMIN: "#F9E0B8", LOC_FACILITY: "#EDE8F7"
+    };
     let marked = "", last = 0;
     for (const s of [...spans].sort((a, b) => a.start - b.start)) {
       marked += (post.body || "").slice(last, s.start)
-             + `<span class="pado-hit" data-t="${s.type}" title="${s.type}">`
-             + (post.body || "").slice(s.start, s.end) + "</span>";
+             + `<mark style="background:${TYPE_COLOR[s.type] || "#F9E0B8"};border-radius:3px;
+                            padding:1px 2px;" title="${s.type}">`
+             + (post.body || "").slice(s.start, s.end) + "</mark>";
       last = s.end;
     }
     marked += (post.body || "").slice(last);
     out.innerHTML = spans.length
-      ? `<p><span class="pado-k">${spans.length}</span> 곳에서 단서가 읽힙니다`
-        + (k.k ? ` · 추정 후보 약 <b>${k.k}</b>명` : "")
-        + `</p><div class="pado-body">${marked}</div>`
-        + `<a class="pado-more" href="${PADO_BASE}/static/scan.html">파도풀에서 자세히 보기 →</a>`
-      : '<p class="pado-muted">읽히는 단서가 없습니다. 이대로 올려도 괜찮아 보입니다.</p>';
-  } catch (e) {
-    out.innerHTML = '<p class="pado-muted">점검에 실패했습니다. 잠시 뒤 다시 눌러 주세요.</p>';
+      ? `<p style="margin:0 0 8px;"><b style="font-size:20px;">${spans.length}</b>곳에서 단서가 읽힙니다`
+        + (k.k ? ` · 약 <b>${Number(k.k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")
+        + `</p><div style="white-space:pre-wrap;background:var(--ut-bg);border-radius:10px;
+                           padding:12px 14px;line-height:1.85;font-size:13px;">${marked}</div>`
+        + `<a href="${PADO_BASE}/static/scan.html" style="display:inline-block;margin-top:10px;
+              font-size:13px;color:var(--ut-earth-ink);">파도풀에서 자세히 보기 →</a>`
+      : '<p style="color:var(--ut-ink3);">읽히는 단서가 없습니다. 이대로 올려도 괜찮아 보입니다.</p>';
+  } catch {
+    out.innerHTML = '<p style="color:var(--ut-ink3);">점검에 실패했습니다. 잠시 뒤 다시 눌러 주세요.</p>';
   } finally { btn.disabled = false; }
 };
 </script>
-
 {% endblock %}
