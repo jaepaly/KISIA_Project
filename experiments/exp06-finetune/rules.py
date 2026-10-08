@@ -55,12 +55,14 @@ _PARTICLES = tuple(sorted({"으로부터", "에서부터", "에게서는", "에�
                            "에", "도", "만", "로", "와", "과", "랑"}, key=len, reverse=True))
 # train 검수 골드 331편에서 일반 명사·동사로 쓰여 불일치한 행정구역명/약칭.
 # 실제 지명으로도 쓰일 수 있어 v1+규칙 결과의 한계로 기록한다.
-TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주"})
+TRAIN_AMBIGUOUS_TERMS = frozenset({"동안", "고양", "내면", "동작", "이동", "서면", "경기", "전주",
+                                   "수정", "도면", "상하", "상하면"})  # 「수정 요청」 「도면 계획」 「(음식이) 상하면」 — 지명보다 일반어로 훨씬 자주 쓴다 (#322 ②)
 # 지명과 같은 꼴의 일반 명사 — 단어째 빼면 「진도에 놀러 갔다」 「구미에서 일한다」까지 놓치므로, **바로 뒤가 관용 표현일 때만** 거른다 (#322 ②).
 # pattern.match(text, pos) 로 쓰므로 ^ 를 붙이지 않는다 — ^ 는 pos 가 아니라 문자열 맨 앞에서만 맞는다.
 # 바로 앞이 도 이름이면(「경기도 화성」 「경북 구미」 「전남 진도」) 거르지 않는다 (Codex 10/8)
 _PROVINCE_BEFORE = re.compile(r"(?:경기도?|강원도?|충청[남북]도|충[남북]|전라[남북]도|전[남북]|경상[남북]도|경[남북]|제주도?|"
                               r"[가-힣]+특별자치도)\s*$")
+_SIDO_SHORT = {"경북": "경상북도", "경남": "경상남도", "충북": "충청북도", "충남": "충청남도", "전남": "전남광주통합특별시"}
 _HOMONYM_IDIOM = {
     "진도": re.compile(r"(?:가|를|도|는|만)?\s*(?:나가|나갔|나간|나갈|나감|안\s*나|못\s*나|빼|뺐|뺀|뺄|따라가|따라잡|맞추|맞춰"
                      r"|진행|체크)"),
@@ -143,6 +145,11 @@ class ExplicitRules:
                         if len(alias) >= 2 and alias not in self.excluded_aliases:
                             self.aliases.add(alias)
                         break
+        # 도 약칭 — 「경상북도」에서 「도」만 떼면 「경상북」이 돼 「경북」이 안 생긴다 (#322 ②). 사전에 그 도가 있을 때만 넣는다
+        sido = {region["name"] for region in self.dictionary.regions.values() if region["level"] == "sido"}
+        for short, full in _SIDO_SHORT.items():
+            if full in sido and short not in self.excluded_aliases:
+                self.aliases.add(short)
 
     def location_spans(self, text: str) -> set[tuple[int, int, str]]:
         found: set[tuple[int, int, str]] = set()
@@ -160,6 +167,12 @@ class ExplicitRules:
                     found.add((match.start(), match.end(), "LOC_ADMIN"))
                     break
                 if name in self.aliases:
+                    found.add((match.start(), match.end(), "LOC_ADMIN"))
+                    break
+                # 법정동 이름 — 「봉천동 · 망원동」은 행정동 목록(names)에 없지만 사전이 해석한다 (#322 ② · exp17 놓침 6/12).
+                # 세 글자 이상 · 「~동 · ~읍」만 — 「~리 · ~면 · ~가」는 「모서리 · 목소리」처럼 일반어와 같은 마을 이름이 많아
+                # 오탐이 5→75 로 늘었다. 「판교」처럼 「동」 없는 줄임말도 일반어 오탐(「방학이」)이 커서 넣지 않는다
+                if len(name) >= 3 and name[-1] in "동읍" and name not in self.excluded_aliases                         and self.dictionary.resolve(name):
                     found.add((match.start(), match.end(), "LOC_ADMIN"))
                     break
         return found
