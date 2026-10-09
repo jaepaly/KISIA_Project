@@ -175,3 +175,4 @@ experiments/exp12-action-llm/data/*.jsonl
 /experiments/exp21-local-rewrite/results/v2c/checkpoint/
 /experiments/exp21-local-rewrite/results/v2c/train_metrics.json
 /experiments/exp21-local-rewrite/results/v3/train_metrics.json
+/experiments/exp21-local-rewrite/results/v2c/

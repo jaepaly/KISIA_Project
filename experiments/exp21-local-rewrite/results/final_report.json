@@ -1,0 +1,840 @@
+{
+ "rule": "README 최종 판정 — 합계 good ≥ 70% · wrong ≤ 5% (후보 기준) · 이중 채점 보수 병합",
+ "exp17": {
+  "clues": 63,
+  "candidates": 34,
+  "good": 14,
+  "good_rate": 0.412,
+  "good_ci95": [
+   0.264,
+   0.578
+  ],
+  "wrong": 0,
+  "wrong_rate": 0.0,
+  "wrong_ci95": [
+   0.0,
+   0.102
+  ],
+  "good_over_clues": 0.222,
+  "judge_agreement": 0.735
+ },
+ "aug1": {
+  "clues": 316,
+  "candidates": 168,
+  "good": 61,
+  "good_rate": 0.363,
+  "good_ci95": [
+   0.294,
+   0.438
+  ],
+  "wrong": 12,
+  "wrong_rate": 0.071,
+  "wrong_ci95": [
+   0.041,
+   0.121
+  ],
+  "good_over_clues": 0.193,
+  "judge_agreement": 0.917
+ },
+ "합계": {
+  "clues": 379,
+  "candidates": 202,
+  "good": 75,
+  "good_rate": 0.371,
+  "good_ci95": [
+   0.308,
+   0.44
+  ],
+  "wrong": 12,
+  "wrong_rate": 0.059,
+  "wrong_ci95": [
+   0.034,
+   0.101
+  ],
+  "good_over_clues": 0.198,
+  "judge_agreement": 0.886
+ },
+ "adopted": false,
+ "bad_examples": [
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "대전 유성구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "부산 해운대구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "명사 연결 어색",
+    "지역 연결 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "인천 연수구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 집 어색",
+    "지역 집 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "인천 연수구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "JOB",
+   "original": "택배 기사",
+   "suggestion": "일하는 사람",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "직무 연결 어색",
+    "직업 연결 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "전주 완산구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "명사 연결 어색",
+    "지역 우리집 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "창원 의창구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "문장 연결 어색",
+    "문장 연결 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "청주 흥덕구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "인천 연수구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 집 어색",
+    "지역 집 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "창원 의창구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "INCOME",
+   "original": "알바비로 80만 원",
+   "suggestion": "수입",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "수입 받다 어색",
+    "금액 출처 삭제"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "인천 연수구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "방이 사는 표현",
+    "방이 산다는 표현"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "청주 흥덕구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "청주 흥덕구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "장소 조사 누락",
+    "장소 조사 누락"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "전주 완산구",
+   "suggestion": "전라북도",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 범위 확대",
+    "도명 동네 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "대전 유성구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "부산 해운대구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 주변 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "청주 흥덕구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "명사 연결 어색",
+    "지역 우리집 어색"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "수원 영통구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 동네 겹침",
+    "지역 동네 겹침"
+   ]
+  },
+  {
+   "source": "exp17",
+   "type": "LOC_ADMIN",
+   "original": "대전 유성구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "문장 연결 어색",
+    "지역 연결 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "퇴근하고",
+   "suggestion": "일을 마치고하고",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "하고 중복",
+    "하고 중복"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "대전 서구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 사는데 어색",
+    "장소 조사 누락"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "서울 강서구",
+   "suggestion": "도시",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "도시로 일반화",
+    "장소 조사 누락"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "천안 서북구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "대전 서구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 사는데 어색",
+    "장소 조사 누락"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_FACILITY",
+   "original": "미용실",
+   "suggestion": "건강 관리 시설",
+   "good": false,
+   "wrong": true,
+   "agree": true,
+   "why": [
+    "시설 종류 오류",
+    "시설 종류 오류"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "REL_HOME",
+   "original": "근처에",
+   "suggestion": "주변에",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "동의어 교체뿐",
+    "동의어만 교체"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "AGE",
+   "original": "스물넷이야",
+   "suggestion": "나이야",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "나이야 의미 불명",
+    "나이야 의미 불명"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "성남 중원구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "포항 남구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "용인 수지구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "전주 덕진구는",
+   "suggestion": "지역은",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "울산 남구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "고양 일산동구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "전주 덕진구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "위치 일반화",
+    "지역 지칭 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "퇴근하고",
+   "suggestion": "근무 종료하고",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "종료하고 어색",
+    "근무 종료 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "퇴근하고는",
+   "suggestion": "가다는",
+   "good": false,
+   "wrong": true,
+   "agree": true,
+   "why": [
+    "문장 연결 파손",
+    "비문과 행위 변경"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "수원 권선구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "부산 동래구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 내 중의적",
+    "지역 내 집 중의"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "REL_HOME",
+   "original": "내 집도",
+   "suggestion": "집도",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "자기 집 여전",
+    "소유어만 삭제"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "상도동",
+   "suggestion": "동네",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "동네에 조사 필요",
+    "동명 일반화"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "출근하는 길인데",
+   "suggestion": "길인데",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "이동 서술 누락",
+    "이동 서술 누락"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "퇴근하고",
+   "suggestion": "일을 마치고하고",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "하고 중복",
+    "하고 중복"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "INCOME",
+   "original": "410만 원",
+   "suggestion": "수입",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "월급 수입 겹침",
+    "월급 수입 겹침"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "REL_HOME",
+   "original": "집으로",
+   "suggestion": "거처로",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "거주 의미 동일",
+    "동의어 치환"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "대구 수성구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역에 조사 필요",
+    "지역 사는데 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "청주 상당구",
+   "suggestion": "도시",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "도시에 조사 필요",
+    "도시로 일반화"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "포항 남구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역에 조사 필요",
+    "지역 사는 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "안산 상록구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "안산 상록구",
+   "suggestion": "지역",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역에 조사 필요",
+    "지역 사는 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "JOB",
+   "original": "보험 설계사인데",
+   "suggestion": "직업인데",
+   "good": false,
+   "wrong": true,
+   "agree": true,
+   "why": [
+    "사람을 직업 취급",
+    "직업인데 비문"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "COMMUTE",
+   "original": "퇴근하고",
+   "suggestion": "일하는 시간하고",
+   "good": false,
+   "wrong": true,
+   "agree": true,
+   "why": [
+    "퇴근 의미 소실",
+    "시간 관계 변경"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "부천 원미구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "안양 동안구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "INCOME",
+   "original": "55만 원",
+   "suggestion": "수입",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "수입 받다 어색",
+    "수입 받은 어색"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "광주 북구에",
+   "suggestion": "지역에",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "창원 성산구에서",
+   "suggestion": "지역에서",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "지역 지칭 어색",
+    "지역 표현 모호"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "JOB",
+   "original": "나는 공인중개사로",
+   "suggestion": "일하는 사람으로",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "일하는 일하면서",
+    "일하는 일하면서"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "REL_HOME",
+   "original": "동네를",
+   "suggestion": "근처를",
+   "good": false,
+   "wrong": false,
+   "agree": true,
+   "why": [
+    "위치 단서 비슷",
+    "특정성 차이 미미"
+   ]
+  },
+  {
+   "source": "aug1",
+   "type": "LOC_ADMIN",
+   "original": "서울 강서구",
+   "suggestion": "도시",
+   "good": false,
+   "wrong": false,
+   "agree": false,
+   "why": [
+    "도시에 조사 필요",
+    "도시로 일반화"
+   ]
+  }
+ ]
+}
