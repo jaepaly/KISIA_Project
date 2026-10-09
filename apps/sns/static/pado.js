@@ -71,7 +71,7 @@
     let undo = null;                                 // { before, after } — 바꾼 직후 되돌리기
     const setChip = (html, cls) => { chip.innerHTML = html; chip.className = "pado-chip" + (cls ? " " + cls : ""); };
     const paint = (text, spans) => {
-      backdrop.innerHTML = markup(text, spans, { alpha: true, hint: spans.length ? " · 누르면 바꿀 후보" : "" }) + "\n";
+      backdrop.innerHTML = markup(text, spans, { alpha: false, hint: spans.length ? " · 누르면 바꿀 후보" : "" }) + "\n";   // 불투명 + CSS multiply
       // 후보가 있는 형광은 점선 밑줄로 「누를 수 있다」를 미리 보여 준다
       backdrop.querySelectorAll("mark[data-id]").forEach((m) => { if (cur.rewrites.has(m.dataset.id)) m.classList.add("has-cand"); });
     };

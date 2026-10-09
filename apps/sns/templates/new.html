@@ -11,8 +11,9 @@
     border:1px solid transparent;border-radius:10px;background:transparent;
     font:inherit;font-size:14px;line-height:1.7;padding:12px 14px;
     white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;color:transparent}
+  /* multiply — 형광은 색만 입히고 아래 실제 글자는 그대로 검게 남는다 (반투명으로 덮으면 글자가 옅어진다) */
   .pado-backdrop mark{pointer-events:auto;cursor:pointer;color:transparent;border-radius:3px;padding:1px 0;
-    box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
+    mix-blend-mode:multiply;box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
   .pado-backdrop mark.has-cand{box-shadow:inset 0 -2px 0 var(--ut-earth)}
   .pado-backdrop mark:hover{filter:saturate(1.6) brightness(.93);box-shadow:inset 0 -3px 0 var(--ut-earth-ink)}
   .pado-backdrop mark.on{filter:saturate(1.8) brightness(.9);box-shadow:inset 0 -3px 0 var(--ut-earth-ink),0 0 0 2px rgba(216,137,111,.35)}
