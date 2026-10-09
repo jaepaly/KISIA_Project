@@ -418,9 +418,16 @@ body.welcome-open{overflow:hidden}
 .tag-cloud{display:flex;flex-wrap:wrap;gap:6px}
 .tag-cloud .tag{font-size:12px;color:var(--ut-ink2);background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:99px;padding:3px 10px}
 .tag-cloud .tag b{color:var(--ut-ink3);font-weight:600;margin-left:2px}
+/* 오른쪽 레일만 (글쓰기 — 왼쪽은 비우고 본문을 넓게) · 좁아지면 레일이 본문 아래로 내려온다 */
+.ut-shell.right-only{grid-template-columns:minmax(0,1fr) 320px;max-width:1100px}
 @media (max-width:1199px){
   .ut-shell.three{grid-template-columns:var(--side-w) minmax(0,1fr)}
   .ut-rail-r{display:none}
+}
+@media (max-width:999px){
+  .ut-shell.right-only{grid-template-columns:minmax(0,1fr)}
+  .ut-shell.right-only .ut-rail-r{display:block}
+  .ut-shell.right-only .ut-rail-r-in{position:static;margin-top:0}
 }
 @media (max-width:767px){
   .ut-shell.three{grid-template-columns:minmax(0,1fr)}

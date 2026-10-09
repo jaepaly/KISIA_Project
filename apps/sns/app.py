@@ -231,6 +231,32 @@ def profile(user_ref: str):
 
 
 # ── ⭐ 내보내기 — 계층 경계. 계약: docs/contracts/sns-minimal-spec.md ──
+@app.get("/api/author/<author_id>/summary")
+def author_summary(author_id: str):
+    """글쓰기 화면 오른쪽 패널 — 테스터는 이 작성자를 모른다. 소개·글 수·자주 찍는 동네·최근 글(공개만)."""
+    a = db().execute("SELECT * FROM authors WHERE author_id = ?", (author_id,)).fetchone()
+    if a is None:
+        abort(404)
+    posts = db().execute(
+        "SELECT post_id, title, body, created_at, geo_tag FROM posts"
+        " WHERE author_id = ? AND visibility = 'public' ORDER BY created_at DESC", (author_id,)).fetchall()
+    tags: dict[str, int] = {}
+    for p in posts:
+        if p["geo_tag"]:
+            tags[p["geo_tag"]] = tags.get(p["geo_tag"], 0) + 1
+    top = sorted(tags.items(), key=lambda kv: -kv[1])[:3]
+    return jsonify({
+        "author_id": a["author_id"], "user_ref": a["user_ref"], "nickname": a["nickname"],
+        "hue": _hue(a["author_id"]),   # 피드 아바타와 같은 색
+        "bio": a["bio"], "joined_at": (a["joined_at"] or "")[:10],
+        "n_posts": len(posts), "last": posts[0]["created_at"][:10] if posts else None,
+        "top_tags": [{"geo_tag": t, "n": n} for t, n in top],
+        "recent": [{"post_id": p["post_id"], "title": p["title"] or "",
+                    "snippet": (p["body"] or "").replace("\n", " ")[:70], "created_at": p["created_at"][:10]}
+                   for p in posts[:4]],
+    })
+
+
 @app.get("/api/export/<user_ref>")
 def export(user_ref: str):
     """분석기가 보는 유일한 창구.

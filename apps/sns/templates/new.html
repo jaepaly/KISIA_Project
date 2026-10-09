@@ -3,14 +3,19 @@
 
 {% block head %}
 <style>
-  /* 실시간 점검 — textarea 뒤에 같은 글꼴·여백의 판을 깔고 거기에 형광을 칠한다. 글자는 투명, 형광만 보인다 */
+  /* 실시간 점검 — textarea 위에 같은 글꼴·여백의 투명 판을 띄우고 거기에 형광만 칠한다.
+     판은 마우스를 통과시키고(pointer-events:none) 형광만 받는다 → 올리면 진해지고, 누르면 후보 */
   .pado-wrap{position:relative}
-  .pado-wrap textarea{position:relative;z-index:1;background:transparent!important;width:100%;display:block}
-  .pado-backdrop{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
-    border:1px solid transparent;border-radius:10px;background:var(--ut-panel2);
+  .pado-wrap textarea{position:relative;z-index:1;width:100%;display:block}
+  .pado-backdrop{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;
+    border:1px solid transparent;border-radius:10px;background:transparent;
     font:inherit;font-size:14px;line-height:1.7;padding:12px 14px;
     white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;color:transparent}
-  .pado-backdrop mark{color:transparent;border-radius:3px;padding:1px 0;box-shadow:inset 0 -2px 0 rgba(62,58,54,.18)}
+  .pado-backdrop mark{pointer-events:auto;cursor:pointer;color:transparent;border-radius:3px;padding:1px 0;
+    box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
+  .pado-backdrop mark.has-cand{box-shadow:inset 0 -2px 0 var(--ut-earth)}
+  .pado-backdrop mark:hover{filter:saturate(1.6) brightness(.93);box-shadow:inset 0 -3px 0 var(--ut-earth-ink)}
+  .pado-backdrop mark.on{filter:saturate(1.8) brightness(.9);box-shadow:inset 0 -3px 0 var(--ut-earth-ink),0 0 0 2px rgba(216,137,111,.35)}
   .pado-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
   .pado-chip{font-size:12px;color:var(--ut-ink3);min-height:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;transition:color .2s}
   .pado-chip.hit{color:var(--ut-earth-ink)}
@@ -42,14 +47,43 @@
   .pado-pick-f{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12px}
   .pado-pick-f .ghost{font-size:12px;padding:6px 12px}
   .pado-pick .muted{color:var(--ut-ink3)}
+
+  /* 오른쪽 — 고른 작성자 (테스터는 이 사람을 모른다) */
+  .ap .rail-h{margin-bottom:8px}
+  .ap .who{display:flex;gap:10px;align-items:center}
+  .ap .who .nm{font-size:16px;font-weight:700;color:var(--ut-ink);text-decoration:none}
+  .ap .who .handle{font-size:12px;color:var(--ut-ink3)}
+  .ap .bio{font-size:13px;color:var(--ut-ink2);margin:8px 0 0;line-height:1.5}
+  .ap .stats{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ut-ink3);margin-top:10px}
+  .ap .stats b{color:var(--ut-ink)}
+  .ap .recent{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .ap .recent li{font-size:12.5px;line-height:1.4}
+  .ap .recent a{color:var(--ut-ink);font-weight:600;text-decoration:none}
+  .ap .recent a:hover{color:var(--ut-earth-ink)}
+  .ap .recent .sn{color:var(--ut-ink3);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ap .kbox{display:flex;align-items:baseline;gap:8px;margin:4px 0 2px}
+  .ap .kbox b{font-size:24px;letter-spacing:-.02em}
+  .ap .kbox .u{font-size:12px;color:var(--ut-ink3)}
+  .ap .steps{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+  .ap .steps li{position:relative;font-size:12px;padding:5px 8px;border-radius:8px;background:var(--ut-panel2);overflow:hidden;display:flex;justify-content:space-between;gap:8px}
+  .ap .steps li i{position:absolute;left:0;top:0;bottom:0;background:var(--ut-earth-soft);z-index:0}
+  .ap .steps li span{position:relative;z-index:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ap .steps li .n{flex:none;font-weight:700;color:var(--ut-earth-ink);font-variant-numeric:tabular-nums}
+  .ap .axes{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+  .ap .axes span{font-size:11px;border-radius:99px;padding:2px 8px;border:1px solid var(--ut-line);color:var(--ut-ink3);background:var(--ut-panel)}
+  .ap .axes span.read{background:var(--ut-red-soft);color:var(--ut-red);border-color:transparent}
+  .ap .axes span.open{background:var(--ut-leaf-soft);color:var(--ut-leaf);border-color:transparent}
+  .ap .try{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-earth-soft);border-radius:10px;padding:8px 10px;line-height:1.5}
+  .ap .scan-btn{width:100%;margin-top:10px;font-size:13px;padding:9px}
+  .ap .muted{font-size:12px;color:var(--ut-ink3)}
   @media (prefers-reduced-motion:reduce){.pado-chip .dots::after{animation:none;content:"…"}.pado-warn,.pado-pick{animation:none}}
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="ut-shell no-rail">
+<div class="ut-shell right-only">
   <main class="ut-main">
-    <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
+    <div class="ut-wrap" style="margin:24px 0 0;">
       <div class="ut-h"><h1>글 작성</h1></div>
 
       {% if not authors %}
@@ -61,8 +95,8 @@
       <div class="ut-card rv">
         <form method="post" action="/posts">
           <div style="margin-bottom:14px;">
-            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자</label>
-            <select name="author_id" required
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자 <span style="font-weight:400;">— 이 사람이 되어 씁니다. 오른쪽에 누구인지 나옵니다</span></label>
+            <select name="author_id" id="authorSel" required
                     style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
                            background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
               {% for a in authors %}
@@ -84,11 +118,11 @@
               <span class="pado-chip" id="padoChip" aria-live="polite"></span>
             </div>
             <div class="pado-wrap">
-              <div class="pado-backdrop" id="padoBackdrop" aria-hidden="true"></div>
               <textarea name="body" id="body" rows="8" required
                         style="border:1px solid var(--ut-line);border-radius:10px;
                                background:var(--ut-panel2);font:inherit;font-size:14px;
                                padding:12px 14px;resize:vertical;line-height:1.7;"></textarea>
+              <div class="pado-backdrop" id="padoBackdrop" aria-hidden="true"></div>
             </div>
             <p class="pado-warn" id="padoWarn" hidden></p>
             <div class="pado-pick" id="padoPick" hidden></div>
@@ -137,7 +171,7 @@
         </form>
       </div>
 
-      {# ── 파도풀 위젯 ── #}
+      {# ── 파도풀 위젯 — 자세한 결과 ── #}
       <div class="ut-card rv" id="padoCard"
            style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
@@ -155,6 +189,18 @@
       </div>
     </div>
   </main>
+
+  <aside class="ut-rail-r">
+    <div class="ut-rail-r-in">
+      <div class="rail-card rv ap" id="apWho"><div class="rail-h">지금 고른 작성자</div><p class="muted">불러오는 중…</p></div>
+      <div class="rail-card rv ap" id="apK">
+        <div class="rail-h">이 계정은 지금 몇 명 중 한 명?</div>
+        <p class="muted" style="margin:0;">이 사람의 공개 글을 전부 읽어 후보 수를 셉니다. 글이 많으면 10초쯤 걸립니다.</p>
+        <button type="button" class="ghost scan-btn" id="apScanBtn">세어 보기</button>
+        <div id="apKOut"></div>
+      </div>
+    </div>
+  </aside>
 </div>
 {% endblock %}
 
@@ -166,7 +212,7 @@ padoWidget({
   out: document.getElementById("padoOut"),
   getText: () => document.getElementById("body").value
 });
-// 쓰는 동안 실시간 — 타자가 0.8초 멈추면 자동 점검, 본문 위에 형광
+// 쓰는 동안 실시간 — 타자가 0.8초 멈추면 자동 점검, 본문 위에 형광, 형광을 누르면 바꿔 쓰기 후보
 padoLive({
   textarea: document.getElementById("body"),
   backdrop: document.getElementById("padoBackdrop"),
@@ -179,5 +225,79 @@ new ResizeObserver(() => {
   const t = document.getElementById("body"), b = document.getElementById("padoBackdrop");
   b.style.height = t.offsetHeight + "px";
 }).observe(document.getElementById("body"));
+
+// ── 오른쪽: 고른 작성자 요약 + 계정 k (스캔은 계정당 한 번, 세션에 캐시) ──
+(function () {
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const AXIS = { location: "거주지", age: "나이", sex: "성별", occupation: "직업", family: "가족", commute: "통근", income: "소득" };
+  const sel = document.getElementById("authorSel"), who = document.getElementById("apWho"),
+        kOut = document.getElementById("apKOut"), scanBtn = document.getElementById("apScanBtn");
+  let me = null;
+  const fmtN = (n) => Math.round(n).toLocaleString("ko-KR");
+
+
+  async function loadWho() {
+    if (!sel || !sel.value) return;
+    who.innerHTML = `<div class="rail-h">지금 고른 작성자</div><p class="muted">불러오는 중…</p>`;
+    kOut.innerHTML = ""; scanBtn.disabled = false; scanBtn.textContent = "세어 보기";
+    try {
+      me = await (await fetch(`/api/author/${encodeURIComponent(sel.value)}/summary`)).json();
+    } catch { who.innerHTML = `<div class="rail-h">지금 고른 작성자</div><p class="muted">불러오지 못했습니다.</p>`; return; }
+    const h = me.hue;
+    who.innerHTML = `
+      <div class="rail-h">지금 고른 작성자</div>
+      <div class="who">
+        <a class="ut-av sm" href="/u/${esc(me.user_ref)}" style="background:hsl(${h},45%,86%);color:hsl(${h},35%,32%);">${esc(me.nickname.slice(0, 1))}</a>
+        <div><a class="nm" href="/u/${esc(me.user_ref)}">${esc(me.nickname)}</a><div class="handle">@${esc(me.user_ref)}</div></div>
+      </div>
+      ${me.bio ? `<p class="bio">${esc(me.bio)}</p>` : `<p class="bio muted">소개 없음 — 글에서 드러나는 것만 있습니다.</p>`}
+      <div class="stats"><span>공개 글 <b>${me.n_posts}</b>편</span>${me.last ? `<span>마지막 <b>${esc(me.last)}</b></span>` : ""}${me.top_tags.length ? `<span>📍 ${me.top_tags.map((t) => esc(t.geo_tag) + " " + t.n).join(" · ")}</span>` : ""}</div>
+      ${me.recent.length ? `<div class="rail-h" style="margin-top:12px;">최근 글</div><ul class="recent">${me.recent.map((p) => `<li><a href="/posts/${esc(p.post_id)}" target="veilo">${esc(p.title || "(제목 없음)")}</a><span class="sn">${esc(p.snippet)}</span></li>`).join("")}</ul>` : ""}
+      <p class="muted" style="margin:10px 0 0;">이 사람의 말투·동네·나이에 맞춰 써 보세요. 새 글이 더하는 단서가 실시간으로 보입니다.</p>`;
+    const cached = sessionStorage.getItem("veilo.scan." + me.user_ref);
+    if (cached) renderK(JSON.parse(cached));
+  }
+
+  function quotes(cond) { return [...cond.matchAll(/«([^»]+)»/g)].map((m) => m[1]); }
+  function renderK(d) {
+    const spec = d.specificity.output, k = spec.k, risk = d.contribution.output.baseline_risk;
+    const steps = (spec.steps || []).slice(1);
+    const nation = (spec.steps || [{ n_after: 5e7 }])[0].n_after;
+    const findings = (d.stage2 && d.stage2.output && d.stage2.output.findings) || {};
+    const read = Object.entries(findings).filter(([, f]) => f.verdict !== "abstain").map(([a]) => AXIS[a] || a);
+    const open = Object.entries(findings).filter(([, f]) => f.verdict === "abstain").map(([a]) => AXIS[a] || a);
+    scanBtn.hidden = true;
+    kOut.innerHTML = `
+      <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 위험 점수 ${Number(risk).toFixed(1)}</span></div>
+      <div class="rail-h" style="margin-top:8px;">어떻게 여기까지 좁혀졌나</div>
+      <ul class="steps">${steps.slice(0, 6).map((s) => {
+        const w = Math.max(2, 100 * Math.log10(s.n_after + 1) / Math.log10(nation + 1));
+        const q = quotes(s.condition);
+        return `<li><i style="width:${w}%"></i><span>${esc(AXIS[s.axis] || s.axis)}${q.length ? " 「" + esc(q.join("·")) + "」" : ""}</span><span class="n">${fmtN(s.n_after)}명</span></li>`;
+      }).join("")}</ul>
+      <div class="rail-h" style="margin-top:10px;">읽힌 신상 / 아직 안 읽힌 신상</div>
+      <div class="axes">${read.map((a) => `<span class="read">${esc(a)}</span>`).join("")}${open.map((a) => `<span class="open">${esc(a)} 아직</span>`).join("")}</div>
+      ${open.length ? `<p class="try">해 보기: 새 글에 <b>${esc(open.slice(0, 2).join("·"))}</b>이(가) 드러나는 문장을 쓰면 후보가 크게 줄어듭니다. 본문 위 형광과 칩의 숫자로 바로 확인됩니다.</p>`
+                    : `<p class="try">7가지 신상이 모두 읽힌 계정입니다. 지금은 같은 단서를 더 구체적으로 쓸 때만 더 좁혀집니다.</p>`}
+      <p class="muted" style="margin:8px 0 0;"><a href="/check/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
+  }
+
+  scanBtn.addEventListener("click", async () => {
+    if (!me) return;
+    scanBtn.disabled = true; scanBtn.textContent = "세는 중…";
+    let i = 0; const dt = setInterval(() => { scanBtn.textContent = "세는 중" + [".", "..", "..."][i++ % 3]; }, 420);
+    try {
+      const r = await fetch(`/check/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      try { sessionStorage.setItem("veilo.scan." + me.user_ref, JSON.stringify(d)); } catch {}
+      renderK(d);
+    } catch {
+      scanBtn.disabled = false; scanBtn.textContent = "실패 — 다시 세어 보기";
+    } finally { clearInterval(dt); }
+  });
+  sel && sel.addEventListener("change", () => { scanBtn.hidden = false; loadWho(); });
+  loadWho();
+})();
 </script>
 {% endblock %}

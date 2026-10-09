@@ -17,13 +17,15 @@
   // 스팬 오프셋은 코드포인트 단위 — 이모지 뒤에서 UTF-16 slice 가 어긋난다
   const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
 
-  // 본문 텍스트에 스팬 형광을 입힌 HTML. 줄바꿈은 그대로 둔다 (overlay 가 pre-wrap)
-  function markup(text, spans) {
+  // 본문 텍스트에 스팬 형광을 입힌 HTML. 줄바꿈은 그대로 둔다 (overlay 가 pre-wrap).
+  // 형광판이 textarea 위에 있을 때(실시간)는 반투명(alpha)으로 — 실제 글자가 비쳐야 한다
+  function markup(text, spans, { alpha = false, hint = "" } = {}) {
     let out = "", last = 0;
     for (const s of [...spans].sort((a, b) => a.start - b.start)) {
       if (s.start < last) continue;
+      const bg = (COLOR[s.type] || "#F9E0B8") + (alpha ? "B3" : "");
       out += esc(cp(text, last, s.start))
-        + `<mark data-t="${esc(s.type)}" style="background:${COLOR[s.type] || "#F9E0B8"};" title="${esc(LABEL[s.type] || s.type)}">`
+        + `<mark data-t="${esc(s.type)}" data-id="${esc(s.span_id || "")}" style="background:${bg};" title="${esc(LABEL[s.type] || s.type)}${hint}">`
         + esc(cp(text, s.start, s.end)) + "</mark>";
       last = s.end;
     }
@@ -68,9 +70,16 @@
     let cur = { spans: [], rewrites: new Map() };   // 마지막 응답 — 형광 누르기가 쓴다
     let undo = null;                                 // { before, after } — 바꾼 직후 되돌리기
     const setChip = (html, cls) => { chip.innerHTML = html; chip.className = "pado-chip" + (cls ? " " + cls : ""); };
-    const paint = (text, spans) => { backdrop.innerHTML = markup(text, spans) + "\n"; };
+    const paint = (text, spans) => {
+      backdrop.innerHTML = markup(text, spans, { alpha: true, hint: spans.length ? " · 누르면 바꿀 후보" : "" }) + "\n";
+      // 후보가 있는 형광은 점선 밑줄로 「누를 수 있다」를 미리 보여 준다
+      backdrop.querySelectorAll("mark[data-id]").forEach((m) => { if (cur.rewrites.has(m.dataset.id)) m.classList.add("has-cand"); });
+    };
     const sync = () => { backdrop.scrollTop = textarea.scrollTop; backdrop.scrollLeft = textarea.scrollLeft; };
-    const hidePick = () => { if (pick) { pick.hidden = true; pick.innerHTML = ""; } };
+    const hidePick = () => {
+      if (pick) { pick.hidden = true; pick.innerHTML = ""; }
+      backdrop.querySelectorAll("mark.on").forEach((m) => m.classList.remove("on"));
+    };
 
     async function run() {
       const text = textarea.value;
@@ -85,7 +94,7 @@
         const { spans, k, rewrites } = await check(text, ctrl.signal);
         if (textarea.value !== text) return;   // 응답 오는 사이 또 바뀜 — 다음 턴이 처리
         lastText = text; cur = { spans, rewrites };
-        paint(text, spans);
+        paint(text, spans);   // cur 를 먼저 — paint 가 후보 유무를 본다
         if (!spans.length) {
           setChip("읽히는 단서 없음", "ok"); if (warn) warn.hidden = true; hidePick();
         } else {
@@ -134,6 +143,8 @@
           <span class="muted">${cands.length ? "안전할수록 원문에서 멀어집니다." : "자동으로 바꿀 말을 정하기 어려운 단서입니다."}</span>
         </div>`;
       pick.hidden = false;
+      backdrop.querySelectorAll("mark.on").forEach((m) => m.classList.remove("on"));
+      const mk = backdrop.querySelector(`mark[data-id="${CSS.escape(s.span_id || "")}"]`); if (mk) mk.classList.add("on");
       pick.querySelectorAll(".pado-cand").forEach((b) => b.addEventListener("click", () => apply(s, cands[+b.dataset.i].suggestion)));
       pick.querySelector("[data-close]").addEventListener("click", hidePick);
       pick.querySelector("[data-self]").addEventListener("click", () => selectSpan(s));
@@ -172,6 +183,14 @@
     textarea.addEventListener("scroll", sync);
     textarea.addEventListener("click", maybePick);
     textarea.addEventListener("keyup", (e) => { if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) maybePick(); });
+    // 형광판이 위에 있다 — 형광(mark)만 마우스를 받고 나머지는 textarea 로 통과한다. 형광을 누르면 바로 패널 + 캐럿을 그 자리로
+    backdrop.addEventListener("click", (e) => {
+      const m = e.target.closest("mark[data-id]"); if (!m) return;
+      const s = cur.spans.find((x) => x.span_id === m.dataset.id); if (!s) return;
+      const [a] = utf16Range(s);
+      textarea.focus({ preventScroll: true }); textarea.setSelectionRange(a, a);
+      showPick(s);
+    });
     if (textarea.value.trim()) run();
     return { run };
   };
