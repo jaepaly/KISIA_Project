@@ -146,6 +146,7 @@ def _business_back(d: date, n_days: int) -> date:
 _WORK_EVENTS = {"출근", "입사", "근무", "인턴", "실습", "알바", "아르바이트", "연수", "교육", "등교"}  # 근무일로 셀 수 있는 사건
 _MAX_MARKS_PER_POST = 3
 _MAX_MARKS = 400
+_MAX_N = 3660  # 차수 상한 — 10년(일) 넘는 「n일차」는 시작일 역산에 쓰지 않는다 (근무일 셈이 하루씩 도는 것도 막는다)
 _TOLERANCE = 3  # 시작 구간끼리 이 날수 안에서 겹치면 같은 시작으로 본다
 
 
@@ -231,8 +232,17 @@ def infer_starts(marks_by_post: Mapping[str, list[dict[str, Any]]]) -> list[dict
     근무일(주말 뺌) 셈은 출근 · 인턴 같은 일의 n일차에만. 나머지는 달력으로 센다.
     """
     # 글마다 차수 앞 3개 · 전체 400개까지만 — 일지 계정이 글마다 차수를 수십 개 써도 분석이 늘어지지 않게 (Codex 10/9)
-    rows = [(pid, mk, *_start_interval(mk, _basis(mk)))
-            for pid, marks in marks_by_post.items() for mk in marks[:_MAX_MARKS_PER_POST]][:_MAX_MARKS]
+    # 상한은 역산 **전에** 자른다 — 1,000편 계정에서도 역산은 400번까지 (Codex 10/9 #2)
+    picked = [(pid, mk) for pid, marks in marks_by_post.items() for mk in marks[:_MAX_MARKS_PER_POST]][:_MAX_MARKS]
+    rows = []
+    for pid, mk in picked:
+        # 날짜 범위를 넘는 역산(작성일 0001-01-01 · 「D+999999」)은 그 차수만 버린다 — 분석 전체가 500 으로 죽지 않게 (Codex 10/9)
+        if mk["n"] > _MAX_N:
+            continue
+        try:
+            rows.append((pid, mk, *_start_interval(mk, _basis(mk))))
+        except (OverflowError, ValueError):
+            continue
     by_word: dict[str, list] = {}
     for r in rows:
         by_word.setdefault(r[1]["event"], []).append(r)

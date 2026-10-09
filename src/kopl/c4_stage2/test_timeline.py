@@ -133,3 +133,22 @@ def test_repeated_same_count_is_a_cycle_not_a_start():
 
 def test_post_date_only_single_unknown_word_is_not_reported():
     assert infer_starts({"a": find_marks({"body": "블로그 시작한 지 3주째"}, post_date="2026-03-17")}) == []
+
+
+def test_역산이_날짜_범위를_넘으면_그_차수만_버린다():
+    """작성일 0001-01-01 + 「운동 2일차」 · 아주 큰 차수 — 예외 없이 빈 결과 (Codex 10/9)"""
+    marks = {"p1": find_marks({"body": "운동 2일차"}, "0001-01-01"),
+             "p2": find_marks({"body": "운동 3일차"}, "0001-01-02"),
+             "p3": find_marks({"body": "출근 999999일차"}, "2026-03-02")}
+    assert infer_starts(marks) == []
+
+
+def test_상한은_역산_전에_자른다(monkeypatch):
+    import kopl.c4_stage2.timeline as tl
+    calls = []
+    real = tl._start_interval
+    monkeypatch.setattr(tl, "_start_interval", lambda mk, b: calls.append(1) or real(mk, b))
+    marks = {f"p{i}": find_marks({"body": "운동 3일차"}, "2026-03-04") for i in range(1000)}
+    tl.infer_starts(marks)
+    assert len(calls) <= tl._MAX_MARKS
+
