@@ -94,6 +94,7 @@
   .ap .muted{font-size:12px;color:var(--ut-ink3)}
   .ap .cnt.busy::after{content:"…";animation:pado-dots 1.2s steps(3,end) infinite}
   #apLive .kbox b.up{color:var(--ut-red)}
+  .ap.live{border-color:var(--ut-earth);box-shadow:0 0 0 3px var(--ut-earth-soft)}
   @media (prefers-reduced-motion:reduce){.pado-chip .dots::after,.ap .cnt.busy::after{animation:none;content:"…"}.pado-warn,.pado-pick{animation:none}}
 </style>
 {% endblock %}
@@ -210,16 +211,17 @@
 
   <aside class="ut-rail-r">
     <div class="ut-rail-r-in">
+      {# 맨 위 — 쓰는 동안 계속 보여야 하는 것 #}
+      <div class="rail-card rv ap live" id="apLive">
+        <div class="rail-h" style="color:var(--ut-earth-ink);">지금 쓰는 글 — 왜 이 숫자인가 <span class="cnt" id="apLiveState"></span></div>
+        <div id="apLiveOut"><p class="muted" style="margin:0;">쓰기 시작하면 여기에 「이 글만으로 몇 명 · 어떤 표현이 몇 명까지」가 바로 나옵니다.</p></div>
+        <button type="button" class="ghost scan-btn" id="apCombineBtn" hidden>지금까지 쓴 글에 더해서 세기</button>
+        <div id="apCombineOut"></div>
+      </div>
       <div class="rail-card rv ap" id="apWho"><div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오는 중…</p></div>
       <div class="rail-card rv ap" id="apK">
         <div class="rail-h">지금까지 쓴 글로는 몇 명 중 한 명? <span class="cnt busy" id="apKState">세는 중</span></div>
         <div id="apKOut"><p class="muted" style="margin:0;">이 사람의 공개 글을 전부 읽어 후보 수를 셉니다. 글이 많으면 10초쯤.</p></div>
-      </div>
-      <div class="rail-card rv ap" id="apLive" hidden>
-        <div class="rail-h">지금 쓰는 글 — 왜 이 숫자인가 <span class="cnt" id="apLiveState"></span></div>
-        <div id="apLiveOut"></div>
-        <button type="button" class="ghost scan-btn" id="apCombineBtn">지금까지 쓴 글에 더해서 세기</button>
-        <div id="apCombineOut"></div>
       </div>
     </div>
   </aside>
@@ -272,16 +274,15 @@ const AP = (function () {
     if (p) {
       html += `<p class="ptype">${esc(p.type || "")}</p>
         <dl class="truth">${AXIS_ORDER.map((a) => { const v = p.truth[a]; return `<dt class="k">${AXIS[a]}</dt><dd class="v${v ? "" : " na"}">${v ? esc(a === "sex" ? sexKo(v) : a === "age" ? v + "세" : v) : "—"}</dd>`; }).join("")}</dl>`;
-      if (Object.keys(p.voice || {}).length) {
-        html += `<div class="sub">말투</div><p class="voice">${Object.entries(p.voice).map(([k, v]) => `<b>${esc(k)}</b> ${esc(v)}`).join(" · ")}</p>`;
-      }
+      // 쓰는 말은 펼쳐 둔다 — 글에 들어가면 칩이 진해지는 걸 봐야 한다. 말투·소재·시간은 접는다
       if (p.words && p.words.length) {
         html += `<div class="sub">이 사람이 실제로 쓰는 말</div><div class="chips" id="apWords">${p.words.map((w) => `<span data-w="${esc(w)}">${esc(w)}</span>`).join("")}</div>`;
       }
-      if (p.topics && p.topics.length) {
-        html += `<div class="sub">평소 소재</div><div class="chips">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
-      }
-      if (p.hours) html += `<p class="muted" style="margin:10px 0 0;">주로 쓰는 시간 ${esc(p.hours)}</p>`;
+      let more = "";
+      if (Object.keys(p.voice || {}).length) more += `<div class="sub">말투</div><p class="voice">${Object.entries(p.voice).map(([k, v]) => `<b>${esc(k)}</b> ${esc(v)}`).join(" · ")}</p>`;
+      if (p.topics && p.topics.length) more += `<div class="sub">평소 소재</div><div class="chips">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
+      if (p.hours) more += `<p class="muted" style="margin:10px 0 0;">주로 쓰는 시간 ${esc(p.hours)}</p>`;
+      if (more) html += `<details><summary>말투 · 평소 소재 · 쓰는 시간</summary>${more}</details>`;
     } else {
       html += `<p class="muted" style="margin:10px 0 0;">설정 파일이 없는 작성자입니다 — 글에서 드러나는 것만 있습니다.</p>`;
     }
@@ -350,8 +351,12 @@ const AP = (function () {
   function onLive(res) {
     lastDraft = res;
     combineOut.innerHTML = "";
-    if (!res) { live.hidden = true; return; }
-    live.hidden = false;
+    if (!res) {
+      combineBtn.hidden = true; liveState.textContent = ""; live.dataset.k = "";
+      liveOut.innerHTML = `<p class="muted" style="margin:0;">쓰기 시작하면 여기에 「이 글만으로 몇 명 · 어떤 표현이 몇 명까지」가 바로 나옵니다.</p>`;
+      return;
+    }
+    combineBtn.hidden = false;
     const prev = live.dataset.k ? Number(live.dataset.k) : null;
     const k = res.k;
     live.dataset.k = k === null || k === undefined ? "" : String(k);
