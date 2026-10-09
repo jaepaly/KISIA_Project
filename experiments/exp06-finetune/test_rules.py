@@ -34,6 +34,19 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'서른하나', '쉰셋이에요', '스물다섯인데', '스물하나인데'})
 
+    def test_numeric_age_with_direct_ending(self):
+        """「45세다」 「아들이 5세다」 — 살·세 뒤에 「이」 없이 붙는 어미 (#323 추가 · 인스턴스 핫패치와 같은 내용)."""
+        for text, want in (('나는 45세다', '45세다'), ('45세야', '45세야'), ('아들이 5세다', '5세다'),
+                           ('올해 45세라고 했다', '45세라고'), ('45세라서 그런지', '45세라서'), ('딸이 7살이네', '7살이네'),
+                           ('제가 45세요', '45세요'), ('45세란다', '45세란다')):
+            found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+            self.assertEqual(found, {want}, text)
+
+    def test_century_and_generation_are_not_age(self):
+        """「세기 · 세대」와 세 자리 수는 나이가 아니다 — 어미를 넓혀도 그대로 빈 결과."""
+        for text in ('12세기 건축', '45세대 아파트', '2세대 아이돌', '245세', '100세 시대'):
+            self.assertEqual(age_spans(text), set(), text)
+
     def test_numeric_age_after_nai(self):
         """「나이 48에」 — 살·세 없는 숫자 나이 (인스턴스 비교 측정 10/5 · 네 구성 모두 못 잡던 표현)."""
         text = '나이 48에 처음 배운다. 나이는 35인데. 나이 3개월 차 아님, 2024년 나이'
@@ -109,6 +122,87 @@ class RuleTests(unittest.TestCase):
         for (text, span), expected in cases.items():
             start = text.index(span)
             self.assertEqual(is_quantity_age(text, start, start + len(span)), expected, (text, span))
+
+    def test_age_endings_gap_322(self):
+        """#322 ② — 「에 · 이다 · 이었다 · 인」으로 끝나는 한글 나이를 잡는다. 수량·단위 앞은 그대로 거른다."""
+        cases = {
+            '마흔여덟에 퇴직했다': {'마흔여덟에'},
+            '스물 일곱에 결혼했다': {'스물 일곱에'},
+            '그때 나는 마흔여덟이다': {'마흔여덟이다'},
+            '그해 서른셋이었다': {'서른셋이었다'},
+            '스물다섯인 동생': {'스물다섯인'},
+            '서른 살에 이사했다': {'서른 살에'},
+            '마흔에는 달라질 줄 알았다': {'마흔에는'},
+            # 거르는 것은 그대로
+            '시청에서 보낸 서른 해 동안': set(),
+            '마흔 명에게 선물을 줬다': set(),
+            '쉰 날이 지났다': set(),
+            '다시 셌지만 스물셋에서 그만뒀다': set(),
+            '하나부터 스물까지 세었다': set(),
+            '총개수는 스물이다': set(),
+            '스물에 한 번 당첨된다': set(),
+            '점수는 마흔이다': set(),
+            '제 나이는 총 마흔 살입니다': {'마흔 살입니다'},
+            '총개수는 스물세이다': set(),
+            '점수는 스물세이다': set(),
+            '스물세에 한 번 당첨된다': set(),
+            '제 나이는 총 스물세 살입니다': {'스물세 살입니다'},
+            '23세에 한 번 갔다': {'23세에'},
+            '나는 마흔 살이고 한 번도 못 가봤다': {'마흔 살이고'},
+        }
+        for text, expected in cases.items():
+            found = {text[s:e] for s, e, _ in age_spans(text)}
+            self.assertEqual(found, expected, text)
+
+    def test_location_homonym_idiom_322(self):
+        """#322 ② — 지명과 같은 꼴의 관용 표현은 거르고, 진짜 지명은 남긴다."""
+        rules = ExplicitRules()
+        cases = {
+            '요즘 진도가 안 나간다': set(),
+            '수학 진도 나가기가 힘들다': set(),
+            '오늘따라 구미가 당기는 메뉴': set(),
+            '화성 탐사 다큐를 봤다': set(),
+            '진도에 놀러 갔다': {'진도에'},
+            '구미에서 일한다': {'구미에서'},
+            '화성에 산다': {'화성에'},
+            '경기도 화성에서 온 친구다': {'경기도', '화성에서'},
+            '경북 구미는 맞벌이 가구가 많다': {'경북', '구미는'},
+            '전남 진도는 빠르게 인구가 줄고 있다': {'전남', '진도는'},
+            '음식이 구미에 맞는다': set(),
+            '오늘 업무 진도는 여기까지': set(),
+            '공부 진도가 밀렸다': set(),
+            '진도가 느려서 걱정이다': set(),
+            '목표 달성을 했다': set(),
+            '이 진도로 가면 끝난다': set(),
+            '진도 항상 느리다': set(),
+            '진도에 놀러 갔다': {'진도에'},
+            '진도군에 산다': {'진도군에'},
+            '진도 여행을 다녀왔다': {'진도'},
+            '대구 달성에 산다': {'대구', '달성에'},
+            '대구 달성군에 산다': {'대구', '달성군에'},
+            '목표 달성에 가까워졌다': set(),
+            '업무 진도로 가득한 하루': set(),
+            '진도에 오래 머물렀다': set(),
+            '진도에 가서 쉬었다': {'진도에'},
+            '진도로 이사 왔다': {'진도로'},
+            '진도에 와서 좋았다': {'진도에'},
+            '충남 공주로 이사했다': {'충남', '공주로'},
+            '경남에서 일한다': {'경남에서'},
+            '충북 청주 출신': {'충북', '청주'},
+            '봉천동 우리 집에 왔다': {'봉천동'},
+            '망원동으로 이사 왔다': {'망원동으로'},
+            '두 기능이 연동되는 구조': set(),
+            '아침마다 운동을 한다': set(),
+            '책상 모서리에 부딪혔다': set(),
+            '목소리가 잠깐 멈췄다': set(),
+            '수정 요청은 내일까지': set(),
+            '도면 계획을 바꿨다': set(),
+            '음식은 한 번 상하면 끝': set(),
+            '경기도에 있는 화성 토양을 조사했다': {'경기도에', '화성'},
+        }
+        for text, expected in cases.items():
+            found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}
+            self.assertEqual(found, expected, text)
 
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
