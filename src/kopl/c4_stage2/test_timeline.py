@@ -94,7 +94,8 @@ def test_months_range():
 
 def test_single_post_is_reported_with_one_post():
     out = infer_starts(_marks({"a": {"body": "26.03.10 입사 5일차"}}))
-    assert out and out[0]["n_posts"] == 1 and out[0]["start"] == "2026-03-06"
+    # 입사 · 출근 같은 일은 근무일로 센다 — 26.03.10(화)의 5번째 근무일 시작 = 3/4(수)
+    assert out and out[0]["n_posts"] == 1 and out[0]["start"] == "2026-03-04" and out[0]["strength"] == "weak"
 
 
 def test_date_trailing_dot_still_pairs():
@@ -111,3 +112,24 @@ def test_dplus_split_by_preceding_word():
 def test_intervals_do_not_chain_across_months():
     posts = {f"m{m}": {"body": f"26.{m:02d}.28 자취 2개월차"} for m in range(3, 9)}
     assert all(e["n_posts"] <= 2 for e in infer_starts(_marks(posts)))
+
+
+def test_post_date_anchor_mixed_words_and_no_word():
+    # 코퍼스 A13 · E02 모양 — 본문 날짜 없이 작성일 + 「n주차」. 말이 제각각이거나 없어도 3편 이상이 같은 시작이면 낸다
+    posts = {"a": ({"title": "워홀 1주차 장바구니"}, "2026-03-02"), "b": ({"title": "시드니 4주차 야식"}, "2026-03-26"),
+             "c": ({"title": "블로그 8주차 이어폰"}, "2026-04-25"), "d": ({"title": "13주차: 날파리"}, "2026-05-31")}
+    out = infer_starts({p: find_marks(t, post_date=d) for p, (t, d) in posts.items()})
+    assert out[0]["n_posts"] == 4 and out[0]["anchor"] == "post_date" and out[0]["start_range"][0] <= "2026-03-02"
+    no_word = {f"e{i}": ({"title": f"{n}주차: 하루"}, d) for i, (n, d) in
+               enumerate([(1, "2026-03-02"), (3, "2026-03-18"), (5, "2026-04-01"), (11, "2026-05-17")])}
+    assert infer_starts({p: find_marks(t, post_date=d) for p, (t, d) in no_word.items()})[0]["n_posts"] == 4
+
+
+def test_repeated_same_count_is_a_cycle_not_a_start():
+    # 「야간 3일차」가 다른 날 두 번 — 교대 근무 주기이지 하나의 시작이 아니다 (코퍼스 D12)
+    posts = {"a": ({"body": "야간 3일차"}, "2026-03-17"), "b": ({"body": "야간 3일차"}, "2026-03-20")}
+    assert infer_starts({p: find_marks(t, post_date=d) for p, (t, d) in posts.items()}) == []
+
+
+def test_post_date_only_single_unknown_word_is_not_reported():
+    assert infer_starts({"a": find_marks({"body": "블로그 시작한 지 3주째"}, post_date="2026-03-17")}) == []
