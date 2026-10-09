@@ -91,7 +91,7 @@
         } else {
           const types = [...new Set(spans.map((s) => LABEL[s.type] || s.type))];
           const nCand = spans.filter((s) => rewrites.has(s.span_id)).length;
-          setChip(`단서 <b>${spans.length}</b>곳${k ? ` · 약 <b>${Number(k).toLocaleString("ko-KR")}</b>명 중 한 명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
+          setChip(`단서 <b>${spans.length}</b>곳${k ? ` · 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명 중 한 명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
           if (warn) {
             warn.hidden = false;
             warn.innerHTML = `형광으로 칠한 ${spans.length}곳이 나를 드러냅니다. <b>형광 단어를 누르면</b> ${nCand ? `바꿀 후보가 나옵니다(${nCand}곳).` : "고치는 방향을 알려 드립니다."}`;
