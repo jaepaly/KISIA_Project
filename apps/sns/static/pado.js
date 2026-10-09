@@ -50,7 +50,17 @@
     }
     return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk };
   }
-  window.padoCheck = check;   // 다른 스크립트(계정 글 + 초안 합산)도 같은 경로를 쓴다
+  window.padoCheck = check;
+  // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
+  window.padoCheckExport = async function (exportObj, signal) {
+    const fd = new FormData();
+    fd.append("file", new File([JSON.stringify(exportObj)], "draft.json", { type: "application/json" }));
+    const r = await fetch(`${BASE}/upload`, { method: "POST", body: fd, signal });
+    if (!r.ok) throw new Error(await r.text());
+    const d = await r.json();
+    const spec = ((d.specificity || {}).output || {});
+    return { k: spec.k, steps: spec.steps || [], risk: spec.risk, raw: d };
+  };
 
   // 후보가 없는 유형 — 고치는 방향 한 줄 (분석 앱 action.html MANUAL_TIP 의 짧은 판)
   const TIP = {
