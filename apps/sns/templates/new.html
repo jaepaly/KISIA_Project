@@ -5,15 +5,17 @@
 <style>
   /* 실시간 점검 — textarea 위에 같은 글꼴·여백의 투명 판을 띄우고 거기에 형광만 칠한다.
      판은 마우스를 통과시키고(pointer-events:none) 형광만 받는다 → 올리면 진해지고, 누르면 후보 */
-  .pado-wrap{position:relative}
+  /* isolate — 블렌드 범위를 이 상자 안(textarea + 판)으로 묶는다 */
+  .pado-wrap{position:relative;isolation:isolate}
   .pado-wrap textarea{position:relative;z-index:1;width:100%;display:block}
-  .pado-backdrop{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;
+  /* 판 전체를 multiply 로 — 형광은 색만 입히고 아래 textarea 의 실제 글자는 그대로 검게 비친다.
+     (mark 에만 걸면 판이 자기 스태킹 컨텍스트라 판 안에서만 섞여 글자를 가린다) */
+  .pado-backdrop{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;mix-blend-mode:multiply;
     border:1px solid transparent;border-radius:10px;background:transparent;
     font:inherit;font-size:14px;line-height:1.7;padding:12px 14px;
     white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;color:transparent}
-  /* multiply — 형광은 색만 입히고 아래 실제 글자는 그대로 검게 남는다 (반투명으로 덮으면 글자가 옅어진다) */
   .pado-backdrop mark{pointer-events:auto;cursor:pointer;color:transparent;border-radius:3px;padding:1px 0;
-    mix-blend-mode:multiply;box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
+    box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
   .pado-backdrop mark.has-cand{box-shadow:inset 0 -2px 0 var(--ut-earth)}
   .pado-backdrop mark:hover{filter:saturate(1.6) brightness(.93);box-shadow:inset 0 -3px 0 var(--ut-earth-ink)}
   .pado-backdrop mark.on{filter:saturate(1.8) brightness(.9);box-shadow:inset 0 -3px 0 var(--ut-earth-ink),0 0 0 2px rgba(216,137,111,.35)}
