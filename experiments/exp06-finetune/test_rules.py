@@ -34,6 +34,19 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'서른하나', '쉰셋이에요', '스물다섯인데', '스물하나인데'})
 
+    def test_numeric_age_with_direct_ending(self):
+        """「45세다」 「아들이 5세다」 — 살·세 뒤에 「이」 없이 붙는 어미 (#323 추가 · 인스턴스 핫패치와 같은 내용)."""
+        for text, want in (('나는 45세다', '45세다'), ('45세야', '45세야'), ('아들이 5세다', '5세다'),
+                           ('올해 45세라고 했다', '45세라고'), ('45세라서 그런지', '45세라서'), ('딸이 7살이네', '7살이네'),
+                           ('제가 45세요', '45세요'), ('45세란다', '45세란다')):
+            found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
+            self.assertEqual(found, {want}, text)
+
+    def test_century_and_generation_are_not_age(self):
+        """「세기 · 세대」와 세 자리 수는 나이가 아니다 — 어미를 넓혀도 그대로 빈 결과."""
+        for text in ('12세기 건축', '45세대 아파트', '2세대 아이돌', '245세', '100세 시대'):
+            self.assertEqual(age_spans(text), set(), text)
+
     def test_numeric_age_after_nai(self):
         """「나이 48에」 — 살·세 없는 숫자 나이 (인스턴스 비교 측정 10/5 · 네 구성 모두 못 잡던 표현)."""
         text = '나이 48에 처음 배운다. 나이는 35인데. 나이 3개월 차 아님, 2024년 나이'

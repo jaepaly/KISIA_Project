@@ -23,8 +23,13 @@ _AGE_ENDINGS = sorted({
     "이지", "이라", "이던", "에는", "에도", "즈음", "쯤", "에", "인", "임", "은", "는", "이", "가",
     "도", "만"}, key=lambda e: (-len(e), e))
 _AGE_ENDING = r"(?:" + "|".join(_AGE_ENDINGS) + r")?"
+# 숫자 + 살·세 뒤에는 「이」 없이 어미가 바로 붙는다 — 「45세다」 「45세야」 「아들이 5세다」 「45세라고」.
+# _AGE_ENDINGS 의 「이다」로는 안 잡히고 68행 단어 경계에서 통째로 버려졌다. 한글 수사 패턴엔 넣지 않는다 — 「스물세 다…」 오탐
+_UNIT_ENDINGS = sorted(set(_AGE_ENDINGS) | {"다", "야", "네", "요", "였다", "였고", "라고", "라서", "라며", "란다", "라", "이네"},
+                       key=lambda e: (-len(e), e))
+_UNIT_ENDING = r"(?:" + "|".join(_UNIT_ENDINGS) + r")?"
 _AGE_PATTERNS = (
-    re.compile(r"(?<![가-힣A-Za-z0-9])(?:[1-9][0-9]?\s*(?:살|세)|[0-9]{2}년생)" + _AGE_ENDING),
+    re.compile(r"(?<![가-힣A-Za-z0-9])(?:[1-9][0-9]?\s*(?:살|세)|[0-9]{2}년생)" + _UNIT_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _TENS + r"(?:\s*" + _ONES + r")?(?:\s*(?:살|세))?" + _AGE_ENDING),
     re.compile(r"(?<![가-힣A-Za-z0-9])" + _ONES + r"(?:\s*살|\s+세)" + _AGE_ENDING),
 )
