@@ -401,6 +401,30 @@ body.welcome-open{overflow:hidden}
   .ut-tabs a.on{color:var(--ut-earth-ink);background:var(--ut-earth-soft);font-weight:700}
   .ut-tabs a:hover{text-decoration:none}
 }
+/* ── 3단: 왼쪽 레일 · 피드 · 오른쪽 레일 (본 프로젝트 추가 — 피드만 있으면 넓은 화면에서 좌우가 빈다) ── */
+.ut-shell.three{grid-template-columns:var(--side-w) minmax(0,1fr) 280px}
+.ut-rail-r{min-width:0}
+.ut-rail-r-in{position:sticky;top:76px;margin-top:24px;display:flex;flex-direction:column;gap:16px}
+.ut-av.sm{width:34px;height:34px;flex:0 0 34px;font-size:14px;font-weight:700;text-decoration:none;transition:transform .2s var(--ease)}
+.ut-av.sm:hover{transform:scale(1.1);text-decoration:none}
+.card-author{display:flex;align-items:center;gap:10px}
+.card-author .who,.who-list .who{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.card-author .nm,.who-list .nm{font-size:14px;font-weight:700;color:var(--ut-ink)}
+.card-author .nm:hover,.who-list .nm:hover{color:var(--ut-earth-ink)}
+.card-author .when,.who-list .when{font-size:12px;color:var(--ut-ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-author .badge-private{margin-left:auto;font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;border-radius:99px;padding:2px 10px;white-space:nowrap}
+.who-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.who-list li{display:flex;align-items:center;gap:10px}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px}
+.tag-cloud .tag{font-size:12px;color:var(--ut-ink2);background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:99px;padding:3px 10px}
+.tag-cloud .tag b{color:var(--ut-ink3);font-weight:600;margin-left:2px}
+@media (max-width:1199px){
+  .ut-shell.three{grid-template-columns:var(--side-w) minmax(0,1fr)}
+  .ut-rail-r{display:none}
+}
+@media (max-width:767px){
+  .ut-shell.three{grid-template-columns:minmax(0,1fr)}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;scroll-behavior:auto!important}
   .rv{opacity:1;transform:none}

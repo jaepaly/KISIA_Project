@@ -30,6 +30,12 @@ KST = timezone(timedelta(hours=9))
 PAGE_SIZE = 20
 
 
+@app.template_filter("hue")
+def _hue(s: str) -> int:
+    """작성자마다 같은 아바타 색 — 문자열을 0~359 색상각으로. 사진이 없는 가상 SNS 라 이니셜 아바타를 쓴다."""
+    return sum(ord(c) for c in (s or "")) % 360
+
+
 def db() -> sqlite3.Connection:
     if "db" not in g:
         g.db = connect()
@@ -72,8 +78,18 @@ def index():
         if request.args.get("partial"):
             return render_template("_cards.html", posts=posts, next_url=next_url)
         authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+        # 오른쪽 레일 — 글을 거치지 않고 프로필로 가는 길 · 자주 찍히는 동네 (공개 글만)
+        recent_authors = db().execute(
+            "SELECT a.author_id, a.nickname, a.user_ref, COUNT(*) AS n, MAX(p.created_at) AS last"
+            " FROM posts p JOIN authors a ON a.author_id = p.author_id"
+            " WHERE p.visibility = 'public' GROUP BY a.author_id ORDER BY last DESC LIMIT 8").fetchall()
+        top_tags = db().execute(
+            "SELECT geo_tag, COUNT(*) AS n FROM posts"
+            " WHERE visibility = 'public' AND geo_tag IS NOT NULL AND geo_tag != ''"
+            " GROUP BY geo_tag ORDER BY n DESC LIMIT 6").fetchall()
         return render_template("list.html", posts=posts, authors=authors,
-                                selected_author=author_id, next_url=next_url)
+                                selected_author=author_id, next_url=next_url,
+                                recent_authors=recent_authors, top_tags=top_tags)
     except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 

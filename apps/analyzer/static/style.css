@@ -32,7 +32,14 @@ body{
 }
 .brand{font-size:17px; font-weight:700; letter-spacing:-.01em}
 .brand-sub{font-size:13px; font-weight:400; color:var(--ink3); margin-left:2px}
-.top-in .engine{margin-left:auto; font-size:12px; color:var(--ink3)}
+.top-in .engine{font-size:12px; color:var(--ink3)}
+/* 돌아갈 길 — 인스턴스에선 / 가 Veilo 다. 로컬 단독 실행이면 분석 앱 루트(스캔)로 간다 */
+.back-sns{
+  margin-left:auto; font-size:13px; font-weight:600; color:var(--earth-ink); text-decoration:none;
+  border:1px solid var(--line); border-radius:999px; padding:5px 12px; white-space:nowrap;
+  transition:border-color .15s, background .15s;
+}
+.back-sns:hover{border-color:var(--earth); background:var(--earth-soft)}
 
 /* ── 단계 ───────────────────────────────── */
 .steps{max-width:var(--shell); margin:0 auto; padding:18px 20px 0; display:flex; gap:8px}
