@@ -14,6 +14,73 @@
   };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const muted = (t) => `<p style="color:var(--ut-ink3);margin:0;">${t}</p>`;
+  // 스팬 오프셋은 코드포인트 단위 — 이모지 뒤에서 UTF-16 slice 가 어긋난다
+  const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
+
+  // 본문 텍스트에 스팬 형광을 입힌 HTML. 줄바꿈은 그대로 둔다 (overlay 가 pre-wrap)
+  function markup(text, spans) {
+    let out = "", last = 0;
+    for (const s of [...spans].sort((a, b) => a.start - b.start)) {
+      if (s.start < last) continue;
+      out += esc(cp(text, last, s.start))
+        + `<mark data-t="${esc(s.type)}" style="background:${COLOR[s.type] || "#F9E0B8"};" title="${esc(LABEL[s.type] || s.type)}">`
+        + esc(cp(text, s.start, s.end)) + "</mark>";
+      last = s.end;
+    }
+    return out + esc(cp(text, last));
+  }
+
+  async function check(text, signal) {
+    const fd = new FormData();
+    fd.append("file", new File([text.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
+    const r = await fetch(`${BASE}/upload`, { method: "POST", body: fd, signal });
+    if (!r.ok) throw new Error(await r.text());
+    const d = await r.json();
+    const post = (d.posts || [])[0] || {};
+    const spans = (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other");
+    const k = ((d.specificity || {}).output || {}).k;
+    return { spans, k };
+  }
+
+  /* 실시간 — 타자가 멈추고 delay 뒤 자동 점검. 서버 보호: 디바운스 · 이전 요청 취소 · minChars 미만 생략 · 같은 글 재요청 안 함.
+     padoLive({ textarea, backdrop, chip, warn?, delay=800, minChars=20 }) */
+  window.padoLive = function ({ textarea, backdrop, chip, warn, delay = 800, minChars = 20 }) {
+    let timer = null, ctrl = null, lastText = null;
+    const setChip = (html, cls) => { chip.innerHTML = html; chip.className = "pado-chip" + (cls ? " " + cls : ""); };
+    const paint = (text, spans) => { backdrop.innerHTML = markup(text, spans) + "\n"; };
+    const sync = () => { backdrop.scrollTop = textarea.scrollTop; backdrop.scrollLeft = textarea.scrollLeft; };
+
+    async function run() {
+      const text = textarea.value;
+      if (text === lastText) return;
+      if (text.trim().length < minChars) {
+        lastText = text; paint(text, []); setChip("", ""); if (warn) warn.hidden = true; return;
+      }
+      if (ctrl) ctrl.abort();
+      ctrl = new AbortController();
+      setChip("확인 중<span class=\"dots\"></span>", "busy");
+      try {
+        const { spans, k } = await check(text, ctrl.signal);
+        if (textarea.value !== text) return;   // 응답 오는 사이 또 바뀜 — 다음 턴이 처리
+        lastText = text;
+        paint(text, spans);
+        if (!spans.length) {
+          setChip("읽히는 단서 없음", "ok"); if (warn) warn.hidden = true;
+        } else {
+          const types = [...new Set(spans.map((s) => LABEL[s.type] || s.type))];
+          setChip(`단서 <b>${spans.length}</b>곳${k ? ` · 약 <b>${Number(k).toLocaleString("ko-KR")}</b>명 중 한 명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
+          if (warn) { warn.hidden = false; warn.innerHTML = `형광으로 칠한 ${spans.length}곳이 나를 드러냅니다. 그대로 올려도 되지만, 한 번 더 보세요.`; }
+        }
+      } catch (e) {
+        if (e.name === "AbortError") return;
+        setChip("점검 실패 — 잠시 뒤 다시", "err");
+      }
+    }
+    textarea.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, delay); paint(textarea.value, []); sync(); });
+    textarea.addEventListener("scroll", sync);
+    if (textarea.value.trim()) run();
+    return { run };
+  };
 
   window.padoWidget = function ({ btn, out, getText, userRef }) {
     btn.addEventListener("click", async () => {
