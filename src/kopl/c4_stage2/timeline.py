@@ -24,7 +24,8 @@ from typing import Any
 # 날짜 — 연도가 있는 것만 (「9월 3일」은 연도를 모르면 역산이 흔들린다 · 같은 글에 연도 있는 날짜가 있으면 그 해로 읽는다)
 # 앞뒤에 숫자 · 점 · 버전 표시가 붙거나 뒤에 단위가 오면 날짜가 아니다 — 「버전 12.2.3」 「24.5.1kg」 「1.2.3.4」 (Codex 10/9)
 _DATE_FULL = re.compile(r"(?<![\d.vV])(?:(20)?(\d{2}))[./-]\s?(\d{1,2})[./-]\s?(\d{1,2})"
-                        r"(?![\d.]\d|\d|\s?(?:kg|km|cm|mm|g|m|l|L|%|원|점|배|개|명|회|위|번|분|초|시간|kcal)(?![A-Za-z]))")  # 「kg으로」도 단위
+                        r"(?![\d.]\d|\d|\s?(?:kg|km|cm|mm|g|m|l|L|%|kcal)(?![A-Za-z])"  # 「kg으로」도 단위
+                        r"|(?:원|점|배|개|명|회|위|번|분|초|시간))")  # 한글 단위는 **붙어 있을 때만** — 「26.09.03 명동에서」 「분당」 「회의」 「점심」은 날짜 (#331 리뷰 ②)
 _VERSION_BEFORE = re.compile(r"(?:버전|ver\.?|version|v)\s*$", re.IGNORECASE)
 _DATE_MD = re.compile(r"(?<!\d)(\d{1,2})\s*월\s*(\d{1,2})\s*일")
 _DATE_YMD_KO = re.compile(r"(?<!\d)(20\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일")
@@ -34,7 +35,7 @@ _EVENTS = r"출근|입사|근무|인턴|실습|알바|아르바이트|연수|교
 _KNOWN = set(_EVENTS.split("|"))
 _COUNT = re.compile(
     r"(?:(?P<event>[가-힣A-Za-z]{1,8})\s*(?:한\s*지\s*)?)?(?<![\d.])(?P<n>\d{1,3})\s*(?P<unit>일차|일째|주차|주째|개월차|개월째|달째)"
-    r"|(?P<dplus>[Dd]\s*\+\s*(?P<dn>\d{1,4}))")
+    r"|(?P<dplus>[Dd]\s*\+\s*(?P<dn>\d+)(?!\d))")  # 숫자를 끝까지 읽는다 — 「D+12345」를 「D+1234」로 자르지 않고 차수 상한으로 뺀다 (#331 리뷰 ④)
 _UNIT_DAYS = {"일차": 1, "일째": 1, "주차": 7, "주째": 7, "개월차": 30, "개월째": 30, "달째": 30}
 _PAIR_WINDOW = 40  # 날짜와 차수가 이 글자 안에 있어야 짝으로 본다 (제목 「26.09.03 출근 18일차」 · 본문 첫 줄)
 _SENT_BREAK = re.compile(r"[.!?。…]\s")  # 짝 사이에 문장이 끊기면 다른 이야기다
@@ -120,8 +121,13 @@ def find_marks(texts: Mapping[str, str | None], post_date: str | None = None) ->
         near = [(abs((s + e) / 2 - (m.start() + m.end()) / 2), dt, s, e) for s, e, dt in ds
                 if min(abs(m.start() - e), abs(s - m.end())) <= _PAIR_WINDOW
                 and not _broken(joined[min(e, m.end()):max(s, m.start())])]
-        tid, st = locate(m.start())
-        mark = {"text_id": tid, "start": st, "end": st + (m.end() - m.start()), "value": m.group(0),
+        # 사건 말과 차수가 다른 채널에 있으면(제목 「26.09.03 출근」 · 본문 「18일차」) 짝은 유지하되,
+        # 근거 좌표는 차수가 있는 채널 안으로 — 사건 말은 event 에만 남긴다 (#331 리뷰 ①)
+        vs = m.start()
+        if locate(vs)[0] != locate(m.end() - 1)[0]:
+            vs = m.start("n") if m.group("n") else m.start("dplus")
+        tid, st = locate(vs)
+        mark = {"text_id": tid, "start": st, "end": st + (m.end() - vs), "value": joined[vs:m.end()],
                 "event": event, "n": n, "unit": unit}
         if near:
             _, dt, ds_s, ds_e = min(near, key=lambda x: x[0])
@@ -147,6 +153,7 @@ _WORK_EVENTS = {"출근", "입사", "근무", "인턴", "실습", "알바", "아
 _MAX_MARKS_PER_POST = 3
 _MAX_MARKS = 400
 _MAX_N = 3660  # 차수 상한 — 10년(일) 넘는 「n일차」는 시작일 역산에 쓰지 않는다 (근무일 셈이 하루씩 도는 것도 막는다)
+_YEAR_MIN, _YEAR_MAX = 1900, 2100  # 시작일이 이 밖이면 역산하지 않는다 (작성일 끝값 · 큰 차수)
 _TOLERANCE = 3  # 시작 구간끼리 이 날수 안에서 겹치면 같은 시작으로 본다
 
 
@@ -240,9 +247,13 @@ def infer_starts(marks_by_post: Mapping[str, list[dict[str, Any]]]) -> list[dict
         if mk["n"] > _MAX_N:
             continue
         try:
-            rows.append((pid, mk, *_start_interval(mk, _basis(mk))))
+            lo, hi = _start_interval(mk, _basis(mk))
         except (OverflowError, ValueError):
             continue
+        # 묶을 때 ±오차를 더하므로 date 끝값 근처(0001-01-01 · 9999-12-31)에서 또 넘친다 — 사람 글의 연도 범위만 (#331 리뷰 ③)
+        if not (_YEAR_MIN <= lo.year and hi.year <= _YEAR_MAX):
+            continue
+        rows.append((pid, mk, lo, hi))
     by_word: dict[str, list] = {}
     for r in rows:
         by_word.setdefault(r[1]["event"], []).append(r)
