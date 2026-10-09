@@ -231,9 +231,43 @@ def profile(user_ref: str):
 
 
 # ── ⭐ 내보내기 — 계층 경계. 계약: docs/contracts/sns-minimal-spec.md ──
+import json as _json
+from pathlib import Path as _Path
+
+# 인물 설정 파일 — author_id 가 곧 persona_id (A01 ↔ A01.json). 저장소 밖에 두면 PERSONAS_DIR 로
+PERSONAS_DIR = _Path(os.environ.get("PERSONAS_DIR") or (_Path(__file__).resolve().parents[2] / "data" / "corpus" / "v0" / "personas"))
+_TRUTH_KEYS = ("age", "sex", "location", "occupation", "family", "commute", "income")
+
+
+def _persona_brief(author_id: str) -> dict | None:
+    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다."""
+    p = PERSONAS_DIR / f"{author_id}.json"
+    if not p.exists():
+        return None
+    try:
+        d = _json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    gt, voice, kw = d.get("ground_truth") or {}, d.get("voice") or {}, d.get("scoring_keywords") or {}
+    words: list[str] = []
+    for axis in ("location", "age", "occupation", "family", "commute", "income", "sex"):
+        for w in (kw.get(axis) or [])[:3]:
+            if w not in words:
+                words.append(w)
+    return {
+        "type": d.get("persona_type") or d.get("alias"),
+        "truth": {k: gt.get(k) for k in _TRUTH_KEYS},
+        "voice": {k: voice[k] for k in ("종결어미", "말버릇", "이모지", "제목", "소재") if voice.get(k)},
+        "words": words[:14],
+        "words_by_axis": {k: (kw.get(k) or [])[:3] for k in _TRUTH_KEYS if kw.get(k)},
+        "topics": (d.get("noise_topics") or [])[:5],
+        "hours": (d.get("account") or {}).get("typical_active_hours"),
+    }
+
+
 @app.get("/api/author/<author_id>/summary")
 def author_summary(author_id: str):
-    """글쓰기 화면 오른쪽 패널 — 테스터는 이 작성자를 모른다. 소개·글 수·자주 찍는 동네·최근 글(공개만)."""
+    """글쓰기 화면 오른쪽 패널 — 테스터는 이 작성자를 모른다. 인물 설정 + 소개·글 수·자주 찍는 동네·최근 글(공개만)."""
     a = db().execute("SELECT * FROM authors WHERE author_id = ?", (author_id,)).fetchone()
     if a is None:
         abort(404)
@@ -248,6 +282,7 @@ def author_summary(author_id: str):
     return jsonify({
         "author_id": a["author_id"], "user_ref": a["user_ref"], "nickname": a["nickname"],
         "hue": _hue(a["author_id"]),   # 피드 아바타와 같은 색
+        "persona": _persona_brief(a["author_id"]),
         "bio": a["bio"], "joined_at": (a["joined_at"] or "")[:10],
         "n_posts": len(posts), "last": posts[0]["created_at"][:10] if posts else None,
         "top_tags": [{"geo_tag": t, "n": n} for t, n in top],

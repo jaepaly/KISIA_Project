@@ -51,35 +51,50 @@
   .pado-pick-f .ghost{font-size:12px;padding:6px 12px}
   .pado-pick .muted{color:var(--ut-ink3)}
 
-  /* 오른쪽 — 고른 작성자 (테스터는 이 사람을 모른다) */
+  /* 오른쪽 — 고른 작성자 (테스터는 이 사람을 모른다 → 설정 정답지를 그대로 보여 준다) */
   .ap .rail-h{margin-bottom:8px}
   .ap .who{display:flex;gap:10px;align-items:center}
   .ap .who .nm{font-size:16px;font-weight:700;color:var(--ut-ink);text-decoration:none}
   .ap .who .handle{font-size:12px;color:var(--ut-ink3)}
-  .ap .bio{font-size:13px;color:var(--ut-ink2);margin:8px 0 0;line-height:1.5}
-  .ap .stats{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ut-ink3);margin-top:10px}
-  .ap .stats b{color:var(--ut-ink)}
-  .ap .recent{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .ap .ptype{font-size:13px;font-weight:600;color:var(--ut-earth-ink);margin:10px 0 0;line-height:1.45}
+  .ap .truth{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:52px 1fr;row-gap:4px;column-gap:8px;font-size:12.5px}
+  .ap .truth dt,.ap .truth .k{color:var(--ut-ink3)}
+  .ap .truth .v{color:var(--ut-ink);font-weight:600}
+  .ap .truth .v.na{color:var(--ut-ink3);font-weight:400}
+  .ap .sub{font-size:11.5px;font-weight:700;color:var(--ut-ink3);margin:12px 0 4px;letter-spacing:.02em}
+  .ap .voice{font-size:12.5px;color:var(--ut-ink2);line-height:1.55;margin:0}
+  .ap .voice b{color:var(--ut-ink);font-weight:600}
+  .ap .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .ap .chips span{font-size:11.5px;border-radius:99px;padding:2px 9px;background:var(--ut-panel2);border:1px solid var(--ut-line);color:var(--ut-ink2)}
+  .ap .chips span.hot{background:var(--ut-earth-soft);border-color:transparent;color:var(--ut-earth-ink);font-weight:600}
+  .ap .recent{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
   .ap .recent li{font-size:12.5px;line-height:1.4}
   .ap .recent a{color:var(--ut-ink);font-weight:600;text-decoration:none}
   .ap .recent a:hover{color:var(--ut-earth-ink)}
   .ap .recent .sn{color:var(--ut-ink3);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ap details summary{cursor:pointer;font-size:12px;color:var(--ut-ink3);margin-top:10px;list-style:none}
+  .ap details summary::before{content:"⌄ ";}
+  .ap details[open] summary::before{content:"⌃ ";}
   .ap .kbox{display:flex;align-items:baseline;gap:8px;margin:4px 0 2px}
-  .ap .kbox b{font-size:24px;letter-spacing:-.02em}
+  .ap .kbox b{font-size:24px;letter-spacing:-.02em;transition:color .3s}
   .ap .kbox .u{font-size:12px;color:var(--ut-ink3)}
-  .ap .steps{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
+  .ap .steps{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
   .ap .steps li{position:relative;font-size:12px;padding:5px 8px;border-radius:8px;background:var(--ut-panel2);overflow:hidden;display:flex;justify-content:space-between;gap:8px}
-  .ap .steps li i{position:absolute;left:0;top:0;bottom:0;background:var(--ut-earth-soft);z-index:0}
+  .ap .steps li i{position:absolute;left:0;top:0;bottom:0;background:var(--ut-earth-soft);z-index:0;transition:width .5s var(--ease)}
   .ap .steps li span{position:relative;z-index:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ap .steps li .n{flex:none;font-weight:700;color:var(--ut-earth-ink);font-variant-numeric:tabular-nums}
+  .ap .steps li.base{background:transparent;color:var(--ut-ink3)}
   .ap .axes{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
   .ap .axes span{font-size:11px;border-radius:99px;padding:2px 8px;border:1px solid var(--ut-line);color:var(--ut-ink3);background:var(--ut-panel)}
   .ap .axes span.read{background:var(--ut-red-soft);color:var(--ut-red);border-color:transparent}
   .ap .axes span.open{background:var(--ut-leaf-soft);color:var(--ut-leaf);border-color:transparent}
-  .ap .try{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-earth-soft);border-radius:10px;padding:8px 10px;line-height:1.5}
+  .ap .try{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-earth-soft);border-radius:10px;padding:8px 10px;line-height:1.55}
+  .ap .try b{color:var(--ut-ink)}
   .ap .scan-btn{width:100%;margin-top:10px;font-size:13px;padding:9px}
   .ap .muted{font-size:12px;color:var(--ut-ink3)}
-  @media (prefers-reduced-motion:reduce){.pado-chip .dots::after{animation:none;content:"…"}.pado-warn,.pado-pick{animation:none}}
+  .ap .cnt.busy::after{content:"…";animation:pado-dots 1.2s steps(3,end) infinite}
+  #apLive .kbox b.up{color:var(--ut-red)}
+  @media (prefers-reduced-motion:reduce){.pado-chip .dots::after,.ap .cnt.busy::after{animation:none;content:"…"}.pado-warn,.pado-pick{animation:none}}
 </style>
 {% endblock %}
 
@@ -195,12 +210,16 @@
 
   <aside class="ut-rail-r">
     <div class="ut-rail-r-in">
-      <div class="rail-card rv ap" id="apWho"><div class="rail-h">지금 고른 작성자</div><p class="muted">불러오는 중…</p></div>
+      <div class="rail-card rv ap" id="apWho"><div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오는 중…</p></div>
       <div class="rail-card rv ap" id="apK">
-        <div class="rail-h">이 계정은 지금 몇 명 중 한 명?</div>
-        <p class="muted" style="margin:0;">이 사람의 공개 글을 전부 읽어 후보 수를 셉니다. 글이 많으면 10초쯤 걸립니다.</p>
-        <button type="button" class="ghost scan-btn" id="apScanBtn">세어 보기</button>
-        <div id="apKOut"></div>
+        <div class="rail-h">지금까지 쓴 글로는 몇 명 중 한 명? <span class="cnt busy" id="apKState">세는 중</span></div>
+        <div id="apKOut"><p class="muted" style="margin:0;">이 사람의 공개 글을 전부 읽어 후보 수를 셉니다. 글이 많으면 10초쯤.</p></div>
+      </div>
+      <div class="rail-card rv ap" id="apLive" hidden>
+        <div class="rail-h">지금 쓰는 글 — 왜 이 숫자인가 <span class="cnt" id="apLiveState"></span></div>
+        <div id="apLiveOut"></div>
+        <button type="button" class="ghost scan-btn" id="apCombineBtn">지금까지 쓴 글에 더해서 세기</button>
+        <div id="apCombineOut"></div>
       </div>
     </div>
   </aside>
@@ -215,92 +234,170 @@ padoWidget({
   out: document.getElementById("padoOut"),
   getText: () => document.getElementById("body").value
 });
-// 쓰는 동안 실시간 — 타자가 0.8초 멈추면 자동 점검, 본문 위에 형광, 형광을 누르면 바꿔 쓰기 후보
+
+// ── 오른쪽 패널 ─────────────────────────────────────────────────────────
+const AP = (function () {
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const AXIS = { location: "거주지", age: "나이", sex: "성별", occupation: "직업", family: "가족", commute: "통근", income: "소득" };
+  const AXIS_ORDER = ["age", "sex", "location", "occupation", "family", "commute", "income"];
+  const sel = document.getElementById("authorSel"), who = document.getElementById("apWho"),
+        kOut = document.getElementById("apKOut"), kState = document.getElementById("apKState"),
+        live = document.getElementById("apLive"), liveOut = document.getElementById("apLiveOut"), liveState = document.getElementById("apLiveState"),
+        combineBtn = document.getElementById("apCombineBtn"), combineOut = document.getElementById("apCombineOut");
+  let me = null, scan = null, lastDraft = null;
+  const fmtN = (n) => Math.round(n).toLocaleString("ko-KR");
+  const quotes = (cond) => [...cond.matchAll(/«([^»]+)»/g)].map((m) => m[1]);
+  const sexKo = (s) => s === "M" ? "남성" : s === "F" ? "여성" : s;
+
+  // 깔때기 — 「전 국민 → 조건마다 남는 사람」. 첫 줄은 기준(전 국민)
+  function stepsHtml(steps, max = 7) {
+    if (!steps || steps.length < 2) return `<p class="muted" style="margin:6px 0 0;">아직 좁히는 조건이 없습니다.</p>`;
+    const nation = steps[0].n_after;
+    return `<ul class="steps"><li class="base"><span>전 국민</span><span class="n">${fmtN(nation)}명</span></li>${steps.slice(1, max + 1).map((s) => {
+      const w = Math.max(2, 100 * Math.log10(s.n_after + 1) / Math.log10(nation + 1));
+      const q = quotes(s.condition);
+      return `<li><i style="width:${w}%"></i><span>${esc(AXIS[s.axis] || s.axis)}${q.length ? " 「" + esc(q.join("·")) + "」" : ""}</span><span class="n">${fmtN(s.n_after)}명</span></li>`;
+    }).join("")}</ul>`;
+  }
+
+  function renderWho() {
+    const p = me.persona;
+    const h = me.hue;
+    let html = `
+      <div class="rail-h">이 사람은 누구인가</div>
+      <div class="who">
+        <a class="ut-av sm" href="/u/${esc(me.user_ref)}" style="background:hsl(${h},45%,86%);color:hsl(${h},35%,32%);">${esc(me.nickname.slice(0, 1))}</a>
+        <div><a class="nm" href="/u/${esc(me.user_ref)}">${esc(me.nickname)}</a><div class="handle">@${esc(me.user_ref)}${me.bio ? " · " + esc(me.bio) : ""}</div></div>
+      </div>`;
+    if (p) {
+      html += `<p class="ptype">${esc(p.type || "")}</p>
+        <dl class="truth">${AXIS_ORDER.map((a) => { const v = p.truth[a]; return `<dt class="k">${AXIS[a]}</dt><dd class="v${v ? "" : " na"}">${v ? esc(a === "sex" ? sexKo(v) : a === "age" ? v + "세" : v) : "—"}</dd>`; }).join("")}</dl>`;
+      if (Object.keys(p.voice || {}).length) {
+        html += `<div class="sub">말투</div><p class="voice">${Object.entries(p.voice).map(([k, v]) => `<b>${esc(k)}</b> ${esc(v)}`).join(" · ")}</p>`;
+      }
+      if (p.words && p.words.length) {
+        html += `<div class="sub">이 사람이 실제로 쓰는 말</div><div class="chips" id="apWords">${p.words.map((w) => `<span data-w="${esc(w)}">${esc(w)}</span>`).join("")}</div>`;
+      }
+      if (p.topics && p.topics.length) {
+        html += `<div class="sub">평소 소재</div><div class="chips">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
+      }
+      if (p.hours) html += `<p class="muted" style="margin:10px 0 0;">주로 쓰는 시간 ${esc(p.hours)}</p>`;
+    } else {
+      html += `<p class="muted" style="margin:10px 0 0;">설정 파일이 없는 작성자입니다 — 글에서 드러나는 것만 있습니다.</p>`;
+    }
+    html += `<details><summary>최근 글 ${me.n_posts}편 중 ${me.recent.length}편</summary><ul class="recent">${me.recent.map((r) => `<li><a href="/posts/${esc(r.post_id)}" target="veilo">${esc(r.title || "(제목 없음)")}</a><span class="sn">${esc(r.snippet)}</span></li>`).join("")}</ul></details>`;
+    who.innerHTML = html;
+  }
+
+  function renderK() {
+    const d = scan, spec = d.specificity.output, k = spec.k, risk = d.contribution.output.baseline_risk;
+    const findings = (d.stage2 && d.stage2.output && d.stage2.output.findings) || {};
+    const read = AXIS_ORDER.filter((a) => findings[a] && findings[a].verdict !== "abstain");
+    const open = AXIS_ORDER.filter((a) => !findings[a] || findings[a].verdict === "abstain");
+    kState.className = "cnt"; kState.textContent = `공개 글 ${me.n_posts}편`;
+    const p = me.persona;
+    let tryHtml;
+    if (open.length) {
+      const tips = open.slice(0, 2).map((a) => {
+        const truth = p && p.truth[a], words = p && p.words_by_axis && p.words_by_axis[a];
+        return `<b>${AXIS[a]}</b>${truth ? ` — 설정은 「${esc(a === "sex" ? sexKo(truth) : truth)}」` : ""}${words && words.length ? ` · 이 사람 말로는 ${words.map((w) => "「" + esc(w) + "」").join(" ")}` : ""}`;
+      }).join("<br>");
+      tryHtml = `<p class="try">해 보기 — 아직 안 읽힌 신상을 새 글에 넣어 보세요:<br>${tips}<br>본문 위 형광과 아래 「지금 쓰는 글」 숫자가 바로 바뀝니다.</p>`;
+    } else {
+      tryHtml = `<p class="try">7가지 신상이 모두 읽힌 계정입니다. 지금은 같은 단서를 더 구체적으로 쓸 때(동 이름·정확한 나이)만 더 좁혀집니다 — 거꾸로, 위 깔때기의 표현을 넓게 바꿔 쓰면 후보가 늘어나는 것도 볼 수 있습니다.</p>`;
+    }
+    kOut.innerHTML = `
+      <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 위험 점수 ${Number(risk).toFixed(1)}</span></div>
+      <div class="sub">어떤 표현이 몇 명까지 좁혔나</div>${stepsHtml(spec.steps, 6)}
+      <div class="sub">읽힌 신상 / 아직 안 읽힌 신상</div>
+      <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 아직</span>`).join("")}</div>
+      ${tryHtml}
+      <p class="muted" style="margin:8px 0 0;"><a href="/check/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
+  }
+
+  async function autoScan() {
+    if (!me) return;
+    const key = "veilo.scan." + me.user_ref;
+    const cached = sessionStorage.getItem(key);
+    if (cached) { scan = JSON.parse(cached); renderK(); return; }
+    kState.className = "cnt busy"; kState.textContent = "세는 중";
+    try {
+      const r = await fetch(`/check/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
+      if (!r.ok) throw new Error(r.status);
+      scan = await r.json();
+      try { sessionStorage.setItem(key, JSON.stringify(scan)); } catch {}
+      if (sel.value === me.author_id) renderK();
+    } catch {
+      kState.className = "cnt"; kState.textContent = "";
+      kOut.innerHTML = `<p class="muted" style="margin:0;">세지 못했습니다. <a href="#" id="apRetry" style="color:var(--ut-earth-ink);">다시</a></p>`;
+      document.getElementById("apRetry").addEventListener("click", (e) => { e.preventDefault(); autoScan(); });
+    }
+  }
+
+  async function loadWho() {
+    if (!sel || !sel.value) return;
+    scan = null; combineOut.innerHTML = "";
+    who.innerHTML = `<div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오는 중…</p>`;
+    kOut.innerHTML = ""; kState.className = "cnt busy"; kState.textContent = "세는 중";
+    try { me = await (await fetch(`/api/author/${encodeURIComponent(sel.value)}/summary`)).json(); }
+    catch { who.innerHTML = `<div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오지 못했습니다.</p>`; return; }
+    renderWho();
+    combineBtn.textContent = `지금까지 쓴 글 ${me.n_posts}편에 더해서 세기`;
+    autoScan();
+  }
+
+  // 실시간 — 점검이 끝날 때마다 「이 글만으로」 깔때기. 설정의 「쓰는 말」 중 글에 들어간 것은 칩이 진해진다
+  function onLive(res) {
+    lastDraft = res;
+    combineOut.innerHTML = "";
+    if (!res) { live.hidden = true; return; }
+    live.hidden = false;
+    const prev = live.dataset.k ? Number(live.dataset.k) : null;
+    const k = res.k;
+    live.dataset.k = k === null || k === undefined ? "" : String(k);
+    const dir = prev !== null && k !== null && k !== undefined ? (k < prev ? " up" : "") : "";
+    liveState.textContent = res.spans.length ? `단서 ${res.spans.length}곳` : "단서 없음";
+    liveOut.innerHTML = res.spans.length
+      ? `<div class="kbox"><b class="${dir}">${k === null || k === undefined ? "—" : "약 " + fmtN(k) + "명"}</b><span class="u">이 글만으로 · 중 한 명</span></div>${stepsHtml(res.steps, 6)}`
+      : `<p class="muted" style="margin:0;">이 글만으로는 아무도 좁혀지지 않습니다 — 전 국민이 후보입니다.</p>`;
+    const words = document.getElementById("apWords");
+    if (words) words.querySelectorAll("span[data-w]").forEach((s) => s.classList.toggle("hot", res.text.includes(s.dataset.w)));
+  }
+
+  // 지금까지 쓴 글 + 이 글 — 계정 공개 글을 내보내 초안과 함께 한 번에 센다 (버튼 — 글이 많으면 몇 초)
+  combineBtn.addEventListener("click", async () => {
+    if (!me || !lastDraft) return;
+    combineBtn.disabled = true; combineBtn.textContent = "세는 중…";
+    try {
+      const ex = await (await fetch(`/api/export/${encodeURIComponent(me.user_ref)}`)).json();
+      const lines = (ex.posts || []).map((p) => [p.title, p.body].filter(Boolean).join(" ").replace(/\s+/g, " ").trim()).filter(Boolean);
+      lines.push(lastDraft.text.replace(/\s+/g, " ").trim());
+      const r = await window.padoCheck(lines.join("\n"));
+      const before = scan ? scan.specificity.output.k : null;
+      combineOut.innerHTML = `<div class="kbox" style="margin-top:10px;"><b>${r.k === null || r.k === undefined ? "—" : "약 " + fmtN(r.k) + "명"}</b><span class="u">지금까지 쓴 글 + 이 글${before !== null ? ` · 전에는 약 ${fmtN(before)}명` : ""}</span></div>${stepsHtml(r.steps, 7)}`;
+    } catch {
+      combineOut.innerHTML = `<p class="muted" style="margin-top:8px;">세지 못했습니다. 잠시 뒤 다시.</p>`;
+    } finally { combineBtn.disabled = false; combineBtn.textContent = `지금까지 쓴 글 ${me.n_posts}편에 더해서 세기`; }
+  });
+
+  sel && sel.addEventListener("change", loadWho);
+  loadWho();
+  return { onLive };
+})();
+
+// 쓰는 동안 실시간 — 타자가 0.8초 멈추면 자동 점검, 본문 위에 형광, 형광을 누르면 바꿔 쓰기 후보, 오른쪽에 「왜 이 숫자인가」
 padoLive({
   textarea: document.getElementById("body"),
   backdrop: document.getElementById("padoBackdrop"),
   chip: document.getElementById("padoChip"),
   warn: document.getElementById("padoWarn"),
-  pick: document.getElementById("padoPick")
+  pick: document.getElementById("padoPick"),
+  onResult: AP.onLive
 });
 // textarea 를 세로로 늘리면 뒤판도 따라간다
 new ResizeObserver(() => {
   const t = document.getElementById("body"), b = document.getElementById("padoBackdrop");
   b.style.height = t.offsetHeight + "px";
 }).observe(document.getElementById("body"));
-
-// ── 오른쪽: 고른 작성자 요약 + 계정 k (스캔은 계정당 한 번, 세션에 캐시) ──
-(function () {
-  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const AXIS = { location: "거주지", age: "나이", sex: "성별", occupation: "직업", family: "가족", commute: "통근", income: "소득" };
-  const sel = document.getElementById("authorSel"), who = document.getElementById("apWho"),
-        kOut = document.getElementById("apKOut"), scanBtn = document.getElementById("apScanBtn");
-  let me = null;
-  const fmtN = (n) => Math.round(n).toLocaleString("ko-KR");
-
-
-  async function loadWho() {
-    if (!sel || !sel.value) return;
-    who.innerHTML = `<div class="rail-h">지금 고른 작성자</div><p class="muted">불러오는 중…</p>`;
-    kOut.innerHTML = ""; scanBtn.disabled = false; scanBtn.textContent = "세어 보기";
-    try {
-      me = await (await fetch(`/api/author/${encodeURIComponent(sel.value)}/summary`)).json();
-    } catch { who.innerHTML = `<div class="rail-h">지금 고른 작성자</div><p class="muted">불러오지 못했습니다.</p>`; return; }
-    const h = me.hue;
-    who.innerHTML = `
-      <div class="rail-h">지금 고른 작성자</div>
-      <div class="who">
-        <a class="ut-av sm" href="/u/${esc(me.user_ref)}" style="background:hsl(${h},45%,86%);color:hsl(${h},35%,32%);">${esc(me.nickname.slice(0, 1))}</a>
-        <div><a class="nm" href="/u/${esc(me.user_ref)}">${esc(me.nickname)}</a><div class="handle">@${esc(me.user_ref)}</div></div>
-      </div>
-      ${me.bio ? `<p class="bio">${esc(me.bio)}</p>` : `<p class="bio muted">소개 없음 — 글에서 드러나는 것만 있습니다.</p>`}
-      <div class="stats"><span>공개 글 <b>${me.n_posts}</b>편</span>${me.last ? `<span>마지막 <b>${esc(me.last)}</b></span>` : ""}${me.top_tags.length ? `<span>📍 ${me.top_tags.map((t) => esc(t.geo_tag) + " " + t.n).join(" · ")}</span>` : ""}</div>
-      ${me.recent.length ? `<div class="rail-h" style="margin-top:12px;">최근 글</div><ul class="recent">${me.recent.map((p) => `<li><a href="/posts/${esc(p.post_id)}" target="veilo">${esc(p.title || "(제목 없음)")}</a><span class="sn">${esc(p.snippet)}</span></li>`).join("")}</ul>` : ""}
-      <p class="muted" style="margin:10px 0 0;">이 사람의 말투·동네·나이에 맞춰 써 보세요. 새 글이 더하는 단서가 실시간으로 보입니다.</p>`;
-    const cached = sessionStorage.getItem("veilo.scan." + me.user_ref);
-    if (cached) renderK(JSON.parse(cached));
-  }
-
-  function quotes(cond) { return [...cond.matchAll(/«([^»]+)»/g)].map((m) => m[1]); }
-  function renderK(d) {
-    const spec = d.specificity.output, k = spec.k, risk = d.contribution.output.baseline_risk;
-    const steps = (spec.steps || []).slice(1);
-    const nation = (spec.steps || [{ n_after: 5e7 }])[0].n_after;
-    const findings = (d.stage2 && d.stage2.output && d.stage2.output.findings) || {};
-    const read = Object.entries(findings).filter(([, f]) => f.verdict !== "abstain").map(([a]) => AXIS[a] || a);
-    const open = Object.entries(findings).filter(([, f]) => f.verdict === "abstain").map(([a]) => AXIS[a] || a);
-    scanBtn.hidden = true;
-    kOut.innerHTML = `
-      <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 위험 점수 ${Number(risk).toFixed(1)}</span></div>
-      <div class="rail-h" style="margin-top:8px;">어떻게 여기까지 좁혀졌나</div>
-      <ul class="steps">${steps.slice(0, 6).map((s) => {
-        const w = Math.max(2, 100 * Math.log10(s.n_after + 1) / Math.log10(nation + 1));
-        const q = quotes(s.condition);
-        return `<li><i style="width:${w}%"></i><span>${esc(AXIS[s.axis] || s.axis)}${q.length ? " 「" + esc(q.join("·")) + "」" : ""}</span><span class="n">${fmtN(s.n_after)}명</span></li>`;
-      }).join("")}</ul>
-      <div class="rail-h" style="margin-top:10px;">읽힌 신상 / 아직 안 읽힌 신상</div>
-      <div class="axes">${read.map((a) => `<span class="read">${esc(a)}</span>`).join("")}${open.map((a) => `<span class="open">${esc(a)} 아직</span>`).join("")}</div>
-      ${open.length ? `<p class="try">해 보기: 새 글에 <b>${esc(open.slice(0, 2).join("·"))}</b>이(가) 드러나는 문장을 쓰면 후보가 크게 줄어듭니다. 본문 위 형광과 칩의 숫자로 바로 확인됩니다.</p>`
-                    : `<p class="try">7가지 신상이 모두 읽힌 계정입니다. 지금은 같은 단서를 더 구체적으로 쓸 때만 더 좁혀집니다.</p>`}
-      <p class="muted" style="margin:8px 0 0;"><a href="/check/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
-  }
-
-  scanBtn.addEventListener("click", async () => {
-    if (!me) return;
-    scanBtn.disabled = true; scanBtn.textContent = "세는 중…";
-    let i = 0; const dt = setInterval(() => { scanBtn.textContent = "세는 중" + [".", "..", "..."][i++ % 3]; }, 420);
-    try {
-      const r = await fetch(`/check/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
-      if (!r.ok) throw new Error(r.status);
-      const d = await r.json();
-      try { sessionStorage.setItem("veilo.scan." + me.user_ref, JSON.stringify(d)); } catch {}
-      renderK(d);
-    } catch {
-      scanBtn.disabled = false; scanBtn.textContent = "실패 — 다시 세어 보기";
-    } finally { clearInterval(dt); }
-  });
-  sel && sel.addEventListener("change", () => { scanBtn.hidden = false; loadWho(); });
-  loadWho();
-})();
 </script>
 {% endblock %}

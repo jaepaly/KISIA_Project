@@ -40,15 +40,17 @@
     const d = await r.json();
     const post = (d.posts || [])[0] || {};
     const spans = (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other");
-    const k = ((d.specificity || {}).output || {}).k;
+    const spec = ((d.specificity || {}).output || {});
+    const k = spec.k;
     // 바꿔 쓰기 후보 — span_id 별로 묶는다 (조사까지 맞춘 suggestion · residual_risk none|partial)
     const rewrites = new Map();
     for (const rw of ((d.stage2 || {}).output || {}).rewrites || []) {
       if (!rewrites.has(rw.span_id)) rewrites.set(rw.span_id, []);
       rewrites.get(rw.span_id).push(rw);
     }
-    return { spans, k, rewrites };
+    return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk };
   }
+  window.padoCheck = check;   // 다른 스크립트(계정 글 + 초안 합산)도 같은 경로를 쓴다
 
   // 후보가 없는 유형 — 고치는 방향 한 줄 (분석 앱 action.html MANUAL_TIP 의 짧은 판)
   const TIP = {
@@ -65,7 +67,7 @@
 
   /* 실시간 — 타자가 멈추고 delay 뒤 자동 점검. 서버 보호: 디바운스 · 이전 요청 취소 · minChars 미만 생략 · 같은 글 재요청 안 함.
      padoLive({ textarea, backdrop, chip, warn?, delay=800, minChars=20 }) */
-  window.padoLive = function ({ textarea, backdrop, chip, warn, pick, delay = 800, minChars = 20 }) {
+  window.padoLive = function ({ textarea, backdrop, chip, warn, pick, onResult, delay = 800, minChars = 20 }) {
     let timer = null, ctrl = null, lastText = null;
     let cur = { spans: [], rewrites: new Map() };   // 마지막 응답 — 형광 누르기가 쓴다
     let undo = null;                                 // { before, after } — 바꾼 직후 되돌리기
@@ -85,16 +87,19 @@
       const text = textarea.value;
       if (text === lastText) return;
       if (text.trim().length < minChars) {
-        lastText = text; cur = { spans: [], rewrites: new Map() }; paint(text, []); setChip("", ""); if (warn) warn.hidden = true; hidePick(); return;
+        lastText = text; cur = { spans: [], rewrites: new Map() }; paint(text, []); setChip("", ""); if (warn) warn.hidden = true; hidePick();
+        if (onResult) onResult(null);
+        return;
       }
       if (ctrl) ctrl.abort();
       ctrl = new AbortController();
       setChip("확인 중<span class=\"dots\"></span>", "busy");
       try {
-        const { spans, k, rewrites } = await check(text, ctrl.signal);
+        const { spans, k, rewrites, steps, risk } = await check(text, ctrl.signal);
         if (textarea.value !== text) return;   // 응답 오는 사이 또 바뀜 — 다음 턴이 처리
         lastText = text; cur = { spans, rewrites };
         paint(text, spans);   // cur 를 먼저 — paint 가 후보 유무를 본다
+        if (onResult) onResult({ spans, k, steps, risk, text });
         if (!spans.length) {
           setChip("읽히는 단서 없음", "ok"); if (warn) warn.hidden = true; hidePick();
         } else {
