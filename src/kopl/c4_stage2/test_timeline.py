@@ -39,7 +39,6 @@ def test_marks_keep_channel_offsets():
     {"body": "26.09.03 오늘은 쉬었다"},                     # 차수가 없다
     {"body": "오늘 점수는 4.5점, 3.5km 걸었다"},             # 소수 · 거리
     {"body": "9월 3일 출근 18일차"},                         # 연도를 모르는 날짜만 있으면 역산하지 않는다
-    {"body": "26.09.03 회의 18일차"},                        # 묶을 수 있는 사건 말이 아니다
     {"body": "버전 12.2.3 운동 3일차"},                      # 버전 번호 (Codex 10/9)
     {"body": "24.5.1kg 운동 3일차"},                         # 단위가 붙은 수
     {"body": "1.2.3.4 운동 3일차"},
@@ -48,6 +47,13 @@ def test_marks_keep_channel_offsets():
 ])
 def test_no_marks(texts):
     assert find_marks(texts) == []
+
+
+def test_모르는_사건_말_글_하나는_차수는_잡아도_내지_않는다():
+    """「회의 18일차」 — 예전엔 「회」가 단위 필터에 걸려 날짜째 빠졌다(우연히 통과). 지금은 차수는 잡고 infer_starts 가 거른다 (#331 리뷰 ②)"""
+    marks = find_marks({"body": "26.09.03 회의 18일차"})
+    assert [m["event"] for m in marks] == ["회의"]
+    assert infer_starts({"p": marks}) == []
 
 
 def test_date_in_title_and_count_on_next_line_pair():
@@ -151,4 +157,38 @@ def test_상한은_역산_전에_자른다(monkeypatch):
     marks = {f"p{i}": find_marks({"body": "운동 3일차"}, "2026-03-04") for i in range(1000)}
     tl.infer_starts(marks)
     assert len(calls) <= tl._MAX_MARKS
+
+
+# ── #331 리뷰 (B · 10/9) 반례 ─────────────────────────────────────────────
+def test_채널을_넘는_차수는_차수_채널_안의_좌표로():
+    texts = {"title": "26.09.03 출근", "body": "18일차"}
+    (m,) = find_marks(texts)
+    assert m["event"] == "출근" and m["date"] == "2026-09-03"
+    assert (m["text_id"], m["start"], m["end"], m["value"]) == ("body", 0, 4, "18일차")
+    assert texts[m["text_id"]][m["start"]:m["end"]] == m["value"]
+    assert texts[m["date_text_id"]][m["date_start"]:m["date_end"]] == m["date_value"]
+
+
+@pytest.mark.parametrize("body", ["26.09.03 점심 먹고 운동 3일차", "26.09.03 회의 후 운동 3일차",
+                                  "26.09.03 명동에서 운동 3일차", "26.09.03 분당에서 운동 3일차"])
+def test_날짜_뒤_일반_단어를_단위로_오인하지_않는다(body):
+    (m,) = find_marks({"body": body})
+    assert m["anchor"] == "text" and m["date"] == "2026-09-03"
+
+
+@pytest.mark.parametrize("body", ["24.5.1점 받았다", "24.5.1명 참석", "24.5.1kg으로"])
+def test_붙은_단위는_여전히_날짜가_아니다(body):
+    assert find_marks({"body": body + " 운동 3일차"}) == []
+
+
+@pytest.mark.parametrize("post_date", ["0001-01-01", "9999-12-31"])
+def test_날짜_끝값에서도_예외_없이_빈_결과(post_date):
+    marks = {"p1": find_marks({"body": "운동 1일차"}, post_date), "p2": find_marks({"body": "운동 2일차"}, post_date)}
+    assert infer_starts(marks) == []
+
+
+def test_D플러스_숫자를_자르지_않는다():
+    (m,) = find_marks({"body": "2026.10.01 운동 D+12345"})
+    assert m["value"].endswith("12345") and m["n"] == 12346
+    assert infer_starts({"p": [m]}) == []  # 차수 상한(3,660)으로 빠진다
 
