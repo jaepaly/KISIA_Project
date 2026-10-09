@@ -11,7 +11,9 @@ import requests
 DEFAULT_BASE = "http://localhost:3000"
 
 
-def load(user_ref: str, base: str = DEFAULT_BASE) -> dict:
-    r = requests.get(f"{base}/api/export/{user_ref}", timeout=5)
+def load(user_ref: str, base: str = DEFAULT_BASE, session_id: str | None = None) -> dict:
+    # 가상 SNS 는 방문자별 사본을 쓴다 — 브라우저가 보낸 세션 ID 를 넘겨야 그 사람이 본 글을 읽는다
+    headers = {"X-Veilo-Session": session_id} if session_id else {}
+    r = requests.get(f"{base}/api/export/{user_ref}", timeout=5, headers=headers)
     r.raise_for_status()
     return r.json()

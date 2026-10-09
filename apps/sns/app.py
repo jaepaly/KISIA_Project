@@ -38,9 +38,85 @@ def _hue(s: str) -> int:
     return int.from_bytes(hashlib.md5((s or "").encode("utf-8")).digest()[:2], "big") % 360
 
 
+# ── 방문자별 격리 — 공용 테스트 서버에서 한 사람의 수정(비공개·위치태그·프로필·새 글)이 남에게 보이지 않게 ──
+# 첫 방문에 쿠키 veilo_sid 를 주고, 그 방문자의 요청은 시드 사본을 복사한 sessions/<sid>.db 로 보낸다.
+# 시드 사본(sns.seed.db)이 없으면 꺼진다 — 로컬 개발은 지금처럼 DB 하나.
+# 파도풀 분석기는 같은 도메인이라 쿠키를 받고, export 를 부를 때 X-Veilo-Session 헤더로 넘긴다.
+import re as _re
+import shutil as _shutil
+import time as _time
+import uuid as _uuid
+from pathlib import Path as _Path
+
+SESSION_COOKIE = "veilo_sid"
+_SID_RE = _re.compile(r"^[0-9a-f]{16,32}$")
+SESSION_IDLE_SECONDS = 48 * 3600
+
+
+def _seed_path() -> _Path:
+    from db import db_path
+    return _Path(os.environ.get("SNS_SEED_DB") or db_path().with_name("sns.seed.db"))
+
+
+def _session_dir() -> _Path:
+    from db import db_path
+    return _Path(os.environ.get("SNS_SESSION_DIR") or db_path().with_name("sessions"))
+
+
+def isolation_on() -> bool:
+    return _seed_path().exists()
+
+
+def _sid() -> str | None:
+    """쿠키 → 헤더(분석기가 넘김) → 쿼리 순. 형식이 어긋나면 없는 것으로."""
+    s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session") or request.args.get("sid")
+    return s if s and _SID_RE.match(s) else None
+
+
+def _session_db_path(sid: str) -> _Path:
+    d = _session_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    p = d / f"{sid}.db"
+    if not p.exists():
+        _shutil.copyfile(_seed_path(), p)
+        _sweep_sessions(d)
+    return p
+
+
+def _sweep_sessions(d: _Path) -> None:
+    """이틀 안 쓴 사본은 지운다 — 새 세션이 생길 때만 돈다."""
+    cutoff = _time.time() - SESSION_IDLE_SECONDS
+    for f in d.glob("*.db"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+        except OSError:
+            pass
+
+
+@app.before_request
+def _ensure_session() -> None:
+    if not isolation_on():
+        return
+    sid = _sid()
+    if sid is None and not request.path.startswith("/api/"):   # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB
+        sid = _uuid.uuid4().hex[:24]
+        g.new_sid = sid
+    g.sid = sid
+
+
+@app.after_request
+def _set_session_cookie(resp):
+    if getattr(g, "new_sid", None):
+        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=7 * 24 * 3600, path="/", samesite="Lax",
+                        httponly=True, secure=request.is_secure)
+    return resp
+
+
 def db() -> sqlite3.Connection:
     if "db" not in g:
-        g.db = connect()
+        sid = getattr(g, "sid", None)
+        g.db = connect(_session_db_path(sid)) if (sid and isolation_on()) else connect()
     return g.db
 
 
@@ -281,8 +357,7 @@ def reset_author(user_ref: str):
     a = db().execute("SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
     if a is None:
         abort(404)
-    live = db().execute("PRAGMA database_list").fetchone()[2]
-    seed = _Path(os.environ.get("SNS_SEED_DB") or _Path(live).with_name("sns.seed.db"))
+    seed = _seed_path()
     if not seed.exists():
         abort(503, "시드 사본(sns.seed.db)이 없어 되돌릴 수 없습니다")
     aid, c = a["author_id"], db()
