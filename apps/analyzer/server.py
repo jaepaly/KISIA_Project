@@ -15,6 +15,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from apps.analyzer import engines as engine
+from kopl.c4_stage2.links import find_direct_identifiers
 from apps.analyzer.adapters import file_adapter, sns_adapter
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
@@ -44,6 +45,14 @@ def _detect_input(post: dict) -> dict:
     record = {"post_id": post["post_id"], "title": post.get("title"), "body": post.get("body") or "",
               "photo_captions": captions}
     return {k: v for k, v in record.items() if v not in (None, [])}
+
+
+def _channels(post: dict) -> dict[str, str]:
+    """화면(common.js channelsOf)과 같은 채널 이름 — title · body · photo_caption:N (빈 캡션도 번호를 지킨다)"""
+    out = {"title": post.get("title") or "", "body": post.get("body") or ""}
+    for i, ph in enumerate(post.get("photos") or []):
+        out[f"photo_caption:{i}"] = (ph.get("caption") if isinstance(ph, dict) else ph) or ""
+    return out
 
 
 def _check_posts(posts: list[dict]) -> None:
@@ -76,6 +85,9 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
         "contribution": contrib,
         "k_by_post": engine.per_post_k(posts, spans_by_post),
         "stage2": stage2,
+        # 계정 링크 · 이메일 · 전화 · @아이디 — 하나만으로 글쓴이에게 닿는다. k 로 잴 대상이 아니라 위험 점수와 별개로 먼저 안내한다
+        # (스팬 계약 밖 · 화면 전용). 글마다 [{text_id, start, end, kind, label, value}]
+        "direct_identifiers": {p["post_id"]: find_direct_identifiers(_channels(p)) for p in posts},
     }
 
 

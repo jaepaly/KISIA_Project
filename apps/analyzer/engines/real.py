@@ -3,7 +3,7 @@ mock에서 그대로 가져와 쓴다 (docs/roles/howto/e-integration.md §3).
 
 c1(스팬 탐지)과 stage2(2단 판정 + 추천 엔진 v1)가 실제다. c1 은 B 의 v1 체크포인트를 experiments/exp06-finetune/infer.py
 의 SpanDetector 로 부른다. 가이드 예시(kopl.c1_span.predict)와 다르게 가는 이유:
-  - local_files_only=True — 체크포인트를 허브에서 받으러 나가지 않는다 (외부 요청 0건)
+  - local_files_only=True + HF_HUB_OFFLINE 기본값 — 체크포인트를 허브에서 받으러 나가지 않고 허브에 확인 요청도 안 한다 (외부 요청 0건)
   - 체크포인트가 없으면 에러 — kopl 쪽은 조용히 목 결과로 폴백해 진짜와 구분이 안 된다
   - 임계값 0.7 · 긴 글 창 나눔 — W7 성능 수치(#276)를 잰 경로와 같다
 
@@ -18,6 +18,13 @@ import threading
 import unicodedata
 from collections import OrderedDict
 from pathlib import Path
+
+# 모델 허브 접속을 아예 끈다 — 실제 모드는 로컬 가중치만 쓴다 (외부 요청 0건).
+# local_files_only=True 만으로는 부족했다: GPU 경로(2단 Qwen3-4B + QLoRA)에서 첫 기동 때 huggingface.co 로
+# 연결이 한 번 나갔다 (10/7 PM 측정 · 이후 재현 안 됨 · 라이브러리의 확인 요청으로 보임). transformers 를
+# 불러오기 전에 정해야 하므로 이 파일 맨 위에 둔다. 굳이 허브를 쓰려면 환경변수로 0 을 주면 된다
+for _k in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE", "HF_HUB_DISABLE_TELEMETRY", "HF_HUB_DISABLE_IMPLICIT_TOKEN"):
+    os.environ.setdefault(_k, "1")
 
 from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
 from . import c1_rules as _c1_rules

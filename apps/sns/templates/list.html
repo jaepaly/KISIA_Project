@@ -1,35 +1,52 @@
 {% extends "base.html" %}
-{% block title %}글 목록 — Veilo{% endblock %}
-{% block content %}
+{% block title %}Veilo{% endblock %}
 
-<form method="get" action="/" style="margin-bottom:16px;">
-  <label for="author">작성자 필터</label>
-  <select name="author" id="author" onchange="this.form.submit()">
-    <option value="">전체</option>
-    {% for a in authors %}
-      <option value="{{ a.author_id }}" {% if a.author_id == selected_author %}selected{% endif %}>
-        {{ a.nickname }}
-      </option>
-    {% endfor %}
-  </select>
-</form>
+{% block body %}
+<div class="ut-shell">
+  <aside class="ut-side">
+    <div class="ut-side-in">
+      <div class="rail-card rv">
+        <div class="rail-h">작성자 필터 <span class="cnt">{{ authors|length }}명</span></div>
+        <form method="get" action="/">
+          <select name="author" onchange="this.form.submit()"
+            style="width:100%;height:40px;border:1px solid var(--ut-line);border-radius:10px;
+                   background:var(--ut-panel2);font:inherit;font-size:13px;color:var(--ut-ink);
+                   padding:0 12px;cursor:pointer;">
+            <option value="">전체 보기</option>
+            {% for a in authors %}
+            <option value="{{ a.author_id }}"
+              {% if a.author_id == selected_author %}selected{% endif %}>
+              {{ a.nickname }}
+            </option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
 
-{% if not posts %}
-  <p class="empty">아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.</p>
-{% endif %}
-
-{% for p in posts %}
-  <div class="post-card {% if p.visibility == 'private' %}private{% endif %}">
-    <a class="post-title" href="/posts/{{ p.post_id }}">
-      {{ p.title or "(제목 없음)" }}
-    </a>
-    {% if p.visibility == 'private' %}<span class="badge private">비공개</span>{% endif %}
-    <div class="post-meta">
-      <a href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
-      · {{ p.created_at[:16].replace('T', ' ') }}
-      {% if p.geo_tag %}· 📍{{ p.geo_tag }}{% endif %}
+      <div class="rail-card rail-me rv">
+        <div class="rail-who">
+          <span class="ut-av lg" style="background:var(--ut-earth-soft);">
+            <img src="/static/veilo-symbol.svg" alt="" width="38" height="38">
+          </span>
+          <div>
+            <span class="nm" style="font-size:16px;">Veilo</span>
+            <div class="handle">가상 SNS 시연 플랫폼</div>
+            <div class="bio">내 글이 나를 얼마나 특정하는지 알고 싶다면, 파도풀에서 확인해 보세요.</div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-{% endfor %}
+  </aside>
 
+  <main class="ut-main">
+    <div class="ut-wrap" id="feed">
+      {% if not posts %}
+      <p style="color:var(--ut-ink3);text-align:center;padding:48px 0;">
+        아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.
+      </p>
+      {% endif %}
+      {% include "_cards.html" %}
+    </div>
+  </main>
+</div>
 {% endblock %}

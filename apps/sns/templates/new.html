@@ -1,49 +1,161 @@
 {% extends "base.html" %}
 {% block title %}글 작성 — Veilo{% endblock %}
-{% block content %}
 
-<h1>글 작성</h1>
+{% block head %}
+<style>
+  /* 실시간 점검 — textarea 뒤에 같은 글꼴·여백의 판을 깔고 거기에 형광을 칠한다. 글자는 투명, 형광만 보인다 */
+  .pado-wrap{position:relative}
+  .pado-wrap textarea{position:relative;z-index:1;background:transparent!important;width:100%;display:block}
+  .pado-backdrop{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+    border:1px solid transparent;border-radius:10px;background:var(--ut-panel2);
+    font:inherit;font-size:14px;line-height:1.7;padding:12px 14px;
+    white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;color:transparent}
+  .pado-backdrop mark{color:transparent;border-radius:3px;padding:1px 0;box-shadow:inset 0 -2px 0 rgba(62,58,54,.18)}
+  .pado-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .pado-chip{font-size:12px;color:var(--ut-ink3);min-height:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;transition:color .2s}
+  .pado-chip.hit{color:var(--ut-earth-ink)}
+  .pado-chip.ok{color:var(--ut-leaf)}
+  .pado-chip.err{color:var(--ut-red)}
+  .pado-chip .types{font-size:11px;color:var(--ut-ink3);background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:99px;padding:1px 8px}
+  .pado-chip .dots::after{content:"…";animation:pado-dots 1.2s steps(3,end) infinite}
+  @keyframes pado-dots{0%{content:"."}33%{content:".."}66%{content:"..."}}
+  .pado-warn{margin:10px 0 0;font-size:13px;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
+    border:1px solid var(--ut-earth);border-radius:10px;padding:8px 12px;animation:pado-in .25s var(--ease)}
+  @keyframes pado-in{from{opacity:0;transform:translateY(-4px)}}
+  @media (prefers-reduced-motion:reduce){.pado-chip .dots::after{animation:none;content:"…"}.pado-warn{animation:none}}
+</style>
+{% endblock %}
 
-{% if not authors %}
-  <p class="empty">
-    작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다
-    (W4 시딩 전이라면 테스트용으로 하나 넣어보세요).
-  </p>
-{% endif %}
+{% block body %}
+<div class="ut-shell no-rail">
+  <main class="ut-main">
+    <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
+      <div class="ut-h"><h1>글 작성</h1></div>
 
-<form method="post" action="/posts">
-  <label for="author_id">작성자</label>
-  <select name="author_id" id="author_id" required>
-    {% for a in authors %}
-      <option value="{{ a.author_id }}">{{ a.nickname }}</option>
-    {% endfor %}
-  </select>
+      {% if not authors %}
+      <div class="ut-card" style="color:var(--ut-ink3);">
+        작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다.
+      </div>
+      {% endif %}
 
-  <label for="title">제목 (선택)</label>
-  <input type="text" name="title" id="title">
+      <div class="ut-card rv">
+        <form method="post" action="/posts">
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자</label>
+            <select name="author_id" required
+                    style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                           background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
+              {% for a in authors %}
+              <option value="{{ a.author_id }}">{{ a.nickname }}</option>
+              {% endfor %}
+            </select>
+          </div>
 
-  <label for="body">본문</label>
-  <textarea name="body" id="body" rows="8" required></textarea>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">제목 (선택)</label>
+            <input type="text" name="title" id="title"
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <label for="geo_tag">위치 태그 (선택)</label>
-  <input type="text" name="geo_tag" id="geo_tag" placeholder="예: 용인시 기흥구">
+          <div style="margin-bottom:14px;">
+            <div class="pado-head">
+              <label for="body" style="font-size:12px;font-weight:700;color:var(--ut-ink3);">본문</label>
+              <span class="pado-chip" id="padoChip" aria-live="polite"></span>
+            </div>
+            <div class="pado-wrap">
+              <div class="pado-backdrop" id="padoBackdrop" aria-hidden="true"></div>
+              <textarea name="body" id="body" rows="8" required
+                        style="border:1px solid var(--ut-line);border-radius:10px;
+                               background:var(--ut-panel2);font:inherit;font-size:14px;
+                               padding:12px 14px;resize:vertical;line-height:1.7;"></textarea>
+            </div>
+            <p class="pado-warn" id="padoWarn" hidden></p>
+          </div>
 
-  <label for="captions">사진 캡션 (선택, 한 줄에 하나씩 — 순서대로 사진 0, 1, 2...로 들어갑니다)</label>
-  <textarea name="captions" id="captions" rows="3" placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"></textarea>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">위치 태그 (선택)</label>
+            <input type="text" name="geo_tag"
+                   placeholder="예: 용인시 기흥구"
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <label for="created_at">
-    작성 시각 — 실제 SNS엔 없는 기능이지만 여기서는 직접 바꿀 수 있습니다
-    (새벽 시간대에 쓰는 패턴 등을 시연하려면 필요합니다)
-  </label>
-  <input type="datetime-local" name="created_at" id="created_at" value="{{ now }}" required>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">
+              사진 캡션 (선택, 한 줄에 하나씩)
+            </label>
+            <textarea name="captions" rows="3"
+                      placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"
+                      style="border:1px solid var(--ut-line);border-radius:10px;
+                             background:var(--ut-panel2);font:inherit;font-size:13px;
+                             padding:10px 14px;resize:vertical;"></textarea>
+          </div>
 
-  <label for="visibility">공개 범위</label>
-  <select name="visibility" id="visibility">
-    <option value="public">공개</option>
-    <option value="private">비공개</option>
-  </select>
+          <div style="margin-bottom:14px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">
+              작성 시각
+            </label>
+            <input type="datetime-local" name="created_at" value="{{ now }}" required
+                   style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                          background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
+          </div>
 
-  <button type="submit" {% if not authors %}disabled{% endif %}>올리기</button>
-</form>
+          <div style="margin-bottom:20px;">
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">공개 범위</label>
+            <select name="visibility"
+                    style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
+                           background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
+              <option value="public">🌐 공개</option>
+              <option value="private">🔒 비공개</option>
+            </select>
+          </div>
 
+          <button type="submit" {% if not authors %}disabled{% endif %}
+                  style="width:100%;height:48px;font-size:15px;">올리기</button>
+        </form>
+      </div>
+
+      {# ── 파도풀 위젯 ── #}
+      <div class="ut-card rv" id="padoCard"
+           style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-weight:700;font-size:15px;color:var(--ut-ink);">🌊 파도풀</span>
+          <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
+                       border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
+        </div>
+        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">쓰는 동안 본문 위에 형광으로 표시됩니다. 자세한 결과는 여기서.</p>
+        <button type="button" id="padoBtn" class="fx-wave"
+                style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
+                       height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
+          이 글 점검
+        </button>
+        <div id="padoOut" style="margin-top:14px;font-size:14px;"></div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/pado.js"></script>
+<script>
+padoWidget({
+  btn: document.getElementById("padoBtn"),
+  out: document.getElementById("padoOut"),
+  getText: () => document.getElementById("body").value
+});
+// 쓰는 동안 실시간 — 타자가 0.8초 멈추면 자동 점검, 본문 위에 형광
+padoLive({
+  textarea: document.getElementById("body"),
+  backdrop: document.getElementById("padoBackdrop"),
+  chip: document.getElementById("padoChip"),
+  warn: document.getElementById("padoWarn")
+});
+// textarea 를 세로로 늘리면 뒤판도 따라간다
+new ResizeObserver(() => {
+  const t = document.getElementById("body"), b = document.getElementById("padoBackdrop");
+  b.style.height = t.offsetHeight + "px";
+}).observe(document.getElementById("body"));
+</script>
 {% endblock %}
