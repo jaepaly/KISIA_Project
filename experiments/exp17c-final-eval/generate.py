@@ -70,7 +70,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--env", required=True)
     ap.add_argument("--models", default="gemini-3.6-flash,gemini-3.7-flash,gemini-3.8-flash,gemini-flash-latest,gemini-flash-lite-latest",
-                    help="무료 등급 한도가 모델당 하루 20회라, 한도(429)에 걸리면 다음 Gemini 모델로 넘어간다 (글마다 gen_model 기록)")
+                    help="한도·과부하(429·503) 응답이 오면 다음 Gemini 모델로 넘어간다 (글마다 gen_model 기록)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--interval", type=float, default=7.0, help="호출 간격(초) — 분당 한도(429) 회피")
     a = ap.parse_args()
