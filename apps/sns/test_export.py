@@ -131,6 +131,16 @@ def test_post_time_이_created_at_에서_파생된다(client):
     assert p["activity_meta"]["post_time"] == "02:10"
 
 
+def test_post_date_는_날짜만_activity_meta_밖에(client):
+    """시점 역산의 기준점(#332). 시각까지 내보내면 조치 ②로 post_time 을 감춰도 새므로 날짜만."""
+    d = get(client)
+    for p in d["posts"]:
+        assert re.match(r"^\d{4}-\d{2}-\d{2}$", p["post_date"]), p["post_date"]
+        assert "post_date" not in p["activity_meta"]
+    p = next(x for x in d["posts"] if x["post_id"] == "S01_b02")
+    assert p["post_date"] == "2026-03-11"
+
+
 # ── 조치 ③ 비공개 ──────────────────────────────────────────────────
 def test_비공개_글은_안_나간다(client):
     """조치 → 재스캔 → 위험도 하락이 실제로 일어나려면 여기서 빠져야 한다."""

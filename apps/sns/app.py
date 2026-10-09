@@ -252,6 +252,9 @@ def export(user_ref: str):
             "title": r["title"],          # 채널 title
             "body": r["body"],            # 채널 body
             "photos": caps.get(r["post_id"], []),   # 채널 photo_caption:N — 순서 보존
+            # 작성 날짜만 (YYYY-MM-DD) — 「작성일 + n주차」 시점 역산의 기준점 (#332).
+            # 시각은 넣지 않는다: 시각은 조치 ②가 감추는 activity_meta.post_time 하나에만 둔다
+            "post_date": r["created_at"][:10],
             "activity_meta": {
                 "nickname": a["nickname"],
                 "geo_tag": r["geo_tag"],
