@@ -1,8 +1,8 @@
 """B·C·D 완성 후 여기로 교체한다. 부분 교체 가능 — 아직 안 온 함수는
 mock에서 그대로 가져와 쓴다 (docs/roles/howto/e-integration.md §3).
 
-c1(스팬 탐지)과 stage2(2단 판정 + 추천 엔진 v1)가 실제다. c1 은 B 의 v1 체크포인트를 experiments/exp06-finetune/infer.py
-의 SpanDetector 로 부른다. 가이드 예시(kopl.c1_span.predict)와 다르게 가는 이유:
+c1(스팬 탐지)과 stage2(2단 판정 + 추천 엔진 v1)가 실제다. c1 은 B 의 **기준선 v2**(교사 라벨 재학습 + 명시 규칙 · DEC-011 ·
+#310 · exp17b 본인 재현율 0.699 · exp17c 0.752) 체크포인트를 experiments/exp06-finetune/infer.py 의 SpanDetector 로 부른다. 가이드 예시(kopl.c1_span.predict)와 다르게 가는 이유:
   - local_files_only=True + HF_HUB_OFFLINE 기본값 — 체크포인트를 허브에서 받으러 나가지 않고 허브에 확인 요청도 안 한다 (외부 요청 0건)
   - 체크포인트가 없으면 에러 — kopl 쪽은 조용히 목 결과로 폴백해 진짜와 구분이 안 된다
   - 임계값 0.7 · 긴 글 창 나눔 — W7 성능 수치(#276)를 잰 경로와 같다
@@ -31,8 +31,10 @@ from . import c1_rules as _c1_rules
 
 _ROOT = Path(__file__).resolve().parents[3]
 _EXP06 = _ROOT / "experiments" / "exp06-finetune"
-_DEFAULT_CHECKPOINT = _EXP06 / "runs" / "v1_lr5e-5" / "checkpoint-epoch-10"
-_MIN_SPAN_SCORE = 0.7  # v1 운용 임계값 (#266 B 코멘트)
+# 기준선 v2 — 10/8 확정 (#310 · DEC-011) · exp17c 에서 후보(C그룹 + o-weight 0.05)보다 낫지 않아 유지 (#322 · 10/9).
+# 예전 v1(`v1_lr5e-5/checkpoint-epoch-10`)로 비교하려면 C1_CHECKPOINT_DIR 로 지정
+_DEFAULT_CHECKPOINT = _EXP06 / "runs" / "variant_base_20261008" / "checkpoint-epoch-10"
+_MIN_SPAN_SCORE = 0.7  # 운용 임계값 — v1 (#266) · v2 (#310 · exp17b/exp17c 채점 조건) 같음
 
 # infer.py 는 같은 폴더의 train·prepare_bio 와 kopl.c1_span.schema 를 import 한다
 for _path in (_EXP06, _ROOT / "src"):
@@ -105,7 +107,7 @@ def detect_spans(post: dict) -> dict:
     record = {key: post[key] for key in ("post_id", "title", "body") if post.get(key) is not None}
     if post.get("photo_captions") is not None or post.get("photos"):
         record["photo_captions"] = _captions(post)
-    result = _c1_rules.detect(_DETECTOR, record, _attributes)  # C1_RULES=1 이면 명시 규칙 병합 (기본 꺼짐)
+    result = _c1_rules.detect(_DETECTOR, record, _attributes)  # 명시 규칙 병합 — 기준선 v2 의 일부라 기본 켬 (C1_RULES=0 이면 끔)
     with _SPAN_CACHE_LOCK:
         _SPAN_CACHE[record["post_id"]] = (record, result)
         _SPAN_CACHE.move_to_end(record["post_id"])

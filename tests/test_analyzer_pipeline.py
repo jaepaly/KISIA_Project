@@ -256,3 +256,18 @@ def test_server_reports_direct_identifiers_per_channel(monkeypatch):
     assert [(f["text_id"], f["kind"]) for f in p1] == [("body", "account_url"), ("photo_caption:1", "phone")]
     assert out["direct_identifiers"]["p2"] == []
 
+
+
+def test_c1_defaults_are_baseline_v2(monkeypatch):
+    """앱 기본 = 기준선 v2(재학습 체크포인트 + 명시 규칙 켬) — exp17b · exp17c 를 잰 구성과 같아야 한다 (#310 · #322)."""
+    import importlib
+    from apps.analyzer.engines import c1_rules
+
+    monkeypatch.delenv("C1_RULES", raising=False)
+    assert importlib.reload(c1_rules).enabled() is True
+    monkeypatch.setenv("C1_RULES", "0")
+    assert importlib.reload(c1_rules).enabled() is False
+    monkeypatch.delenv("C1_RULES", raising=False)
+    importlib.reload(c1_rules)
+    src = (ROOT / "apps" / "analyzer" / "engines" / "real.py").read_text(encoding="utf-8")
+    assert '"variant_base_20261008" / "checkpoint-epoch-10"' in src
