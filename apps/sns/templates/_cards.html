@@ -22,6 +22,15 @@
     {{ p.body | truncate(110, True, '…') }}
   </p>
   {% endif %}
+  {% if p.photos %}
+  {# 사진 띠 — 가상 SNS 라 실제 사진 대신 자리 그림. 캡션은 분석 대상 채널(photo_caption:N)이라 그대로 보여 준다 #}
+  <div class="ut-card-photos" aria-label="사진 {{ p.photos|length }}장">
+    {% for cap in p.photos[:3] %}
+    <figure class="pv"><div class="ph"><span>🖼</span></div>{% if cap %}<figcaption><span class="cap-lab">사진 설명</span>{{ cap }}</figcaption>{% endif %}</figure>
+    {% endfor %}
+    {% if p.photos|length > 3 %}<span class="more">+{{ p.photos|length - 3 }}</span>{% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endfor %}
 {% if next_url %}

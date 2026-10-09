@@ -73,7 +73,16 @@ def index():
     args += [PAGE_SIZE + 1, (page - 1) * PAGE_SIZE]
     try:
         rows = db().execute(q, args).fetchall()
-        posts, has_more = rows[:PAGE_SIZE], len(rows) > PAGE_SIZE
+        posts, has_more = [dict(r) for r in rows[:PAGE_SIZE]], len(rows) > PAGE_SIZE
+        # 사진 캡션 띠 — 카드를 안 열어도 사진이 있고 무엇인지 보이게 (데모 list.html 과 같은 모양)
+        if posts:
+            ids = [p["post_id"] for p in posts]
+            caps: dict[str, list[str]] = {}
+            for r in db().execute(
+                    f"SELECT post_id, caption FROM photos WHERE post_id IN ({','.join('?' * len(ids))}) ORDER BY post_id, idx", ids):
+                caps.setdefault(r["post_id"], []).append(r["caption"])
+            for p in posts:
+                p["photos"] = caps.get(p["post_id"], [])
         next_url = None
         if has_more:
             next_url = f"/?page={page + 1}" + (f"&author={author_id}" if author_id else "")
