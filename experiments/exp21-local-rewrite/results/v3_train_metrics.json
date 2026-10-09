@@ -1,0 +1,115 @@
+{
+  "model": "Qwen/Qwen3-4B",
+  "rank": 16,
+  "max_len": 1408,
+  "grad_accum": 8,
+  "lr": 0.0002,
+  "epochs": 1,
+  "seed": 20260908,
+  "train_n": 791,
+  "train_dropped": 93,
+  "dev_n": 26,
+  "dev_dropped": 31,
+  "loss_curve": [
+    {
+      "update": 5,
+      "loss": 1.4301,
+      "sec": 161
+    },
+    {
+      "update": 10,
+      "loss": 0.6268,
+      "sec": 328
+    },
+    {
+      "update": 15,
+      "loss": 0.4293,
+      "sec": 483
+    },
+    {
+      "update": 20,
+      "loss": 0.4657,
+      "sec": 654
+    },
+    {
+      "update": 25,
+      "loss": 0.4744,
+      "sec": 820
+    },
+    {
+      "update": 30,
+      "loss": 0.3511,
+      "sec": 953
+    },
+    {
+      "update": 35,
+      "loss": 0.3742,
+      "sec": 1075
+    },
+    {
+      "update": 40,
+      "loss": 0.3067,
+      "sec": 1187
+    },
+    {
+      "update": 45,
+      "loss": 0.3476,
+      "sec": 1308
+    },
+    {
+      "update": 50,
+      "loss": 0.3304,
+      "sec": 1424
+    },
+    {
+      "update": 55,
+      "loss": 0.2651,
+      "sec": 1545
+    },
+    {
+      "update": 60,
+      "loss": 0.3268,
+      "sec": 1661
+    },
+    {
+      "update": 65,
+      "loss": 0.2864,
+      "sec": 1784
+    },
+    {
+      "update": 70,
+      "loss": 0.2542,
+      "sec": 1898
+    },
+    {
+      "update": 75,
+      "loss": 0.2591,
+      "sec": 2153
+    },
+    {
+      "update": 80,
+      "loss": 0.2504,
+      "sec": 2490
+    },
+    {
+      "update": 85,
+      "loss": 0.3629,
+      "sec": 2840
+    },
+    {
+      "update": 90,
+      "loss": 0.3748,
+      "sec": 3054
+    },
+    {
+      "update": 95,
+      "loss": 0.2834,
+      "sec": 3255
+    }
+  ],
+  "started_at": "2026-10-08T20:29:48",
+  "dev_loss_before": 1.9186,
+  "train_sec": 3436,
+  "vram_peak_gb": 6.11,
+  "dev_loss_after": 0.2991
+}

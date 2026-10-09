@@ -9,7 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from kopl.c4_stage2.infer import MODEL_VERSION, RULES_VERSION, analyze, build_user_prompt, validate_findings
+from kopl.c4_stage2.infer import (MODEL_MAX_SPANS, MODEL_MAX_SPANS_PER_TYPE, MODEL_VERSION, RULES_VERSION, analyze,
+                                  build_user_prompt, output_budget, select_for_model, validate_findings)
 from kopl.c4_stage2.rules import ATTRS, findings_from_spans
 
 USER = "u_0123abcd"
@@ -187,3 +188,86 @@ def test_recommendation_risk_matches_app_conditions() -> None:
     app = round(float(risk_total(conditions_from_posts(posts))), 2)
     out = analyze(USER, posts, mode="rules", target_risk=100.0)
     assert out["recommendation"]["projected"]["current_risk"] == app
+
+
+def _many_posts(n_posts: int = 8):
+    """글마다 JOB 5 · FAM 3(같은 「엄마」 되풀이) · COMMUTE 2 — 실제 계정처럼 스팬이 많은 입력"""
+    posts = []
+    for i in range(n_posts):
+        words = [("인턴", "JOB", "inferential"), ("출근", "JOB", "inferential"), ("부장님", "JOB", "inferential"),
+                 ("이사님", "JOB", "inferential"), ("간호사", "JOB", "explicit"),
+                 ("엄마", "FAM", "inferential"), ("엄마", "FAM", "inferential"), ("엄마", "FAM", "inferential"),
+                 ("지하철", "COMMUTE", "inferential"), ("퇴근길", "COMMUTE", "inferential")]
+        body, spans = "", []
+        for j, (w, t, lv) in enumerate(words):
+            start = len(body)
+            body += w + " 얘기. "
+            spans.append({"span_id": f"q{i}_s{j:02d}", "text_id": "body", "start": start, "end": start + len(w),
+                          "text": w, "type": t, "level": lv, "subject": "self"})
+        posts.append({"post_id": f"q{i}", "texts": {"body": body}, "geo_tag": None, "spans": spans})
+    return posts
+
+
+def test_model_input_is_capped_to_training_range() -> None:
+    _, full = build_user_prompt(USER, _many_posts())
+    _, capped = build_user_prompt(USER, _many_posts(), cap=True)
+    assert sum(len(e["spans"]) for e in full) == 80
+    spans = [s for e in capped for s in e["spans"]]
+    assert len(spans) <= MODEL_MAX_SPANS
+    by_type = {}
+    for s in spans:
+        by_type[s["type"]] = by_type.get(s["type"], 0) + 1
+    assert max(by_type.values()) <= MODEL_MAX_SPANS_PER_TYPE
+    assert set(by_type) == {"JOB", "FAM", "COMMUTE"}  # 한 유형이 자리를 독차지하지 않는다
+
+
+def test_selection_prefers_explicit_spreads_posts_and_drops_repeats() -> None:
+    _, full = build_user_prompt(USER, _many_posts())
+    capped = select_for_model(full)
+    jobs = [(e["post_id"], s["level"]) for e in capped for s in e["spans"] if s["type"] == "JOB"]
+    assert all(level == "explicit" for _, level in jobs)       # 명시 단서(간호사)가 먼저
+    assert len({pid for pid, _ in jobs}) == len(jobs)            # 여러 글에 퍼져 cross_post 를 살린다
+    for e in capped:                                             # 같은 글의 「엄마」 되풀이는 하나만
+        assert sum(1 for s in e["spans"] if s["type"] == "FAM") <= 1
+
+
+def test_small_input_is_unchanged_by_cap() -> None:
+    prompt_full, _ = build_user_prompt(USER, _posts())
+    prompt_cap, _ = build_user_prompt(USER, _posts(), cap=True)
+    assert prompt_full == prompt_cap
+
+
+def test_rules_fallback_uses_all_spans_and_budget_grows() -> None:
+    out = analyze(USER, _many_posts(), model=FakeModel('{"findings": {"age": '), mode="auto")
+    assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: model output truncated)"
+    assert out["findings"]["occupation"]["verdict"] != "abstain"
+    assert output_budget(2) == 700 and output_budget(24) == 850 and output_budget(500) == 1400
+
+
+def _entry(post_id, spans):
+    return {"post_id": post_id, "spans": [dict(span_id=f"{post_id}_s{i:02d}", text_id=tid, text=tok, type=ty, level=lv,
+                                               subject=sub) for i, (tid, tok, ty, lv, sub) in enumerate(spans)]}
+
+
+def test_repeat_keeps_best_ranked_and_channel_is_part_of_key() -> None:
+    # 같은 표현이 타인 → 본인 순으로 나와도 본인이 남는다
+    out = select_for_model([_entry("a", [("body", "[직업1]", "JOB", "explicit", "other"),
+                                         ("body", "[직업1]", "JOB", "explicit", "self")])])
+    assert [s["subject"] for s in out[0]["spans"]] == ["self"]
+    # 제목 [직업1] 과 본문 [직업1] 은 다른 표현이다 (채널마다 번호가 새로 붙는다)
+    out = select_for_model([_entry("a", [("title", "[직업1]", "JOB", "inferential", "self"),
+                                         ("body", "[직업1]", "JOB", "explicit", "self")])])
+    assert len(out[0]["spans"]) == 2
+
+
+def test_spreading_posts_never_beats_self_priority() -> None:
+    first = _entry("p0", [("body", f"[직업{i}]", "JOB", "explicit", "self") for i in range(1, 7)])
+    others = [_entry(f"p{i}", [("body", "[직업1]", "JOB", "inferential", "other")]) for i in range(1, 6)]
+    out = select_for_model([first, *others])
+    picked = [s for e in out for s in e["spans"]]
+    assert len(picked) == MODEL_MAX_SPANS_PER_TYPE and all(s["subject"] == "self" for s in picked)
+
+
+def test_selection_is_deterministic() -> None:
+    _, full = build_user_prompt(USER, _many_posts())
+    assert select_for_model(full) == select_for_model(full)

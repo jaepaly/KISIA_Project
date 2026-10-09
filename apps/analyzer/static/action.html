@@ -33,13 +33,19 @@ function renderActions(actions, data) {
   const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
   if (!actions.length) {
     // 목표(기본 40)보다 이미 낮으면 조치가 비는 게 정상이다 — 빈 화면 대신 이유를 보여 준다 (#319 리뷰 1번)
+    // 계정·연락처가 남아 있으면 「필요 없음」이라고 하지 않는다 — 위의 「먼저 지울 것」이 남은 조치다
     const r = data.stage2.output.recommendation.projected;
     const target = (data.stage2.input && data.stage2.input.risk && data.stage2.input.risk.target);
+    const strong = strongIdentifiers(data).length;
     if (r.target_met && target !== undefined && target !== null) {
+      if (strong) {
+        return `<p>위험 점수 ${esc(r.current_risk)}는 목표 ${esc(target)}보다 낮습니다. 그래도 <b>위의 「먼저 지울 것」은 처리하세요</b> —
+          점수와 별개로 계정·연락처에 바로 닿습니다.</p>`;
+      }
       return `<p>지금 위험 점수 ${esc(r.current_risk)}가 목표 ${esc(target)}보다 낮아 <b>추가 조치가 필요하지 않습니다.</b>
         더 줄이고 싶으면 아래 「어떤 글부터 내리면 좋을까」와 「표현 바꿔 쓰기」를 참고하세요.</p>`;
     }
-    return "<p>추천할 조치가 없습니다.</p>";
+    return `<p>추천할 조치가 없습니다.${strong ? " 위의 「먼저 지울 것」은 처리하세요." : ""}</p>`;
   }
   return actions.map(a => `
     <div class="card">
@@ -152,6 +158,7 @@ function render() {
     <h2>${esc(data.user_ref)}</h2>
     <p class="card">위험 점수 <b>${esc(rec.projected.current_risk)} → ${esc(rec.projected.projected_risk)}</b>
       (감소 ${rec.projected.reduction_pct === null || rec.projected.reduction_pct === undefined ? "—" : esc(rec.projected.reduction_pct) + "%"}, 목표 달성: ${rec.projected.target_met ? "예" : "아니오"})</p>
+    ${renderDirectIdentifiers(data, "먼저 지울 것 — 계정·연락처로 바로 연결되는 정보")}
     <h3>추천 조치 <small>— 위험 점수 기준</small></h3>
     ${renderActions(rec.actions, data)}
     ${renderUnpublishPath(data)}

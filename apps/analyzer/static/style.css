@@ -19,3 +19,7 @@ button { cursor: pointer; padding: 0.5rem 1rem; }
 input[type=text] { padding: 0.4rem; width: 220px; }
 footer { margin-top: 2rem; font-size: 0.8rem; color: #888; }
 .error { color: #a11; }
+
+/* 계정·연락처 경고 — 위험 점수와 별개로 먼저 보여 준다 */
+.card.warn { border-left: 4px solid #c0392b; background: #fdf2f1; }
+.card.warn code { word-break: break-all; }

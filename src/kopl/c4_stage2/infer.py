@@ -39,6 +39,12 @@ RULES_VERSION = "rules-v1"
 _ROOT = Path(__file__).resolve().parents[3]
 _DEFAULT_ADAPTER = _ROOT / "experiments" / "exp08-stage2-sft" / "results" / "adapter"
 _VERDICTS = {"specified", "narrowed", "weak_signal", "abstain"}
+# 모델 입력 상한 — v1 어댑터 학습 데이터는 입력당 스팬 중앙 4 · 최대 23, 한 유형 p90 5 였다 (exp08 train 342건).
+# 실제 계정은 수십~수백 개라 출력(근거 목록)이 700토큰을 넘겨 JSON 이 잘리고 규칙 폴백으로 떨어졌다 (실제 글 내부 시험 10/8 ·
+# 합성 재현: 스팬 39개 → 출력 700/700 잘림). 학습 범위 안으로 줄여 보낸다 — 규칙 판정·추천·k 는 전체 스팬을 그대로 쓴다
+MODEL_MAX_SPANS = 24
+MODEL_MAX_SPANS_PER_TYPE = 6
+_LEVEL_RANK = {"explicit": 0, "implicit": 1, "inferential": 2}
 _ABSTAIN_MAX_CONFIDENCE = 0.25
 
 # v1 어댑터가 학습한 system 프롬프트 그대로 (exp08 data/v1_train.jsonl). make_sft_v1.SYSTEM 은
@@ -85,10 +91,71 @@ def pseudonymize_spans(post: Mapping[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
-def build_user_prompt(user_ref: str, posts: Sequence[Mapping[str, Any]]) -> tuple[str, list[dict[str, Any]]]:
+def select_for_model(entries: Sequence[Mapping[str, Any]], *, max_spans: int = MODEL_MAX_SPANS,
+                     max_per_type: int = MODEL_MAX_SPANS_PER_TYPE) -> list[dict[str, Any]]:
+    """모델에 보낼 스팬을 학습 범위 안으로 고른다. 글 순서·글 안 순서는 원래대로 둔다.
+
+    - 같은 글 · 같은 채널에서 같은 유형 · 같은 표현이 되풀이되면(「엄마」 ×6) 가장 순위 높은 하나만.
+      가명 토큰은 채널마다 번호가 새로 붙으므로 채널(text_id)까지 키에 넣는다 (Codex 10/8)
+    - 우선순위: 본인(self) > 등급 explicit > implicit > inferential
+    - 같은 순위 안에서만 글을 돌아가며 고른다 — 여러 글에 걸친 근거(cross_post)는 살리되, 글을 퍼뜨리려고
+      순위 낮은 단서(타인 등)가 본인 단서를 밀어내지 않게 (Codex 10/8)
+    """
+    best: dict[tuple[str, str, str, str], tuple[int, int, int, str, dict[str, Any]]] = {}
+    for pi, e in enumerate(entries):
+        for si, sp in enumerate(e["spans"]):
+            key = (e["post_id"], str(sp.get("text_id")), str(sp.get("type")), str(sp.get("text")))
+            rank = (0 if sp.get("subject", "self") == "self" else 1) * 10 + _LEVEL_RANK.get(str(sp.get("level")), 3)
+            cand = (rank, pi, si, e["post_id"], sp)
+            if key not in best or cand[:3] < best[key][:3]:
+                best[key] = cand
+    pool: dict[str, list[tuple[int, int, int, str, dict[str, Any]]]] = {}
+    for cand in best.values():
+        pool.setdefault(str(cand[4].get("type")), []).append(cand)
+
+    picked_by_type: dict[str, list[tuple[int, int, int, str, dict[str, Any]]]] = {}
+    for stype, cands in pool.items():
+        cands.sort(key=lambda c: c[:3])
+        chosen: list[tuple[int, int, int, str, dict[str, Any]]] = []
+        used_posts: set[str] = set()
+        for rank in sorted({c[0] for c in cands}):
+            tier = [c for c in cands if c[0] == rank]
+            for c in tier:  # 이 순위 안에서 아직 안 나온 글 먼저
+                if len(chosen) < max_per_type and c[3] not in used_posts:
+                    chosen.append(c)
+                    used_posts.add(c[3])
+            for c in tier:  # 그다음 같은 순위의 나머지
+                if len(chosen) < max_per_type and c not in chosen:
+                    chosen.append(c)
+        picked_by_type[stype] = chosen
+
+    # 전체 상한 — 유형을 돌아가며 한 개씩 (한 유형이 자리를 독차지하지 않게). 순서는 유형별 최상위 후보 순
+    final: list[tuple[int, int, int, str, dict[str, Any]]] = []
+    depth = 0
+    order = sorted(picked_by_type, key=lambda t: picked_by_type[t][0][:3])
+    while len(final) < max_spans and any(depth < len(picked_by_type[t]) for t in order):
+        for stype in order:
+            if depth < len(picked_by_type[stype]) and len(final) < max_spans:
+                final.append(picked_by_type[stype][depth])
+        depth += 1
+    keep = {(c[1], c[2]) for c in final}
+    return [{"post_id": e["post_id"], "spans": [sp for si, sp in enumerate(e["spans"]) if (pi, si) in keep]}
+            for pi, e in enumerate(entries)]
+
+
+def build_user_prompt(user_ref: str, posts: Sequence[Mapping[str, Any]], *,
+                      cap: bool = False) -> tuple[str, list[dict[str, Any]]]:
+    """모델 입력. ``cap=True`` 면 학습 범위로 줄인다(앱 경로). 실험 재현(exp13 등)은 기본값 그대로 전체."""
     entries = [{"post_id": p["post_id"], "spans": pseudonymize_spans(p)} for p in posts]
+    if cap:
+        entries = select_for_model(entries)
     payload = {"user_ref": user_ref, "profile": None, "posts": entries}
     return json.dumps(payload, ensure_ascii=False), entries
+
+
+def output_budget(n_spans: int) -> int:
+    """출력 토큰 상한 — 근거 하나에 약 17토큰 (합성 재현 실측) + 7속성 뼈대. 700 아래로는 내리지 않는다"""
+    return min(max(700, 250 + 25 * n_spans), 1400)
 
 
 # ── 출력 검증 ───────────────────────────────────────────────────────────
@@ -166,14 +233,14 @@ class Stage2Model:
         self.model.eval()
         self.max_new_tokens = max_new_tokens
 
-    def generate(self, user_prompt: str) -> str:
+    def generate(self, user_prompt: str, max_new_tokens: int | None = None) -> str:
         """exp08 eval.py · exp09 run_qwen.py 와 같은 디코딩 — greedy · thinking 끔."""
         msgs = [{"role": "system", "content": SYSTEM_V1}, {"role": "user", "content": user_prompt}]
         prompt = self.tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
                                               enable_thinking=False)
         ids = self.tok(prompt, return_tensors="pt").to(self.model.device)
         with self._torch.no_grad():
-            out = self.model.generate(**ids, max_new_tokens=self.max_new_tokens, do_sample=False,
+            out = self.model.generate(**ids, max_new_tokens=max_new_tokens or self.max_new_tokens, do_sample=False,
                                       temperature=None, top_p=None, top_k=None)
         return self.tok.decode(out[0][ids["input_ids"].shape[1]:], skip_special_tokens=True).strip()
 
@@ -252,7 +319,8 @@ def analyze(
     """
     if mode not in {"auto", "model", "rules"}:
         raise ValueError(f"mode: {mode!r}")
-    user_prompt, entries = build_user_prompt(user_ref, posts)
+    _, all_entries = build_user_prompt(user_ref, posts)
+    user_prompt, entries = build_user_prompt(user_ref, posts, cap=True)
     findings, version = None, RULES_VERSION
     if mode != "rules":
         m = model or _get_model()
@@ -262,8 +330,13 @@ def analyze(
             version = f"{RULES_VERSION} (fallback: {_MODEL_ERROR})"
         else:
             try:
-                findings = validate_findings(parse_findings(m.generate(user_prompt)), entries)
-                reason = "model output invalid"
+                n_spans = sum(len(e["spans"]) for e in entries)
+                raw = (m.generate(user_prompt, max_new_tokens=output_budget(n_spans)) if isinstance(m, Stage2Model)
+                       else m.generate(user_prompt))
+                findings = validate_findings(parse_findings(raw), entries)
+                # 닫는 괄호 없이 끝났으면 출력 상한에 잘린 것 — 「invalid」와 구분해 남긴다
+                reason = ("model output truncated" if not raw.rstrip().endswith("}")
+                          else "model output invalid")
             except Exception as e:  # noqa: BLE001 — 생성 중 GPU 오류 등. auto 면 규칙으로 넘어간다
                 if mode == "model":
                     raise
@@ -275,7 +348,7 @@ def analyze(
             else:
                 version = MODEL_VERSION
     if findings is None:
-        findings = findings_from_spans(entries)
+        findings = findings_from_spans(all_entries)  # 규칙 판정은 줄이지 않은 전체로
     rec_posts = [{"post_id": p["post_id"], "spans": list(p.get("spans") or []), "geo_tag": p.get("geo_tag")}
                  for p in posts]
     if rec_posts:

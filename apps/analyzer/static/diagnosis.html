@@ -88,6 +88,7 @@ if (!data) {
 } else {
   el.innerHTML = `
     <h2>${esc(data.user_ref)}</h2>
+    ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
     ${renderSpecificity(data.specificity)}
     <p>기준 위험도: <b>${esc(data.contribution.output.baseline_risk)}</b></p>
     <h3>7속성 판정</h3>
