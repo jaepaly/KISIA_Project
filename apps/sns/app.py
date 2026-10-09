@@ -274,6 +274,50 @@ def _persona_brief(author_id: str) -> dict | None:
     }
 
 
+@app.post("/u/<user_ref>/reset")
+def reset_author(user_ref: str):
+    """이 계정만 시드 상태로 — 공용 테스트 서버라 한 사람의 수정(비공개·위치태그·프로필·새 글)이 모두에게 보인다.
+    시드 사본은 라이브 DB 옆 sns.seed.db (SNS_SEED_DB 로 바꿀 수 있다). 다른 계정은 건드리지 않는다."""
+    a = db().execute("SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
+    if a is None:
+        abort(404)
+    live = db().execute("PRAGMA database_list").fetchone()[2]
+    seed = _Path(os.environ.get("SNS_SEED_DB") or _Path(live).with_name("sns.seed.db"))
+    if not seed.exists():
+        abort(503, "시드 사본(sns.seed.db)이 없어 되돌릴 수 없습니다")
+    aid, c = a["author_id"], db()
+    c.execute("ATTACH DATABASE ? AS seed", (str(seed),))
+    try:
+        c.execute("DELETE FROM photos WHERE post_id IN (SELECT post_id FROM posts WHERE author_id = ?)", (aid,))
+        c.execute("DELETE FROM posts WHERE author_id = ?", (aid,))
+        c.execute("INSERT INTO posts SELECT * FROM seed.posts WHERE author_id = ?", (aid,))
+        c.execute("INSERT INTO photos SELECT * FROM seed.photos"
+                  " WHERE post_id IN (SELECT post_id FROM seed.posts WHERE author_id = ?)", (aid,))
+        c.execute("DELETE FROM authors WHERE author_id = ?", (aid,))
+        c.execute("INSERT INTO authors SELECT * FROM seed.authors WHERE author_id = ?", (aid,))
+        c.commit()
+    finally:
+        c.execute("DETACH DATABASE seed")
+    return redirect(f"/u/{user_ref}")
+
+
+@app.get("/api/authors")
+def authors_search():
+    """닉네임으로 계정 찾기 — 파도풀 스캔 화면의 「가상 SNS 계정에서 가져오기」가 쓴다 (식별자를 외워 오게 하지 않는다)."""
+    q = (request.args.get("q") or "").strip()
+    sql = ("SELECT a.author_id, a.nickname, a.user_ref, a.bio, COUNT(p.post_id) AS n"
+           " FROM authors a LEFT JOIN posts p ON p.author_id = a.author_id AND p.visibility = 'public'")
+    args: list = []
+    if q:
+        sql += " WHERE a.nickname LIKE ? OR a.user_ref LIKE ?"
+        args += [f"%{q}%", f"{q}%"]
+    sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT 12"
+    args.append(f"{q}%")
+    rows = db().execute(sql, args).fetchall()
+    return jsonify([{"author_id": r["author_id"], "nickname": r["nickname"], "user_ref": r["user_ref"],
+                     "bio": r["bio"], "n_posts": r["n"], "hue": _hue(r["author_id"])} for r in rows])
+
+
 @app.get("/api/author/<author_id>/summary")
 def author_summary(author_id: str):
     """글쓰기 화면 오른쪽 패널 — 테스터는 이 작성자를 모른다. 인물 설정 + 소개·글 수·자주 찍는 동네·최근 글(공개만)."""

@@ -93,7 +93,7 @@ function renderScore(data) {
   return `
     <div class="card">
       <div class="row between">
-        <h2>${esc(data.user_ref)}</h2>
+        <h2>${esc(data.nickname || ((data.posts[0] || {}).activity_meta || {}).nickname || data.user_ref)} <small class="muted">@${esc(data.user_ref)}</small></h2>
         <button id="rescanBtn" class="ghost">Veilo 에서 바꾼 뒤 다시 계산</button>
       </div>
       <p class="score"><b>${fmtR(pr.current_risk)}</b><span class="arrow">→</span>

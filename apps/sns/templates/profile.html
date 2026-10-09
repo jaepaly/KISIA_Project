@@ -20,6 +20,12 @@
           <span><b>{{ posts|length }}</b> 글</span>
           <span><b>{{ a.joined_at[:10] }}</b> 가입</span>
         </div>
+        {# 공용 테스트 서버라 한 사람이 바꾸면 모두에게 보인다 — 이 계정만 시드 상태로 되돌린다 #}
+        <form method="post" action="/u/{{ a.user_ref }}/reset" style="margin-top:12px;"
+              onsubmit="return confirm('이 계정의 글·프로필·공개 여부를 처음 상태로 되돌립니다. 이 계정에 새로 쓴 글은 지워집니다. 계속할까요?')">
+          <button type="submit" class="ghost" style="width:100%;font-size:12px;padding:8px;">⟲ 이 계정 처음 상태로</button>
+        </form>
+        <p style="font-size:11px;color:var(--ut-ink3);margin:6px 0 0;line-height:1.4;">공용 테스트 서버입니다 — 누군가 바꾼 것이 모두에게 보입니다. 실험이 끝나면 되돌려 주세요.</p>
         <details style="margin-top:14px;">
           <summary style="cursor:pointer;font-size:12px;color:var(--ut-ink3);">프로필 수정</summary>
           <form method="post" action="/u/{{ a.user_ref }}/edit" style="margin-top:10px;">

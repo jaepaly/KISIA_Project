@@ -22,13 +22,18 @@
 
 <main>
 <h1>내 글 불러오기</h1>
-<p class="lede">분석할 글을 가져옵니다. 가상 SNS 계정에서 바로 끌어오거나, 다른 서비스에서 내보낸 파일을 올릴 수 있습니다.</p>
-<div class="card">
+<p class="lede">분석할 글을 가져옵니다. 가상 SNS 계정을 이름으로 찾거나, 다른 서비스에서 내보낸 파일을 올릴 수 있습니다.</p>
+
+<div class="card" id="scanCard">
   <h2>가상 SNS 계정에서 가져오기</h2>
-  <p class="hint">계정 식별자를 넣으면 그 계정의 글을 모두 읽어 옵니다. 예: <code>u_3f2a91c4</code></p>
-  <div class="row">
-    <input id="userRef" type="text" placeholder="u_...">
-    <button id="scanBtn">스캔 시작</button>
+  <p class="hint">계정 이름을 치면 찾아 줍니다. 식별자(<code>u_…</code>)를 알고 있으면 그대로 넣어도 됩니다.</p>
+  <div class="finder">
+    <div class="row">
+      <input id="userQ" type="text" placeholder="계정 이름 또는 u_…" autocomplete="off">
+      <button id="scanBtn" disabled>스캔 시작</button>
+    </div>
+    <ul class="finder-list" id="finderList" hidden></ul>
+    <div class="picked" id="picked" hidden></div>
   </div>
   <p id="scanMsg" class="muted"></p>
 </div>
@@ -50,62 +55,137 @@
 
 <footer>엔진 판정은 참고용입니다. 최종 판단과 조치는 사용자가 합니다.</footer>
 
+<!-- 진행 표시 — 스캔은 한 번의 요청이라 퍼센트는 없다. 단계와 흐른 시간을 보여 준다 -->
+<div class="progress" id="progress" hidden>
+  <div class="progress-in">
+    <div class="pbar"><i></i></div>
+    <div class="ptext"><b id="pTitle">읽는 중</b><span id="pStage"></span><span class="pt" id="pTime">0초</span></div>
+    <p class="muted" id="pNote">글이 많으면 10~20초 걸립니다. 1단(단서 찾기) → 후보 수 → 2단(판정·조치) 순서로 돕니다.</p>
+  </div>
+</div>
+
 <script src="common.js"></script>
 <script>
 showEngineBadge("badge");
 
-async function runScan(user_ref) {
-  const msg = document.getElementById("scanMsg");
-  msg.textContent = "스캔 중...";
-  const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
-  if (!r.ok) {
-    const detail = await r.text();
-    msg.textContent = `실패: ${r.status} ${detail}`;
-    msg.className = "error";
-    return;
-  }
-  const data = await r.json();
-  saveScan(data);
-  msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
-  location.href = "diagnosis.html";
+// 가상 SNS 는 같은 도메인 루트(/api/…) — 분석 앱은 /check/static/ 아래라 두 단계 위다
+const SNS_API = "../../api";
+const $ = (id) => document.getElementById(id);
+let picked = null;   // { user_ref, nickname, n_posts }
+
+// ── 진행 표시 ──
+let _pt = null;
+function progressStart(title, note) {
+  $("pTitle").textContent = title; $("pStage").textContent = ""; $("pTime").textContent = "0초";
+  if (note) $("pNote").textContent = note;
+  $("progress").hidden = false; document.body.classList.add("busy");
+  const t0 = performance.now();
+  const stages = [[0, "글 읽는 중"], [2, "1단 · 단서 찾는 중"], [6, "후보 수 세는 중"], [10, "2단 · 판정하고 조치 고르는 중"], [18, "거의 다 됐습니다"]];
+  _pt = setInterval(() => {
+    const s = (performance.now() - t0) / 1000;
+    $("pTime").textContent = `${Math.round(s)}초`;
+    const st = stages.filter(([at]) => s >= at).pop(); if (st) $("pStage").textContent = " · " + st[1];
+  }, 250);
+}
+function progressStop() { clearInterval(_pt); $("progress").hidden = true; document.body.classList.remove("busy"); }
+
+async function runScan(user_ref, label) {
+  const msg = $("scanMsg");
+  msg.className = "muted"; msg.textContent = "";
+  $("scanBtn").disabled = true;
+  progressStart(`${label || user_ref} 스캔 중`);
+  try {
+    const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
+    if (!r.ok) {
+      msg.textContent = `실패: ${r.status} ${await r.text()}`; msg.className = "error"; return;
+    }
+    const data = await r.json();
+    if (label) data.nickname = label;   // 진단·조치 화면의 제목
+    saveScan(data);
+    msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+    location.href = "diagnosis.html";
+  } catch (e) {
+    msg.textContent = "서버에 닿지 못했습니다. 잠시 뒤 다시 눌러 주세요."; msg.className = "error";
+  } finally { progressStop(); $("scanBtn").disabled = !picked; }
 }
 
-document.getElementById("scanBtn").onclick = () => {
-  const v = document.getElementById("userRef").value.trim();
-  if (!v) return;
-  runScan(v);
-};
+// ── 계정 찾기 ──
+function pick(a) {
+  picked = a;
+  $("userQ").value = a.nickname;
+  $("finderList").hidden = true;
+  $("picked").hidden = false;
+  $("picked").innerHTML = `<span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
+    <div><b>${esc(a.nickname)}</b> <span class="muted">@${esc(a.user_ref)} · 공개 글 ${a.n_posts}편</span>${a.bio ? `<div class="muted">${esc(a.bio)}</div>` : ""}</div>`;
+  $("scanBtn").disabled = false;
+}
+let _ft = null;
+async function search(q) {
+  const list = $("finderList");
+  if (/^u_[0-9a-f]{8,}$/i.test(q)) {   // 식별자를 그대로 넣은 경우
+    picked = { user_ref: q, nickname: q, n_posts: "?", hue: 30, bio: "" };
+    $("picked").hidden = true; list.hidden = true; $("scanBtn").disabled = false; return;
+  }
+  try {
+    const rows = await (await fetch(`${SNS_API}/authors?q=${encodeURIComponent(q)}`)).json();
+    if (!rows.length) { list.innerHTML = `<li class="none">「${esc(q)}」 — 없는 이름입니다</li>`; list.hidden = false; return; }
+    list.innerHTML = rows.map((a, i) => `<li data-i="${i}"><span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
+      <span class="nm">${esc(a.nickname)}</span><span class="muted">@${esc(a.user_ref)} · 글 ${a.n_posts}편</span></li>`).join("");
+    list.hidden = false;
+    list.querySelectorAll("li[data-i]").forEach((li) => li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(rows[+li.dataset.i]); }));
+  } catch { list.innerHTML = `<li class="none">계정 목록을 가져오지 못했습니다 — 가상 SNS 가 같은 주소에서 돌고 있어야 합니다</li>`; list.hidden = false; }
+}
+$("userQ").addEventListener("input", () => {
+  picked = null; $("scanBtn").disabled = true; $("picked").hidden = true;
+  const q = $("userQ").value.trim();
+  clearTimeout(_ft);
+  if (!q) { $("finderList").hidden = true; return; }
+  _ft = setTimeout(() => search(q), 220);
+});
+$("userQ").addEventListener("focus", () => { if (!picked && $("userQ").value.trim()) search($("userQ").value.trim()); });
+$("userQ").addEventListener("blur", () => setTimeout(() => { $("finderList").hidden = true; }, 150));
+$("userQ").addEventListener("keydown", (e) => { if (e.key === "Enter" && picked) { e.preventDefault(); $("scanBtn").click(); } });
+$("scanBtn").onclick = () => { if (picked) runScan(picked.user_ref, picked.nickname === picked.user_ref ? "" : picked.nickname); };
 
-document.getElementById("uploadBtn").onclick = async () => {
-  const msg = document.getElementById("uploadMsg");
-  const f = document.getElementById("uploadFile").files[0];
+$("uploadBtn").onclick = async () => {
+  const msg = $("uploadMsg");
+  const f = $("uploadFile").files[0];
   if (!f) { msg.textContent = "파일을 선택하세요"; return; }
-  msg.textContent = "분석 중...";
-  const form = new FormData();
-  form.append("file", f);
-  const r = await fetch("../upload", { method: "POST", body: form });
-  if (!r.ok) {
-    msg.textContent = `실패: ${r.status} ${await r.text()}`;
-    msg.className = "error";
-    return;
-  }
-  const data = await r.json();
-  saveScan(data);
-  msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
-  location.href = "diagnosis.html";
+  msg.className = "muted"; msg.textContent = "";
+  progressStart(`${f.name} 분석 중`);
+  try {
+    const form = new FormData();
+    form.append("file", f);
+    const r = await fetch("../upload", { method: "POST", body: form });
+    if (!r.ok) { msg.textContent = `실패: ${r.status} ${await r.text()}`; msg.className = "error"; return; }
+    const data = await r.json();
+    data.nickname = f.name;
+    saveScan(data);
+    msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+    location.href = "diagnosis.html";
+  } catch (e) {
+    msg.textContent = "서버에 닿지 못했습니다."; msg.className = "error";
+  } finally { progressStop(); }
 };
 
-// Veilo 프로필에서 ?u= 를 달고 넘어오면 바로 돌린다
-const _u = new URLSearchParams(location.search).get("u");
-if (_u) {
-  document.getElementById("userRef").value = _u;
-  runScan(_u);
-}
+// Veilo 프로필의 「내 계정 진단」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
+(async () => {
+  const u = new URLSearchParams(location.search).get("u");
+  if (!u) return;
+  $("userQ").value = u;
+  try {
+    const rows = await (await fetch(`${SNS_API}/authors?q=${encodeURIComponent(u)}`)).json();
+    const a = rows.find((x) => x.user_ref === u);
+    if (a) pick(a); else { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
+  } catch { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
+  $("scanMsg").textContent = "이 계정의 공개 글을 모두 읽습니다. 「스캔 시작」을 누르세요.";
+  $("scanBtn").focus();
+})();
 
 const cached = loadScan();
 if (cached) {
-  document.getElementById("postList").innerHTML =
-    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${esc(cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
+  $("postList").innerHTML =
+    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
 }
 </script>
 </body>
