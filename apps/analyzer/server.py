@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from apps.analyzer import engines as engine
 from kopl.c4_stage2.links import find_direct_identifiers
+from apps.analyzer.engines import c1_rules  # os · threading 만 — 목 모드에서도 모델을 불러오지 않는다
 from apps.analyzer.adapters import file_adapter, sns_adapter
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
@@ -33,7 +34,8 @@ def root():
 @app.get("/api/engine-mode")
 def engine_mode():
     """화면 하단 배지용 — 지금 mock인지 real인지."""
-    return {"mode": os.getenv("ENGINE_MODE", "mock"), "c1_rules": os.getenv("C1_RULES", "1") != "0"}  # c1_rules.py 와 같은 기본값(켬)
+    # 엔진이 실제로 쓰는 값(import 때 고정)을 그대로 — 환경변수를 다시 읽으면 배지와 동작이 어긋날 수 있다 (Codex 10/9)
+    return {"mode": os.getenv("ENGINE_MODE", "mock"), "c1_rules": c1_rules.enabled()}
 
 
 def _detect_input(post: dict) -> dict:

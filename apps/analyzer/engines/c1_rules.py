@@ -4,15 +4,26 @@ B 의 exp06 ``rules.ExplicitRules`` (한글 수사·숫자 나이 · 행정구�
 (``merge_with_model`` — 최장 우선 · 겹침 없음)으로 합친다. models/registry.md 「v1+명시 규칙」 구성이다
 (test 239편 명시 재현율 0.1339 → 0.3750 · partial F1 0.2940 → 0.3424).
 
-운용 구성은 **기준선 v2 = 교사 라벨 재학습 + 이 규칙**으로 확정했다 (#310 · DEC-011 · 10/8). exp17b · exp17c 점수는
-규칙을 켠 채로 쟀으므로 앱도 기본으로 켠다 — 끄면 그 점수와 다른 구성이 된다. 모델 단독과 비교할 때만 ``C1_RULES=0``.
+운용 구성은 **기준선 v2 = 교사 라벨 재학습 + 이 규칙**으로 확정했다 (#310 · DEC-011 · 10/8). 점수는 규칙을 켠 채로 쟀으므로
+앱도 기본으로 켠다 — 끄면 그 점수와 다른 구성이 된다. 모델 단독과 비교할 때만 ``C1_RULES=0``.
+  - exp17c 0.752 (10/9) — 규칙 커밋 ``eb6badf``(#323 포함) = 지금 이 앱이 불러오는 규칙과 같다
+  - exp17b 0.699 (10/8) — #323 **이전** 규칙. 규칙 후보가 조금 다르다
+  - 두 평가는 본문만 채점했다. 앱은 제목 · 사진 캡션도 같은 경로로 보지만, 그 채널의 성능은 따로 잰 적이 없다
 """
 from __future__ import annotations
 
 import os
 import threading
 
-_ENABLED = os.getenv("C1_RULES", "1") != "0"
+_OFF = {"0", "false", "off", "no"}
+
+
+def parse(value: str | None) -> bool:
+    """``C1_RULES`` 값 → 켤지. 비었거나 없으면 켬(기본), 0 · false · off · no 면 끔 — server.py 배지도 이걸 쓴다"""
+    return (value or "").strip().lower() not in _OFF
+
+
+_ENABLED = parse(os.getenv("C1_RULES"))
 _RULES = None
 _LOCK = threading.Lock()
 
