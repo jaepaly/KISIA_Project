@@ -288,14 +288,19 @@ def reset_author(user_ref: str):
     aid, c = a["author_id"], db()
     c.execute("ATTACH DATABASE ? AS seed", (str(seed),))
     try:
+        # authors 행은 지우지 않고 덮어쓴다 — posts 가 FK 로 물고 있어 DELETE 가 막힌다
+        c.execute("UPDATE authors SET nickname = (SELECT nickname FROM seed.authors WHERE author_id = ?),"
+                  " bio = (SELECT bio FROM seed.authors WHERE author_id = ?),"
+                  " joined_at = (SELECT joined_at FROM seed.authors WHERE author_id = ?) WHERE author_id = ?", (aid, aid, aid, aid))
         c.execute("DELETE FROM photos WHERE post_id IN (SELECT post_id FROM posts WHERE author_id = ?)", (aid,))
         c.execute("DELETE FROM posts WHERE author_id = ?", (aid,))
         c.execute("INSERT INTO posts SELECT * FROM seed.posts WHERE author_id = ?", (aid,))
         c.execute("INSERT INTO photos SELECT * FROM seed.photos"
                   " WHERE post_id IN (SELECT post_id FROM seed.posts WHERE author_id = ?)", (aid,))
-        c.execute("DELETE FROM authors WHERE author_id = ?", (aid,))
-        c.execute("INSERT INTO authors SELECT * FROM seed.authors WHERE author_id = ?", (aid,))
         c.commit()
+    except Exception:
+        c.rollback()
+        raise
     finally:
         c.execute("DETACH DATABASE seed")
     return redirect(f"/u/{user_ref}")
