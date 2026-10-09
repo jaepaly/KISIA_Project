@@ -32,8 +32,10 @@ PAGE_SIZE = 20
 
 @app.template_filter("hue")
 def _hue(s: str) -> int:
-    """작성자마다 같은 아바타 색 — 문자열을 0~359 색상각으로. 사진이 없는 가상 SNS 라 이니셜 아바타를 쓴다."""
-    return sum(ord(c) for c in (s or "")) % 360
+    """작성자마다 같은 아바타 색 — 문자열을 0~359 색상각으로. 사진이 없는 가상 SNS 라 이니셜 아바타를 쓴다.
+    글자 합이 아니라 해시다 — B18·B19 처럼 연번 ID 는 합으로 하면 1도 차이라 전부 같은 색이 된다."""
+    import hashlib
+    return int.from_bytes(hashlib.md5((s or "").encode("utf-8")).digest()[:2], "big") % 360
 
 
 def db() -> sqlite3.Connection:
