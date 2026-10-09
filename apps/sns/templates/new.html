@@ -22,7 +22,26 @@
   .pado-warn{margin:10px 0 0;font-size:13px;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
     border:1px solid var(--ut-earth);border-radius:10px;padding:8px 12px;animation:pado-in .25s var(--ease)}
   @keyframes pado-in{from{opacity:0;transform:translateY(-4px)}}
-  @media (prefers-reduced-motion:reduce){.pado-chip .dots::after{animation:none;content:"…"}.pado-warn{animation:none}}
+  /* 형광 단어를 누르면 — 후보 패널 */
+  .pado-pick{margin-top:8px;border:1px solid var(--ut-earth);border-radius:12px;background:var(--ut-panel);
+    padding:12px 14px;box-shadow:var(--ut-shadow-hi);animation:pado-in .2s var(--ease)}
+  .pado-pick-h{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:8px}
+  .pado-pick-h .t{font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);border-radius:99px;padding:2px 8px}
+  .pado-pick-h del{color:var(--ut-red);font-weight:600}
+  .pado-pick-h .x{margin-left:auto;background:transparent;border:0;font-size:18px;line-height:1;color:var(--ut-ink3);cursor:pointer;padding:0 4px}
+  .pado-cands{display:flex;flex-wrap:wrap;gap:8px}
+  .pado-cand{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;
+    background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer;
+    transition:border-color .15s,background .15s,transform .15s}
+  .pado-cand:hover{border-color:var(--ut-earth);background:var(--ut-earth-soft);transform:translateY(-1px)}
+  .pado-cand .sug{font-size:14px;font-weight:700;color:var(--ut-ink)}
+  .pado-cand .rr{font-size:11px;color:var(--ut-ink3)}
+  .pado-cand .rr.none{color:var(--ut-leaf)}
+  .pado-tip{margin:0;font-size:13.5px;color:var(--ut-ink2);line-height:1.6}
+  .pado-pick-f{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:12px}
+  .pado-pick-f .ghost{font-size:12px;padding:6px 12px}
+  .pado-pick .muted{color:var(--ut-ink3)}
+  @media (prefers-reduced-motion:reduce){.pado-chip .dots::after{animation:none;content:"…"}.pado-warn,.pado-pick{animation:none}}
 </style>
 {% endblock %}
 
@@ -71,6 +90,7 @@
                                padding:12px 14px;resize:vertical;line-height:1.7;"></textarea>
             </div>
             <p class="pado-warn" id="padoWarn" hidden></p>
+            <div class="pado-pick" id="padoPick" hidden></div>
           </div>
 
           <div style="margin-bottom:14px;">
@@ -150,7 +170,8 @@ padoLive({
   textarea: document.getElementById("body"),
   backdrop: document.getElementById("padoBackdrop"),
   chip: document.getElementById("padoChip"),
-  warn: document.getElementById("padoWarn")
+  warn: document.getElementById("padoWarn"),
+  pick: document.getElementById("padoPick")
 });
 // textarea 를 세로로 늘리면 뒤판도 따라간다
 new ResizeObserver(() => {
