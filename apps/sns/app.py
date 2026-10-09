@@ -27,6 +27,7 @@ from db import connect, init
 
 app = Flask(__name__)
 KST = timezone(timedelta(hours=9))
+PAGE_SIZE = 20
 
 
 def db() -> sqlite3.Connection:
@@ -52,18 +53,27 @@ def _todo(screen: str, where: str) -> str:
 def index():
     """글 목록. 최신순 · 작성자 필터 · private 는 회색."""
     author_id = request.args.get("author")
+    page = max(1, request.args.get("page", 1, type=int))
     q = ("SELECT p.*, a.nickname, a.user_ref FROM posts p"
          " JOIN authors a ON a.author_id = p.author_id")
-    args: list[str] = []
+    args: list = []
     if author_id:
         q += " WHERE p.author_id = ?"
         args.append(author_id)
-    q += " ORDER BY p.created_at DESC LIMIT 200"
+    # 한 장 더 읽어 다음 장이 있는지만 본다 — 20편씩 무한 스크롤 (list.html · fx.js)
+    q += " ORDER BY p.created_at DESC LIMIT ? OFFSET ?"
+    args += [PAGE_SIZE + 1, (page - 1) * PAGE_SIZE]
     try:
-        posts = db().execute(q, args).fetchall()
+        rows = db().execute(q, args).fetchall()
+        posts, has_more = rows[:PAGE_SIZE], len(rows) > PAGE_SIZE
+        next_url = None
+        if has_more:
+            next_url = f"/?page={page + 1}" + (f"&author={author_id}" if author_id else "")
+        if request.args.get("partial"):
+            return render_template("_cards.html", posts=posts, next_url=next_url)
         authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
         return render_template("list.html", posts=posts, authors=authors,
-                                selected_author=author_id)
+                                selected_author=author_id, next_url=next_url)
     except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 

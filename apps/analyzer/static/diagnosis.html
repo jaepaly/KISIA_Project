@@ -2,21 +2,39 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>2화면 — 진단</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>진단 — 파도풀</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>2화면 — 위험도 진단</h1>
-<nav>
-  <a href="/static/scan.html">스캔</a>
-  <a href="/static/diagnosis.html">진단</a>
-  <a href="/static/action.html">조치</a>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">파도풀 <span class="brand-sub">올리기 전에, 내가 몇 명 중 한 명인지</span></div>
+    <div class="engine" id="badge"></div>
+  </div>
+</header>
+
+<nav class="steps">
+  <a href="scan.html"><span class="n">1</span>스캔</a>
+  <a href="diagnosis.html" aria-current="step"><span class="n">2</span>진단</a>
+  <a href="action.html"><span class="n">3</span>조치</a>
 </nav>
 
+<main>
+<h1>AI가 추정한 당신</h1>
+<p class="lede">모아 둔 글에서 무엇이 읽히는지, 그래서 몇 명 중 한 명까지 좁혀지는지 보여줍니다.</p>
 <div id="content">불러오는 중...</div>
-<footer id="badge"></footer>
+</main>
 
-<script src="/static/common.js"></script>
+<footer>엔진 판정은 참고용입니다. 최종 판단과 조치는 사용자가 합니다.</footer>
+
+<div class="cta-bar" id="ctaBar" hidden>
+  <div class="cta-in">
+    <span class="muted">무엇이 읽히는지 봤다면, 이제 되돌릴 방법을</span>
+    <a class="btn" href="action.html">조치 화면으로 →</a>
+  </div>
+</div>
+
+<script src="common.js"></script>
 <script>
 showEngineBadge("badge");
 
@@ -41,10 +59,10 @@ function postK(data, postId) {
 function renderFindings(findings) {
   return Object.entries(findings).map(([attr, f]) => {
     if (f.verdict === "abstain") {
-      return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge abstain">판단 보류</span> (근거 부족, confidence ${esc(f.confidence)})</div>`;
+      return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge abstain">판단 보류</span> <span class="muted">(근거 부족 · 신뢰도 ${esc(f.confidence)})</span></div>`;
     }
     return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || f.verdict)}</span>
-      ${f.granularity ? `(${esc(f.granularity)})` : ""} confidence ${esc(f.confidence)}</div>`;
+      ${f.granularity ? `<span class="muted">${esc(GRAIN_LABEL[f.granularity] || f.granularity)} 수준</span>` : ""} <span class="muted">· 신뢰도 ${esc(f.confidence)}</span></div>`;
   }).join("");
 }
 
@@ -58,46 +76,100 @@ function highlight(text, spans) {
     out += esc(cpSlice(text, last, s.start));
     const other = s.subject === "other";
     const tip = `${TYPE_LABEL[s.type] || s.type} · ${s.level}${other ? " · 다른 사람 정보 — 내 후보 수 계산에는 안 들어감" : ""}`;
-    out += `<span class="${other ? "span-other" : "span-hit"}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}</span>`;
+    out += `<span class="${other ? "span-other" : "span-hit"}" data-type="${esc(s.type)}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}</span>`;
     last = s.end;
   }
   return out + esc(cpSlice(text, last));
 }
 
+// 글은 접힌 카드로 — 제목 한 줄 + 단서 개수. 누르면 펼쳐진다 (글이 수십 편이라 다 펼치면 스크롤이 길다)
 function renderPosts(data) {
   if (!data.posts.length) {
-    return `<div class="card">탐지된 글이 없습니다 (네거티브 컨트롤 — 위험도 계산 대상 0편).</div>`;
+    return `<div class="card"><p class="empty">탐지된 글이 없습니다 — 위험도 계산 대상 0편</p></div>`;
   }
   return data.posts.map(p => {
     const spans = (data.spans[p.post_id] || { spans: [] }).spans;
-    const spanNote = spans.length ? "" : "<p><i>탐지된 단서 없음</i></p>";
-    const others = spans.filter(s => s.subject === "other").length;
+    const mine = spans.filter(s => s.subject !== "other").length;
+    const others = spans.length - mine;
     const body = channelsOf(p).map(([tid, text]) => {
       const label = tid === "title" ? "제목" : tid === "body" ? "" : "사진 설명";
-      return `<p>${label ? `<span class="channel">${label}</span>` : ""}${highlight(text, spans.filter(s => s.text_id === tid))}</p>`;
+      return `<p class="post-body">${label ? `<span class="channel">${label}</span>` : ""}${highlight(text, spans.filter(s => s.text_id === tid))}</p>`;
     }).join("");
-    const otherNote = others ? `<p class="note">파란 표시 ${others}개는 다른 사람(가족·지인)의 정보로 읽혀 내 후보 수 계산에서 뺐습니다. 그 사람에게는 노출될 수 있는 정보입니다.</p>` : "";
-    return `<div class="card">${body}${spanNote}${otherNote}${postK(data, p.post_id)}</div>`;
+    const otherNote = others ? `<p class="note">초록 표시 ${others}개는 다른 사람(가족·지인)의 정보로 읽혀 내 후보 수 계산에서 뺐습니다. 그 사람에게는 노출될 수 있는 정보입니다.</p>` : "";
+    const types = [...new Set(spans.filter(s => s.subject !== "other").map(s => TYPE_LABEL[s.type] || s.type))];
+    const count = mine
+      ? `<span class="badge found">단서 ${mine}</span>`
+      : (others ? `<span class="badge">남의 정보 ${others}</span>` : `<span class="badge abstain">단서 없음</span>`);
+    return `<div class="card post${spans.length ? "" : " quiet"}" data-post>
+      <button type="button" class="post-head" aria-expanded="false">
+        <span class="post-title">${esc(postLabel(p) || p.post_id)}</span>
+        <span class="post-types">${types.map(esc).join(" · ")}</span>
+        ${count}
+        <span class="chev" aria-hidden="true">⌄</span>
+      </button>
+      <div class="post-detail" hidden>${body}${otherNote}${postK(data, p.post_id)}</div>
+    </div>`;
   }).join("");
+}
+
+function wirePosts() {
+  document.querySelectorAll("[data-post] .post-head").forEach(h => {
+    h.addEventListener("click", () => {
+      const open = h.getAttribute("aria-expanded") === "true";
+      h.setAttribute("aria-expanded", String(!open));
+      h.nextElementSibling.hidden = open;
+    });
+  });
+  const all = document.getElementById("toggleAll");
+  if (!all) return;
+  all.addEventListener("click", () => {
+    const heads = [...document.querySelectorAll("[data-post] .post-head")];
+    const expand = heads.some(h => h.getAttribute("aria-expanded") !== "true");
+    heads.forEach(h => { h.setAttribute("aria-expanded", String(expand)); h.nextElementSibling.hidden = !expand; });
+    all.textContent = expand ? "모두 접기" : "모두 펼치기";
+  });
 }
 
 const data = loadScan();
 const el = document.getElementById("content");
 if (!data) {
-  el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="/static/scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
+  el.innerHTML = `<p class="error">스캔 결과가 없습니다. <a href="scan.html">스캔 화면</a>에서 먼저 스캔하세요.</p>`;
 } else {
+  const nPosts = data.posts.length;
+  const nHit = data.posts.filter(p => ((data.spans[p.post_id] || { spans: [] }).spans).some(s => s.subject !== "other")).length;
+  const nFound = Object.values(data.stage2.output.findings || {}).filter(f => f.verdict !== "abstain").length;
   el.innerHTML = `
-    <h2>${esc(data.user_ref)}</h2>
+    <div class="card">
+      <div class="row between">
+        <h2>${esc(data.user_ref)}</h2>
+        <a class="btn" href="action.html">조치 화면으로 →</a>
+      </div>
+      <p class="score"><b>${esc(data.contribution.output.baseline_risk)}</b><span class="unit">/ 100 · 기준 위험도</span></p>
+      ${renderSpecificity(data.specificity)}
+    </div>
     ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
-    ${renderSpecificity(data.specificity)}
-    <p>기준 위험도: <b>${esc(data.contribution.output.baseline_risk)}</b></p>
-    <h3>7속성 판정</h3>
-    ${renderFindings(data.stage2.output.findings)}
-    <h3>글 (탐지된 단서 하이라이트)</h3>
-    <p class="legend"><span class="span-hit">빨강</span> 내 정보로 읽히는 단서 · <span class="span-other">파랑</span> 다른 사람 정보로 읽히는 단서</p>
+    <details class="card more sec">
+      <summary>7속성 판정 <small>— ${nFound}개 속성이 특정되거나 좁혀짐 · ${7 - nFound}개 판단 보류</small></summary>
+      ${renderFindings(data.stage2.output.findings)}
+    </details>
+    <div class="row between sec">
+      <h3>글에서 읽힌 단서 <small>— 글 ${nPosts}편 중 ${nHit}편에서 읽힘 · 제목을 누르면 펼쳐집니다</small></h3>
+      <button type="button" id="toggleAll" class="ghost">모두 펼치기</button>
+    </div>
+    <details class="more">
+      <summary>색 범례</summary>
+      <p class="legend">
+        <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
+        <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
+        <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
+        <span style="background:#FDE8C9">소득</span>
+        <span class="span-other">다른 사람 정보</span>
+      </p>
+    </details>
     ${renderPosts(data)}
-    <p><a href="/static/action.html">→ 조치 화면으로</a></p>
   `;
+  wirePosts();
+  document.getElementById("ctaBar").hidden = false;
 }
 </script>
 </body>
