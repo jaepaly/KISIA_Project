@@ -78,7 +78,47 @@ function renderRewrites(data) {
     cards.push(`<div class="card"><p><del>${esc(span.text)}</del> 대신</p>${options}</div>`);
   }
   return `<h3>표현 바꿔 쓰기</h3>
-    <p class="note">확실하지 않으면 후보를 내지 않습니다. 후보가 없는 단서는 진단 화면에서 직접 고쳐 주세요.</p>${cards.join("")}`;
+    <p class="note">확실하지 않으면 후보를 내지 않습니다. 후보가 없는 단서는 아래 「직접 고쳐 볼 표현」을 참고하세요.</p>${cards.join("")}`;
+}
+
+// 바꿔 쓰기 후보가 없는 내 단서 — 유형별로 어떻게 고치면 되는지 안내한다.
+// 직업 · 장소 단서는 규칙으로 안전하게 바꿀 말이 거의 없고, 로컬 모델로 만든 후보는 새 글에서 good 37% 라 넣지 않았다 (exp21 · 10/9).
+// 「후보 없음」으로 끝내지 않고 고칠 방향을 보여 준다
+const MANUAL_TIP = {
+  JOB: "업종 · 가게나 회사 이름, 하는 일의 세부(쓰는 도구 · 업무 이름)는 「일하는 곳」 「일」 정도로 넓혀 보세요.",
+  REL_WORK: "회사 근처 장소나 사내 시설 이름은 「회사 근처」처럼 넓혀 보세요.",
+  REL_HOME: "집 근처 가게 · 건물 이름은 「동네 가게」 「집 근처」처럼 바꿔 보세요.",
+  LOC_FACILITY: "가게 · 공원 · 학교 이름 대신 「근처 공원」 「한 카페」처럼 종류만 남겨 보세요.",
+  LOC_ADMIN: "동 · 구 이름은 시나 도 단위로 넓혀 보세요.",
+  AGE: "나이는 「30대」처럼 범위로 바꾸거나 빼 보세요.",
+  FAM: "몇째인지, 가족의 나이 · 학년 같은 구성은 「가족」 「아이」처럼 넓혀 보세요.",
+  COMMUTE: "노선 · 정류장 · 걸리는 시간은 빼거나 「버스로」 정도만 남겨 보세요.",
+  INCOME: "금액 · 대출이나 수당 종류는 빼거나 「돈」 「비용」처럼 넓혀 보세요.",
+  SEX: "호칭(언니 · 오빠 · 남편 등)은 성별을 짐작하게 하는 단서가 될 수 있습니다. 「가족」 「친구」로 바꿔도 뜻이 통하는지 보세요.",
+};
+
+function renderManualTips(data) {
+  const withCandidate = new Set((data.stage2.output.rewrites || []).map(r => `${r.post_id}|${r.span_id}`));
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  const byType = new Map();
+  for (const [postId, entry] of Object.entries(data.spans || {})) {
+    for (const s of (entry.spans || [])) {
+      if (s.subject === "other" || withCandidate.has(`${postId}|${s.span_id}`) || !MANUAL_TIP[s.type]) continue;
+      if (!byType.has(s.type)) byType.set(s.type, []);
+      byType.get(s.type).push({ text: s.text, post: posts[postId], postId });
+    }
+  }
+  if (!byType.size) return "";
+  const cards = [...byType].map(([type, list]) => {
+    const seen = new Set();
+    const uniq = list.filter(x => !seen.has(x.text) && seen.add(x.text));  // 같은 표현은 한 번만
+    const items = uniq.slice(0, 6)
+      .map(x => `<li><mark>${esc(x.text)}</mark> — 「${esc(postLabel(x.post) || x.postId)}」</li>`).join("");
+    const more = uniq.length > 6 ? `<p class="note">외 ${uniq.length - 6}개</p>` : "";
+    return `<div class="card"><b>${esc(TYPE_LABEL[type] || type)}</b><p>${esc(MANUAL_TIP[type])}</p><ul>${items}</ul>${more}</div>`;
+  }).join("");
+  return `<h3>직접 고쳐 볼 표현</h3>
+    <p class="note">자동으로 바꿀 말을 정하기 어려운 단서입니다. 유형별로 고치는 방향을 참고해 직접 다듬어 주세요.</p>${cards}`;
 }
 
 // 비공개 순서와 후보 수 — 엔진이 글별 k 를 줄 때만
@@ -116,6 +156,7 @@ function render() {
     ${renderActions(rec.actions, data)}
     ${renderUnpublishPath(data)}
     ${renderRewrites(data)}
+    ${renderManualTips(data)}
     <p>비공개 전환은 가상 SNS 쪽 글 화면에서 직접 실행합니다 — 분석기는 '무엇을' 할지만 말합니다.</p>
     <button id="rescanBtn">비공개로 바꾼 뒤 재계산</button>
   `;
