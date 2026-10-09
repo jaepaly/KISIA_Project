@@ -1,0 +1,10 @@
+{
+ "posts": 941,
+ "items": 1596,
+ "kept": 998,
+ "null_teacher": 228,
+ "null_filtered": 13,
+ "null_residual": 357,
+ "dev_posts": 57,
+ "train_posts": 884
+}

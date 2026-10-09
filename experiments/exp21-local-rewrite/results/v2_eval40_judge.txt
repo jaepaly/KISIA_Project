@@ -1,0 +1,74 @@
+{"i":1,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"공원 종류 완화"}
+{"i":2,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거처 유형 완화"}
+{"i":3,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"비용 종류 완화"}
+{"i":4,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"부업 정보 축소"}
+{"i":5,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"작물 단서 삭제"}
+{"i":6,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"지형 단서 완화"}
+{"i":7,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":8,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"업무 분야 축소"}
+{"i":9,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"대출 명칭 왜곡"}
+{"i":10,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"대출 종류 완화"}
+{"i":11,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"강 러닝 어색"}
+{"i":12,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":13,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"방향을 위치로"}
+{"i":14,"natural":0,"meaning":0,"less":1,"wrong":0,"why":"진료과 불명"}
+{"i":15,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"주거 유형 완화"}
+{"i":16,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"역명 삭제"}
+{"i":17,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"여행 시설 어색"}
+{"i":18,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":19,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"기관명 삭제"}
+{"i":20,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":21,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"기관명 일반화"}
+{"i":22,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"상가명 삭제"}
+{"i":23,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":24,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":25,"natural":0,"meaning":0,"less":1,"wrong":0,"why":"시간 중복"}
+{"i":26,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"기간 수식 누락"}
+{"i":27,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"사람 농담 어색"}
+{"i":28,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"사람 엄마 중복"}
+{"i":29,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"부모 단서 삭제"}
+{"i":30,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"물건 지칭 어색"}
+{"i":31,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"연화교로 특정"}
+{"i":32,"natural":0,"meaning":0,"less":0,"wrong":0,"why":"교 단독 부자연"}
+{"i":33,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"근무 단서 축소"}
+{"i":34,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"가게 종류 완화"}
+{"i":35,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"금액 삭제"}
+{"i":36,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"식사 단서 완화"}
+{"i":37,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"차 상태 삭제"}
+{"i":38,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"육아 단서 완화"}
+{"i":39,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"근무처 종류 삭제"}
+{"i":40,"natural":0,"meaning":1,"less":0,"wrong":0,"why":"금액 그대로"}
+{"i":41,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"주거 종류 변경"}
+{"i":42,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"다른 지명 가능"}
+{"i":43,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"모빌리티 어색"}
+{"i":44,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거처 종류 완화"}
+{"i":45,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"퇴근 단서 완화"}
+{"i":46,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"교육 분야 삭제"}
+{"i":47,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"제목에 사내 잔존"}
+{"i":48,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"근무 공간 완화"}
+{"i":49,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"근처 동네 겹침"}
+{"i":50,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":51,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"중복 및 뜻 변경"}
+{"i":52,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"청사명 삭제"}
+{"i":53,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"위치 기준 변경"}
+{"i":54,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"하천 단서 삭제"}
+{"i":55,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"공공기관 아님"}
+{"i":56,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"야자 단서 삭제"}
+{"i":57,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"돌봄 범위 확대"}
+{"i":58,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"시설을 거리로"}
+{"i":59,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"임용 단서 삭제"}
+{"i":60,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":61,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":62,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"회관 종류 완화"}
+{"i":63,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"직무 단서 완화"}
+{"i":64,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"공간 범위 확대"}
+{"i":65,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"유사어 교체뿐"}
+{"i":66,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"i":67,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"시설 준비물 어색"}
+{"i":68,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"역명 삭제"}
+{"i":69,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"유모차를 차량화"}
+{"i":70,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 삭제"}
+{"i":71,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"이동 수단 삭제"}
+{"i":72,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"수리 대상 삭제"}
+{"i":73,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 종류 완화"}
+{"summary":{"good":46,"n":73}}

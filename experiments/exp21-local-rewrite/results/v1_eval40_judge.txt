@@ -1,0 +1,50 @@
+{"i":1,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 범주 확대"}
+{"i":2,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"건물 종류 변경"}
+{"i":3,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"비용 종류 생략"}
+{"i":4,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"부업 구분 생략"}
+{"i":5,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"작물 종류 생략"}
+{"i":6,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"지형 범주 확대"}
+{"i":7,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"관형 연결 어색"}
+{"i":8,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"직무 단서 유지"}
+{"i":9,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":10,"natural":0,"meaning":1,"less":0,"wrong":0,"why":"비표준 진료과명"}
+{"i":11,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"시설 종류 변경"}
+{"i":12,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"간판을 사무실로"}
+{"i":13,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"야자 뜻 오역"}
+{"i":14,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"친분 의미 추가"}
+{"i":15,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"공원 위치 단정"}
+{"i":16,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"연화교로 특정"}
+{"i":17,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"교 단독 부자연"}
+{"i":18,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"가게 종류 생략"}
+{"i":19,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"음식 종류 생략"}
+{"i":20,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"식사를 뜸 어색"}
+{"i":21,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"차 상태 생략"}
+{"i":22,"natural":0,"meaning":1,"less":0,"wrong":0,"why":"금액 단서 유지"}
+{"i":23,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"주거 종류 변경"}
+{"i":24,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"학교 위치 추가"}
+{"i":25,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"문법과 뜻 훼손"}
+{"i":26,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"교육 역할 생략"}
+{"i":27,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"제목에 사내 유지"}
+{"i":28,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":29,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"기관 종류 변경"}
+{"i":30,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"세부 시설 생략"}
+{"i":31,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"하천 단서 생략"}
+{"i":32,"natural":1,"meaning":0,"less":0,"wrong":1,"why":"학교급 추가"}
+{"i":33,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"시설 종류 변경"}
+{"i":34,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"야자 뜻 오역"}
+{"i":35,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":36,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":37,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"돌봄 대상 변경"}
+{"i":38,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"고유 시설명 생략"}
+{"i":39,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"거주 관계 완화"}
+{"i":40,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"시설 범주 확대"}
+{"i":41,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"장소 연결 어색"}
+{"i":42,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"인접 관계 완화"}
+{"i":43,"natural":0,"meaning":0,"less":1,"wrong":1,"why":"기관 성격 단정"}
+{"i":44,"natural":1,"meaning":0,"less":1,"wrong":1,"why":"출발 장소 변경"}
+{"i":45,"natural":0,"meaning":1,"less":0,"wrong":0,"why":"거리 정보 동일"}
+{"i":46,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"수리 대상 생략"}
+{"i":47,"natural":1,"meaning":1,"less":1,"wrong":0,"why":"인접 관계 완화"}
+{"i":48,"natural":0,"meaning":1,"less":1,"wrong":0,"why":"장소 연결 어색"}
+{"i":49,"natural":1,"meaning":1,"less":0,"wrong":0,"why":"단골 의미 동일"}
+{"summary":{"good":21,"n":49}}

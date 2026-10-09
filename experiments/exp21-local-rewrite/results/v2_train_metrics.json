@@ -1,0 +1,95 @@
+{
+  "model": "Qwen/Qwen3-4B",
+  "rank": 16,
+  "max_len": 1024,
+  "grad_accum": 8,
+  "lr": 0.0002,
+  "epochs": 2,
+  "seed": 20260908,
+  "train_n": 309,
+  "train_dropped": 63,
+  "dev_n": 34,
+  "dev_dropped": 7,
+  "loss_curve": [
+    {
+      "update": 5,
+      "loss": 0.9307,
+      "sec": 911
+    },
+    {
+      "update": 10,
+      "loss": 0.5775,
+      "sec": 2179
+    },
+    {
+      "update": 15,
+      "loss": 0.5621,
+      "sec": 2437
+    },
+    {
+      "update": 20,
+      "loss": 0.4772,
+      "sec": 2679
+    },
+    {
+      "update": 25,
+      "loss": 0.3193,
+      "sec": 2926
+    },
+    {
+      "update": 30,
+      "loss": 0.408,
+      "sec": 3164
+    },
+    {
+      "update": 35,
+      "loss": 0.4355,
+      "sec": 3403
+    },
+    {
+      "update": 40,
+      "loss": 0.3056,
+      "sec": 3651
+    },
+    {
+      "update": 45,
+      "loss": 0.3225,
+      "sec": 3894
+    },
+    {
+      "update": 50,
+      "loss": 0.3082,
+      "sec": 4132
+    },
+    {
+      "update": 55,
+      "loss": 0.1905,
+      "sec": 4366
+    },
+    {
+      "update": 60,
+      "loss": 0.2309,
+      "sec": 4615
+    },
+    {
+      "update": 65,
+      "loss": 0.2579,
+      "sec": 4853
+    },
+    {
+      "update": 70,
+      "loss": 0.2766,
+      "sec": 5098
+    },
+    {
+      "update": 75,
+      "loss": 0.2681,
+      "sec": 5341
+    }
+  ],
+  "started_at": "2026-10-08T17:44:49",
+  "dev_loss_before": 1.9772,
+  "train_sec": 5452,
+  "vram_peak_gb": 5.26,
+  "dev_loss_after": 0.4018
+}

@@ -163,3 +163,16 @@ experiments/exp10-action-repro/data/*.jsonl
 experiments/exp11-risk-correlation/data/*.jsonl
 experiments/exp11-risk-correlation/data/*
 experiments/exp12-action-llm/data/*.jsonl
+
+# exp21 바꿔 쓰기 어댑터 · 이어 하기 체크포인트 (가중치는 커밋하지 않는다)
+/experiments/exp21-local-rewrite/results/rewrite_adapter/
+/experiments/exp21-local-rewrite/results/checkpoint/
+/experiments/exp21-local-rewrite/results/train_metrics.json
+/experiments/exp21-local-rewrite/results/rewrite_adapter_v2/
+/experiments/exp21-local-rewrite/results/v3/rewrite_adapter/
+/experiments/exp21-local-rewrite/results/v3/checkpoint/
+/experiments/exp21-local-rewrite/results/v2c/rewrite_adapter/
+/experiments/exp21-local-rewrite/results/v2c/checkpoint/
+/experiments/exp21-local-rewrite/results/v2c/train_metrics.json
+/experiments/exp21-local-rewrite/results/v3/train_metrics.json
+/experiments/exp21-local-rewrite/results/v2c/
