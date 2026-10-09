@@ -103,28 +103,56 @@ const MANUAL_TIP = {
   SEX: "호칭(언니 · 오빠 · 남편 등)은 성별을 짐작하게 하는 단서가 될 수 있습니다. 「가족」 「친구」로 바꿔도 뜻이 통하는지 보세요.",
 };
 
+// 표현에서 끝 조사를 떼 같은 말끼리 묶는다 — 「할멈과 · 할멈이 · 할멈은」 → 「할멈」 (#329 리뷰 2번)
+const _TAIL_PARTICLES = ["하고는", "에게서", "이랑", "하고", "에서", "에게", "한테", "께서", "까지", "부터", "으로", "이나",
+  "은", "는", "이", "가", "을", "를", "과", "와", "에", "께", "랑", "로", "의", "도", "만", "나"];
+function _core(text) {
+  let t = String(text || "").trim().replace(/[\s.,!?…~'"“”‘’()\[\]]+$/u, "");
+  for (const p of _TAIL_PARTICLES) {
+    if (t.endsWith(p) && (t.length > p.length + 1 || _ONE_CHAR_KIN.has(t.slice(0, -p.length)))) { t = t.slice(0, -p.length); break; }
+  }
+  return t;
+}
+// 조각 — 두 글자 미만이거나 어미·조사로 시작하는 말(「으러」 「며」)은 1단의 잘린 조각이라 보여 주지 않는다 (#329 리뷰 1번)
+const _FRAGMENT = /^(?:으|러|며|고서|면서|는데|은데|니까|어서|아서|이랑|하고)/u;
+const _ONE_CHAR_KIN = new Set(["딸", "형", "처", "애", "손"]);  // 한 글자라도 진짜 단서인 가족 호칭
+function _isFragment(core) {
+  return core.length === 0 || (core.length < 2 && !_ONE_CHAR_KIN.has(core)) || _FRAGMENT.test(core);
+}
+
 function renderManualTips(data) {
   const withCandidate = new Set((data.stage2.output.rewrites || []).map(r => `${r.post_id}|${r.span_id}`));
   const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
   const byType = new Map();
+  const inferred = new Map();  // 추론 단서는 「30대처럼」 같은 고칠 방향이 맞지 않아 개수만 따로 (#329 리뷰 3번)
   for (const [postId, entry] of Object.entries(data.spans || {})) {
     for (const s of (entry.spans || [])) {
       if (s.subject === "other" || withCandidate.has(`${postId}|${s.span_id}`) || !MANUAL_TIP[s.type]) continue;
-      if (!byType.has(s.type)) byType.set(s.type, []);
-      byType.get(s.type).push({ text: s.text, post: posts[postId], postId });
+      const core = _core(s.text);
+      if (_isFragment(core)) continue;
+      if (s.level === "inferential") { inferred.set(s.type, (inferred.get(s.type) || 0) + 1); continue; }
+      if (!byType.has(s.type)) byType.set(s.type, new Map());
+      const group = byType.get(s.type);
+      if (!group.has(core)) group.set(core, { core, posts: new Set(), first: postId });
+      group.get(core).posts.add(postId);
     }
   }
-  if (!byType.size) return "";
-  const cards = [...byType].map(([type, list]) => {
-    const seen = new Set();
-    const uniq = list.filter(x => !seen.has(x.text) && seen.add(x.text));  // 같은 표현은 한 번만
-    const items = uniq.slice(0, 6)
-      .map(x => `<li><mark>${esc(x.text)}</mark> — 「${esc(postLabel(x.post) || x.postId)}」</li>`).join("");
-    const more = uniq.length > 6 ? `<p class="note">외 ${uniq.length - 6}개</p>` : "";
-    return `<div class="card"><b>${esc(TYPE_LABEL[type] || type)}</b><p>${esc(MANUAL_TIP[type])}</p><ul>${items}</ul>${more}</div>`;
+  if (!byType.size && !inferred.size) return "";
+  const cards = [...byType].map(([type, group]) => {
+    const list = [...group.values()].sort((a, b) => b.posts.size - a.posts.size);
+    const items = list.slice(0, 6).map(g => {
+      const where = g.posts.size > 1 ? `글 ${g.posts.size}편` : `「${esc(postLabel(posts[g.first]) || g.first)}」`;
+      return `<li><mark>${esc(g.core)}</mark> — ${where}</li>`;
+    }).join("");
+    const more = list.length > 6 ? `<p class="note">외 ${list.length - 6}개</p>` : "";
+    const inf = inferred.get(type) ? `<p class="note">여러 정황으로 짐작되는 단서 ${inferred.get(type)}개는 진단 화면에서 글과 함께 확인하세요.</p>` : "";
+    inferred.delete(type);
+    return `<div class="card"><b>${esc(TYPE_LABEL[type] || type)}</b><p>${esc(MANUAL_TIP[type])}</p><ul>${items}</ul>${more}${inf}</div>`;
   }).join("");
+  const restInf = [...inferred].map(([type, n]) => `${esc(TYPE_LABEL[type] || type)} ${n}개`).join(" · ");
+  const rest = restInf ? `<p class="note">여러 정황으로 짐작되는 단서(${restInf})는 진단 화면에서 글과 함께 확인하세요.</p>` : "";
   return `<h3>직접 고쳐 볼 표현</h3>
-    <p class="note">자동으로 바꿀 말을 정하기 어려운 단서입니다. 유형별로 고치는 방향을 참고해 직접 다듬어 주세요.</p>${cards}`;
+    <p class="note">자동으로 바꿀 말을 정하기 어려운 단서입니다. 유형별로 고치는 방향을 참고해 직접 다듬어 주세요.</p>${cards}${rest}`;
 }
 
 // 비공개 순서와 후보 수 — 엔진이 글별 k 를 줄 때만
