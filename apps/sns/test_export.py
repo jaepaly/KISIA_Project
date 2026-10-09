@@ -177,6 +177,19 @@ def test_작성_화면_기본값은_공개다(client):
     assert "공개로 씁니다" in [p["body"] for p in d["posts"]]
 
 
+def test_작성시각_형식이_틀리면_400_이고_글이_안_생긴다(client):
+    """post_date · post_time 이 created_at 을 잘라 쓰므로 형식이 틀린 값은 저장 전에 막는다 (#334 Codex 검토)."""
+    before = len(get(client)["posts"])
+    for bad in ("bad", "2026-13-01T09:00", "2026-03-13", "2026-03-13T09:00+09:00"):
+        r = client.post("/posts", data={"author_id": "S01", "body": "형식 검사", "created_at": bad})
+        assert r.status_code == 400, bad
+    assert len(get(client)["posts"]) == before
+    ok = client.post("/posts", data={"author_id": "S01", "body": "초까지", "created_at": "2026-03-13T09:05:30"})
+    assert ok.status_code in (200, 302)
+    p = next(x for x in get(client)["posts"] if x["body"] == "초까지")
+    assert p["post_date"] == "2026-03-13" and p["activity_meta"]["post_time"] == "09:05"
+
+
 # ── W6 — 활동 메타 편집 라우트 ──────────────────────────────────────
 def test_닉네임을_빈값으로_보내면_기존값이_유지된다(client):
     """실수로 닉네임을 지워버리는 걸 막는 안전장치."""

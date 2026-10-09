@@ -116,6 +116,11 @@ def create_post():
     if len(created_at) == 16:          # <input type=datetime-local> 은 초가 없다
         created_at += ":00"
     created_at += "+09:00"
+    # 형식이 틀린 값이 들어오면 export 의 post_date([:10]) · post_time([11:16])이 둘 다 깨진다 (#334 Codex 검토)
+    try:
+        datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%S%z")
+    except ValueError:
+        abort(400)
 
     visibility = f.get("visibility", "public")
     if visibility not in ("public", "private"):
