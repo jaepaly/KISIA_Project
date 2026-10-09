@@ -56,6 +56,40 @@ function postLabel(post) {
   return body.length > 24 ? body.slice(0, 24) + "…" : body;
 }
 
+// 계정 링크 · 이메일 · 전화 · @아이디 — 서버 direct_identifiers (없으면 빈 목록)
+function directIdentifiers(data) {
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  const out = [];
+  for (const [postId, list] of Object.entries(data.direct_identifiers || {})) {
+    for (const f of list) out.push({ ...f, post_id: postId, post: posts[postId] });
+  }
+  return out;
+}
+
+// strong — 계정 링크 · 이메일 · 전화 · @아이디. 일반 링크(strong=false)는 계정에 닿지 않아 확인 권고로만 (Codex 10/8)
+function strongIdentifiers(data) {
+  return directIdentifiers(data).filter(f => f.strong !== false);
+}
+
+function renderDirectIdentifiers(data, heading) {
+  const all = directIdentifiers(data);
+  const row = f => `<li><b>${esc(f.label)}</b> <code>${esc(f.value)}</code> — 「${esc(postLabel(f.post) || f.post_id)}」</li>`;
+  const strong = all.filter(f => f.strong !== false);
+  const weak = all.filter(f => f.strong === false);
+  let out = "";
+  if (strong.length) {
+    out += `<div class="card warn"><h3>${heading}</h3>
+      <p>아래 정보는 <b>하나만으로 내 계정이나 연락처에 바로 닿습니다.</b> 위험 점수(같은 조건의 사람 수)와 별개로 가장 먼저 지우세요.</p>
+      <ul>${strong.map(row).join("")}</ul></div>`;
+  }
+  if (weak.length) {
+    out += `<div class="card"><h3>링크 확인</h3>
+      <p>계정으로 바로 이어지지는 않지만, 주소에 동네·가게·학교 이름이 들어 있으면 단서가 됩니다. 한 번 확인해 보세요.</p>
+      <ul>${weak.map(row).join("")}</ul></div>`;
+  }
+  return out;
+}
+
 const TYPE_LABEL = {
   LOC_ADMIN: "지역", LOC_FACILITY: "장소", REL_HOME: "집 근처", REL_WORK: "직장 근처", AGE: "나이", SEX: "성별",
   JOB: "직업", FAM: "가족", COMMUTE: "통근", INCOME: "소득",

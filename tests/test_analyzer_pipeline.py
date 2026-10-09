@@ -237,3 +237,22 @@ def test_contribution_recompute_removed_posts():
     out = c23.contribution("u_deadbeef", posts, spans_by_post=spans_by_post, removed_post_ids=["p1"])["output"]
     assert out["baseline_risk"] > 0
     assert out["risk_after"] == 0.0
+
+
+def test_server_reports_direct_identifiers_per_channel(monkeypatch):
+    """계정 링크 · 연락처는 스팬과 별개로 글마다 · 채널 이름(photo_caption:N)까지 화면과 같게 나온다."""
+    pytest.importorskip("fastapi")
+    from apps.analyzer import server
+    from apps.analyzer.engines import mock
+
+    for name, fn in (("detect_spans", lambda r: {"spans": []}), ("conditions", c23.conditions),
+                     ("specificity", c23.specificity), ("contribution", c23.contribution),
+                     ("per_post_k", c23.per_post_k), ("stage2", mock.stage2)):
+        monkeypatch.setattr(server.engine, name, fn)
+    posts = [{**_post("p1", "지난 글 https://blog.naver.com/abc_123 참고"), "photos": [{"caption": ""}, {"caption": "문의 010-1234-5678"}]},
+             _post("p2", "링크 없는 글")]
+    out = server._run_pipeline("u_0000aaaa", posts)
+    p1 = out["direct_identifiers"]["p1"]
+    assert [(f["text_id"], f["kind"]) for f in p1] == [("body", "account_url"), ("photo_caption:1", "phone")]
+    assert out["direct_identifiers"]["p2"] == []
+

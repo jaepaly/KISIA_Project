@@ -114,8 +114,34 @@ def _ladder_from_full(toks: list[str], seen: set[str]) -> list[tuple[str, str]]:
     return out
 
 
+def _prefix_matches(prefix: str, full_toks: list[str]) -> bool:
+    """「대전」「서울특별시」「전주」가 정식 전체 이름의 상위 단계 중 하나인가 (약칭 · 「시·군·구」 뗀 말 포함)."""
+    for tok in full_toks:
+        if (prefix in (tok, _SIDO_SHORT.get(tok)) or prefix in _SIDO_ALIASES.get(tok, ())  # 「서울시」「강원」「제주도」 (Codex 10/9)
+                or (len(prefix) >= 2 and tok[:-1] == prefix and tok[-1] in "시군구도")):
+            return True
+    return False
+
+
+def _multi_region_ladder(words: list[str]) -> list[tuple[str, str]]:
+    """「대전 유성구」「서울 강서구」「전주 완산구」 — 두 어절 이상 지명. 마지막 어절을 앞 어절로 좁혀 해석한다.
+
+    통째로는 사전에 없어 기권하던 것 — exp21 최종 판정(10/9)에서 이런 지명이 LLM 으로 넘어가 「지역」으로 뭉개졌다.
+    앞 어절이 강서구(서울·부산)처럼 갈리는 이름도 하나로 좁힌다. 좁혀도 둘 이상이면 기권.
+    """
+    d = _dict()
+    fulls = [(d.regions[c].get("full_name") or d.regions[c]["name"]).split() for c in _region_codes(words[-1])]
+    fulls = [f for f in fulls if all(_prefix_matches(p, f[:-1]) for p in words[:-1])]
+    if not fulls or len({tuple(x[:-1]) for x in fulls}) != 1:
+        return []
+    return _ladder_from_full(fulls[0], {words[-1]})
+
+
 def _region_ladder(core: str) -> list[tuple[str, str]]:
     """지명 → [(더 넓은 이름, 설명)]. 동 → 시군구 → 시도 (정식 전체 이름의 상위 단계). 동명이 여러 곳이면 []."""
+    words = core.split()
+    if len(words) >= 2:
+        return _multi_region_ladder(words)
     codes = _region_codes(core)
     if not codes:
         return []
