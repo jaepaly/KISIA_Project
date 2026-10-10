@@ -277,3 +277,13 @@ def test_server_reports_timeline_with_post_date(monkeypatch):
     assert g["start_range"][0] <= "2026-03-02" <= g["start_range"][1]
     assert server._run_pipeline("u_0000aaaa", [_post("p9", "차수 없는 글")])["timeline"] == []
 
+
+def test_c1_defaults_are_baseline_v2():
+    """앱 기본 = 기준선 v2(재학습 체크포인트 + 명시 규칙 켬) — exp17c 를 잰 구성과 같아야 한다 (#310 · #322).
+    모듈을 reload 하지 않고 해석 함수만 본다 — 다른 테스트에 상태가 새지 않게 (Codex 10/9)"""
+    from apps.analyzer.engines import c1_rules
+
+    assert all(c1_rules.parse(v) for v in (None, "", "1", "on", "yes"))
+    assert not any(c1_rules.parse(v) for v in ("0", "false", "OFF", " no "))
+    src = (ROOT / "apps" / "analyzer" / "engines" / "real.py").read_text(encoding="utf-8")
+    assert '"variant_base_20261008" / "checkpoint-epoch-10"' in src
