@@ -257,6 +257,26 @@ def test_server_reports_direct_identifiers_per_channel(monkeypatch):
     assert out["direct_identifiers"]["p2"] == []
 
 
+def test_server_reports_timeline_with_post_date(monkeypatch):
+    """시점 역산(#331) — 본문 날짜가 없으면 export 의 post_date(#334)를 기준점으로 써서 여러 글의 같은 시작을 묶는다."""
+    pytest.importorskip("fastapi")
+    from apps.analyzer import server
+    from apps.analyzer.engines import mock
+
+    for name, fn in (("detect_spans", lambda r: {"spans": []}), ("conditions", c23.conditions),
+                     ("specificity", c23.specificity), ("contribution", c23.contribution),
+                     ("per_post_k", c23.per_post_k), ("stage2", mock.stage2)):
+        monkeypatch.setattr(server.engine, name, fn)
+    posts = [{**_post("p1", "워홀 3주차, 오늘은 바다"), "post_date": "2026-03-16"},
+             {**_post("p2", "워홀 5주차 근황"), "post_date": "2026-03-30"},
+             _post("p3", "워홀 9주차")]   # 작성일 없음(파일 업로드) → 기준점이 없어 빠진다
+    out = server._run_pipeline("u_0000aaaa", posts)
+    assert len(out["timeline"]) == 1
+    g = out["timeline"][0]
+    assert g["posts"] == ["p1", "p2"] and g["anchor"] == "post_date"
+    assert g["start_range"][0] <= "2026-03-02" <= g["start_range"][1]
+    assert server._run_pipeline("u_0000aaaa", [_post("p9", "차수 없는 글")])["timeline"] == []
+
 
 def test_c1_defaults_are_baseline_v2():
     """앱 기본 = 기준선 v2(재학습 체크포인트 + 명시 규칙 켬) — exp17c 를 잰 구성과 같아야 한다 (#310 · #322).

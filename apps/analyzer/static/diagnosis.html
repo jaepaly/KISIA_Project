@@ -148,6 +148,7 @@ if (!data) {
       ${renderSpecificity(data.specificity)}
     </div>
     ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
+    ${renderTimeline(data)}
     <details class="card more sec">
       <summary>7속성 판정 <small>— ${nFound}개 속성이 특정되거나 좁혀짐 · ${7 - nFound}개 판단 보류</small></summary>
       ${renderFindings(data.stage2.output.findings)}

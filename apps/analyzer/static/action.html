@@ -364,6 +364,7 @@ function render() {
   }
   el.innerHTML = renderScore(data)
     + renderDirectIdentifiers(data, "먼저 지울 것 — 계정·연락처로 바로 연결되는 정보")   // #326 · 점수와 별개
+    + renderTimeline(data)   // #331 · 점수와 별개
     + renderActions(data) + renderFunnel(data) + renderOrder(data) + renderRewrites(data) + renderManualTips(data);
   document.getElementById("rescanBtn").onclick = () => rescan(data.user_ref);
   // ③ 카드의 「후보는 아래에」 링크 → 접힌 섹션을 펼치고 이동
