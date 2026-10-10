@@ -90,6 +90,38 @@ function renderDirectIdentifiers(data, heading) {
   return out;
 }
 
+// 글을 합치면 드러나는 시점 — 서버 timeline(#331). 「3주차 · 7주차 · 9주차」를 합치면 시작한 날이 나온다
+function _ymd(iso) {
+  const [y, m, d] = String(iso).split("-").map(Number);
+  return `${y}년 ${m}월 ${d}일`;
+}
+
+function renderTimeline(data) {
+  const groups = data.timeline || [];
+  if (!groups.length) return "";
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  const cards = groups.map(g => {
+    const when = g.start ? _ymd(g.start) : `${_ymd(g.start_range[0])} ~ ${_ymd(g.start_range[1])} 사이`;
+    // 많이 쓴 말부터 — 「워홀」이 「청소」보다 앞에 오게
+    const freq = {};
+    for (const m of (g.marks || [])) freq[m.event] = (freq[m.event] || 0) + 1;
+    const words = (g.words || []).filter(w => w !== "?").sort((a, b) => (freq[b] || 0) - (freq[a] || 0));
+    const shown = words.slice(0, 3).map(esc).join(" · ") + (words.length > 3 ? ` 외 ${words.length - 3}개` : "");
+    const what = words.length ? `「${shown}」 시작일` : "무언가를 시작한 날";
+    const how = { post_date: "글 작성일과 차수(n일차 · n주차)", text: "글에 적은 날짜와 차수(n일차 · n주차)",
+      mixed: "글에 적은 날짜 · 글 작성일과 차수(n일차 · n주차)" }[g.anchor] || "날짜와 차수";
+    const seen = new Set();
+    const items = (g.marks || []).filter(m => !seen.has(m.post_id + m.value) && seen.add(m.post_id + m.value)).slice(0, 5)
+      .map(m => `<li><mark>${esc(m.date_value ? m.date_value + " … " + m.value : m.value)}</mark> — 「${esc(postLabel(posts[m.post_id]) || m.post_id)}」</li>`).join("");
+    const lead = g.n_posts >= 2 ? `글 ${g.n_posts}편을 합치면` : "이 글 하나로";
+    return `<li><p>${lead} ${what}이 <b>${esc(when)}</b>쯤으로 계산됩니다 <small>(${how}로 거꾸로 셈)</small></p><ul>${items}</ul></li>`;
+  }).join("");
+  return `<div class="card"><h3>글을 합치면 드러나는 시점</h3>
+    <p>날짜와 「n일차 · n주차」를 함께 쓰면 언제 시작했는지(입사 · 이사 · 여행 등)가 계산됩니다. 시작한 날은 다른 단서와 합쳐 글쓴이를 좁히는 데 쓰입니다.
+    글에서 차수(「n일차 · n주차」)를 지우면 계산되지 않습니다. 글 작성일도 기준이 되므로 본문 날짜만 지워서는 부족하고, 글이 많으면 몇 편만 숨겨도 남은 글로 계산됩니다.</p>
+    <ul>${cards}</ul></div>`;
+}
+
 const TYPE_LABEL = {
   LOC_ADMIN: "지역", LOC_FACILITY: "장소", REL_HOME: "집 근처", REL_WORK: "직장 근처", AGE: "나이", SEX: "성별",
   JOB: "직업", FAM: "가족", COMMUTE: "통근", INCOME: "소득",

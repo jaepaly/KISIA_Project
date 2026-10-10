@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 
 from apps.analyzer import engines as engine
 from kopl.c4_stage2.links import find_direct_identifiers
+from kopl.c4_stage2.timeline import find_marks, infer_starts
 from apps.analyzer.adapters import file_adapter, sns_adapter
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
@@ -88,6 +89,10 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
         # 계정 링크 · 이메일 · 전화 · @아이디 — 하나만으로 글쓴이에게 닿는다. k 로 잴 대상이 아니라 위험 점수와 별개로 먼저 안내한다
         # (스팬 계약 밖 · 화면 전용). 글마다 [{text_id, start, end, kind, label, value}]
         "direct_identifiers": {p["post_id"]: find_direct_identifiers(_channels(p)) for p in posts},
+        # 글을 합치면 드러나는 시점 — 「날짜 + n일차/n주차」에서 시작일을 역산해, 여러 글이 같은 시작을 가리키면 묶는다 (#331).
+        # 본문 날짜가 없으면 SNS export 의 작성 날짜(post_date · #334)를 기준점으로 쓴다. 파일 업로드는 작성일이 없어 본문 날짜만.
+        # 스팬 계약 밖 · 화면 전용 — direct_identifiers 와 같은 방식
+        "timeline": infer_starts({p["post_id"]: find_marks(_channels(p), p.get("post_date")) for p in posts}),
     }
 
 
