@@ -1,0 +1,1725 @@
+{
+ "summary": {
+  "source": "model",
+  "measured": "2026-10-11",
+  "accounts": 115,
+  "posts": 1978,
+  "posts_with_labels": 1978,
+  "risk_median": 14.29,
+  "risk_mean": 15.19,
+  "risk_p90": 27.86,
+  "risk_max": 50.0,
+  "below_15": 59,
+  "zero": 12,
+  "seconds": 533.7
+ },
+ "accounts": [
+  {
+   "persona_id": "A01",
+   "n_posts": 7,
+   "n_spans_self": 1,
+   "types": {
+    "JOB": 1
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "A02",
+   "n_posts": 9,
+   "n_spans_self": 9,
+   "types": {
+    "AGE": 1,
+    "JOB": 5,
+    "FAM": 2,
+    "REL_HOME": 1
+   },
+   "risk": 19.29,
+   "risk_by_axis": {
+    "age": 40.0,
+    "occupation": 40.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "A03",
+   "n_posts": 9,
+   "n_spans_self": 1,
+   "types": {
+    "FAM": 1
+   },
+   "risk": 4.29,
+   "risk_by_axis": {
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "A04",
+   "n_posts": 10,
+   "n_spans_self": 10,
+   "types": {
+    "JOB": 3,
+    "LOC_FACILITY": 3,
+    "AGE": 2,
+    "LOC_ADMIN": 1,
+    "COMMUTE": 1
+   },
+   "risk": 33.57,
+   "risk_by_axis": {
+    "location": 55.0,
+    "age": 100.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A05",
+   "n_posts": 8,
+   "n_spans_self": 6,
+   "types": {
+    "JOB": 1,
+    "REL_WORK": 1,
+    "SEX": 2,
+    "FAM": 2
+   },
+   "risk": 24.29,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A06",
+   "n_posts": 13,
+   "n_spans_self": 3,
+   "types": {
+    "COMMUTE": 2,
+    "JOB": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A07",
+   "n_posts": 11,
+   "n_spans_self": 1,
+   "types": {
+    "SEX": 1
+   },
+   "risk": 8.57,
+   "risk_by_axis": {
+    "sex": 60.0
+   }
+  },
+  {
+   "persona_id": "A08",
+   "n_posts": 13,
+   "n_spans_self": 5,
+   "types": {
+    "COMMUTE": 3,
+    "JOB": 1,
+    "REL_HOME": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A09",
+   "n_posts": 10,
+   "n_spans_self": 4,
+   "types": {
+    "COMMUTE": 3,
+    "JOB": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A10",
+   "n_posts": 13,
+   "n_spans_self": 8,
+   "types": {
+    "COMMUTE": 5,
+    "FAM": 3
+   },
+   "risk": 17.86,
+   "risk_by_axis": {
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A11",
+   "n_posts": 19,
+   "n_spans_self": 18,
+   "types": {
+    "LOC_ADMIN": 2,
+    "SEX": 7,
+    "JOB": 3,
+    "LOC_FACILITY": 3,
+    "FAM": 3
+   },
+   "risk": 34.29,
+   "risk_by_axis": {
+    "location": 55.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 85.0
+   }
+  },
+  {
+   "persona_id": "A12",
+   "n_posts": 19,
+   "n_spans_self": 28,
+   "types": {
+    "JOB": 10,
+    "FAM": 9,
+    "SEX": 9
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "A13",
+   "n_posts": 20,
+   "n_spans_self": 20,
+   "types": {
+    "JOB": 1,
+    "LOC_ADMIN": 8,
+    "LOC_FACILITY": 4,
+    "INCOME": 3,
+    "REL_HOME": 2,
+    "FAM": 2
+   },
+   "risk": 25.0,
+   "risk_by_axis": {
+    "location": 55.0,
+    "occupation": 40.0,
+    "family": 30.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "A14",
+   "n_posts": 20,
+   "n_spans_self": 16,
+   "types": {
+    "LOC_ADMIN": 2,
+    "SEX": 3,
+    "COMMUTE": 2,
+    "JOB": 7,
+    "AGE": 1,
+    "FAM": 1
+   },
+   "risk": 50.0,
+   "risk_by_axis": {
+    "location": 55.0,
+    "age": 100.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 55.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A15",
+   "n_posts": 20,
+   "n_spans_self": 18,
+   "types": {
+    "REL_HOME": 8,
+    "SEX": 4,
+    "JOB": 5,
+    "REL_WORK": 1
+   },
+   "risk": 24.29,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A16",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "SEX": 2,
+    "FAM": 1
+   },
+   "risk": 16.43,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "A17",
+   "n_posts": 20,
+   "n_spans_self": 5,
+   "types": {
+    "SEX": 1,
+    "INCOME": 1,
+    "JOB": 2,
+    "COMMUTE": 1
+   },
+   "risk": 31.43,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "commute": 40.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "A18",
+   "n_posts": 20,
+   "n_spans_self": 29,
+   "types": {
+    "JOB": 6,
+    "SEX": 4,
+    "COMMUTE": 11,
+    "REL_WORK": 7,
+    "REL_HOME": 1
+   },
+   "risk": 20.0,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A19",
+   "n_posts": 20,
+   "n_spans_self": 21,
+   "types": {
+    "REL_WORK": 10,
+    "FAM": 1,
+    "SEX": 1,
+    "REL_HOME": 4,
+    "JOB": 5
+   },
+   "risk": 36.43,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A20",
+   "n_posts": 21,
+   "n_spans_self": 12,
+   "types": {
+    "AGE": 3,
+    "FAM": 3,
+    "JOB": 1,
+    "REL_HOME": 2,
+    "LOC_FACILITY": 2,
+    "SEX": 1
+   },
+   "risk": 24.29,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "A21",
+   "n_posts": 20,
+   "n_spans_self": 14,
+   "types": {
+    "INCOME": 2,
+    "SEX": 5,
+    "JOB": 3,
+    "REL_WORK": 1,
+    "FAM": 3
+   },
+   "risk": 31.43,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "A22",
+   "n_posts": 21,
+   "n_spans_self": 9,
+   "types": {
+    "JOB": 6,
+    "INCOME": 1,
+    "LOC_FACILITY": 1,
+    "REL_WORK": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "A23",
+   "n_posts": 21,
+   "n_spans_self": 11,
+   "types": {
+    "FAM": 3,
+    "COMMUTE": 3,
+    "REL_WORK": 1,
+    "REL_HOME": 2,
+    "SEX": 1,
+    "JOB": 1
+   },
+   "risk": 32.14,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A24",
+   "n_posts": 21,
+   "n_spans_self": 15,
+   "types": {
+    "FAM": 7,
+    "LOC_FACILITY": 4,
+    "COMMUTE": 1,
+    "SEX": 3
+   },
+   "risk": 26.43,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "A25",
+   "n_posts": 20,
+   "n_spans_self": 6,
+   "types": {
+    "REL_HOME": 1,
+    "FAM": 3,
+    "AGE": 1,
+    "SEX": 1
+   },
+   "risk": 22.14,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "A26",
+   "n_posts": 20,
+   "n_spans_self": 16,
+   "types": {
+    "AGE": 8,
+    "COMMUTE": 7,
+    "SEX": 1
+   },
+   "risk": 20.0,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B01",
+   "n_posts": 8,
+   "n_spans_self": 6,
+   "types": {
+    "JOB": 3,
+    "REL_HOME": 3
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "B02",
+   "n_posts": 11,
+   "n_spans_self": 10,
+   "types": {
+    "LOC_FACILITY": 2,
+    "JOB": 8
+   },
+   "risk": 10.0,
+   "risk_by_axis": {
+    "occupation": 70.0
+   }
+  },
+  {
+   "persona_id": "B03",
+   "n_posts": 11,
+   "n_spans_self": 8,
+   "types": {
+    "COMMUTE": 2,
+    "JOB": 5,
+    "LOC_ADMIN": 1
+   },
+   "risk": 19.29,
+   "risk_by_axis": {
+    "location": 55.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B04",
+   "n_posts": 12,
+   "n_spans_self": 5,
+   "types": {
+    "JOB": 4,
+    "REL_WORK": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B05",
+   "n_posts": 12,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "B06",
+   "n_posts": 20,
+   "n_spans_self": 24,
+   "types": {
+    "COMMUTE": 5,
+    "JOB": 7,
+    "FAM": 9,
+    "REL_HOME": 1,
+    "SEX": 1,
+    "AGE": 1
+   },
+   "risk": 38.57,
+   "risk_by_axis": {
+    "age": 100.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B07",
+   "n_posts": 19,
+   "n_spans_self": 19,
+   "types": {
+    "JOB": 13,
+    "REL_WORK": 1,
+    "SEX": 5
+   },
+   "risk": 20.0,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B08",
+   "n_posts": 22,
+   "n_spans_self": 17,
+   "types": {
+    "JOB": 13,
+    "LOC_ADMIN": 1,
+    "REL_HOME": 3
+   },
+   "risk": 22.14,
+   "risk_by_axis": {
+    "location": 85.0,
+    "occupation": 70.0
+   }
+  },
+  {
+   "persona_id": "B09",
+   "n_posts": 20,
+   "n_spans_self": 7,
+   "types": {
+    "JOB": 5,
+    "REL_HOME": 1,
+    "SEX": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "B10",
+   "n_posts": 19,
+   "n_spans_self": 8,
+   "types": {
+    "FAM": 5,
+    "AGE": 1,
+    "REL_WORK": 2
+   },
+   "risk": 19.29,
+   "risk_by_axis": {
+    "age": 40.0,
+    "family": 55.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B11",
+   "n_posts": 22,
+   "n_spans_self": 3,
+   "types": {
+    "LOC_FACILITY": 2,
+    "REL_HOME": 1
+   },
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "B12",
+   "n_posts": 19,
+   "n_spans_self": 9,
+   "types": {
+    "FAM": 1,
+    "JOB": 6,
+    "COMMUTE": 1,
+    "LOC_FACILITY": 1
+   },
+   "risk": 15.71,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B13",
+   "n_posts": 20,
+   "n_spans_self": 16,
+   "types": {
+    "AGE": 2,
+    "REL_HOME": 1,
+    "LOC_FACILITY": 2,
+    "FAM": 5,
+    "SEX": 4,
+    "COMMUTE": 1,
+    "REL_WORK": 1
+   },
+   "risk": 36.43,
+   "risk_by_axis": {
+    "age": 100.0,
+    "sex": 60.0,
+    "family": 55.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B14",
+   "n_posts": 18,
+   "n_spans_self": 10,
+   "types": {
+    "AGE": 1,
+    "SEX": 4,
+    "FAM": 3,
+    "JOB": 1,
+    "LOC_FACILITY": 1
+   },
+   "risk": 27.86,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "B15",
+   "n_posts": 19,
+   "n_spans_self": 8,
+   "types": {
+    "REL_HOME": 5,
+    "LOC_FACILITY": 3
+   },
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "B16",
+   "n_posts": 22,
+   "n_spans_self": 17,
+   "types": {
+    "JOB": 12,
+    "SEX": 3,
+    "REL_WORK": 1,
+    "COMMUTE": 1
+   },
+   "risk": 20.0,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B17",
+   "n_posts": 19,
+   "n_spans_self": 23,
+   "types": {
+    "REL_WORK": 4,
+    "FAM": 7,
+    "JOB": 9,
+    "SEX": 1,
+    "COMMUTE": 1,
+    "LOC_FACILITY": 1
+   },
+   "risk": 32.14,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "family": 55.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B18",
+   "n_posts": 18,
+   "n_spans_self": 5,
+   "types": {
+    "JOB": 4,
+    "SEX": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "B19",
+   "n_posts": 19,
+   "n_spans_self": 2,
+   "types": {
+    "REL_WORK": 2
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B20",
+   "n_posts": 22,
+   "n_spans_self": 10,
+   "types": {
+    "COMMUTE": 2,
+    "LOC_FACILITY": 1,
+    "REL_WORK": 4,
+    "SEX": 2,
+    "FAM": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "B21",
+   "n_posts": 20,
+   "n_spans_self": 22,
+   "types": {
+    "JOB": 11,
+    "FAM": 10,
+    "COMMUTE": 1
+   },
+   "risk": 23.57,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C01",
+   "n_posts": 10,
+   "n_spans_self": 3,
+   "types": {
+    "FAM": 1,
+    "REL_HOME": 1,
+    "AGE": 1
+   },
+   "risk": 10.0,
+   "risk_by_axis": {
+    "age": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "C02",
+   "n_posts": 10,
+   "n_spans_self": 4,
+   "types": {
+    "COMMUTE": 2,
+    "JOB": 2
+   },
+   "risk": 15.71,
+   "risk_by_axis": {
+    "occupation": 70.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C03",
+   "n_posts": 10,
+   "n_spans_self": 1,
+   "types": {
+    "JOB": 1
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "C04",
+   "n_posts": 10,
+   "n_spans_self": 11,
+   "types": {
+    "JOB": 6,
+    "COMMUTE": 2,
+    "FAM": 3
+   },
+   "risk": 15.71,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C05",
+   "n_posts": 10,
+   "n_spans_self": 1,
+   "types": {
+    "INCOME": 1
+   },
+   "risk": 7.14,
+   "risk_by_axis": {
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "C06",
+   "n_posts": 20,
+   "n_spans_self": 9,
+   "types": {
+    "JOB": 8,
+    "SEX": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "C07",
+   "n_posts": 20,
+   "n_spans_self": 5,
+   "types": {
+    "JOB": 3,
+    "REL_HOME": 1,
+    "REL_WORK": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C08",
+   "n_posts": 20,
+   "n_spans_self": 9,
+   "types": {
+    "FAM": 6,
+    "JOB": 3
+   },
+   "risk": 14.29,
+   "risk_by_axis": {
+    "occupation": 70.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "C09",
+   "n_posts": 20,
+   "n_spans_self": 7,
+   "types": {
+    "JOB": 2,
+    "LOC_FACILITY": 5
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "C10",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "SEX": 3
+   },
+   "risk": 12.86,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "C11",
+   "n_posts": 20,
+   "n_spans_self": 9,
+   "types": {
+    "COMMUTE": 5,
+    "REL_HOME": 2,
+    "FAM": 1,
+    "REL_WORK": 1
+   },
+   "risk": 13.57,
+   "risk_by_axis": {
+    "family": 55.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C12",
+   "n_posts": 20,
+   "n_spans_self": 7,
+   "types": {
+    "LOC_FACILITY": 1,
+    "REL_HOME": 2,
+    "SEX": 1,
+    "FAM": 3
+   },
+   "risk": 20.71,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 85.0
+   }
+  },
+  {
+   "persona_id": "C13",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "JOB": 1,
+    "FAM": 1,
+    "COMMUTE": 1
+   },
+   "risk": 15.71,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C14",
+   "n_posts": 20,
+   "n_spans_self": 2,
+   "types": {
+    "JOB": 2
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "C15",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "SEX": 2,
+    "JOB": 1
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "C16",
+   "n_posts": 20,
+   "n_spans_self": 6,
+   "types": {
+    "JOB": 4,
+    "FAM": 2
+   },
+   "risk": 17.86,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 85.0
+   }
+  },
+  {
+   "persona_id": "C17",
+   "n_posts": 20,
+   "n_spans_self": 16,
+   "types": {
+    "JOB": 15,
+    "COMMUTE": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C18",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "LOC_FACILITY": 1,
+    "JOB": 2
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "C19",
+   "n_posts": 20,
+   "n_spans_self": 7,
+   "types": {
+    "JOB": 6,
+    "COMMUTE": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "C20",
+   "n_posts": 20,
+   "n_spans_self": 1,
+   "types": {
+    "JOB": 1
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "C21",
+   "n_posts": 20,
+   "n_spans_self": 3,
+   "types": {
+    "SEX": 1,
+    "JOB": 2
+   },
+   "risk": 18.57,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "D01",
+   "n_posts": 10,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D02",
+   "n_posts": 9,
+   "n_spans_self": 4,
+   "types": {
+    "SEX": 3,
+    "COMMUTE": 1
+   },
+   "risk": 14.29,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D03",
+   "n_posts": 11,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D04",
+   "n_posts": 10,
+   "n_spans_self": 2,
+   "types": {
+    "REL_WORK": 1,
+    "SEX": 1
+   },
+   "risk": 14.29,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D05",
+   "n_posts": 8,
+   "n_spans_self": 1,
+   "types": {
+    "REL_HOME": 1
+   },
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D06",
+   "n_posts": 5,
+   "n_spans_self": 4,
+   "types": {
+    "COMMUTE": 1,
+    "REL_HOME": 1,
+    "JOB": 1,
+    "LOC_FACILITY": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D07",
+   "n_posts": 9,
+   "n_spans_self": 2,
+   "types": {
+    "LOC_FACILITY": 2
+   },
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D08",
+   "n_posts": 17,
+   "n_spans_self": 1,
+   "types": {
+    "LOC_ADMIN": 1
+   },
+   "risk": 7.86,
+   "risk_by_axis": {
+    "location": 55.0
+   }
+  },
+  {
+   "persona_id": "D09",
+   "n_posts": 21,
+   "n_spans_self": 15,
+   "types": {
+    "REL_HOME": 9,
+    "JOB": 6
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "D10",
+   "n_posts": 20,
+   "n_spans_self": 5,
+   "types": {
+    "LOC_ADMIN": 1,
+    "REL_WORK": 3,
+    "LOC_FACILITY": 1
+   },
+   "risk": 17.86,
+   "risk_by_axis": {
+    "location": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D11",
+   "n_posts": 22,
+   "n_spans_self": 6,
+   "types": {
+    "COMMUTE": 5,
+    "REL_HOME": 1
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D12",
+   "n_posts": 19,
+   "n_spans_self": 5,
+   "types": {
+    "AGE": 1,
+    "REL_HOME": 2,
+    "JOB": 2
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "age": 40.0,
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "D13",
+   "n_posts": 21,
+   "n_spans_self": 3,
+   "types": {
+    "REL_HOME": 2,
+    "LOC_FACILITY": 1
+   },
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D14",
+   "n_posts": 22,
+   "n_spans_self": 7,
+   "types": {
+    "REL_HOME": 1,
+    "COMMUTE": 5,
+    "JOB": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D15",
+   "n_posts": 21,
+   "n_spans_self": 3,
+   "types": {
+    "JOB": 1,
+    "REL_HOME": 1,
+    "AGE": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "age": 40.0,
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "D16",
+   "n_posts": 22,
+   "n_spans_self": 7,
+   "types": {
+    "JOB": 6,
+    "COMMUTE": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D17",
+   "n_posts": 22,
+   "n_spans_self": 10,
+   "types": {
+    "COMMUTE": 8,
+    "REL_HOME": 2
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D18",
+   "n_posts": 21,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "D19",
+   "n_posts": 22,
+   "n_spans_self": 9,
+   "types": {
+    "JOB": 8,
+    "REL_WORK": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D20",
+   "n_posts": 21,
+   "n_spans_self": 1,
+   "types": {
+    "REL_WORK": 1
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D21",
+   "n_posts": 22,
+   "n_spans_self": 3,
+   "types": {
+    "JOB": 1,
+    "COMMUTE": 2
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "D22",
+   "n_posts": 22,
+   "n_spans_self": 18,
+   "types": {
+    "JOB": 11,
+    "FAM": 3,
+    "REL_HOME": 3,
+    "SEX": 1
+   },
+   "risk": 22.14,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "D23",
+   "n_posts": 21,
+   "n_spans_self": 3,
+   "types": {
+    "JOB": 3
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "D24",
+   "n_posts": 22,
+   "n_spans_self": 6,
+   "types": {
+    "JOB": 5,
+    "REL_WORK": 1
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E01",
+   "n_posts": 10,
+   "n_spans_self": 2,
+   "types": {
+    "FAM": 2
+   },
+   "risk": 4.29,
+   "risk_by_axis": {
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E02",
+   "n_posts": 10,
+   "n_spans_self": 7,
+   "types": {
+    "REL_HOME": 1,
+    "JOB": 6
+   },
+   "risk": 5.71,
+   "risk_by_axis": {
+    "occupation": 40.0
+   }
+  },
+  {
+   "persona_id": "E03",
+   "n_posts": 10,
+   "n_spans_self": 4,
+   "types": {
+    "REL_HOME": 2,
+    "COMMUTE": 1,
+    "INCOME": 1
+   },
+   "risk": 12.86,
+   "risk_by_axis": {
+    "commute": 40.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "E04",
+   "n_posts": 10,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "E05",
+   "n_posts": 10,
+   "n_spans_self": 2,
+   "types": {
+    "REL_HOME": 1,
+    "SEX": 1
+   },
+   "risk": 8.57,
+   "risk_by_axis": {
+    "sex": 60.0
+   }
+  },
+  {
+   "persona_id": "E06",
+   "n_posts": 20,
+   "n_spans_self": 12,
+   "types": {
+    "REL_WORK": 1,
+    "LOC_FACILITY": 1,
+    "REL_HOME": 3,
+    "COMMUTE": 5,
+    "JOB": 2
+   },
+   "risk": 11.43,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E07",
+   "n_posts": 20,
+   "n_spans_self": 16,
+   "types": {
+    "JOB": 2,
+    "REL_HOME": 9,
+    "SEX": 4,
+    "AGE": 1
+   },
+   "risk": 24.29,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E08",
+   "n_posts": 20,
+   "n_spans_self": 13,
+   "types": {
+    "REL_HOME": 9,
+    "FAM": 3,
+    "JOB": 1
+   },
+   "risk": 17.86,
+   "risk_by_axis": {
+    "occupation": 70.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "E09",
+   "n_posts": 20,
+   "n_spans_self": 12,
+   "types": {
+    "REL_HOME": 4,
+    "JOB": 4,
+    "FAM": 4
+   },
+   "risk": 13.57,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "E10",
+   "n_posts": 20,
+   "n_spans_self": 45,
+   "types": {
+    "JOB": 5,
+    "FAM": 37,
+    "COMMUTE": 3
+   },
+   "risk": 23.57,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E11",
+   "n_posts": 20,
+   "n_spans_self": 39,
+   "types": {
+    "LOC_FACILITY": 3,
+    "REL_HOME": 3,
+    "SEX": 28,
+    "FAM": 1,
+    "JOB": 4
+   },
+   "risk": 22.86,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E12",
+   "n_posts": 20,
+   "n_spans_self": 29,
+   "types": {
+    "FAM": 19,
+    "REL_HOME": 4,
+    "LOC_FACILITY": 2,
+    "JOB": 1,
+    "INCOME": 3
+   },
+   "risk": 21.43,
+   "risk_by_axis": {
+    "occupation": 70.0,
+    "family": 30.0,
+    "income": 50.0
+   }
+  },
+  {
+   "persona_id": "E13",
+   "n_posts": 20,
+   "n_spans_self": 12,
+   "types": {
+    "SEX": 6,
+    "JOB": 4,
+    "REL_WORK": 2
+   },
+   "risk": 24.29,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E14",
+   "n_posts": 20,
+   "n_spans_self": 23,
+   "types": {
+    "SEX": 8,
+    "LOC_FACILITY": 1,
+    "FAM": 14
+   },
+   "risk": 12.86,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E15",
+   "n_posts": 20,
+   "n_spans_self": 9,
+   "types": {
+    "AGE": 1,
+    "SEX": 6,
+    "COMMUTE": 2
+   },
+   "risk": 20.0,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E16",
+   "n_posts": 20,
+   "n_spans_self": 12,
+   "types": {
+    "REL_WORK": 7,
+    "FAM": 1,
+    "JOB": 2,
+    "COMMUTE": 1,
+    "REL_HOME": 1
+   },
+   "risk": 15.71,
+   "risk_by_axis": {
+    "occupation": 40.0,
+    "family": 30.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E17",
+   "n_posts": 20,
+   "n_spans_self": 9,
+   "types": {
+    "FAM": 2,
+    "JOB": 4,
+    "SEX": 3
+   },
+   "risk": 22.86,
+   "risk_by_axis": {
+    "sex": 60.0,
+    "occupation": 70.0,
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E18",
+   "n_posts": 20,
+   "n_spans_self": 10,
+   "types": {
+    "REL_WORK": 8,
+    "JOB": 1,
+    "LOC_ADMIN": 1
+   },
+   "risk": 19.29,
+   "risk_by_axis": {
+    "location": 55.0,
+    "occupation": 40.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E19",
+   "n_posts": 20,
+   "n_spans_self": 26,
+   "types": {
+    "JOB": 12,
+    "REL_WORK": 3,
+    "FAM": 7,
+    "LOC_ADMIN": 1,
+    "REL_HOME": 3
+   },
+   "risk": 31.43,
+   "risk_by_axis": {
+    "location": 55.0,
+    "occupation": 40.0,
+    "family": 85.0,
+    "commute": 40.0
+   }
+  },
+  {
+   "persona_id": "E20",
+   "n_posts": 20,
+   "n_spans_self": 6,
+   "types": {
+    "LOC_FACILITY": 5,
+    "FAM": 1
+   },
+   "risk": 4.29,
+   "risk_by_axis": {
+    "family": 30.0
+   }
+  },
+  {
+   "persona_id": "E21",
+   "n_posts": 20,
+   "n_spans_self": 25,
+   "types": {
+    "AGE": 6,
+    "FAM": 9,
+    "SEX": 9,
+    "JOB": 1
+   },
+   "risk": 27.86,
+   "risk_by_axis": {
+    "age": 40.0,
+    "sex": 60.0,
+    "occupation": 40.0,
+    "family": 55.0
+   }
+  },
+  {
+   "persona_id": "S01",
+   "n_posts": 10,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  },
+  {
+   "persona_id": "S01b",
+   "n_posts": 11,
+   "n_spans_self": 0,
+   "types": {},
+   "risk": 0.0,
+   "risk_by_axis": {}
+  }
+ ]
+}
