@@ -32,7 +32,14 @@ body{
 }
 .brand{font-size:17px; font-weight:700; letter-spacing:-.01em}
 .brand-sub{font-size:13px; font-weight:400; color:var(--ink3); margin-left:2px}
-.top-in .engine{margin-left:auto; font-size:12px; color:var(--ink3)}
+.top-in .engine{font-size:12px; color:var(--ink3)}
+/* 돌아갈 길 — 인스턴스에선 / 가 Veilo 다. 로컬 단독 실행이면 분석 앱 루트(스캔)로 간다 */
+.back-sns{
+  margin-left:auto; font-size:13px; font-weight:600; color:var(--earth-ink); text-decoration:none;
+  border:1px solid var(--line); border-radius:999px; padding:5px 12px; white-space:nowrap;
+  transition:border-color .15s, background .15s;
+}
+.back-sns:hover{border-color:var(--earth); background:var(--earth-soft)}
 
 /* ── 단계 ───────────────────────────────── */
 .steps{max-width:var(--shell); margin:0 auto; padding:18px 20px 0; display:flex; gap:8px}
@@ -266,6 +273,39 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
   .act-head .delta{margin-left:0; width:100%}
   .axes li{grid-template-columns:44px 1fr 30px}
 }
+
+/* ── 스캔: 계정 찾기 ───────────────────────── */
+.finder{position:relative}
+.finder-list{position:absolute; left:0; right:0; z-index:5; list-style:none; margin:4px 0 0; padding:6px;
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-hi); max-height:300px; overflow:auto}
+.finder-list li{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:14px}
+.finder-list li:hover{background:var(--earth-soft)}
+.finder-list li.none{cursor:default; color:var(--ink3); font-size:13px}
+.finder-list .nm{font-weight:600}
+.finder .av,.picked .av{width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none}
+.picked{display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border:1px solid var(--earth); border-radius:10px; background:var(--earth-soft); font-size:14px}
+.picked .av{width:34px; height:34px}
+button:disabled{background:var(--panel2); border-color:var(--line); color:var(--ink3); cursor:not-allowed}
+
+/* ── 진행 표시 ─────────────────────────────── */
+body.busy{cursor:progress}
+.progress{position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(255,253,250,.96); backdrop-filter:blur(10px);
+  border-top:1px solid var(--line); box-shadow:0 -8px 24px -18px rgba(62,58,54,.3)}
+.progress-in{max-width:var(--shell); margin:0 auto; padding:12px 20px 14px}
+.pbar{height:6px; border-radius:99px; background:var(--panel2); overflow:hidden}
+.pbar i{display:block; height:100%; width:40%; border-radius:99px; background:linear-gradient(90deg,var(--earth-soft),var(--earth),var(--earth-soft)); animation:pbar 1.3s ease-in-out infinite}
+@keyframes pbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+.ptext{display:flex; align-items:baseline; gap:6px; margin-top:8px; font-size:14px}
+.ptext .pt{margin-left:auto; font-variant-numeric:tabular-nums; color:var(--ink3); font-size:13px}
+.progress .muted{margin:4px 0 0}
+@media (prefers-reduced-motion:reduce){.pbar i{animation:none; width:100%}}
+
+/* ── 진단: 7속성 판정 근거 ─────────────────── */
+.finding .fh{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.finding .why{margin:6px 0 0; font-size:13.5px; color:var(--ink2); line-height:1.65}
+.finding .ev{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:4px; font-size:13.5px}
+.finding .ev mark{font-size:13px}
+h2 small.muted{font-size:12px; font-weight:400; margin-left:4px}
 
 /* ── 하단 고정 CTA ────────────────────────── */
 .cta-bar{

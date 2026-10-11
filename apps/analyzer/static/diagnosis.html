@@ -9,6 +9,7 @@
 <header class="top">
   <div class="top-in">
     <div class="brand">파도풀 <span class="brand-sub">올리기 전에, 내가 몇 명 중 한 명인지</span></div>
+    <a class="back-sns" href="/">🌱 Veilo 로 돌아가기</a>
     <div class="engine" id="badge"></div>
   </div>
 </header>
@@ -56,13 +57,38 @@ function postK(data, postId) {
   return `<p class="post-k">이 글을 비공개하면 후보 ${fmtK(kp.k)} → ${fmtK(row.k_without)}</p>`;
 }
 
-function renderFindings(findings) {
+// 판정은 규칙이다 — 명시 단서가 있으면 「특정됨」, 암묵이면 「좁혀짐」, 추론 단서가 글 2편 이상이면 「좁혀짐」, 1편이면 「약한 신호」.
+// 「신뢰도」는 그 단계에 붙은 고정값(0.9 · 0.7 · 0.6 · 0.4 · 0.1)이지 계산된 확률이 아니다 — 화면에 그렇게 적는다
+const VERDICT_WHY = {
+  specified: "글에 나이·지역 같은 값이 <b>그대로 적힌 단서(명시)</b>가 있어 값이 정해집니다.",
+  narrowed: "값이 그대로 적히진 않았지만 <b>돌려 말한 단서(암묵)</b>가 있거나, <b>짐작할 단서(추론)</b>가 글 2편 이상에 걸쳐 있어 범위가 좁혀집니다.",
+  weak_signal: "짐작할 단서가 글 1편에만 있어 신호로만 둡니다.",
+  abstain: "단서가 없어 추측하지 않습니다 — 오류가 아니라 설계 동작입니다.",
+};
+const LEVEL_KO = { explicit: "명시", implicit: "암묵", inferential: "추론" };
+function evidenceOf(data, f) {
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  return (f.evidence || []).map(e => {
+    const s = ((data.spans[e.post_id] || { spans: [] }).spans).find(x => x.span_id === e.span_id);
+    return s ? { text: s.text, level: s.level, post_id: e.post_id, label: postLabel(posts[e.post_id]) || e.post_id } : null;
+  }).filter(Boolean);
+}
+function renderFindings(data, findings) {
   return Object.entries(findings).map(([attr, f]) => {
+    const ev = evidenceOf(data, f);
+    const nPosts = new Set(ev.map(e => e.post_id)).size;
+    const why = VERDICT_WHY[f.verdict] || "";
+    const evHtml = ev.length ? `<ul class="ev">${ev.slice(0, 6).map(e => `<li><mark class="span-hit" data-type="${esc(attr === "location" ? "LOC_ADMIN" : attr.toUpperCase())}">${esc(e.text)}</mark> <span class="muted">${LEVEL_KO[e.level] || e.level} · 「${esc(e.label)}」</span></li>`).join("")}${ev.length > 6 ? `<li class="muted">외 ${ev.length - 6}곳</li>` : ""}</ul>` : "";
     if (f.verdict === "abstain") {
-      return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge abstain">판단 보류</span> <span class="muted">(근거 부족 · 신뢰도 ${esc(f.confidence)})</span></div>`;
+      return `<div class="card finding"><div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge abstain">판단 보류</span></div><p class="why">${why}</p></div>`;
     }
-    return `<div class="card"><b>${esc(ATTR_LABEL[attr] || attr)}</b> — <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || f.verdict)}</span>
-      ${f.granularity ? `<span class="muted">${esc(GRAIN_LABEL[f.granularity] || f.granularity)} 수준</span>` : ""} <span class="muted">· 신뢰도 ${esc(f.confidence)}</span></div>`;
+    return `<div class="card finding">
+      <div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || f.verdict)}</span>
+        ${f.granularity ? `<span class="muted">${esc(GRAIN_LABEL[f.granularity] || f.granularity)} 수준</span>` : ""}
+        <span class="muted">· 근거 ${ev.length}곳${nPosts > 1 ? ` · 글 ${nPosts}편에 걸침` : ""}</span></div>
+      <p class="why">${why} <span class="muted">신뢰도 ${esc(f.confidence)}는 이 단계에 붙는 값입니다(명시 0.9 · 암묵 0.7 · 추론 0.6 · 약한 신호 0.4).</span></p>
+      ${evHtml}
+    </div>`;
   }).join("");
 }
 
@@ -138,10 +164,11 @@ if (!data) {
   const nPosts = data.posts.length;
   const nHit = data.posts.filter(p => ((data.spans[p.post_id] || { spans: [] }).spans).some(s => s.subject !== "other")).length;
   const nFound = Object.values(data.stage2.output.findings || {}).filter(f => f.verdict !== "abstain").length;
+  const nick = data.nickname || ((data.posts[0] || {}).activity_meta || {}).nickname || "";
   el.innerHTML = `
     <div class="card">
       <div class="row between">
-        <h2>${esc(data.user_ref)}</h2>
+        <h2>${esc(nick || data.user_ref)}${nick ? ` <small class="muted">@${esc(data.user_ref)}</small>` : ""}</h2>
         <a class="btn" href="action.html">조치 화면으로 →</a>
       </div>
       <p class="score"><b>${esc(data.contribution.output.baseline_risk)}</b><span class="unit">/ 100 · 기준 위험도</span></p>
@@ -150,23 +177,20 @@ if (!data) {
     ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
     ${renderTimeline(data)}
     <details class="card more sec">
-      <summary>7속성 판정 <small>— ${nFound}개 속성이 특정되거나 좁혀짐 · ${7 - nFound}개 판단 보류</small></summary>
-      ${renderFindings(data.stage2.output.findings)}
+      <summary>7속성 판정 <small>— ${nFound}개 속성이 특정되거나 좁혀짐 · ${7 - nFound}개 판단 보류 · 누르면 근거가 나옵니다</small></summary>
+      ${renderFindings(data, data.stage2.output.findings)}
     </details>
     <div class="row between sec">
       <h3>글에서 읽힌 단서 <small>— 글 ${nPosts}편 중 ${nHit}편에서 읽힘 · 제목을 누르면 펼쳐집니다</small></h3>
       <button type="button" id="toggleAll" class="ghost">모두 펼치기</button>
     </div>
-    <details class="more">
-      <summary>색 범례</summary>
-      <p class="legend">
-        <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
-        <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
-        <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
-        <span style="background:#FDE8C9">소득</span>
-        <span class="span-other">다른 사람 정보</span>
-      </p>
-    </details>
+    <p class="legend">
+      <span style="background:#F9E0B8">거주지</span><span style="background:#CFE6F7">나이</span>
+      <span style="background:#F3D9E6">성별</span><span style="background:#D6ECD9">직업</span>
+      <span style="background:#E5D9F2">가족</span><span style="background:#E1EEEC">통근</span>
+      <span style="background:#FDE8C9">소득</span>
+      <span class="span-other">다른 사람 정보</span>
+    </p>
     ${renderPosts(data)}
   `;
   wirePosts();

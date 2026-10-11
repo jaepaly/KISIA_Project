@@ -2,9 +2,25 @@
 {% block title %}Veilo{% endblock %}
 
 {% block body %}
-<div class="ut-shell">
+<div class="ut-shell three">
   <aside class="ut-side">
     <div class="ut-side-in">
+      <div class="rail-card rail-me rv">
+        <div class="rail-who">
+          <span class="ut-av lg" style="background:var(--ut-earth-soft);">
+            <img src="/static/veilo-symbol.svg" alt="" width="38" height="38">
+          </span>
+          <div>
+            <span class="nm" style="font-size:16px;">Veilo</span>
+            <div class="handle">가상 SNS 시연 플랫폼</div>
+            <div class="bio">중요한 이야기는 그대로, 나를 특정할 수 있는 정보는 더 안전하게.</div>
+          </div>
+        </div>
+        <div class="rail-btns" style="margin-top:14px;">
+          <a class="ut-btn fx-btn" href="/new" style="flex:1;text-align:center;background:var(--ut-earth);color:#fff;border-radius:12px;padding:10px;font-weight:700;text-decoration:none;">✏️ 글쓰기</a>
+        </div>
+      </div>
+
       <div class="rail-card rv">
         <div class="rail-h">작성자 필터 <span class="cnt">{{ authors|length }}명</span></div>
         <form method="get" action="/">
@@ -21,19 +37,11 @@
             {% endfor %}
           </select>
         </form>
-      </div>
-
-      <div class="rail-card rail-me rv">
-        <div class="rail-who">
-          <span class="ut-av lg" style="background:var(--ut-earth-soft);">
-            <img src="/static/veilo-symbol.svg" alt="" width="38" height="38">
-          </span>
-          <div>
-            <span class="nm" style="font-size:16px;">Veilo</span>
-            <div class="handle">가상 SNS 시연 플랫폼</div>
-            <div class="bio">내 글이 나를 얼마나 특정하는지 알고 싶다면, 파도풀에서 확인해 보세요.</div>
-          </div>
-        </div>
+        {% if selected_author %}
+        {% for a in authors if a.author_id == selected_author %}
+        <a class="fx-link" href="/u/{{ a.user_ref }}" style="display:inline-block;margin-top:10px;font-size:13px;color:var(--ut-earth-ink);font-weight:600;">{{ a.nickname }} 프로필 보기 →</a>
+        {% endfor %}
+        {% endif %}
       </div>
     </div>
   </aside>
@@ -48,5 +56,51 @@
       {% include "_cards.html" %}
     </div>
   </main>
+
+  <aside class="ut-rail-r">
+    <div class="ut-rail-r-in">
+      {% if recent_authors %}
+      <div class="rail-card rv">
+        <div class="rail-h">최근 글 쓴 사람들</div>
+        <ul class="who-list">
+          {% for a in recent_authors %}
+          <li>
+            <a class="ut-av sm" href="/u/{{ a.user_ref }}" aria-label="{{ a.nickname }} 프로필"
+               style="background:hsl({{ a.author_id|hue }},45%,86%);color:hsl({{ a.author_id|hue }},35%,32%);">{{ a.nickname[:1] }}</a>
+            <div class="who">
+              <a class="nm fx-link" href="/u/{{ a.user_ref }}">{{ a.nickname }}</a>
+              <span class="when">글 {{ a.n }}편 · {{ a.last[:10] }}</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="rail-card rv" style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
+        <div class="rail-h" style="color:var(--ut-earth-ink);">🌊 파도풀</div>
+        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 10px;line-height:1.55;">
+          이름·전화번호가 없어도, 글이 쌓이면 「몇 명 중 한 명」까지 좁혀집니다. 올리기 전에 한 번 보세요.
+        </p>
+        <a class="fx-btn fx-wave" href="/new"
+           style="display:block;text-align:center;background:var(--ut-earth);color:#fff;border-radius:12px;padding:9px;font-size:13.5px;font-weight:700;text-decoration:none;">
+          쓰면서 바로 점검 →
+        </a>
+        <p style="font-size:12px;color:var(--ut-ink3);margin:8px 0 0;">계정 전체는 프로필의 「내 계정 진단」</p>
+      </div>
+
+      {% if top_tags %}
+      <div class="rail-card rv">
+        <div class="rail-h">자주 찍히는 동네 <span class="cnt">위치태그</span></div>
+        <div class="tag-cloud">
+          {% for t in top_tags %}
+          <span class="tag">📍 {{ t.geo_tag }} <b>{{ t.n }}</b></span>
+          {% endfor %}
+        </div>
+        <p style="font-size:12px;color:var(--ut-ink3);margin:8px 0 0;">위치태그는 본문을 안 읽어도 보이는 단서입니다.</p>
+      </div>
+      {% endif %}
+    </div>
+  </aside>
 </div>
 {% endblock %}

@@ -1,28 +1,36 @@
-{# 피드 카드 묶음 — list.html 이 처음 20편을 넣고, fx.js 가 ?partial=1 로 다음 장을 받아 이어 붙인다 #}
+{# 피드 카드 묶음 — list.html 이 처음 20편을 넣고, fx.js 가 ?partial=1 로 다음 장을 받아 이어 붙인다.
+   맨 위 줄이 작성자(아바타 + 닉네임) — 글을 거치지 않고 프로필로 간다. #}
 {% for p in posts %}
 <div class="ut-card rv" data-href="/posts/{{ p.post_id }}">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-right:22px;">
-    <span class="ut-title"
-          style="font-weight:700;font-size:16px;color:var(--ut-ink);flex:1;letter-spacing:-.01em;">
-      {{ p.title or "(제목 없음)" }}
-    </span>
+  <div class="card-author">
+    <a class="ut-av sm" href="/u/{{ p.user_ref }}" aria-label="{{ p.nickname }} 프로필"
+       style="background:hsl({{ p.author_id|hue }},45%,86%);color:hsl({{ p.author_id|hue }},35%,32%);">{{ p.nickname[:1] }}</a>
+    <div class="who">
+      <a class="nm fx-link" href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
+      <span class="when">{{ p.created_at[:16].replace('T', ' ') }}{% if p.geo_tag %} · 📍 {{ p.geo_tag }}{% endif %}</span>
+    </div>
     {% if p.visibility == 'private' %}
-    <span style="font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;
-                 border-radius:99px;padding:2px 10px;white-space:nowrap;flex:0 0 auto;">비공개</span>
+    <span class="badge-private">비공개</span>
     {% endif %}
   </div>
+  <div class="ut-title" style="font-weight:700;font-size:16px;color:var(--ut-ink);letter-spacing:-.01em;margin-top:10px;padding-right:22px;">
+    {{ p.title or "(제목 없음)" }}
+  </div>
   {% if p.body %}
-  <p style="font-size:13px;color:var(--ut-ink2);margin:7px 0 0;line-height:1.6;
+  <p style="font-size:13.5px;color:var(--ut-ink2);margin:6px 0 0;line-height:1.65;
             display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-    {{ p.body | truncate(100, True, '…') }}
+    {{ p.body | truncate(110, True, '…') }}
   </p>
   {% endif %}
-  <div style="font-size:12px;color:var(--ut-ink3);margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-    <a class="fx-link" href="/u/{{ p.user_ref }}"
-       style="color:var(--ut-earth-ink);font-weight:600;">{{ p.nickname }}</a>
-    <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
-    {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
+  {% if p.photos %}
+  {# 사진 띠 — 가상 SNS 라 실제 사진 대신 자리 그림. 캡션은 분석 대상 채널(photo_caption:N)이라 그대로 보여 준다 #}
+  <div class="ut-card-photos" aria-label="사진 {{ p.photos|length }}장">
+    {% for cap in p.photos[:3] %}
+    <figure class="pv"><div class="ph"><span>🖼</span></div>{% if cap %}<figcaption><span class="cap-lab">사진 설명</span>{{ cap }}</figcaption>{% endif %}</figure>
+    {% endfor %}
+    {% if p.photos|length > 3 %}<span class="more">+{{ p.photos|length - 3 }}</span>{% endif %}
   </div>
+  {% endif %}
 </div>
 {% endfor %}
 {% if next_url %}

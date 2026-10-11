@@ -14,8 +14,8 @@ def db_path() -> Path:
     return Path(os.getenv("SNS_DB_PATH", DEFAULT_DB))
 
 
-def connect() -> sqlite3.Connection:
-    p = db_path()
+def connect(path: Path | None = None) -> sqlite3.Connection:
+    p = path or db_path()
     p.parent.mkdir(parents=True, exist_ok=True)
     c = sqlite3.connect(p)
     c.row_factory = sqlite3.Row          # dict 처럼 쓸 수 있게

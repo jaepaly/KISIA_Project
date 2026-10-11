@@ -99,9 +99,10 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
 
 
 @app.post("/scan/{user_ref}")
-def scan(user_ref: str):
+def scan(user_ref: str, request: Request):
     try:
-        export = sns_adapter.load(user_ref, base=SNS_BASE)
+        # 같은 도메인이라 Veilo 의 방문자 쿠키가 여기까지 온다 — 그 사람의 사본을 읽도록 넘긴다
+        export = sns_adapter.load(user_ref, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:  # SNS 서버 다운·404 등
         raise HTTPException(status_code=502, detail=f"내보내기 조회 실패: {exc}") from exc
     return _run_pipeline(user_ref, export.get("posts", []))

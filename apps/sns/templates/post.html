@@ -25,17 +25,11 @@
         <div id="postBody" style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
 
         {% if photos %}
-        <div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;">
+        {# 사진 띠 — 피드 카드와 같은 모양. 캡션은 분석 채널(photo_caption:N) 이라 그대로 #}
+        <div class="ut-card-photos" style="margin-top:18px;flex-wrap:wrap;" aria-label="사진 {{ photos|length }}장">
           {% for ph in photos %}
-          <figure style="margin:0;border:1px solid var(--ut-line);border-radius:12px;
-                         background:var(--ut-panel2);padding:10px 12px;min-width:160px;flex:1;">
-            <div style="font-size:24px;text-align:center;padding:10px 0;">🖼</div>
-            <figcaption style="font-size:12px;color:var(--ut-ink2);">
-              <span style="font-size:10px;color:var(--ut-ink3);border:1px solid var(--ut-line);
-                           border-radius:99px;padding:0 6px;margin-right:5px;">사진 {{ ph.idx + 1 }}</span>
-              {{ ph.caption }}
-            </figcaption>
-          </figure>
+          <figure class="pv" style="flex:1 1 160px;"><div class="ph"><span>🖼</span></div>
+            <figcaption style="white-space:normal;"><span class="cap-lab">사진 {{ ph.idx + 1 }}</span>{{ ph.caption }}</figcaption></figure>
           {% endfor %}
         </div>
         {% endif %}

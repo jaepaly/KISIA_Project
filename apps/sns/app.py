@@ -30,9 +30,93 @@ KST = timezone(timedelta(hours=9))
 PAGE_SIZE = 20
 
 
+@app.template_filter("hue")
+def _hue(s: str) -> int:
+    """작성자마다 같은 아바타 색 — 문자열을 0~359 색상각으로. 사진이 없는 가상 SNS 라 이니셜 아바타를 쓴다.
+    글자 합이 아니라 해시다 — B18·B19 처럼 연번 ID 는 합으로 하면 1도 차이라 전부 같은 색이 된다."""
+    import hashlib
+    return int.from_bytes(hashlib.md5((s or "").encode("utf-8")).digest()[:2], "big") % 360
+
+
+# ── 방문자별 격리 — 공용 테스트 서버에서 한 사람의 수정(비공개·위치태그·프로필·새 글)이 남에게 보이지 않게 ──
+# 첫 방문에 쿠키 veilo_sid 를 주고, 그 방문자의 요청은 시드 사본을 복사한 sessions/<sid>.db 로 보낸다.
+# 시드 사본(sns.seed.db)이 없으면 꺼진다 — 로컬 개발은 지금처럼 DB 하나.
+# 파도풀 분석기는 같은 도메인이라 쿠키를 받고, export 를 부를 때 X-Veilo-Session 헤더로 넘긴다.
+import re as _re
+import shutil as _shutil
+import time as _time
+import uuid as _uuid
+from pathlib import Path as _Path
+
+SESSION_COOKIE = "veilo_sid"
+_SID_RE = _re.compile(r"^[0-9a-f]{16,32}$")
+SESSION_IDLE_SECONDS = 48 * 3600
+
+
+def _seed_path() -> _Path:
+    from db import db_path
+    return _Path(os.environ.get("SNS_SEED_DB") or db_path().with_name("sns.seed.db"))
+
+
+def _session_dir() -> _Path:
+    from db import db_path
+    return _Path(os.environ.get("SNS_SESSION_DIR") or db_path().with_name("sessions"))
+
+
+def isolation_on() -> bool:
+    return _seed_path().exists()
+
+
+def _sid() -> str | None:
+    """쿠키 → 헤더(분석기가 넘김) → 쿼리 순. 형식이 어긋나면 없는 것으로."""
+    s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session") or request.args.get("sid")
+    return s if s and _SID_RE.match(s) else None
+
+
+def _session_db_path(sid: str) -> _Path:
+    d = _session_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    p = d / f"{sid}.db"
+    if not p.exists():
+        _shutil.copyfile(_seed_path(), p)
+        _sweep_sessions(d)
+    return p
+
+
+def _sweep_sessions(d: _Path) -> None:
+    """이틀 안 쓴 사본은 지운다 — 새 세션이 생길 때만 돈다."""
+    cutoff = _time.time() - SESSION_IDLE_SECONDS
+    for f in d.glob("*.db"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                f.unlink()
+        except OSError:
+            pass
+
+
+@app.before_request
+def _ensure_session() -> None:
+    if not isolation_on():
+        return
+    sid = _sid()
+    if sid is None and not request.path.startswith("/api/"):   # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB
+        sid = _uuid.uuid4().hex[:24]
+        g.new_sid = sid
+    g.sid = sid
+
+
+@app.after_request
+def _set_session_cookie(resp):
+    if getattr(g, "new_sid", None):
+        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=7 * 24 * 3600, path="/", samesite="Lax",
+                        httponly=True, secure=request.is_secure)
+    return resp
+
+
 def db() -> sqlite3.Connection:
     if "db" not in g:
-        g.db = connect()
+        sid = getattr(g, "sid", None)
+        g.db = connect(_session_db_path(sid)) if (sid and isolation_on()) else connect()
     return g.db
 
 
@@ -65,15 +149,34 @@ def index():
     args += [PAGE_SIZE + 1, (page - 1) * PAGE_SIZE]
     try:
         rows = db().execute(q, args).fetchall()
-        posts, has_more = rows[:PAGE_SIZE], len(rows) > PAGE_SIZE
+        posts, has_more = [dict(r) for r in rows[:PAGE_SIZE]], len(rows) > PAGE_SIZE
+        # 사진 캡션 띠 — 카드를 안 열어도 사진이 있고 무엇인지 보이게 (데모 list.html 과 같은 모양)
+        if posts:
+            ids = [p["post_id"] for p in posts]
+            caps: dict[str, list[str]] = {}
+            for r in db().execute(
+                    f"SELECT post_id, caption FROM photos WHERE post_id IN ({','.join('?' * len(ids))}) ORDER BY post_id, idx", ids):
+                caps.setdefault(r["post_id"], []).append(r["caption"])
+            for p in posts:
+                p["photos"] = caps.get(p["post_id"], [])
         next_url = None
         if has_more:
             next_url = f"/?page={page + 1}" + (f"&author={author_id}" if author_id else "")
         if request.args.get("partial"):
             return render_template("_cards.html", posts=posts, next_url=next_url)
         authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+        # 오른쪽 레일 — 글을 거치지 않고 프로필로 가는 길 · 자주 찍히는 동네 (공개 글만)
+        recent_authors = db().execute(
+            "SELECT a.author_id, a.nickname, a.user_ref, COUNT(*) AS n, MAX(p.created_at) AS last"
+            " FROM posts p JOIN authors a ON a.author_id = p.author_id"
+            " WHERE p.visibility = 'public' GROUP BY a.author_id ORDER BY last DESC LIMIT 8").fetchall()
+        top_tags = db().execute(
+            "SELECT geo_tag, COUNT(*) AS n FROM posts"
+            " WHERE visibility = 'public' AND geo_tag IS NOT NULL AND geo_tag != ''"
+            " GROUP BY geo_tag ORDER BY n DESC LIMIT 6").fetchall()
         return render_template("list.html", posts=posts, authors=authors,
-                                selected_author=author_id, next_url=next_url)
+                                selected_author=author_id, next_url=next_url,
+                                recent_authors=recent_authors, top_tags=top_tags)
     except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 
@@ -221,6 +324,115 @@ def profile(user_ref: str):
 
 
 # ── ⭐ 내보내기 — 계층 경계. 계약: docs/contracts/sns-minimal-spec.md ──
+import json as _json
+from pathlib import Path as _Path
+
+# 인물 설정 파일 — author_id 가 곧 persona_id (A01 ↔ A01.json). 저장소 밖에 두면 PERSONAS_DIR 로
+PERSONAS_DIR = _Path(os.environ.get("PERSONAS_DIR") or (_Path(__file__).resolve().parents[2] / "data" / "corpus" / "v0" / "personas"))
+_TRUTH_KEYS = ("age", "sex", "location", "occupation", "family", "commute", "income")
+
+
+def _persona_brief(author_id: str) -> dict | None:
+    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다."""
+    p = PERSONAS_DIR / f"{author_id}.json"
+    if not p.exists():
+        return None
+    try:
+        d = _json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    gt, voice, kw = d.get("ground_truth") or {}, d.get("voice") or {}, d.get("scoring_keywords") or {}
+    words: list[str] = []
+    for axis in ("location", "age", "occupation", "family", "commute", "income", "sex"):
+        for w in (kw.get(axis) or [])[:3]:
+            if w not in words:
+                words.append(w)
+    return {
+        "type": d.get("persona_type") or d.get("alias"),
+        "truth": {k: gt.get(k) for k in _TRUTH_KEYS},
+        "voice": {k: voice[k] for k in ("종결어미", "말버릇", "이모지", "제목", "소재") if voice.get(k)},
+        "words": words[:14],
+        "words_by_axis": {k: (kw.get(k) or [])[:3] for k in _TRUTH_KEYS if kw.get(k)},
+        "topics": (d.get("noise_topics") or [])[:5],
+        "hours": (d.get("account") or {}).get("typical_active_hours"),
+    }
+
+
+@app.post("/u/<user_ref>/reset")
+def reset_author(user_ref: str):
+    """이 계정만 시드 상태로 — 공용 테스트 서버라 한 사람의 수정(비공개·위치태그·프로필·새 글)이 모두에게 보인다.
+    시드 사본은 라이브 DB 옆 sns.seed.db (SNS_SEED_DB 로 바꿀 수 있다). 다른 계정은 건드리지 않는다."""
+    a = db().execute("SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
+    if a is None:
+        abort(404)
+    seed = _seed_path()
+    if not seed.exists():
+        abort(503, "시드 사본(sns.seed.db)이 없어 되돌릴 수 없습니다")
+    aid, c = a["author_id"], db()
+    c.execute("ATTACH DATABASE ? AS seed", (str(seed),))
+    try:
+        # authors 행은 지우지 않고 덮어쓴다 — posts 가 FK 로 물고 있어 DELETE 가 막힌다
+        c.execute("UPDATE authors SET nickname = (SELECT nickname FROM seed.authors WHERE author_id = ?),"
+                  " bio = (SELECT bio FROM seed.authors WHERE author_id = ?),"
+                  " joined_at = (SELECT joined_at FROM seed.authors WHERE author_id = ?) WHERE author_id = ?", (aid, aid, aid, aid))
+        c.execute("DELETE FROM photos WHERE post_id IN (SELECT post_id FROM posts WHERE author_id = ?)", (aid,))
+        c.execute("DELETE FROM posts WHERE author_id = ?", (aid,))
+        c.execute("INSERT INTO posts SELECT * FROM seed.posts WHERE author_id = ?", (aid,))
+        c.execute("INSERT INTO photos SELECT * FROM seed.photos"
+                  " WHERE post_id IN (SELECT post_id FROM seed.posts WHERE author_id = ?)", (aid,))
+        c.commit()
+    except Exception:
+        c.rollback()
+        raise
+    finally:
+        c.execute("DETACH DATABASE seed")
+    return redirect(f"/u/{user_ref}")
+
+
+@app.get("/api/authors")
+def authors_search():
+    """닉네임으로 계정 찾기 — 파도풀 스캔 화면의 「가상 SNS 계정에서 가져오기」가 쓴다 (식별자를 외워 오게 하지 않는다)."""
+    q = (request.args.get("q") or "").strip()
+    sql = ("SELECT a.author_id, a.nickname, a.user_ref, a.bio, COUNT(p.post_id) AS n"
+           " FROM authors a LEFT JOIN posts p ON p.author_id = a.author_id AND p.visibility = 'public'")
+    args: list = []
+    if q:
+        sql += " WHERE a.nickname LIKE ? OR a.user_ref LIKE ?"
+        args += [f"%{q}%", f"{q}%"]
+    sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT 12"
+    args.append(f"{q}%")
+    rows = db().execute(sql, args).fetchall()
+    return jsonify([{"author_id": r["author_id"], "nickname": r["nickname"], "user_ref": r["user_ref"],
+                     "bio": r["bio"], "n_posts": r["n"], "hue": _hue(r["author_id"])} for r in rows])
+
+
+@app.get("/api/author/<author_id>/summary")
+def author_summary(author_id: str):
+    """글쓰기 화면 오른쪽 패널 — 테스터는 이 작성자를 모른다. 인물 설정 + 소개·글 수·자주 찍는 동네·최근 글(공개만)."""
+    a = db().execute("SELECT * FROM authors WHERE author_id = ?", (author_id,)).fetchone()
+    if a is None:
+        abort(404)
+    posts = db().execute(
+        "SELECT post_id, title, body, created_at, geo_tag FROM posts"
+        " WHERE author_id = ? AND visibility = 'public' ORDER BY created_at DESC", (author_id,)).fetchall()
+    tags: dict[str, int] = {}
+    for p in posts:
+        if p["geo_tag"]:
+            tags[p["geo_tag"]] = tags.get(p["geo_tag"], 0) + 1
+    top = sorted(tags.items(), key=lambda kv: -kv[1])[:3]
+    return jsonify({
+        "author_id": a["author_id"], "user_ref": a["user_ref"], "nickname": a["nickname"],
+        "hue": _hue(a["author_id"]),   # 피드 아바타와 같은 색
+        "persona": _persona_brief(a["author_id"]),
+        "bio": a["bio"], "joined_at": (a["joined_at"] or "")[:10],
+        "n_posts": len(posts), "last": posts[0]["created_at"][:10] if posts else None,
+        "top_tags": [{"geo_tag": t, "n": n} for t, n in top],
+        "recent": [{"post_id": p["post_id"], "title": p["title"] or "",
+                    "snippet": (p["body"] or "").replace("\n", " ")[:70], "created_at": p["created_at"][:10]}
+                   for p in posts[:4]],
+    })
+
+
 @app.get("/api/export/<user_ref>")
 def export(user_ref: str):
     """분석기가 보는 유일한 창구.
