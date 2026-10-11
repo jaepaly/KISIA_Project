@@ -68,8 +68,10 @@ def isolation_on() -> bool:
 
 
 def _sid() -> str | None:
-    """쿠키 → 헤더(분석기가 넘김) → 쿼리 순. 형식이 어긋나면 없는 것으로."""
-    s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session") or request.args.get("sid")
+    """쿠키 → 헤더(분석기가 넘김) 순. 형식이 어긋나면 없는 것으로.
+
+    주소의 ?sid= 는 받지 않는다 — 주소를 공유하면 받은 사람이 그 방문자의 사본을 보고 고칠 수 있다 (#337 E 리뷰)."""
+    s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session")
     return s if s and _SID_RE.match(s) else None
 
 
