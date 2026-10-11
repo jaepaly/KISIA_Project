@@ -18,7 +18,7 @@
 
 ※ 사진이 여러 장이면 캡션도 여러 개다. 순서를 보존한다. 스팬·복원키는 `photo_caption:0`, `photo_caption:1` 형식(콜론+숫자)으로 몇 번째 사진인지 가리킨다.
 
-※ 작성 일시는 둘로 나눠 내보낸다 — 날짜는 `post_date`, 시각은 `activity_meta.post_time`(`HH:MM`). 시각은 조치 ②가 감추는 대상이라 `post_date` 에 넣지 않는다. 참고로 `stage2-io.schema.json` 의 `post_time` 은 `format: date-time` 이라 이 export 의 `post_time`(`HH:MM`)과 형식이 다르다 — 분석기가 2단 입력을 만들 때 맞춘다.
+※ 작성 일시는 둘로 나눠 내보낸다 — 날짜는 `post_date`, 시각은 `activity_meta.post_time`(`HH:MM`). 시각은 조치 ②가 감추는 대상이라 `post_date` 에 넣지 않는다. 참고로 `stage2-io.schema.json` 의 `post_time` 은 `format: date-time` 이라 이 export 의 `post_time`(`HH:MM`)과 형식이 다르다. 지금 분석기는 `post_time` 을 2단 입력에 넘기지 않는다. 넘기게 되면 `post_date` 와 합쳐 date-time 으로 바꿔 넣어야 한다.
 
 ## 2. 사용자
 
