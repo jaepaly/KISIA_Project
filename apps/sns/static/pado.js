@@ -1,9 +1,9 @@
 /* 파도풀 글 단위 점검 위젯 — 글쓰기(new.html)·글 본문(post.html) 공용.
-   진단은 분석 앱(/check/upload)이 하고 여기서는 띄우기만 한다.
+   진단은 분석 앱(PADO_BASE/upload — 기본 /check)이 하고 여기서는 띄우기만 한다.
    padoWidget({ btn, out, getText, userRef? }) — userRef 가 있으면 결과 아래에 계정 전체 진단 링크를 단다. */
 (function () {
   "use strict";
-  const BASE = "/check";
+  const BASE = window.PADO_BASE || "/check";   // base.html 이 app.py PADO_BASE 를 넣어 준다
   const COLOR = {
     AGE: "#CFE6F7", SEX: "#F3D9E6", JOB: "#D6ECD9", FAM: "#E5D9F2",
     COMMUTE: "#E1EEEC", INCOME: "#FDE8C9", LOC_ADMIN: "#F9E0B8", LOC_FACILITY: "#EDE8F7"
@@ -248,7 +248,7 @@
         const types = [...new Set(spans.map((s) => LABEL[s.type] || s.type))];
         out.innerHTML =
           `<p style="margin:0 0 8px;"><b style="font-size:20px;">${spans.length}</b>곳에서 단서가 읽힙니다`
-          + (k ? ` · 약 <b>${Number(k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")
+          + (k ? ` · 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")   // 실시간 칩(118행)과 같게 — 사람 수에 소수점을 쓰지 않는다
           + `</p>`
           + `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">`
           + types.map((t) => `<span style="font-size:11px;font-weight:600;color:var(--ut-ink2);background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:99px;padding:2px 9px;">${esc(t)}</span>`).join("")

@@ -239,6 +239,7 @@ padoWidget({
 
 // ── 오른쪽 패널 ─────────────────────────────────────────────────────────
 const AP = (function () {
+  const PADO = window.PADO_BASE || "/check";   // 파도풀 주소 — app.py PADO_BASE
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const AXIS = { location: "거주지", age: "나이", sex: "성별", occupation: "직업", family: "가족", commute: "통근", income: "소득" };
   const AXIS_ORDER = ["age", "sex", "location", "occupation", "family", "commute", "income"];
@@ -313,7 +314,7 @@ const AP = (function () {
       <div class="sub">읽힌 신상 / 아직 안 읽힌 신상</div>
       <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 아직</span>`).join("")}</div>
       ${tryHtml}
-      <p class="muted" style="margin:8px 0 0;"><a href="/check/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
+      <p class="muted" style="margin:8px 0 0;"><a href="${PADO}/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
   }
 
   async function autoScan() {
@@ -323,7 +324,7 @@ const AP = (function () {
     if (cached) { scan = JSON.parse(cached); renderK(); return; }
     kState.className = "cnt busy"; kState.textContent = "세는 중";
     try {
-      const r = await fetch(`/check/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
+      const r = await fetch(`${PADO}/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
       if (!r.ok) throw new Error(r.status);
       scan = await r.json();
       try { sessionStorage.setItem(key, JSON.stringify(scan)); } catch {}
