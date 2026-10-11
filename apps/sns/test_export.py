@@ -180,7 +180,7 @@ def test_작성_화면_기본값은_공개다(client):
 def test_작성시각_형식이_틀리면_400_이고_글이_안_생긴다(client):
     """post_date · post_time 이 created_at 을 잘라 쓰므로 형식이 틀린 값은 저장 전에 막는다 (#334 Codex 검토)."""
     before = len(get(client)["posts"])
-    for bad in ("bad", "2026-13-01T09:00", "2026-03-13", "2026-03-13T09:00+09:00"):
+    for bad in ("bad", "2026-13-01T09:00", "2026-03-13", "2026-03-13T09:00+09:00", "２０２６-03-13T09:05"):
         r = client.post("/posts", data={"author_id": "S01", "body": "형식 검사", "created_at": bad})
         assert r.status_code == 400, bad
     assert len(get(client)["posts"]) == before
