@@ -120,3 +120,55 @@ def test_recall_by_group():
     gold = _gold([dict(_clue(0, 4), group="aimed"), dict(_clue(10, 14), group="unaimed")])
     preds = {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "LOC_ADMIN"}]}
     assert evaluate(gold, preds)["recall_by_group"] == {"aimed": "1/1", "unaimed": "0/1"}
+
+
+def test_typed_distractor_counts_its_own_type():
+    """exp17d — JOB 함정(「방학이라」)을 JOB 으로 잡으면 JOB 함정 오탐. 유형 없는 함정은 지금처럼 AGE 로 센다."""
+    gold = _gold([], [{"start": 0, "end": 4, "text": "방학이라", "type": "JOB"},
+                      {"start": 10, "end": 14, "text": "서른 그릇"}])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 3, "type": "JOB"},
+                    {"text_id": "body", "start": 10, "end": 12, "type": "AGE"}]}
+    r = evaluate(gold, preds)
+    assert r["distractor_fp_by_type"] == {"AGE": "1/1", "JOB": "1/1"}
+    assert r["distractor_age_fp"] == "1/1"
+    # AGE 로 잡은 JOB 함정은 JOB 오탐이 아니다
+    r = evaluate(gold, {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "AGE"}]})
+    assert r["distractor_fp_by_type"]["JOB"] == "0/1"
+
+
+def test_untyped_distractors_keep_old_output():
+    """exp17 · 17b · 17c 는 출력 키가 그대로다 — distractor_fp_by_type 이 생기지 않는다."""
+    r = evaluate(_gold([], [{"start": 0, "end": 4, "text": "서른 해"}]), {"P1": []})
+    assert r["distractor_age_fp"] == "0/1" and "distractor_fp_by_type" not in r
+
+
+def test_typed_distractor_touch_and_excluded():
+    """JOB 함정은 짧게 걸쳐도 오탐 · 전수 검토에서 뺀 함정은 분모에도 안 들어간다 (Codex 10/12)."""
+    gold = _gold([], [{"start": 0, "end": 9, "text": "치과 진료 받으러", "type": "JOB"},
+                      {"start": 20, "end": 24, "text": "방학이라", "type": "JOB", "excluded": "직업 문맥"}])
+    r = evaluate(gold, {"P1": [{"text_id": "body", "start": 0, "end": 2, "type": "JOB"},
+                               {"text_id": "body", "start": 20, "end": 24, "type": "JOB"}]})
+    assert r["distractor_fp_by_type"]["JOB"] == "1/1"
+
+
+def test_self_attribution_counted_apart_from_recall():
+    """본인 단서를 other 로 잡으면 재현율은 맞지만 본인 귀속에서 빠진다."""
+    gold = _gold([dict(_clue(0, 4, typ="JOB"), group="job_self"), dict(_clue(10, 14, typ="JOB"), group="job_self")])
+    preds = {"P1": [{"text_id": "body", "start": 0, "end": 4, "type": "JOB", "subject": "self"},
+                    {"text_id": "body", "start": 10, "end": 14, "type": "JOB", "subject": "other"}]}
+    r = evaluate(gold, preds)
+    assert r["recall_by_group"]["job_self"] == "2/2" and r["self_attributed_by_group"]["job_self"] == "1/2"
+
+
+def test_other_title_short_self_prediction_is_leak():
+    """exp17d 남의 직함 — 「팀장님께서」에서 「팀장」만 self 로 잡아도 본인 판정(오탐)으로 센다."""
+    gold = _gold([dict(_clue(0, 5, typ="JOB", subject="other"), group="job_title_other")])
+    r = evaluate(gold, {"P1": [{"text_id": "body", "start": 0, "end": 2, "type": "JOB", "subject": "self"}]})
+    assert r["trap_other"]["judged_self"] == 1
+
+
+def test_typed_age_distractor_keeps_iou_rule():
+    """exp17d 의 AGE 함정은 type 이 있어도 예전처럼 IoU ≥ 0.5 로 센다."""
+    gold = _gold([], [{"start": 0, "end": 6, "text": "스물한 개", "type": "AGE"}])
+    r = evaluate(gold, {"P1": [{"text_id": "body", "start": 0, "end": 1, "type": "AGE"}]})
+    assert r["distractor_age_fp"] == "0/1"

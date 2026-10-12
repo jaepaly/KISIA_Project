@@ -10,7 +10,7 @@
 - **입력 검사**: 예측 파일의 post_id 는 평가셋 80편과 정확히 같아야 한다 — 누락·추가·중복이면 멈춘다.
   처리했지만 탐지가 없는 글은 `"spans": []` 로 둔다 (#311 리뷰)
 - **타인 함정**: subject=other 로 심은 단서를 잡았을 때 other 로 판정했나 (self 면 k 를 잘못 좁힌다)
-- **숫자 함정 오탐**: 「서른 해」 「쉰 날」 같은 수를 AGE 로 잡았나
+- **함정 오탐**: 「서른 해」 「쉰 날」 같은 수를 AGE 로 잡았나 (`distractor_age_fp`). 함정에 `type` 이 있으면 그 유형으로 센다 — exp17d 의 JOB 함정(「방학이라」 등 · `distractor_fp_by_type`)
 - **심지 않은 곳**: 심은 단서·함정과 겹치지 않는 예측 수 — Gemini 가 의도치 않게 넣은 단서일 수 있어 **정밀도가 아니라 참고치**
 """
 from __future__ import annotations
@@ -60,8 +60,9 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
     hit, tot = Counter(), Counter()
     by_variant_hit, by_variant_tot = Counter(), Counter()
     trap = Counter()
-    grp_hit, grp_tot = Counter(), Counter()
-    distract_fp = unplanned = n_pred = 0
+    grp_hit, grp_tot, grp_self = Counter(), Counter(), Counter()
+    dist_fp, dist_tot = Counter(), Counter()
+    unplanned = n_pred = 0
     for g in gold:
         p = sorted((dict(x, text_id=x.get("text_id", "body")) for x in preds.get(g["post_id"], [])), key=_key)
         n_pred += len(p)
@@ -81,10 +82,16 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
                 by_variant_hit[c["variant"]] += 1
                 if "group" in c:
                     grp_hit[c["group"]] += 1
+                    # 본인 단서를 잡았는데 other 로 판정하면 k 에 안 들어간다 — 재현율과 따로 센다 (exp17d · Codex 10/12)
+                    if c["subject"] == "self" and m.get("subject") == "self":
+                        grp_self[c["group"]] += 1
             if c["subject"] == "other":
                 trap["planted"] += 1
                 # 매칭과 별개로, 같은 유형으로 겹친 예측 중 하나라도 self 면 k 를 잘못 좁힌다 (Codex 10/6)
                 leak = any(x.get("subject") == "self" and overlap(planted[i], x) for x in p)
+                if c.get("group") == "job_title_other":   # exp17d — 남의 직함은 조금이라도 걸쳐 self 로 잡으면 오탐 (「팀장님께서」의 「팀장」)
+                    leak = any(x.get("subject") == "self" and x["type"] == c["type"] and x["text_id"] == "body"
+                               and x["start"] < c["end"] and c["start"] < x["end"] for x in p)
                 if m is not None:
                     trap["caught"] += 1
                 if leak:
@@ -93,9 +100,19 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
                     trap["judged_other" if m.get("subject") == "other" else "judged_unknown"] += 1
         used = set(matched.values())  # 정답과 짝지어진 예측은 함정 오탐으로 다시 세지 않는다
         for d in g["distractors"]:
-            if any(j not in used and x["type"] == "AGE" and overlap({**d, "type": "AGE", "text_id": "body"}, x)
-                   for j, x in enumerate(p)):
-                distract_fp += 1
+            if d.get("excluded"):       # 전수 검토에서 뜻이 틀어진 함정
+                continue
+            dt = d.get("type", "AGE")   # exp17 · 17b · 17c 함정은 유형이 없다 = 숫자 함정(AGE)
+            dist_tot[dt] += 1
+            # JOB 함정(exp17d)은 조금이라도 겹치면 오탐 — 「치과 진료 받으러」에서 「치과」만 잡아도 오탐이다. AGE 는 그대로 IoU
+            if dt == "JOB":
+                def hits(x, d=d):
+                    return d["start"] < x["end"] and x["start"] < d["end"]
+            else:
+                def hits(x, d=d, dt=dt):
+                    return overlap({**d, "type": dt, "text_id": "body"}, x)
+            if any(j not in used and x["type"] == dt and x["text_id"] == "body" and hits(x) for j, x in enumerate(p)):
+                dist_fp[dt] += 1
         planted_any = [dict(c, text_id="body") for c in g["planted"]] + [dict(d, text_id="body") for d in g["distractors"]]
         unplanned += sum(1 for x in p if not any(overlap(x, c, same_type=False) for c in planted_any))
     self_keys = [k for k in tot if k.endswith("/self")]
@@ -106,9 +123,12 @@ def evaluate(gold: list[dict], preds: dict[str, list[dict]]) -> dict:
         "recall_by_type": {k: f"{hit[k]}/{tot[k]}" for k in sorted(tot)},
         "recall_by_variant": {k: f"{by_variant_hit[k]}/{by_variant_tot[k]}" for k in sorted(by_variant_tot)},
         "recall_by_group": {k: f"{grp_hit[k]}/{grp_tot[k]}" for k in sorted(grp_tot)},
+        **({"self_attributed_by_group": {k: f"{grp_self[k]}/{grp_tot[k]}" for k in sorted(grp_tot)}} if grp_tot else {}),
         "trap_other": {"planted": trap["planted"], "caught": trap["caught"], "judged_other": trap["judged_other"],
                        "judged_self": trap["judged_self"], "judged_unknown": trap["judged_unknown"]},
-        "distractor_age_fp": f"{distract_fp}/{sum(len(g['distractors']) for g in gold)}",
+        "distractor_age_fp": f"{dist_fp['AGE']}/{dist_tot['AGE']}",
+        **({"distractor_fp_by_type": {k: f"{dist_fp[k]}/{dist_tot[k]}" for k in sorted(dist_tot)}}
+           if set(dist_tot) - {"AGE"} else {}),
         "unplanned_spans_per_post": round(unplanned / max(1, len(gold)), 2),
     }
 
