@@ -1,0 +1,178 @@
+{
+ "v1_train 원본": {
+  "n": 342,
+  "posts_median": 3.0,
+  "spans_median": 4.0,
+  "spans_max": 23,
+  "total_median": 804.5,
+  "total_p90": 1277,
+  "total_max": 2480,
+  "completion_max": 853,
+  "over_1024": 90,
+  "over_1408": 22,
+  "over_2048": 3,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 4,
+   "n": 127,
+   "over_1024": 86,
+   "over_1408": 22,
+   "over_2048": 3,
+   "over_2560": 0
+  }
+ },
+ "v1_dev 원본": {
+  "n": 30,
+  "posts_median": 2.0,
+  "spans_median": 2.0,
+  "spans_max": 8,
+  "total_median": 704.0,
+  "total_p90": 976,
+  "total_max": 1212,
+  "completion_max": 397,
+  "over_1024": 2,
+  "over_1408": 0,
+  "over_2048": 0,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 3,
+   "n": 11,
+   "over_1024": 2,
+   "over_1408": 0,
+   "over_2048": 0,
+   "over_2560": 0
+  }
+ },
+ "실제 계정 상한 24/6 빈 글 포함(지금 앱)": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 18,
+  "spans_max": 24,
+  "total_median": 2280,
+  "total_p90": 2784,
+  "total_max": 2856,
+  "completion_max": 873,
+  "over_1024": 110,
+  "over_1408": 93,
+  "over_2048": 73,
+  "over_2560": 34,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 50,
+   "over_1408": 34,
+   "over_2048": 31,
+   "over_2560": 17
+  }
+ },
+ "실제 계정 상한 24/6": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 18,
+  "spans_max": 24,
+  "total_median": 2045,
+  "total_p90": 2542,
+  "total_max": 2611,
+  "completion_max": 873,
+  "over_1024": 93,
+  "over_1408": 93,
+  "over_2048": 57,
+  "over_2560": 7,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 34,
+   "over_1408": 34,
+   "over_2048": 22,
+   "over_2560": 2
+  }
+ },
+ "실제 계정 상한 20/5": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 17,
+  "spans_max": 20,
+  "total_median": 1968,
+  "total_p90": 2234,
+  "total_max": 2276,
+  "completion_max": 770,
+  "over_1024": 93,
+  "over_1408": 93,
+  "over_2048": 48,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 34,
+   "over_1408": 34,
+   "over_2048": 20,
+   "over_2560": 0
+  }
+ },
+ "실제 계정 상한 18/5": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 17,
+  "spans_max": 18,
+  "total_median": 1950,
+  "total_p90": 2066,
+  "total_max": 2111,
+  "completion_max": 719,
+  "over_1024": 93,
+  "over_1408": 93,
+  "over_2048": 20,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 34,
+   "over_1408": 34,
+   "over_2048": 9,
+   "over_2560": 0
+  }
+ },
+ "실제 계정 상한 16/4": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 16,
+  "spans_max": 16,
+  "total_median": 1837,
+  "total_p90": 1906,
+  "total_max": 1950,
+  "completion_max": 663,
+  "over_1024": 93,
+  "over_1408": 93,
+  "over_2048": 0,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 34,
+   "over_1408": 34,
+   "over_2048": 0,
+   "over_2560": 0
+  }
+ },
+ "실제 계정 상한 12/3": {
+  "n": 115,
+  "posts_median": 27,
+  "spans_median": 12,
+  "spans_max": 12,
+  "total_median": 1531,
+  "total_p90": 1577,
+  "total_max": 1605,
+  "completion_max": 574,
+  "over_1024": 93,
+  "over_1408": 88,
+  "over_2048": 0,
+  "over_2560": 0,
+  "long_accounts": {
+   "posts_ge": 28,
+   "n": 50,
+   "over_1024": 34,
+   "over_1408": 34,
+   "over_2048": 0,
+   "over_2560": 0
+  }
+ }
+}
