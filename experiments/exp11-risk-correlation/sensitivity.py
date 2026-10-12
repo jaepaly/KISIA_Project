@@ -20,6 +20,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+import numpy as np  # noqa: E402
+from scipy.stats import spearmanr  # noqa: E402
+
 from kopl.c1_span.attributes import resolve  # noqa: E402
 from kopl.c2_specificity import build_conditions, risk_total  # noqa: E402
 
@@ -246,6 +249,49 @@ def write_metrics(
     return metrics
 
 
+def person_block_permutation(
+    windows: list[dict[str, Any]],
+    *,
+    repetitions: int = 10_000,
+    seed: int = 20_261_002,
+) -> dict[str, Any]:
+    """인물 단위 순열 검정 — 한 인물의 7개 윈도우 위험도를 **통째로** 다른 인물에게 옮긴다.
+
+    기존 층화 검정(score.py ``baseline_checks``)은 윈도우마다 인물을 따로 섞어,
+    같은 인물의 누적 이력(w1 ⊂ w2 ⊂ … ⊂ w19)이 서로 독립인 것처럼 다룬다.
+    여기서는 인물 하나의 위험도 궤적을 한 단위로 두고, 성공 점수는 그대로 둔 채
+    인물 사이에서만 궤적을 바꾼다. 귀무가설: 위험도 궤적이 어느 인물 것이든
+    추론 성공과의 상관이 같다. 단측(관측 rho 이상).
+    """
+    personas = sorted({row["persona_id"] for row in windows})
+    sizes = sorted({int(row["window_size"]) for row in windows})
+    risk = {(row["persona_id"], int(row["window_size"])): float(row["our_risk"]) for row in windows}
+    score = {(row["persona_id"], int(row["window_size"])): float(row["success_count"]) for row in windows}
+    keys = [(p, w) for p in personas for w in sizes]
+    if len(keys) != len(windows):
+        raise ValueError("인물 × 윈도우 칸이 비어 있거나 중복입니다")
+    scores = np.asarray([score[k] for k in keys])
+    observed = float(spearmanr([risk[k] for k in keys], scores).statistic)
+    rng = np.random.default_rng(seed)
+    hits = 0
+    for _ in range(repetitions):
+        order = rng.permutation(len(personas))
+        permuted = [risk[(personas[order[i]], w)] for i in range(len(personas)) for w in sizes]
+        hits += float(spearmanr(permuted, scores).statistic) >= observed
+    return {
+        "rho": observed,
+        "personas": len(personas),
+        "repetitions": repetitions,
+        "seed": seed,
+        "p_one_sided": (hits + 1) / (repetitions + 1),
+    }
+
+
+def read_window_csv(path: Path) -> list[dict[str, Any]]:
+    with path.open(encoding="utf-8-sig", newline="") as file:
+        return list(csv.DictReader(file))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inputs", type=Path, default=DEFAULT_INPUTS)
@@ -272,6 +318,8 @@ def main() -> int:
         )
 
     score = _load_module("exp11_score_for_sensitivity", HERE / "score.py")
+    # 인물 단위 순열 — 교사 라벨 결과(원본 teacher_window_scores.csv)도 같은 검정으로 비교한다. 원본 파일은 읽기만 한다
+    block = {"teacher": person_block_permutation(read_window_csv(args.results / "teacher_window_scores.csv"))}
     for label, filename in PREDICTIONS.items():
         predictions = load_predictions(args.inputs / filename, expected_ids)
         risks = build_window_risks(posts, predictions)
@@ -282,6 +330,7 @@ def main() -> int:
         metrics = write_metrics(
             scored_path, windows_path, metrics_path, score
         )
+        block[label] = person_block_permutation(read_window_csv(windows_path))
         primary = metrics["primary"]
         baseline = metrics["window_size_baseline"]
         print(
@@ -294,8 +343,13 @@ def main() -> int:
             "글 수 통제 부분상관="
             f"{baseline['partial_rho_given_window_size']:.3f} · "
             "층화 p="
-            f"{baseline['within_window_shuffle']['p_one_sided']:.4g}"
+            f"{baseline['within_window_shuffle']['p_one_sided']:.4g} · "
+            f"인물 단위 p={block[label]['p_one_sided']:.4g}"
         )
+    (args.results / "sensitivity_person_block_permutation.json").write_text(
+        json.dumps(block, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"teacher: 인물 단위 p={block['teacher']['p_one_sided']:.4g}")
     return 0
 
 

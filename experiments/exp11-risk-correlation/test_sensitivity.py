@@ -107,3 +107,28 @@ def test_replace_risks_preserves_rows(tmp_path: Path) -> None:
         rows = list(csv.DictReader(file))
     assert rows[0]["our_risk"] == "12.34"
     assert rows[0]["attribute"] == "age"
+
+
+def _windows(trajectories: dict[str, list[float]], scores: dict[str, list[float]]) -> list[dict]:
+    return [{"persona_id": p, "window_size": w, "our_risk": r, "success_count": scores[p][i]}
+            for p, rs in trajectories.items() for i, (w, r) in enumerate(zip((1, 2, 3), rs))]
+
+
+def test_person_block_permutation_moves_whole_trajectory() -> None:
+    """인물마다 위험도 수준이 성공과 맞으면 작은 p · 인물 순서와 무관하면 큰 p. 한 인물의 윈도우는 함께 움직인다."""
+    personas = [f"P{i}" for i in range(8)]
+    aligned = sensitivity.person_block_permutation(
+        _windows({p: [i, i + 0.1, i + 0.2] for i, p in enumerate(personas)},
+                 {p: [i, i, i] for i, p in enumerate(personas)}), repetitions=999, seed=1)
+    assert aligned["p_one_sided"] < 0.01 and aligned["personas"] == 8
+    # 위험도 궤적이 모든 인물에서 같으면 인물을 바꿔도 통계량이 같다 → p = 1
+    flat = sensitivity.person_block_permutation(
+        _windows({p: [1.0, 2.0, 3.0] for p in personas}, {p: [i, i + 1, i + 2] for i, p in enumerate(personas)}),
+        repetitions=199, seed=1)
+    assert flat["p_one_sided"] == 1.0
+
+
+def test_person_block_permutation_rejects_missing_cells() -> None:
+    rows = _windows({"A": [1.0, 2.0, 3.0], "B": [1.0, 2.0, 3.0]}, {"A": [1, 2, 3], "B": [1, 2, 3]})
+    with pytest.raises(ValueError):
+        sensitivity.person_block_permutation(rows[:-1])
