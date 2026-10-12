@@ -1,0 +1,11 @@
+W1012 16:33:42.566000 21316 Lib\site-packages\torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\s2v2\experiments\exp22-stage2-judge\run_stage2.py", line 102, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\s2v2\experiments\exp22-stage2-judge\run_stage2.py", line 68, in main
+    model = infer.Stage2Model(adapter)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\s2v2\src\kopl\c4_stage2\infer.py", line 220, in __init__
+    raise FileNotFoundError(f"2단 어댑터가 없다: {adapter} (STAGE2_ADAPTER_DIR 로 지정)")
+FileNotFoundError: 2단 어댑터가 없다: C:\Users\dor12\wt\s2v2\experiments\exp08-stage2-sft\results\adapter (STAGE2_ADAPTER_DIR 로 지정)

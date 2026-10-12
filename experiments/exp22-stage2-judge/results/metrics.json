@@ -1,0 +1,72 @@
+{
+ "v1": {
+  "cells": 210,
+  "M1": 0.1714,
+  "M2": 0.1206,
+  "M2_cells": 141,
+  "M3": 0.2416,
+  "M3_pr": [
+   1.0,
+   0.1374
+  ],
+  "M4": 23,
+  "M5": 0.9381,
+  "M1_by_attr": {
+   "age": "6/30",
+   "sex": "3/30",
+   "location": "5/30",
+   "occupation": "5/30",
+   "family": "3/30",
+   "commute": "7/30",
+   "income": "7/30"
+  },
+  "reference_planted": {
+   "cells": 171,
+   "agree": 0.614
+  },
+  "seconds_mean": 69.3,
+  "prompt_tokens_max": 2041,
+  "truncated": 22
+ },
+ "v2": {
+  "cells": 210,
+  "M1": 0.2286,
+  "M2": 0.1631,
+  "M2_cells": 141,
+  "M3": 0.329,
+  "M3_pr": [
+   1.0,
+   0.1969
+  ],
+  "M4": 23,
+  "M5": 0.9952,
+  "M1_by_attr": {
+   "age": "7/30",
+   "sex": "6/30",
+   "location": "7/30",
+   "occupation": "7/30",
+   "family": "7/30",
+   "commute": "7/30",
+   "income": "7/30"
+  },
+  "reference_planted": {
+   "cells": 171,
+   "agree": 0.6082
+  },
+  "seconds_mean": 56.4,
+  "prompt_tokens_max": 1503,
+  "truncated": 23
+ },
+ "M1_diff_ci95": [
+  -0.0762,
+  0.1952
+ ],
+ "criteria": {
+  "1 M1 +0.05 · CI 아래끝 > 0": false,
+  "2 M2 v1 이상": true,
+  "3 M3 -0.05 이내": true,
+  "4 M4 v1 이하 · 3 이하": false,
+  "5 M5 -0.02 이내": true,
+  "6 exp09 회귀": "따로 — README §2 6번"
+ }
+}

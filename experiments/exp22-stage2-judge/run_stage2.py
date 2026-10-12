@@ -28,6 +28,8 @@ from make_sft_v2 import MAX_PER_TYPE, MAX_SPANS, SYSTEM_V2  # noqa: E402
 
 ADAPTERS = {"v1": ROOT / "experiments/exp08-stage2-sft/results/adapter",
             "v2": ROOT / "experiments/exp08-stage2-sft/results/adapter_v2"}
+# 어댑터는 커밋하지 않는다 — 다른 작업 폴더에서 돌리면 --adapter 로 보관본을 준다. v1 은 해시로 같은 어댑터인지 확인한다
+V1_SHA256 = "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
 
 
 def sha256(path: Path) -> str:
@@ -60,11 +62,14 @@ def model_input(config: str, uref: str, posts: list[dict]) -> tuple[str, str, li
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", choices=("v1", "v2"), required=True)
+    ap.add_argument("--adapter", type=Path, help="어댑터 폴더 (기본: exp08 results/adapter · adapter_v2)")
     a = ap.parse_args()
     out = HERE / "results" / f"raw_{a.config}.jsonl"
     if out.exists():
         raise SystemExit(f"{out} 가 이미 있다 — exp22 는 구성마다 한 번만 돌린다 (README §2)")
-    adapter = ADAPTERS[a.config]
+    adapter = a.adapter or ADAPTERS[a.config]
+    if a.config == "v1" and sha256(adapter / "adapter_model.safetensors") != V1_SHA256:
+        raise SystemExit(f"v1 어댑터 해시가 다르다: {adapter}")
     model = infer.Stage2Model(adapter)
     torch = model._torch
     accounts = load_accounts()
@@ -90,7 +95,7 @@ def main() -> int:
         print(f"{acc['account_id']} · 입력 {rows[-1]['prompt_tokens']} 토큰 · 스팬 {n_spans} · {sec}s · "
               f"{'검증 통과' if validated else '폴백'}", flush=True)
     out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8", newline="\n")
-    meta = {"config": a.config, "adapter": str(adapter.relative_to(ROOT)), "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
+    meta = {"config": a.config, "adapter": str(adapter), "adapter_sha256": sha256(adapter / "adapter_model.safetensors"),
             "system_sha256": hashlib.sha256((infer.SYSTEM_V1 if a.config == "v1" else SYSTEM_V2).encode()).hexdigest(),
             "stage1_manifest": json.loads((HERE / "data/stage1_manifest.json").read_text(encoding="utf-8")),
             "measured": time.strftime("%Y-%m-%d %H:%M"), "gpu": torch.cuda.get_device_name(0)}
