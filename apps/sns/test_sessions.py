@@ -70,6 +70,9 @@ def test_export_follows_session_header(app_iso):
     with_sid = plain.get("/api/export/u_0123456789ab", headers={"X-Veilo-Session": sid}).get_json()
     without = plain.get("/api/export/u_0123456789ab").get_json()
     assert len(with_sid["posts"]) == 0 and len(without["posts"]) == 1
+    # 주소의 ?sid= 로는 남의 사본에 들어가지 못한다 (#337 E 리뷰)
+    via_query = plain.get(f"/api/export/u_0123456789ab?sid={sid}").get_json()
+    assert len(via_query["posts"]) == 1
 
 
 def test_reset_restores_only_this_session(app_iso):
