@@ -20,7 +20,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT)]
 DATA = HERE / "data" / "accounts.jsonl"
-FROZEN = "(검토 뒤 고정 해시)"
+FROZEN = "50213cdbd0a407f90651459fee9fbdc4bc8e33e9d61c68c9229933ca45a57c8d"
 
 
 def sha256(path: Path) -> str:
