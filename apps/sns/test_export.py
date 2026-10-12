@@ -207,3 +207,26 @@ def test_geo_tag를_빈값으로_보내면_NULL이_된다(client):
 
     p1 = next(x for x in get(client)["posts"] if x["post_id"] == "S01_b01")
     assert p1["activity_meta"]["geo_tag"] is None
+
+
+# ── 계약 §6 두 번째 창구 · 파도풀 주소 (PADO_BASE) ─────────────────────
+def test_계정찾기는_user_ref_nickname_n_posts_만(client):
+    """분석기에 넘기는 값이라 export 와 같은 규칙 — 플랫폼 내부 값(author_id)은 나가지 않는다 (#337 리뷰 (나))."""
+    r = client.get("/api/authors?q=골목")
+    assert r.status_code == 200
+    rows = r.get_json()
+    assert rows and all(set(a) == {"user_ref", "nickname", "n_posts"} for a in rows), rows
+    a = next(x for x in rows if x["user_ref"] == "u_3f2a91c4")
+    assert a["n_posts"] == 2, "공개 글만 센다 — 비공개 S01_b03 은 빠진다"
+
+
+def test_파도풀_진입점이_PADO_BASE_를_따른다(client, monkeypatch):
+    """기본은 인스턴스 경로 /check, 로컬은 분석 앱 주소로 (#324 리뷰 (가))."""
+    import app as sns_app
+    html = client.get("/u/u_3f2a91c4").get_data(as_text=True)
+    assert 'href="/check/static/scan.html?u=u_3f2a91c4"' in html
+    assert 'window.PADO_BASE = "/check"' in html
+    monkeypatch.setattr(sns_app, "PADO_BASE", "http://localhost:8000")
+    html = client.get("/u/u_3f2a91c4").get_data(as_text=True)
+    assert 'href="http://localhost:8000/static/scan.html?u=u_3f2a91c4"' in html
+    assert 'window.PADO_BASE = "http://localhost:8000"' in html

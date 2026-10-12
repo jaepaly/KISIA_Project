@@ -51,3 +51,15 @@
 
 - 실명 · 이메일 · 전화번호 (애초에 수집하지 않는다)
 - 비밀번호 · 로그인 정보
+- 플랫폼 내부 값 — `author_id` · `source` · `visibility` (공개 글만 나가므로 visibility 는 필요 없다)
+
+## 6. 분석 도구가 읽는 창구 — 둘뿐이다
+
+| 창구 | 응답 | 쓰는 곳 |
+|---|---|---|
+| `GET /api/export/<user_ref>` | §1 글 · §2 사용자 (공개 글만) | 분석의 입력 전부 |
+| `GET /api/authors?q=<검색어>` | `[{ user_ref, nickname, n_posts }]` — 닉네임·`user_ref` 앞부분으로 최대 12명 · `n_posts` 는 공개 글 수 | 스캔 화면 계정 찾기 (식별자를 외워 오게 하지 않는다) |
+
+- 분석 도구는 이 둘을 `apps/analyzer/adapters/sns_adapter.py` 로만 부른다 — 화면(브라우저)이 가상 SNS 를 직접 부르지 않는다
+- 방문자별 사본을 쓰는 서버에서는 두 창구 모두 `X-Veilo-Session` 헤더로 그 방문자의 사본을 읽는다
+- 화면 연결 주소: 가상 SNS → 분석 앱은 `PADO_BASE`(기본 `/check`), 분석 앱 → 가상 SNS 는 `SNS_PUBLIC_URL`(기본 같은 도메인 루트). 링크·주소일 뿐 데이터 창구가 아니다

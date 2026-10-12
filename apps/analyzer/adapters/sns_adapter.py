@@ -17,3 +17,15 @@ def load(user_ref: str, base: str = DEFAULT_BASE, session_id: str | None = None)
     r = requests.get(f"{base}/api/export/{user_ref}", timeout=5, headers=headers)
     r.raise_for_status()
     return r.json()
+
+
+# 두 번째 창구 — 계정 찾기 (sns-minimal-spec §6). 화면이 Veilo 를 직접 부르지 않고 여기를 거친다
+AUTHOR_FIELDS = ("user_ref", "nickname", "n_posts")
+
+
+def search_authors(q: str, base: str = DEFAULT_BASE, session_id: str | None = None) -> list[dict]:
+    headers = {"X-Veilo-Session": session_id} if session_id else {}
+    r = requests.get(f"{base}/api/authors", params={"q": q}, timeout=5, headers=headers)
+    r.raise_for_status()
+    # 계약 밖 필드가 와도 화면까지 흘리지 않는다
+    return [{k: a.get(k) for k in AUTHOR_FIELDS} for a in r.json()]

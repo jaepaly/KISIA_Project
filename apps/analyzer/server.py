@@ -8,10 +8,12 @@
 
 from __future__ import annotations
 
+import json
 import os
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from apps.analyzer import engines as engine
@@ -21,15 +23,41 @@ from kopl.c4_stage2.timeline import find_marks, infer_starts
 from apps.analyzer.adapters import file_adapter, sns_adapter
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
-SNS_BASE = os.getenv("SNS_BASE_URL", "http://localhost:3000")
+SNS_BASE = os.getenv("SNS_BASE_URL", "http://localhost:3000")   # 서버가 Veilo 를 부르는 주소 (adapter)
+# 브라우저가 보는 Veilo 주소 — 「Veilo 로 돌아가기」 · 글 링크. 빈 값 = 같은 도메인 루트(인스턴스 veilo.site)
+# 로컬에서 따로 띄우면 SNS_PUBLIC_URL=http://localhost:3000 (Veilo 쪽 PADO_BASE 와 짝)
+SNS_PUBLIC_URL = os.getenv("SNS_PUBLIC_URL", "").rstrip("/")
 
 app = FastAPI(title="분석기 (mock)")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Veilo 화면(다른 포트)이 점검을 부를 수 있게 — SNS_PUBLIC_URL 이 다른 출처일 때만 그 하나를 허용한다.
+# 인스턴스는 같은 도메인이라 켜지지 않는다. 외부로 나가는 요청이 아니라 들어오는 요청의 허용이다
+if SNS_PUBLIC_URL.startswith(("http://", "https://")):
+    from urllib.parse import urlsplit
+    _o = urlsplit(SNS_PUBLIC_URL)
+    app.add_middleware(CORSMiddleware, allow_origins=[f"{_o.scheme}://{_o.netloc}"],
+                       allow_methods=["GET", "POST"], allow_headers=["*"])
 
 
 @app.get("/")
 def root():
     return RedirectResponse("/static/scan.html")
+
+
+@app.get("/config.js")
+def config_js():
+    """화면 설정 — 세 화면이 common.js 보다 먼저 읽는다 (<script src="../config.js">)."""
+    return Response(f"window.SNS_PUBLIC = {json.dumps(SNS_PUBLIC_URL)};\n", media_type="application/javascript")
+
+
+@app.get("/sns/authors")
+def sns_authors(request: Request, q: str = ""):
+    """스캔 화면 계정 자동완성 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰)."""
+    try:
+        return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
+    except Exception as exc:  # SNS 서버 다운 등
+        raise HTTPException(status_code=502, detail=f"계정 찾기 실패: {exc}") from exc
 
 
 @app.get("/api/engine-mode")

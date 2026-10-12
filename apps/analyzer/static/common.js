@@ -143,3 +143,6 @@ const ATTR_LABEL = {
   age: "나이", sex: "성별", location: "거주지", occupation: "직업",
   family: "가족", commute: "통근", income: "소득",
 };
+
+// 「Veilo 로 돌아가기」 — Veilo 주소는 config.js(SNS_PUBLIC). 빈 값이면 같은 도메인 루트 (인스턴스)
+document.querySelectorAll("a.back-sns").forEach((a) => { a.href = (window.SNS_PUBLIC || "") + "/"; });

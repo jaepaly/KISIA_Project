@@ -29,6 +29,16 @@ app = Flask(__name__)
 KST = timezone(timedelta(hours=9))
 PAGE_SIZE = 20
 
+# 파도풀(분석 앱) 주소 — 「내 계정 진단」 · 「이 글 점검」 · 글쓰기 실시간 점검이 부른다.
+# 기본값 /check 는 인스턴스(veilo.site)의 nginx 프록시 경로. 저장소만 받아 로컬에서 돌리면
+# PADO_BASE=http://localhost:8000 처럼 분석 앱 주소를 넘긴다 (#324 리뷰 · 정한 대로 (가))
+PADO_BASE = os.environ.get("PADO_BASE", "/check").rstrip("/")
+
+
+@app.context_processor
+def _inject_pado_base() -> dict:
+    return {"pado_base": PADO_BASE}
+
 
 @app.template_filter("hue")
 def _hue(s: str) -> int:
@@ -393,7 +403,10 @@ def reset_author(user_ref: str):
 
 @app.get("/api/authors")
 def authors_search():
-    """닉네임으로 계정 찾기 — 파도풀 스캔 화면의 「가상 SNS 계정에서 가져오기」가 쓴다 (식별자를 외워 오게 하지 않는다)."""
+    """닉네임으로 계정 찾기 — 파도풀 스캔 화면의 「가상 SNS 계정에서 가져오기」가 쓴다 (식별자를 외워 오게 하지 않는다).
+
+    export 다음의 두 번째 창구다 (sns-minimal-spec §6). 분석기에 넘기는 값이라 export 와 같은 규칙으로
+    플랫폼 내부 값(author_id)은 내보내지 않는다 — user_ref · nickname · n_posts 만 (#337 리뷰 (나))."""
     q = (request.args.get("q") or "").strip()
     sql = ("SELECT a.author_id, a.nickname, a.user_ref, a.bio, COUNT(p.post_id) AS n"
            " FROM authors a LEFT JOIN posts p ON p.author_id = a.author_id AND p.visibility = 'public'")
@@ -404,8 +417,7 @@ def authors_search():
     sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT 12"
     args.append(f"{q}%")
     rows = db().execute(sql, args).fetchall()
-    return jsonify([{"author_id": r["author_id"], "nickname": r["nickname"], "user_ref": r["user_ref"],
-                     "bio": r["bio"], "n_posts": r["n"], "hue": _hue(r["author_id"])} for r in rows])
+    return jsonify([{"user_ref": r["user_ref"], "nickname": r["nickname"], "n_posts": r["n"]} for r in rows])
 
 
 @app.get("/api/author/<author_id>/summary")

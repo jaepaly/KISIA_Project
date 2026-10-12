@@ -287,3 +287,40 @@ def test_c1_defaults_are_baseline_v2():
     assert not any(c1_rules.parse(v) for v in ("0", "false", "OFF", " no "))
     src = (ROOT / "apps" / "analyzer" / "engines" / "real.py").read_text(encoding="utf-8")
     assert '"variant_base_20261008" / "checkpoint-epoch-10"' in src
+
+
+# ── PADO_BASE PR — 화면 설정 · 계정 찾기는 어댑터를 거친다 (sns-minimal-spec §6)
+def test_config_js_carries_sns_public_url(monkeypatch):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    monkeypatch.setattr(server, "SNS_PUBLIC_URL", "http://localhost:3000")
+    r = TestClient(server.app).get("/config.js")
+    assert r.status_code == 200 and "javascript" in r.headers["content-type"]
+    assert r.text.strip() == 'window.SNS_PUBLIC = "http://localhost:3000";'
+
+
+def test_sns_authors_goes_through_adapter_and_drops_internal_fields(monkeypatch):
+    """화면은 ../sns/authors 만 부른다 — 응답에 계약 밖 필드(author_id 등)가 와도 화면까지 안 간다."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    from apps.analyzer.adapters import sns_adapter
+
+    class _Resp:
+        def raise_for_status(self): pass
+        def json(self): return [{"author_id": "S01", "user_ref": "u_3f2a91c4", "nickname": "골목 사진",
+                                 "n_posts": 2, "bio": "소개", "hue": 10}]
+    calls = []
+    def fake_get(url, params=None, timeout=None, headers=None):
+        calls.append((url, params, headers))
+        return _Resp()
+    monkeypatch.setattr(sns_adapter.requests, "get", fake_get)
+    client = TestClient(server.app)
+    client.cookies.set("veilo_sid", "ab" * 12)
+    r = client.get("/sns/authors", params={"q": "골목"})
+    assert r.status_code == 200
+    assert r.json() == [{"user_ref": "u_3f2a91c4", "nickname": "골목 사진", "n_posts": 2}]
+    url, params, headers = calls[0]
+    assert url.endswith("/api/authors") and params == {"q": "골목"}
+    assert headers == {"X-Veilo-Session": "ab" * 12}, "방문자 사본을 읽도록 세션을 넘긴다"

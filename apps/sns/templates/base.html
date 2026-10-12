@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="/static/fonts/pretendard.css">
   <link rel="stylesheet" href="/static/veilo.css">
   <link rel="stylesheet" href="/static/fx.css">
+  {# 파도풀 주소 — app.py PADO_BASE. pado.js · 글쓰기 화면 스크립트가 읽는다 #}
+  <script>window.PADO_BASE = {{ pado_base|tojson }};</script>
   {% block head %}{% endblock %}
 </head>
 <body>
