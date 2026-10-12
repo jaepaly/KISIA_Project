@@ -1,0 +1,10 @@
+{
+ "measured": "2026-10-12 14:29",
+ "accounts_sha256": "d9db9bdec3a8407837f9b29ec0f97e84b93c86273f41e9b6bb5d1a62974ace86",
+ "stage1_sha256": "5e137b193181b5973a15ed4673c28816fa5c473c637e3d9855e637112c37955c",
+ "checkpoint": "v2",
+ "checkpoint_model_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+ "c1_rules": true,
+ "git_commit": "eb1be0e3515dc67151c8f2fbecd2d311649ea43a",
+ "seconds": 52.8
+}
