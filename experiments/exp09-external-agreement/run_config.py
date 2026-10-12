@@ -43,7 +43,7 @@ def config_input(config: str, row: dict) -> tuple[str, str, list[dict]]:
     user = json.loads(row["user"])
     posts = user["posts"]
     if config == "v1":
-        entries = infer.select_for_model(posts)
+        entries = infer.select_for_model(posts, max_spans=24, max_per_type=6)  # 10/12 까지의 앱 (기본값이 v2 로 바뀌어도 재현)
         system = row["system"]
     else:
         entries = [e for e in infer.select_for_model(posts, max_spans=MAX_SPANS, max_per_type=MAX_PER_TYPE) if e["spans"]]

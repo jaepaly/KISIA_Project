@@ -21,9 +21,28 @@
 | koelectra-v1 | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO | `experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10` (B 데스크톱 로컬) | 2026-09-16 | corpus-v0 p2.3 · 검수 골드 · #244 split | 내부 eval partial/exact F1 0.4839/0.4194 · test 0.2940/0.1616 · 합성 CPU p95 최대 276.31ms (9/17) |
 | koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · 비공개 전달 예정) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | 모델 단독 내부 eval P/R/F1 0.4390/0.4500/0.4444 · 규칙 결합 exp17b 본인 재현율 0.699 (10/8) · exp17c 0.752 (10/9, #323 포함) |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
+| qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
+| **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달) | 2026-10-12 | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) |
 
 **모든 행에 학습일 · 데이터 버전 · 지표를 함께 적는다.** 없으면 10주 뒤에
 그 체크포인트가 무엇이었는지 복원할 수 없다.
+
+### 2단 qwen3-4b-qlora-v2 — 앱 기본 교체 (2026-10-12 · [DEC-012](../docs/decisions.md))
+
+- 어댑터 `adapter_model.safetensors` SHA-256 `94ada34de0f1e49c859f2102e311bf42c0683768ec779ca8aab243f63a950190` (47 MB)
+- 학습: `exp08-stage2-sft/make_sft_v2.py` → `train.py --train data/v2_train.jsonl --dev data/v2_dev.jsonl --max-len 2048 --completion-logits` · RTX 3060 · 피크 VRAM 5.62 GB · 228 업데이트
+- 앱 구성(`src/kopl/c4_stage2/infer.py`): `SYSTEM_V2`(v1 + #296 판정 기준 한 줄) · 모델 입력 상한 16/4 · 스팬 없는 글 뺌 · 출력 상한 `output_budget(entries)`(#346) · `MODEL_VERSION = qwen3-4b-qlora-v2`
+- 판정: [exp22b](../experiments/exp22b-stage2-judge/README.md) §5 — 기준 1~5 통과 · 기준 6 미달은 규칙 대조로 DEC-011 예외
+- **이 등록만으로 각 PC 의 어댑터가 바뀌지 않는다.** 2단을 GPU 로 돌리는 PC 는 `results/adapter_v2/` 에 어댑터 파일(`adapter_config.json` · `adapter_model.safetensors`)을 두거나 `STAGE2_ADAPTER_DIR` 로 가리킨다. 없으면 앱은 지금처럼 규칙으로 폴백하고 provenance 에 이유를 적는다
+- `STAGE2_ADAPTER_DIR` 이 예전 v1 어댑터를 가리킨 채면 앱이 로드를 거부하고 규칙으로 폴백한다 (v1 가중치 + v2 프롬프트는 판정하지 않은 구성) — 환경변수를 v2 로 바꾸거나 지운다
+
+**v1 로 되돌리기** — 코드 한 커밋 되돌림 + 어댑터 경로:
+
+1. 서버를 멈춘다 (모델은 프로세스에 한 번 올라가 캐시된다)
+2. `infer.py` 의 `MODEL_VERSION` → `qwen3-4b-qlora-v1` · `_DEFAULT_ADAPTER` → `results/adapter` · `MODEL_MAX_SPANS` 24 · `MODEL_MAX_SPANS_PER_TYPE` 6 · `Stage2Model` 기본 system → `SYSTEM_V1` · `build_user_prompt(cap=True)` 에서 빈 글 제외 줄 삭제 (= 이 교체 커밋 `git revert`)
+3. `STAGE2_ADAPTER_DIR` 을 v1 어댑터 폴더로 바꾸거나, 지우고 `results/adapter` 에 v1 을 둔다. v1 어댑터 SHA-256 `1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b` 확인 (보관본: D 로컬 저장소 밖)
+4. 출력 상한 수정(#346)은 v1 에도 그대로 둔다 — exp22b v1 수치가 그 상태다
+5. 서버를 다시 켜고 분석 결과 provenance 의 `model_version` 이 `qwen3-4b-qlora-v1` 인지 본다
 
 **2026-10-09 운용 결정**: B·D는 [#322](../../../issues/322)에서 **기준선 v2 유지**를
 확정했다. v1 행은 과거 등록·인계 이력으로 보존한다. 앱 기본값 변경은 D의 별도 PR

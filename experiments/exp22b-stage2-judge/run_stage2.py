@@ -52,8 +52,10 @@ def load_accounts() -> list[dict]:
 def model_input(config: str, uref: str, posts: list[dict]) -> tuple[str, str, list[dict]]:
     """(system, user_prompt, entries) — 앱이 그 구성에서 모델에 보내는 것 그대로"""
     if config == "v1":
-        prompt, entries = infer.build_user_prompt(uref, posts, cap=True)
-        return infer.SYSTEM_V1, prompt, entries
+        # v1 구성 = 10/12 까지의 앱 (상한 24/6 · 빈 글 포함) — 앱 기본값이 v2 로 바뀌어도 재현되게 명시한다
+        entries = [{"post_id": p["post_id"], "spans": infer.pseudonymize_spans(p)} for p in posts]
+        entries = infer.select_for_model(entries, max_spans=24, max_per_type=6)
+        return infer.SYSTEM_V1, json.dumps({"user_ref": uref, "profile": None, "posts": entries}, ensure_ascii=False), entries
     entries = [{"post_id": p["post_id"], "spans": infer.pseudonymize_spans(p)} for p in posts]
     entries = [e for e in infer.select_for_model(entries, max_spans=MAX_SPANS, max_per_type=MAX_PER_TYPE) if e["spans"]]
     return SYSTEM_V2, json.dumps({"user_ref": uref, "profile": None, "posts": entries}, ensure_ascii=False), entries
