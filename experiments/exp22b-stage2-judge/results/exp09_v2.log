@@ -1,0 +1,107 @@
+W1012 19:46:30.281000 19896 Lib\site-packages\torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:00<01:43,  3.82it/s]Loading weights:   3%|▎         | 11/398 [00:00<00:10, 36.93it/s]Loading weights:   7%|▋         | 26/398 [00:00<00:05, 73.06it/s]Loading weights:  11%|█         | 42/398 [00:00<00:03, 100.45it/s]Loading weights:  15%|█▍        | 58/398 [00:00<00:02, 118.79it/s]Loading weights:  18%|█▊        | 72/398 [00:00<00:02, 123.03it/s]Loading weights:  23%|██▎       | 91/398 [00:00<00:02, 140.03it/s]Loading weights:  27%|██▋       | 106/398 [00:00<00:02, 141.09it/s]Loading weights:  31%|███       | 124/398 [00:01<00:01, 149.23it/s]Loading weights:  35%|███▌      | 140/398 [00:01<00:01, 149.73it/s]Loading weights:  39%|███▉      | 157/398 [00:01<00:01, 152.94it/s]Loading weights:  43%|████▎     | 173/398 [00:01<00:01, 151.46it/s]Loading weights:  48%|████▊     | 190/398 [00:01<00:01, 153.95it/s]Loading weights:  52%|█████▏    | 206/398 [00:01<00:01, 153.00it/s]Loading weights:  56%|█████▌    | 223/398 [00:01<00:01, 153.46it/s]Loading weights:  60%|██████    | 239/398 [00:01<00:01, 151.84it/s]Loading weights:  64%|██████▍   | 256/398 [00:01<00:00, 156.12it/s]Loading weights:  68%|██████▊   | 272/398 [00:02<00:00, 152.59it/s]Loading weights:  73%|███████▎  | 289/398 [00:02<00:00, 154.18it/s]Loading weights:  77%|███████▋  | 305/398 [00:02<00:00, 151.71it/s]Loading weights:  81%|████████  | 322/398 [00:02<00:00, 154.91it/s]Loading weights:  85%|████████▍ | 338/398 [00:02<00:00, 153.07it/s]Loading weights:  89%|████████▉ | 355/398 [00:02<00:00, 154.80it/s]Loading weights:  93%|█████████▎| 371/398 [00:02<00:00, 150.88it/s]Loading weights:  97%|█████████▋| 388/398 [00:02<00:00, 149.71it/s]Loading weights: 100%|██████████| 398/398 [00:02<00:00, 137.83it/s]
+A01 ok 23.1 s
+A02 ok 20.7 s
+A03 ok 23.0 s
+A04 ok 24.7 s
+A05 ok 20.7 s
+A07 ok 20.9 s
+A08 ok 20.6 s
+A10 ok 20.7 s
+A11 ok 22.8 s
+A12 ok 18.8 s
+A13 ok 24.6 s
+A14 ok 24.8 s
+A15 ok 22.9 s
+A16 ok 20.8 s
+A18 ok 27.0 s
+A19 ok 25.0 s
+A20 ok 18.8 s
+A21 ok 22.7 s
+A22 ok 20.6 s
+A23 ok 20.7 s
+A24 ok 22.7 s
+A25 ok 22.8 s
+A26 ok 29.0 s
+B02 ok 26.8 s
+B03 ok 22.7 s
+B04 ok 22.8 s
+B05 ok 22.8 s
+B06 ok 37.6 s
+B07 ok 26.8 s
+B08 ok 18.7 s
+B09 ok 20.6 s
+B10 ok 26.9 s
+B11 ok 20.6 s
+B12 ok 31.1 s
+B13 ok 33.5 s
+B14 ok 24.5 s
+B15 ok 37.8 s
+B16 ok 35.5 s
+B17 ok 29.0 s
+B18 ok 25.2 s
+B19 ok 20.7 s
+B20 ok 18.7 s
+C01 ok 18.8 s
+C02 ok 20.6 s
+C03 ok 20.8 s
+C04 ok 22.8 s
+C05 ok 20.7 s
+C06 ok 20.8 s
+C07 ok 20.8 s
+C08 ok 22.8 s
+C09 ok 20.6 s
+C10 ok 20.8 s
+C11 ok 22.7 s
+C12 ok 18.7 s
+C13 ok 20.7 s
+C14 ok 18.6 s
+C15 ok 20.6 s
+C17 ok 22.6 s
+C18 ok 22.8 s
+C20 ok 27.1 s
+D01 ok 26.7 s
+D02 ok 22.8 s
+D03 ok 21.0 s
+D04 ok 26.9 s
+D05 ok 18.7 s
+D06 ok 26.9 s
+D07 ok 22.6 s
+D08 ok 22.9 s
+D09 ok 26.8 s
+D10 ok 24.5 s
+D11 ok 20.7 s
+D12 ok 22.7 s
+D13 ok 20.8 s
+D14 ok 22.8 s
+D15 ok 22.6 s
+D16 ok 18.6 s
+D17 ok 20.7 s
+D18 ok 20.7 s
+D19 ok 23.0 s
+D20 ok 26.8 s
+D21 ok 20.7 s
+D22 ok 24.8 s
+D23 ok 24.7 s
+D24 ok 22.8 s
+E01 ok 27.1 s
+E03 ok 26.5 s
+E04 ok 18.6 s
+E05 ok 22.6 s
+E06 ok 22.9 s
+E07 ok 29.0 s
+E08 ok 22.8 s
+E10 ok 27.3 s
+E11 ok 22.6 s
+E12 ok 29.1 s
+E13 ok 33.2 s
+E14 ok 37.5 s
+E15 ok 37.5 s
+E16 ok 27.3 s
+E17 ok 26.8 s
+E18 ok 31.2 s
+E19 ok 21.0 s
+E20 ok 25.1 s
+E21 ok 27.1 s
+S01 ok 22.5 s
+S01b ok 18.7 s
