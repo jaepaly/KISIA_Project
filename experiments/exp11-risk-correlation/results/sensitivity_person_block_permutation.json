@@ -1,0 +1,23 @@
+{
+  "teacher": {
+    "rho": 0.8132970979851141,
+    "personas": 10,
+    "repetitions": 10000,
+    "seed": 20261002,
+    "p_one_sided": 0.010498950104989501
+  },
+  "v1": {
+    "rho": 0.764453524304453,
+    "personas": 10,
+    "repetitions": 10000,
+    "seed": 20261002,
+    "p_one_sided": 0.1207879212078792
+  },
+  "v1_rules": {
+    "rho": 0.7951388655766537,
+    "personas": 10,
+    "repetitions": 10000,
+    "seed": 20261002,
+    "p_one_sided": 0.0240975902409759
+  }
+}
