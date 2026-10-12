@@ -241,7 +241,20 @@ def test_rules_fallback_uses_all_spans_and_budget_grows() -> None:
     out = analyze(USER, _many_posts(), model=FakeModel('{"findings": {"age": '), mode="auto")
     assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: model output truncated)"
     assert out["findings"]["occupation"]["verdict"] != "abstain"
-    assert output_budget(2) == 700 and output_budget(24) == 850 and output_budget(500) == 1400
+    assert output_budget([]) == 700
+
+
+def test_output_budget_fits_rule_answer_for_long_ids() -> None:
+    """상한이 근거 전부를 담는 규칙 답변보다 커야 한다 — 짧은 ID(S01_b07) · 긴 ID(u_3f2a91c4_p001) 모두 (exp22 · 10/12)."""
+    from kopl.c4_stage2.rules import findings_from_spans
+    for pid in ("S01_b07", "u_3f2a91c4_p001", "post_1234567890"):
+        entries = [{"post_id": f"{pid}{k}", "spans": [{"span_id": f"{pid}{k}_s{i:02d}", "type": t, "level": "explicit",
+                                                       "subject": "self"} for i, t in enumerate(("AGE", "JOB", "FAM", "INCOME"), 1)]}
+                   for k in range(6)]   # 24 스팬 · 모두 본인 · 모두 근거가 된다
+        answer = json.dumps({"findings": findings_from_spans(entries), "rewrites": []}, ensure_ascii=False)
+        # 토크나이저 없이 보수적으로 — 한글 없는 JSON 은 글자 2개에 토큰 1개보다 덜 쪼개지지 않는다
+        assert output_budget(entries) >= len(answer) // 2, pid
+    assert output_budget([{"post_id": "x", "spans": [{"span_id": "x_s01"}] * 500}]) == 2048
 
 
 def _entry(post_id, spans):
@@ -271,3 +284,18 @@ def test_spreading_posts_never_beats_self_priority() -> None:
 def test_selection_is_deterministic() -> None:
     _, full = build_user_prompt(USER, _many_posts())
     assert select_for_model(full) == select_for_model(full)
+
+
+def test_output_budget_covers_real_token_count() -> None:
+    """토크나이저가 받아져 있으면 실제 토큰 수로 — 규칙 답변(근거 전부)이 상한 안에 들어온다. 없으면(CI) 건너뛴다."""
+    transformers = pytest.importorskip("transformers")
+    try:
+        tok = transformers.AutoTokenizer.from_pretrained("Qwen/Qwen3-4B", local_files_only=True)
+    except Exception:  # noqa: BLE001
+        pytest.skip("Qwen3 토크나이저가 로컬에 없다")
+    for pid in ("S01_b07", "A12_b12", "G22_01_p13", "u_3f2a91c4_p001", "post_1234567890"):
+        entries = [{"post_id": f"{pid}{k}", "spans": [{"span_id": f"{pid}{k}_s{i:02d}", "type": t, "level": "explicit",
+                                                       "subject": "self"} for i, t in enumerate(("AGE", "JOB", "FAM", "INCOME"), 1)]}
+                   for k in range(6)]
+        answer = json.dumps({"findings": findings_from_spans(entries), "rewrites": []}, ensure_ascii=False)
+        assert output_budget(entries) >= len(tok(answer)["input_ids"]) + 20, pid
