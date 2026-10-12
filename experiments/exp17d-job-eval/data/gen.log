@@ -1,0 +1,7 @@
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+    ⚠ 응답이 끊겼다 (finishReason=MAX_TOKENS)
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+{"kept": 90, "dropped": 0, "calls": 76, "usage": {"input_tokens": 18583, "output_tokens": 5359, "in_chars": 29471, "out_chars": 8940, "thinking_tokens": 0}}
