@@ -299,3 +299,22 @@ def test_output_budget_covers_real_token_count() -> None:
                    for k in range(6)]
         answer = json.dumps({"findings": findings_from_spans(entries), "rewrites": []}, ensure_ascii=False)
         assert output_budget(entries) >= len(tok(answer)["input_ids"]) + 20, pid
+
+
+def test_analyze_passes_budget_of_selected_entries() -> None:
+    """앱은 상한(24 · 유형당 6)으로 고른 입력의 ID 로 출력 상한을 계산해 Stage2Model.generate 에 넘긴다."""
+    from kopl.c4_stage2 import infer as infer_mod
+
+    seen = {}
+
+    class Capture(infer_mod.Stage2Model):
+        def __init__(self) -> None:  # 모델을 올리지 않는다
+            pass
+
+        def generate(self, user_prompt, max_new_tokens=None):
+            seen["budget"], seen["prompt"] = max_new_tokens, user_prompt
+            return '{"findings": {'
+
+    analyze(USER, _many_posts(), model=Capture(), mode="auto")
+    _, entries = build_user_prompt(USER, _many_posts(), cap=True)
+    assert seen["budget"] == output_budget(entries)

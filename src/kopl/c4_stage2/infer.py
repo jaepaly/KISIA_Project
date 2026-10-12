@@ -160,7 +160,9 @@ def output_budget(entries: Sequence[Mapping[str, Any]]) -> int:
     글 ID 길이에 따라 27(`S01_b07`) ~ 43(`u_3f2a91c4_p001`) 토큰 — 「10 + 글 ID 글자 수 + 스팬 ID 글자 수」가
     네 가지 ID 형식에서 모두 실측보다 조금 크다. 예전 「근거당 17토큰」은 작아서 글 많은 계정의 답변이
     중간에 잘려 규칙으로 떨어졌다(exp22 · v1 · v2 모두 30계정 중 23개). 모델은 답을 다 쓰면 멈추므로
-    상한을 넉넉히 둬도 시간 손해는 없다. 700 아래로는 내리지 않는다.
+    상한을 높여도 짧은 답은 그대로이고, 예전에 잘리던 긴 답만 끝까지 쓴다(그만큼 시간 · KV 캐시가 는다).
+    700 아래로는 내리지 않고 2048 에서 막는다 — ID 가 아주 길거나 모델이 근거를 지어내 늘리면 여전히
+    잘릴 수 있고, 그때는 지금처럼 규칙으로 떨어진다 (analyze 의 「model output truncated」).
     """
     per = sum(10 + len(str(e.get("post_id", ""))) + len(str(s.get("span_id", "")))
               for e in entries for s in e.get("spans") or [])
