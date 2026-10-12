@@ -9,7 +9,10 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
+
+import requests
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,6 +24,8 @@ from kopl.c4_stage2.links import find_direct_identifiers
 from apps.analyzer.engines import c1_rules  # os · threading 만 — 목 모드에서도 모델을 불러오지 않는다
 from kopl.c4_stage2.timeline import find_marks, infer_starts
 from apps.analyzer.adapters import file_adapter, sns_adapter
+
+log = logging.getLogger("analyzer")
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 SNS_BASE = os.getenv("SNS_BASE_URL", "http://localhost:3000")   # 서버가 Veilo 를 부르는 주소 (adapter)
@@ -51,13 +56,23 @@ def config_js():
     return Response(f"window.SNS_PUBLIC = {json.dumps(SNS_PUBLIC_URL)};\n", media_type="application/javascript")
 
 
+def _upstream_error(what: str, exc: Exception, missing_account: bool = False) -> HTTPException:
+    """Veilo 호출 실패를 화면용 고정 문구로 바꾼다. 예외 원문에는 내부 주소(SNS_BASE_URL)가 들어 있어 로그에만 남긴다."""
+    log.warning("%s 실패: %r", what, exc)
+    # 「없는 계정」은 내보내기 창구가 404 로 답한 경우뿐 — 검색 창구의 404 는 경로 문제라 502 로 둔다
+    resp = getattr(exc, "response", None)
+    if missing_account and isinstance(exc, requests.HTTPError) and resp is not None and resp.status_code == 404:
+        return HTTPException(status_code=404, detail="계정을 찾지 못했습니다")
+    return HTTPException(status_code=502, detail=f"{what} 실패 — 가상 SNS 에 닿지 못했습니다")
+
+
 @app.get("/sns/authors")
 def sns_authors(request: Request, q: str = ""):
     """스캔 화면 계정 자동완성 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰)."""
     try:
         return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:  # SNS 서버 다운 등
-        raise HTTPException(status_code=502, detail=f"계정 찾기 실패: {exc}") from exc
+        raise _upstream_error("계정 찾기", exc) from exc
 
 
 @app.get("/api/engine-mode")
@@ -132,7 +147,7 @@ def scan(user_ref: str, request: Request):
         # 같은 도메인이라 Veilo 의 방문자 쿠키가 여기까지 온다 — 그 사람의 사본을 읽도록 넘긴다
         export = sns_adapter.load(user_ref, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:  # SNS 서버 다운·404 등
-        raise HTTPException(status_code=502, detail=f"내보내기 조회 실패: {exc}") from exc
+        raise _upstream_error("내보내기 조회", exc, missing_account=True) from exc
     return _run_pipeline(user_ref, export.get("posts", []))
 
 

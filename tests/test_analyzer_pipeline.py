@@ -324,3 +324,40 @@ def test_sns_authors_goes_through_adapter_and_drops_internal_fields(monkeypatch)
     url, params, headers = calls[0]
     assert url.endswith("/api/authors") and params == {"q": "골목"}
     assert headers == {"X-Veilo-Session": "ab" * 12}, "방문자 사본을 읽도록 세션을 넘긴다"
+
+
+def test_upstream_errors_hide_internal_address(monkeypatch):
+    """Veilo 호출이 실패해도 응답에 내부 주소(SNS_BASE_URL)가 나가지 않는다 — 없는 계정은 404, 그 밖은 502 (#343 리뷰)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    from apps.analyzer.adapters import sns_adapter
+
+    secret = "http://10.0.0.7:3000"
+    monkeypatch.setattr(server, "SNS_BASE", secret)
+
+    def down(url, params=None, timeout=None, headers=None):
+        raise sns_adapter.requests.ConnectionError(f"Max retries exceeded with url: {url}")
+    monkeypatch.setattr(sns_adapter.requests, "get", down)
+    c = TestClient(server.app)
+    for r in (c.get("/sns/authors", params={"q": "골목"}), c.post("/scan/u_3f2a91c4")):
+        assert r.status_code == 502
+        assert "10.0.0.7" not in r.text and "가상 SNS 에 닿지 못했습니다" in r.json()["detail"]
+
+    class _NotFound:
+        status_code = 404
+        def raise_for_status(self):
+            raise sns_adapter.requests.HTTPError(f"404 Client Error for url: {secret}/api/export/u_0", response=self)
+    monkeypatch.setattr(sns_adapter.requests, "get", lambda *a, **k: _NotFound())
+    r = c.post("/scan/u_00000000")
+    assert r.status_code == 404 and r.json() == {"detail": "계정을 찾지 못했습니다"}
+    # 검색 창구의 404 는 「없는 계정」이 아니라 경로 문제다 — 502
+    r = c.get("/sns/authors", params={"q": "골목"})
+    assert r.status_code == 502 and "10.0.0.7" not in r.text
+
+    class _ConnWith404:
+        status_code = 404
+        def raise_for_status(self):
+            raise sns_adapter.requests.ConnectionError("transport failed", response=self)
+    monkeypatch.setattr(sns_adapter.requests, "get", lambda *a, **k: _ConnWith404())
+    assert c.post("/scan/u_00000000").status_code == 502
