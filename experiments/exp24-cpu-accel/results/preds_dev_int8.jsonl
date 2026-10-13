@@ -1,0 +1,2281 @@
+{"post_id": "A01_b01", "spans": []}
+{"post_id": "A01_b03", "spans": []}
+{"post_id": "A01_b05", "spans": [{"text_id": "body", "start": 1499, "end": 1501, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "A01_b07", "spans": []}
+{"post_id": "A01_b08", "spans": [{"text_id": "body", "start": 1169, "end": 1172, "type": "LOC_ADMIN", "text": "마포구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A01_b09", "spans": []}
+{"post_id": "A01_b10", "spans": []}
+{"post_id": "A01_b11", "spans": []}
+{"post_id": "A01_b12", "spans": []}
+{"post_id": "A01_b13", "spans": [{"text_id": "body", "start": 1054, "end": 1057, "type": "LOC_ADMIN", "text": "강하면", "level": "explicit", "subject": "self"}]}
+{"post_id": "A01_b14", "spans": []}
+{"post_id": "A01_b15", "spans": []}
+{"post_id": "A01_b16", "spans": []}
+{"post_id": "A01_b17", "spans": []}
+{"post_id": "A02_b01", "spans": [{"text_id": "body", "start": 754, "end": 755, "type": "AGE", "text": "쉰", "level": "explicit", "subject": "self"}]}
+{"post_id": "A02_b02", "spans": [{"text_id": "body", "start": 1474, "end": 1478, "type": "LOC_ADMIN", "text": "수영구를", "level": "explicit", "subject": "self"}]}
+{"post_id": "A02_b03", "spans": [{"text_id": "body", "start": 957, "end": 960, "type": "AGE", "text": "쉰둘에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A02_b04", "spans": []}
+{"post_id": "A02_b05", "spans": []}
+{"post_id": "A02_b06", "spans": [{"text_id": "body", "start": 1025, "end": 1027, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}]}
+{"post_id": "A02_b08", "spans": []}
+{"post_id": "A02_b09", "spans": [{"text_id": "body", "start": 1149, "end": 1152, "type": "LOC_ADMIN", "text": "장수를", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 1172, "end": 1175, "type": "LOC_ADMIN", "text": "해운대", "level": "explicit", "subject": "other"}]}
+{"post_id": "A02_b10", "spans": []}
+{"post_id": "A02_b11", "spans": []}
+{"post_id": "A02_b12", "spans": []}
+{"post_id": "A02_b13", "spans": []}
+{"post_id": "A02_b14", "spans": []}
+{"post_id": "A02_b15", "spans": []}
+{"post_id": "A02_b16", "spans": []}
+{"post_id": "A02_b17", "spans": []}
+{"post_id": "A03_b01", "spans": []}
+{"post_id": "A03_b02", "spans": []}
+{"post_id": "A03_b03", "spans": [{"text_id": "body", "start": 437, "end": 440, "type": "LOC_ADMIN", "text": "유성구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A03_b04", "spans": []}
+{"post_id": "A03_b06", "spans": []}
+{"post_id": "A03_b07", "spans": []}
+{"post_id": "A03_b09", "spans": []}
+{"post_id": "A03_b11", "spans": [{"text_id": "body", "start": 1425, "end": 1429, "type": "LOC_ADMIN", "text": "세종에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "A03_b12", "spans": []}
+{"post_id": "A03_b13", "spans": [{"text_id": "body", "start": 950, "end": 953, "type": "LOC_ADMIN", "text": "유성구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A03_b14", "spans": []}
+{"post_id": "A03_b15", "spans": []}
+{"post_id": "A03_b17", "spans": []}
+{"post_id": "A03_b18", "spans": []}
+{"post_id": "A04_b01", "spans": []}
+{"post_id": "A04_b02", "spans": [{"text_id": "body", "start": 936, "end": 939, "type": "LOC_ADMIN", "text": "경기도", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 1655, "end": 1658, "type": "LOC_ADMIN", "text": "장수가", "level": "explicit", "subject": "self"}]}
+{"post_id": "A04_b03", "spans": []}
+{"post_id": "A04_b05", "spans": []}
+{"post_id": "A04_b06", "spans": []}
+{"post_id": "A04_b08", "spans": []}
+{"post_id": "A04_b09", "spans": [{"text_id": "body", "start": 1134, "end": 1135, "type": "AGE", "text": "쉰", "level": "explicit", "subject": "self"}]}
+{"post_id": "A04_b10", "spans": [{"text_id": "body", "start": 1803, "end": 1805, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "A04_b11", "spans": []}
+{"post_id": "A04_b12", "spans": [{"text_id": "body", "start": 1717, "end": 1720, "type": "AGE", "text": "서른한", "level": "explicit", "subject": "self"}]}
+{"post_id": "A04_b13", "spans": []}
+{"post_id": "A04_b14", "spans": [{"text_id": "body", "start": 1319, "end": 1322, "type": "LOC_ADMIN", "text": "예산도", "level": "explicit", "subject": "self"}]}
+{"post_id": "A04_b15", "spans": []}
+{"post_id": "A04_b16", "spans": []}
+{"post_id": "A04_b17", "spans": []}
+{"post_id": "A04_b18", "spans": []}
+{"post_id": "A05_b01", "spans": []}
+{"post_id": "A05_b02", "spans": []}
+{"post_id": "A05_b03", "spans": [{"text_id": "body", "start": 2392, "end": 2397, "type": "AGE", "text": "스물아홉이", "level": "explicit", "subject": "self"}]}
+{"post_id": "A05_b04", "spans": []}
+{"post_id": "A05_b05", "spans": []}
+{"post_id": "A05_b07", "spans": []}
+{"post_id": "A05_b08", "spans": [{"text_id": "body", "start": 138, "end": 142, "type": "LOC_ADMIN", "text": "제주에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "A05_b10", "spans": []}
+{"post_id": "A05_b11", "spans": []}
+{"post_id": "A05_b12", "spans": []}
+{"post_id": "A05_b13", "spans": []}
+{"post_id": "A05_b14", "spans": [{"text_id": "body", "start": 1266, "end": 1269, "type": "LOC_ADMIN", "text": "성산에", "level": "explicit", "subject": "other"}]}
+{"post_id": "A05_b15", "spans": []}
+{"post_id": "A05_b16", "spans": []}
+{"post_id": "A06_b01", "spans": []}
+{"post_id": "A06_b02", "spans": []}
+{"post_id": "A06_b03", "spans": []}
+{"post_id": "A06_b04", "spans": []}
+{"post_id": "A06_b05", "spans": []}
+{"post_id": "A06_b06", "spans": []}
+{"post_id": "A06_b07", "spans": []}
+{"post_id": "A06_b08", "spans": []}
+{"post_id": "A06_b09", "spans": [{"text_id": "body", "start": 28, "end": 30, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "A06_b10", "spans": []}
+{"post_id": "A06_b11", "spans": []}
+{"post_id": "A06_b12", "spans": []}
+{"post_id": "A06_b13", "spans": [{"text_id": "body", "start": 59, "end": 61, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "A06_b14", "spans": []}
+{"post_id": "A06_b15", "spans": []}
+{"post_id": "A06_b16", "spans": []}
+{"post_id": "A06_b17", "spans": []}
+{"post_id": "A06_b18", "spans": []}
+{"post_id": "A06_b19", "spans": []}
+{"post_id": "A06_b20", "spans": [{"text_id": "body", "start": 13, "end": 15, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "A06_b21", "spans": []}
+{"post_id": "A06_b22", "spans": []}
+{"post_id": "A07_b01", "spans": []}
+{"post_id": "A07_b02", "spans": []}
+{"post_id": "A07_b03", "spans": [{"text_id": "body", "start": 75, "end": 77, "type": "LOC_ADMIN", "text": "부천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A07_b04", "spans": []}
+{"post_id": "A07_b05", "spans": []}
+{"post_id": "A07_b06", "spans": []}
+{"post_id": "A07_b07", "spans": []}
+{"post_id": "A07_b08", "spans": []}
+{"post_id": "A07_b09", "spans": []}
+{"post_id": "A07_b10", "spans": []}
+{"post_id": "A07_b11", "spans": [{"text_id": "body", "start": 287, "end": 289, "type": "LOC_ADMIN", "text": "부천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A07_b12", "spans": []}
+{"post_id": "A07_b13", "spans": []}
+{"post_id": "A07_b14", "spans": []}
+{"post_id": "A07_b15", "spans": []}
+{"post_id": "A07_b17", "spans": []}
+{"post_id": "A07_b18", "spans": []}
+{"post_id": "A07_b20", "spans": []}
+{"post_id": "A08_b01", "spans": []}
+{"post_id": "A08_b02", "spans": []}
+{"post_id": "A08_b03", "spans": []}
+{"post_id": "A08_b04", "spans": []}
+{"post_id": "A08_b05", "spans": []}
+{"post_id": "A08_b06", "spans": []}
+{"post_id": "A08_b07", "spans": []}
+{"post_id": "A08_b08", "spans": []}
+{"post_id": "A08_b10", "spans": []}
+{"post_id": "A08_b11", "spans": []}
+{"post_id": "A08_b12", "spans": [{"text_id": "body", "start": 8, "end": 11, "type": "LOC_ADMIN", "text": "부평에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A08_b13", "spans": []}
+{"post_id": "A08_b14", "spans": []}
+{"post_id": "A08_b15", "spans": []}
+{"post_id": "A08_b16", "spans": []}
+{"post_id": "A08_b17", "spans": []}
+{"post_id": "A08_b19", "spans": []}
+{"post_id": "A08_b20", "spans": [{"text_id": "body", "start": 5, "end": 7, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A08_b22", "spans": []}
+{"post_id": "A08_b23", "spans": []}
+{"post_id": "A08_b24", "spans": []}
+{"post_id": "A09_b01", "spans": []}
+{"post_id": "A09_b02", "spans": []}
+{"post_id": "A09_b03", "spans": []}
+{"post_id": "A09_b04", "spans": [{"text_id": "body", "start": 21, "end": 24, "type": "LOC_ADMIN", "text": "달서구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A09_b05", "spans": []}
+{"post_id": "A09_b06", "spans": [{"text_id": "title", "start": 0, "end": 4, "type": "AGE", "text": "18살에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A09_b07", "spans": []}
+{"post_id": "A09_b08", "spans": []}
+{"post_id": "A09_b09", "spans": []}
+{"post_id": "A09_b10", "spans": []}
+{"post_id": "A09_b11", "spans": []}
+{"post_id": "A09_b12", "spans": []}
+{"post_id": "A09_b13", "spans": []}
+{"post_id": "A09_b14", "spans": []}
+{"post_id": "A09_b15", "spans": []}
+{"post_id": "A09_b16", "spans": [{"text_id": "body", "start": 41, "end": 44, "type": "LOC_ADMIN", "text": "달서구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A09_b17", "spans": []}
+{"post_id": "A09_b18", "spans": []}
+{"post_id": "A09_b19", "spans": []}
+{"post_id": "A09_b20", "spans": []}
+{"post_id": "A10_b01", "spans": []}
+{"post_id": "A10_b02", "spans": []}
+{"post_id": "A10_b03", "spans": [{"text_id": "body", "start": 7, "end": 10, "type": "LOC_ADMIN", "text": "완산구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A10_b04", "spans": []}
+{"post_id": "A10_b05", "spans": []}
+{"post_id": "A10_b06", "spans": []}
+{"post_id": "A10_b07", "spans": []}
+{"post_id": "A10_b09", "spans": []}
+{"post_id": "A10_b10", "spans": []}
+{"post_id": "A10_b11", "spans": []}
+{"post_id": "A10_b12", "spans": []}
+{"post_id": "A10_b13", "spans": []}
+{"post_id": "A10_b14", "spans": []}
+{"post_id": "A10_b15", "spans": []}
+{"post_id": "A10_b16", "spans": []}
+{"post_id": "A10_b17", "spans": []}
+{"post_id": "A10_b18", "spans": []}
+{"post_id": "A10_b19", "spans": []}
+{"post_id": "A10_b20", "spans": [{"text_id": "body", "start": 245, "end": 249, "type": "LOC_ADMIN", "text": "덕진에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "A10_b21", "spans": []}
+{"post_id": "A10_b22", "spans": []}
+{"post_id": "A11_b01", "spans": [{"text_id": "body", "start": 1066, "end": 1068, "type": "LOC_ADMIN", "text": "진해", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b02", "spans": [{"text_id": "body", "start": 8, "end": 11, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b03", "spans": []}
+{"post_id": "A11_b04", "spans": []}
+{"post_id": "A11_b05", "spans": []}
+{"post_id": "A11_b06", "spans": []}
+{"post_id": "A11_b07", "spans": []}
+{"post_id": "A11_b08", "spans": []}
+{"post_id": "A11_b09", "spans": []}
+{"post_id": "A11_b10", "spans": [{"text_id": "body", "start": 182, "end": 185, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b11", "spans": []}
+{"post_id": "A11_b12", "spans": [{"text_id": "body", "start": 952, "end": 956, "type": "LOC_ADMIN", "text": "장수까지", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b13", "spans": []}
+{"post_id": "A11_b14", "spans": []}
+{"post_id": "A11_b15", "spans": []}
+{"post_id": "A11_b16", "spans": []}
+{"post_id": "A11_b17", "spans": []}
+{"post_id": "A11_b19", "spans": []}
+{"post_id": "A11_b20", "spans": [{"text_id": "body", "start": 240, "end": 242, "type": "LOC_ADMIN", "text": "이천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b21", "spans": []}
+{"post_id": "A11_b22", "spans": []}
+{"post_id": "A11_b23", "spans": [{"text_id": "body", "start": 228, "end": 231, "type": "LOC_ADMIN", "text": "음성은", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b24", "spans": []}
+{"post_id": "A11_b25", "spans": []}
+{"post_id": "A11_b26", "spans": []}
+{"post_id": "A11_b27", "spans": [{"text_id": "body", "start": 889, "end": 892, "type": "LOC_ADMIN", "text": "강릉은", "level": "explicit", "subject": "self"}]}
+{"post_id": "A11_b28", "spans": []}
+{"post_id": "A11_b29", "spans": []}
+{"post_id": "A11_b30", "spans": []}
+{"post_id": "A12_b01", "spans": []}
+{"post_id": "A12_b02", "spans": []}
+{"post_id": "A12_b03", "spans": [{"text_id": "body", "start": 431, "end": 434, "type": "AGE", "text": "서른셋", "level": "explicit", "subject": "self"}]}
+{"post_id": "A12_b04", "spans": []}
+{"post_id": "A12_b05", "spans": []}
+{"post_id": "A12_b06", "spans": []}
+{"post_id": "A12_b07", "spans": []}
+{"post_id": "A12_b08", "spans": []}
+{"post_id": "A12_b09", "spans": []}
+{"post_id": "A12_b10", "spans": []}
+{"post_id": "A12_b11", "spans": []}
+{"post_id": "A12_b12", "spans": []}
+{"post_id": "A12_b13", "spans": []}
+{"post_id": "A12_b14", "spans": []}
+{"post_id": "A12_b15", "spans": []}
+{"post_id": "A12_b16", "spans": []}
+{"post_id": "A12_b17", "spans": []}
+{"post_id": "A12_b18", "spans": []}
+{"post_id": "A12_b19", "spans": []}
+{"post_id": "A12_b20", "spans": []}
+{"post_id": "A12_b21", "spans": []}
+{"post_id": "A12_b22", "spans": []}
+{"post_id": "A12_b23", "spans": []}
+{"post_id": "A12_b24", "spans": []}
+{"post_id": "A12_b25", "spans": []}
+{"post_id": "A12_b27", "spans": []}
+{"post_id": "A12_b29", "spans": []}
+{"post_id": "A12_b30", "spans": []}
+{"post_id": "A13_b01", "spans": []}
+{"post_id": "A13_b03", "spans": []}
+{"post_id": "A13_b04", "spans": []}
+{"post_id": "A13_b05", "spans": []}
+{"post_id": "A13_b06", "spans": []}
+{"post_id": "A13_b07", "spans": []}
+{"post_id": "A13_b08", "spans": []}
+{"post_id": "A13_b10", "spans": []}
+{"post_id": "A13_b11", "spans": []}
+{"post_id": "A13_b12", "spans": []}
+{"post_id": "A13_b14", "spans": []}
+{"post_id": "A13_b15", "spans": []}
+{"post_id": "A13_b16", "spans": []}
+{"post_id": "A13_b17", "spans": []}
+{"post_id": "A13_b18", "spans": []}
+{"post_id": "A13_b19", "spans": []}
+{"post_id": "A13_b20", "spans": []}
+{"post_id": "A13_b21", "spans": []}
+{"post_id": "A13_b22", "spans": []}
+{"post_id": "A13_b24", "spans": [{"text_id": "body", "start": 248, "end": 250, "type": "LOC_ADMIN", "text": "대구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A13_b25", "spans": []}
+{"post_id": "A13_b26", "spans": []}
+{"post_id": "A13_b27", "spans": []}
+{"post_id": "A13_b28", "spans": []}
+{"post_id": "A13_b29", "spans": []}
+{"post_id": "A13_b30", "spans": []}
+{"post_id": "A14_b01", "spans": [{"text_id": "body", "start": 412, "end": 414, "type": "LOC_ADMIN", "text": "진해", "level": "explicit", "subject": "self"}]}
+{"post_id": "A14_b02", "spans": []}
+{"post_id": "A14_b03", "spans": []}
+{"post_id": "A14_b05", "spans": []}
+{"post_id": "A14_b06", "spans": [{"text_id": "body", "start": 693, "end": 697, "type": "LOC_ADMIN", "text": "춘천으로", "level": "explicit", "subject": "other"}]}
+{"post_id": "A14_b07", "spans": []}
+{"post_id": "A14_b08", "spans": []}
+{"post_id": "A14_b10", "spans": []}
+{"post_id": "A14_b11", "spans": [{"text_id": "body", "start": 732, "end": 734, "type": "LOC_ADMIN", "text": "울진", "level": "explicit", "subject": "self"}]}
+{"post_id": "A14_b12", "spans": [{"text_id": "body", "start": 52, "end": 56, "type": "AGE", "text": "스물일곱", "level": "explicit", "subject": "self"}]}
+{"post_id": "A14_b13", "spans": []}
+{"post_id": "A14_b14", "spans": []}
+{"post_id": "A14_b15", "spans": []}
+{"post_id": "A14_b16", "spans": []}
+{"post_id": "A14_b17", "spans": []}
+{"post_id": "A14_b18", "spans": []}
+{"post_id": "A14_b19", "spans": []}
+{"post_id": "A14_b20", "spans": []}
+{"post_id": "A14_b21", "spans": [{"text_id": "body", "start": 711, "end": 713, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 723, "end": 726, "type": "LOC_ADMIN", "text": "대전은", "level": "explicit", "subject": "self"}]}
+{"post_id": "A14_b22", "spans": []}
+{"post_id": "A14_b23", "spans": []}
+{"post_id": "A14_b24", "spans": []}
+{"post_id": "A14_b25", "spans": []}
+{"post_id": "A14_b26", "spans": []}
+{"post_id": "A14_b27", "spans": []}
+{"post_id": "A14_b28", "spans": []}
+{"post_id": "A14_b29", "spans": []}
+{"post_id": "A14_b30", "spans": []}
+{"post_id": "A15_b01", "spans": []}
+{"post_id": "A15_b02", "spans": [{"text_id": "body", "start": 174, "end": 177, "type": "AGE", "text": "서른둘", "level": "explicit", "subject": "self"}]}
+{"post_id": "A15_b03", "spans": []}
+{"post_id": "A15_b04", "spans": []}
+{"post_id": "A15_b05", "spans": []}
+{"post_id": "A15_b06", "spans": []}
+{"post_id": "A15_b07", "spans": []}
+{"post_id": "A15_b08", "spans": []}
+{"post_id": "A15_b09", "spans": []}
+{"post_id": "A15_b10", "spans": []}
+{"post_id": "A15_b11", "spans": []}
+{"post_id": "A15_b13", "spans": []}
+{"post_id": "A15_b14", "spans": []}
+{"post_id": "A15_b16", "spans": []}
+{"post_id": "A15_b17", "spans": []}
+{"post_id": "A15_b18", "spans": [{"text_id": "body", "start": 358, "end": 360, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "other"}]}
+{"post_id": "A15_b19", "spans": []}
+{"post_id": "A15_b20", "spans": []}
+{"post_id": "A15_b21", "spans": []}
+{"post_id": "A15_b22", "spans": []}
+{"post_id": "A15_b23", "spans": []}
+{"post_id": "A15_b24", "spans": []}
+{"post_id": "A15_b25", "spans": []}
+{"post_id": "A15_b26", "spans": []}
+{"post_id": "A15_b27", "spans": [{"text_id": "body", "start": 20, "end": 22, "type": "LOC_ADMIN", "text": "천안", "level": "explicit", "subject": "self"}]}
+{"post_id": "A15_b28", "spans": []}
+{"post_id": "A15_b29", "spans": []}
+{"post_id": "A15_b30", "spans": []}
+{"post_id": "A16_b01", "spans": []}
+{"post_id": "A16_b02", "spans": [{"text_id": "body", "start": 4, "end": 6, "type": "LOC_ADMIN", "text": "광주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 7, "end": 9, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b03", "spans": [{"text_id": "body", "start": 93, "end": 99, "type": "AGE", "text": "예순여덟인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b04", "spans": []}
+{"post_id": "A16_b05", "spans": []}
+{"post_id": "A16_b06", "spans": []}
+{"post_id": "A16_b08", "spans": []}
+{"post_id": "A16_b09", "spans": []}
+{"post_id": "A16_b10", "spans": []}
+{"post_id": "A16_b11", "spans": []}
+{"post_id": "A16_b12", "spans": []}
+{"post_id": "A16_b13", "spans": []}
+{"post_id": "A16_b14", "spans": []}
+{"post_id": "A16_b15", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "광주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b16", "spans": []}
+{"post_id": "A16_b17", "spans": [{"text_id": "body", "start": 91, "end": 94, "type": "LOC_ADMIN", "text": "목포로", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b18", "spans": []}
+{"post_id": "A16_b19", "spans": []}
+{"post_id": "A16_b20", "spans": []}
+{"post_id": "A16_b21", "spans": []}
+{"post_id": "A16_b22", "spans": []}
+{"post_id": "A16_b23", "spans": []}
+{"post_id": "A16_b24", "spans": [{"text_id": "body", "start": 91, "end": 95, "type": "LOC_ADMIN", "text": "나주에는", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b25", "spans": []}
+{"post_id": "A16_b26", "spans": []}
+{"post_id": "A16_b27", "spans": []}
+{"post_id": "A16_b28", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "광주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A16_b29", "spans": []}
+{"post_id": "A16_b30", "spans": []}
+{"post_id": "A17_b01", "spans": []}
+{"post_id": "A17_b02", "spans": [{"text_id": "body", "start": 388, "end": 391, "type": "AGE", "text": "스물둘", "level": "explicit", "subject": "self"}]}
+{"post_id": "A17_b03", "spans": []}
+{"post_id": "A17_b04", "spans": []}
+{"post_id": "A17_b05", "spans": []}
+{"post_id": "A17_b06", "spans": []}
+{"post_id": "A17_b07", "spans": []}
+{"post_id": "A17_b08", "spans": [{"text_id": "body", "start": 393, "end": 395, "type": "LOC_ADMIN", "text": "이천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A17_b09", "spans": []}
+{"post_id": "A17_b10", "spans": []}
+{"post_id": "A17_b11", "spans": []}
+{"post_id": "A17_b12", "spans": []}
+{"post_id": "A17_b13", "spans": []}
+{"post_id": "A17_b14", "spans": []}
+{"post_id": "A17_b15", "spans": []}
+{"post_id": "A17_b16", "spans": []}
+{"post_id": "A17_b17", "spans": []}
+{"post_id": "A17_b18", "spans": []}
+{"post_id": "A17_b19", "spans": []}
+{"post_id": "A17_b20", "spans": []}
+{"post_id": "A17_b21", "spans": []}
+{"post_id": "A17_b22", "spans": [{"text_id": "body", "start": 365, "end": 367, "type": "LOC_ADMIN", "text": "수원", "level": "explicit", "subject": "self"}]}
+{"post_id": "A17_b23", "spans": []}
+{"post_id": "A17_b24", "spans": []}
+{"post_id": "A17_b25", "spans": []}
+{"post_id": "A17_b26", "spans": []}
+{"post_id": "A17_b27", "spans": []}
+{"post_id": "A17_b28", "spans": []}
+{"post_id": "A17_b29", "spans": []}
+{"post_id": "A17_b30", "spans": []}
+{"post_id": "A18_b01", "spans": []}
+{"post_id": "A18_b02", "spans": []}
+{"post_id": "A18_b03", "spans": [{"text_id": "body", "start": 757, "end": 762, "type": "AGE", "text": "서른하나에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A18_b04", "spans": []}
+{"post_id": "A18_b05", "spans": [{"text_id": "body", "start": 643, "end": 645, "type": "LOC_ADMIN", "text": "수원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 646, "end": 650, "type": "LOC_ADMIN", "text": "장안구는", "level": "explicit", "subject": "self"}]}
+{"post_id": "A18_b06", "spans": []}
+{"post_id": "A18_b07", "spans": []}
+{"post_id": "A18_b08", "spans": []}
+{"post_id": "A18_b09", "spans": []}
+{"post_id": "A18_b10", "spans": []}
+{"post_id": "A18_b11", "spans": [{"text_id": "body", "start": 48, "end": 51, "type": "LOC_ADMIN", "text": "장안구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A18_b12", "spans": []}
+{"post_id": "A18_b13", "spans": []}
+{"post_id": "A18_b15", "spans": []}
+{"post_id": "A18_b16", "spans": [{"text_id": "body", "start": 374, "end": 377, "type": "LOC_ADMIN", "text": "경기도", "level": "explicit", "subject": "self"}]}
+{"post_id": "A18_b17", "spans": []}
+{"post_id": "A18_b18", "spans": []}
+{"post_id": "A18_b19", "spans": []}
+{"post_id": "A18_b20", "spans": []}
+{"post_id": "A18_b21", "spans": []}
+{"post_id": "A18_b22", "spans": []}
+{"post_id": "A18_b23", "spans": []}
+{"post_id": "A18_b24", "spans": []}
+{"post_id": "A18_b26", "spans": []}
+{"post_id": "A18_b27", "spans": []}
+{"post_id": "A18_b28", "spans": []}
+{"post_id": "A18_b29", "spans": []}
+{"post_id": "A19_b01", "spans": []}
+{"post_id": "A19_b02", "spans": []}
+{"post_id": "A19_b03", "spans": []}
+{"post_id": "A19_b04", "spans": [{"text_id": "title", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "강남", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 891, "end": 895, "type": "AGE", "text": "서른여덟", "level": "explicit", "subject": "self"}]}
+{"post_id": "A19_b05", "spans": []}
+{"post_id": "A19_b06", "spans": []}
+{"post_id": "A19_b07", "spans": []}
+{"post_id": "A19_b08", "spans": []}
+{"post_id": "A19_b09", "spans": []}
+{"post_id": "A19_b10", "spans": [{"text_id": "body", "start": 1261, "end": 1264, "type": "LOC_ADMIN", "text": "강하면", "level": "explicit", "subject": "self"}]}
+{"post_id": "A19_b11", "spans": []}
+{"post_id": "A19_b12", "spans": []}
+{"post_id": "A19_b13", "spans": []}
+{"post_id": "A19_b14", "spans": []}
+{"post_id": "A19_b15", "spans": []}
+{"post_id": "A19_b17", "spans": []}
+{"post_id": "A19_b18", "spans": []}
+{"post_id": "A19_b19", "spans": []}
+{"post_id": "A19_b21", "spans": []}
+{"post_id": "A19_b23", "spans": []}
+{"post_id": "A19_b24", "spans": []}
+{"post_id": "A19_b25", "spans": []}
+{"post_id": "A19_b26", "spans": [{"text_id": "body", "start": 735, "end": 738, "type": "LOC_ADMIN", "text": "창원에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A19_b28", "spans": []}
+{"post_id": "A19_b29", "spans": []}
+{"post_id": "A19_b30", "spans": []}
+{"post_id": "A20_b01", "spans": []}
+{"post_id": "A20_b02", "spans": []}
+{"post_id": "A20_b03", "spans": []}
+{"post_id": "A20_b04", "spans": []}
+{"post_id": "A20_b05", "spans": []}
+{"post_id": "A20_b06", "spans": []}
+{"post_id": "A20_b07", "spans": []}
+{"post_id": "A20_b08", "spans": []}
+{"post_id": "A20_b09", "spans": []}
+{"post_id": "A20_b10", "spans": []}
+{"post_id": "A20_b11", "spans": []}
+{"post_id": "A20_b12", "spans": [{"text_id": "body", "start": 22, "end": 24, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}]}
+{"post_id": "A20_b13", "spans": []}
+{"post_id": "A20_b14", "spans": []}
+{"post_id": "A20_b15", "spans": []}
+{"post_id": "A20_b16", "spans": []}
+{"post_id": "A20_b17", "spans": []}
+{"post_id": "A20_b18", "spans": []}
+{"post_id": "A20_b19", "spans": []}
+{"post_id": "A20_b20", "spans": []}
+{"post_id": "A20_b21", "spans": []}
+{"post_id": "A20_b22", "spans": []}
+{"post_id": "A20_b23", "spans": []}
+{"post_id": "A20_b24", "spans": []}
+{"post_id": "A20_b25", "spans": [{"text_id": "body", "start": 124, "end": 127, "type": "LOC_ADMIN", "text": "마포구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A20_b26", "spans": []}
+{"post_id": "A20_b28", "spans": []}
+{"post_id": "A20_b29", "spans": []}
+{"post_id": "A20_b30", "spans": []}
+{"post_id": "A21_b01", "spans": []}
+{"post_id": "A21_b02", "spans": []}
+{"post_id": "A21_b03", "spans": [{"text_id": "body", "start": 53, "end": 55, "type": "LOC_ADMIN", "text": "평택", "level": "explicit", "subject": "self"}]}
+{"post_id": "A21_b04", "spans": []}
+{"post_id": "A21_b05", "spans": []}
+{"post_id": "A21_b07", "spans": []}
+{"post_id": "A21_b08", "spans": []}
+{"post_id": "A21_b09", "spans": []}
+{"post_id": "A21_b10", "spans": []}
+{"post_id": "A21_b11", "spans": [{"text_id": "body", "start": 72, "end": 74, "type": "LOC_ADMIN", "text": "평택", "level": "explicit", "subject": "self"}]}
+{"post_id": "A21_b12", "spans": []}
+{"post_id": "A21_b13", "spans": []}
+{"post_id": "A21_b15", "spans": []}
+{"post_id": "A21_b16", "spans": []}
+{"post_id": "A21_b17", "spans": [{"text_id": "body", "start": 55, "end": 57, "type": "LOC_ADMIN", "text": "평택", "level": "explicit", "subject": "self"}]}
+{"post_id": "A21_b18", "spans": []}
+{"post_id": "A21_b19", "spans": []}
+{"post_id": "A21_b20", "spans": [{"text_id": "body", "start": 848, "end": 852, "type": "LOC_ADMIN", "text": "당진으로", "level": "explicit", "subject": "other"}]}
+{"post_id": "A21_b21", "spans": []}
+{"post_id": "A21_b22", "spans": []}
+{"post_id": "A21_b23", "spans": []}
+{"post_id": "A21_b24", "spans": [{"text_id": "body", "start": 978, "end": 980, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}]}
+{"post_id": "A21_b25", "spans": []}
+{"post_id": "A21_b26", "spans": [{"text_id": "body", "start": 35, "end": 37, "type": "LOC_ADMIN", "text": "평택", "level": "explicit", "subject": "self"}]}
+{"post_id": "A21_b27", "spans": []}
+{"post_id": "A21_b28", "spans": []}
+{"post_id": "A21_b29", "spans": []}
+{"post_id": "A21_b30", "spans": []}
+{"post_id": "A22_b01", "spans": []}
+{"post_id": "A22_b02", "spans": [{"text_id": "body", "start": 25, "end": 27, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A22_b03", "spans": []}
+{"post_id": "A22_b04", "spans": []}
+{"post_id": "A22_b06", "spans": []}
+{"post_id": "A22_b07", "spans": []}
+{"post_id": "A22_b08", "spans": []}
+{"post_id": "A22_b09", "spans": [{"text_id": "photo_caption:0", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "대연동", "level": "explicit", "subject": "self"}]}
+{"post_id": "A22_b10", "spans": [{"text_id": "body", "start": 492, "end": 494, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A22_b11", "spans": []}
+{"post_id": "A22_b12", "spans": []}
+{"post_id": "A22_b13", "spans": []}
+{"post_id": "A22_b14", "spans": []}
+{"post_id": "A22_b15", "spans": []}
+{"post_id": "A22_b16", "spans": []}
+{"post_id": "A22_b17", "spans": []}
+{"post_id": "A22_b18", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A22_b19", "spans": []}
+{"post_id": "A22_b20", "spans": [{"text_id": "body", "start": 637, "end": 640, "type": "LOC_ADMIN", "text": "김해로", "level": "explicit", "subject": "other"}]}
+{"post_id": "A22_b21", "spans": []}
+{"post_id": "A22_b22", "spans": []}
+{"post_id": "A22_b23", "spans": []}
+{"post_id": "A22_b24", "spans": []}
+{"post_id": "A22_b25", "spans": [{"text_id": "body", "start": 219, "end": 221, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A22_b26", "spans": []}
+{"post_id": "A22_b27", "spans": []}
+{"post_id": "A22_b28", "spans": []}
+{"post_id": "A22_b29", "spans": []}
+{"post_id": "A22_b30", "spans": []}
+{"post_id": "A23_b01", "spans": []}
+{"post_id": "A23_b02", "spans": []}
+{"post_id": "A23_b03", "spans": [{"text_id": "body", "start": 815, "end": 818, "type": "AGE", "text": "마흔둘", "level": "explicit", "subject": "self"}]}
+{"post_id": "A23_b04", "spans": []}
+{"post_id": "A23_b05", "spans": [{"text_id": "body", "start": 55, "end": 57, "type": "LOC_ADMIN", "text": "서구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A23_b06", "spans": []}
+{"post_id": "A23_b07", "spans": []}
+{"post_id": "A23_b08", "spans": []}
+{"post_id": "A23_b09", "spans": []}
+{"post_id": "A23_b10", "spans": []}
+{"post_id": "A23_b11", "spans": [{"text_id": "body", "start": 1183, "end": 1185, "type": "AGE", "text": "스무", "level": "explicit", "subject": "self"}]}
+{"post_id": "A23_b12", "spans": []}
+{"post_id": "A23_b13", "spans": []}
+{"post_id": "A23_b14", "spans": []}
+{"post_id": "A23_b15", "spans": []}
+{"post_id": "A23_b16", "spans": []}
+{"post_id": "A23_b17", "spans": []}
+{"post_id": "A23_b18", "spans": [{"text_id": "body", "start": 78, "end": 80, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}]}
+{"post_id": "A23_b19", "spans": []}
+{"post_id": "A23_b21", "spans": []}
+{"post_id": "A23_b22", "spans": []}
+{"post_id": "A23_b23", "spans": []}
+{"post_id": "A23_b24", "spans": []}
+{"post_id": "A23_b25", "spans": []}
+{"post_id": "A23_b26", "spans": [{"text_id": "body", "start": 372, "end": 374, "type": "LOC_ADMIN", "text": "김포", "level": "explicit", "subject": "self"}]}
+{"post_id": "A23_b27", "spans": []}
+{"post_id": "A23_b28", "spans": []}
+{"post_id": "A23_b29", "spans": []}
+{"post_id": "A23_b30", "spans": []}
+{"post_id": "A24_b01", "spans": []}
+{"post_id": "A24_b02", "spans": [{"text_id": "body", "start": 1110, "end": 1114, "type": "AGE", "text": "서른둘에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A24_b03", "spans": []}
+{"post_id": "A24_b04", "spans": []}
+{"post_id": "A24_b05", "spans": [{"text_id": "body", "start": 609, "end": 612, "type": "LOC_ADMIN", "text": "강남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A24_b06", "spans": []}
+{"post_id": "A24_b07", "spans": []}
+{"post_id": "A24_b09", "spans": []}
+{"post_id": "A24_b10", "spans": []}
+{"post_id": "A24_b11", "spans": [{"text_id": "body", "start": 95, "end": 98, "type": "LOC_ADMIN", "text": "강남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A24_b12", "spans": []}
+{"post_id": "A24_b13", "spans": []}
+{"post_id": "A24_b14", "spans": []}
+{"post_id": "A24_b15", "spans": []}
+{"post_id": "A24_b16", "spans": []}
+{"post_id": "A24_b17", "spans": []}
+{"post_id": "A24_b18", "spans": []}
+{"post_id": "A24_b19", "spans": [{"text_id": "body", "start": 61, "end": 64, "type": "LOC_ADMIN", "text": "강남구", "level": "explicit", "subject": "other"}]}
+{"post_id": "A24_b20", "spans": []}
+{"post_id": "A24_b21", "spans": []}
+{"post_id": "A24_b22", "spans": []}
+{"post_id": "A24_b23", "spans": []}
+{"post_id": "A24_b24", "spans": []}
+{"post_id": "A24_b25", "spans": []}
+{"post_id": "A24_b27", "spans": []}
+{"post_id": "A24_b28", "spans": [{"text_id": "body", "start": 44, "end": 47, "type": "LOC_ADMIN", "text": "강남구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A24_b29", "spans": []}
+{"post_id": "A24_b30", "spans": []}
+{"post_id": "A25_b01", "spans": []}
+{"post_id": "A25_b02", "spans": []}
+{"post_id": "A25_b03", "spans": [{"text_id": "body", "start": 238, "end": 240, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}]}
+{"post_id": "A25_b04", "spans": [{"text_id": "body", "start": 332, "end": 337, "type": "AGE", "text": "예순다섯이", "level": "explicit", "subject": "self"}]}
+{"post_id": "A25_b05", "spans": []}
+{"post_id": "A25_b06", "spans": []}
+{"post_id": "A25_b07", "spans": []}
+{"post_id": "A25_b08", "spans": [{"text_id": "body", "start": 93, "end": 97, "type": "LOC_ADMIN", "text": "동래구에", "level": "explicit", "subject": "self"}]}
+{"post_id": "A25_b09", "spans": []}
+{"post_id": "A25_b11", "spans": []}
+{"post_id": "A25_b12", "spans": []}
+{"post_id": "A25_b13", "spans": []}
+{"post_id": "A25_b14", "spans": []}
+{"post_id": "A25_b16", "spans": []}
+{"post_id": "A25_b17", "spans": []}
+{"post_id": "A25_b18", "spans": [{"text_id": "body", "start": 37, "end": 40, "type": "LOC_ADMIN", "text": "동래구", "level": "explicit", "subject": "self"}]}
+{"post_id": "A25_b19", "spans": []}
+{"post_id": "A25_b20", "spans": []}
+{"post_id": "A25_b21", "spans": []}
+{"post_id": "A25_b22", "spans": []}
+{"post_id": "A25_b23", "spans": []}
+{"post_id": "A25_b24", "spans": []}
+{"post_id": "A25_b25", "spans": [{"text_id": "body", "start": 38, "end": 40, "type": "LOC_ADMIN", "text": "동래", "level": "explicit", "subject": "self"}]}
+{"post_id": "A25_b26", "spans": []}
+{"post_id": "A25_b27", "spans": []}
+{"post_id": "A25_b28", "spans": []}
+{"post_id": "A25_b29", "spans": [{"text_id": "body", "start": 309, "end": 313, "type": "LOC_ADMIN", "text": "양산으로", "level": "explicit", "subject": "other"}]}
+{"post_id": "A25_b30", "spans": []}
+{"post_id": "A26_b01", "spans": []}
+{"post_id": "A26_b02", "spans": []}
+{"post_id": "A26_b03", "spans": []}
+{"post_id": "A26_b04", "spans": []}
+{"post_id": "A26_b05", "spans": []}
+{"post_id": "A26_b06", "spans": []}
+{"post_id": "A26_b08", "spans": []}
+{"post_id": "A26_b09", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "A26_b10", "spans": []}
+{"post_id": "A26_b11", "spans": []}
+{"post_id": "A26_b12", "spans": []}
+{"post_id": "A26_b13", "spans": []}
+{"post_id": "A26_b14", "spans": []}
+{"post_id": "A26_b15", "spans": []}
+{"post_id": "A26_b16", "spans": []}
+{"post_id": "A26_b18", "spans": []}
+{"post_id": "A26_b19", "spans": []}
+{"post_id": "A26_b21", "spans": []}
+{"post_id": "A26_b22", "spans": []}
+{"post_id": "A26_b23", "spans": [{"text_id": "body", "start": 196, "end": 200, "type": "LOC_ADMIN", "text": "분당으로", "level": "explicit", "subject": "other"}]}
+{"post_id": "A26_b24", "spans": [{"text_id": "body", "start": 273, "end": 275, "type": "LOC_ADMIN", "text": "광주", "level": "explicit", "subject": "self"}]}
+{"post_id": "A26_b25", "spans": []}
+{"post_id": "A26_b26", "spans": []}
+{"post_id": "A26_b28", "spans": []}
+{"post_id": "A26_b29", "spans": []}
+{"post_id": "A26_b30", "spans": []}
+{"post_id": "B01_b01", "spans": []}
+{"post_id": "B01_b02", "spans": []}
+{"post_id": "B01_b03", "spans": [{"text_id": "body", "start": 26, "end": 28, "type": "LOC_ADMIN", "text": "분당", "level": "explicit", "subject": "self"}]}
+{"post_id": "B01_b04", "spans": []}
+{"post_id": "B01_b05", "spans": []}
+{"post_id": "B01_b06", "spans": []}
+{"post_id": "B01_b07", "spans": [{"text_id": "body", "start": 24, "end": 26, "type": "LOC_ADMIN", "text": "분당", "level": "explicit", "subject": "self"}]}
+{"post_id": "B01_b08", "spans": []}
+{"post_id": "B01_b09", "spans": [{"text_id": "body", "start": 45, "end": 49, "type": "AGE", "text": "스물아홉", "level": "explicit", "subject": "self"}]}
+{"post_id": "B01_b10", "spans": []}
+{"post_id": "B01_b11", "spans": []}
+{"post_id": "B01_b12", "spans": []}
+{"post_id": "B01_b13", "spans": []}
+{"post_id": "B01_b14", "spans": []}
+{"post_id": "B01_b15", "spans": []}
+{"post_id": "B01_b16", "spans": []}
+{"post_id": "B01_b17", "spans": [{"text_id": "body", "start": 46, "end": 50, "type": "LOC_ADMIN", "text": "분당에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "B01_b18", "spans": []}
+{"post_id": "B02_b01", "spans": []}
+{"post_id": "B02_b02", "spans": [{"text_id": "body", "start": 192, "end": 197, "type": "AGE", "text": "서른하나에", "level": "explicit", "subject": "self"}]}
+{"post_id": "B02_b03", "spans": []}
+{"post_id": "B02_b04", "spans": []}
+{"post_id": "B02_b07", "spans": []}
+{"post_id": "B02_b08", "spans": [{"text_id": "body", "start": 28, "end": 30, "type": "LOC_ADMIN", "text": "울산", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 31, "end": 35, "type": "LOC_ADMIN", "text": "남구에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "B02_b09", "spans": []}
+{"post_id": "B02_b10", "spans": []}
+{"post_id": "B02_b11", "spans": []}
+{"post_id": "B02_b12", "spans": []}
+{"post_id": "B02_b13", "spans": []}
+{"post_id": "B02_b14", "spans": []}
+{"post_id": "B02_b15", "spans": []}
+{"post_id": "B02_b17", "spans": [{"text_id": "body", "start": 73, "end": 75, "type": "LOC_ADMIN", "text": "울산", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 76, "end": 80, "type": "LOC_ADMIN", "text": "남구에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "B02_b18", "spans": []}
+{"post_id": "B02_b19", "spans": []}
+{"post_id": "B02_b20", "spans": [{"text_id": "body", "start": 63, "end": 65, "type": "LOC_ADMIN", "text": "변동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B02_b21", "spans": []}
+{"post_id": "B03_b01", "spans": []}
+{"post_id": "B03_b02", "spans": [{"text_id": "body", "start": 98, "end": 103, "type": "AGE", "text": "스물여덟에", "level": "explicit", "subject": "self"}]}
+{"post_id": "B03_b03", "spans": []}
+{"post_id": "B03_b04", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "B03_b07", "spans": []}
+{"post_id": "B03_b08", "spans": [{"text_id": "body", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "마포구", "level": "explicit", "subject": "self"}]}
+{"post_id": "B03_b09", "spans": []}
+{"post_id": "B03_b10", "spans": []}
+{"post_id": "B03_b11", "spans": []}
+{"post_id": "B03_b12", "spans": [{"text_id": "body", "start": 12, "end": 14, "type": "LOC_ADMIN", "text": "마포", "level": "explicit", "subject": "self"}]}
+{"post_id": "B03_b13", "spans": []}
+{"post_id": "B03_b14", "spans": []}
+{"post_id": "B03_b15", "spans": []}
+{"post_id": "B03_b16", "spans": []}
+{"post_id": "B03_b17", "spans": []}
+{"post_id": "B03_b18", "spans": [{"text_id": "body", "start": 82, "end": 84, "type": "LOC_ADMIN", "text": "이천", "level": "explicit", "subject": "self"}]}
+{"post_id": "B03_b19", "spans": []}
+{"post_id": "B03_b20", "spans": []}
+{"post_id": "B04_b01", "spans": []}
+{"post_id": "B04_b03", "spans": []}
+{"post_id": "B04_b05", "spans": []}
+{"post_id": "B04_b06", "spans": [{"text_id": "body", "start": 192, "end": 194, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "B04_b07", "spans": []}
+{"post_id": "B04_b08", "spans": []}
+{"post_id": "B04_b09", "spans": []}
+{"post_id": "B04_b10", "spans": []}
+{"post_id": "B04_b11", "spans": []}
+{"post_id": "B04_b12", "spans": []}
+{"post_id": "B04_b13", "spans": []}
+{"post_id": "B04_b15", "spans": []}
+{"post_id": "B04_b16", "spans": [{"text_id": "body", "start": 25, "end": 28, "type": "LOC_ADMIN", "text": "성수동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B04_b17", "spans": []}
+{"post_id": "B04_b18", "spans": []}
+{"post_id": "B04_b19", "spans": []}
+{"post_id": "B04_b20", "spans": []}
+{"post_id": "B04_b21", "spans": []}
+{"post_id": "B04_b22", "spans": []}
+{"post_id": "B05_b01", "spans": []}
+{"post_id": "B05_b02", "spans": []}
+{"post_id": "B05_b03", "spans": []}
+{"post_id": "B05_b04", "spans": [{"text_id": "body", "start": 111, "end": 114, "type": "AGE", "text": "쉰둘에", "level": "explicit", "subject": "self"}]}
+{"post_id": "B05_b05", "spans": []}
+{"post_id": "B05_b06", "spans": [{"text_id": "body", "start": 68, "end": 71, "type": "LOC_ADMIN", "text": "제물포", "level": "explicit", "subject": "self"}]}
+{"post_id": "B05_b08", "spans": []}
+{"post_id": "B05_b09", "spans": []}
+{"post_id": "B05_b10", "spans": []}
+{"post_id": "B05_b11", "spans": [{"text_id": "body", "start": 52, "end": 56, "type": "LOC_ADMIN", "text": "제물포구", "level": "explicit", "subject": "self"}]}
+{"post_id": "B05_b12", "spans": []}
+{"post_id": "B05_b13", "spans": []}
+{"post_id": "B05_b15", "spans": []}
+{"post_id": "B05_b16", "spans": [{"text_id": "body", "start": 82, "end": 84, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}]}
+{"post_id": "B05_b17", "spans": []}
+{"post_id": "B05_b18", "spans": [{"text_id": "body", "start": 95, "end": 97, "type": "LOC_ADMIN", "text": "군산", "level": "explicit", "subject": "other"}]}
+{"post_id": "B05_b19", "spans": []}
+{"post_id": "B05_b20", "spans": []}
+{"post_id": "B06_b01", "spans": []}
+{"post_id": "B06_b02", "spans": []}
+{"post_id": "B06_b03", "spans": [{"text_id": "body", "start": 41, "end": 43, "type": "LOC_ADMIN", "text": "연수", "level": "explicit", "subject": "self"}]}
+{"post_id": "B06_b04", "spans": []}
+{"post_id": "B06_b05", "spans": []}
+{"post_id": "B06_b06", "spans": []}
+{"post_id": "B06_b07", "spans": []}
+{"post_id": "B06_b10", "spans": []}
+{"post_id": "B06_b11", "spans": []}
+{"post_id": "B06_b13", "spans": []}
+{"post_id": "B06_b14", "spans": []}
+{"post_id": "B06_b17", "spans": []}
+{"post_id": "B06_b18", "spans": []}
+{"post_id": "B06_b19", "spans": []}
+{"post_id": "B06_b20", "spans": [{"text_id": "photo_caption:0", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}]}
+{"post_id": "B06_b21", "spans": [{"text_id": "body", "start": 187, "end": 190, "type": "AGE", "text": "세 살", "level": "explicit", "subject": "self"}]}
+{"post_id": "B06_b22", "spans": []}
+{"post_id": "B06_b24", "spans": []}
+{"post_id": "B06_b26", "spans": []}
+{"post_id": "B06_b27", "spans": []}
+{"post_id": "B06_b28", "spans": []}
+{"post_id": "B06_b29", "spans": []}
+{"post_id": "B06_b30", "spans": []}
+{"post_id": "B07_b01", "spans": []}
+{"post_id": "B07_b02", "spans": []}
+{"post_id": "B07_b03", "spans": []}
+{"post_id": "B07_b04", "spans": []}
+{"post_id": "B07_b05", "spans": []}
+{"post_id": "B07_b06", "spans": []}
+{"post_id": "B07_b07", "spans": []}
+{"post_id": "B07_b08", "spans": []}
+{"post_id": "B07_b09", "spans": []}
+{"post_id": "B07_b10", "spans": []}
+{"post_id": "B07_b11", "spans": []}
+{"post_id": "B07_b12", "spans": []}
+{"post_id": "B07_b13", "spans": [{"text_id": "body", "start": 189, "end": 196, "type": "AGE", "text": "스물셋이었는데", "level": "explicit", "subject": "self"}]}
+{"post_id": "B07_b14", "spans": []}
+{"post_id": "B07_b15", "spans": []}
+{"post_id": "B07_b16", "spans": []}
+{"post_id": "B07_b18", "spans": []}
+{"post_id": "B07_b19", "spans": []}
+{"post_id": "B07_b20", "spans": []}
+{"post_id": "B07_b21", "spans": []}
+{"post_id": "B07_b23", "spans": []}
+{"post_id": "B07_b25", "spans": []}
+{"post_id": "B07_b26", "spans": []}
+{"post_id": "B07_b27", "spans": [{"text_id": "body", "start": 237, "end": 239, "type": "LOC_ADMIN", "text": "창원", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 240, "end": 243, "type": "LOC_ADMIN", "text": "성산구", "level": "explicit", "subject": "other"}]}
+{"post_id": "B07_b28", "spans": []}
+{"post_id": "B07_b29", "spans": []}
+{"post_id": "B07_b30", "spans": []}
+{"post_id": "B08_b01", "spans": []}
+{"post_id": "B08_b02", "spans": []}
+{"post_id": "B08_b03", "spans": []}
+{"post_id": "B08_b04", "spans": []}
+{"post_id": "B08_b05", "spans": []}
+{"post_id": "B08_b06", "spans": []}
+{"post_id": "B08_b07", "spans": [{"text_id": "body", "start": 189, "end": 193, "type": "AGE", "text": "스물하나", "level": "explicit", "subject": "self"}]}
+{"post_id": "B08_b08", "spans": []}
+{"post_id": "B08_b09", "spans": [{"text_id": "title", "start": 12, "end": 15, "type": "LOC_ADMIN", "text": "대이동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B08_b10", "spans": []}
+{"post_id": "B08_b11", "spans": []}
+{"post_id": "B08_b12", "spans": []}
+{"post_id": "B08_b13", "spans": []}
+{"post_id": "B08_b14", "spans": []}
+{"post_id": "B08_b15", "spans": []}
+{"post_id": "B08_b16", "spans": []}
+{"post_id": "B08_b17", "spans": []}
+{"post_id": "B08_b18", "spans": []}
+{"post_id": "B08_b19", "spans": []}
+{"post_id": "B08_b20", "spans": []}
+{"post_id": "B08_b21", "spans": []}
+{"post_id": "B08_b22", "spans": []}
+{"post_id": "B08_b23", "spans": []}
+{"post_id": "B08_b24", "spans": []}
+{"post_id": "B08_b25", "spans": []}
+{"post_id": "B08_b27", "spans": []}
+{"post_id": "B08_b28", "spans": []}
+{"post_id": "B08_b29", "spans": []}
+{"post_id": "B08_b30", "spans": []}
+{"post_id": "B09_b01", "spans": []}
+{"post_id": "B09_b02", "spans": []}
+{"post_id": "B09_b03", "spans": []}
+{"post_id": "B09_b04", "spans": []}
+{"post_id": "B09_b05", "spans": []}
+{"post_id": "B09_b06", "spans": []}
+{"post_id": "B09_b07", "spans": []}
+{"post_id": "B09_b08", "spans": []}
+{"post_id": "B09_b09", "spans": []}
+{"post_id": "B09_b10", "spans": []}
+{"post_id": "B09_b11", "spans": []}
+{"post_id": "B09_b13", "spans": []}
+{"post_id": "B09_b14", "spans": []}
+{"post_id": "B09_b15", "spans": []}
+{"post_id": "B09_b16", "spans": []}
+{"post_id": "B09_b17", "spans": []}
+{"post_id": "B09_b18", "spans": []}
+{"post_id": "B09_b19", "spans": []}
+{"post_id": "B09_b20", "spans": []}
+{"post_id": "B09_b21", "spans": []}
+{"post_id": "B09_b22", "spans": [{"text_id": "body", "start": 309, "end": 312, "type": "LOC_ADMIN", "text": "노은동", "level": "explicit", "subject": "self"}, {"text_id": "photo_caption:0", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "B09_b23", "spans": []}
+{"post_id": "B09_b24", "spans": []}
+{"post_id": "B09_b25", "spans": []}
+{"post_id": "B09_b26", "spans": []}
+{"post_id": "B09_b27", "spans": [{"text_id": "body", "start": 144, "end": 147, "type": "LOC_ADMIN", "text": "공주로", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 165, "end": 167, "type": "LOC_ADMIN", "text": "충남", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 168, "end": 171, "type": "LOC_ADMIN", "text": "공주시", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 172, "end": 176, "type": "LOC_ADMIN", "text": "금학동에", "level": "explicit", "subject": "other"}]}
+{"post_id": "B09_b28", "spans": []}
+{"post_id": "B09_b29", "spans": []}
+{"post_id": "B09_b30", "spans": []}
+{"post_id": "B10_b01", "spans": []}
+{"post_id": "B10_b02", "spans": []}
+{"post_id": "B10_b03", "spans": []}
+{"post_id": "B10_b04", "spans": []}
+{"post_id": "B10_b05", "spans": []}
+{"post_id": "B10_b06", "spans": []}
+{"post_id": "B10_b07", "spans": []}
+{"post_id": "B10_b08", "spans": []}
+{"post_id": "B10_b09", "spans": []}
+{"post_id": "B10_b10", "spans": []}
+{"post_id": "B10_b11", "spans": []}
+{"post_id": "B10_b12", "spans": [{"text_id": "body", "start": 310, "end": 313, "type": "AGE", "text": "서른에", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 340, "end": 344, "type": "AGE", "text": "마흔둘에", "level": "explicit", "subject": "self"}]}
+{"post_id": "B10_b14", "spans": []}
+{"post_id": "B10_b15", "spans": []}
+{"post_id": "B10_b17", "spans": []}
+{"post_id": "B10_b18", "spans": []}
+{"post_id": "B10_b19", "spans": []}
+{"post_id": "B10_b21", "spans": []}
+{"post_id": "B10_b22", "spans": []}
+{"post_id": "B10_b23", "spans": []}
+{"post_id": "B10_b24", "spans": []}
+{"post_id": "B10_b25", "spans": [{"text_id": "body", "start": 447, "end": 449, "type": "LOC_ADMIN", "text": "용인", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 450, "end": 453, "type": "LOC_ADMIN", "text": "기흥구", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 454, "end": 457, "type": "LOC_ADMIN", "text": "서농동", "level": "explicit", "subject": "other"}]}
+{"post_id": "B10_b26", "spans": []}
+{"post_id": "B10_b27", "spans": []}
+{"post_id": "B10_b28", "spans": []}
+{"post_id": "B10_b29", "spans": []}
+{"post_id": "B10_b30", "spans": []}
+{"post_id": "B11_b01", "spans": []}
+{"post_id": "B11_b03", "spans": []}
+{"post_id": "B11_b04", "spans": []}
+{"post_id": "B11_b05", "spans": [{"text_id": "body", "start": 79, "end": 82, "type": "LOC_ADMIN", "text": "강서구", "level": "explicit", "subject": "self"}]}
+{"post_id": "B11_b06", "spans": []}
+{"post_id": "B11_b07", "spans": [{"text_id": "body", "start": 215, "end": 219, "type": "AGE", "text": "스물일곱", "level": "explicit", "subject": "self"}]}
+{"post_id": "B11_b08", "spans": []}
+{"post_id": "B11_b09", "spans": []}
+{"post_id": "B11_b10", "spans": []}
+{"post_id": "B11_b11", "spans": []}
+{"post_id": "B11_b12", "spans": []}
+{"post_id": "B11_b14", "spans": []}
+{"post_id": "B11_b15", "spans": []}
+{"post_id": "B11_b16", "spans": []}
+{"post_id": "B11_b17", "spans": []}
+{"post_id": "B11_b18", "spans": []}
+{"post_id": "B11_b19", "spans": []}
+{"post_id": "B11_b20", "spans": []}
+{"post_id": "B11_b21", "spans": []}
+{"post_id": "B11_b22", "spans": []}
+{"post_id": "B11_b23", "spans": []}
+{"post_id": "B11_b24", "spans": []}
+{"post_id": "B11_b25", "spans": []}
+{"post_id": "B11_b26", "spans": [{"text_id": "body", "start": 37, "end": 40, "type": "LOC_ADMIN", "text": "성수동", "level": "explicit", "subject": "other"}]}
+{"post_id": "B11_b27", "spans": []}
+{"post_id": "B11_b28", "spans": []}
+{"post_id": "B11_b29", "spans": []}
+{"post_id": "B11_b30", "spans": []}
+{"post_id": "B12_b01", "spans": []}
+{"post_id": "B12_b02", "spans": []}
+{"post_id": "B12_b06", "spans": []}
+{"post_id": "B12_b07", "spans": []}
+{"post_id": "B12_b08", "spans": []}
+{"post_id": "B12_b09", "spans": []}
+{"post_id": "B12_b10", "spans": []}
+{"post_id": "B12_b11", "spans": []}
+{"post_id": "B12_b13", "spans": [{"text_id": "body", "start": 248, "end": 253, "type": "AGE", "text": "쉰하나인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "B12_b14", "spans": []}
+{"post_id": "B12_b16", "spans": []}
+{"post_id": "B12_b17", "spans": []}
+{"post_id": "B12_b18", "spans": []}
+{"post_id": "B12_b19", "spans": []}
+{"post_id": "B12_b20", "spans": []}
+{"post_id": "B12_b21", "spans": []}
+{"post_id": "B12_b23", "spans": []}
+{"post_id": "B12_b24", "spans": []}
+{"post_id": "B12_b25", "spans": []}
+{"post_id": "B12_b26", "spans": []}
+{"post_id": "B12_b27", "spans": [{"text_id": "body", "start": 146, "end": 148, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 149, "end": 152, "type": "LOC_ADMIN", "text": "기장군", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 153, "end": 156, "type": "LOC_ADMIN", "text": "장안읍", "level": "explicit", "subject": "other"}]}
+{"post_id": "B12_b28", "spans": []}
+{"post_id": "B12_b29", "spans": []}
+{"post_id": "B12_b30", "spans": []}
+{"post_id": "B13_b01", "spans": []}
+{"post_id": "B13_b03", "spans": []}
+{"post_id": "B13_b04", "spans": []}
+{"post_id": "B13_b05", "spans": [{"text_id": "body", "start": 33, "end": 35, "type": "LOC_ADMIN", "text": "원주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B13_b06", "spans": []}
+{"post_id": "B13_b07", "spans": [{"text_id": "body", "start": 217, "end": 221, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}]}
+{"post_id": "B13_b09", "spans": []}
+{"post_id": "B13_b10", "spans": []}
+{"post_id": "B13_b11", "spans": [{"text_id": "body", "start": 251, "end": 253, "type": "LOC_ADMIN", "text": "원주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B13_b12", "spans": []}
+{"post_id": "B13_b13", "spans": []}
+{"post_id": "B13_b14", "spans": []}
+{"post_id": "B13_b15", "spans": []}
+{"post_id": "B13_b16", "spans": []}
+{"post_id": "B13_b17", "spans": []}
+{"post_id": "B13_b18", "spans": []}
+{"post_id": "B13_b19", "spans": []}
+{"post_id": "B13_b20", "spans": [{"text_id": "body", "start": 223, "end": 226, "type": "LOC_ADMIN", "text": "무실동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B13_b21", "spans": []}
+{"post_id": "B13_b22", "spans": []}
+{"post_id": "B13_b23", "spans": []}
+{"post_id": "B13_b24", "spans": [{"text_id": "body", "start": 8, "end": 10, "type": "LOC_ADMIN", "text": "원주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B13_b25", "spans": [{"text_id": "body", "start": 112, "end": 114, "type": "LOC_ADMIN", "text": "춘천", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 126, "end": 128, "type": "LOC_ADMIN", "text": "춘천", "level": "explicit", "subject": "other"}]}
+{"post_id": "B13_b27", "spans": []}
+{"post_id": "B13_b29", "spans": []}
+{"post_id": "B13_b30", "spans": [{"text_id": "body", "start": 252, "end": 256, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "self"}]}
+{"post_id": "B14_b01", "spans": []}
+{"post_id": "B14_b02", "spans": []}
+{"post_id": "B14_b03", "spans": []}
+{"post_id": "B14_b04", "spans": []}
+{"post_id": "B14_b05", "spans": []}
+{"post_id": "B14_b06", "spans": []}
+{"post_id": "B14_b07", "spans": []}
+{"post_id": "B14_b08", "spans": []}
+{"post_id": "B14_b10", "spans": []}
+{"post_id": "B14_b11", "spans": []}
+{"post_id": "B14_b12", "spans": []}
+{"post_id": "B14_b13", "spans": []}
+{"post_id": "B14_b14", "spans": []}
+{"post_id": "B14_b15", "spans": []}
+{"post_id": "B14_b16", "spans": []}
+{"post_id": "B14_b18", "spans": [{"text_id": "body", "start": 59, "end": 61, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B14_b19", "spans": []}
+{"post_id": "B14_b20", "spans": []}
+{"post_id": "B14_b21", "spans": []}
+{"post_id": "B14_b22", "spans": [{"text_id": "body", "start": 225, "end": 228, "type": "LOC_ADMIN", "text": "복대동", "level": "explicit", "subject": "self"}, {"text_id": "photo_caption:0", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "복대동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B14_b23", "spans": []}
+{"post_id": "B14_b24", "spans": [{"text_id": "body", "start": 125, "end": 127, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B14_b25", "spans": []}
+{"post_id": "B14_b26", "spans": []}
+{"post_id": "B14_b27", "spans": [{"text_id": "body", "start": 205, "end": 207, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 208, "end": 211, "type": "LOC_ADMIN", "text": "둔산동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B14_b28", "spans": []}
+{"post_id": "B14_b29", "spans": []}
+{"post_id": "B14_b30", "spans": []}
+{"post_id": "B15_b02", "spans": []}
+{"post_id": "B15_b03", "spans": []}
+{"post_id": "B15_b04", "spans": [{"text_id": "body", "start": 231, "end": 235, "type": "AGE", "text": "예순넷이", "level": "explicit", "subject": "self"}]}
+{"post_id": "B15_b06", "spans": []}
+{"post_id": "B15_b07", "spans": []}
+{"post_id": "B15_b08", "spans": []}
+{"post_id": "B15_b10", "spans": []}
+{"post_id": "B15_b11", "spans": [{"text_id": "body", "start": 6, "end": 9, "type": "LOC_ADMIN", "text": "순천만", "level": "explicit", "subject": "self"}]}
+{"post_id": "B15_b12", "spans": []}
+{"post_id": "B15_b14", "spans": []}
+{"post_id": "B15_b15", "spans": []}
+{"post_id": "B15_b16", "spans": []}
+{"post_id": "B15_b17", "spans": [{"text_id": "body", "start": 144, "end": 147, "type": "LOC_ADMIN", "text": "순천만", "level": "explicit", "subject": "self"}]}
+{"post_id": "B15_b18", "spans": [{"text_id": "body", "start": 267, "end": 270, "type": "LOC_ADMIN", "text": "해룡면", "level": "explicit", "subject": "self"}, {"text_id": "photo_caption:0", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "해룡면", "level": "explicit", "subject": "self"}]}
+{"post_id": "B15_b19", "spans": []}
+{"post_id": "B15_b20", "spans": []}
+{"post_id": "B15_b21", "spans": []}
+{"post_id": "B15_b22", "spans": []}
+{"post_id": "B15_b23", "spans": [{"text_id": "body", "start": 283, "end": 285, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "other"}]}
+{"post_id": "B15_b24", "spans": []}
+{"post_id": "B15_b25", "spans": []}
+{"post_id": "B15_b26", "spans": []}
+{"post_id": "B15_b27", "spans": []}
+{"post_id": "B15_b30", "spans": []}
+{"post_id": "B16_b01", "spans": []}
+{"post_id": "B16_b02", "spans": []}
+{"post_id": "B16_b04", "spans": []}
+{"post_id": "B16_b05", "spans": []}
+{"post_id": "B16_b06", "spans": [{"text_id": "body", "start": 304, "end": 307, "type": "AGE", "text": "서른셋", "level": "explicit", "subject": "self"}]}
+{"post_id": "B16_b07", "spans": []}
+{"post_id": "B16_b08", "spans": []}
+{"post_id": "B16_b09", "spans": []}
+{"post_id": "B16_b10", "spans": []}
+{"post_id": "B16_b11", "spans": []}
+{"post_id": "B16_b12", "spans": []}
+{"post_id": "B16_b13", "spans": []}
+{"post_id": "B16_b14", "spans": []}
+{"post_id": "B16_b15", "spans": []}
+{"post_id": "B16_b16", "spans": []}
+{"post_id": "B16_b17", "spans": []}
+{"post_id": "B16_b18", "spans": []}
+{"post_id": "B16_b19", "spans": []}
+{"post_id": "B16_b20", "spans": []}
+{"post_id": "B16_b22", "spans": []}
+{"post_id": "B16_b23", "spans": []}
+{"post_id": "B16_b24", "spans": []}
+{"post_id": "B16_b25", "spans": []}
+{"post_id": "B16_b27", "spans": []}
+{"post_id": "B16_b28", "spans": []}
+{"post_id": "B16_b29", "spans": []}
+{"post_id": "B16_b30", "spans": []}
+{"post_id": "B17_b01", "spans": []}
+{"post_id": "B17_b02", "spans": []}
+{"post_id": "B17_b03", "spans": []}
+{"post_id": "B17_b04", "spans": []}
+{"post_id": "B17_b05", "spans": []}
+{"post_id": "B17_b06", "spans": []}
+{"post_id": "B17_b07", "spans": []}
+{"post_id": "B17_b08", "spans": []}
+{"post_id": "B17_b09", "spans": []}
+{"post_id": "B17_b10", "spans": []}
+{"post_id": "B17_b11", "spans": []}
+{"post_id": "B17_b12", "spans": []}
+{"post_id": "B17_b13", "spans": []}
+{"post_id": "B17_b15", "spans": []}
+{"post_id": "B17_b17", "spans": []}
+{"post_id": "B17_b18", "spans": []}
+{"post_id": "B17_b20", "spans": []}
+{"post_id": "B17_b21", "spans": []}
+{"post_id": "B17_b22", "spans": []}
+{"post_id": "B17_b23", "spans": []}
+{"post_id": "B17_b24", "spans": [{"text_id": "body", "start": 313, "end": 316, "type": "LOC_ADMIN", "text": "율하동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B17_b25", "spans": []}
+{"post_id": "B17_b26", "spans": []}
+{"post_id": "B17_b27", "spans": []}
+{"post_id": "B17_b28", "spans": []}
+{"post_id": "B17_b29", "spans": [{"text_id": "body", "start": 225, "end": 227, "type": "LOC_ADMIN", "text": "경북", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 228, "end": 230, "type": "LOC_ADMIN", "text": "구미", "level": "explicit", "subject": "self"}]}
+{"post_id": "B17_b30", "spans": []}
+{"post_id": "B18_b01", "spans": []}
+{"post_id": "B18_b02", "spans": []}
+{"post_id": "B18_b03", "spans": [{"text_id": "body", "start": 23, "end": 27, "type": "AGE", "text": "일흔하나", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b04", "spans": []}
+{"post_id": "B18_b05", "spans": []}
+{"post_id": "B18_b06", "spans": []}
+{"post_id": "B18_b07", "spans": []}
+{"post_id": "B18_b08", "spans": []}
+{"post_id": "B18_b09", "spans": [{"text_id": "body", "start": 187, "end": 191, "type": "LOC_ADMIN", "text": "옥동에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b10", "spans": [{"text_id": "body", "start": 86, "end": 88, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b11", "spans": []}
+{"post_id": "B18_b13", "spans": []}
+{"post_id": "B18_b14", "spans": []}
+{"post_id": "B18_b15", "spans": []}
+{"post_id": "B18_b16", "spans": []}
+{"post_id": "B18_b17", "spans": [{"text_id": "body", "start": 96, "end": 98, "type": "LOC_ADMIN", "text": "옥동", "level": "explicit", "subject": "self"}, {"text_id": "photo_caption:0", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "옥동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b18", "spans": []}
+{"post_id": "B18_b19", "spans": [{"text_id": "body", "start": 8, "end": 10, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b20", "spans": []}
+{"post_id": "B18_b21", "spans": []}
+{"post_id": "B18_b22", "spans": []}
+{"post_id": "B18_b23", "spans": []}
+{"post_id": "B18_b24", "spans": []}
+{"post_id": "B18_b25", "spans": [{"text_id": "body", "start": 164, "end": 166, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B18_b26", "spans": []}
+{"post_id": "B18_b28", "spans": []}
+{"post_id": "B18_b29", "spans": []}
+{"post_id": "B18_b30", "spans": []}
+{"post_id": "B19_b01", "spans": []}
+{"post_id": "B19_b02", "spans": []}
+{"post_id": "B19_b03", "spans": []}
+{"post_id": "B19_b04", "spans": []}
+{"post_id": "B19_b05", "spans": []}
+{"post_id": "B19_b06", "spans": []}
+{"post_id": "B19_b07", "spans": []}
+{"post_id": "B19_b08", "spans": []}
+{"post_id": "B19_b09", "spans": []}
+{"post_id": "B19_b10", "spans": []}
+{"post_id": "B19_b11", "spans": []}
+{"post_id": "B19_b12", "spans": []}
+{"post_id": "B19_b13", "spans": [{"text_id": "body", "start": 156, "end": 161, "type": "AGE", "text": "스물다섯에", "level": "explicit", "subject": "self"}]}
+{"post_id": "B19_b14", "spans": []}
+{"post_id": "B19_b16", "spans": []}
+{"post_id": "B19_b17", "spans": []}
+{"post_id": "B19_b18", "spans": []}
+{"post_id": "B19_b19", "spans": []}
+{"post_id": "B19_b20", "spans": []}
+{"post_id": "B19_b21", "spans": []}
+{"post_id": "B19_b22", "spans": []}
+{"post_id": "B19_b23", "spans": [{"text_id": "photo_caption:0", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "금암동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B19_b24", "spans": []}
+{"post_id": "B19_b25", "spans": []}
+{"post_id": "B19_b26", "spans": []}
+{"post_id": "B19_b27", "spans": []}
+{"post_id": "B19_b28", "spans": [{"text_id": "body", "start": 266, "end": 275, "type": "LOC_ADMIN", "text": "전남광주통합특별시", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 276, "end": 278, "type": "LOC_ADMIN", "text": "북구", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 279, "end": 284, "type": "LOC_ADMIN", "text": "용봉동이라", "level": "explicit", "subject": "other"}]}
+{"post_id": "B19_b29", "spans": []}
+{"post_id": "B19_b30", "spans": []}
+{"post_id": "B20_b01", "spans": []}
+{"post_id": "B20_b02", "spans": [{"text_id": "title", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "제주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B20_b03", "spans": []}
+{"post_id": "B20_b04", "spans": []}
+{"post_id": "B20_b05", "spans": []}
+{"post_id": "B20_b06", "spans": []}
+{"post_id": "B20_b07", "spans": [{"text_id": "body", "start": 198, "end": 202, "type": "AGE", "text": "서른하나", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 206, "end": 208, "type": "LOC_ADMIN", "text": "제주", "level": "explicit", "subject": "self"}]}
+{"post_id": "B20_b08", "spans": []}
+{"post_id": "B20_b09", "spans": []}
+{"post_id": "B20_b10", "spans": []}
+{"post_id": "B20_b11", "spans": [{"text_id": "body", "start": 111, "end": 114, "type": "LOC_ADMIN", "text": "제주시", "level": "explicit", "subject": "self"}]}
+{"post_id": "B20_b12", "spans": []}
+{"post_id": "B20_b13", "spans": []}
+{"post_id": "B20_b14", "spans": []}
+{"post_id": "B20_b15", "spans": []}
+{"post_id": "B20_b16", "spans": [{"text_id": "body", "start": 206, "end": 211, "type": "INCOME", "text": "80만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "B20_b17", "spans": []}
+{"post_id": "B20_b18", "spans": []}
+{"post_id": "B20_b19", "spans": []}
+{"post_id": "B20_b20", "spans": []}
+{"post_id": "B20_b21", "spans": [{"text_id": "body", "start": 158, "end": 161, "type": "LOC_ADMIN", "text": "노형동", "level": "explicit", "subject": "self"}, {"text_id": "photo_caption:0", "start": 0, "end": 3, "type": "LOC_ADMIN", "text": "노형동", "level": "explicit", "subject": "self"}]}
+{"post_id": "B20_b22", "spans": []}
+{"post_id": "B20_b23", "spans": []}
+{"post_id": "B20_b24", "spans": []}
+{"post_id": "B20_b25", "spans": []}
+{"post_id": "B20_b27", "spans": []}
+{"post_id": "B20_b28", "spans": []}
+{"post_id": "B20_b29", "spans": []}
+{"post_id": "B20_b30", "spans": []}
+{"post_id": "B21_b01", "spans": []}
+{"post_id": "B21_b02", "spans": []}
+{"post_id": "B21_b03", "spans": []}
+{"post_id": "B21_b04", "spans": []}
+{"post_id": "B21_b05", "spans": []}
+{"post_id": "B21_b06", "spans": []}
+{"post_id": "B21_b07", "spans": []}
+{"post_id": "B21_b08", "spans": []}
+{"post_id": "B21_b09", "spans": []}
+{"post_id": "B21_b10", "spans": []}
+{"post_id": "B21_b11", "spans": []}
+{"post_id": "B21_b12", "spans": []}
+{"post_id": "B21_b13", "spans": []}
+{"post_id": "B21_b14", "spans": []}
+{"post_id": "B21_b15", "spans": []}
+{"post_id": "B21_b16", "spans": []}
+{"post_id": "B21_b17", "spans": []}
+{"post_id": "B21_b18", "spans": []}
+{"post_id": "B21_b19", "spans": [{"text_id": "body", "start": 121, "end": 125, "type": "AGE", "text": "마흔여섯", "level": "explicit", "subject": "self"}]}
+{"post_id": "B21_b20", "spans": []}
+{"post_id": "B21_b21", "spans": []}
+{"post_id": "B21_b22", "spans": []}
+{"post_id": "B21_b23", "spans": []}
+{"post_id": "B21_b24", "spans": []}
+{"post_id": "B21_b25", "spans": []}
+{"post_id": "B21_b26", "spans": []}
+{"post_id": "B21_b27", "spans": []}
+{"post_id": "B21_b28", "spans": []}
+{"post_id": "B21_b29", "spans": [{"text_id": "body", "start": 234, "end": 241, "type": "LOC_ADMIN", "text": "강원특별자치도", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 242, "end": 245, "type": "LOC_ADMIN", "text": "횡성군", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 246, "end": 249, "type": "LOC_ADMIN", "text": "둔내면", "level": "explicit", "subject": "other"}]}
+{"post_id": "B21_b30", "spans": []}
+{"post_id": "D01_b01", "spans": []}
+{"post_id": "D01_b02", "spans": []}
+{"post_id": "D01_b03", "spans": []}
+{"post_id": "D01_b05", "spans": []}
+{"post_id": "D01_b06", "spans": []}
+{"post_id": "D01_b08", "spans": []}
+{"post_id": "D01_b09", "spans": []}
+{"post_id": "D01_b10", "spans": []}
+{"post_id": "D01_b11", "spans": []}
+{"post_id": "D01_b12", "spans": []}
+{"post_id": "D01_b13", "spans": []}
+{"post_id": "D01_b14", "spans": []}
+{"post_id": "D01_b15", "spans": []}
+{"post_id": "D01_b16", "spans": []}
+{"post_id": "D01_b17", "spans": []}
+{"post_id": "D01_b19", "spans": []}
+{"post_id": "D01_b20", "spans": []}
+{"post_id": "D02_b01", "spans": []}
+{"post_id": "D02_b02", "spans": []}
+{"post_id": "D02_b03", "spans": [{"text_id": "body", "start": 70, "end": 73, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "D02_b04", "spans": []}
+{"post_id": "D02_b05", "spans": []}
+{"post_id": "D02_b07", "spans": [{"text_id": "body", "start": 9, "end": 12, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "D02_b08", "spans": []}
+{"post_id": "D02_b09", "spans": []}
+{"post_id": "D02_b10", "spans": []}
+{"post_id": "D02_b11", "spans": []}
+{"post_id": "D02_b12", "spans": [{"text_id": "body", "start": 20, "end": 23, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "D02_b13", "spans": []}
+{"post_id": "D02_b14", "spans": []}
+{"post_id": "D02_b15", "spans": []}
+{"post_id": "D02_b16", "spans": []}
+{"post_id": "D02_b17", "spans": [{"text_id": "body", "start": 21, "end": 24, "type": "LOC_ADMIN", "text": "관악구", "level": "explicit", "subject": "self"}]}
+{"post_id": "D02_b18", "spans": []}
+{"post_id": "D03_b01", "spans": []}
+{"post_id": "D03_b02", "spans": []}
+{"post_id": "D03_b03", "spans": []}
+{"post_id": "D03_b05", "spans": []}
+{"post_id": "D03_b06", "spans": []}
+{"post_id": "D03_b07", "spans": []}
+{"post_id": "D03_b08", "spans": []}
+{"post_id": "D03_b09", "spans": []}
+{"post_id": "D03_b10", "spans": []}
+{"post_id": "D03_b11", "spans": []}
+{"post_id": "D03_b12", "spans": []}
+{"post_id": "D03_b13", "spans": []}
+{"post_id": "D03_b14", "spans": []}
+{"post_id": "D03_b16", "spans": []}
+{"post_id": "D03_b17", "spans": []}
+{"post_id": "D03_b18", "spans": []}
+{"post_id": "D03_b19", "spans": []}
+{"post_id": "D03_b20", "spans": []}
+{"post_id": "D03_b21", "spans": []}
+{"post_id": "D03_b22", "spans": []}
+{"post_id": "D04_b01", "spans": []}
+{"post_id": "D04_b02", "spans": []}
+{"post_id": "D04_b03", "spans": []}
+{"post_id": "D04_b04", "spans": []}
+{"post_id": "D04_b05", "spans": []}
+{"post_id": "D04_b07", "spans": []}
+{"post_id": "D04_b08", "spans": []}
+{"post_id": "D04_b09", "spans": [{"text_id": "body", "start": 94, "end": 96, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D04_b10", "spans": []}
+{"post_id": "D04_b11", "spans": []}
+{"post_id": "D04_b13", "spans": []}
+{"post_id": "D04_b15", "spans": [{"text_id": "body", "start": 36, "end": 38, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D04_b16", "spans": []}
+{"post_id": "D04_b17", "spans": []}
+{"post_id": "D04_b18", "spans": []}
+{"post_id": "D04_b20", "spans": [{"text_id": "body", "start": 82, "end": 84, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D05_b01", "spans": []}
+{"post_id": "D05_b02", "spans": []}
+{"post_id": "D05_b03", "spans": []}
+{"post_id": "D05_b04", "spans": []}
+{"post_id": "D05_b05", "spans": []}
+{"post_id": "D05_b06", "spans": []}
+{"post_id": "D05_b07", "spans": []}
+{"post_id": "D05_b08", "spans": [{"text_id": "body", "start": 177, "end": 180, "type": "LOC_ADMIN", "text": "여수로", "level": "explicit", "subject": "other"}]}
+{"post_id": "D05_b09", "spans": []}
+{"post_id": "D05_b10", "spans": []}
+{"post_id": "D05_b11", "spans": [{"text_id": "body", "start": 67, "end": 69, "type": "LOC_ADMIN", "text": "담양", "level": "explicit", "subject": "self"}]}
+{"post_id": "D05_b13", "spans": []}
+{"post_id": "D05_b14", "spans": []}
+{"post_id": "D05_b15", "spans": []}
+{"post_id": "D05_b16", "spans": []}
+{"post_id": "D05_b17", "spans": [{"text_id": "body", "start": 146, "end": 148, "type": "LOC_ADMIN", "text": "광주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D05_b18", "spans": []}
+{"post_id": "D06_b01", "spans": []}
+{"post_id": "D06_b02", "spans": []}
+{"post_id": "D06_b03", "spans": [{"text_id": "body", "start": 473, "end": 475, "type": "LOC_ADMIN", "text": "경남", "level": "explicit", "subject": "self"}]}
+{"post_id": "D06_b04", "spans": []}
+{"post_id": "D06_b05", "spans": []}
+{"post_id": "D06_b06", "spans": []}
+{"post_id": "D06_b07", "spans": []}
+{"post_id": "D06_b09", "spans": [{"text_id": "body", "start": 807, "end": 811, "type": "AGE", "text": "서른여덟", "level": "explicit", "subject": "self"}]}
+{"post_id": "D06_b10", "spans": []}
+{"post_id": "D06_b13", "spans": [{"text_id": "body", "start": 505, "end": 508, "type": "LOC_ADMIN", "text": "창원에", "level": "explicit", "subject": "other"}]}
+{"post_id": "D06_b14", "spans": []}
+{"post_id": "D06_b15", "spans": []}
+{"post_id": "D07_b01", "spans": []}
+{"post_id": "D07_b02", "spans": []}
+{"post_id": "D07_b04", "spans": []}
+{"post_id": "D07_b05", "spans": []}
+{"post_id": "D07_b07", "spans": []}
+{"post_id": "D07_b08", "spans": []}
+{"post_id": "D07_b10", "spans": []}
+{"post_id": "D07_b11", "spans": []}
+{"post_id": "D07_b12", "spans": []}
+{"post_id": "D07_b13", "spans": []}
+{"post_id": "D07_b14", "spans": [{"text_id": "body", "start": 75, "end": 81, "type": "LOC_ADMIN", "text": "미추홀구에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "D07_b15", "spans": []}
+{"post_id": "D07_b17", "spans": [{"text_id": "body", "start": 131, "end": 136, "type": "LOC_ADMIN", "text": "미추홀에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "D07_b18", "spans": []}
+{"post_id": "D08_b01", "spans": []}
+{"post_id": "D08_b02", "spans": []}
+{"post_id": "D08_b03", "spans": []}
+{"post_id": "D08_b04", "spans": [{"text_id": "body", "start": 596, "end": 599, "type": "LOC_ADMIN", "text": "경기도", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 600, "end": 603, "type": "LOC_ADMIN", "text": "광주시", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 604, "end": 609, "type": "LOC_ADMIN", "text": "경안동으로", "level": "explicit", "subject": "self"}]}
+{"post_id": "D08_b05", "spans": []}
+{"post_id": "D08_b06", "spans": []}
+{"post_id": "D08_b07", "spans": []}
+{"post_id": "D08_b08", "spans": []}
+{"post_id": "D08_b09", "spans": []}
+{"post_id": "D08_b10", "spans": []}
+{"post_id": "D08_b11", "spans": [{"text_id": "body", "start": 378, "end": 382, "type": "LOC_ADMIN", "text": "광주에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "D08_b12", "spans": []}
+{"post_id": "D08_b14", "spans": []}
+{"post_id": "D08_b15", "spans": []}
+{"post_id": "D08_b16", "spans": []}
+{"post_id": "D08_b17", "spans": [{"text_id": "body", "start": 520, "end": 523, "type": "LOC_ADMIN", "text": "경기도", "level": "explicit", "subject": "self"}]}
+{"post_id": "D08_b18", "spans": []}
+{"post_id": "D08_b19", "spans": []}
+{"post_id": "D08_b20", "spans": [{"text_id": "body", "start": 167, "end": 169, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 170, "end": 174, "type": "LOC_ADMIN", "text": "성동구로", "level": "explicit", "subject": "self"}]}
+{"post_id": "D08_b21", "spans": []}
+{"post_id": "D08_b22", "spans": [{"text_id": "body", "start": 964, "end": 967, "type": "LOC_ADMIN", "text": "영양가", "level": "explicit", "subject": "self"}]}
+{"post_id": "D08_b23", "spans": []}
+{"post_id": "D08_b24", "spans": []}
+{"post_id": "D08_b25", "spans": []}
+{"post_id": "D08_b26", "spans": []}
+{"post_id": "D09_b01", "spans": []}
+{"post_id": "D09_b02", "spans": []}
+{"post_id": "D09_b03", "spans": []}
+{"post_id": "D09_b04", "spans": []}
+{"post_id": "D09_b05", "spans": []}
+{"post_id": "D09_b06", "spans": []}
+{"post_id": "D09_b07", "spans": []}
+{"post_id": "D09_b08", "spans": []}
+{"post_id": "D09_b09", "spans": []}
+{"post_id": "D09_b10", "spans": []}
+{"post_id": "D09_b11", "spans": []}
+{"post_id": "D09_b13", "spans": []}
+{"post_id": "D09_b14", "spans": [{"text_id": "body", "start": 35, "end": 37, "type": "LOC_ADMIN", "text": "예산", "level": "explicit", "subject": "self"}]}
+{"post_id": "D09_b16", "spans": []}
+{"post_id": "D09_b17", "spans": []}
+{"post_id": "D09_b18", "spans": []}
+{"post_id": "D09_b19", "spans": []}
+{"post_id": "D09_b20", "spans": []}
+{"post_id": "D09_b21", "spans": []}
+{"post_id": "D09_b23", "spans": []}
+{"post_id": "D09_b24", "spans": []}
+{"post_id": "D09_b25", "spans": [{"text_id": "body", "start": 76, "end": 78, "type": "LOC_ADMIN", "text": "아산", "level": "explicit", "subject": "other"}]}
+{"post_id": "D09_b26", "spans": []}
+{"post_id": "D09_b27", "spans": [{"text_id": "body", "start": 18, "end": 21, "type": "LOC_ADMIN", "text": "예산군", "level": "explicit", "subject": "self"}]}
+{"post_id": "D09_b28", "spans": []}
+{"post_id": "D09_b29", "spans": []}
+{"post_id": "D09_b30", "spans": []}
+{"post_id": "D10_b01", "spans": []}
+{"post_id": "D10_b02", "spans": []}
+{"post_id": "D10_b03", "spans": [{"text_id": "body", "start": 36, "end": 39, "type": "LOC_ADMIN", "text": "양동이", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b04", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "영주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b05", "spans": []}
+{"post_id": "D10_b07", "spans": []}
+{"post_id": "D10_b08", "spans": []}
+{"post_id": "D10_b09", "spans": [{"text_id": "body", "start": 120, "end": 122, "type": "LOC_ADMIN", "text": "영주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b10", "spans": []}
+{"post_id": "D10_b12", "spans": []}
+{"post_id": "D10_b13", "spans": []}
+{"post_id": "D10_b14", "spans": []}
+{"post_id": "D10_b15", "spans": []}
+{"post_id": "D10_b16", "spans": []}
+{"post_id": "D10_b17", "spans": []}
+{"post_id": "D10_b18", "spans": [{"text_id": "body", "start": 61, "end": 63, "type": "LOC_ADMIN", "text": "영주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b19", "spans": []}
+{"post_id": "D10_b20", "spans": []}
+{"post_id": "D10_b22", "spans": []}
+{"post_id": "D10_b23", "spans": []}
+{"post_id": "D10_b24", "spans": [{"text_id": "body", "start": 97, "end": 99, "type": "LOC_ADMIN", "text": "영주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b25", "spans": []}
+{"post_id": "D10_b26", "spans": [{"text_id": "body", "start": 289, "end": 291, "type": "LOC_ADMIN", "text": "대구", "level": "explicit", "subject": "self"}]}
+{"post_id": "D10_b27", "spans": []}
+{"post_id": "D10_b28", "spans": []}
+{"post_id": "D10_b29", "spans": []}
+{"post_id": "D10_b30", "spans": []}
+{"post_id": "D11_b01", "spans": []}
+{"post_id": "D11_b02", "spans": []}
+{"post_id": "D11_b03", "spans": []}
+{"post_id": "D11_b04", "spans": []}
+{"post_id": "D11_b05", "spans": [{"text_id": "photo_caption:0", "start": 0, "end": 6, "type": "AGE", "text": "일흔한 살에", "level": "explicit", "subject": "self"}]}
+{"post_id": "D11_b06", "spans": []}
+{"post_id": "D11_b07", "spans": []}
+{"post_id": "D11_b08", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "곡성", "level": "explicit", "subject": "self"}]}
+{"post_id": "D11_b09", "spans": []}
+{"post_id": "D11_b11", "spans": []}
+{"post_id": "D11_b12", "spans": []}
+{"post_id": "D11_b13", "spans": []}
+{"post_id": "D11_b14", "spans": []}
+{"post_id": "D11_b15", "spans": []}
+{"post_id": "D11_b16", "spans": []}
+{"post_id": "D11_b17", "spans": []}
+{"post_id": "D11_b18", "spans": []}
+{"post_id": "D11_b19", "spans": []}
+{"post_id": "D11_b20", "spans": [{"text_id": "body", "start": 77, "end": 80, "type": "LOC_ADMIN", "text": "순천에", "level": "explicit", "subject": "other"}]}
+{"post_id": "D11_b21", "spans": []}
+{"post_id": "D11_b22", "spans": []}
+{"post_id": "D11_b23", "spans": []}
+{"post_id": "D11_b24", "spans": []}
+{"post_id": "D11_b25", "spans": []}
+{"post_id": "D11_b26", "spans": [{"text_id": "body", "start": 129, "end": 131, "type": "LOC_ADMIN", "text": "곡성", "level": "explicit", "subject": "self"}]}
+{"post_id": "D11_b27", "spans": []}
+{"post_id": "D11_b28", "spans": []}
+{"post_id": "D11_b29", "spans": []}
+{"post_id": "D11_b30", "spans": []}
+{"post_id": "D12_b01", "spans": []}
+{"post_id": "D12_b02", "spans": []}
+{"post_id": "D12_b03", "spans": []}
+{"post_id": "D12_b05", "spans": [{"text_id": "body", "start": 156, "end": 159, "type": "AGE", "text": "마흔쯤", "level": "explicit", "subject": "self"}]}
+{"post_id": "D12_b06", "spans": [{"text_id": "body", "start": 14, "end": 16, "type": "LOC_ADMIN", "text": "울주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D12_b07", "spans": []}
+{"post_id": "D12_b08", "spans": []}
+{"post_id": "D12_b09", "spans": []}
+{"post_id": "D12_b10", "spans": []}
+{"post_id": "D12_b11", "spans": []}
+{"post_id": "D12_b12", "spans": []}
+{"post_id": "D12_b14", "spans": []}
+{"post_id": "D12_b15", "spans": [{"text_id": "body", "start": 168, "end": 171, "type": "LOC_ADMIN", "text": "울주군", "level": "explicit", "subject": "self"}]}
+{"post_id": "D12_b16", "spans": []}
+{"post_id": "D12_b18", "spans": []}
+{"post_id": "D12_b19", "spans": []}
+{"post_id": "D12_b20", "spans": []}
+{"post_id": "D12_b21", "spans": []}
+{"post_id": "D12_b22", "spans": []}
+{"post_id": "D12_b24", "spans": []}
+{"post_id": "D12_b25", "spans": []}
+{"post_id": "D12_b26", "spans": [{"text_id": "body", "start": 49, "end": 51, "type": "LOC_ADMIN", "text": "울산", "level": "explicit", "subject": "self"}]}
+{"post_id": "D12_b27", "spans": []}
+{"post_id": "D12_b28", "spans": [{"text_id": "body", "start": 89, "end": 91, "type": "LOC_ADMIN", "text": "남구", "level": "explicit", "subject": "other"}]}
+{"post_id": "D12_b29", "spans": []}
+{"post_id": "D12_b30", "spans": []}
+{"post_id": "D13_b01", "spans": []}
+{"post_id": "D13_b02", "spans": []}
+{"post_id": "D13_b03", "spans": []}
+{"post_id": "D13_b04", "spans": []}
+{"post_id": "D13_b05", "spans": []}
+{"post_id": "D13_b06", "spans": []}
+{"post_id": "D13_b07", "spans": [{"text_id": "body", "start": 44, "end": 48, "type": "AGE", "text": "예순둘이", "level": "explicit", "subject": "self"}]}
+{"post_id": "D13_b08", "spans": []}
+{"post_id": "D13_b09", "spans": []}
+{"post_id": "D13_b10", "spans": []}
+{"post_id": "D13_b11", "spans": []}
+{"post_id": "D13_b12", "spans": []}
+{"post_id": "D13_b13", "spans": []}
+{"post_id": "D13_b14", "spans": []}
+{"post_id": "D13_b15", "spans": []}
+{"post_id": "D13_b17", "spans": []}
+{"post_id": "D13_b18", "spans": [{"text_id": "body", "start": 168, "end": 172, "type": "LOC_ADMIN", "text": "정선에는", "level": "explicit", "subject": "self"}]}
+{"post_id": "D13_b19", "spans": [{"text_id": "body", "start": 185, "end": 187, "type": "LOC_ADMIN", "text": "태백", "level": "explicit", "subject": "self"}]}
+{"post_id": "D13_b21", "spans": []}
+{"post_id": "D13_b22", "spans": []}
+{"post_id": "D13_b23", "spans": []}
+{"post_id": "D13_b24", "spans": [{"text_id": "body", "start": 172, "end": 174, "type": "LOC_ADMIN", "text": "동해", "level": "explicit", "subject": "other"}]}
+{"post_id": "D13_b25", "spans": []}
+{"post_id": "D13_b26", "spans": []}
+{"post_id": "D13_b27", "spans": [{"text_id": "body", "start": 120, "end": 122, "type": "LOC_ADMIN", "text": "정선", "level": "explicit", "subject": "self"}]}
+{"post_id": "D13_b28", "spans": []}
+{"post_id": "D13_b29", "spans": []}
+{"post_id": "D13_b30", "spans": []}
+{"post_id": "D14_b01", "spans": []}
+{"post_id": "D14_b02", "spans": []}
+{"post_id": "D14_b03", "spans": []}
+{"post_id": "D14_b04", "spans": []}
+{"post_id": "D14_b05", "spans": []}
+{"post_id": "D14_b06", "spans": []}
+{"post_id": "D14_b07", "spans": []}
+{"post_id": "D14_b08", "spans": []}
+{"post_id": "D14_b09", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "D14_b10", "spans": []}
+{"post_id": "D14_b12", "spans": []}
+{"post_id": "D14_b13", "spans": []}
+{"post_id": "D14_b14", "spans": []}
+{"post_id": "D14_b15", "spans": []}
+{"post_id": "D14_b16", "spans": []}
+{"post_id": "D14_b17", "spans": []}
+{"post_id": "D14_b18", "spans": [{"text_id": "body", "start": 54, "end": 56, "type": "LOC_ADMIN", "text": "김포", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 76, "end": 78, "type": "LOC_ADMIN", "text": "서울", "level": "explicit", "subject": "self"}]}
+{"post_id": "D14_b20", "spans": []}
+{"post_id": "D14_b21", "spans": []}
+{"post_id": "D14_b22", "spans": []}
+{"post_id": "D14_b23", "spans": []}
+{"post_id": "D14_b24", "spans": []}
+{"post_id": "D14_b25", "spans": []}
+{"post_id": "D14_b26", "spans": []}
+{"post_id": "D14_b27", "spans": []}
+{"post_id": "D14_b28", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "김포", "level": "explicit", "subject": "self"}]}
+{"post_id": "D14_b29", "spans": []}
+{"post_id": "D14_b30", "spans": []}
+{"post_id": "D15_b01", "spans": []}
+{"post_id": "D15_b02", "spans": []}
+{"post_id": "D15_b03", "spans": []}
+{"post_id": "D15_b04", "spans": []}
+{"post_id": "D15_b05", "spans": []}
+{"post_id": "D15_b06", "spans": []}
+{"post_id": "D15_b07", "spans": []}
+{"post_id": "D15_b08", "spans": []}
+{"post_id": "D15_b09", "spans": []}
+{"post_id": "D15_b10", "spans": []}
+{"post_id": "D15_b11", "spans": []}
+{"post_id": "D15_b12", "spans": []}
+{"post_id": "D15_b13", "spans": []}
+{"post_id": "D15_b15", "spans": []}
+{"post_id": "D15_b16", "spans": []}
+{"post_id": "D15_b17", "spans": []}
+{"post_id": "D15_b18", "spans": []}
+{"post_id": "D15_b19", "spans": [{"text_id": "body", "start": 283, "end": 285, "type": "LOC_ADMIN", "text": "창원", "level": "explicit", "subject": "self"}]}
+{"post_id": "D15_b20", "spans": []}
+{"post_id": "D15_b21", "spans": [{"text_id": "body", "start": 69, "end": 71, "type": "LOC_ADMIN", "text": "경남", "level": "explicit", "subject": "self"}]}
+{"post_id": "D15_b22", "spans": [{"text_id": "body", "start": 157, "end": 159, "type": "AGE", "text": "스무", "level": "explicit", "subject": "self"}]}
+{"post_id": "D15_b23", "spans": []}
+{"post_id": "D15_b24", "spans": []}
+{"post_id": "D15_b25", "spans": [{"text_id": "body", "start": 100, "end": 102, "type": "LOC_ADMIN", "text": "경남", "level": "explicit", "subject": "self"}]}
+{"post_id": "D15_b27", "spans": [{"text_id": "body", "start": 151, "end": 153, "type": "LOC_ADMIN", "text": "진주", "level": "explicit", "subject": "self"}]}
+{"post_id": "D15_b28", "spans": []}
+{"post_id": "D15_b29", "spans": []}
+{"post_id": "D15_b30", "spans": []}
+{"post_id": "D16_b01", "spans": []}
+{"post_id": "D16_b02", "spans": []}
+{"post_id": "D16_b03", "spans": []}
+{"post_id": "D16_b04", "spans": []}
+{"post_id": "D16_b05", "spans": []}
+{"post_id": "D16_b06", "spans": []}
+{"post_id": "D16_b07", "spans": []}
+{"post_id": "D16_b08", "spans": []}
+{"post_id": "D16_b09", "spans": []}
+{"post_id": "D16_b10", "spans": []}
+{"post_id": "D16_b11", "spans": []}
+{"post_id": "D16_b12", "spans": []}
+{"post_id": "D16_b13", "spans": []}
+{"post_id": "D16_b14", "spans": []}
+{"post_id": "D16_b15", "spans": []}
+{"post_id": "D16_b16", "spans": []}
+{"post_id": "D16_b18", "spans": []}
+{"post_id": "D16_b19", "spans": []}
+{"post_id": "D16_b20", "spans": []}
+{"post_id": "D16_b21", "spans": []}
+{"post_id": "D16_b22", "spans": []}
+{"post_id": "D16_b23", "spans": [{"text_id": "body", "start": 179, "end": 181, "type": "LOC_ADMIN", "text": "옥천", "level": "explicit", "subject": "other"}]}
+{"post_id": "D16_b24", "spans": []}
+{"post_id": "D16_b25", "spans": []}
+{"post_id": "D16_b26", "spans": [{"text_id": "body", "start": 206, "end": 208, "type": "LOC_ADMIN", "text": "옥천", "level": "explicit", "subject": "self"}]}
+{"post_id": "D16_b28", "spans": []}
+{"post_id": "D16_b29", "spans": []}
+{"post_id": "D16_b30", "spans": []}
+{"post_id": "D17_b01", "spans": []}
+{"post_id": "D17_b02", "spans": []}
+{"post_id": "D17_b03", "spans": []}
+{"post_id": "D17_b04", "spans": []}
+{"post_id": "D17_b05", "spans": [{"text_id": "body", "start": 73, "end": 78, "type": "AGE", "text": "일흔셋에도", "level": "explicit", "subject": "self"}]}
+{"post_id": "D17_b06", "spans": []}
+{"post_id": "D17_b07", "spans": []}
+{"post_id": "D17_b08", "spans": [{"text_id": "body", "start": 23, "end": 25, "type": "LOC_ADMIN", "text": "임실", "level": "explicit", "subject": "self"}]}
+{"post_id": "D17_b09", "spans": []}
+{"post_id": "D17_b10", "spans": []}
+{"post_id": "D17_b11", "spans": []}
+{"post_id": "D17_b12", "spans": []}
+{"post_id": "D17_b13", "spans": []}
+{"post_id": "D17_b14", "spans": []}
+{"post_id": "D17_b15", "spans": []}
+{"post_id": "D17_b16", "spans": []}
+{"post_id": "D17_b17", "spans": [{"text_id": "body", "start": 48, "end": 50, "type": "LOC_ADMIN", "text": "임실", "level": "explicit", "subject": "self"}]}
+{"post_id": "D17_b18", "spans": []}
+{"post_id": "D17_b19", "spans": []}
+{"post_id": "D17_b20", "spans": []}
+{"post_id": "D17_b21", "spans": []}
+{"post_id": "D17_b23", "spans": []}
+{"post_id": "D17_b24", "spans": []}
+{"post_id": "D17_b25", "spans": [{"text_id": "body", "start": 26, "end": 28, "type": "LOC_ADMIN", "text": "임실", "level": "explicit", "subject": "self"}]}
+{"post_id": "D17_b26", "spans": []}
+{"post_id": "D17_b27", "spans": []}
+{"post_id": "D17_b28", "spans": []}
+{"post_id": "D17_b29", "spans": []}
+{"post_id": "D17_b30", "spans": []}
+{"post_id": "D18_b01", "spans": []}
+{"post_id": "D18_b02", "spans": []}
+{"post_id": "D18_b03", "spans": []}
+{"post_id": "D18_b04", "spans": []}
+{"post_id": "D18_b05", "spans": []}
+{"post_id": "D18_b06", "spans": [{"text_id": "body", "start": 54, "end": 56, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b07", "spans": []}
+{"post_id": "D18_b08", "spans": []}
+{"post_id": "D18_b09", "spans": []}
+{"post_id": "D18_b10", "spans": []}
+{"post_id": "D18_b11", "spans": []}
+{"post_id": "D18_b12", "spans": [{"text_id": "body", "start": 98, "end": 103, "type": "AGE", "text": "마흔하나에", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b13", "spans": []}
+{"post_id": "D18_b14", "spans": [{"text_id": "body", "start": 103, "end": 105, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b15", "spans": []}
+{"post_id": "D18_b16", "spans": []}
+{"post_id": "D18_b18", "spans": []}
+{"post_id": "D18_b19", "spans": [{"text_id": "body", "start": 25, "end": 29, "type": "LOC_ADMIN", "text": "유성에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b20", "spans": []}
+{"post_id": "D18_b21", "spans": [{"text_id": "body", "start": 154, "end": 158, "type": "LOC_ADMIN", "text": "세종으로", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b22", "spans": []}
+{"post_id": "D18_b23", "spans": []}
+{"post_id": "D18_b24", "spans": []}
+{"post_id": "D18_b25", "spans": []}
+{"post_id": "D18_b26", "spans": []}
+{"post_id": "D18_b27", "spans": [{"text_id": "body", "start": 25, "end": 27, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}]}
+{"post_id": "D18_b28", "spans": []}
+{"post_id": "D18_b29", "spans": []}
+{"post_id": "D18_b30", "spans": []}
+{"post_id": "D19_b01", "spans": []}
+{"post_id": "D19_b02", "spans": []}
+{"post_id": "D19_b03", "spans": []}
+{"post_id": "D19_b04", "spans": []}
+{"post_id": "D19_b05", "spans": []}
+{"post_id": "D19_b06", "spans": []}
+{"post_id": "D19_b07", "spans": []}
+{"post_id": "D19_b08", "spans": []}
+{"post_id": "D19_b09", "spans": [{"text_id": "body", "start": 53, "end": 55, "type": "LOC_ADMIN", "text": "연천", "level": "explicit", "subject": "self"}]}
+{"post_id": "D19_b10", "spans": []}
+{"post_id": "D19_b12", "spans": []}
+{"post_id": "D19_b13", "spans": []}
+{"post_id": "D19_b14", "spans": []}
+{"post_id": "D19_b15", "spans": []}
+{"post_id": "D19_b16", "spans": []}
+{"post_id": "D19_b17", "spans": []}
+{"post_id": "D19_b18", "spans": [{"text_id": "body", "start": 176, "end": 179, "type": "LOC_ADMIN", "text": "연천도", "level": "explicit", "subject": "self"}]}
+{"post_id": "D19_b20", "spans": []}
+{"post_id": "D19_b21", "spans": []}
+{"post_id": "D19_b22", "spans": []}
+{"post_id": "D19_b23", "spans": []}
+{"post_id": "D19_b24", "spans": [{"text_id": "body", "start": 65, "end": 68, "type": "LOC_ADMIN", "text": "연천은", "level": "explicit", "subject": "self"}]}
+{"post_id": "D19_b25", "spans": []}
+{"post_id": "D19_b26", "spans": [{"text_id": "body", "start": 105, "end": 108, "type": "LOC_ADMIN", "text": "동두천", "level": "explicit", "subject": "other"}]}
+{"post_id": "D19_b27", "spans": []}
+{"post_id": "D19_b28", "spans": []}
+{"post_id": "D19_b29", "spans": []}
+{"post_id": "D20_b01", "spans": []}
+{"post_id": "D20_b02", "spans": []}
+{"post_id": "D20_b03", "spans": []}
+{"post_id": "D20_b04", "spans": []}
+{"post_id": "D20_b05", "spans": []}
+{"post_id": "D20_b06", "spans": [{"text_id": "body", "start": 150, "end": 152, "type": "LOC_ADMIN", "text": "기장", "level": "explicit", "subject": "self"}]}
+{"post_id": "D20_b07", "spans": []}
+{"post_id": "D20_b08", "spans": []}
+{"post_id": "D20_b09", "spans": []}
+{"post_id": "D20_b10", "spans": []}
+{"post_id": "D20_b11", "spans": []}
+{"post_id": "D20_b12", "spans": []}
+{"post_id": "D20_b14", "spans": []}
+{"post_id": "D20_b15", "spans": []}
+{"post_id": "D20_b16", "spans": []}
+{"post_id": "D20_b17", "spans": []}
+{"post_id": "D20_b19", "spans": []}
+{"post_id": "D20_b20", "spans": []}
+{"post_id": "D20_b21", "spans": []}
+{"post_id": "D20_b22", "spans": [{"text_id": "body", "start": 221, "end": 224, "type": "LOC_ADMIN", "text": "사하구", "level": "explicit", "subject": "other"}]}
+{"post_id": "D20_b23", "spans": []}
+{"post_id": "D20_b24", "spans": []}
+{"post_id": "D20_b25", "spans": [{"text_id": "body", "start": 154, "end": 156, "type": "LOC_ADMIN", "text": "기장", "level": "explicit", "subject": "self"}]}
+{"post_id": "D20_b26", "spans": []}
+{"post_id": "D20_b27", "spans": []}
+{"post_id": "D20_b29", "spans": []}
+{"post_id": "D20_b30", "spans": []}
+{"post_id": "D21_b01", "spans": []}
+{"post_id": "D21_b02", "spans": []}
+{"post_id": "D21_b03", "spans": []}
+{"post_id": "D21_b04", "spans": []}
+{"post_id": "D21_b05", "spans": []}
+{"post_id": "D21_b06", "spans": []}
+{"post_id": "D21_b07", "spans": [{"text_id": "body", "start": 73, "end": 75, "type": "LOC_ADMIN", "text": "세종", "level": "explicit", "subject": "self"}]}
+{"post_id": "D21_b08", "spans": []}
+{"post_id": "D21_b09", "spans": []}
+{"post_id": "D21_b11", "spans": []}
+{"post_id": "D21_b12", "spans": []}
+{"post_id": "D21_b13", "spans": []}
+{"post_id": "D21_b14", "spans": []}
+{"post_id": "D21_b15", "spans": []}
+{"post_id": "D21_b16", "spans": []}
+{"post_id": "D21_b17", "spans": []}
+{"post_id": "D21_b18", "spans": []}
+{"post_id": "D21_b19", "spans": []}
+{"post_id": "D21_b20", "spans": [{"text_id": "title", "start": 5, "end": 9, "type": "AGE", "text": "서른다섯", "level": "explicit", "subject": "self"}]}
+{"post_id": "D21_b21", "spans": []}
+{"post_id": "D21_b22", "spans": []}
+{"post_id": "D21_b23", "spans": []}
+{"post_id": "D21_b24", "spans": []}
+{"post_id": "D21_b25", "spans": []}
+{"post_id": "D21_b26", "spans": []}
+{"post_id": "D21_b27", "spans": [{"text_id": "body", "start": 64, "end": 66, "type": "LOC_ADMIN", "text": "세종", "level": "explicit", "subject": "self"}]}
+{"post_id": "D21_b28", "spans": []}
+{"post_id": "D21_b29", "spans": []}
+{"post_id": "D21_b30", "spans": []}
+{"post_id": "D22_b01", "spans": []}
+{"post_id": "D22_b02", "spans": []}
+{"post_id": "D22_b03", "spans": []}
+{"post_id": "D22_b04", "spans": []}
+{"post_id": "D22_b05", "spans": []}
+{"post_id": "D22_b06", "spans": []}
+{"post_id": "D22_b07", "spans": [{"text_id": "body", "start": 140, "end": 143, "type": "LOC_ADMIN", "text": "서귀포", "level": "explicit", "subject": "self"}]}
+{"post_id": "D22_b08", "spans": []}
+{"post_id": "D22_b09", "spans": []}
+{"post_id": "D22_b10", "spans": []}
+{"post_id": "D22_b11", "spans": []}
+{"post_id": "D22_b12", "spans": []}
+{"post_id": "D22_b13", "spans": []}
+{"post_id": "D22_b15", "spans": []}
+{"post_id": "D22_b16", "spans": [{"text_id": "body", "start": 37, "end": 40, "type": "LOC_ADMIN", "text": "서귀포", "level": "explicit", "subject": "self"}]}
+{"post_id": "D22_b17", "spans": []}
+{"post_id": "D22_b18", "spans": []}
+{"post_id": "D22_b19", "spans": []}
+{"post_id": "D22_b20", "spans": []}
+{"post_id": "D22_b21", "spans": []}
+{"post_id": "D22_b23", "spans": []}
+{"post_id": "D22_b24", "spans": []}
+{"post_id": "D22_b25", "spans": []}
+{"post_id": "D22_b26", "spans": []}
+{"post_id": "D22_b27", "spans": [{"text_id": "body", "start": 159, "end": 162, "type": "LOC_ADMIN", "text": "서귀포", "level": "explicit", "subject": "self"}]}
+{"post_id": "D22_b28", "spans": []}
+{"post_id": "D22_b29", "spans": []}
+{"post_id": "D22_b30", "spans": []}
+{"post_id": "D23_b01", "spans": []}
+{"post_id": "D23_b02", "spans": []}
+{"post_id": "D23_b03", "spans": []}
+{"post_id": "D23_b04", "spans": []}
+{"post_id": "D23_b05", "spans": []}
+{"post_id": "D23_b06", "spans": []}
+{"post_id": "D23_b07", "spans": []}
+{"post_id": "D23_b08", "spans": [{"text_id": "body", "start": 53, "end": 55, "type": "LOC_ADMIN", "text": "청도", "level": "explicit", "subject": "self"}]}
+{"post_id": "D23_b09", "spans": []}
+{"post_id": "D23_b10", "spans": []}
+{"post_id": "D23_b11", "spans": []}
+{"post_id": "D23_b12", "spans": []}
+{"post_id": "D23_b13", "spans": []}
+{"post_id": "D23_b14", "spans": []}
+{"post_id": "D23_b15", "spans": []}
+{"post_id": "D23_b16", "spans": [{"text_id": "body", "start": 243, "end": 247, "type": "AGE", "text": "마흔넷에", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 256, "end": 261, "type": "AGE", "text": "마흔일곱인", "level": "explicit", "subject": "self"}]}
+{"post_id": "D23_b17", "spans": []}
+{"post_id": "D23_b19", "spans": []}
+{"post_id": "D23_b20", "spans": []}
+{"post_id": "D23_b21", "spans": []}
+{"post_id": "D23_b22", "spans": [{"text_id": "body", "start": 210, "end": 213, "type": "LOC_ADMIN", "text": "경산에", "level": "explicit", "subject": "other"}]}
+{"post_id": "D23_b23", "spans": []}
+{"post_id": "D23_b24", "spans": []}
+{"post_id": "D23_b26", "spans": []}
+{"post_id": "D23_b27", "spans": []}
+{"post_id": "D23_b28", "spans": []}
+{"post_id": "D23_b29", "spans": []}
+{"post_id": "D23_b30", "spans": []}
+{"post_id": "D24_b01", "spans": []}
+{"post_id": "D24_b03", "spans": []}
+{"post_id": "D24_b04", "spans": []}
+{"post_id": "D24_b05", "spans": []}
+{"post_id": "D24_b06", "spans": []}
+{"post_id": "D24_b07", "spans": []}
+{"post_id": "D24_b08", "spans": []}
+{"post_id": "D24_b09", "spans": []}
+{"post_id": "D24_b10", "spans": []}
+{"post_id": "D24_b11", "spans": []}
+{"post_id": "D24_b13", "spans": []}
+{"post_id": "D24_b14", "spans": []}
+{"post_id": "D24_b15", "spans": []}
+{"post_id": "D24_b16", "spans": []}
+{"post_id": "D24_b17", "spans": []}
+{"post_id": "D24_b18", "spans": []}
+{"post_id": "D24_b19", "spans": []}
+{"post_id": "D24_b20", "spans": []}
+{"post_id": "D24_b21", "spans": []}
+{"post_id": "D24_b22", "spans": []}
+{"post_id": "D24_b23", "spans": []}
+{"post_id": "D24_b24", "spans": [{"text_id": "body", "start": 20, "end": 22, "type": "LOC_ADMIN", "text": "강원", "level": "explicit", "subject": "self"}]}
+{"post_id": "D24_b25", "spans": []}
+{"post_id": "D24_b26", "spans": [{"text_id": "body", "start": 125, "end": 127, "type": "LOC_ADMIN", "text": "춘천", "level": "explicit", "subject": "other"}]}
+{"post_id": "D24_b27", "spans": []}
+{"post_id": "D24_b28", "spans": []}
+{"post_id": "D24_b29", "spans": []}
+{"post_id": "D24_b30", "spans": []}
+{"post_id": "E01_b01", "spans": []}
+{"post_id": "E01_b02", "spans": []}
+{"post_id": "E01_b03", "spans": []}
+{"post_id": "E01_b04", "spans": []}
+{"post_id": "E01_b06", "spans": []}
+{"post_id": "E01_b07", "spans": []}
+{"post_id": "E01_b08", "spans": []}
+{"post_id": "E01_b10", "spans": []}
+{"post_id": "E01_b11", "spans": []}
+{"post_id": "E01_b12", "spans": []}
+{"post_id": "E01_b13", "spans": []}
+{"post_id": "E01_b14", "spans": []}
+{"post_id": "E01_b16", "spans": []}
+{"post_id": "E01_b17", "spans": [{"text_id": "body", "start": 125, "end": 131, "type": "AGE", "text": "스물다섯인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E01_b18", "spans": []}
+{"post_id": "E01_b19", "spans": []}
+{"post_id": "E01_b20", "spans": []}
+{"post_id": "E02_b01", "spans": []}
+{"post_id": "E02_b02", "spans": []}
+{"post_id": "E02_b03", "spans": []}
+{"post_id": "E02_b04", "spans": []}
+{"post_id": "E02_b05", "spans": []}
+{"post_id": "E02_b06", "spans": []}
+{"post_id": "E02_b07", "spans": []}
+{"post_id": "E02_b08", "spans": []}
+{"post_id": "E02_b09", "spans": []}
+{"post_id": "E02_b10", "spans": []}
+{"post_id": "E02_b11", "spans": []}
+{"post_id": "E02_b12", "spans": []}
+{"post_id": "E02_b13", "spans": []}
+{"post_id": "E02_b14", "spans": []}
+{"post_id": "E02_b15", "spans": []}
+{"post_id": "E02_b16", "spans": []}
+{"post_id": "E02_b17", "spans": []}
+{"post_id": "E02_b18", "spans": []}
+{"post_id": "E02_b19", "spans": [{"text_id": "body", "start": 74, "end": 79, "type": "AGE", "text": "스물둘인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E02_b20", "spans": []}
+{"post_id": "E03_b01", "spans": []}
+{"post_id": "E03_b02", "spans": []}
+{"post_id": "E03_b03", "spans": []}
+{"post_id": "E03_b04", "spans": []}
+{"post_id": "E03_b05", "spans": []}
+{"post_id": "E03_b06", "spans": []}
+{"post_id": "E03_b07", "spans": []}
+{"post_id": "E03_b09", "spans": []}
+{"post_id": "E03_b10", "spans": []}
+{"post_id": "E03_b11", "spans": []}
+{"post_id": "E03_b12", "spans": []}
+{"post_id": "E03_b13", "spans": []}
+{"post_id": "E03_b14", "spans": []}
+{"post_id": "E03_b15", "spans": []}
+{"post_id": "E03_b16", "spans": [{"text_id": "body", "start": 214, "end": 217, "type": "LOC_ADMIN", "text": "속초에", "level": "explicit", "subject": "other"}]}
+{"post_id": "E03_b17", "spans": []}
+{"post_id": "E03_b18", "spans": []}
+{"post_id": "E03_b20", "spans": []}
+{"post_id": "E04_b01", "spans": []}
+{"post_id": "E04_b02", "spans": []}
+{"post_id": "E04_b03", "spans": []}
+{"post_id": "E04_b05", "spans": []}
+{"post_id": "E04_b06", "spans": []}
+{"post_id": "E04_b07", "spans": []}
+{"post_id": "E04_b08", "spans": []}
+{"post_id": "E04_b09", "spans": []}
+{"post_id": "E04_b10", "spans": [{"text_id": "body", "start": 197, "end": 199, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "other"}]}
+{"post_id": "E04_b11", "spans": []}
+{"post_id": "E04_b12", "spans": []}
+{"post_id": "E04_b13", "spans": []}
+{"post_id": "E04_b14", "spans": []}
+{"post_id": "E04_b15", "spans": []}
+{"post_id": "E04_b16", "spans": []}
+{"post_id": "E04_b17", "spans": []}
+{"post_id": "E04_b18", "spans": [{"text_id": "body", "start": 180, "end": 186, "type": "AGE", "text": "스물여덟인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E04_b19", "spans": []}
+{"post_id": "E04_b20", "spans": []}
+{"post_id": "E05_b01", "spans": []}
+{"post_id": "E05_b02", "spans": []}
+{"post_id": "E05_b03", "spans": []}
+{"post_id": "E05_b04", "spans": []}
+{"post_id": "E05_b05", "spans": []}
+{"post_id": "E05_b06", "spans": []}
+{"post_id": "E05_b07", "spans": []}
+{"post_id": "E05_b08", "spans": []}
+{"post_id": "E05_b09", "spans": []}
+{"post_id": "E05_b11", "spans": []}
+{"post_id": "E05_b12", "spans": []}
+{"post_id": "E05_b13", "spans": []}
+{"post_id": "E05_b14", "spans": []}
+{"post_id": "E05_b15", "spans": [{"text_id": "body", "start": 220, "end": 223, "type": "LOC_ADMIN", "text": "기장에", "level": "explicit", "subject": "other"}]}
+{"post_id": "E05_b16", "spans": []}
+{"post_id": "E05_b18", "spans": []}
+{"post_id": "E05_b19", "spans": []}
+{"post_id": "E05_b20", "spans": []}
+{"post_id": "E06_b01", "spans": []}
+{"post_id": "E06_b02", "spans": []}
+{"post_id": "E06_b03", "spans": [{"text_id": "body", "start": 202, "end": 205, "type": "LOC_ADMIN", "text": "정선군", "level": "explicit", "subject": "self"}]}
+{"post_id": "E06_b04", "spans": []}
+{"post_id": "E06_b05", "spans": []}
+{"post_id": "E06_b06", "spans": []}
+{"post_id": "E06_b07", "spans": []}
+{"post_id": "E06_b08", "spans": []}
+{"post_id": "E06_b09", "spans": []}
+{"post_id": "E06_b10", "spans": []}
+{"post_id": "E06_b11", "spans": []}
+{"post_id": "E06_b12", "spans": []}
+{"post_id": "E06_b13", "spans": []}
+{"post_id": "E06_b15", "spans": [{"text_id": "body", "start": 130, "end": 136, "type": "LOC_ADMIN", "text": "정선군이라고", "level": "explicit", "subject": "self"}]}
+{"post_id": "E06_b16", "spans": []}
+{"post_id": "E06_b17", "spans": [{"text_id": "body", "start": 274, "end": 278, "type": "AGE", "text": "마흔여덟", "level": "explicit", "subject": "self"}]}
+{"post_id": "E06_b18", "spans": []}
+{"post_id": "E06_b19", "spans": []}
+{"post_id": "E06_b20", "spans": [{"text_id": "body", "start": 256, "end": 258, "type": "LOC_ADMIN", "text": "태백", "level": "explicit", "subject": "other"}]}
+{"post_id": "E06_b21", "spans": []}
+{"post_id": "E06_b22", "spans": []}
+{"post_id": "E06_b23", "spans": []}
+{"post_id": "E06_b24", "spans": []}
+{"post_id": "E06_b25", "spans": []}
+{"post_id": "E06_b27", "spans": []}
+{"post_id": "E06_b28", "spans": []}
+{"post_id": "E06_b29", "spans": []}
+{"post_id": "E06_b30", "spans": []}
+{"post_id": "E07_b01", "spans": []}
+{"post_id": "E07_b02", "spans": []}
+{"post_id": "E07_b03", "spans": []}
+{"post_id": "E07_b04", "spans": []}
+{"post_id": "E07_b05", "spans": [{"text_id": "body", "start": 49, "end": 52, "type": "AGE", "text": "일흔셋", "level": "explicit", "subject": "self"}]}
+{"post_id": "E07_b06", "spans": []}
+{"post_id": "E07_b07", "spans": []}
+{"post_id": "E07_b08", "spans": []}
+{"post_id": "E07_b09", "spans": []}
+{"post_id": "E07_b10", "spans": []}
+{"post_id": "E07_b11", "spans": []}
+{"post_id": "E07_b12", "spans": []}
+{"post_id": "E07_b13", "spans": []}
+{"post_id": "E07_b14", "spans": []}
+{"post_id": "E07_b15", "spans": []}
+{"post_id": "E07_b16", "spans": []}
+{"post_id": "E07_b18", "spans": []}
+{"post_id": "E07_b19", "spans": []}
+{"post_id": "E07_b21", "spans": []}
+{"post_id": "E07_b23", "spans": []}
+{"post_id": "E07_b24", "spans": []}
+{"post_id": "E07_b25", "spans": []}
+{"post_id": "E07_b26", "spans": []}
+{"post_id": "E07_b27", "spans": []}
+{"post_id": "E07_b28", "spans": []}
+{"post_id": "E07_b29", "spans": []}
+{"post_id": "E07_b30", "spans": []}
+{"post_id": "E08_b01", "spans": []}
+{"post_id": "E08_b03", "spans": []}
+{"post_id": "E08_b04", "spans": []}
+{"post_id": "E08_b06", "spans": []}
+{"post_id": "E08_b07", "spans": []}
+{"post_id": "E08_b08", "spans": []}
+{"post_id": "E08_b09", "spans": [{"text_id": "body", "start": 26, "end": 28, "type": "LOC_ADMIN", "text": "보령", "level": "explicit", "subject": "self"}]}
+{"post_id": "E08_b10", "spans": []}
+{"post_id": "E08_b11", "spans": []}
+{"post_id": "E08_b12", "spans": []}
+{"post_id": "E08_b13", "spans": []}
+{"post_id": "E08_b15", "spans": [{"text_id": "body", "start": 24, "end": 27, "type": "LOC_ADMIN", "text": "보령시", "level": "explicit", "subject": "self"}]}
+{"post_id": "E08_b16", "spans": []}
+{"post_id": "E08_b17", "spans": [{"text_id": "body", "start": 51, "end": 54, "type": "AGE", "text": "예순셋", "level": "explicit", "subject": "self"}]}
+{"post_id": "E08_b18", "spans": []}
+{"post_id": "E08_b19", "spans": []}
+{"post_id": "E08_b20", "spans": [{"text_id": "body", "start": 156, "end": 158, "type": "LOC_ADMIN", "text": "서산", "level": "explicit", "subject": "other"}]}
+{"post_id": "E08_b21", "spans": []}
+{"post_id": "E08_b22", "spans": []}
+{"post_id": "E08_b23", "spans": []}
+{"post_id": "E08_b24", "spans": []}
+{"post_id": "E08_b25", "spans": []}
+{"post_id": "E08_b26", "spans": []}
+{"post_id": "E08_b27", "spans": []}
+{"post_id": "E08_b28", "spans": []}
+{"post_id": "E08_b29", "spans": []}
+{"post_id": "E08_b30", "spans": []}
+{"post_id": "E09_b01", "spans": []}
+{"post_id": "E09_b02", "spans": []}
+{"post_id": "E09_b03", "spans": [{"text_id": "body", "start": 206, "end": 208, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "E09_b04", "spans": []}
+{"post_id": "E09_b05", "spans": []}
+{"post_id": "E09_b06", "spans": []}
+{"post_id": "E09_b07", "spans": []}
+{"post_id": "E09_b08", "spans": []}
+{"post_id": "E09_b09", "spans": [{"text_id": "body", "start": 368, "end": 370, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "E09_b10", "spans": []}
+{"post_id": "E09_b11", "spans": []}
+{"post_id": "E09_b12", "spans": []}
+{"post_id": "E09_b13", "spans": []}
+{"post_id": "E09_b14", "spans": []}
+{"post_id": "E09_b15", "spans": [{"text_id": "body", "start": 154, "end": 156, "type": "LOC_ADMIN", "text": "안동", "level": "explicit", "subject": "self"}]}
+{"post_id": "E09_b16", "spans": []}
+{"post_id": "E09_b17", "spans": []}
+{"post_id": "E09_b18", "spans": []}
+{"post_id": "E09_b19", "spans": []}
+{"post_id": "E09_b20", "spans": []}
+{"post_id": "E09_b21", "spans": []}
+{"post_id": "E09_b22", "spans": []}
+{"post_id": "E09_b23", "spans": []}
+{"post_id": "E09_b24", "spans": []}
+{"post_id": "E09_b25", "spans": []}
+{"post_id": "E09_b26", "spans": []}
+{"post_id": "E09_b27", "spans": []}
+{"post_id": "E09_b28", "spans": []}
+{"post_id": "E09_b29", "spans": []}
+{"post_id": "E09_b30", "spans": []}
+{"post_id": "E10_b01", "spans": []}
+{"post_id": "E10_b02", "spans": []}
+{"post_id": "E10_b03", "spans": []}
+{"post_id": "E10_b04", "spans": []}
+{"post_id": "E10_b05", "spans": [{"text_id": "body", "start": 473, "end": 478, "type": "AGE", "text": "마흔셋인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E10_b06", "spans": []}
+{"post_id": "E10_b07", "spans": []}
+{"post_id": "E10_b08", "spans": []}
+{"post_id": "E10_b09", "spans": [{"text_id": "body", "start": 345, "end": 348, "type": "LOC_ADMIN", "text": "달성군", "level": "explicit", "subject": "self"}]}
+{"post_id": "E10_b10", "spans": []}
+{"post_id": "E10_b11", "spans": []}
+{"post_id": "E10_b12", "spans": []}
+{"post_id": "E10_b15", "spans": []}
+{"post_id": "E10_b16", "spans": []}
+{"post_id": "E10_b17", "spans": []}
+{"post_id": "E10_b18", "spans": []}
+{"post_id": "E10_b20", "spans": []}
+{"post_id": "E10_b21", "spans": []}
+{"post_id": "E10_b22", "spans": []}
+{"post_id": "E10_b23", "spans": []}
+{"post_id": "E10_b25", "spans": []}
+{"post_id": "E10_b26", "spans": []}
+{"post_id": "E10_b28", "spans": []}
+{"post_id": "E10_b29", "spans": []}
+{"post_id": "E10_b30", "spans": []}
+{"post_id": "E11_b01", "spans": []}
+{"post_id": "E11_b02", "spans": []}
+{"post_id": "E11_b03", "spans": [{"text_id": "body", "start": 679, "end": 681, "type": "LOC_ADMIN", "text": "통영", "level": "explicit", "subject": "self"}]}
+{"post_id": "E11_b04", "spans": []}
+{"post_id": "E11_b06", "spans": []}
+{"post_id": "E11_b07", "spans": []}
+{"post_id": "E11_b08", "spans": []}
+{"post_id": "E11_b09", "spans": []}
+{"post_id": "E11_b10", "spans": []}
+{"post_id": "E11_b11", "spans": []}
+{"post_id": "E11_b12", "spans": []}
+{"post_id": "E11_b13", "spans": []}
+{"post_id": "E11_b14", "spans": []}
+{"post_id": "E11_b15", "spans": []}
+{"post_id": "E11_b16", "spans": []}
+{"post_id": "E11_b17", "spans": []}
+{"post_id": "E11_b18", "spans": []}
+{"post_id": "E11_b19", "spans": []}
+{"post_id": "E11_b21", "spans": []}
+{"post_id": "E11_b22", "spans": []}
+{"post_id": "E11_b23", "spans": []}
+{"post_id": "E11_b24", "spans": []}
+{"post_id": "E11_b25", "spans": []}
+{"post_id": "E11_b26", "spans": []}
+{"post_id": "E11_b27", "spans": []}
+{"post_id": "E11_b28", "spans": []}
+{"post_id": "E11_b29", "spans": []}
+{"post_id": "E11_b30", "spans": []}
+{"post_id": "E12_b01", "spans": []}
+{"post_id": "E12_b02", "spans": []}
+{"post_id": "E12_b03", "spans": [{"text_id": "body", "start": 170, "end": 172, "type": "LOC_ADMIN", "text": "수지", "level": "explicit", "subject": "self"}]}
+{"post_id": "E12_b04", "spans": []}
+{"post_id": "E12_b06", "spans": []}
+{"post_id": "E12_b08", "spans": []}
+{"post_id": "E12_b09", "spans": [{"text_id": "body", "start": 169, "end": 171, "type": "LOC_ADMIN", "text": "수지", "level": "explicit", "subject": "self"}]}
+{"post_id": "E12_b10", "spans": []}
+{"post_id": "E12_b11", "spans": []}
+{"post_id": "E12_b12", "spans": []}
+{"post_id": "E12_b13", "spans": []}
+{"post_id": "E12_b14", "spans": []}
+{"post_id": "E12_b15", "spans": [{"text_id": "body", "start": 230, "end": 232, "type": "LOC_ADMIN", "text": "수지", "level": "explicit", "subject": "self"}]}
+{"post_id": "E12_b16", "spans": []}
+{"post_id": "E12_b17", "spans": []}
+{"post_id": "E12_b18", "spans": []}
+{"post_id": "E12_b19", "spans": []}
+{"post_id": "E12_b21", "spans": []}
+{"post_id": "E12_b22", "spans": []}
+{"post_id": "E12_b23", "spans": []}
+{"post_id": "E12_b24", "spans": []}
+{"post_id": "E12_b25", "spans": []}
+{"post_id": "E12_b27", "spans": []}
+{"post_id": "E12_b28", "spans": []}
+{"post_id": "E12_b29", "spans": []}
+{"post_id": "E12_b30", "spans": []}
+{"post_id": "E13_b03", "spans": []}
+{"post_id": "E13_b04", "spans": []}
+{"post_id": "E13_b05", "spans": [{"text_id": "body", "start": 63, "end": 68, "type": "AGE", "text": "쉰다섯인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E13_b06", "spans": []}
+{"post_id": "E13_b07", "spans": []}
+{"post_id": "E13_b08", "spans": []}
+{"post_id": "E13_b09", "spans": []}
+{"post_id": "E13_b10", "spans": []}
+{"post_id": "E13_b11", "spans": []}
+{"post_id": "E13_b12", "spans": []}
+{"post_id": "E13_b13", "spans": []}
+{"post_id": "E13_b14", "spans": []}
+{"post_id": "E13_b15", "spans": [{"text_id": "body", "start": 58, "end": 60, "type": "LOC_ADMIN", "text": "군산", "level": "explicit", "subject": "self"}]}
+{"post_id": "E13_b16", "spans": []}
+{"post_id": "E13_b17", "spans": [{"text_id": "body", "start": 180, "end": 183, "type": "LOC_ADMIN", "text": "김제로", "level": "explicit", "subject": "other"}]}
+{"post_id": "E13_b18", "spans": []}
+{"post_id": "E13_b19", "spans": []}
+{"post_id": "E13_b21", "spans": []}
+{"post_id": "E13_b22", "spans": []}
+{"post_id": "E13_b23", "spans": []}
+{"post_id": "E13_b24", "spans": []}
+{"post_id": "E13_b25", "spans": []}
+{"post_id": "E13_b26", "spans": []}
+{"post_id": "E13_b27", "spans": []}
+{"post_id": "E13_b29", "spans": []}
+{"post_id": "E13_b30", "spans": []}
+{"post_id": "E14_b01", "spans": []}
+{"post_id": "E14_b03", "spans": []}
+{"post_id": "E14_b04", "spans": []}
+{"post_id": "E14_b05", "spans": []}
+{"post_id": "E14_b06", "spans": []}
+{"post_id": "E14_b07", "spans": []}
+{"post_id": "E14_b08", "spans": []}
+{"post_id": "E14_b09", "spans": []}
+{"post_id": "E14_b10", "spans": []}
+{"post_id": "E14_b12", "spans": []}
+{"post_id": "E14_b14", "spans": []}
+{"post_id": "E14_b15", "spans": []}
+{"post_id": "E14_b16", "spans": []}
+{"post_id": "E14_b17", "spans": [{"text_id": "body", "start": 159, "end": 163, "type": "AGE", "text": "서른아홉", "level": "explicit", "subject": "self"}]}
+{"post_id": "E14_b18", "spans": []}
+{"post_id": "E14_b19", "spans": []}
+{"post_id": "E14_b20", "spans": [{"text_id": "body", "start": 221, "end": 223, "type": "LOC_ADMIN", "text": "부평", "level": "explicit", "subject": "self"}]}
+{"post_id": "E14_b21", "spans": []}
+{"post_id": "E14_b22", "spans": []}
+{"post_id": "E14_b23", "spans": []}
+{"post_id": "E14_b24", "spans": []}
+{"post_id": "E14_b26", "spans": []}
+{"post_id": "E14_b27", "spans": []}
+{"post_id": "E14_b29", "spans": []}
+{"post_id": "E14_b30", "spans": []}
+{"post_id": "E15_b01", "spans": []}
+{"post_id": "E15_b03", "spans": [{"text_id": "body", "start": 672, "end": 674, "type": "LOC_ADMIN", "text": "울산", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 675, "end": 679, "type": "LOC_ADMIN", "text": "북구에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "E15_b04", "spans": []}
+{"post_id": "E15_b06", "spans": []}
+{"post_id": "E15_b07", "spans": []}
+{"post_id": "E15_b08", "spans": []}
+{"post_id": "E15_b09", "spans": [{"text_id": "body", "start": 2270, "end": 2275, "type": "LOC_ADMIN", "text": "울산이라고", "level": "explicit", "subject": "self"}]}
+{"post_id": "E15_b10", "spans": []}
+{"post_id": "E15_b11", "spans": []}
+{"post_id": "E15_b12", "spans": [{"text_id": "body", "start": 576, "end": 577, "type": "AGE", "text": "쉰", "level": "explicit", "subject": "self"}]}
+{"post_id": "E15_b13", "spans": []}
+{"post_id": "E15_b14", "spans": [{"text_id": "body", "start": 1621, "end": 1625, "type": "LOC_ADMIN", "text": "포항에서", "level": "explicit", "subject": "other"}]}
+{"post_id": "E15_b15", "spans": []}
+{"post_id": "E15_b16", "spans": []}
+{"post_id": "E15_b17", "spans": []}
+{"post_id": "E15_b19", "spans": []}
+{"post_id": "E15_b22", "spans": []}
+{"post_id": "E15_b23", "spans": []}
+{"post_id": "E15_b24", "spans": []}
+{"post_id": "E15_b25", "spans": []}
+{"post_id": "E15_b26", "spans": []}
+{"post_id": "E15_b27", "spans": []}
+{"post_id": "E15_b28", "spans": []}
+{"post_id": "E15_b30", "spans": []}
+{"post_id": "E16_b01", "spans": []}
+{"post_id": "E16_b02", "spans": []}
+{"post_id": "E16_b03", "spans": []}
+{"post_id": "E16_b04", "spans": []}
+{"post_id": "E16_b05", "spans": [{"text_id": "body", "start": 475, "end": 481, "type": "AGE", "text": "스물아홉인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E16_b06", "spans": []}
+{"post_id": "E16_b08", "spans": []}
+{"post_id": "E16_b09", "spans": []}
+{"post_id": "E16_b10", "spans": []}
+{"post_id": "E16_b11", "spans": []}
+{"post_id": "E16_b12", "spans": []}
+{"post_id": "E16_b13", "spans": []}
+{"post_id": "E16_b15", "spans": []}
+{"post_id": "E16_b16", "spans": []}
+{"post_id": "E16_b17", "spans": []}
+{"post_id": "E16_b18", "spans": []}
+{"post_id": "E16_b19", "spans": []}
+{"post_id": "E16_b21", "spans": []}
+{"post_id": "E16_b22", "spans": []}
+{"post_id": "E16_b23", "spans": []}
+{"post_id": "E16_b24", "spans": []}
+{"post_id": "E16_b25", "spans": []}
+{"post_id": "E16_b26", "spans": []}
+{"post_id": "E16_b27", "spans": []}
+{"post_id": "E16_b28", "spans": []}
+{"post_id": "E16_b29", "spans": []}
+{"post_id": "E17_b01", "spans": []}
+{"post_id": "E17_b03", "spans": []}
+{"post_id": "E17_b04", "spans": []}
+{"post_id": "E17_b05", "spans": [{"text_id": "body", "start": 167, "end": 172, "type": "AGE", "text": "마흔넷인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E17_b06", "spans": []}
+{"post_id": "E17_b07", "spans": []}
+{"post_id": "E17_b09", "spans": []}
+{"post_id": "E17_b10", "spans": []}
+{"post_id": "E17_b11", "spans": []}
+{"post_id": "E17_b12", "spans": []}
+{"post_id": "E17_b13", "spans": []}
+{"post_id": "E17_b14", "spans": []}
+{"post_id": "E17_b15", "spans": [{"text_id": "body", "start": 111, "end": 113, "type": "LOC_ADMIN", "text": "원주", "level": "explicit", "subject": "self"}]}
+{"post_id": "E17_b16", "spans": []}
+{"post_id": "E17_b17", "spans": []}
+{"post_id": "E17_b19", "spans": []}
+{"post_id": "E17_b20", "spans": [{"text_id": "body", "start": 256, "end": 258, "type": "LOC_ADMIN", "text": "횡성", "level": "explicit", "subject": "other"}]}
+{"post_id": "E17_b21", "spans": []}
+{"post_id": "E17_b22", "spans": []}
+{"post_id": "E17_b23", "spans": []}
+{"post_id": "E17_b24", "spans": []}
+{"post_id": "E17_b25", "spans": []}
+{"post_id": "E17_b26", "spans": []}
+{"post_id": "E17_b27", "spans": []}
+{"post_id": "E17_b28", "spans": []}
+{"post_id": "E17_b29", "spans": []}
+{"post_id": "E17_b30", "spans": []}
+{"post_id": "E18_b01", "spans": []}
+{"post_id": "E18_b03", "spans": []}
+{"post_id": "E18_b04", "spans": []}
+{"post_id": "E18_b06", "spans": []}
+{"post_id": "E18_b07", "spans": []}
+{"post_id": "E18_b08", "spans": []}
+{"post_id": "E18_b09", "spans": []}
+{"post_id": "E18_b11", "spans": []}
+{"post_id": "E18_b12", "spans": []}
+{"post_id": "E18_b13", "spans": []}
+{"post_id": "E18_b14", "spans": []}
+{"post_id": "E18_b15", "spans": [{"text_id": "body", "start": 69, "end": 71, "type": "LOC_ADMIN", "text": "김해", "level": "explicit", "subject": "self"}]}
+{"post_id": "E18_b16", "spans": []}
+{"post_id": "E18_b19", "spans": []}
+{"post_id": "E18_b20", "spans": [{"text_id": "body", "start": 128, "end": 130, "type": "LOC_ADMIN", "text": "창원", "level": "explicit", "subject": "other"}]}
+{"post_id": "E18_b21", "spans": [{"text_id": "body", "start": 116, "end": 118, "type": "LOC_ADMIN", "text": "음성", "level": "explicit", "subject": "self"}]}
+{"post_id": "E18_b22", "spans": []}
+{"post_id": "E18_b23", "spans": []}
+{"post_id": "E18_b24", "spans": []}
+{"post_id": "E18_b25", "spans": []}
+{"post_id": "E18_b26", "spans": []}
+{"post_id": "E18_b27", "spans": []}
+{"post_id": "E18_b28", "spans": []}
+{"post_id": "E18_b29", "spans": []}
+{"post_id": "E18_b30", "spans": []}
+{"post_id": "E19_b01", "spans": []}
+{"post_id": "E19_b02", "spans": []}
+{"post_id": "E19_b03", "spans": [{"text_id": "body", "start": 353, "end": 357, "type": "LOC_ADMIN", "text": "충주에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "E19_b04", "spans": []}
+{"post_id": "E19_b05", "spans": [{"text_id": "body", "start": 279, "end": 284, "type": "AGE", "text": "쉰일곱인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E19_b06", "spans": []}
+{"post_id": "E19_b07", "spans": []}
+{"post_id": "E19_b09", "spans": [{"text_id": "body", "start": 293, "end": 295, "type": "LOC_ADMIN", "text": "충주", "level": "explicit", "subject": "self"}]}
+{"post_id": "E19_b10", "spans": []}
+{"post_id": "E19_b11", "spans": []}
+{"post_id": "E19_b12", "spans": []}
+{"post_id": "E19_b14", "spans": []}
+{"post_id": "E19_b15", "spans": []}
+{"post_id": "E19_b16", "spans": []}
+{"post_id": "E19_b17", "spans": []}
+{"post_id": "E19_b18", "spans": [{"text_id": "body", "start": 497, "end": 500, "type": "LOC_ADMIN", "text": "장수를", "level": "explicit", "subject": "self"}]}
+{"post_id": "E19_b19", "spans": []}
+{"post_id": "E19_b20", "spans": [{"text_id": "body", "start": 283, "end": 285, "type": "LOC_ADMIN", "text": "제천", "level": "explicit", "subject": "other"}]}
+{"post_id": "E19_b21", "spans": []}
+{"post_id": "E19_b22", "spans": []}
+{"post_id": "E19_b23", "spans": []}
+{"post_id": "E19_b25", "spans": []}
+{"post_id": "E19_b26", "spans": []}
+{"post_id": "E19_b27", "spans": []}
+{"post_id": "E19_b28", "spans": []}
+{"post_id": "E19_b29", "spans": []}
+{"post_id": "E19_b30", "spans": []}
+{"post_id": "E20_b01", "spans": []}
+{"post_id": "E20_b02", "spans": []}
+{"post_id": "E20_b03", "spans": [{"text_id": "body", "start": 28, "end": 30, "type": "LOC_ADMIN", "text": "세종", "level": "explicit", "subject": "self"}]}
+{"post_id": "E20_b04", "spans": []}
+{"post_id": "E20_b06", "spans": []}
+{"post_id": "E20_b07", "spans": []}
+{"post_id": "E20_b08", "spans": []}
+{"post_id": "E20_b09", "spans": []}
+{"post_id": "E20_b10", "spans": []}
+{"post_id": "E20_b11", "spans": []}
+{"post_id": "E20_b12", "spans": []}
+{"post_id": "E20_b13", "spans": []}
+{"post_id": "E20_b15", "spans": [{"text_id": "body", "start": 140, "end": 142, "type": "LOC_ADMIN", "text": "세종", "level": "explicit", "subject": "self"}]}
+{"post_id": "E20_b16", "spans": []}
+{"post_id": "E20_b17", "spans": [{"text_id": "body", "start": 247, "end": 253, "type": "AGE", "text": "스물하나인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E20_b18", "spans": []}
+{"post_id": "E20_b19", "spans": []}
+{"post_id": "E20_b20", "spans": [{"text_id": "body", "start": 143, "end": 145, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "other"}]}
+{"post_id": "E20_b21", "spans": []}
+{"post_id": "E20_b23", "spans": []}
+{"post_id": "E20_b24", "spans": []}
+{"post_id": "E20_b25", "spans": []}
+{"post_id": "E20_b26", "spans": []}
+{"post_id": "E20_b27", "spans": []}
+{"post_id": "E20_b28", "spans": []}
+{"post_id": "E20_b29", "spans": []}
+{"post_id": "E20_b30", "spans": []}
+{"post_id": "E21_b01", "spans": []}
+{"post_id": "E21_b02", "spans": []}
+{"post_id": "E21_b03", "spans": []}
+{"post_id": "E21_b04", "spans": []}
+{"post_id": "E21_b05", "spans": []}
+{"post_id": "E21_b06", "spans": []}
+{"post_id": "E21_b07", "spans": []}
+{"post_id": "E21_b09", "spans": []}
+{"post_id": "E21_b10", "spans": []}
+{"post_id": "E21_b11", "spans": []}
+{"post_id": "E21_b12", "spans": []}
+{"post_id": "E21_b13", "spans": []}
+{"post_id": "E21_b15", "spans": []}
+{"post_id": "E21_b16", "spans": []}
+{"post_id": "E21_b17", "spans": [{"text_id": "body", "start": 198, "end": 204, "type": "AGE", "text": "예순다섯인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "E21_b19", "spans": []}
+{"post_id": "E21_b20", "spans": [{"text_id": "body", "start": 181, "end": 185, "type": "LOC_ADMIN", "text": "사천에서", "level": "explicit", "subject": "self"}]}
+{"post_id": "E21_b21", "spans": []}
+{"post_id": "E21_b22", "spans": []}
+{"post_id": "E21_b23", "spans": []}
+{"post_id": "E21_b24", "spans": []}
+{"post_id": "E21_b25", "spans": []}
+{"post_id": "E21_b26", "spans": []}
+{"post_id": "E21_b27", "spans": []}
+{"post_id": "E21_b29", "spans": []}
+{"post_id": "E21_b30", "spans": []}
+{"post_id": "S01_b01", "spans": []}
+{"post_id": "S01_b02", "spans": []}
+{"post_id": "S01_b03", "spans": []}
+{"post_id": "S01_b04", "spans": []}
+{"post_id": "S01_b05", "spans": []}
+{"post_id": "S01_b07", "spans": []}
+{"post_id": "S01_b08", "spans": []}
+{"post_id": "S01_b09", "spans": []}
+{"post_id": "S01_b11", "spans": []}
+{"post_id": "S01_b12", "spans": []}
+{"post_id": "S01_b13", "spans": []}
+{"post_id": "S01_b14", "spans": []}
+{"post_id": "S01_b16", "spans": []}
+{"post_id": "S01_b18", "spans": []}
+{"post_id": "S01_b19", "spans": []}
+{"post_id": "S01_b20", "spans": []}
+{"post_id": "S01b_b01", "spans": []}
+{"post_id": "S01b_b02", "spans": [{"text_id": "body", "start": 5, "end": 7, "type": "LOC_ADMIN", "text": "음성", "level": "explicit", "subject": "self"}]}
+{"post_id": "S01b_b03", "spans": []}
+{"post_id": "S01b_b05", "spans": []}
+{"post_id": "S01b_b06", "spans": []}
+{"post_id": "S01b_b07", "spans": []}
+{"post_id": "S01b_b08", "spans": [{"text_id": "body", "start": 79, "end": 81, "type": "LOC_ADMIN", "text": "진천", "level": "explicit", "subject": "self"}]}
+{"post_id": "S01b_b09", "spans": []}
+{"post_id": "S01b_b12", "spans": [{"text_id": "body", "start": 136, "end": 140, "type": "AGE", "text": "서른여덟", "level": "explicit", "subject": "self"}]}
+{"post_id": "S01b_b13", "spans": []}
+{"post_id": "S01b_b14", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "진천", "level": "explicit", "subject": "self"}]}
+{"post_id": "S01b_b16", "spans": []}
+{"post_id": "S01b_b17", "spans": []}
+{"post_id": "S01b_b18", "spans": [{"text_id": "body", "start": 126, "end": 128, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "other"}]}
+{"post_id": "S01b_b20", "spans": []}
