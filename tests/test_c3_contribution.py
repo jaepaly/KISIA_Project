@@ -25,6 +25,15 @@ def test_loo_delta_rank_and_evidence() -> None:
     assert rows[0]["top_spans"] == [{"span_id": "p2_s01", "text_id": "body"}]
 
 
+def test_risk_without_equals_baseline_plus_delta_after_rounding() -> None:
+    # 계약 불변식 (3) — 따로 반올림하면 18.57 + (-14.29) = 4.28 ≠ 4.29 였다 (E01 예시에서 발견)
+    result = leave_one_out(user_ref="u_deadbeef", post_ids=["a", "b"],
+                           risk_fn=weighted_risk({"a": 14.2857, "b": 4.2857}))
+    out = result["output"]
+    for row in out["contributions"]:
+        assert row["risk_without"] == pytest.approx(out["baseline_risk"] + row["delta"], abs=1e-9)
+
+
 def test_order_independent_and_tie_break_by_post_id() -> None:
     risk = weighted_risk({"a": 10.0, "b": 10.0})
     a = leave_one_out(user_ref="u_deadbeef", post_ids=["b", "a"], risk_fn=risk)
