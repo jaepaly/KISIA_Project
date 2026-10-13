@@ -169,7 +169,7 @@
             "restore_key": {}
           }
         ],
-        "contribution": -14.29
+        "contribution": -14.28
       },
       {
         "post_id": "E01_b19",
@@ -305,7 +305,7 @@
             "restore_key": {}
           }
         ],
-        "contribution": -4.29
+        "contribution": -4.28
       }
     ],
     "risk": {
@@ -313,7 +313,7 @@
       "target": 40.0
     },
     "provenance": {
-      "measured_at": "2026-10-13T06:13:17+00:00",
+      "measured_at": "2026-10-13T06:26:35+00:00",
       "model_version": "kisia-ckpt/v2+rules",
       "dict_version": "geo-2026-07",
       "data_version": "corpus-v0"
@@ -417,7 +417,7 @@
     },
     "rewrites": [],
     "provenance": {
-      "measured_at": "2026-10-13T06:13:17+00:00",
+      "measured_at": "2026-10-13T06:26:35+00:00",
       "model_version": "rules-v1",
       "dict_version": "geo-2026-07",
       "external_llm_used": false

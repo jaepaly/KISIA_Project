@@ -18,7 +18,7 @@
       {
         "post_id": "E01_b11",
         "risk_without": 4.29,
-        "delta": -14.29,
+        "delta": -14.28,
         "rank": 1,
         "clue_ids": [
           "E01_b11_s01",
@@ -45,7 +45,7 @@
       {
         "post_id": "E01_b12",
         "risk_without": 14.29,
-        "delta": -4.29,
+        "delta": -4.28,
         "rank": 2,
         "clue_ids": [
           "E01_b12_s01",

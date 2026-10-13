@@ -76,6 +76,24 @@ def validate(doc: dict, schema_name: str, ref: str | None = None) -> None:
     jsonschema.Draft202012Validator(schema, format_checker=jsonschema.FormatChecker()).validate(doc)
 
 
+def check_links(span_docs: dict, contr_doc: dict, stage2_doc: dict) -> None:
+    """스키마가 못 잡는 값끼리의 맞물림 — 계약 $comment 의 불변식과 문서 사이 참조."""
+    out = contr_doc["output"]
+    for c in out["contributions"]:  # contribution 불변식 (3)
+        if abs(c["risk_without"] - (out["baseline_risk"] + c["delta"])) > 1e-9:
+            raise SystemExit(f"risk_without ≠ baseline_risk + delta: {c}")
+    span_ids = {s["span_id"] for d in span_docs.values() for s in d["spans"]}
+    for post in stage2_doc["input"]["posts"]:
+        texts = {t["text_id"]: t["pseudonymized"] for t in post["texts"]}
+        for e in post["pseudonym_map"]:
+            if texts[e["text_id"]][e["pseudo"]["start"]:e["pseudo"]["end"]] != e["label"]:
+                raise SystemExit(f"pseudo offset 이 가명 텍스트와 안 맞는다: {e}")
+    for f in stage2_doc["output"]["findings"].values():
+        for ev in f["evidence"]:
+            if ev["span_id"] not in span_ids:
+                raise SystemExit(f"evidence 가 없는 span_id 를 가리킨다: {ev}")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--checkpoint", required=True, help="1단 v2 체크포인트 폴더")
@@ -124,6 +142,7 @@ def main() -> int:
             "specificity": (spec_doc, "specificity.schema.json", None),
             "contribution": (contr_doc, "contribution.schema.json", None),
             "stage2-io": (stage2_doc, "stage2-io.schema.json", None)}
+    check_links(spans_by_post, contr_doc, stage2_doc)
     OUT.mkdir(exist_ok=True)
     for name, (doc, schema, ref) in docs.items():
         validate(doc, schema, ref)
