@@ -1,0 +1,678 @@
+{
+ "fingerprint": {
+  "commit": "a8e05d2fa80c3d0c41ec41fcf00ec0d154ea3211",
+  "target": 40.0,
+  "weights": {
+   "main": [
+    1,
+    2,
+    3
+   ],
+   "count": [
+    1,
+    1,
+    1
+   ],
+   "steep": [
+    1,
+    2,
+    4
+   ]
+  },
+  "inputs_full_sha256": "6233749eb27114d14aad5c5f8db973a6b9be71523f00a2b302cf2eca39a05622",
+  "gold_files_sha256": "cb7832338f1e197198d20ed1035f623c9814768d52da166270c17002686d8e23",
+  "test_ids_sha256": "ba628bc4dccd0763128cc4a068b309e43f2fe820a3b35be23e0202c4f7213faf",
+  "measured_at": "2026-10-13T16:58:36",
+  "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+  "checkpoint_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be"
+ },
+ "totals": {
+  "targets": 730,
+  "no_candidate": 543,
+  "applied": 187,
+  "redetected": 145,
+  "posts_rewritten": 171
+ },
+ "no_candidate_rate": 0.7438,
+ "redetect_rate": 0.7754,
+ "drop_all": {
+  "sim": {
+   "n": 87,
+   "mean": 0.2544,
+   "median": 0.2857
+  },
+  "real": {
+   "n": 87,
+   "mean": 0.0735,
+   "median": 0.0
+  },
+  "real_minus_sim": {
+   "n": 87,
+   "mean": -0.1808,
+   "median": -0.1609
+  }
+ },
+ "drop_over_target": {
+  "sim": {
+   "n": 58,
+   "mean": 0.3168,
+   "median": 0.3234
+  },
+  "real": {
+   "n": 58,
+   "mean": 0.0893,
+   "median": 0.0778
+  }
+ },
+ "accounts": [
+  {
+   "persona_id": "A01",
+   "n_posts": 14,
+   "orig": 36.4286,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "A02",
+   "n_posts": 16,
+   "orig": 45.7143,
+   "sim": 27.1429,
+   "real": 37.1429
+  },
+  {
+   "persona_id": "A03",
+   "n_posts": 14,
+   "orig": 32.1429,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "A04",
+   "n_posts": 16,
+   "orig": 46.4286,
+   "sim": 32.1429,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "A05",
+   "n_posts": 14,
+   "orig": 46.4286,
+   "sim": 32.1429,
+   "real": 46.4286
+  },
+  {
+   "persona_id": "A07",
+   "n_posts": 18,
+   "orig": 54.2857,
+   "sim": 33.5714,
+   "real": 45.7143
+  },
+  {
+   "persona_id": "A08",
+   "n_posts": 21,
+   "orig": 27.1429,
+   "sim": 27.1429,
+   "real": 27.1429
+  },
+  {
+   "persona_id": "A10",
+   "n_posts": 21,
+   "orig": 61.4286,
+   "sim": 40.0,
+   "real": 61.4286
+  },
+  {
+   "persona_id": "A11",
+   "n_posts": 29,
+   "orig": 54.2857,
+   "sim": 40.0,
+   "real": 54.2857
+  },
+  {
+   "persona_id": "A12",
+   "n_posts": 28,
+   "orig": 53.5714,
+   "sim": 39.2857,
+   "real": 53.5714
+  },
+  {
+   "persona_id": "A13",
+   "n_posts": 26,
+   "orig": 37.8571,
+   "sim": 25.7143,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "A14",
+   "n_posts": 28,
+   "orig": 63.5714,
+   "sim": 42.8571,
+   "real": 55.0
+  },
+  {
+   "persona_id": "A15",
+   "n_posts": 28,
+   "orig": 46.4286,
+   "sim": 27.8571,
+   "real": 46.4286
+  },
+  {
+   "persona_id": "A16",
+   "n_posts": 29,
+   "orig": 38.5714,
+   "sim": 24.2857,
+   "real": 30.0
+  },
+  {
+   "persona_id": "A18",
+   "n_posts": 27,
+   "orig": 42.1429,
+   "sim": 33.5714,
+   "real": 33.5714
+  },
+  {
+   "persona_id": "A19",
+   "n_posts": 26,
+   "orig": 70.0,
+   "sim": 47.1429,
+   "real": 70.0
+  },
+  {
+   "persona_id": "A20",
+   "n_posts": 29,
+   "orig": 32.1429,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "A21",
+   "n_posts": 28,
+   "orig": 53.5714,
+   "sim": 39.2857,
+   "real": 53.5714
+  },
+  {
+   "persona_id": "A22",
+   "n_posts": 29,
+   "orig": 38.5714,
+   "sim": 34.2857,
+   "real": 34.2857
+  },
+  {
+   "persona_id": "A23",
+   "n_posts": 29,
+   "orig": 54.2857,
+   "sim": 40.0,
+   "real": 54.2857
+  },
+  {
+   "persona_id": "A24",
+   "n_posts": 28,
+   "orig": 48.5714,
+   "sim": 34.2857,
+   "real": 40.0
+  },
+  {
+   "persona_id": "A25",
+   "n_posts": 28,
+   "orig": 38.5714,
+   "sim": 30.0,
+   "real": 38.5714
+  },
+  {
+   "persona_id": "A26",
+   "n_posts": 26,
+   "orig": 32.1429,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "B02",
+   "n_posts": 18,
+   "orig": 62.1429,
+   "sim": 39.2857,
+   "real": 49.2857
+  },
+  {
+   "persona_id": "B03",
+   "n_posts": 18,
+   "orig": 52.1429,
+   "sim": 26.4286,
+   "real": 38.5714
+  },
+  {
+   "persona_id": "B04",
+   "n_posts": 19,
+   "orig": 40.7143,
+   "sim": 34.2857,
+   "real": 40.7143
+  },
+  {
+   "persona_id": "B05",
+   "n_posts": 18,
+   "orig": 46.4286,
+   "sim": 32.1429,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "B06",
+   "n_posts": 23,
+   "orig": 55.7143,
+   "sim": 32.1429,
+   "real": 55.7143
+  },
+  {
+   "persona_id": "B07",
+   "n_posts": 27,
+   "orig": 50.0,
+   "sim": 35.7143,
+   "real": 41.4286
+  },
+  {
+   "persona_id": "B08",
+   "n_posts": 29,
+   "orig": 50.7143,
+   "sim": 27.8571,
+   "real": 46.4286
+  },
+  {
+   "persona_id": "B09",
+   "n_posts": 29,
+   "orig": 55.0,
+   "sim": 33.5714,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "B10",
+   "n_posts": 27,
+   "orig": 50.0,
+   "sim": 41.4286,
+   "real": 41.4286
+  },
+  {
+   "persona_id": "B11",
+   "n_posts": 28,
+   "orig": 65.0,
+   "sim": 35.0,
+   "real": 60.0
+  },
+  {
+   "persona_id": "B12",
+   "n_posts": 24,
+   "orig": 50.0,
+   "sim": 35.7143,
+   "real": 41.4286
+  },
+  {
+   "persona_id": "B13",
+   "n_posts": 26,
+   "orig": 61.4286,
+   "sim": 42.8571,
+   "real": 61.4286
+  },
+  {
+   "persona_id": "B14",
+   "n_posts": 28,
+   "orig": 50.0,
+   "sim": 45.7143,
+   "real": 50.0
+  },
+  {
+   "persona_id": "B15",
+   "n_posts": 24,
+   "orig": 48.5714,
+   "sim": 30.0,
+   "real": 48.5714
+  },
+  {
+   "persona_id": "B16",
+   "n_posts": 27,
+   "orig": 55.7143,
+   "sim": 35.0,
+   "real": 55.7143
+  },
+  {
+   "persona_id": "B17",
+   "n_posts": 27,
+   "orig": 46.4286,
+   "sim": 35.7143,
+   "real": 46.4286
+  },
+  {
+   "persona_id": "B18",
+   "n_posts": 28,
+   "orig": 63.5714,
+   "sim": 40.0,
+   "real": 58.5714
+  },
+  {
+   "persona_id": "B19",
+   "n_posts": 29,
+   "orig": 47.8571,
+   "sim": 39.2857,
+   "real": 47.8571
+  },
+  {
+   "persona_id": "B20",
+   "n_posts": 29,
+   "orig": 57.8571,
+   "sim": 31.4286,
+   "real": 57.8571
+  },
+  {
+   "persona_id": "D01",
+   "n_posts": 17,
+   "orig": 32.1429,
+   "sim": 24.2857,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "D02",
+   "n_posts": 17,
+   "orig": 42.8571,
+   "sim": 42.8571,
+   "real": 42.8571
+  },
+  {
+   "persona_id": "D03",
+   "n_posts": 20,
+   "orig": 32.1429,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "D04",
+   "n_posts": 16,
+   "orig": 37.8571,
+   "sim": 37.8571,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "D05",
+   "n_posts": 17,
+   "orig": 35.0,
+   "sim": 26.4286,
+   "real": 35.0
+  },
+  {
+   "persona_id": "D06",
+   "n_posts": 12,
+   "orig": 57.8571,
+   "sim": 39.2857,
+   "real": 49.2857
+  },
+  {
+   "persona_id": "D07",
+   "n_posts": 14,
+   "orig": 30.0,
+   "sim": 30.0,
+   "real": 30.0
+  },
+  {
+   "persona_id": "D08",
+   "n_posts": 25,
+   "orig": 36.4286,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "D09",
+   "n_posts": 27,
+   "orig": 47.1429,
+   "sim": 20.7143,
+   "real": 42.8571
+  },
+  {
+   "persona_id": "D10",
+   "n_posts": 27,
+   "orig": 32.1429,
+   "sim": 27.8571,
+   "real": 27.8571
+  },
+  {
+   "persona_id": "D11",
+   "n_posts": 29,
+   "orig": 42.8571,
+   "sim": 28.5714,
+   "real": 34.2857
+  },
+  {
+   "persona_id": "D12",
+   "n_posts": 26,
+   "orig": 37.8571,
+   "sim": 27.8571,
+   "real": 37.8571
+  },
+  {
+   "persona_id": "D13",
+   "n_posts": 28,
+   "orig": 46.4286,
+   "sim": 32.1429,
+   "real": 46.4286
+  },
+  {
+   "persona_id": "D14",
+   "n_posts": 28,
+   "orig": 39.2857,
+   "sim": 35.0,
+   "real": 39.2857
+  },
+  {
+   "persona_id": "D15",
+   "n_posts": 28,
+   "orig": 42.1429,
+   "sim": 27.8571,
+   "real": 42.1429
+  },
+  {
+   "persona_id": "D16",
+   "n_posts": 28,
+   "orig": 31.4286,
+   "sim": 27.1429,
+   "real": 31.4286
+  },
+  {
+   "persona_id": "D17",
+   "n_posts": 29,
+   "orig": 48.5714,
+   "sim": 32.1429,
+   "real": 40.0
+  },
+  {
+   "persona_id": "D18",
+   "n_posts": 29,
+   "orig": 42.1429,
+   "sim": 27.8571,
+   "real": 33.5714
+  },
+  {
+   "persona_id": "D19",
+   "n_posts": 27,
+   "orig": 27.8571,
+   "sim": 27.8571,
+   "real": 27.8571
+  },
+  {
+   "persona_id": "D20",
+   "n_posts": 27,
+   "orig": 26.4286,
+   "sim": 14.2857,
+   "real": 22.1429
+  },
+  {
+   "persona_id": "D21",
+   "n_posts": 29,
+   "orig": 49.2857,
+   "sim": 35.0,
+   "real": 49.2857
+  },
+  {
+   "persona_id": "D22",
+   "n_posts": 28,
+   "orig": 34.2857,
+   "sim": 30.0,
+   "real": 34.2857
+  },
+  {
+   "persona_id": "D23",
+   "n_posts": 28,
+   "orig": 61.4286,
+   "sim": 42.8571,
+   "real": 52.8571
+  },
+  {
+   "persona_id": "D24",
+   "n_posts": 28,
+   "orig": 39.2857,
+   "sim": 35.0,
+   "real": 39.2857
+  },
+  {
+   "persona_id": "E01",
+   "n_posts": 17,
+   "orig": 40.7143,
+   "sim": 26.4286,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "E03",
+   "n_posts": 18,
+   "orig": 38.5714,
+   "sim": 33.5714,
+   "real": 33.5714
+  },
+  {
+   "persona_id": "E04",
+   "n_posts": 19,
+   "orig": 48.5714,
+   "sim": 20.0,
+   "real": 40.0
+  },
+  {
+   "persona_id": "E05",
+   "n_posts": 18,
+   "orig": 22.1429,
+   "sim": 22.1429,
+   "real": 22.1429
+  },
+  {
+   "persona_id": "E06",
+   "n_posts": 28,
+   "orig": 45.7143,
+   "sim": 27.1429,
+   "real": 45.7143
+  },
+  {
+   "persona_id": "E07",
+   "n_posts": 27,
+   "orig": 54.2857,
+   "sim": 45.7143,
+   "real": 54.2857
+  },
+  {
+   "persona_id": "E08",
+   "n_posts": 27,
+   "orig": 54.2857,
+   "sim": 30.0,
+   "real": 54.2857
+  },
+  {
+   "persona_id": "E10",
+   "n_posts": 25,
+   "orig": 54.2857,
+   "sim": 40.0,
+   "real": 45.7143
+  },
+  {
+   "persona_id": "E11",
+   "n_posts": 28,
+   "orig": 43.5714,
+   "sim": 39.2857,
+   "real": 43.5714
+  },
+  {
+   "persona_id": "E12",
+   "n_posts": 26,
+   "orig": 45.7143,
+   "sim": 35.7143,
+   "real": 45.7143
+  },
+  {
+   "persona_id": "E13",
+   "n_posts": 26,
+   "orig": 53.5714,
+   "sim": 39.2857,
+   "real": 45.0
+  },
+  {
+   "persona_id": "E14",
+   "n_posts": 25,
+   "orig": 40.7143,
+   "sim": 26.4286,
+   "real": 40.7143
+  },
+  {
+   "persona_id": "E15",
+   "n_posts": 24,
+   "orig": 35.0,
+   "sim": 29.2857,
+   "real": 35.0
+  },
+  {
+   "persona_id": "E16",
+   "n_posts": 26,
+   "orig": 37.8571,
+   "sim": 23.5714,
+   "real": 29.2857
+  },
+  {
+   "persona_id": "E17",
+   "n_posts": 27,
+   "orig": 45.0,
+   "sim": 26.4286,
+   "real": 36.4286
+  },
+  {
+   "persona_id": "E18",
+   "n_posts": 25,
+   "orig": 27.8571,
+   "sim": 27.8571,
+   "real": 27.8571
+  },
+  {
+   "persona_id": "E19",
+   "n_posts": 27,
+   "orig": 54.2857,
+   "sim": 40.0,
+   "real": 45.7143
+  },
+  {
+   "persona_id": "E20",
+   "n_posts": 27,
+   "orig": 40.7143,
+   "sim": 26.4286,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "E21",
+   "n_posts": 26,
+   "orig": 44.2857,
+   "sim": 35.7143,
+   "real": 35.7143
+  },
+  {
+   "persona_id": "S01",
+   "n_posts": 16,
+   "orig": 32.1429,
+   "sim": 32.1429,
+   "real": 32.1429
+  },
+  {
+   "persona_id": "S01b",
+   "n_posts": 15,
+   "orig": 42.1429,
+   "sim": 27.8571,
+   "real": 42.1429
+  }
+ ]
+}
