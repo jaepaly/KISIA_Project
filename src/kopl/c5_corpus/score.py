@@ -170,6 +170,25 @@ def declared_targets(persona: dict) -> dict:
     return out
 
 
+def carded_metrics(persona: dict, cards_dir) -> set[str]:
+    """인물이 참조한 카드(card_ref)에 근거가 있는 축 → 측정 지표 이름.
+
+    `python -m kopl.c5_corpus.score` 로 돌리면 최상위 `validate` 가 없어 import 가 실패하는데,
+    예전에는 그 예외를 삼켜 「카드 근거 없음」 표시가 조용히 빠졌다 — 패키지 경로를 먼저 쓴다.
+    """
+    try:
+        from .validate import load_card_axes
+    except ImportError:  # 스크립트로 직접 실행할 때 (python score.py)
+        from validate import load_card_axes
+    ca = load_card_axes(cards_dir)
+    axes = set()
+    for c in persona.get("card_ref", []) or []:
+        axes |= set((ca.get(c) or {}).keys())
+    # voice 키 → 측정 지표 이름으로 환산
+    # 축 이름이 카드·인물 양쪽에서 같아졌다 (§2-⑤-4). 별칭이 필요 없다
+    return {DECLARED[k][0] for k in axes if k in DECLARED and DECLARED[k][0]}
+
+
 def compare_declared(measured: dict, targets: dict, carded: set | None = None) -> list[str]:
     """선언값과 실측을 대조한다.
 
@@ -257,17 +276,7 @@ def main() -> int:
                 tgt = declared_targets(pj)
                 carded = None
                 if args.cards:
-                    try:
-                        from validate import load_card_axes
-                        ca = load_card_axes(args.cards)
-                        axes = set()
-                        for c in pj.get("card_ref", []) or []:
-                            axes |= set((ca.get(c) or {}).keys())
-                        # voice 키 → 측정 지표 이름으로 환산
-                        # 축 이름이 카드·인물 양쪽에서 같아졌다 (§2-⑤-4). 별칭이 필요 없다
-                        carded = {DECLARED[k][0] for k in axes if k in DECLARED and DECLARED[k][0]}
-                    except Exception:  # noqa: BLE001
-                        carded = None
+                    carded = carded_metrics(pj, args.cards)
                 out = compare_declared(m, tgt, carded)
                 if out:
                     print("\n".join(out))

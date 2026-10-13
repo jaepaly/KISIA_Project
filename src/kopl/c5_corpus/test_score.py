@@ -4,7 +4,10 @@
     python -m kopl.c5_corpus.test_score
 """
 
-from kopl.c5_corpus.score import post_metrics
+import json
+from pathlib import Path
+
+from kopl.c5_corpus.score import carded_metrics, compare_declared, post_metrics
 
 
 def sents(body: str) -> int:
@@ -51,6 +54,20 @@ def test_jamo_count_not_affected() -> None:
     assert m["문장수"] == 2
 
 
+
+def test_card_axes_loaded_as_package() -> None:
+    """`python -m kopl.c5_corpus.score --cards` 에서 카드 근거가 조용히 빠지지 않는다.
+
+    예전에는 `from validate import` 가 패키지 실행에서 실패하고 예외를 삼켜 carded=None 이 됐다
+    → 「카드 근거 없음」 표시가 전부 사라졌다 (W9 Codex 검토)."""
+    root = Path(__file__).resolve().parents[3]
+    pj = json.loads((root / "data/corpus/v0/personas/A01.json").read_text(encoding="utf-8-sig"))
+    carded = carded_metrics(pj, root / "data/realism/cards")
+    assert "문장길이_평균" in carded          # A01 의 카드 S14 에 문장 길이 근거가 있다
+    out = compare_declared({"문장길이_평균": 23.0, "이모지": 1.0}, {"문장길이_평균": 25, "이모지": 0}, carded)
+    assert any("이모지" in l and "카드 근거 없음" in l for l in out)
+    assert not any("문장길이_평균" in l and "카드 근거 없음" in l for l in out)
+
 if __name__ == "__main__":
     test_jamo_is_boundary()
     print("[PASS] 음절에 붙은 자모 → 문장 경계")
@@ -69,3 +86,6 @@ if __name__ == "__main__":
 
     test_jamo_count_not_affected()
     print("[PASS] 자모이모티콘 집계 불변")
+
+    test_card_axes_loaded_as_package()
+    print("[PASS] 카드 근거 축 — 패키지 실행에서도 읽힌다")
