@@ -27,7 +27,10 @@ POST_IDS = ["E01_b11", "E01_b19", "E01_b12"]
 
 
 def load_posts() -> list[dict]:
-    test = set(json.loads((ROOT / "data/corpus/v0/splits/test_post_ids.json").read_text(encoding="utf-8")))
+    # 파일은 메타 dict — 목록은 post_ids (dict 를 그대로 set 으로 만들면 키만 남아 검사가 무력해진다)
+    test = set(json.loads((ROOT / "data/corpus/v0/splits/test_post_ids.json").read_text(encoding="utf-8"))["post_ids"])
+    if len(test) != 255:
+        raise SystemExit(f"test 글 수가 255 가 아니다: {len(test)}")
     if test & set(POST_IDS):
         raise SystemExit("예시 글에 test 글이 섞였다")
     rows = {}
