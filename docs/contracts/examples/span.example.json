@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "model_version": "kisia-ckpt/v2+rules",
+  "record_type": "post",
+  "post_id": "E01_b11",
+  "spans": [
+    {
+      "start": 0,
+      "end": 11,
+      "text": "공단 생활서비스센터에",
+      "type": "LOC_FACILITY",
+      "score": 0.981917428970337,
+      "text_id": "body",
+      "span_id": "E01_b11_s01",
+      "level": "explicit",
+      "subject": "self"
+    },
+    {
+      "start": 20,
+      "end": 22,
+      "text": "중국",
+      "type": "LOC_ADMIN",
+      "score": 0.9739468097686768,
+      "text_id": "body",
+      "span_id": "E01_b11_s02",
+      "level": "inferential",
+      "subject": "self"
+    },
+    {
+      "start": 112,
+      "end": 117,
+      "text": "기숙사 앞",
+      "type": "REL_HOME",
+      "score": 0.9300260543823242,
+      "text_id": "body",
+      "span_id": "E01_b11_s03",
+      "level": "inferential",
+      "subject": "self"
+    },
+    {
+      "start": 118,
+      "end": 124,
+      "text": "통근버스에서",
+      "type": "COMMUTE",
+      "score": 0.9425278306007385,
+      "text_id": "body",
+      "span_id": "E01_b11_s04",
+      "level": "implicit",
+      "subject": "self"
+    },
+    {
+      "start": 125,
+      "end": 130,
+      "text": "같은 부서",
+      "type": "JOB",
+      "score": 0.9307214021682739,
+      "text_id": "body",
+      "span_id": "E01_b11_s05",
+      "level": "inferential",
+      "subject": "other"
+    },
+    {
+      "start": 131,
+      "end": 134,
+      "text": "언니가",
+      "type": "SEX",
+      "score": 0.9685845375061035,
+      "text_id": "body",
+      "span_id": "E01_b11_s06",
+      "level": "implicit",
+      "subject": "self"
+    }
+  ]
+}

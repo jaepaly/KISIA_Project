@@ -1,0 +1,426 @@
+{
+  "input": {
+    "schema_version": "0.1.0",
+    "user_ref": "u_e7e7dd241b31",
+    "posts": [
+      {
+        "post_id": "E01_b11",
+        "texts": [
+          {
+            "text_id": "title",
+            "pseudonymized": "택배함이 왜 이래?!"
+          },
+          {
+            "text_id": "body",
+            "pseudonymized": "[시설1] 다녀왔다,,,\n[지역1] 무인택배함은 칸이 진짜 많다.\n번호를 눌렀는데 문이 안 열렸구,,,\n결국 화면 앞에서 좀 헤멨다🐈\n알고 보니 인증 숫자가 따로 있었다.\n너무 작잖아,,,\n참, [거주관계1] [통근지1] [직업1] [성별1] 늘 내 옆에 앉는데, 이 얘길 해줬던 기억이 났다.\n그땐 대충 들었지 뭐🐾\n두 번 누르니까 아래쪽 문이 툭 열렸다.\n상자보다 뜨개실 봉지가 더 컸다,,,\n연두색 실은 화면보다 조금 탁했다.\n그래도 손으로 만져 보니 보들보들했다🧶\n다음에는 인증 숫자부터 캡처해 둬야지,,,"
+          }
+        ],
+        "spans": [
+          {
+            "start": 0,
+            "end": 11,
+            "text": "공단 생활서비스센터에",
+            "type": "LOC_FACILITY",
+            "score": 0.981917428970337,
+            "text_id": "body",
+            "span_id": "E01_b11_s01",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "start": 20,
+            "end": 22,
+            "text": "중국",
+            "type": "LOC_ADMIN",
+            "score": 0.9739468097686768,
+            "text_id": "body",
+            "span_id": "E01_b11_s02",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "start": 112,
+            "end": 117,
+            "text": "기숙사 앞",
+            "type": "REL_HOME",
+            "score": 0.9300260543823242,
+            "text_id": "body",
+            "span_id": "E01_b11_s03",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "start": 118,
+            "end": 124,
+            "text": "통근버스에서",
+            "type": "COMMUTE",
+            "score": 0.9425278306007385,
+            "text_id": "body",
+            "span_id": "E01_b11_s04",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "start": 125,
+            "end": 130,
+            "text": "같은 부서",
+            "type": "JOB",
+            "score": 0.9307214021682739,
+            "text_id": "body",
+            "span_id": "E01_b11_s05",
+            "level": "inferential",
+            "subject": "other"
+          },
+          {
+            "start": 131,
+            "end": 134,
+            "text": "언니가",
+            "type": "SEX",
+            "score": 0.9685845375061035,
+            "text_id": "body",
+            "span_id": "E01_b11_s06",
+            "level": "implicit",
+            "subject": "self"
+          }
+        ],
+        "pseudonym_map": [
+          {
+            "span_id": "E01_b11_s01",
+            "text_id": "body",
+            "label": "[시설1]",
+            "original": {
+              "start": 0,
+              "end": 11
+            },
+            "pseudo": {
+              "start": 0,
+              "end": 5
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b11_s02",
+            "text_id": "body",
+            "label": "[지역1]",
+            "original": {
+              "start": 20,
+              "end": 22
+            },
+            "pseudo": {
+              "start": 14,
+              "end": 19
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b11_s03",
+            "text_id": "body",
+            "label": "[거주관계1]",
+            "original": {
+              "start": 112,
+              "end": 117
+            },
+            "pseudo": {
+              "start": 109,
+              "end": 116
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b11_s04",
+            "text_id": "body",
+            "label": "[통근지1]",
+            "original": {
+              "start": 118,
+              "end": 124
+            },
+            "pseudo": {
+              "start": 117,
+              "end": 123
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b11_s05",
+            "text_id": "body",
+            "label": "[직업1]",
+            "original": {
+              "start": 125,
+              "end": 130
+            },
+            "pseudo": {
+              "start": 124,
+              "end": 129
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b11_s06",
+            "text_id": "body",
+            "label": "[성별1]",
+            "original": {
+              "start": 131,
+              "end": 134
+            },
+            "pseudo": {
+              "start": 130,
+              "end": 135
+            },
+            "restore_key": {}
+          }
+        ],
+        "contribution": -14.29
+      },
+      {
+        "post_id": "E01_b19",
+        "texts": [
+          {
+            "text_id": "title",
+            "pseudonymized": "이불이 왜 안 돌아가?!"
+          },
+          {
+            "text_id": "body",
+            "pseudonymized": "점심 뒤에 [지역1] 세탁방에 갔다,,,\n[거주관계1] 이불을 큰 통에 밀어 넣었어.\n생각보다 입구가 좁네,,,\n두 번 접으니 겨우 들어감🐾\n근데 결제 화면이 계속 처음으로 돌아갔어.\n뒤에서 기다리던 분이 버튼 하나 눌러줬구,,,\n바로 됨.\n내가 누른 건 취소였나 봐ㅋㅋ\nㅋ\n근데 세탁 끝났는데 문이 안 열리는 거야.\n손잡이만 세번 당겼어,,,\n화면 보니까 헹굼 중이었네🐈\n민망해,,,\n끝,,,"
+          }
+        ],
+        "spans": [
+          {
+            "start": 6,
+            "end": 9,
+            "text": "개발구",
+            "type": "LOC_ADMIN",
+            "score": 0.9762879908084869,
+            "text_id": "body",
+            "span_id": "E01_b19_s01",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "start": 21,
+            "end": 24,
+            "text": "기숙사",
+            "type": "REL_HOME",
+            "score": 0.9370022416114807,
+            "text_id": "body",
+            "span_id": "E01_b19_s02",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ],
+        "pseudonym_map": [
+          {
+            "span_id": "E01_b19_s01",
+            "text_id": "body",
+            "label": "[지역1]",
+            "original": {
+              "start": 6,
+              "end": 9
+            },
+            "pseudo": {
+              "start": 6,
+              "end": 11
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b19_s02",
+            "text_id": "body",
+            "label": "[거주관계1]",
+            "original": {
+              "start": 21,
+              "end": 24
+            },
+            "pseudo": {
+              "start": 23,
+              "end": 30
+            },
+            "restore_key": {}
+          }
+        ],
+        "contribution": 0.0
+      },
+      {
+        "post_id": "E01_b12",
+        "texts": [
+          {
+            "text_id": "title",
+            "pseudonymized": "벌써 이렇게 더워?!"
+          },
+          {
+            "text_id": "body",
+            "pseudonymized": "연휴라 [가족1] 얼굴 보러 [지역1] 나왔는데,,,\n\n밖에 딱 나가자마자 인상부터 찌푸렸음.\n\n바람은 있는데 하나도 안 시원해,,,\n\n햇빛만 목덜미에 계속 붙는 기분이야🐈\n\n근데 봄은 어디 가고 갑자기 여름이냐구,,,\n\n얇게 입었는데도 등에 땀이 차서 진짜 짜증낫다.\n\n그늘 찾아서 몇 걸음 옮겼는데 거기도 더워.\n\nㅋ\n\n차가운 음료만 계속 생각났어여,,,\n\n얼음 녹는 속도도 너무 빠름🐾\n\n근데 시계 초침 소리는 왜 저렇게 크지,,,"
+          }
+        ],
+        "spans": [
+          {
+            "start": 4,
+            "end": 9,
+            "text": "엄마 아빠",
+            "type": "FAM",
+            "score": 0.9774166941642761,
+            "text_id": "body",
+            "span_id": "E01_b12_s01",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "start": 16,
+            "end": 18,
+            "text": "한국",
+            "type": "LOC_ADMIN",
+            "score": 0.9480383396148682,
+            "text_id": "body",
+            "span_id": "E01_b12_s02",
+            "level": "explicit",
+            "subject": "self"
+          }
+        ],
+        "pseudonym_map": [
+          {
+            "span_id": "E01_b12_s01",
+            "text_id": "body",
+            "label": "[가족1]",
+            "original": {
+              "start": 4,
+              "end": 9
+            },
+            "pseudo": {
+              "start": 4,
+              "end": 9
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "E01_b12_s02",
+            "text_id": "body",
+            "label": "[지역1]",
+            "original": {
+              "start": 16,
+              "end": 18
+            },
+            "pseudo": {
+              "start": 16,
+              "end": 21
+            },
+            "restore_key": {}
+          }
+        ],
+        "contribution": -4.29
+      }
+    ],
+    "risk": {
+      "current": 18.57,
+      "target": 40.0
+    },
+    "provenance": {
+      "measured_at": "2026-10-13T06:13:17+00:00",
+      "model_version": "kisia-ckpt/v2+rules",
+      "dict_version": "geo-2026-07",
+      "data_version": "corpus-v0"
+    }
+  },
+  "output": {
+    "schema_version": "0.1.0",
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b11",
+            "span_id": "E01_b11_s06"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "E01_b11",
+            "span_id": "E01_b11_s01"
+          },
+          {
+            "post_id": "E01_b11",
+            "span_id": "E01_b11_s02"
+          },
+          {
+            "post_id": "E01_b19",
+            "span_id": "E01_b19_s01"
+          },
+          {
+            "post_id": "E01_b12",
+            "span_id": "E01_b12_s02"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.6,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "E01_b11",
+            "span_id": "E01_b11_s03"
+          },
+          {
+            "post_id": "E01_b19",
+            "span_id": "E01_b19_s02"
+          },
+          {
+            "post_id": "E01_b12",
+            "span_id": "E01_b12_s01"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "E01_b11",
+            "span_id": "E01_b11_s04"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "recommendation": {
+      "actions": [],
+      "projected": {
+        "current_risk": 18.57,
+        "projected_risk": 18.57,
+        "reduction_pct": 0.0,
+        "target_met": true
+      },
+      "optimality_gap_pct": null
+    },
+    "rewrites": [],
+    "provenance": {
+      "measured_at": "2026-10-13T06:13:17+00:00",
+      "model_version": "rules-v1",
+      "dict_version": "geo-2026-07",
+      "external_llm_used": false
+    }
+  }
+}
