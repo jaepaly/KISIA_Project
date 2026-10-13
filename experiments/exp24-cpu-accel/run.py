@@ -31,9 +31,17 @@ RESULTS = HERE / "results"
 EXP17 = ROOT / "experiments" / "exp17-planted-eval" / "data" / "posts.jsonl"
 
 
+def test_post_ids() -> set[str]:
+    """test 255편. 파일은 메타 dict 이고 목록은 ``post_ids`` 다 — dict 를 그대로 set 으로 만들면 키 6개만 남는다."""
+    ids = set(json.loads((ROOT / "data/corpus/v0/splits/test_post_ids.json").read_text(encoding="utf-8"))["post_ids"])
+    if len(ids) != 255:
+        raise ValueError(f"test 글 수가 255 가 아니다: {len(ids)}")
+    return ids
+
+
 def dev_gold_posts() -> dict[str, dict]:
     """코퍼스 v0 골드 중 test 가 아닌 글 → {post_id: {texts, spans}}."""
-    test = set(json.loads((ROOT / "data/corpus/v0/splits/test_post_ids.json").read_text(encoding="utf-8")))
+    test = test_post_ids()
     posts = {}
     for f in sorted(glob.glob(str(ROOT / "data/corpus/v0/gold/*_spans.jsonl"))):
         for line in open(f, encoding="utf-8"):

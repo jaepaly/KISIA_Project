@@ -76,6 +76,10 @@ def main() -> int:
     gold = run.dev_gold_posts()
     base = {n: load(RESULTS / f"preds_{n}_fp32.jsonl") for n in ("dev", "exp17")}
     cand = {n: load(RESULTS / f"preds_{n}_int8.jsonl") for n in ("dev", "exp17")}
+    # 첫 실행(10/13)은 test 를 잘못 읽어(메타 dict 의 키 6개) dev 에 test 231편이 섞였다 — 저장된 예측에서 걸러 다시 채점한다
+    for preds in (base["dev"], cand["dev"]):
+        for pid in set(preds) - set(gold):
+            del preds[pid]
 
     a = span_set(base["dev"], "dev") | span_set(base["exp17"], "exp17")
     b = span_set(cand["dev"], "dev") | span_set(cand["exp17"], "exp17")
