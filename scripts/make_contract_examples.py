@@ -85,14 +85,18 @@ def check_gold(spans_by_post: dict) -> None:
     def key(s):
         return (s["text_id"], s["start"], s["end"], s["type"], s["level"], s["subject"])
 
+    checked = set()
     for line in open(ROOT / f"data/corpus/v0/gold/{PERSONA}_spans.jsonl", encoding="utf-8"):
         row = json.loads(line)
         pid = row.get("post_id")
         if pid in spans_by_post:
+            checked.add(pid)
             got = {key(s) for s in spans_by_post[pid]["spans"]}
             want = {key(s) for s in row["spans"]}
             if got != want:
                 raise SystemExit(f"{pid}: 1단 출력이 골드와 다르다 — 출력만 {sorted(got - want)} · 골드만 {sorted(want - got)}")
+    if checked != set(spans_by_post):
+        raise SystemExit(f"골드가 없는 글: {sorted(set(spans_by_post) - checked)}")
 
 
 def check_links(span_docs: dict, contr_doc: dict, stage2_doc: dict) -> None:
