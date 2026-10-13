@@ -3,17 +3,17 @@
   "engine_version": "c2-k-0.1.0",
   "dict_version": "geo-2026-07",
   "input": {
-    "user_ref": "u_e7e7dd241b31",
+    "user_ref": "u_f29bc501c32a",
     "conditions": [
       {
         "axis": "commute",
         "kind": "commute_mode",
         "resolution": 1,
-        "confidence": 0.8,
+        "confidence": 0.5,
         "source_post_ids": [
-          "E01_b11"
+          "D02_b14"
         ],
-        "value": "통근버스에서"
+        "value": "퇴근길"
       },
       {
         "axis": "sex",
@@ -21,36 +21,36 @@
         "resolution": 1,
         "confidence": 0.8,
         "source_post_ids": [
-          "E01_b11"
+          "D02_b14"
         ],
         "value": "언니가"
       },
       {
-        "axis": "family",
-        "kind": "family_status",
-        "resolution": 1,
-        "confidence": 0.5,
+        "axis": "location",
+        "kind": "administrative_area",
+        "resolution": 2,
+        "confidence": 1.0,
         "source_post_ids": [
-          "E01_b12"
+          "D02_b17"
         ],
-        "value": "엄마 아빠"
+        "geo_code": "1162000000"
       }
     ]
   },
   "output": {
-    "k": 29037557.29,
+    "k": 385509.36,
     "k_level": "ACCEPTABLE",
     "basis": {
       "source": "행정안전부 주민등록 인구통계",
       "as_of": "2026-07"
     },
-    "risk": 18.57,
+    "risk": 22.14,
     "risk_by_axis": {
-      "location": 0.0,
+      "location": 55.0,
       "age": 0.0,
       "sex": 60.0,
       "occupation": 0.0,
-      "family": 30.0,
+      "family": 0.0,
       "commute": 40.0,
       "income": 0.0
     },
@@ -63,22 +63,19 @@
         "method": "population_lookup"
       },
       {
-        "axis": "family",
-        "condition": "family:family_status «엄마 아빠»",
-        "n_after": 42989072.3294,
-        "method": "ratio_damped",
-        "p": 0.5,
-        "confidence": 0.5,
-        "q_damped": 0.841466
+        "axis": "location",
+        "condition": "location:administrative_area «1162000000» → 읍면동 21곳",
+        "n_after": 477503,
+        "method": "population_lookup"
       },
       {
         "axis": "commute",
-        "condition": "commute:commute_mode «통근버스에서»",
-        "n_after": 29037557.2905,
+        "condition": "commute:commute_mode «퇴근길»",
+        "n_after": 385509.3613,
         "method": "ratio_damped",
         "p": 0.4,
-        "confidence": 0.8,
-        "q_damped": 0.675464
+        "confidence": 0.5,
+        "q_damped": 0.807344
       }
     ],
     "assumptions": [

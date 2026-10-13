@@ -2,7 +2,7 @@
 
     PYTHONIOENCODING=utf-8 python scripts/make_contract_examples.py --checkpoint <1단 v2 폴더>
 
-- 입력: 합성 코퍼스 v0 인물 E01 의 글 3편 (test 가 아닌 글 · 1단 출력이 골드와 같은 글 · 합성 데이터)
+- 입력: 합성 코퍼스 v0 인물 D02 의 글 2편 (test 가 아닌 글 · 1단 출력이 골드와 위치 · 유형 · level · subject 까지 같은 글 · 합성 데이터)
 - 엔진: 앱과 같은 길 — ``apps/analyzer/engines/real.py`` (1단 v2 + 명시 규칙 · C2 k · C3 LOO · 2단 규칙 모드)
 - 출력: ``docs/contracts/examples/{span,specificity,contribution,stage2-io}.example.json``
 - 2단 입력(Stage2Input) 전체는 앱이 아직 만들지 않는다(real.stage2 는 요약만 넘긴다). 여기서는 같은 스팬을
@@ -21,9 +21,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS = ROOT / "docs" / "contracts"
 OUT = CONTRACTS / "examples"
-# test 가 아닌 짧은 글 중 1단 출력이 골드와 정확히 같은 글 — 예시가 오탐 스팬으로 계약을 잘못 보여 주지 않게
-PERSONA = "E01"
-POST_IDS = ["E01_b11", "E01_b19", "E01_b12"]
+# test 가 아닌 짧은 글 중 1단 출력이 골드와 정확히 같은 글 — 위치 · 유형 · level · subject 전부 (check_gold 가 확인)
+# 예시가 오탐 스팬이나 틀린 판정으로 계약을 잘못 보여 주지 않게
+PERSONA = "D02"
+POST_IDS = ["D02_b14", "D02_b17"]
 
 
 def load_posts() -> list[dict]:
@@ -77,6 +78,21 @@ def validate(doc: dict, schema_name: str, ref: str | None = None) -> None:
     if ref:
         schema = {"$defs": schema["$defs"], "$ref": ref}
     jsonschema.Draft202012Validator(schema, format_checker=jsonschema.FormatChecker()).validate(doc)
+
+
+def check_gold(spans_by_post: dict) -> None:
+    """고른 글의 1단 출력이 골드와 위치 · 유형 · level · subject 까지 같은지 — 다르면 다른 글을 고른다."""
+    def key(s):
+        return (s["text_id"], s["start"], s["end"], s["type"], s["level"], s["subject"])
+
+    for line in open(ROOT / f"data/corpus/v0/gold/{PERSONA}_spans.jsonl", encoding="utf-8"):
+        row = json.loads(line)
+        pid = row.get("post_id")
+        if pid in spans_by_post:
+            got = {key(s) for s in spans_by_post[pid]["spans"]}
+            want = {key(s) for s in row["spans"]}
+            if got != want:
+                raise SystemExit(f"{pid}: 1단 출력이 골드와 다르다 — 출력만 {sorted(got - want)} · 골드만 {sorted(want - got)}")
 
 
 def check_links(span_docs: dict, contr_doc: dict, stage2_doc: dict) -> None:
@@ -145,6 +161,7 @@ def main() -> int:
             "specificity": (spec_doc, "specificity.schema.json", None),
             "contribution": (contr_doc, "contribution.schema.json", None),
             "stage2-io": (stage2_doc, "stage2-io.schema.json", None)}
+    check_gold(spans_by_post)
     check_links(spans_by_post, contr_doc, stage2_doc)
     OUT.mkdir(exist_ok=True)
     for name, (doc, schema, ref) in docs.items():

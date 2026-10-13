@@ -17,7 +17,7 @@
 | `contribution.schema.json` | C 신정현 | D · E | 글별 기여도, 조치 후 재계산 |
 | `stage2-io.schema.json` | D 박재현 | E | 종합 판정 결과, 추천 조합 |
 
-**예시** — [`examples/`](examples/) 에 계약마다 하나씩 있다. 손으로 쓴 값이 아니라 앱 엔진(`apps/analyzer/engines/real.py`)을 합성 인물 E01 의 글 3편에 돌린 출력이다. 다시 만들고 대조하는 법:
+**예시** — [`examples/`](examples/) 에 계약마다 하나씩 있다. 손으로 쓴 값이 아니라 앱 엔진(`apps/analyzer/engines/real.py`)을 합성 인물 D02 의 글 2편(1단 출력이 골드와 위치 · 유형 · level · subject 까지 같은 글)에 돌린 출력이다. 다시 만들고 대조하는 법:
 
 ```bash
 PYTHONIOENCODING=utf-8 python scripts/make_contract_examples.py --checkpoint <1단 v2 폴더>   # 만들면서 스키마 대조

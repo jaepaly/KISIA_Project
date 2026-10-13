@@ -1,170 +1,120 @@
 {
   "input": {
     "schema_version": "0.1.0",
-    "user_ref": "u_e7e7dd241b31",
+    "user_ref": "u_f29bc501c32a",
     "posts": [
       {
-        "post_id": "E01_b11",
+        "post_id": "D02_b14",
         "texts": [
           {
             "text_id": "title",
-            "pseudonymized": "택배함이 왜 이래?!"
+            "pseudonymized": "천장 무늬"
           },
           {
             "text_id": "body",
-            "pseudonymized": "[시설1] 다녀왔다,,,\n[지역1] 무인택배함은 칸이 진짜 많다.\n번호를 눌렀는데 문이 안 열렸구,,,\n결국 화면 앞에서 좀 헤멨다🐈\n알고 보니 인증 숫자가 따로 있었다.\n너무 작잖아,,,\n참, [거주관계1] [통근지1] [직업1] [성별1] 늘 내 옆에 앉는데, 이 얘길 해줬던 기억이 났다.\n그땐 대충 들었지 뭐🐾\n두 번 누르니까 아래쪽 문이 툭 열렸다.\n상자보다 뜨개실 봉지가 더 컸다,,,\n연두색 실은 화면보다 조금 탁했다.\n그래도 손으로 만져 보니 보들보들했다🧶\n다음에는 인증 숫자부터 캡처해 둬야지,,,"
+            "pseudonymized": "불 끄고 누웠는데 잠이안 왔다.\n베개를 세 번 뒤집엇다.\n시원한 쪽도 바로 미지근해짐.\n천장 무늬가 사람 얼굴처럼 보여서 눈을 감았다가 다시 뜸.\n새벽 공기는 얇은 이불처럼 서늘했다.\n아까 [통근지1] [직업1] [성별1] 또 유통기한 지난 삼각김밥을 챙겨줫다.\n이건 고마움 ㅠㅠ\n십 분만 걸으면 되니까 [거주관계1] 못 떠나는 이유가 또 늘었다.\n아 그리고 다시 누웠더니 천장 얼굴이 아까랑 좀 달랐다.\n분명 눈이 두 개였는데 ㅠㅠ\n지금은 세 개네."
           }
         ],
         "spans": [
           {
-            "start": 0,
-            "end": 11,
-            "text": "공단 생활서비스센터에",
-            "type": "LOC_FACILITY",
-            "score": 0.981917428970337,
-            "text_id": "body",
-            "span_id": "E01_b11_s01",
-            "level": "explicit",
-            "subject": "self"
-          },
-          {
-            "start": 20,
-            "end": 22,
-            "text": "중국",
-            "type": "LOC_ADMIN",
-            "score": 0.9739468097686768,
-            "text_id": "body",
-            "span_id": "E01_b11_s02",
-            "level": "inferential",
-            "subject": "self"
-          },
-          {
-            "start": 112,
-            "end": 117,
-            "text": "기숙사 앞",
-            "type": "REL_HOME",
-            "score": 0.9300260543823242,
-            "text_id": "body",
-            "span_id": "E01_b11_s03",
-            "level": "inferential",
-            "subject": "self"
-          },
-          {
-            "start": 118,
-            "end": 124,
-            "text": "통근버스에서",
+            "start": 106,
+            "end": 109,
+            "text": "퇴근길",
             "type": "COMMUTE",
-            "score": 0.9425278306007385,
+            "score": 0.9498969912528992,
             "text_id": "body",
-            "span_id": "E01_b11_s04",
-            "level": "implicit",
+            "span_id": "D02_b14_s01",
+            "level": "inferential",
             "subject": "self"
           },
           {
-            "start": 125,
-            "end": 130,
-            "text": "같은 부서",
+            "start": 110,
+            "end": 116,
+            "text": "편의점 알바",
             "type": "JOB",
-            "score": 0.9307214021682739,
+            "score": 0.9718534350395203,
             "text_id": "body",
-            "span_id": "E01_b11_s05",
-            "level": "inferential",
+            "span_id": "D02_b14_s02",
+            "level": "explicit",
             "subject": "other"
           },
           {
-            "start": 131,
-            "end": 134,
+            "start": 117,
+            "end": 120,
             "text": "언니가",
             "type": "SEX",
-            "score": 0.9685845375061035,
+            "score": 0.9767636656761169,
             "text_id": "body",
-            "span_id": "E01_b11_s06",
+            "span_id": "D02_b14_s03",
             "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "start": 166,
+            "end": 171,
+            "text": "이 동네를",
+            "type": "REL_HOME",
+            "score": 0.8937820792198181,
+            "text_id": "body",
+            "span_id": "D02_b14_s04",
+            "level": "inferential",
             "subject": "self"
           }
         ],
         "pseudonym_map": [
           {
-            "span_id": "E01_b11_s01",
-            "text_id": "body",
-            "label": "[시설1]",
-            "original": {
-              "start": 0,
-              "end": 11
-            },
-            "pseudo": {
-              "start": 0,
-              "end": 5
-            },
-            "restore_key": {}
-          },
-          {
-            "span_id": "E01_b11_s02",
-            "text_id": "body",
-            "label": "[지역1]",
-            "original": {
-              "start": 20,
-              "end": 22
-            },
-            "pseudo": {
-              "start": 14,
-              "end": 19
-            },
-            "restore_key": {}
-          },
-          {
-            "span_id": "E01_b11_s03",
-            "text_id": "body",
-            "label": "[거주관계1]",
-            "original": {
-              "start": 112,
-              "end": 117
-            },
-            "pseudo": {
-              "start": 109,
-              "end": 116
-            },
-            "restore_key": {}
-          },
-          {
-            "span_id": "E01_b11_s04",
+            "span_id": "D02_b14_s01",
             "text_id": "body",
             "label": "[통근지1]",
             "original": {
-              "start": 118,
-              "end": 124
+              "start": 106,
+              "end": 109
             },
             "pseudo": {
-              "start": 117,
-              "end": 123
+              "start": 106,
+              "end": 112
             },
             "restore_key": {}
           },
           {
-            "span_id": "E01_b11_s05",
+            "span_id": "D02_b14_s02",
             "text_id": "body",
             "label": "[직업1]",
             "original": {
-              "start": 125,
-              "end": 130
+              "start": 110,
+              "end": 116
             },
             "pseudo": {
-              "start": 124,
-              "end": 129
+              "start": 113,
+              "end": 118
             },
             "restore_key": {}
           },
           {
-            "span_id": "E01_b11_s06",
+            "span_id": "D02_b14_s03",
             "text_id": "body",
             "label": "[성별1]",
             "original": {
-              "start": 131,
-              "end": 134
+              "start": 117,
+              "end": 120
             },
             "pseudo": {
-              "start": 130,
-              "end": 135
+              "start": 119,
+              "end": 124
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "D02_b14_s04",
+            "text_id": "body",
+            "label": "[거주관계1]",
+            "original": {
+              "start": 166,
+              "end": 171
+            },
+            "pseudo": {
+              "start": 170,
+              "end": 177
             },
             "restore_key": {}
           }
@@ -172,148 +122,80 @@
         "contribution": -14.28
       },
       {
-        "post_id": "E01_b19",
+        "post_id": "D02_b17",
         "texts": [
           {
             "text_id": "title",
-            "pseudonymized": "이불이 왜 안 돌아가?!"
+            "pseudonymized": "새벽 장보기"
           },
           {
             "text_id": "body",
-            "pseudonymized": "점심 뒤에 [지역1] 세탁방에 갔다,,,\n[거주관계1] 이불을 큰 통에 밀어 넣었어.\n생각보다 입구가 좁네,,,\n두 번 접으니 겨우 들어감🐾\n근데 결제 화면이 계속 처음으로 돌아갔어.\n뒤에서 기다리던 분이 버튼 하나 눌러줬구,,,\n바로 됨.\n내가 누른 건 취소였나 봐ㅋㅋ\nㅋ\n근데 세탁 끝났는데 문이 안 열리는 거야.\n손잡이만 세번 당겼어,,,\n화면 보니까 헹굼 중이었네🐈\n민망해,,,\n끝,,,"
+            "pseudonymized": "새벽 네 시에 무인 식료품점에 갔다.\n[지역1] 큰길 쪽은 아직 조용했다.\n문은 열려잇었다.\n새벽 영업 확인함.\n바구니에 달걀부터 넣었다.\n우유도 하나 추가함.\n밖은 생각보다 후덥지근했다.\n과자 앞에서 십분쯤 서성임.\n몰라 진짜.\n결국 짠 거랑 단 거 둘 다 샀다 ㅠㅠ\n계산대앞에서 봉투값을 뒤늦게 봤다.\n장바구니 챙긴다는 계획은 실패함.\n손으로 안고 나오려다 달걀이 눌릴 뻔했다 ㅠㅠ\n암튼 [거주관계1] 참외 냄새가 났다.\n그랫다.\n오늘 머리 감을지 말지나 정해야 함."
           }
         ],
         "spans": [
           {
-            "start": 6,
-            "end": 9,
-            "text": "개발구",
+            "start": 21,
+            "end": 24,
+            "text": "관악구",
             "type": "LOC_ADMIN",
-            "score": 0.9762879908084869,
+            "score": 0.9802389144897461,
             "text_id": "body",
-            "span_id": "E01_b19_s01",
+            "span_id": "D02_b17_s01",
             "level": "explicit",
             "subject": "self"
           },
           {
-            "start": 21,
-            "end": 24,
-            "text": "기숙사",
+            "start": 217,
+            "end": 224,
+            "text": "집 가는 길에",
             "type": "REL_HOME",
-            "score": 0.9370022416114807,
+            "score": 0.9211696267127991,
             "text_id": "body",
-            "span_id": "E01_b19_s02",
+            "span_id": "D02_b17_s02",
             "level": "inferential",
             "subject": "self"
           }
         ],
         "pseudonym_map": [
           {
-            "span_id": "E01_b19_s01",
+            "span_id": "D02_b17_s01",
             "text_id": "body",
             "label": "[지역1]",
-            "original": {
-              "start": 6,
-              "end": 9
-            },
-            "pseudo": {
-              "start": 6,
-              "end": 11
-            },
-            "restore_key": {}
-          },
-          {
-            "span_id": "E01_b19_s02",
-            "text_id": "body",
-            "label": "[거주관계1]",
             "original": {
               "start": 21,
               "end": 24
             },
             "pseudo": {
-              "start": 23,
-              "end": 30
+              "start": 21,
+              "end": 26
             },
             "restore_key": {}
-          }
-        ],
-        "contribution": 0.0
-      },
-      {
-        "post_id": "E01_b12",
-        "texts": [
-          {
-            "text_id": "title",
-            "pseudonymized": "벌써 이렇게 더워?!"
           },
           {
+            "span_id": "D02_b17_s02",
             "text_id": "body",
-            "pseudonymized": "연휴라 [가족1] 얼굴 보러 [지역1] 나왔는데,,,\n\n밖에 딱 나가자마자 인상부터 찌푸렸음.\n\n바람은 있는데 하나도 안 시원해,,,\n\n햇빛만 목덜미에 계속 붙는 기분이야🐈\n\n근데 봄은 어디 가고 갑자기 여름이냐구,,,\n\n얇게 입었는데도 등에 땀이 차서 진짜 짜증낫다.\n\n그늘 찾아서 몇 걸음 옮겼는데 거기도 더워.\n\nㅋ\n\n차가운 음료만 계속 생각났어여,,,\n\n얼음 녹는 속도도 너무 빠름🐾\n\n근데 시계 초침 소리는 왜 저렇게 크지,,,"
-          }
-        ],
-        "spans": [
-          {
-            "start": 4,
-            "end": 9,
-            "text": "엄마 아빠",
-            "type": "FAM",
-            "score": 0.9774166941642761,
-            "text_id": "body",
-            "span_id": "E01_b12_s01",
-            "level": "inferential",
-            "subject": "self"
-          },
-          {
-            "start": 16,
-            "end": 18,
-            "text": "한국",
-            "type": "LOC_ADMIN",
-            "score": 0.9480383396148682,
-            "text_id": "body",
-            "span_id": "E01_b12_s02",
-            "level": "explicit",
-            "subject": "self"
-          }
-        ],
-        "pseudonym_map": [
-          {
-            "span_id": "E01_b12_s01",
-            "text_id": "body",
-            "label": "[가족1]",
+            "label": "[거주관계1]",
             "original": {
-              "start": 4,
-              "end": 9
+              "start": 217,
+              "end": 224
             },
             "pseudo": {
-              "start": 4,
-              "end": 9
-            },
-            "restore_key": {}
-          },
-          {
-            "span_id": "E01_b12_s02",
-            "text_id": "body",
-            "label": "[지역1]",
-            "original": {
-              "start": 16,
-              "end": 18
-            },
-            "pseudo": {
-              "start": 16,
-              "end": 21
+              "start": 219,
+              "end": 226
             },
             "restore_key": {}
           }
         ],
-        "contribution": -4.28
+        "contribution": -7.85
       }
     ],
     "risk": {
-      "current": 18.57,
+      "current": 22.14,
       "target": 40.0
     },
     "provenance": {
-      "measured_at": "2026-10-13T06:26:35+00:00",
+      "measured_at": "2026-10-13T06:47:08+00:00",
       "model_version": "kisia-ckpt/v2+rules",
       "dict_version": "geo-2026-07",
       "data_version": "corpus-v0"
@@ -334,31 +216,19 @@
         "cross_post": false,
         "evidence": [
           {
-            "post_id": "E01_b11",
-            "span_id": "E01_b11_s06"
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s03"
           }
         ]
       },
       "location": {
         "verdict": "specified",
         "confidence": 0.9,
-        "cross_post": true,
+        "cross_post": false,
         "evidence": [
           {
-            "post_id": "E01_b11",
-            "span_id": "E01_b11_s01"
-          },
-          {
-            "post_id": "E01_b11",
-            "span_id": "E01_b11_s02"
-          },
-          {
-            "post_id": "E01_b19",
-            "span_id": "E01_b19_s01"
-          },
-          {
-            "post_id": "E01_b12",
-            "span_id": "E01_b12_s02"
+            "post_id": "D02_b17",
+            "span_id": "D02_b17_s01"
           }
         ]
       },
@@ -374,27 +244,23 @@
         "cross_post": true,
         "evidence": [
           {
-            "post_id": "E01_b11",
-            "span_id": "E01_b11_s03"
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s04"
           },
           {
-            "post_id": "E01_b19",
-            "span_id": "E01_b19_s02"
-          },
-          {
-            "post_id": "E01_b12",
-            "span_id": "E01_b12_s01"
+            "post_id": "D02_b17",
+            "span_id": "D02_b17_s02"
           }
         ]
       },
       "commute": {
-        "verdict": "narrowed",
-        "confidence": 0.7,
+        "verdict": "weak_signal",
+        "confidence": 0.4,
         "cross_post": false,
         "evidence": [
           {
-            "post_id": "E01_b11",
-            "span_id": "E01_b11_s04"
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s01"
           }
         ]
       },
@@ -408,16 +274,24 @@
     "recommendation": {
       "actions": [],
       "projected": {
-        "current_risk": 18.57,
-        "projected_risk": 18.57,
+        "current_risk": 22.14,
+        "projected_risk": 22.14,
         "reduction_pct": 0.0,
         "target_met": true
       },
       "optimality_gap_pct": null
     },
-    "rewrites": [],
+    "rewrites": [
+      {
+        "post_id": "D02_b17",
+        "span_id": "D02_b17_s01",
+        "suggestion": "서울",
+        "semantic_similarity": null,
+        "residual_risk": "partial"
+      }
+    ],
     "provenance": {
-      "measured_at": "2026-10-13T06:26:35+00:00",
+      "measured_at": "2026-10-13T06:47:08+00:00",
       "model_version": "rules-v1",
       "dict_version": "geo-2026-07",
       "external_llm_used": false
