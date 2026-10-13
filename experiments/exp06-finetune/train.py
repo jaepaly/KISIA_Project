@@ -15,6 +15,7 @@ import math
 import os
 import platform
 import random
+import sys
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -26,6 +27,10 @@ DEFAULT_LABELS = Path("experiments/exp06-finetune/runs/bio/labels.json")
 DEFAULT_OUTPUT = Path("experiments/exp06-finetune/runs/model")
 DEFAULT_MODEL = "monologg/koelectra-base-v3-discriminator"
 
+
+_SRC = Path(__file__).resolve().parents[2] / "src"  # kopl 을 PYTHONPATH 없이도 찾게 (D 9번 전엔 src 가 필요 없었다)
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 # 추론에도 쓰는 순수 함수는 src/kopl/c1_span/bio.py 로 옮겼다 (README W9 D 9번) — 이름은 여기서도 그대로 쓴다
 from kopl.c1_span.bio import (  # noqa: E402,F401

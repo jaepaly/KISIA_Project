@@ -16,6 +16,9 @@ import sys
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
+_SRC = Path(__file__).resolve().parents[2] / "src"  # kopl 을 PYTHONPATH 없이도 찾게 (D 9번 전엔 src 가 필요 없었다)
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 from kopl.c1_span.bio import LABELS, TYPES, channel_sort_key  # noqa: E402,F401 — 추론과 같은 정의 (D 9번)
 
