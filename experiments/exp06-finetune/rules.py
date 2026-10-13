@@ -7,7 +7,5 @@ import sys
 
 from kopl.c1_span import rules as _impl
 
-if __name__ == "__main__":
-    raise SystemExit("rules 는 실행 스크립트가 아니다")
-else:
+if __name__ != "__main__":  # 직접 실행하면 전처럼 아무것도 하지 않고 끝난다
     sys.modules[__name__] = _impl
