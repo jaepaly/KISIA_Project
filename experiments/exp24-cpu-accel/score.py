@@ -77,8 +77,13 @@ def main() -> int:
     base = {n: load(RESULTS / f"preds_{n}_fp32.jsonl") for n in ("dev", "exp17")}
     cand = {n: load(RESULTS / f"preds_{n}_int8.jsonl") for n in ("dev", "exp17")}
     # 첫 실행(10/13)은 test 를 잘못 읽어(메타 dict 의 키 6개) dev 에 test 231편이 섞였다 — 저장된 예측에서 걸러 다시 채점한다
+    # 알려진 test 글만 뺀다 — 그 밖에 골드에 없는 글은 입력 누락 · 오염이니 멈춘다 (B 리뷰 #350)
+    test = run.test_post_ids()
     for preds in (base["dev"], cand["dev"]):
-        for pid in set(preds) - set(gold):
+        extra = set(preds) - set(gold)
+        if extra - test:
+            raise SystemExit(f"골드에 없는 글 {len(extra - test)}편 (test 아님): {sorted(extra - test)[:5]}")
+        for pid in extra:
             del preds[pid]
 
     a = span_set(base["dev"], "dev") | span_set(base["exp17"], "exp17")
