@@ -1,0 +1,18 @@
+{
+ "config": "v2",
+ "adapter": "experiments\\exp08-stage2-sft\\results\\adapter_v2",
+ "adapter_sha256": "94ada34de0f1e49c859f2102e311bf42c0683768ec779ca8aab243f63a950190",
+ "system_sha256": "66ed87742f3e9cc8d5e124bc2227c85f8917aa1666b793423dff9f28fc3e2ae3",
+ "stage1_manifest": {
+  "measured": "2026-10-12 14:29",
+  "accounts_sha256": "d9db9bdec3a8407837f9b29ec0f97e84b93c86273f41e9b6bb5d1a62974ace86",
+  "stage1_sha256": "5e137b193181b5973a15ed4673c28816fa5c473c637e3d9855e637112c37955c",
+  "checkpoint": "v2",
+  "checkpoint_model_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+  "c1_rules": true,
+  "git_commit": "eb1be0e3515dc67151c8f2fbecd2d311649ea43a",
+  "seconds": 52.8
+ },
+ "measured": "2026-10-12 17:02",
+ "gpu": "NVIDIA GeForce RTX 3060"
+}

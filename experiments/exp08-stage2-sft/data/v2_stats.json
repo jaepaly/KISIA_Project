@@ -1,0 +1,24 @@
+{
+ "seed": 20261012,
+ "k": 7,
+ "max_spans": 16,
+ "max_per_type": 4,
+ "dev_personas": [
+  "A09",
+  "A10",
+  "A15",
+  "A22",
+  "B02",
+  "B17",
+  "B19",
+  "B21",
+  "D08",
+  "D13",
+  "D14",
+  "E02"
+ ],
+ "train": 606,
+ "dev": 92,
+ "personas": 92,
+ "skipped_no_posts": []
+}

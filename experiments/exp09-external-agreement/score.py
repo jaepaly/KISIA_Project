@@ -130,12 +130,15 @@ def main() -> int:
     ap.add_argument("--boot", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=20260928)
     ap.add_argument("--variant", default="base", help="외부 결과 변형 — base · verdictdef (#279)")
+    ap.add_argument("--qwen-file", help="Qwen 결과 파일 (data/ 아래) — 구성별 재실행(run_config.py) 채점용. 기본은 qwen.jsonl")
+    ap.add_argument("--out", help="결과 파일 이름 (results/ 아래) — 기본은 metrics.json")
     a = ap.parse_args()
     data = HERE / "data"
     inputs = load(data / "inputs.jsonl")
     sfx = "_pilot" if a.pilot else ""
     vsfx = "" if a.variant == "base" else f"_{a.variant}"
-    qwen, ext = load(data / f"qwen{sfx}.jsonl"), load(data / f"external{sfx}{vsfx}.jsonl")
+    qwen_file = a.qwen_file or f"qwen{sfx}.jsonl"
+    qwen, ext = load(data / qwen_file), load(data / f"external{sfx}{vsfx}.jsonl")
     personas = sorted(set(qwen) & set(ext)) if a.pilot else sorted(inputs)
     missing = [p for p in personas if p not in qwen or p not in ext]
 
@@ -225,7 +228,7 @@ def main() -> int:
         "cost_usd_external": r4(sum(r.get("cost_usd") or 0 for r in ext.values())),
         "contract_finding_violations": {"qwen": contract_violations(qwen), "external": contract_violations(ext)},
         "external_variant": a.variant,
-        "raw_outputs": {f: file_digest(data / f) for f in ("inputs.jsonl", f"qwen{sfx}.jsonl", f"external{sfx}{vsfx}.jsonl")},
+        "raw_outputs": {f: file_digest(data / f) for f in ("inputs.jsonl", qwen_file, f"external{sfx}{vsfx}.jsonl")},
         "external_routes": sorted({f"{r.get('route')}:{r.get('gateway_url_sha256_12')}" for r in ext.values()}),
         "invalid_policy": {
             "agreement": "invalid 는 불일치 (invalid-invalid 포함)",
@@ -241,7 +244,7 @@ def main() -> int:
     }
     out = HERE / "results"
     out.mkdir(exist_ok=True)
-    (out / f"metrics{sfx}{vsfx}.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    (out / (a.out or f"metrics{sfx}{vsfx}.json")).write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
     o = res["overall"]
     print(f"agreement {o['agreement']} CI {o['agreement_ci95']} · κ {o['kappa']} · AC1 {o['gwet_ac1']} · "
           f"non-abstain {o['agreement_non_abstain']} (n={o['non_abstain_cells']}) · always-abstain baseline {o['always_abstain_vs_rule']}")

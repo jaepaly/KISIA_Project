@@ -1,4 +1,4 @@
-"""2단 실행 — 스팬 → 가명화 → Qwen3-4B + v1 어댑터 → 검증 → stage2-io Stage2Output.
+"""2단 실행 — 스팬 → 가명화 → Qwen3-4B + v2 어댑터 → 검증 → stage2-io Stage2Output.
 
     from kopl.c4_stage2.infer import analyze
     out = analyze(user_ref, posts, target_risk=40.0)            # 모델 (없으면 규칙 폴백)
@@ -8,16 +8,17 @@
 
 - 모델에는 원문이 가지 않는다. 학습과 같게 **가명 토큰으로 바꾼 스팬 목록**만 간다 (계약 설계 제약 5)
 - findings 는 모델이, recommendation 은 추천 엔진 v1(규칙 · ``recommend.py``)이 낸다.
-  v1 어댑터는 기여도 입력 없이 학습돼 recommendation 을 내지 않는다
+  어댑터(v1 · v2)는 기여도 입력 없이 학습돼 recommendation 을 내지 않는다
 - 모델 출력은 받은 뒤 다시 검증한다 — 7속성 · verdict enum · 입력에 없는 span_id 근거 제거 ·
   기권이면 근거 비우고 신뢰도 ≤ 0.25 (계약 Finding if/then). 파싱이 안 되면 규칙 판정으로 폴백하고
   provenance.model_version 에 그렇다고 적는다
-- 어댑터는 저장소에 없다 (models/registry.md 포인터). 기본 위치는 exp08 results/adapter,
+- 어댑터는 저장소에 없다 (models/registry.md 포인터). 기본 위치는 exp08 results/adapter_v2,
   다른 곳이면 ``STAGE2_ADAPTER_DIR``. 베이스 모델은 허브에 나가지 않고 로컬 캐시에서만 읽는다
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
@@ -34,23 +35,37 @@ from .rules import ATTRS, TYPE_TO_ATTR, findings_from_spans
 
 SCHEMA_VERSION = "0.1.0"
 BASE_MODEL = "Qwen/Qwen3-4B"
-MODEL_VERSION = "qwen3-4b-qlora-v1"
+MODEL_VERSION = "qwen3-4b-qlora-v2"
 RULES_VERSION = "rules-v1"
 _ROOT = Path(__file__).resolve().parents[3]
-_DEFAULT_ADAPTER = _ROOT / "experiments" / "exp08-stage2-sft" / "results" / "adapter"
+_DEFAULT_ADAPTER = _ROOT / "experiments" / "exp08-stage2-sft" / "results" / "adapter_v2"
+# v1 어댑터 가중치 해시 (DEC-009 · 되돌리기용 보존). v2 프롬프트 · 상한으로 v1 가중치를 돌리면 판정하지 않은 구성이라 막는다 —
+# 예전 STAGE2_ADAPTER_DIR 이 v1 을 가리킨 채 남은 PC 에서 조용히 섞이지 않게 (되돌리기는 models/registry.md)
+V1_ADAPTER_SHA256 = "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
 _VERDICTS = {"specified", "narrowed", "weak_signal", "abstain"}
 # 모델 입력 상한 — v1 어댑터 학습 데이터는 입력당 스팬 중앙 4 · 최대 23, 한 유형 p90 5 였다 (exp08 train 342건).
 # 실제 계정은 수십~수백 개라 출력(근거 목록)이 700토큰을 넘겨 JSON 이 잘리고 규칙 폴백으로 떨어졌다 (실제 글 내부 시험 10/8 ·
-# 합성 재현: 스팬 39개 → 출력 700/700 잘림). 학습 범위 안으로 줄여 보낸다 — 규칙 판정·추천·k 는 전체 스팬을 그대로 쓴다
-MODEL_MAX_SPANS = 24
-MODEL_MAX_SPANS_PER_TYPE = 6
+# 합성 재현: 스팬 39개 → 출력 700/700 잘림). 학습 범위 안으로 줄여 보낸다 — 규칙 판정·추천·k 는 전체 스팬을 그대로 쓴다.
+# v2 어댑터(DEC-012)는 실제 크기 계정을 이 상한 16/4 로 줄이고 스팬 없는 글을 뺀 입력으로 학습했다 (exp08 make_sft_v2 · 2048 토큰 안).
+# v1 은 24/6 · 빈 글 포함이었다 — 되돌릴 때 함께 되돌린다 (models/registry.md)
+MODEL_MAX_SPANS = 16
+MODEL_MAX_SPANS_PER_TYPE = 4
 _LEVEL_RANK = {"explicit": 0, "implicit": 1, "inferential": 2}
 _ABSTAIN_MAX_CONFIDENCE = 0.25
 
 # v1 어댑터가 학습한 system 프롬프트 그대로 (exp08 data/v1_train.jsonl). make_sft_v1.SYSTEM 은
-# 그 뒤에 바뀌었으므로(#279 판정 기준 등) 여기서 가져다 쓰지 않는다 — 어댑터를 다시 학습하면 같이 바꾼다
+# 그 뒤에 바뀌었으므로(#279 판정 기준 등) 여기서 가져다 쓰지 않는다. 앱은 v2 를 쓴다 — v1 은 실험 재현(exp09 · exp22b)과 되돌리기용
 SYSTEM_V1 = """공개 게시글 스팬 목록만 보고 글쓴이 7속성(age·sex·location·occupation·family·commute·income)이 얼마나 특정되는지 판정한다.
 verdict: specified(확정) · narrowed(범위 좁혀짐) · weak_signal(약한 신호) · abstain(근거 없음 — 추측 금지, 정상 동작).
+규칙: evidence 는 근거 스팬의 post_id·span_id 만 (프로필 스팬은 post_id null). subject "other" 는 남의 정보라 근거 불가.
+본인 얘기라도 예전 거주지·출신지·방문지·이사 갈 곳·예전 직장은 지금 것이 아니다 — 근거 불가.
+cross_post 는 근거가 서로 다른 글 2편 이상일 때만 true. 실제 값(나이·지명)은 쓰지 않는다.
+출력은 {"findings": {7속성 전부}, "rewrites": []} JSON 하나."""
+
+# v2 어댑터가 학습한 system 프롬프트 그대로 (exp08 make_sft_v2.SYSTEM_V2 = v1 + #296 판정 기준 한 줄). test_infer 가 같은지 확인한다
+SYSTEM_V2 = """공개 게시글 스팬 목록만 보고 글쓴이 7속성(age·sex·location·occupation·family·commute·income)이 얼마나 특정되는지 판정한다.
+verdict: specified(확정) · narrowed(범위 좁혀짐) · weak_signal(약한 신호) · abstain(근거 없음 — 추측 금지, 정상 동작).
+판정 기준(속성마다 그 속성 유형의 본인 스팬만): explicit 이 하나라도 있으면 specified · 아니면 implicit 이 하나라도 있으면 narrowed · 아니면 inferential 만 있는데 서로 다른 글 2편 이상이면 narrowed · inferential 이 글 1편뿐이면 weak_signal · 단서가 없으면 abstain.
 규칙: evidence 는 근거 스팬의 post_id·span_id 만 (프로필 스팬은 post_id null). subject "other" 는 남의 정보라 근거 불가.
 본인 얘기라도 예전 거주지·출신지·방문지·이사 갈 곳·예전 직장은 지금 것이 아니다 — 근거 불가.
 cross_post 는 근거가 서로 다른 글 2편 이상일 때만 true. 실제 값(나이·지명)은 쓰지 않는다.
@@ -145,10 +160,11 @@ def select_for_model(entries: Sequence[Mapping[str, Any]], *, max_spans: int = M
 
 def build_user_prompt(user_ref: str, posts: Sequence[Mapping[str, Any]], *,
                       cap: bool = False) -> tuple[str, list[dict[str, Any]]]:
-    """모델 입력. ``cap=True`` 면 학습 범위로 줄인다(앱 경로). 실험 재현(exp13 등)은 기본값 그대로 전체."""
+    """모델 입력. ``cap=True`` 면 v2 학습과 같게 줄인다(앱 경로) — 상한 16/4 · 스팬 없는 글 뺌.
+    실험 재현(exp13 등)은 기본값 그대로 전체."""
     entries = [{"post_id": p["post_id"], "spans": pseudonymize_spans(p)} for p in posts]
     if cap:
-        entries = select_for_model(entries)
+        entries = [e for e in select_for_model(entries) if e["spans"]]
     payload = {"user_ref": user_ref, "profile": None, "posts": entries}
     return json.dumps(payload, ensure_ascii=False), entries
 
@@ -219,16 +235,20 @@ def validate_findings(raw: Any, entries: Sequence[Mapping[str, Any]]) -> dict[st
 # ── 모델 ────────────────────────────────────────────────────────────────
 
 class Stage2Model:
-    """Qwen3-4B 4bit + v1 어댑터. 서버가 켜질 때 한 번만 만든다 (로딩 수십 초)."""
+    """Qwen3-4B 4bit + v2 어댑터. 서버가 켜질 때 한 번만 만든다 (로딩 수십 초)."""
 
-    def __init__(self, adapter_dir: str | Path | None = None, max_new_tokens: int = 700) -> None:
-        import torch
-        from peft import PeftModel
-        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
-
+    def __init__(self, adapter_dir: str | Path | None = None, max_new_tokens: int = 700,
+                 system: str | None = None) -> None:
+        """system — 어댑터가 학습한 프롬프트. 기본 SYSTEM_V2 · v1 어댑터를 재현할 때만 SYSTEM_V1 을 넘긴다."""
         adapter = Path(adapter_dir or os.getenv("STAGE2_ADAPTER_DIR", _DEFAULT_ADAPTER))
         if not (adapter / "adapter_config.json").is_file():
             raise FileNotFoundError(f"2단 어댑터가 없다: {adapter} (STAGE2_ADAPTER_DIR 로 지정)")
+        if (system or SYSTEM_V2) == SYSTEM_V2 and _sha256(adapter / "adapter_model.safetensors") == V1_ADAPTER_SHA256:
+            raise RuntimeError(f"v1 어댑터를 v2 구성으로 돌리려 했다: {adapter} — STAGE2_ADAPTER_DIR 을 v2 로 바꾸거나 지운다")
+        import torch  # 경로 · 해시 확인은 torch 없이 (GPU 없는 PC 에서도 이유가 정확히 남게)
+        from peft import PeftModel
+        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
         if not torch.cuda.is_available():
             raise RuntimeError("CUDA GPU 가 없다 — 2단 모델은 4bit GPU 추론만 지원한다 (mode='rules' 로 폴백)")
         self._torch = torch
@@ -243,10 +263,11 @@ class Stage2Model:
         self.model = PeftModel.from_pretrained(model, adapter)
         self.model.eval()
         self.max_new_tokens = max_new_tokens
+        self.system = system or SYSTEM_V2
 
     def generate(self, user_prompt: str, max_new_tokens: int | None = None) -> str:
         """exp08 eval.py · exp09 run_qwen.py 와 같은 디코딩 — greedy · thinking 끔."""
-        msgs = [{"role": "system", "content": SYSTEM_V1}, {"role": "user", "content": user_prompt}]
+        msgs = [{"role": "system", "content": self.system}, {"role": "user", "content": user_prompt}]
         prompt = self.tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
                                               enable_thinking=False)
         ids = self.tok(prompt, return_tensors="pt").to(self.model.device)
@@ -254,6 +275,16 @@ class Stage2Model:
             out = self.model.generate(**ids, max_new_tokens=max_new_tokens or self.max_new_tokens, do_sample=False,
                                       temperature=None, top_p=None, top_k=None)
         return self.tok.decode(out[0][ids["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+
+
+def _sha256(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def parse_findings(text: str) -> Any:

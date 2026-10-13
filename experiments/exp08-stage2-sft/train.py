@@ -1,10 +1,13 @@
 """2단 판정기 QLoRA SFT — Qwen3-4B NF4 + LoRA r16, RTX 3060 8GB (exp07 상한: seq 1024 · batch 1).
 
     python experiments/exp08-stage2-sft/train.py [--epochs 1] [--max-len 1024] [--grad-accum 8] [--lr 2e-4]
+    # v2 (README 「v2 준비」) — v1 어댑터(results/adapter)를 덮지 않게 저장 폴더를 따로
+    python experiments/exp08-stage2-sft/train.py --train data/v2_train.jsonl --dev data/v2_dev.jsonl         --max-len 2048 --completion-logits --epochs 3 --out results/adapter_v2
 
 - 손실은 assistant 턴에만 (system·user 는 -100)
 - max-len 을 넘는 예시는 버린다 (자르면 타깃 JSON 이 깨진다) — 버린 수를 metrics 에 적는다
-- 산출: results/adapter/ (LoRA 가중치) · results/metrics.json (loss 곡선 · dev loss · VRAM · 시간)
+- 산출: results/adapter/ (LoRA 가중치) · results/metrics.json (loss 곡선 · dev loss · VRAM · 시간). `--out` 이면 그 폴더에 둘 다
+- `--completion-logits`: 답변 구간의 logits 만 만든다(`logits_to_keep`). 손실은 같고 길이 2048 에서 피크 VRAM 7.17 → 5.80 GB
 """
 from __future__ import annotations
 
@@ -56,13 +59,23 @@ def load(tok, path: Path, max_len: int):
     return kept, dropped
 
 
+def step_loss(model, ids, labels, completion_logits: bool):
+    """한 예시의 손실. completion_logits 면 답변 구간(라벨이 -100 이 아닌 끝 구간)의 logits 만 만든다 —
+    위치 t 의 logits 가 t+1 토큰을 맞히므로 답변 C 토큰에는 끝에서 C+1 위치가 필요하다. 표준 손실과 같은 값이다."""
+    if not completion_logits:
+        return model(input_ids=ids[None].cuda(), labels=labels[None].cuda()).loss
+    c = int((labels != -100).sum())
+    assert c > 0 and bool((labels[-c:] != -100).all()), "답변은 끝에 붙은 한 구간이어야 한다"
+    logits = model(input_ids=ids[None].cuda(), logits_to_keep=c + 1).logits[0, :-1]
+    return torch.nn.functional.cross_entropy(logits.float(), ids[-c:].cuda())
+
+
 @torch.no_grad()
-def eval_loss(model, data) -> float:
+def eval_loss(model, data, completion_logits: bool = False) -> float:
     model.eval()
     tot, n = 0.0, 0
     for ids, labels in data:
-        out = model(input_ids=ids[None].cuda(), labels=labels[None].cuda())
-        tot += out.loss.item(); n += 1
+        tot += step_loss(model, ids, labels, completion_logits).item(); n += 1
     model.train()
     return round(tot / max(n, 1), 4)
 
@@ -76,13 +89,21 @@ def main() -> None:
     ap.add_argument("--rank", type=int, default=16)
     ap.add_argument("--seed", type=int, default=20260908)
     ap.add_argument("--limit", type=int, default=0, help="디버그 — 예시 n개만")
+    ap.add_argument("--train", default="data/train.jsonl", help="학습 데이터 (이 폴더 기준)")
+    ap.add_argument("--dev", default="data/dev.jsonl")
+    ap.add_argument("--out", default="results", help="어댑터 · metrics 저장 폴더 (이 폴더 기준). 기본은 예전 그대로 results/adapter")
+    ap.add_argument("--completion-logits", action="store_true", help="답변 구간 logits 만 (긴 입력 VRAM 절약)")
     a = ap.parse_args()
+    out_dir = HERE / a.out
+    adapter_dir = out_dir / "adapter" if a.out == "results" else out_dir
+    if adapter_dir.resolve() == (RESULTS / "adapter").resolve() and (a.train, a.dev) != ("data/train.jsonl", "data/dev.jsonl"):
+        raise SystemExit("v1 어댑터(results/adapter)를 덮어쓴다 — 다른 데이터로 학습할 때는 --out 을 따로 준다")
     torch.manual_seed(a.seed); random.seed(a.seed)
-    RESULTS.mkdir(parents=True, exist_ok=True)
+    adapter_dir.mkdir(parents=True, exist_ok=True)
 
     tok = AutoTokenizer.from_pretrained(MODEL_ID)
-    train, tr_drop = load(tok, DATA / "train.jsonl", a.max_len)
-    dev, dv_drop = load(tok, DATA / "dev.jsonl", a.max_len)
+    train, tr_drop = load(tok, HERE / a.train, a.max_len)
+    dev, dv_drop = load(tok, HERE / a.dev, a.max_len)
     if a.limit:
         train, dev = train[: a.limit], dev[: max(4, a.limit // 8)]
     print(f"train {len(train)} (버림 {tr_drop}) · dev {len(dev)} (버림 {dv_drop}) · max_len {a.max_len}")
@@ -109,9 +130,10 @@ def main() -> None:
     print(f"로드 {round(time.time()-t0,1)}s · 업데이트 {total_updates}회")
 
     metrics = {"model": MODEL_ID, "rank": a.rank, "max_len": a.max_len, "grad_accum": a.grad_accum, "lr": a.lr,
-               "epochs": a.epochs, "seed": a.seed, "train_n": len(train), "train_dropped": tr_drop,
+               "epochs": a.epochs, "seed": a.seed, "train_file": a.train, "dev_file": a.dev,
+               "completion_logits": a.completion_logits, "train_n": len(train), "train_dropped": tr_drop,
                "dev_n": len(dev), "dev_dropped": dv_drop, "loss_curve": [], "started_at": time.strftime("%Y-%m-%dT%H:%M:%S")}
-    metrics["dev_loss_before"] = eval_loss(model, dev)
+    metrics["dev_loss_before"] = eval_loss(model, dev, a.completion_logits)
     print("dev loss (학습 전)", metrics["dev_loss_before"])
 
     torch.cuda.reset_peak_memory_stats()
@@ -122,14 +144,14 @@ def main() -> None:
         order = list(range(len(train))); random.shuffle(order)
         for i in order:
             ids, labels = train[i]
-            out = model(input_ids=ids[None].cuda(), labels=labels[None].cuda())
-            (out.loss / a.grad_accum).backward()
-            run_loss += out.loss.item(); step += 1
+            loss = step_loss(model, ids, labels, a.completion_logits)
+            (loss / a.grad_accum).backward()
+            run_loss += loss.item(); step += 1
             if step % a.grad_accum == 0:
                 torch.nn.utils.clip_grad_norm_(params, 1.0)
                 opt.step(); sched.step(); opt.zero_grad(set_to_none=True); upd += 1
                 if upd % 20 == 0:
-                    model.save_pretrained(RESULTS / "adapter")  # 중간 저장 — 스톨·중단 대비
+                    model.save_pretrained(adapter_dir)  # 중간 저장 — 스톨·중단 대비
                 if upd % 5 == 0 or upd == total_updates:
                     avg = round(run_loss / a.grad_accum / 5, 4) if upd % 5 == 0 else round(run_loss / a.grad_accum, 4)
                     metrics["loss_curve"].append({"update": upd, "loss": avg, "sec": round(time.time() - t0)})
@@ -137,11 +159,12 @@ def main() -> None:
                     run_loss = 0.0
     metrics["train_sec"] = round(time.time() - t0)
     metrics["vram_peak_gb"] = gb(torch.cuda.max_memory_allocated())
-    metrics["dev_loss_after"] = eval_loss(model, dev)
+    metrics["dev_loss_after"] = eval_loss(model, dev, a.completion_logits)
     print("dev loss (학습 후)", metrics["dev_loss_after"], "· 피크 VRAM", metrics["vram_peak_gb"], "GB")
-    model.save_pretrained(RESULTS / "adapter")
-    (RESULTS / "metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")
-    print("→", RESULTS / "adapter", "·", RESULTS / "metrics.json")
+    model.save_pretrained(adapter_dir)
+    metrics_path = (RESULTS if a.out == "results" else adapter_dir) / "metrics.json"
+    metrics_path.write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("→", adapter_dir, "·", metrics_path)
 
 
 if __name__ == "__main__":

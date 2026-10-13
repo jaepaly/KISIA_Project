@@ -231,10 +231,44 @@ def test_selection_prefers_explicit_spreads_posts_and_drops_repeats() -> None:
         assert sum(1 for s in e["spans"] if s["type"] == "FAM") <= 1
 
 
-def test_small_input_is_unchanged_by_cap() -> None:
-    prompt_full, _ = build_user_prompt(USER, _posts())
-    prompt_cap, _ = build_user_prompt(USER, _posts(), cap=True)
-    assert prompt_full == prompt_cap
+def test_small_input_keeps_all_spans_and_drops_empty_posts() -> None:
+    _, full = build_user_prompt(USER, _posts())
+    _, capped = build_user_prompt(USER, _posts(), cap=True)
+    assert [e["post_id"] for e in full] == ["p1", "p2"]
+    assert capped == [e for e in full if e["spans"]]  # v2 학습과 같게 스팬 없는 글만 빠진다
+
+
+def test_app_uses_v2_configuration() -> None:
+    """앱 2단 = v2 어댑터 구성 (DEC-012) — 상한 16/4 · system 은 v2 학습 데이터의 프롬프트 그대로."""
+    from kopl.c4_stage2 import infer as infer_mod
+
+    assert (MODEL_MAX_SPANS, MODEL_MAX_SPANS_PER_TYPE) == (16, 4)
+    assert MODEL_VERSION == "qwen3-4b-qlora-v2"
+    assert infer_mod._DEFAULT_ADAPTER.name == "adapter_v2"
+    src = Path(__file__).resolve().parents[3] / "experiments" / "exp08-stage2-sft" / "make_sft_v2.py"
+    text = src.read_text(encoding="utf-8")
+    body = text.split('SYSTEM_V2 = """', 1)[1].split('"""', 1)[0]  # 모듈을 실행하지 않고 상수만 읽는다
+    assert infer_mod.SYSTEM_V2 == body
+    # v2 = v1 + 판정 기준 한 줄 (#296)
+    assert set(infer_mod.SYSTEM_V1.splitlines()) < set(infer_mod.SYSTEM_V2.splitlines())
+
+
+def test_stage2_model_uses_v2_prompt_by_default() -> None:
+    from kopl.c4_stage2 import infer as infer_mod
+
+    seen = {}
+
+    class Tok:
+        def apply_chat_template(self, msgs, **_):
+            seen["system"] = msgs[0]["content"]
+            raise StopIteration  # 프롬프트만 확인하고 생성은 하지 않는다
+
+    for system, want in ((None, infer_mod.SYSTEM_V2), (infer_mod.SYSTEM_V1, infer_mod.SYSTEM_V1)):
+        m = object.__new__(infer_mod.Stage2Model)
+        m.tok, m.system = Tok(), system or infer_mod.SYSTEM_V2
+        with pytest.raises(StopIteration):
+            m.generate("{}")
+        assert seen["system"] == want
 
 
 def test_rules_fallback_uses_all_spans_and_budget_grows() -> None:
@@ -318,3 +352,18 @@ def test_analyze_passes_budget_of_selected_entries() -> None:
     analyze(USER, _many_posts(), model=Capture(), mode="auto")
     _, entries = build_user_prompt(USER, _many_posts(), cap=True)
     assert seen["budget"] == output_budget(entries)
+
+
+def test_v1_adapter_is_refused_with_v2_prompt(tmp_path) -> None:
+    """예전 STAGE2_ADAPTER_DIR 이 v1 을 가리키면 v2 구성으로 돌리지 않는다 — 로드 전에 막아 규칙으로 폴백."""
+    from kopl.c4_stage2 import infer as infer_mod
+
+    (tmp_path / "adapter_config.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "adapter_model.safetensors").write_bytes(b"v1")
+    orig = infer_mod.V1_ADAPTER_SHA256
+    infer_mod.V1_ADAPTER_SHA256 = infer_mod._sha256(tmp_path / "adapter_model.safetensors")
+    try:
+        with pytest.raises(RuntimeError, match="v1 어댑터를 v2 구성"):
+            infer_mod.Stage2Model(tmp_path)
+    finally:
+        infer_mod.V1_ADAPTER_SHA256 = orig

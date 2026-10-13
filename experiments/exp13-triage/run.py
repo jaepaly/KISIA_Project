@@ -128,7 +128,9 @@ def main() -> int:
             for rec in read_jsonl(runs_path):
                 done[rec["persona_id"]] = rec
         todo = [r for r in rows if r["persona_id"] in model_ids and r["persona_id"] not in done][:a.batch]
-        model = Stage2Model(max_new_tokens=a.max_new) if todo else None
+        # 9월 측정은 v1 어댑터 · SYSTEM_V1 (앱 기본값이 v2 로 바뀐 뒤에도 재현되게 명시 · DEC-012)
+        model = (Stage2Model(ROOT / "experiments/exp08-stage2-sft/results/adapter", max_new_tokens=a.max_new, system=SYSTEM_V1)
+                 if todo else None)
         with runs_path.open("a", encoding="utf-8") as f:
             for row in todo:
                 rec = {"persona_id": row["persona_id"]}
