@@ -58,7 +58,7 @@
 | 창구 | 응답 | 쓰는 곳 |
 |---|---|---|
 | `GET /api/export/<user_ref>` | §1 글 · §2 사용자 (공개 글만) | 분석의 입력 전부 |
-| `GET /api/authors?q=<검색어>` | `[{ user_ref, nickname, n_posts }]` — 닉네임·`user_ref` 앞부분으로 최대 12명 · `n_posts` 는 공개 글 수 | 스캔 화면 계정 찾기 (식별자를 외워 오게 하지 않는다) |
+| `GET /api/authors?q=<검색어>` | `[{ user_ref, nickname, n_posts }]` — 닉네임 부분 일치 · `user_ref` 앞부분 일치로 최대 12명 · `n_posts` 는 공개 글 수 | 스캔 화면 계정 찾기 (식별자를 외워 오게 하지 않는다) |
 
 - 분석 도구는 이 둘을 `apps/analyzer/adapters/sns_adapter.py` 로만 부른다 — 화면(브라우저)이 가상 SNS 를 직접 부르지 않는다
 - 방문자별 사본을 쓰는 서버에서는 두 창구 모두 `X-Veilo-Session` 헤더로 그 방문자의 사본을 읽는다

@@ -100,7 +100,7 @@ async function runScan(user_ref, label) {
   try {
     const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
     if (!r.ok) {
-      msg.textContent = `실패: ${r.status} ${await r.text()}`; msg.className = "error"; return;
+      msg.textContent = `실패: ${r.status} ${(await r.json().catch(() => ({}))).detail || ""}`; msg.className = "error"; return;
     }
     const data = await r.json();
     if (label) data.nickname = label;   // 진단·조치 화면의 제목
@@ -136,7 +136,7 @@ async function search(q) {
       <span class="nm">${esc(a.nickname)}</span><span class="muted">@${esc(a.user_ref)} · 글 ${a.n_posts}편</span></li>`).join("");
     list.hidden = false;
     list.querySelectorAll("li[data-i]").forEach((li) => li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(rows[+li.dataset.i]); }));
-  } catch { list.innerHTML = `<li class="none">계정 목록을 가져오지 못했습니다 — 가상 SNS 가 같은 주소에서 돌고 있어야 합니다</li>`; list.hidden = false; }
+  } catch { list.innerHTML = `<li class="none">계정 목록을 가져오지 못했습니다 — 잠시 뒤 다시 입력해 주세요</li>`; list.hidden = false; }
 }
 $("userQ").addEventListener("input", () => {
   picked = null; $("scanBtn").disabled = true; $("picked").hidden = true;
@@ -160,7 +160,7 @@ $("uploadBtn").onclick = async () => {
     const form = new FormData();
     form.append("file", f);
     const r = await fetch("../upload", { method: "POST", body: form });
-    if (!r.ok) { msg.textContent = `실패: ${r.status} ${await r.text()}`; msg.className = "error"; return; }
+    if (!r.ok) { msg.textContent = `실패: ${r.status} ${(await r.json().catch(() => ({}))).detail || ""}`; msg.className = "error"; return; }
     const data = await r.json();
     data.nickname = f.name;
     saveScan(data);
