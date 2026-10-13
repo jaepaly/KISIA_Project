@@ -1,0 +1,300 @@
+{
+  "input": {
+    "schema_version": "0.1.0",
+    "user_ref": "u_f29bc501c32a",
+    "posts": [
+      {
+        "post_id": "D02_b14",
+        "texts": [
+          {
+            "text_id": "title",
+            "pseudonymized": "천장 무늬"
+          },
+          {
+            "text_id": "body",
+            "pseudonymized": "불 끄고 누웠는데 잠이안 왔다.\n베개를 세 번 뒤집엇다.\n시원한 쪽도 바로 미지근해짐.\n천장 무늬가 사람 얼굴처럼 보여서 눈을 감았다가 다시 뜸.\n새벽 공기는 얇은 이불처럼 서늘했다.\n아까 [통근지1] [직업1] [성별1] 또 유통기한 지난 삼각김밥을 챙겨줫다.\n이건 고마움 ㅠㅠ\n십 분만 걸으면 되니까 [거주관계1] 못 떠나는 이유가 또 늘었다.\n아 그리고 다시 누웠더니 천장 얼굴이 아까랑 좀 달랐다.\n분명 눈이 두 개였는데 ㅠㅠ\n지금은 세 개네."
+          }
+        ],
+        "spans": [
+          {
+            "start": 106,
+            "end": 109,
+            "text": "퇴근길",
+            "type": "COMMUTE",
+            "score": 0.9498969912528992,
+            "text_id": "body",
+            "span_id": "D02_b14_s01",
+            "level": "inferential",
+            "subject": "self"
+          },
+          {
+            "start": 110,
+            "end": 116,
+            "text": "편의점 알바",
+            "type": "JOB",
+            "score": 0.9718534350395203,
+            "text_id": "body",
+            "span_id": "D02_b14_s02",
+            "level": "explicit",
+            "subject": "other"
+          },
+          {
+            "start": 117,
+            "end": 120,
+            "text": "언니가",
+            "type": "SEX",
+            "score": 0.9767636656761169,
+            "text_id": "body",
+            "span_id": "D02_b14_s03",
+            "level": "implicit",
+            "subject": "self"
+          },
+          {
+            "start": 166,
+            "end": 171,
+            "text": "이 동네를",
+            "type": "REL_HOME",
+            "score": 0.8937820792198181,
+            "text_id": "body",
+            "span_id": "D02_b14_s04",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ],
+        "pseudonym_map": [
+          {
+            "span_id": "D02_b14_s01",
+            "text_id": "body",
+            "label": "[통근지1]",
+            "original": {
+              "start": 106,
+              "end": 109
+            },
+            "pseudo": {
+              "start": 106,
+              "end": 112
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "D02_b14_s02",
+            "text_id": "body",
+            "label": "[직업1]",
+            "original": {
+              "start": 110,
+              "end": 116
+            },
+            "pseudo": {
+              "start": 113,
+              "end": 118
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "D02_b14_s03",
+            "text_id": "body",
+            "label": "[성별1]",
+            "original": {
+              "start": 117,
+              "end": 120
+            },
+            "pseudo": {
+              "start": 119,
+              "end": 124
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "D02_b14_s04",
+            "text_id": "body",
+            "label": "[거주관계1]",
+            "original": {
+              "start": 166,
+              "end": 171
+            },
+            "pseudo": {
+              "start": 170,
+              "end": 177
+            },
+            "restore_key": {}
+          }
+        ],
+        "contribution": -14.28
+      },
+      {
+        "post_id": "D02_b17",
+        "texts": [
+          {
+            "text_id": "title",
+            "pseudonymized": "새벽 장보기"
+          },
+          {
+            "text_id": "body",
+            "pseudonymized": "새벽 네 시에 무인 식료품점에 갔다.\n[지역1] 큰길 쪽은 아직 조용했다.\n문은 열려잇었다.\n새벽 영업 확인함.\n바구니에 달걀부터 넣었다.\n우유도 하나 추가함.\n밖은 생각보다 후덥지근했다.\n과자 앞에서 십분쯤 서성임.\n몰라 진짜.\n결국 짠 거랑 단 거 둘 다 샀다 ㅠㅠ\n계산대앞에서 봉투값을 뒤늦게 봤다.\n장바구니 챙긴다는 계획은 실패함.\n손으로 안고 나오려다 달걀이 눌릴 뻔했다 ㅠㅠ\n암튼 [거주관계1] 참외 냄새가 났다.\n그랫다.\n오늘 머리 감을지 말지나 정해야 함."
+          }
+        ],
+        "spans": [
+          {
+            "start": 21,
+            "end": 24,
+            "text": "관악구",
+            "type": "LOC_ADMIN",
+            "score": 0.9802389144897461,
+            "text_id": "body",
+            "span_id": "D02_b17_s01",
+            "level": "explicit",
+            "subject": "self"
+          },
+          {
+            "start": 217,
+            "end": 224,
+            "text": "집 가는 길에",
+            "type": "REL_HOME",
+            "score": 0.9211696267127991,
+            "text_id": "body",
+            "span_id": "D02_b17_s02",
+            "level": "inferential",
+            "subject": "self"
+          }
+        ],
+        "pseudonym_map": [
+          {
+            "span_id": "D02_b17_s01",
+            "text_id": "body",
+            "label": "[지역1]",
+            "original": {
+              "start": 21,
+              "end": 24
+            },
+            "pseudo": {
+              "start": 21,
+              "end": 26
+            },
+            "restore_key": {}
+          },
+          {
+            "span_id": "D02_b17_s02",
+            "text_id": "body",
+            "label": "[거주관계1]",
+            "original": {
+              "start": 217,
+              "end": 224
+            },
+            "pseudo": {
+              "start": 219,
+              "end": 226
+            },
+            "restore_key": {}
+          }
+        ],
+        "contribution": -7.85
+      }
+    ],
+    "risk": {
+      "current": 22.14,
+      "target": 40.0
+    },
+    "provenance": {
+      "measured_at": "2026-10-13T06:47:08+00:00",
+      "model_version": "kisia-ckpt/v2+rules",
+      "dict_version": "geo-2026-07",
+      "data_version": "corpus-v0"
+    }
+  },
+  "output": {
+    "schema_version": "0.1.0",
+    "findings": {
+      "age": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "sex": {
+        "verdict": "narrowed",
+        "confidence": 0.7,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s03"
+          }
+        ]
+      },
+      "location": {
+        "verdict": "specified",
+        "confidence": 0.9,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b17",
+            "span_id": "D02_b17_s01"
+          }
+        ]
+      },
+      "occupation": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      },
+      "family": {
+        "verdict": "narrowed",
+        "confidence": 0.6,
+        "cross_post": true,
+        "evidence": [
+          {
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s04"
+          },
+          {
+            "post_id": "D02_b17",
+            "span_id": "D02_b17_s02"
+          }
+        ]
+      },
+      "commute": {
+        "verdict": "weak_signal",
+        "confidence": 0.4,
+        "cross_post": false,
+        "evidence": [
+          {
+            "post_id": "D02_b14",
+            "span_id": "D02_b14_s01"
+          }
+        ]
+      },
+      "income": {
+        "verdict": "abstain",
+        "confidence": 0.1,
+        "cross_post": false,
+        "evidence": []
+      }
+    },
+    "recommendation": {
+      "actions": [],
+      "projected": {
+        "current_risk": 22.14,
+        "projected_risk": 22.14,
+        "reduction_pct": 0.0,
+        "target_met": true
+      },
+      "optimality_gap_pct": null
+    },
+    "rewrites": [
+      {
+        "post_id": "D02_b17",
+        "span_id": "D02_b17_s01",
+        "suggestion": "서울",
+        "semantic_similarity": null,
+        "residual_risk": "partial"
+      }
+    ],
+    "provenance": {
+      "measured_at": "2026-10-13T06:47:08+00:00",
+      "model_version": "rules-v1",
+      "dict_version": "geo-2026-07",
+      "external_llm_used": false
+    }
+  }
+}

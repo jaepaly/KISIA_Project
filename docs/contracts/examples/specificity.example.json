@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c2-k-0.1.0",
+  "dict_version": "geo-2026-07",
+  "input": {
+    "user_ref": "u_f29bc501c32a",
+    "conditions": [
+      {
+        "axis": "commute",
+        "kind": "commute_mode",
+        "resolution": 1,
+        "confidence": 0.5,
+        "source_post_ids": [
+          "D02_b14"
+        ],
+        "value": "퇴근길"
+      },
+      {
+        "axis": "sex",
+        "kind": "sex",
+        "resolution": 1,
+        "confidence": 0.8,
+        "source_post_ids": [
+          "D02_b14"
+        ],
+        "value": "언니가"
+      },
+      {
+        "axis": "location",
+        "kind": "administrative_area",
+        "resolution": 2,
+        "confidence": 1.0,
+        "source_post_ids": [
+          "D02_b17"
+        ],
+        "geo_code": "1162000000"
+      }
+    ]
+  },
+  "output": {
+    "k": 385509.36,
+    "k_level": "ACCEPTABLE",
+    "basis": {
+      "source": "행정안전부 주민등록 인구통계",
+      "as_of": "2026-07"
+    },
+    "risk": 22.14,
+    "risk_by_axis": {
+      "location": 55.0,
+      "age": 0.0,
+      "sex": 60.0,
+      "occupation": 0.0,
+      "family": 0.0,
+      "commute": 40.0,
+      "income": 0.0
+    },
+    "floor_applied": false,
+    "steps": [
+      {
+        "axis": "location",
+        "condition": "전 국민 (주민등록)",
+        "n_after": 51088284,
+        "method": "population_lookup"
+      },
+      {
+        "axis": "location",
+        "condition": "location:administrative_area «1162000000» → 읍면동 21곳",
+        "n_after": 477503,
+        "method": "population_lookup"
+      },
+      {
+        "axis": "commute",
+        "condition": "commute:commute_mode «퇴근길»",
+        "n_after": 385509.3613,
+        "method": "ratio_damped",
+        "p": 0.4,
+        "confidence": 0.5,
+        "q_damped": 0.807344
+      }
+    ],
+    "assumptions": [
+      "직업·가족·통근·소득은 서로 독립이고 지역·연령·성별과도 독립이라고 가정한다 — 상관 중복은 감쇠 α=0.6 로 흡수",
+      "비율 p 는 해상도별 대표값이다 (priors-0.1.0 · 초기값 — 통계 원표 대조 전. 해상도별 대표 비율이며 단서 문장마다의 실제 비율이 아니다)",
+      "가능한 해석 중 후보가 가장 적은 해석을 쓴다 (방어적 최소 — 공격자가 고를 수 있는 가장 좁은 해석)"
+    ]
+  }
+}

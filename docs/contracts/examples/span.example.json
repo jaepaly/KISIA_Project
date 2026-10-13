@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "model_version": "kisia-ckpt/v2+rules",
+  "record_type": "post",
+  "post_id": "D02_b14",
+  "spans": [
+    {
+      "start": 106,
+      "end": 109,
+      "text": "퇴근길",
+      "type": "COMMUTE",
+      "score": 0.9498969912528992,
+      "text_id": "body",
+      "span_id": "D02_b14_s01",
+      "level": "inferential",
+      "subject": "self"
+    },
+    {
+      "start": 110,
+      "end": 116,
+      "text": "편의점 알바",
+      "type": "JOB",
+      "score": 0.9718534350395203,
+      "text_id": "body",
+      "span_id": "D02_b14_s02",
+      "level": "explicit",
+      "subject": "other"
+    },
+    {
+      "start": 117,
+      "end": 120,
+      "text": "언니가",
+      "type": "SEX",
+      "score": 0.9767636656761169,
+      "text_id": "body",
+      "span_id": "D02_b14_s03",
+      "level": "implicit",
+      "subject": "self"
+    },
+    {
+      "start": 166,
+      "end": 171,
+      "text": "이 동네를",
+      "type": "REL_HOME",
+      "score": 0.8937820792198181,
+      "text_id": "body",
+      "span_id": "D02_b14_s04",
+      "level": "inferential",
+      "subject": "self"
+    }
+  ]
+}

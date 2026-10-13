@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "engine_version": "c3-0.1.0",
+  "input": {
+    "user_ref": "u_f29bc501c32a",
+    "post_ids": [
+      "D02_b14",
+      "D02_b17"
+    ],
+    "method": "loo"
+  },
+  "output": {
+    "baseline_risk": 22.14,
+    "residual_risk": 0.0,
+    "risk_after": null,
+    "contributions": [
+      {
+        "post_id": "D02_b14",
+        "risk_without": 7.86,
+        "delta": -14.28,
+        "rank": 1,
+        "clue_ids": [
+          "D02_b14_s01",
+          "D02_b14_s03",
+          "D02_b14_s04"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D02_b14_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D02_b14_s03",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D02_b14_s04",
+            "text_id": "body"
+          }
+        ]
+      },
+      {
+        "post_id": "D02_b17",
+        "risk_without": 14.29,
+        "delta": -7.85,
+        "rank": 2,
+        "clue_ids": [
+          "D02_b17_s01",
+          "D02_b17_s02"
+        ],
+        "top_spans": [
+          {
+            "span_id": "D02_b17_s01",
+            "text_id": "body"
+          },
+          {
+            "span_id": "D02_b17_s02",
+            "text_id": "body"
+          }
+        ]
+      }
+    ],
+    "user_scoped": [],
+    "greedy_path": [
+      {
+        "remove": "D02_b14",
+        "risk_after": 7.86
+      }
+    ],
+    "approx_error": null,
+    "note": "greedy_path는 매 제거 후 위험도를 재계산한 값이므로 delta 상위 n개의 단순 합과 일치하지 않을 수 있다."
+  }
+}

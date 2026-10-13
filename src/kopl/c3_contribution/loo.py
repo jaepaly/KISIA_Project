@@ -150,7 +150,8 @@ def leave_one_out(
             {
                 "post_id": post_id,
                 "risk_without": round(without, 2),
-                "delta": round(without - baseline, 2),
+                # 반올림한 두 값의 차 — 따로 반올림하면 계약 불변식 risk_without = baseline_risk + delta 가 0.01 어긋난다
+                "delta": round(round(without, 2) - round(baseline, 2), 2),
                 "rank": 0,
                 "clue_ids": _normalize_clue_ids(clues, post_id),
                 "top_spans": _normalize_spans(spans, post_id),
