@@ -41,6 +41,36 @@
 | DEC-010 | G3 — [필수] 명시 F1 목표 0.80 을 그대로 두고 미달·개선 경과·평가 한계를 적는다 | **Accepted** | W8 | README D 3번 · #295 |
 | DEC-011 | 1단 운용 구성은 코퍼스 밖 평가셋으로 고르고, 최종 판정셋으로 한 번만 확정한다 | **Accepted** | W8 | #310 · #311 · #314 |
 | DEC-012 | 2단 앱 기본을 v2 어댑터로 바꾼다 — 등록 기준 6 미달은 규칙 대조로 예외 처리 | **Accepted** | W9 | exp22b · #346 |
+| DEC-013 | 7속성 필드 이름을 `age` `sex` `location` `occupation` `family` `commute` `income` 으로 통일한다 | **Accepted** | W2 (기록 W9) | #2 · #42 · 필드-대조표 |
+
+---
+
+## [DEC-013] 7속성 필드 이름을 `age` `sex` `location` `occupation` `family` `commute` `income` 으로 통일한다
+
+**상태**: Accepted · **주차**: W2 결정 (2026-08-26 계약 머지) · W9 기록 (2026-10-13) · **관련**: [#2](../../../pull/2) · [#42](../../../pull/42) · [필드-대조표](contracts/필드-대조표.md) · [e-contracts §2](roles/howto/e-contracts.md) · **결정**: 계약 4종 소유자(W2) · 기록 D(@jaepaly, PM) · 확인 E(@zihhhhh)
+
+### 무엇을 정했나
+
+판정 · 위험도에 쓰는 7속성의 코드 이름은 **`age` `sex` `location` `occupation` `family` `commute` `income`** 하나로 쓴다. 화면 문구(「거주지」 「직업」 등)는 E 가 따로 매핑한다 — 코드 값과 표기를 나눈다.
+
+### 왜 — W2 에 두 표기가 공존했다
+
+| 출처 | 표기 |
+|---|---|
+| `persona-design.md` §4-1 `ground_truth` (A 채점 정답) | `age` `sex` `location` `occupation` … |
+| README A 항목 페르소나 예시 (W1) | `age` `gender` `residence` `job` … |
+
+이름은 네 사람 코드에 문자열로 박혀 나중에 바꾸기 가장 어렵다(e-contracts §2). 이미 돌아가는 쪽 — A 의 채점 정답과 C 의 특정성 축 이름 — 을 따랐다. README 예시는 W2 에 같은 표기로 고쳤다.
+
+### 지금 상태 (2026-10-13 확인)
+
+- `specificity.schema.json` 의 축 · `stage2-io.schema.json` 의 `findings` 키가 모두 위 7개다. `span.schema.json` · `contribution.schema.json` 에는 속성 이름 필드가 없다
+- `gender` · `residence` · `job` 은 계약 · `src/` · `apps/` 에 **속성 필드 이름으로는** 남아 있지 않다 (테스트 코드의 지역변수 `job` 같은 것은 빼고)
+- 같은 시기의 다른 이름 충돌(사용자 식별자 `user_ref` · 위험 등급 `k_level`)은 [필드-대조표](contracts/필드-대조표.md) §7 ① · ② 에 정리돼 있다
+
+### 결과
+
+이름을 바꾸려면 계약 PR(코드오너 승인)로만 바꾼다. 이 항목은 W2 에 기록했어야 했는데 빠져 있었다 — E 성공 기준 「7속성 필드 이름 충돌이 해소되고 `decisions.md` 에 기록됨」을 채우려고 늦게 적는다.
 
 ---
 
