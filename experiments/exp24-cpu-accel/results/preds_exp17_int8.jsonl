@@ -1,0 +1,80 @@
+{"post_id": "P17_001", "spans": [{"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 6, "end": 11, "type": "LOC_ADMIN", "text": "유성구에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 113, "end": 117, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_002", "spans": [{"text_id": "body", "start": 78, "end": 81, "type": "LOC_ADMIN", "text": "세종에", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 117, "end": 119, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 120, "end": 124, "type": "LOC_ADMIN", "text": "해운대구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_003", "spans": []}
+{"post_id": "P17_004", "spans": [{"text_id": "body", "start": 53, "end": 59, "type": "AGE", "text": "마흔하나인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_005", "spans": []}
+{"post_id": "P17_006", "spans": [{"text_id": "body", "start": 40, "end": 42, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 43, "end": 46, "type": "LOC_ADMIN", "text": "연수구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_007", "spans": [{"text_id": "body", "start": 34, "end": 37, "type": "LOC_ADMIN", "text": "봉천동", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 67, "end": 69, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_008", "spans": []}
+{"post_id": "P17_009", "spans": [{"text_id": "body", "start": 36, "end": 43, "type": "INCOME", "text": "삼백이십만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_010", "spans": [{"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 6, "end": 11, "type": "LOC_ADMIN", "text": "연수구에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 76, "end": 82, "type": "INCOME", "text": "4,200만", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_011", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_012", "spans": [{"text_id": "body", "start": 32, "end": 36, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_013", "spans": []}
+{"post_id": "P17_014", "spans": [{"text_id": "body", "start": 24, "end": 29, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 56, "end": 60, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_015", "spans": [{"text_id": "body", "start": 12, "end": 14, "type": "LOC_ADMIN", "text": "용인", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 15, "end": 19, "type": "LOC_ADMIN", "text": "기흥구로", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_016", "spans": [{"text_id": "body", "start": 6, "end": 11, "type": "LOC_ADMIN", "text": "망원동으로", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_017", "spans": [{"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "수원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 6, "end": 9, "type": "LOC_ADMIN", "text": "영통구", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 50, "end": 55, "type": "INCOME", "text": "80만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_018", "spans": [{"text_id": "body", "start": 32, "end": 36, "type": "AGE", "text": "스물셋임", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_019", "spans": []}
+{"post_id": "P17_020", "spans": []}
+{"post_id": "P17_021", "spans": [{"text_id": "body", "start": 22, "end": 25, "type": "AGE", "text": "48에", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_022", "spans": [{"text_id": "body", "start": 14, "end": 19, "type": "AGE", "text": "23살이고", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_023", "spans": [{"text_id": "body", "start": 69, "end": 72, "type": "AGE", "text": "서른둘", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_024", "spans": []}
+{"post_id": "P17_025", "spans": []}
+{"post_id": "P17_026", "spans": [{"text_id": "body", "start": 69, "end": 74, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 80, "end": 84, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_027", "spans": []}
+{"post_id": "P17_028", "spans": [{"text_id": "body", "start": 6, "end": 9, "type": "LOC_ADMIN", "text": "완산구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_029", "spans": [{"text_id": "body", "start": 36, "end": 41, "type": "LOC_ADMIN", "text": "봉천동에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 83, "end": 89, "type": "AGE", "text": "스물아홉이라", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_030", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "창원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 8, "type": "LOC_ADMIN", "text": "의창구에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 12, "end": 15, "type": "AGE", "text": "48에", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_031", "spans": [{"text_id": "body", "start": 45, "end": 50, "type": "INCOME", "text": "80만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_032", "spans": [{"text_id": "body", "start": 36, "end": 38, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 39, "end": 44, "type": "LOC_ADMIN", "text": "흥덕구에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 86, "end": 91, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_033", "spans": [{"text_id": "body", "start": 112, "end": 119, "type": "INCOME", "text": "삼백이십만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_034", "spans": [{"text_id": "body", "start": 32, "end": 34, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 35, "end": 38, "type": "LOC_ADMIN", "text": "흥덕구", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 52, "end": 54, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_035", "spans": [{"text_id": "body", "start": 33, "end": 39, "type": "AGE", "text": "스물아홉이라", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_036", "spans": [{"text_id": "body", "start": 39, "end": 43, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_037", "spans": []}
+{"post_id": "P17_038", "spans": [{"text_id": "body", "start": 28, "end": 32, "type": "AGE", "text": "스물셋임", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 52, "end": 56, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_039", "spans": [{"text_id": "body", "start": 44, "end": 47, "type": "AGE", "text": "48에", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_040", "spans": [{"text_id": "body", "start": 32, "end": 35, "type": "AGE", "text": "37세", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_041", "spans": [{"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 6, "end": 9, "type": "LOC_ADMIN", "text": "연수구", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 38, "end": 42, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_042", "spans": [{"text_id": "body", "start": 42, "end": 49, "type": "INCOME", "text": "삼백이십만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_043", "spans": [{"text_id": "body", "start": 58, "end": 64, "type": "AGE", "text": "스물아홉이라", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_044", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "창원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 8, "type": "LOC_ADMIN", "text": "의창구에서", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 30, "end": 36, "type": "AGE", "text": "스물아홉이라", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_045", "spans": [{"text_id": "body", "start": 29, "end": 33, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_046", "spans": []}
+{"post_id": "P17_047", "spans": []}
+{"post_id": "P17_048", "spans": [{"text_id": "body", "start": 11, "end": 16, "type": "INCOME", "text": "80만 원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 40, "end": 43, "type": "AGE", "text": "37세", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_049", "spans": []}
+{"post_id": "P17_050", "spans": []}
+{"post_id": "P17_051", "spans": [{"text_id": "body", "start": 44, "end": 49, "type": "LOC_ADMIN", "text": "봉천동으로", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_052", "spans": [{"text_id": "body", "start": 30, "end": 34, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_053", "spans": [{"text_id": "body", "start": 0, "end": 6, "type": "AGE", "text": "마흔하나인데", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 12, "end": 15, "type": "LOC_ADMIN", "text": "망원동", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 83, "end": 87, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_054", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "인천", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 7, "type": "LOC_ADMIN", "text": "연수구에", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 51, "end": 56, "type": "INCOME", "text": "80만 원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 93, "end": 95, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_055", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "수원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 6, "type": "LOC_ADMIN", "text": "영통구", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 44, "end": 49, "type": "AGE", "text": "23살이고", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_056", "spans": []}
+{"post_id": "P17_057", "spans": [{"text_id": "body", "start": 4, "end": 6, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 7, "end": 10, "type": "LOC_ADMIN", "text": "흥덕구", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 29, "end": 33, "type": "AGE", "text": "마흔둘인", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_058", "spans": []}
+{"post_id": "P17_059", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 6, "type": "LOC_ADMIN", "text": "흥덕구", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 34, "end": 40, "type": "AGE", "text": "마흔하나인데", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_060", "spans": []}
+{"post_id": "P17_061", "spans": [{"text_id": "body", "start": 47, "end": 50, "type": "AGE", "text": "48에", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_062", "spans": [{"text_id": "body", "start": 3, "end": 8, "type": "AGE", "text": "서른둘인데", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 31, "end": 33, "type": "LOC_ADMIN", "text": "동탄", "level": "explicit", "subject": "other"}]}
+{"post_id": "P17_063", "spans": [{"text_id": "body", "start": 10, "end": 14, "type": "AGE", "text": "서른둘이", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 48, "end": 51, "type": "LOC_ADMIN", "text": "완산구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_064", "spans": [{"text_id": "body", "start": 47, "end": 51, "type": "AGE", "text": "아홉 살", "level": "explicit", "subject": "other"}, {"text_id": "body", "start": 139, "end": 147, "type": "INCOME", "text": "4,200만 원", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_065", "spans": []}
+{"post_id": "P17_066", "spans": []}
+{"post_id": "P17_067", "spans": [{"text_id": "body", "start": 3, "end": 5, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 6, "end": 9, "type": "LOC_ADMIN", "text": "흥덕구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_068", "spans": [{"text_id": "body", "start": 47, "end": 52, "type": "AGE", "text": "23살이고", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_069", "spans": [{"text_id": "body", "start": 38, "end": 43, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_070", "spans": [{"text_id": "body", "start": 35, "end": 37, "type": "LOC_ADMIN", "text": "용인", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 38, "end": 42, "type": "LOC_ADMIN", "text": "기흥구로", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_071", "spans": [{"text_id": "body", "start": 6, "end": 8, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 9, "end": 14, "type": "LOC_ADMIN", "text": "유성구에는", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_072", "spans": [{"text_id": "body", "start": 55, "end": 60, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 97, "end": 100, "type": "LOC_ADMIN", "text": "망원동", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_073", "spans": [{"text_id": "body", "start": 19, "end": 21, "type": "LOC_ADMIN", "text": "부산", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 22, "end": 26, "type": "LOC_ADMIN", "text": "해운대구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_074", "spans": []}
+{"post_id": "P17_075", "spans": []}
+{"post_id": "P17_076", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "청주", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 6, "type": "LOC_ADMIN", "text": "흥덕구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_077", "spans": [{"text_id": "body", "start": 6, "end": 9, "type": "AGE", "text": "48에", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_078", "spans": []}
+{"post_id": "P17_079", "spans": [{"text_id": "body", "start": 0, "end": 2, "type": "LOC_ADMIN", "text": "수원", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 3, "end": 6, "type": "LOC_ADMIN", "text": "영통구", "level": "explicit", "subject": "self"}]}
+{"post_id": "P17_080", "spans": [{"text_id": "body", "start": 4, "end": 6, "type": "LOC_ADMIN", "text": "대전", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 7, "end": 10, "type": "LOC_ADMIN", "text": "유성구", "level": "explicit", "subject": "self"}, {"text_id": "body", "start": 52, "end": 57, "type": "AGE", "text": "쉰다섯이야", "level": "explicit", "subject": "self"}]}

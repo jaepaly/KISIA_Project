@@ -1,0 +1,146 @@
+{
+  "checks": {
+    "1_span_agreement": {
+      "value": 0.0659,
+      "min": 0.98,
+      "base_spans": 3818,
+      "cand_spans": 514,
+      "only_base": 3550,
+      "only_cand": 246,
+      "pass": false
+    },
+    "2a_dev_f1_drop": {
+      "fp32": {
+        "tp": 2146,
+        "fp": 1455,
+        "fn": 476,
+        "precision": 0.5959455706748126,
+        "recall": 0.8184591914569032,
+        "f1": 0.6896995018479833
+      },
+      "int8": {
+        "tp": 310,
+        "fp": 97,
+        "fn": 2312,
+        "precision": 0.7616707616707616,
+        "recall": 0.11823035850495804,
+        "f1": 0.20468801584681412
+      },
+      "drop": 0.485,
+      "max": 0.005,
+      "pass": false
+    },
+    "2b_exp17_self_drop": {
+      "fp32": {
+        "self_hit": 102,
+        "self_total": 119,
+        "recall_self": 0.857,
+        "recall_all": 0.848
+      },
+      "int8": {
+        "self_hit": 58,
+        "self_total": 119,
+        "recall_self": 0.487,
+        "recall_all": 0.524
+      },
+      "drop": 44,
+      "max": 1,
+      "pass": false
+    },
+    "3_p95_cut": {
+      "t4": 0.507,
+      "t2": 0.347,
+      "min": 0.3,
+      "pass": true
+    }
+  },
+  "adopt": false,
+  "latency": {
+    "t4": {
+      "app": {
+        "fp32": {
+          "median_of_medians_ms": 153.77799999987474,
+          "p95_ms": 700.9784999995645,
+          "max_ms": 1306.3598500002627,
+          "under_300": 14
+        },
+        "int8": {
+          "median_of_medians_ms": 106.55357499990714,
+          "p95_ms": 345.6750000004831,
+          "max_ms": 712.1445000002495,
+          "under_300": 18
+        },
+        "p95_cut": 0.5068678996564119
+      },
+      "model": {
+        "fp32": {
+          "median_of_medians_ms": 150.50095000015062,
+          "p95_ms": 699.2411000001084,
+          "max_ms": 1342.7914999997483,
+          "under_300": 14
+        },
+        "int8": {
+          "median_of_medians_ms": 104.29460000023028,
+          "p95_ms": 355.63455000010435,
+          "max_ms": 715.2699499997652,
+          "under_300": 18
+        },
+        "p95_cut": 0.4913992469835523
+      }
+    },
+    "t2": {
+      "app": {
+        "fp32": {
+          "median_of_medians_ms": 227.47697499971764,
+          "p95_ms": 907.926050000242,
+          "max_ms": 1715.3265499991903,
+          "under_300": 14
+        },
+        "int8": {
+          "median_of_medians_ms": 123.1114500003514,
+          "p95_ms": 592.6398500000687,
+          "max_ms": 1040.4779500004224,
+          "under_300": 16
+        },
+        "p95_cut": 0.3472597795823671
+      },
+      "model": {
+        "fp32": {
+          "median_of_medians_ms": 233.23382499961554,
+          "p95_ms": 919.2791999998917,
+          "max_ms": 1687.3331499996311,
+          "under_300": 14
+        },
+        "int8": {
+          "median_of_medians_ms": 121.67492500020671,
+          "p95_ms": 592.3922499996479,
+          "max_ms": 1050.227299999733,
+          "under_300": 16
+        },
+        "p95_cut": 0.35559049960042854
+      }
+    }
+  },
+  "meta": {
+    "fp32": {
+      "mode": "fp32",
+      "threads": 4,
+      "torch": "2.12.1+cu130",
+      "cpu": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "machine": "DESKTOP-828COMG",
+      "model_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+      "model_version": "kisia-ckpt/v2",
+      "measured_at": "2026-10-13T12:34:48"
+    },
+    "int8": {
+      "mode": "int8",
+      "threads": 4,
+      "torch": "2.12.1+cu130",
+      "cpu": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "machine": "DESKTOP-828COMG",
+      "model_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+      "model_version": "kisia-ckpt/v2",
+      "measured_at": "2026-10-13T12:42:00"
+    }
+  }
+}

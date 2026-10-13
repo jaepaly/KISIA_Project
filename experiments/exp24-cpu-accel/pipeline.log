@@ -1,0 +1,57 @@
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 9250.53it/s]
+dev 500/2512 275s
+dev 1000/2512 419s
+dev 1500/2512 520s
+dev 2000/2512 588s
+dev 2500/2512 745s
+saved C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\results\preds_dev_fp32.jsonl (2512편 · 746s)
+saved C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\results\preds_exp17_fp32.jsonl (80편 · 5s)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 10471.29it/s]
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:67: DeprecationWarning: torch.ao.quantization is deprecated and will be removed in 2.10. 
+For migrations of users: 
+1. Eager mode quantization (torch.ao.quantization.quantize, torch.ao.quantization.quantize_dynamic), please migrate to use torchao eager mode quantize_ API instead 
+2. FX graph mode quantization (torch.ao.quantization.quantize_fx.prepare_fx,torch.ao.quantization.quantize_fx.convert_fx, please migrate to use torchao pt2e quantization API instead (prepare_pt2e, convert_pt2e) 
+3. pt2e quantization has been migrated to torchao (https://github.com/pytorch/ao/tree/main/torchao/quantization/pt2e) 
+see https://github.com/pytorch/ao/issues/2259 for more details
+  det.model = torch.quantization.quantize_dynamic(det.model, {torch.nn.Linear}, dtype=torch.qint8)
+dev 500/2512 137s
+dev 1000/2512 217s
+dev 1500/2512 277s
+dev 2000/2512 324s
+dev 2500/2512 416s
+saved C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\results\preds_dev_int8.jsonl (2512편 · 417s)
+saved C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\results\preds_exp17_int8.jsonl (80편 · 4s)
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 10471.29it/s]
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:129: RuntimeWarning: level=implicit and subject=self are legacy placeholders, not model predictions; third-party attribution is NOT resolved.
+  for label, fn in (("app", lambda r: app_detect(det, r)), ("model", lambda r: det.detect(r))):
+fp32 4 app {'median_of_medians_ms': 153.8, 'p95_ms': 701.0, 'max_ms': 1306.4, 'under_300': 14}
+fp32 4 model {'median_of_medians_ms': 150.5, 'p95_ms': 699.2, 'max_ms': 1342.8, 'under_300': 14}
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11052.70it/s]
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:67: DeprecationWarning: torch.ao.quantization is deprecated and will be removed in 2.10. 
+For migrations of users: 
+1. Eager mode quantization (torch.ao.quantization.quantize, torch.ao.quantization.quantize_dynamic), please migrate to use torchao eager mode quantize_ API instead 
+2. FX graph mode quantization (torch.ao.quantization.quantize_fx.prepare_fx,torch.ao.quantization.quantize_fx.convert_fx, please migrate to use torchao pt2e quantization API instead (prepare_pt2e, convert_pt2e) 
+3. pt2e quantization has been migrated to torchao (https://github.com/pytorch/ao/tree/main/torchao/quantization/pt2e) 
+see https://github.com/pytorch/ao/issues/2259 for more details
+  det.model = torch.quantization.quantize_dynamic(det.model, {torch.nn.Linear}, dtype=torch.qint8)
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:129: RuntimeWarning: level=implicit and subject=self are legacy placeholders, not model predictions; third-party attribution is NOT resolved.
+  for label, fn in (("app", lambda r: app_detect(det, r)), ("model", lambda r: det.detect(r))):
+int8 4 app {'median_of_medians_ms': 106.6, 'p95_ms': 345.7, 'max_ms': 712.1, 'under_300': 18}
+int8 4 model {'median_of_medians_ms': 104.3, 'p95_ms': 355.6, 'max_ms': 715.3, 'under_300': 18}
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 10471.55it/s]
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:129: RuntimeWarning: level=implicit and subject=self are legacy placeholders, not model predictions; third-party attribution is NOT resolved.
+  for label, fn in (("app", lambda r: app_detect(det, r)), ("model", lambda r: det.detect(r))):
+fp32 2 app {'median_of_medians_ms': 227.5, 'p95_ms': 907.9, 'max_ms': 1715.3, 'under_300': 14}
+fp32 2 model {'median_of_medians_ms': 233.2, 'p95_ms': 919.3, 'max_ms': 1687.3, 'under_300': 14}
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 10471.42it/s]
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:67: DeprecationWarning: torch.ao.quantization is deprecated and will be removed in 2.10. 
+For migrations of users: 
+1. Eager mode quantization (torch.ao.quantization.quantize, torch.ao.quantization.quantize_dynamic), please migrate to use torchao eager mode quantize_ API instead 
+2. FX graph mode quantization (torch.ao.quantization.quantize_fx.prepare_fx,torch.ao.quantization.quantize_fx.convert_fx, please migrate to use torchao pt2e quantization API instead (prepare_pt2e, convert_pt2e) 
+3. pt2e quantization has been migrated to torchao (https://github.com/pytorch/ao/tree/main/torchao/quantization/pt2e) 
+see https://github.com/pytorch/ao/issues/2259 for more details
+  det.model = torch.quantization.quantize_dynamic(det.model, {torch.nn.Linear}, dtype=torch.qint8)
+C:\Users\dor12\wt\cpu\experiments\exp24-cpu-accel\run.py:129: RuntimeWarning: level=implicit and subject=self are legacy placeholders, not model predictions; third-party attribution is NOT resolved.
+  for label, fn in (("app", lambda r: app_detect(det, r)), ("model", lambda r: det.detect(r))):
+int8 2 app {'median_of_medians_ms': 123.1, 'p95_ms': 592.6, 'max_ms': 1040.5, 'under_300': 16}
+int8 2 model {'median_of_medians_ms': 121.7, 'p95_ms': 592.4, 'max_ms': 1050.2, 'under_300': 16}
