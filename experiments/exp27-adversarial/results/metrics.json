@@ -1,0 +1,388 @@
+{
+ "pairs": 20,
+ "strict": {
+  "plain": "15/20",
+  "hidden": "7/20",
+  "plain_hit_hidden_miss": 9,
+  "hidden_hit_plain_miss": 1,
+  "by_technique": {
+   "dot": {
+    "plain": "4/5",
+    "hidden": "2/5"
+   },
+   "chosung": {
+    "plain": "4/5",
+    "hidden": "0/5"
+   },
+   "roman": {
+    "plain": "4/5",
+    "hidden": "3/5"
+   },
+   "paraphrase": {
+    "plain": "3/5",
+    "hidden": "2/5"
+   }
+  },
+  "by_type": {
+   "AGE": {
+    "plain": "3/4",
+    "hidden": "1/4"
+   },
+   "LOC_ADMIN": {
+    "plain": "4/4",
+    "hidden": "2/4"
+   },
+   "LOC_FACILITY": {
+    "plain": "4/4",
+    "hidden": "2/4"
+   },
+   "JOB": {
+    "plain": "3/4",
+    "hidden": "1/4"
+   },
+   "FAM": {
+    "plain": "1/4",
+    "hidden": "1/4"
+   }
+  }
+ },
+ "loose": {
+  "plain": "17/20",
+  "hidden": "9/20",
+  "plain_hit_hidden_miss": 8,
+  "hidden_hit_plain_miss": 0,
+  "by_technique": {
+   "dot": {
+    "plain": "5/5",
+    "hidden": "3/5"
+   },
+   "chosung": {
+    "plain": "4/5",
+    "hidden": "0/5"
+   },
+   "roman": {
+    "plain": "4/5",
+    "hidden": "3/5"
+   },
+   "paraphrase": {
+    "plain": "4/5",
+    "hidden": "3/5"
+   }
+  },
+  "by_type": {
+   "AGE": {
+    "plain": "4/4",
+    "hidden": "1/4"
+   },
+   "LOC_ADMIN": {
+    "plain": "4/4",
+    "hidden": "3/4"
+   },
+   "LOC_FACILITY": {
+    "plain": "4/4",
+    "hidden": "2/4"
+   },
+   "JOB": {
+    "plain": "4/4",
+    "hidden": "2/4"
+   },
+   "FAM": {
+    "plain": "1/4",
+    "hidden": "1/4"
+   }
+  }
+ },
+ "subject_of_hits": {
+  "plain:self": 17,
+  "hidden:self": 9
+ },
+ "per_pair": {
+  "P27_01": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "서른여섯이 되"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_02": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "스물넷 인생"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_03": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "마흔일곱이 되"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_04": {
+   "plain": {
+    "strict": false,
+    "loose": true,
+    "subject": "self",
+    "found": "쉰둘 되고"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "오십 줄 하고도"
+   }
+  },
+  "P27_05": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "도봉구"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "도.봉.구"
+   }
+  },
+  "P27_06": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "영등포구"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_07": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "사하구"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "Saha-gu"
+   }
+  },
+  "P27_08": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "강릉"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": true,
+    "subject": "self",
+    "found": "경포대 있는"
+   }
+  },
+  "P27_09": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "석촌호수를"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_10": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "을지로입구역에"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_11": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "광안대교가"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "Gwangan Br"
+   }
+  },
+  "P27_12": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "서울대입구역 근처에"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "샤로수길 앞"
+   }
+  },
+  "P27_13": {
+   "plain": {
+    "strict": false,
+    "loose": true,
+    "subject": "self",
+    "found": "방사선사 면허증을 따"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": true,
+    "subject": "self",
+    "found": "선.사 면허증을 따"
+   }
+  },
+  "P27_14": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "임상병리사 팔자"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_15": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "간호조무사 일을"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "se aide 일"
+   }
+  },
+  "P27_16": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "보육교사 일 하면서"
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_17": {
+   "plain": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "외동딸"
+   },
+   "hidden": {
+    "strict": true,
+    "loose": true,
+    "subject": "self",
+    "found": "외.동.딸"
+   }
+  },
+  "P27_18": {
+   "plain": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_19": {
+   "plain": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  },
+  "P27_20": {
+   "plain": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   },
+   "hidden": {
+    "strict": false,
+    "loose": false,
+    "subject": null,
+    "found": null
+   }
+  }
+ },
+ "meta": {
+  "checkpoint_sha256": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+  "threshold": 0.7,
+  "rules": true,
+  "torch": "2.12.1+cu130",
+  "measured_at": "2026-10-13T18:00:47"
+ }
+}
