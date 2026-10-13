@@ -2,7 +2,7 @@
 mock에서 그대로 가져와 쓴다 (docs/roles/howto/e-integration.md §3).
 
 c1(스팬 탐지)과 stage2(2단 판정 + 추천 엔진 v1)가 실제다. c1 은 B 의 **기준선 v2**(교사 라벨 재학습 + 명시 규칙 · DEC-011 ·
-#310 · exp17b 본인 재현율 0.699 · exp17c 0.752) 체크포인트를 experiments/exp06-finetune/infer.py 의 SpanDetector 로 부른다. 가이드 예시(kopl.c1_span.predict)와 다르게 가는 이유:
+#310 · exp17b 본인 재현율 0.699 · exp17c 0.752) 체크포인트를 ``kopl.c1_span.infer`` 의 SpanDetector 로 부른다(experiments/exp06-finetune 에서 옮김 · D 9번). 가이드 예시(kopl.c1_span.predict)와 다르게 가는 이유:
   - local_files_only=True + HF_HUB_OFFLINE 기본값 — 체크포인트를 허브에서 받으러 나가지 않고 허브에 확인 요청도 안 한다 (외부 요청 0건)
   - 체크포인트가 없으면 에러 — kopl 쪽은 조용히 목 결과로 폴백해 진짜와 구분이 안 된다
   - 임계값 0.7 · 긴 글 창 나눔 — W7 성능 수치(#276)를 잰 경로와 같다
@@ -36,12 +36,10 @@ _EXP06 = _ROOT / "experiments" / "exp06-finetune"
 _DEFAULT_CHECKPOINT = _EXP06 / "runs" / "variant_base_20261008" / "checkpoint-epoch-10"
 _MIN_SPAN_SCORE = 0.7  # 운용 임계값 — v1 (#266) · v2 (#310 · exp17b/exp17c 채점 조건) 같음
 
-# infer.py 는 같은 폴더의 train·prepare_bio 와 kopl.c1_span.schema 를 import 한다
-for _path in (_EXP06, _ROOT / "src"):
-    if str(_path) not in sys.path:
-        sys.path.insert(0, str(_path))
+if str(_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(_ROOT / "src"))
 
-import infer  # noqa: E402
+from kopl.c1_span import infer  # noqa: E402
 from kopl.c4_stage2.infer import analyze as _stage2_analyze  # noqa: E402
 
 from kopl.c4_stage2.infer import _get_model as _load_stage2  # noqa: E402

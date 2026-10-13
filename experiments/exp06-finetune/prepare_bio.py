@@ -17,19 +17,8 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 
 
-TYPES = [
-    "AGE",
-    "SEX",
-    "LOC_ADMIN",
-    "LOC_FACILITY",
-    "REL_HOME",
-    "REL_WORK",
-    "JOB",
-    "FAM",
-    "COMMUTE",
-    "INCOME",
-]
-LABELS = ["O"] + [f"{prefix}-{span_type}" for span_type in TYPES for prefix in ("B", "I")]
+from kopl.c1_span.bio import LABELS, TYPES, channel_sort_key  # noqa: E402,F401 — 추론과 같은 정의 (D 9번)
+
 LABEL2ID = {label: index for index, label in enumerate(LABELS)}
 ID2LABEL = {index: label for label, index in LABEL2ID.items()}
 
@@ -83,21 +72,6 @@ def load_split_ids(split_dir: Path) -> tuple[set[str], set[str]]:
     if overlap:
         raise DataError(f"train/test 누수 {len(overlap)}건: {sorted(overlap)[:5]}")
     return result["train"], result["test"]
-
-
-def channel_sort_key(text_id: str) -> tuple[int, int | str]:
-    if text_id == "title":
-        return (0, 0)
-    if text_id == "body":
-        return (1, 0)
-    if text_id.startswith("photo_caption:"):
-        suffix = text_id.split(":", 1)[1]
-        if suffix.isdigit():
-            return (2, int(suffix))
-        return (2, suffix)
-    if text_id == "profile_bio":
-        return (3, 0)
-    return (4, text_id)
 
 
 def validate_channel(
