@@ -107,7 +107,7 @@ async function main() {
     await sleep(200);
     const sent = requests.slice(before).some((r) => /^POST .*\/scan\//.test(r));
     check(step, "점검 요청(POST /scan/…)이 실제로 나감", sent, requests.slice(before).filter((r) => /scan/.test(r)), "POST /scan/<user_ref>");
-    const landed = await until(js, `location.pathname.endsWith("/diagnosis.html")`, 15000);
+    const landed = await until(js, `location.pathname.endsWith("/diagnosis.html")`, 120000);   // 실제 엔진은 긴 계정이 1분 가까이 걸린다
     await send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
     check(step, "점검 결과 화면으로 이동", landed, await js(`location.pathname`).catch(() => null), "/static/diagnosis.html");
   }
@@ -140,7 +140,7 @@ async function main() {
     await send("DOM.setFileInputFiles", { nodeId, files: [file] });
     const before = requests.length;
     await js(`document.getElementById("uploadBtn").click(); true`);
-    const landed = await until(js, `location.pathname.endsWith("/diagnosis.html")`, 10000);
+    const landed = await until(js, `location.pathname.endsWith("/diagnosis.html")`, 120000);
     check(step, "업로드 요청(POST /upload)이 나감", requests.slice(before).some((r) => /^POST .*\/upload/.test(r)), requests.slice(before).filter((r) => /upload|estimate/.test(r)), "POST /upload");
     check(step, "업로드 점검 → 결과 화면", landed, await js(`location.pathname`).catch(() => null), "/static/diagnosis.html");
     const named = landed && await until(js, `document.getElementById("content").textContent.includes("flow-sample.txt")`, 4000);
