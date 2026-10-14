@@ -84,7 +84,7 @@ SESSION_IDLE_SECONDS = SESSION_MAX_AGE
 # 오래된 사본 청소는 N분에 한 번만 — 새 방문자마다 폴더 전체를 훑지 않게 (A5b)
 SESSION_SWEEP_SECONDS = int(os.environ.get("SNS_SWEEP_MINUTES", "10")) * 60
 # 사본 수 상한 — 사본 하나가 시드 크기(약 5MB)라 상한이 곧 디스크 상한이다 (1,000개 ≈ 5GB) (A5c)
-SESSION_MAX = int(os.environ.get("SNS_SESSION_MAX", "1000"))
+SESSION_MAX = int(os.environ.get("SNS_SESSION_MAX", "400"))   # 사본 하나 = 시드 크기(운영 약 5MB) — 400개 ≈ 2GB (10/14 서버 실측: 329개 · 1.6GB)
 # 쿠키 Secure — 운영은 nginx 뒤 HTTPS 라 Flask 가 http 로 본다(request.is_secure=False). COOKIE_SECURE=1 이면 늘 Secure (A7)
 COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "") == "1"
 
