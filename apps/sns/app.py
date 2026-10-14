@@ -280,8 +280,11 @@ def toggle_visibility(post_id: str):
         "UPDATE posts SET visibility = ? WHERE post_id = ?", (new_v, post_id))
     db().commit()
 
-    back = request.form.get("back") or f"/posts/{post_id}"
-    return redirect(back)
+    # 돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단) · ?done= 은 화면 맨 위 「다시 점검」 띠
+    back = request.form.get("back") or ""
+    if not back.startswith("/") or back.startswith("//"):
+        back = f"/posts/{post_id}"
+    return redirect(f"{back}{'&' if '?' in back else '?'}done={new_v}")
 
 
 @app.post("/u/<user_ref>/edit")
@@ -312,7 +315,7 @@ def edit_post_meta(post_id: str):
     db().execute(
         "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
     db().commit()
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/posts/{post_id}?done=geo")
 
 
 @app.get("/u/<user_ref>")
@@ -496,6 +499,14 @@ def export(user_ref: str):
             },
         } for r in rows],
     })
+
+
+@app.errorhandler(404)
+def not_found(_):
+    """영어 기본 화면 대신 Veilo 꾸밈의 한국어 안내 (분석기 API 404 는 JSON 그대로 — export 는 직접 jsonify 한다)."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "not found"}), 404
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- 파도풀 심볼 — 둥근 바탕에 파도 두 줄. 파비콘 겸용(16px 에서도 읽히게 굵게). Veilo 바다색 ut-sea #2F6F6A -->
+  <rect width="64" height="64" rx="16" fill="#2F6F6A"/>
+  <path d="M10 30 C16 22 22 22 27 28 C32 34 38 34 43 27 C47 21 52 21 55 25" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M10 44 C16 36 22 36 27 42 C32 48 38 48 43 41 C47 35 52 35 55 39" fill="none" stroke="#9FD1CB" stroke-width="6" stroke-linecap="round"/>
+</svg>

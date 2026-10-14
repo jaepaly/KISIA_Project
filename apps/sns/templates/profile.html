@@ -22,10 +22,10 @@
         </div>
         {# 공용 테스트 서버라 한 사람이 바꾸면 모두에게 보인다 — 이 계정만 시드 상태로 되돌린다 #}
         <form method="post" action="/u/{{ a.user_ref }}/reset" style="margin-top:12px;"
-              onsubmit="return confirm('이 계정의 글·프로필·공개 여부를 처음 상태로 되돌립니다. 이 계정에 새로 쓴 글은 지워집니다. 계속할까요?')">
-          <button type="submit" class="ghost" style="width:100%;font-size:12px;padding:8px;">⟲ 이 계정 처음 상태로</button>
+              onsubmit="return confirm('이 계정의 글과 프로필, 공개 범위를 처음 상태로 되돌릴까요? 새로 쓴 글은 지워집니다.')">
+          <button type="submit" class="ghost" style="width:100%;font-size:12px;padding:8px;">⟲ 이 계정 초기화</button>
         </form>
-        <p style="font-size:11px;color:var(--ut-ink3);margin:6px 0 0;line-height:1.4;">여기서 바꾼 것은 <b>이 브라우저에서만</b> 보입니다. 다른 사람에겐 원래 상태로 보이고, 이틀 안 쓰면 사본은 지워집니다.</p>
+        <p style="font-size:11px;color:var(--ut-ink3);margin:6px 0 0;line-height:1.4;">여기서 바꾼 내용은 <b>이 브라우저에서만</b> 보입니다. 이틀 동안 사용하지 않으면 바꾼 내용은 지워집니다.</p>
         <details style="margin-top:14px;">
           <summary style="cursor:pointer;font-size:12px;color:var(--ut-ink3);">프로필 수정</summary>
           <form method="post" action="/u/{{ a.user_ref }}/edit" style="margin-top:10px;">
@@ -43,13 +43,12 @@
           🌊 파도풀 <span class="tag nosave" style="background:var(--ut-earth-soft);color:var(--ut-earth-ink);border:1px solid var(--ut-earth);">개인정보 점검</span>
         </div>
         <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;line-height:1.5;">
-          이 계정의 글 {{ posts|length }}편을 모두 읽어,<br>
-          몇 명 중 한 명까지 좁혀지는지 봅니다.
+          이 계정의 공개 글을 모아, 글쓴이를 얼마나 좁힐 수 있는지 점검합니다.
         </p>
         <a class="fx-btn fx-wave" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}"
            style="display:block;text-align:center;background:var(--ut-earth);color:#fff;
                   border-radius:12px;padding:10px;font-size:14px;font-weight:700;text-decoration:none;">
-          내 계정 진단 →
+          계정 전체 점검 →
         </a>
       </div>
 
@@ -83,6 +82,20 @@
         <h1>{{ a.nickname }}의 글</h1>
         <span class="sub">{{ posts|length }}편</span>
       </div>
+
+      {% set done = request.args.get('done') %}
+      {% if done in ('private', 'public') %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>{% if done == 'private' %}비공개로 바꿨습니다.{% else %}다시 공개했습니다.{% endif %}</b> 파도풀에서 다시 점검하면 숫자가 바뀝니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}">다시 점검 →</a>
+      </div>
+      {% else %}
+      {# 휴대폰에서는 왼쪽 카드가 ☰ 서랍 속에 들어간다 — 계정 전체 점검을 본문에도 한 번 둔다 #}
+      <div class="pado-strip ut-mobile-only">
+        <span class="tx">🌊 이 계정의 공개 글을 모아 점검합니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}">계정 전체 점검 →</a>
+      </div>
+      {% endif %}
 
       {% if not posts %}
       <p style="color:var(--ut-ink3);text-align:center;padding:48px 0;">아직 쓴 글이 없습니다.</p>
