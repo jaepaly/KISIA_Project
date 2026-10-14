@@ -268,6 +268,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 .rail-who{display:flex;gap:12px;align-items:center}
 .rail-who .nm{font-size:18px;font-weight:700;color:var(--ut-ink);display:block;letter-spacing:-.02em}
 .rail-who .handle{font-size:11.5px;color:var(--ut-ink3);font-family:var(--font-mono)}
+.rail-who .handle.ko{font-family:var(--font-sans)}   /* 한글 설명 줄 — 모노는 한글을 낱자로 벌린다 */
 .rail-who .bio{font-size:12.5px;color:var(--ut-ink2);line-height:1.5;margin-top:4px}
 .rail-stats{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--ut-ink3)}
 .rail-stats b{color:var(--ut-ink);font-variant-numeric:tabular-nums;font-weight:600;margin-right:3px}
@@ -372,8 +373,8 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
   .welcome h2,.welcome p,.welcome li{overflow-wrap:anywhere;word-break:keep-all}
   .welcome .bt .note{margin-left:0}
   .ut-shell{grid-template-columns:minmax(0,1fr);padding:0 16px;z-index:auto}   /* 쌓임 맥락을 풀어야 서랍(.ut-side 45)이 스크림(44) 위로 올라온다 */
-  .ut-side{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);z-index:45;background:var(--ut-bg);transform:translateX(-100%);transition:transform .25s var(--ease);box-shadow:0 0 60px rgba(0,0,0,.25)}
-  .ut-side.open{transform:none}
+  .ut-side{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);z-index:45;background:var(--ut-bg);transform:translateX(-100%);transition:transform .25s var(--ease)}
+  .ut-side.open{transform:none;box-shadow:0 0 60px rgba(0,0,0,.25)}   /* 닫힌 서랍의 그림자가 화면 왼쪽에 새지 않게 */
   .ut-side-in{position:static;max-height:100vh;padding:16px;margin:0}
   .ut-scrim{display:block;position:fixed;inset:0;z-index:44;background:rgba(62,58,54,.45)}
   .ut-scrim[hidden]{display:none}
@@ -441,6 +442,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 .ut-menu[hidden]{display:none!important}
 .ut-nav .intro-btn{height:40px;padding:0 14px;border-radius:999px;background:transparent;border:1px solid var(--line-strong);color:var(--ut-ink2);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
 .ut-nav .intro-btn:hover{background:var(--ut-panel2);color:var(--ut-ink)}
+.ut-nav a.intro-btn{display:inline-flex;align-items:center;text-decoration:none}   /* 상단바 「파도풀이란?」 = /about 링크 */
 .ut-nav a.chk{color:var(--ink);font-weight:700;border:1px solid var(--line-strong);background:var(--surface)}
 .ut-nav a.chk:hover{background:var(--paper-2)}
 .ut-top-in .ut-nav{margin-left:auto}
@@ -519,6 +521,16 @@ dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
 .chip.ink{color:var(--paper);background:var(--ink);border-color:var(--ink)}
 .rule{border:0;border-top:1px solid var(--line);margin:24px 0}
 
+/* 파도풀 칸 — 글 · 프로필 · 홈 레일의 「🌊 파도풀」 카드. 옛 인라인 earth 테두리(새 매핑에서 먹색 1px 로 무거워짐)를 대신한다 */
+.pado-box{background:var(--paper-2);border-color:var(--line-strong)}
+.pado-box .rail-h{color:var(--ink)}
+.pado-box .pado-note{font-size:13px;color:var(--body);margin:0 0 12px;line-height:1.55}
+.pado-box .pado-sub{font-size:12px;color:var(--faint);margin:8px 0 0}
+.pado-tag,.rail-h .tag.pado-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:0;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+.pado-go{display:block;text-align:center;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:10px;font:inherit;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.pado-go:hover{background:var(--ink-2);color:#fff;text-decoration:none}
+button.pado-go{display:inline-flex;align-items:center;height:40px;padding:0 18px}
+
 /* k 등급 — 「약 N명 중 한 명」 칸의 단계 라벨을 알약으로. 높음만 강조색 */
 .rail-k .lvl{display:inline-flex;align-items:center;margin-top:6px;padding:1px 9px;border-radius:999px;border:1px solid var(--line);font-size:11.5px}
 .rail-k .lvl.hi{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
@@ -532,7 +544,7 @@ dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
 .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
 /* JS 가 안 돌면 숨은 채로 남지 않게 — html.no-js 가 없어도 .no-motion · 좁은 화면 · reduced-motion 은 즉시 다 보인다 */
 .no-motion .reveal,html:not(.js) .reveal{opacity:1;transform:none;transition:none}
-@media (max-width:760px){.reveal{opacity:1;transform:none;transition:none}}
+@media (max-width:767px){.reveal{opacity:1;transform:none;transition:none}}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
 /* 어두운 장(章) — 소개 장면이 밤 구간에 들어가면 html.dark-chapter. 상단바 · 하단 탭만 뒤집는다 (본문은 장면이 직접 칠한다) */

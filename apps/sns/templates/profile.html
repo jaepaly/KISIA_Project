@@ -50,16 +50,14 @@
         </details>
       </div>
 
-      <div class="rail-card rv" style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
-        <div class="rail-h" style="color:var(--ut-earth-ink);">
-          🌊 파도풀 <span class="tag nosave" style="background:var(--ut-earth-soft);color:var(--ut-earth-ink);border:1px solid var(--ut-earth);">개인정보 점검</span>
+      <div class="rail-card rv pado-box">
+        <div class="rail-h">
+          🌊 파도풀 <span class="tag nosave pado-tag">개인정보 점검</span>
         </div>
-        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;line-height:1.5;">
+        <p class="pado-note">
           이 계정의 공개 글을 모아, 글쓴이를 얼마나 좁힐 수 있는지 점검합니다.
         </p>
-        <a class="fx-btn fx-wave" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}"
-           style="display:block;text-align:center;background:var(--ut-earth);color:#fff;
-                  border-radius:12px;padding:10px;font-size:14px;font-weight:700;text-decoration:none;">
+        <a class="fx-btn fx-wave pado-go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}">
           계정 전체 점검 →
         </a>
       </div>

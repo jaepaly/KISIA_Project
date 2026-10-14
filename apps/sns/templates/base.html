@@ -25,7 +25,7 @@
       <nav class="ut-nav">
         {% block nav %}
         {# 1분 소개 화면(about.html) — 첫 방문 소개 창은 처음 한 번만 뜨고, 다시 볼 땐 이쪽으로 #}
-        <a href="/about" class="intro-btn" aria-label="파도풀 1분 소개 보기" style="display:inline-flex;align-items:center;text-decoration:none">파도풀이란?</a>
+        <a href="/about" class="intro-btn" aria-label="파도풀 1분 소개 보기">파도풀이란?</a>
         {# 내 계정을 골랐으면 「내 글 점검」은 바로 그 사람으로 (scan.html?u=) — 안 골랐으면 계정 찾기부터 #}
         <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}" class="chk">🌊 내 글 점검</a>
         <a href="/new" class="write">✏️ 글쓰기</a>

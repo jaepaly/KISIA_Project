@@ -2,13 +2,14 @@
    원칙: 스크롤 · 크기 변경 → rAF 에 한 번만 → 장면 함수들이 같은 y 로 갱신한다.
    위치 측정(getBoundingClientRect)은 refresh 에서만 — ResizeObserver · resize 가 「다시 재라」고 표시해 둔다.
    프레임 안에서는 읽은 값(캐시)만 쓰고 스타일만 바꾼다 — 쓰고 나서 다시 읽는 강제 레이아웃이 없다.
-   움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · 폭 760px 이하)는
-   html.ps-static — 장면은 「다 켜진 정지 상태」로 그린다. 760 은 CSS 의 @media (max-width:760px) 와 같은 값이다. */
+   움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · 폭 767px 이하)는
+   html.ps-static — 장면은 「다 켜진 정지 상태」로 그린다. 767 은 레이아웃 CSS 의 @media (max-width:767px) 와 같은 값이다(하나로 통일). */
 (function () {
   "use strict";
   const root = document.documentElement;
+  root.classList.add("js");   // .reveal 은 html.js 일 때만 숨는다 (veilo.css) — 스크립트가 안 돌면 글이 숨은 채 남지 않게
   const KEY = "padopool_motion";
-  const WIDE = matchMedia("(min-width:761px)");
+  const WIDE = matchMedia("(min-width:768px)");
   const RM = matchMedia("(prefers-reduced-motion: reduce)");
   const STATIC = new URLSearchParams(location.search).get("view") === "static";
 

@@ -1,7 +1,7 @@
 /* 「파도풀이란?」 소개 장면 (about.html · pado-scene.js · motion-core.js).
    색 · 글꼴은 공통 토큰(veilo.css :root — --paper --ink --accent …)만 쓴다. 토큰이 아직 없을 때를 위해 var() 둘째 값에 기본값을 둔다.
    움직이는 속성은 transform · opacity · clip-path 뿐 — JS 는 CSS 변수(--in --a --w --p --d --s)만 쓴다.
-   html.ps-static(움직임 끔 · 동작 줄이기 · ?view=static · 폭 760 이하) = 핀 없이 다 켜진 정지 상태. 브레이크포인트는 760 하나. */
+   html.ps-static(움직임 끔 · 동작 줄이기 · ?view=static · 폭 767 이하) = 핀 없이 다 켜진 정지 상태. 브레이크포인트는 레이아웃과 같은 767 하나. */
 .ps-page{
   --ps-paper:var(--paper,#F7F2EA); --ps-paper2:var(--paper-2,#EFE7DC); --ps-ink:var(--ink,#26221F);
   --ps-body:var(--body,#4A433D); --ps-muted:var(--muted,#6B625B); --ps-line:var(--line,rgba(38,34,31,.14));
@@ -14,7 +14,7 @@
 }
 .ps-page body{background:var(--ps-paper)}
 .ps{font-family:var(--ps-sans);color:var(--ps-ink)}
-.ps .eyebrow{font-family:var(--ps-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ps-muted);margin:0 0 14px}
+.ps .eyebrow{display:flex;margin:0 0 14px}   /* 글꼴 · 자간은 veilo.css .eyebrow / .eyebrow.ko — 한글 라벨은 .ko */
 .ps .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-accent-soft);color:var(--ps-ink);font-size:12px;font-weight:600;white-space:nowrap}
 .ps-in{max-width:1180px;margin:0 auto;padding:0 40px}
 .ps-h1{font-size:clamp(34px,5.4vw,72px);line-height:1.12;letter-spacing:-.05em;font-weight:700;word-break:keep-all;margin:0 0 24px;color:var(--ps-ink)}
@@ -83,12 +83,12 @@
 .ps-progress i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--p,0))}
 .ps-map{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;display:flex;align-items:center;gap:4px;padding:6px 6px 6px 12px;
   border:1px solid var(--ps-line);border-radius:999px;background:color-mix(in srgb,var(--ps-paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--ps-mono)}
-.ps-map a{position:relative;display:inline-flex;align-items:baseline;gap:6px;padding:6px 8px;font-size:11px;letter-spacing:.08em;color:var(--ps-muted);text-decoration:none;white-space:nowrap}
-.ps-map a .n{font-size:10px;opacity:.7}
+.ps-map a{position:relative;display:inline-flex;align-items:baseline;gap:6px;padding:6px 8px;font-family:var(--ps-sans);font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--ps-muted);text-decoration:none;white-space:nowrap}
+.ps-map a .n{font-family:var(--ps-mono);font-size:10px;font-weight:500;letter-spacing:.08em;opacity:.7}
 .ps-map a i{position:absolute;left:8px;right:8px;bottom:2px;height:1px;background:var(--ps-ink);transform-origin:0 50%;transform:scaleX(var(--p,0))}
 .ps-map a[aria-current]{color:var(--ps-ink)}
 .ps-map a:hover{text-decoration:none;color:var(--ps-ink)}
-.ps-motion{margin-left:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ps-line);background:transparent;color:var(--ps-ink);font:inherit;font-size:11px;letter-spacing:.06em;cursor:pointer}
+.ps-motion{margin-left:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ps-line);background:transparent;color:var(--ps-ink);font:inherit;font-family:var(--ps-sans);font-size:12px;font-weight:600;cursor:pointer}
 .ps-motion[aria-pressed="false"]{background:var(--ps-ink);color:var(--ps-paper);border-color:var(--ps-ink)}
 html.dark-chapter .ps-map{background:color-mix(in srgb,var(--ps-night) 80%,transparent);border-color:rgba(247,242,234,.18)}
 html.dark-chapter .ps-map a,html.dark-chapter .ps-motion{color:rgba(247,242,234,.72)}
@@ -106,7 +106,7 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 .ps-static .ps-narrow{border-top:1px solid var(--ps-line)}
 .ps-static .ps-steps{border-top:1px solid var(--ps-line)}
 
-@media (max-width:760px){
+@media (max-width:767px){
   .ps-in{padding:0 16px}
   .ps-hero{min-height:auto;padding:32px 0 56px}
   .ps-skip{margin-bottom:28px}

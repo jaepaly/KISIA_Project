@@ -41,7 +41,7 @@
     const cv = $("#psCrowd");
     if (!cv || !cv.getContext) return null;
     const ctx = cv.getContext("2d");
-    const small = !matchMedia("(min-width:761px)").matches;
+    const small = !matchMedia("(min-width:768px)").matches;
     const N = small ? 900 : 2000;
     // 자리와 꺼지는 순서는 고정 난수 — 새로고침해도 같은 그림. 0번이 「나」(가운데)
     let seed = 7;
