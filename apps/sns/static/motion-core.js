@@ -5,7 +5,11 @@
    움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · PIN_MQ 밖 = 폭 767px 이하 또는 높이 799px 이하)는
    html.ps-static + html.no-motion 둘 다 — 장면은 「다 켜진 정지 상태」, 공통 효과(.reveal 등장 · 호버 · 부드러운 스크롤 · 클릭 물결)도 끈다.
    PIN_MQ 는 pado-scene.css 의 정지 미디어쿼리와 같은 문자열이다(test_about.py 가 대조한다). 767 은 레이아웃 CSS 의 (max-width:767px) 와 같은 값.
-   높이 800 — 좁혀지기 장면 내용(약 660px) + 위 바(64) + 아래 소개 순서(72)가 한 화면에 들어가는 최소 높이(1400×900 실측). */
+   높이 800 — 좁혀지기 장면 내용(약 660px) + 위 바(64) + 아래 소개 순서(72)가 한 화면에 들어가는 최소 높이(1400×900 실측).
+   관성 보간 — 휠 한 칸(약 100px)마다 연출 값이 뚝 뛰지 않게, 장면마다 목표(target = 그 장면 진행도)를 두고
+   현재 값(cur)이 지수 감쇠로 따라간다: cur += (target − cur)·(1 − e^(−dt·K)). 장면은 cur 로만 그린다.
+   네이티브 스크롤은 그대로다(가로채지 않는다) — 늦게 따라오는 것은 연출 값뿐. 수렴(|Δ| < EPS)하거나 탭이 숨으면 루프를 멈춘다.
+   정지 상태 · 처음 그림 · 크기 변경 뒤에는 보간 없이 바로 목표로(snap). */
 (function () {
   "use strict";
   const root = document.documentElement;
@@ -30,6 +34,9 @@
   const refreshHooks = [];
   const scenes = [];
   let dirty = true, queued = false;
+  // 관성 보간 — K 가 클수록 빨리 따라간다. K=9: 95% 0.33초 · 99% 0.51초 (휠 한 칸 뒤 실측은 check_motion 이 잰다)
+  const K = 9, EPS = 0.0005;
+  let lastT = 0, snap = true, running = false;
 
   function track(el) { if (el && !geo.has(el)) { geo.set(el, { top: 0, h: 0 }); if (ro) ro.observe(el); dirty = true; } return el; }
   function g(el) { return geo.get(el) || { top: 0, h: 0 }; }
@@ -47,15 +54,39 @@
     refreshHooks.forEach((fn) => fn(view));
   }
 
-  function frame() {
+  function frame(t) {
     queued = false;
-    if (dirty) { dirty = false; refresh(); }
+    if (dirty) { dirty = false; refresh(); snap = true; }
     const y = scrollY;
     const on = pinned();
-    for (const fn of scenes) fn(y, on, view);
+    // dt — 쉬다가 다시 도는 첫 프레임(마지막 프레임이 0.1초보다 전)은 한 프레임(1/60)으로 친다
+    const dt = lastT && t - lastT < 100 ? (t - lastT) / 1000 : 1 / 60;
+    lastT = t;
+    const a = 1 - Math.exp(-dt * K);
+    let moving = false;
+    for (const s of scenes) {
+      if (s.el) {
+        const target = on ? local(s.el, y) : 1;
+        if (snap || !on) s.cur = target;
+        else {
+          s.cur += (target - s.cur) * a;
+          if (Math.abs(target - s.cur) < EPS) s.cur = target; else moving = true;
+        }
+        s.target = target;
+        s.fn(s.cur, on, view);
+      } else s.fn(y, on, view);
+    }
+    snap = false;
+    setRunning(moving && !document.hidden);
+    if (running) schedule();
   }
+  // 루프가 도는지 — html[data-ps-loop] (성능 확인용 표시 · check_motion 이 읽는다)
+  function setRunning(v) { if (v !== running) { running = v; root.dataset.psLoop = v ? "on" : "off"; } }
+  root.dataset.psLoop = "off";
   function schedule() { if (!queued) { queued = true; requestAnimationFrame(frame); } }
   function invalidate() { dirty = true; schedule(); }
+  // 탭이 숨으면 브라우저가 rAF 를 멈춘다 — 돌아오면 남은 거리만큼 다시 이어서 보간
+  document.addEventListener("visibilitychange", () => { if (document.hidden) setRunning(false); else { lastT = 0; schedule(); } });
 
   const ro = "ResizeObserver" in window ? new ResizeObserver(invalidate) : null;
   if (ro) ro.observe(document.body);
@@ -104,6 +135,7 @@
     const still = !pinned();
     root.classList.toggle("ps-static", still);
     root.classList.toggle("no-motion", still);   // 정지 상태는 이 클래스 하나로 공통 효과까지 끈다 (veilo.css · fx.css · fx.js)
+    snap = true;   // 모드가 바뀌면 보간 없이 바로 그 자리 모습으로
     document.dispatchEvent(new CustomEvent("padomotion", { detail: { still } }));
     document.querySelectorAll("[data-motion-toggle]").forEach((b) => {
       b.setAttribute("aria-pressed", String(!paused));
@@ -134,7 +166,11 @@
 
   window.PadoMotion = {
     clamp, smooth, local, top, height, release, track, pinned, PIN_MQ, schedule, invalidate, createTimeline, view,
-    addScene(fn) { scenes.push(fn); schedule(); },
+    // addScene(fn, el) — el 을 주면 fn(cur, on, view) 로 그 장면의 보간된 진행도(0~1)를 받는다. 정지 상태면 cur = 1.
+    //                    el 이 없으면 fn(y, on, view) — 스크롤 위치를 그대로 따라야 하는 것(읽기 진행 막대 등)
+    addScene(fn, el) { scenes.push({ fn, el: el || null, cur: 0, target: 0 }); schedule(); },
+    // 디버그 · 측정용 — 보간 중인 장면의 { target, cur } (check_motion 이 읽는다)
+    probe() { return scenes.filter((s) => s.el).map((s) => ({ id: s.el.id, target: s.target, cur: s.cur })); },
     onRefresh(fn) { refreshHooks.push(fn); },
     start() { wireToggles(); applyMode(false); },
   };

@@ -24,7 +24,7 @@
       </a>
       <nav class="ut-nav">
         {% block nav %}
-        {# 1분 소개 화면(about.html) — 첫 방문 소개 창은 처음 한 번만 뜨고, 다시 볼 땐 이쪽으로 #}
+        {# 1분 소개 화면(about.html) — 처음 온 사람은 홈(/) 대신 여기로 온다(app.py ABOUT_COOKIE). 다시 볼 땐 이 버튼 #}
         <a href="/about" class="intro-btn" aria-label="파도풀 1분 소개 보기">파도풀이란?</a>
         {# 내 계정을 골랐으면 「내 글 점검」은 바로 그 사람으로 (scan.html?u=) — 안 골랐으면 계정 찾기부터 #}
         <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}" class="chk">🌊 내 글 점검</a>
@@ -58,22 +58,6 @@
     </a>
   </nav>
 
-  {# 첫 방문 소개 창 — 처음 한 번만 뜬다(veilo.js initIntro · localStorage padopool_intro_v1). 상단바 「파도풀이란?」로 다시 연다 #}
-  <dialog class="welcome intro" id="intro" aria-labelledby="introTitle">
-    <div class="welcome-brand">
-      <img class="sym" src="/static/padopool-symbol.svg" alt="" width="26" height="26">파도풀
-      <small>in Veilo</small>
-    </div>
-    <h2 id="introTitle">🌊 파도풀 — 내 글이 나를 얼마나 드러내는지 봅니다</h2>
-    <p>이름이나 전화번호를 쓰지 않아도, 사는 동네와 나이와 직업 이야기가 글마다 쌓이면 「몇백 명 중 한 명」까지 좁혀질 수 있습니다.</p>
-    <p>파도풀은 글에서 이런 단서를 찾고, 어떤 글을 고치면 위험이 얼마나 줄어드는지 알려 드립니다.</p>
-    <p>Veilo는 이걸 체험해 보라고 만든 가상 SNS입니다. 여기서 쓰고 바꾼 내용은 이 브라우저에서만 보입니다.</p>
-    <div class="bt">
-      <button type="button" class="dismiss" data-intro-close>가상 글 둘러보기</button>
-      <a class="start" href="/new" data-intro-go>글 쓰며 점검하기</a>
-    </div>
-    <p class="more"><a href="/about" data-intro-go>1분 소개 보기 →</a></p>
-  </dialog>
   <script src="/static/veilo.js"></script>
   <script src="/static/fx.js"></script>
   <script>

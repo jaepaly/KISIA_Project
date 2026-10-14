@@ -50,7 +50,9 @@ def env(tmp_path, monkeypatch):
 
 
 def _sid(client) -> str:
-    return client.get("/").headers["Set-Cookie"].split("veilo_sid=")[1].split(";")[0]
+    sid = client.get("/").headers["Set-Cookie"].split("veilo_sid=")[1].split(";")[0]
+    client.get("/?skip_about=1")   # 소개(/about)를 본 방문자로 — 그래야 홈(/)이 소개로 안 보낸다
+    return sid
 
 
 def _export(app, sid):
@@ -68,7 +70,7 @@ def test_pick_me_is_saved_per_session(env):
     assert "내 계정 시드닉" in home and f"scan.html?u={REF}" in home   # 상단바 아바타 · 내 글 점검이 나로
     assert 'value="S01" selected' in a.get("/new").get_data(as_text=True)   # 글쓰기 기본 작성자
     # 다른 방문자에겐 없다
-    assert "내 계정 시드닉" not in app.test_client().get("/").get_data(as_text=True)
+    assert "내 계정 시드닉" not in app.test_client().get("/?skip_about=1").get_data(as_text=True)
     # fetch 로 바꾸기 (글쓰기 화면) · 풀기
     j = a.post("/me", data={"author_id": "S02"}, headers={"X-Requested-With": "fetch"}).get_json()
     assert j["me"]["nickname"] == "둘째"

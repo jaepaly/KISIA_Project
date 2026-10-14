@@ -9,8 +9,10 @@
 //   4) 끝나면 2) 에서 띄운 크롬만 끈다 (Start-Process -PassThru 로 받은 Id 로 Stop-Process).
 // 결과는 JSON 한 덩어리 { ok, failed, results:[{ mode, check, ok, got, want }] } — 하나라도 실패면 종료 코드 1.
 //
-// 모드: 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1280×640 · 1400×700
-// 검사: .ps-sticky position · .reveal opacity · html scroll-behavior · 캔버스 data-loop 가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
+// 모드: 첫 접속(쿠키 없음) · 관성 보간 · 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1280×640 · 1400×700
+// 검사: 첫 접속 홈 → /about · 소개 뒤 홈 · 소개 창(dialog) 없음 · 끝 화면 「Veilo 둘러보기」로 홈 ·
+//       관성 보간(휠 한 칸 뒤 수렴 시간 · 스크롤 중 rAF p95 · 수렴 뒤 cur = target · 카드 등장 겹침) ·
+//       .ps-sticky position · .reveal opacity · html scroll-behavior · 보간 루프(html[data-ps-loop])가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
 //       핀 장면 내용이 위 바 · 아래 소개 순서에 가리지 않음 · 움직임 토글 뒤 읽던 자리(±1화면) · Tab 으로 소개 순서 · 움직임 버튼 도달 ·
 //       밤 막이 짙어지는 동안 좁혀지기 글자 대비(작은 라벨 4.5:1 · 제목·숫자 3:1 — 실제 계산 색 · 막 농도 · 라벨 바탕으로 계산)
 
@@ -47,6 +49,7 @@ async function connect() {
 }
 
 const results = [];
+const measure = {};   // 관성 보간 실측 (보고서용 — 통과 여부와 따로 출력)
 function check(mode, name, ok, got, want) { results.push({ mode, check: name, ok: !!ok, got, want }); }
 
 async function main() {
@@ -62,26 +65,28 @@ async function main() {
     await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }] });
     // 움직임 설정(localStorage)은 같은 출처에서만 쓸 수 있다 — 한 번 열고 쓴 뒤 다시 연다
     let load = once("Page.loadEventFired");
-    await send("Page.navigate", { url: `${BASE}/about?intro=0` });
+    await send("Page.navigate", { url: `${BASE}/about` });
     await load;
-    await js(`localStorage.setItem("padopool_motion", ${JSON.stringify(motion)}); localStorage.setItem("padopool_intro_v1", "seen"); true`);
+    await js(`localStorage.setItem("padopool_motion", ${JSON.stringify(motion)}); true`);
     load = once("Page.loadEventFired");
     await send("Page.navigate", { url: `${BASE}${path}` });
     await load;
     await sleep(700);
   }
-  const scrollTo = async (y) => { await js(`window.scrollTo({ top: ${Math.round(y)}, behavior: "instant" }); true`); await sleep(350); };
+  // 보간 루프가 멈출 때까지(= 연출 값이 목표에 닿을 때까지) 기다린다
+  const settle = async () => { for (let i = 0; i < 40; i++) { if ((await js(`document.documentElement.dataset.psLoop`)) !== "on") return; await sleep(50); } };
+  const scrollTo = async (y) => { await js(`window.scrollTo({ top: ${Math.round(y)}, behavior: "instant" }); true`); await sleep(80); await settle(); };
   // 섹션 안 비율 p 자리의 스크롤 값 (핀 장면은 풀리는 지점까지를 0~1 로)
   const posOf = (sel, p) => js(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); const top = el.getBoundingClientRect().top + scrollY;
     return Math.round(top + ${p} * Math.max(0, el.offsetHeight - innerHeight)); })()`);
   const state = () => js(`(() => { const cs = (s, p) => { const el = document.querySelector(s); return el ? getComputedStyle(el)[p] : null; };
     return { cls: document.documentElement.className, sticky: cs(".ps-sticky", "position"), reveal: cs(".reveal", "opacity"),
-      scroll: getComputedStyle(document.documentElement).scrollBehavior, loop: document.getElementById("psCrowd")?.dataset.loop,
+      scroll: getComputedStyle(document.documentElement).scrollBehavior, loop: document.documentElement.dataset.psLoop,
       pinned: window.PadoMotion ? window.PadoMotion.pinned() : null, vh: innerHeight }; })()`);
   async function loopStops(mode) {
     let loop = null;
-    for (let i = 0; i < 20; i++) { loop = await js(`document.getElementById("psCrowd").dataset.loop`); if (loop === "off") break; await sleep(250); }
-    check(mode, "canvas data-loop 멈춘 뒤 off", loop === "off", loop, "off");
+    for (let i = 0; i < 20; i++) { loop = await js(`document.documentElement.dataset.psLoop`); if (loop === "off") break; await sleep(250); }
+    check(mode, "보간 루프 data-ps-loop 멈춘 뒤 off", loop === "off", loop, "off");
   }
   // 물결 — pointerdown 을 n 번 보내고 남은 .fx-ripple 수
   const ripple = (n) => js(`(() => { const b = document.querySelector("[data-motion-toggle]:not([hidden])") || document.querySelector(".ut-top a");
@@ -120,10 +125,103 @@ async function main() {
     check(mode, "클릭 물결 안 생김", n === 0, n, 0);
   }
 
+  // ⓪ 첫 접속 — 쿠키 없는 방문자가 홈으로 오면 /about · 소개를 본 뒤엔 홈 · 다른 경로는 안 보냄 · 소개 창 없음
+  {
+    const mode = "첫 접속";
+    await send("Network.enable");
+    await send("Emulation.setDeviceMetricsOverride", { width: 1400, height: 900, deviceScaleFactor: 1, mobile: false });
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+    const nav = async (path) => { const load = once("Page.loadEventFired"); await send("Page.navigate", { url: `${BASE}${path}` }); await load; await sleep(300); return js(`location.pathname + location.search`); };
+    const fresh = async (path) => { await send("Network.clearBrowserCookies"); return nav(path); };
+    const DLG = `document.querySelectorAll("dialog, #intro, [data-intro-open], [data-intro-close]").length`;
+    let at = await fresh("/");
+    check(mode, "쿠키 없음 홈 → /about", at === "/about", at, "/about");
+    let n = await js(DLG);
+    check(mode, "소개 창(dialog) 없음 · /about", n === 0, n, 0);
+    at = await nav("/");
+    check(mode, "소개를 연 뒤 홈은 홈", at === "/", at, "/");
+    n = await js(DLG);
+    check(mode, "소개 창(dialog) 없음 · 홈", n === 0, n, 0);
+    const links = await js(`document.querySelectorAll('a[href="/about"]').length`);
+    check(mode, "홈의 「파도풀이란?」 링크 → /about (상단바 · 레일 · 피드 위)", links >= 3, links, "≥ 3");
+    at = await fresh("/new");
+    check(mode, "쿠키 없음 /new → 그대로", at === "/new", at, "/new");
+    at = await fresh("/?skip_about=1");
+    check(mode, "?skip_about=1 → 홈", at === "/?skip_about=1", at, "/?skip_about=1");
+    at = await nav("/");
+    check(mode, "?skip_about=1 뒤 쿼리 없이도 홈", at === "/", at, "/");
+    // 소개 끝까지 내려가 큰 버튼으로 Veilo 에 들어간다
+    await fresh("/");
+    await js(`window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }); true`);
+    await sleep(900);
+    const end = await js(`(() => { const a = document.querySelector("#end .ps-go"); const r = a.getBoundingClientRect();
+      return { href: a.getAttribute("href"), inView: r.top >= 0 && r.bottom <= innerHeight, h: document.querySelector("#end h2").textContent, x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+    check(mode, "끝 화면 제목 「이제 Veilo 에서 직접 해 보세요」", /이제 Veilo 에서\s*직접 해 보세요/.test(end.h), end.h, "이제 Veilo 에서 직접 해 보세요");
+    check(mode, "끝 화면 「Veilo 둘러보기」 버튼이 화면 안", end.inView, end, "inView");
+    const load = once("Page.loadEventFired");
+    for (const type of ["mousePressed", "mouseReleased"]) await send("Input.dispatchMouseEvent", { type, x: end.x, y: end.y, button: "left", clickCount: 1 });
+    await load; await sleep(300);
+    at = await js(`location.pathname`);
+    check(mode, "「Veilo 둘러보기」 → 홈", at === "/", at, "/");
+  }
+
+  // ①-a 관성 보간 — 휠 한 칸 뒤 연출 값이 목표에 수렴하는 시간 · 스크롤 중 rAF 간격 p95 · 카드 등장 겹침
+
+  {
+    const mode = "관성 보간 1400×900";
+    await open("/about");
+    // 페이지 안 기록기 — 매 rAF 마다 좁혀지기 장면의 { target, cur } · scroll 이벤트 시각
+    const REC = (ms) => `new Promise((res) => { const fr = [], sc = []; const t0 = performance.now();
+      const on = () => sc.push(performance.now() - t0); addEventListener("scroll", on, { passive: true });
+      const tick = (t) => { const p = window.PadoMotion.probe().find((x) => x.id === "narrow"); fr.push({ t: t - t0, target: p.target, cur: p.cur });
+        if (t - t0 < ${ms}) requestAnimationFrame(tick); else { removeEventListener("scroll", on); res({ fr, sc }); } };
+      requestAnimationFrame(tick); })`;
+    const runs = [];
+    for (const p0 of [0.2, 0.45, 0.7]) {
+      await scrollTo(await posOf("#narrow", p0));
+      const c = await js(`(() => { const r = document.querySelector("#narrow .ps-stage").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+      await js(`window.__p = ${REC(1500)}; true`);
+      await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: c.x, y: c.y, deltaX: 0, deltaY: 100 });
+      const { fr, sc } = await js(`window.__p`);
+      if (!sc.length) { runs.push({ p0, err: "scroll 없음" }); continue; }
+      const t0 = sc[0], T = fr[fr.length - 1].target;
+      const c0 = (fr.find((f) => f.t >= t0) || fr[0]).cur;
+      const step = Math.abs(T - c0) || 1e-9;
+      // q 만큼 다가간 뒤 다시 벗어나지 않는 첫 프레임 (scroll 첫 이벤트 기준 ms)
+      const at = (q) => { let tt = null; for (const f of fr) { if (f.t < t0) continue; if (Math.abs(T - f.cur) <= (1 - q) * step) { if (tt === null) tt = f.t; } else tt = null; } return tt === null ? null : Math.round(tt - t0); };
+      const f = fr.find((f) => f.t >= t0 && f.cur === T);
+      runs.push({ p0, step: Math.round(step * 10000) / 10000, scrollMs: Math.round(sc[sc.length - 1] - t0), t90: at(0.9), t95: at(0.95), t98: at(0.98), stop: f ? Math.round(f.t - t0) : null });
+    }
+    measure.wheel = runs;
+    check(mode, "휠 한 칸 뒤 95% 수렴 150~450ms (목표 250~400)", runs.every((r) => r.t95 !== null && r.t95 >= 150 && r.t95 <= 450), runs, "t95 150~450ms");
+    check(mode, "휠 한 칸 뒤 루프 멈춤 (cur = target)", runs.every((r) => r.stop !== null && r.stop <= 1200), runs.map((r) => r.stop), "≤ 1200ms");
+    // 연속 스크롤 — 휠 30칸을 40ms 간격으로 보내는 동안 rAF 간격
+    await scrollTo(await posOf("#narrow", 0.05));
+    await js(`window.__p = new Promise((res) => { const d = []; let prev = 0; const t0 = performance.now();
+      const tick = (t) => { if (prev) d.push(t - prev); prev = t; if (t - t0 < 2000) requestAnimationFrame(tick); else res(d); }; requestAnimationFrame(tick); }); true`);
+    for (let i = 0; i < 30; i++) { await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 700, y: 450, deltaX: 0, deltaY: 100 }); await sleep(40); }
+    const d = (await js(`window.__p`)).sort((a, b) => a - b);
+    const q = (x) => Math.round(d[Math.min(d.length - 1, Math.floor(x * d.length))] * 10) / 10;
+    const raf = { frames: d.length, p50: q(0.5), p95: q(0.95), p99: q(0.99), max: Math.round(d[d.length - 1] * 10) / 10 };
+    measure.raf = raf;
+    check(mode, "연속 스크롤 중 rAF 간격 p95 ≤ 20ms", raf.p95 <= 20, raf, "p95 ≤ 20ms (60Hz = 16.7)");
+    await settle();
+    const pr = await js(`window.PadoMotion.probe()`);
+    check(mode, "수렴 뒤 모든 장면 cur = target", pr.length === 2 && pr.every((x) => x.cur === x.target), pr, "cur === target");
+    // 카드 등장 구간 겹침 — 좁혀지기 0.05~0.85 를 훑으며 반쯤 나온 카드가 2장 이상인 지점 수
+    let overlap = 0;
+    for (let p = 0.05; p <= 0.85; p += 0.04) {
+      await scrollTo(await posOf("#narrow", p));
+      const k = await js(`[...document.querySelectorAll("#narrow .ps-post")].filter((el) => { const v = Number(el.style.getPropertyValue("--in")); return v > 0.05 && v < 0.95; }).length`);
+      if (k >= 2) overlap++;
+    }
+    check(mode, "카드 등장 구간이 겹친다 (반쯤 나온 카드 2장 이상 지점)", overlap >= 5, overlap, "≥ 5 지점");
+  }
+
   // ① 기본 — 1400×900 핀
   {
     const mode = "기본 1400×900";
-    await open("/about?intro=0");
+    await open("/about");
     let s = await state();
     check(mode, "html 에 정지 클래스 없음", !/ps-static|no-motion/.test(s.cls), s.cls, "ps-page js");
     check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
@@ -156,8 +254,7 @@ async function main() {
       return out; })()`;
     const sweep = { small: 99, large: 99, at: [] };
     for (let p = 0.4; p <= 0.62; p += 0.01) {
-      await js(`window.scrollTo({ top: ${await posOf("#narrow", p)}, behavior: "instant" }); true`);
-      await sleep(120);
+      await scrollTo(await posOf("#narrow", p));
       const r = await js(CONTRAST);
       sweep.small = Math.min(sweep.small, r.small); sweep.large = Math.min(sweep.large, r.large);
       if (r.worst) sweep.at.push({ p: Math.round(p * 100) / 100, ...r });
@@ -179,7 +276,7 @@ async function main() {
   // ② 움직임 끄기 버튼 — 토글 뒤 읽던 자리 유지(±1화면) · 물결 정리
   {
     const mode = "움직임 끄기 버튼";
-    await open("/about?intro=0");
+    await open("/about");
     await scrollTo(await posOf("#narrow", 0.6));
     const spot = () => js(`(() => { let cur = null; for (const s of document.querySelectorAll("[data-ps-section]")) if (s.getBoundingClientRect().top <= innerHeight * 0.1) cur = s;
       const r = cur.getBoundingClientRect(); return { id: cur.id, ratio: Math.min(1, Math.max(0, -r.top / r.height)), y: scrollY, h: r.height, top: r.top + scrollY, vh: innerHeight }; })()`);
@@ -216,7 +313,7 @@ async function main() {
   // ③ ?view=static
   {
     const mode = "?view=static";
-    await open("/about?view=static&intro=0");
+    await open("/about?view=static");
     const s = await state();
     await staticChecks(mode, s);
     const hidden = await js(`document.querySelector("[data-motion-toggle]").hidden`);
@@ -227,7 +324,7 @@ async function main() {
   // ④ 동작 줄이기 에뮬레이션
   {
     const mode = "prefers-reduced-motion";
-    await open("/about?intro=0", { reduced: true });
+    await open("/about", { reduced: true });
     await staticChecks(mode, await state());
     await tabReach(mode);
   }
@@ -235,14 +332,14 @@ async function main() {
   // ⑤ 390px — 모바일은 다 켜진 정지 상태 · 소개 순서는 숨김
   {
     const mode = "390×844";
-    await open("/about?intro=0", { w: 390, h: 844, mobile: true });
+    await open("/about", { w: 390, h: 844, mobile: true });
     await staticChecks(mode, await state());
   }
 
   // ⑥ 낮은 데스크톱 — 핀 조건(높이 800) 밖이면 정지 흐름
   for (const [w, h] of [[1280, 640], [1400, 700]]) {
     const mode = `${w}×${h}`;
-    await open("/about?intro=0", { w, h });
+    await open("/about", { w, h });
     const s = await state();
     check(mode, "pinned() false", s.pinned === false, s.pinned, false);
     await staticChecks(mode, s);
@@ -258,5 +355,5 @@ let fatal = null;
 try { await main(); } catch (e) { fatal = String(e && e.stack || e); }
 const failed = results.filter((r) => !r.ok);
 const ok = !fatal && failed.length === 0 && results.length > 0;
-console.log(JSON.stringify({ ok, base: BASE, total: results.length, failed: failed.length, fatal, results }, null, 2));
+console.log(JSON.stringify({ ok, base: BASE, total: results.length, failed: failed.length, fatal, measure, results }, null, 2));
 process.exit(ok ? 0 : 1);

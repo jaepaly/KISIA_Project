@@ -125,6 +125,24 @@ def _set_session_cookie(resp):
     return resp
 
 
+# ── 첫 접속 = 1분 소개(/about) ── 「봤음」 쿠키가 없는 방문자가 홈(/)으로 오면 소개로 보낸다.
+# 소개 화면을 열면(또는 ?skip_about=1 — 시연 · 테스트용) 쿠키를 심는다. 그 뒤로는 로고 · 「둘러보기」로 홈에 바로 간다.
+# 홈 말고 다른 경로(/posts/… · /new · /u/… · /api/*)는 보내지 않는다 — 공유받은 글 주소로 바로 온 사람을 막지 않게.
+ABOUT_COOKIE = "pado_about_seen"
+
+
+def _about_seen() -> bool:
+    return request.cookies.get(ABOUT_COOKIE) == "1" or request.args.get("skip_about") == "1"
+
+
+@app.after_request
+def _set_about_cookie(resp):
+    if (request.path == "/about" or request.args.get("skip_about") == "1") and request.cookies.get(ABOUT_COOKIE) != "1":
+        resp.set_cookie(ABOUT_COOKIE, "1", max_age=365 * 24 * 3600, path="/", samesite="Lax",
+                        httponly=True, secure=request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
+    return resp
+
+
 def db() -> sqlite3.Connection:
     if "db" not in g:
         sid = getattr(g, "sid", None)
@@ -147,7 +165,9 @@ def _todo(screen: str, where: str) -> str:
 # ── 화면 4개 ─────────────────────────────────────────────────────────
 @app.get("/")
 def index():
-    """글 목록. 최신순 · 작성자 필터 · private 는 회색."""
+    """글 목록. 최신순 · 작성자 필터 · private 는 회색. 처음 온 사람(소개 쿠키 없음)은 /about 으로."""
+    if not _about_seen() and not request.args.get("partial"):
+        return redirect("/about", code=302)
     author_id = request.args.get("author")
     page = max(1, request.args.get("page", 1, type=int))
     q = ("SELECT p.*, a.nickname, a.user_ref FROM posts p"

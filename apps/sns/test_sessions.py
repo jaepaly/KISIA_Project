@@ -42,9 +42,10 @@ def test_first_visit_sets_cookie_and_edits_do_not_leak(app_iso):
     app, root = app_iso
     a = app.test_client()
     r = a.get("/")
-    assert r.status_code == 200
+    assert r.status_code == 302 and r.headers["Location"].endswith("/about")   # 첫 접속은 소개로 — 세션 쿠키는 그때 이미 받는다
     cookie = r.headers.get("Set-Cookie", "")
     assert "veilo_sid=" in cookie and "HttpOnly" in cookie
+    assert a.get("/?skip_about=1").status_code == 200   # 소개를 건너뛰고 홈 — 이때 이 방문자의 DB 사본이 생긴다
     assert (root / "sessions").exists()
 
     _toggle(a)   # 방문자 A 가 비공개로
@@ -90,6 +91,6 @@ def test_without_seed_isolation_is_off(tmp_path, monkeypatch):
     _seed(live)
     monkeypatch.setenv("SNS_DB_PATH", str(live))
     import app as appmod
-    r = appmod.app.test_client().get("/")
-    assert r.status_code == 200 and "veilo_sid" not in r.headers.get("Set-Cookie", "")
+    r = appmod.app.test_client().get("/?skip_about=1")
+    assert r.status_code == 200 and "veilo_sid" not in " ".join(r.headers.getlist("Set-Cookie"))
     assert not (tmp_path / "sessions").exists()

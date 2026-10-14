@@ -3,8 +3,6 @@
 {% block title %}파도풀이란? — Veilo{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="/static/pado-scene.css">
-{# 이 화면을 봤으면 첫 방문 소개 창(base.html #intro)은 띄우지 않는다 — 같은 내용을 두 번 보여 주지 않게 #}
-<script>try { localStorage.setItem("padopool_intro_v1", "seen"); } catch (e) {}</script>
 {% endblock %}
 
 {% block body %}
@@ -61,7 +59,7 @@
         </div>
         <figure class="ps-crowd">
           <div class="ps-stage">
-            <canvas id="psCrowd" aria-hidden="true" data-loop="off"></canvas>
+            <canvas id="psCrowd" aria-hidden="true"></canvas>
             <div class="ps-spot" aria-hidden="true"></div>
           </div>
           <figcaption class="ps-count">
@@ -103,17 +101,20 @@
     </div>
   </section>
 
-  {# ── 마무리 ── #}
+  {# ── 마무리 — 스크롤 끝 = Veilo 로 넘어가는 문. 한 화면을 다 쓴다 ──
+     이 화면을 열면 서버가 「봤음」 쿠키(pado_about_seen)를 심는다 — 로고 · 아래 버튼으로 홈에 가도 다시 여기로 안 온다.
+     「Veilo 둘러보기」는 ?skip_about=1 도 붙인다 — 쿠키를 막아 둔 브라우저에서도 홈이 열리게 #}
   <section class="ps-end" id="end" data-ps-section>
     <div class="ps-in reveal">
       <p class="eyebrow ko">04 / 써 보기</p>
-      <h2 class="ps-h2">내 글은 어디까지 좁혀질까요?</h2>
-      <p class="ps-lead">점검 결과는 가능성을 보여 드리는 것이지, 안전하다는 보증은 아닙니다. 걸리는 글이 있으면 고칠지 말지는 직접 정하시면 됩니다.</p>
-      <div class="ps-bt">
-        <a class="ps-btn primary" href="{{ scan_url }}">🌊 내 글 점검</a>
-        <a class="ps-btn" href="/">가상 글 둘러보기</a>
+      <h2 class="ps-h2 ps-end-h">이제 Veilo 에서<br>직접 해 보세요.</h2>
+      <p class="ps-lead">Veilo는 파도풀을 체험해 보라고 만든 가상 SNS입니다. 가상 인물들의 글을 둘러보고, 글을 직접 써 보면 어디까지 좁혀지는지 바로 보입니다.</p>
+      <a class="ps-btn primary ps-go" href="/?skip_about=1">Veilo 둘러보기 <span aria-hidden="true">→</span></a>
+      <div class="ps-bt ps-end-more">
+        <a class="ps-btn" href="/new">✏️ 글 써 보기</a>
+        <a class="ps-btn" href="{{ scan_url }}">🌊 내 글 점검</a>
       </div>
-      <p class="ps-fine">Veilo의 글과 사람은 모두 가상입니다. 여기서 쓰고 바꾼 내용은 이 브라우저에서만 보입니다.</p>
+      <p class="ps-fine">점검 결과는 가능성을 보여 드리는 것이지, 안전하다는 보증은 아닙니다. Veilo의 글과 사람은 모두 가상이고, 여기서 쓰고 바꾼 내용은 이 브라우저에서만 보입니다.</p>
     </div>
   </section>
 </main>

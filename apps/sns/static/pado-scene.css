@@ -77,7 +77,7 @@
 .ps-path{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--ps-line)}
 .ps-path i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--w,1))}
 .ps-step-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
-.ps-step{--a:1;position:relative;padding-top:36px;opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 18px));transition:opacity .2s linear,transform .2s linear}
+.ps-step{--a:1;position:relative;padding-top:36px;opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 18px))}   /* transition 없음 — 값은 motion-core 관성 보간이 이미 부드럽게 준다(겹치면 이중으로 늦어진다) */
 .ps-step .dot{position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--ps-paper);border:1px solid var(--ps-muted)}
 .ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
 .ps-step .eyebrow{margin:0 0 6px}
@@ -85,7 +85,14 @@
 .ps-step p{margin:0;font-size:15px;line-height:1.65;color:var(--ps-body);word-break:keep-all}
 
 /* ── 마무리 ── */
-.ps-end{padding:120px 0 160px;border-top:1px solid var(--ps-line)}
+/* 스크롤 끝 한 화면 — 「이제 Veilo 에서 직접 해 보세요」 + 큰 「Veilo 둘러보기」. 아래 소개 순서(72)를 피해 가운데 */
+.ps-end{min-height:100svh;display:flex;align-items:center;padding:64px 0 96px;border-top:1px solid var(--ps-line)}
+.ps-end .ps-in{width:100%}
+.ps-end-h{font-size:clamp(30px,4.4vw,60px);line-height:1.14;letter-spacing:-.05em}
+.ps-go{min-height:64px;padding:0 32px;font-size:clamp(17px,1.6vw,20px);gap:10px}
+.ps-go span{transition:transform .2s var(--ps-ease)}
+.ps-go:hover span{transform:translateX(4px)}
+.ps-end-more{margin-top:14px}
 
 /* ── 연출 C — 읽기 진행 막대 · 소개 순서 ── */
 .ps-progress{position:fixed;left:0;right:0;top:0;height:2px;z-index:40;pointer-events:none}
@@ -124,7 +131,7 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-night,.ps-spot{display:none}
   .ps-narrow,.ps-steps{border-top:1px solid var(--ps-line)}
 }
-.no-motion .ps-btn:hover{transform:none}
+.no-motion .ps-btn:hover,.no-motion .ps-go:hover span{transform:none}
 
 @media (max-width:767px){
   .ps-in{padding:0 16px}
@@ -137,10 +144,11 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-path{left:6px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
   .ps-step{padding:0 0 0 32px}
   .ps-step .dot{top:4px}
-  .ps-end{padding:72px 0 120px}
+  .ps-end{min-height:auto;padding:72px 0 120px}
+  .ps-go{width:100%;justify-content:center}
   .ps-map{display:none}
   .ps-btn{flex:1 1 auto;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){
-  .ps-btn,.ps-step{transition:none}
+  .ps-btn,.ps-go span{transition:none}
 }

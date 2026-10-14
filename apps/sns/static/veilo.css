@@ -323,27 +323,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 @keyframes tick{from{opacity:0;transform:translateY(6px)}}
 
 @keyframes fadein{from{opacity:0}}
-.welcome{position:relative;min-width:0;background:var(--paper);border:1px solid var(--line-strong);
-  border-radius:16px;padding:28px 30px;width:min(760px,100%);max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 30px 80px -40px rgba(31,28,25,.45);animation:popin .3s var(--ease)}
-.welcome-brand{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);font-family:var(--font-sans);font-weight:700;font-size:18px;letter-spacing:-.03em;color:var(--ut-ink)}
-.welcome-brand .sym{width:26px;height:26px}
-.welcome-brand small{font-family:var(--font-mono);font-weight:500;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ut-ink3);margin-left:auto}
-.welcome h2{margin:0 0 10px;font-size:var(--fs-h1);color:var(--ink);line-height:1.3;letter-spacing:var(--track-head)}
-.welcome h2 b{color:var(--accent);font-weight:700}
-.welcome p{margin:0 0 12px;font-size:14.5px;color:var(--body);line-height:1.75}
-/* 글자 크기가 다른 문단마다 max-width 를 em 으로 주면 줄바꿈 위치가 제각각이 된다 — 카드 폭에 맡긴다 (9/16) */
-.welcome h2,.welcome p,.welcome li{word-break:keep-all;overflow-wrap:break-word}
-.welcome .how-lab{font-size:12px;color:var(--ut-ink3);font-weight:600;letter-spacing:.02em;margin:2px 0 8px}
-.welcome ol{margin:0 0 14px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.welcome li{background:var(--surface);border:1px solid var(--ut-line);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ut-ink2);line-height:1.55}
-.welcome li b{display:block;color:var(--ut-ink);font-size:13.5px;margin-bottom:2px}
-.welcome li .k{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:700}
-.welcome .bt{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative}
-.welcome .bt .start{background:var(--ink);color:#fff;border-radius:999px;height:44px;padding:0 18px;font-size:14px;font-weight:700}
-.welcome .bt .start:hover{background:var(--ink-2)}
-.welcome .bt .dismiss{background:transparent;color:var(--ink);border:1px solid var(--line-strong);border-radius:999px;height:42px;padding:0 16px;font-size:13.5px;font-weight:600}
-.welcome .bt .dismiss:hover{border-color:var(--ink);background:var(--surface);color:var(--ut-ink)}
-.welcome .bt .note{font-size:11.5px;color:var(--ut-ink3);margin-left:auto}
 
 @keyframes popin{0%{opacity:0;transform:translateY(-10px) scale(.96)}60%{transform:translateY(3px) scale(1.01)}100%{opacity:1;transform:none}}
 
@@ -368,10 +347,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
   .ut-top-in{gap:8px}
   .ut-logo .sym{width:24px;height:24px}
   .ut-logo .wm{font-size:20px}
-  .welcome{min-width:0;padding:20px 18px}
-  .welcome h2 br,.welcome p br{display:none}
-  .welcome h2,.welcome p,.welcome li{overflow-wrap:anywhere;word-break:keep-all}
-  .welcome .bt .note{margin-left:0}
   .ut-shell{grid-template-columns:minmax(0,1fr);padding:0 16px;z-index:auto}   /* 쌓임 맥락을 풀어야 서랍(.ut-side 45)이 스크림(44) 위로 올라온다 */
   .ut-side{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);z-index:45;background:var(--ut-bg);transform:translateX(-100%);transition:transform .25s var(--ease)}
   .ut-side.open{transform:none;box-shadow:0 0 60px rgba(0,0,0,.25)}   /* 닫힌 서랍의 그림자가 화면 왼쪽에 새지 않게 */
@@ -385,7 +360,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
   .ut-prof{gap:12px}
   .ut-follow{margin-left:0;width:100%;justify-content:center}
   .ut-pado a.go{width:100%;justify-content:center}
-  .welcome ol{grid-template-columns:1fr}
   .ut-foot{padding:0 16px}
   .ut-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--glass);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-top:1px solid var(--ut-line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
   .ut-tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ut-ink3);padding:4px 10px;border-radius:12px;min-width:64px;transition:color .15s,background .15s}
@@ -438,7 +412,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 @keyframes spin{to{transform:rotate(360deg)}}
 /* 처리방침 — 바닥글은 글이 103편이라 도달하지 못한다. 첫 화면에서 보이는 자리에 둔다 (9/17) */
 
-/* ── 파도풀 입구 · 소개 창 · 조치 띠 (10/14) ── */
+/* ── 파도풀 입구 · 조치 띠 (10/14) ── */
 .ut-menu[hidden]{display:none!important}
 .ut-nav .intro-btn{height:40px;padding:0 14px;border-radius:999px;background:transparent;border:1px solid var(--line-strong);color:var(--ut-ink2);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
 .ut-nav .intro-btn:hover{background:var(--ut-panel2);color:var(--ut-ink)}
@@ -446,13 +420,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 .ut-nav a.chk{color:var(--ink);font-weight:700;border:1px solid var(--line-strong);background:var(--surface)}
 .ut-nav a.chk:hover{background:var(--paper-2)}
 .ut-top-in .ut-nav{margin-left:auto}
-/* 소개 창 — 네이티브 <dialog>. 모양은 .welcome 을 그대로 쓴다 */
-dialog.intro{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 40px);margin:auto;color:var(--ut-ink)}
-dialog.intro::backdrop{background:rgba(25,23,20,.45);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-dialog.intro h2{font-size:var(--fs-h1)}
-dialog.intro .bt{margin-top:16px}
-dialog.intro .bt .start{display:inline-flex;align-items:center;text-decoration:none}
-dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
 /* 홈 피드 맨 위 한 줄 · 조치 뒤 안내 띠 */
 .pado-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line-strong);border-left:3px solid var(--sea);border-radius:var(--ut-radius);padding:10px 14px;margin:0 0 16px;font-size:13.5px;color:var(--ut-ink2);line-height:1.55}
 .pado-strip[hidden]{display:none}
