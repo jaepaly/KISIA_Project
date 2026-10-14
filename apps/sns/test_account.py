@@ -231,6 +231,8 @@ def test_rewrite_undo_keeps_later_separate_private(env):
     assert _visibility(app, sid, "S01_b01") == "private"   # 뒤의 독립 조치는 취소되지 않는다
     assert _visibility(app, sid, new_id) is None           # 고쳐 쓴 글은 지워졌다
     assert "private" in _log_ids(app, sid)                 # 따로 한 비공개 이력도 살아 있다
+    a.post("/changes/undo-all", data={"back": "/"})        # 남은 것을 모두 되돌리면 처음 상태(공개)로
+    assert _visibility(app, sid, "S01_b01") == "public" and _log_ids(app, sid) == {}
 
 
 def test_rewrite_chain_undo_first(env):

@@ -418,9 +418,12 @@ def _undo(entry, cascade: bool = True) -> None:
     field = _FIELD[entry["kind"]]
     kinds = ("private", "public") if field == "visibility" else ("geo",)
     kind_in = f"kind IN ({','.join('?' * len(kinds))})"
-    if not cascade and c.execute(
-            f"SELECT 1 FROM action_log WHERE post_id = ? AND id > ? AND undone_at IS NULL AND {kind_in}",
-            (entry["post_id"], entry["id"], *kinds)).fetchone():
+    nxt = None if cascade else c.execute(
+        f"SELECT id FROM action_log WHERE post_id = ? AND id > ? AND undone_at IS NULL AND {kind_in} ORDER BY id LIMIT 1",
+        (entry["post_id"], entry["id"], *kinds)).fetchone()
+    if nxt:
+        # 이 조치를 이력에서 빼면 바로 다음 조치의 「바꾸기 전 값」은 이 조치 전의 값이 된다 — 나중에 그것을 되돌려도 원래로 간다
+        c.execute("UPDATE action_log SET before_val = ? WHERE id = ?", (entry["before_val"], nxt["id"]))
         c.execute("UPDATE action_log SET undone_at = ? WHERE id = ?", (now, entry["id"]))
         return
     c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
