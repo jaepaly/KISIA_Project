@@ -70,7 +70,7 @@ def test_sticky_total_within_480svh(client):
 def test_nav_links_to_about(client):
     client.get("/about")   # 소개를 본 방문자 — 홈이 열린다
     html = client.get("/").get_data(as_text=True)
-    assert 'href="/about" class="intro-btn"' in html
+    assert 'href="/about" class="intro-btn quiet"' in html   # 소개를 본 사람 — 작은 글씨 링크로 낮춘다
     assert html.count('href="/about"') == 1   # 상단바 하나 — 왼쪽 레일 · 피드 위 띠의 같은 링크는 뺐다 (10/14)
 
 
@@ -166,7 +166,7 @@ def test_other_pages_keep_full_header(client):
     for path in ("/", "/new"):
         html = client.get(path).get_data(as_text=True)
         assert 'class="ut-top" id="utTop"' in html and 'ps-top' not in html, path
-        assert '<a class="ut-logo" href="/">' in html and 'class="intro-btn"' in html and 'class="write"' in html, path
+        assert '<a class="ut-logo" href="/">' in html and 'class="intro-btn quiet"' in html and 'class="write"' in html, path
         assert '<span class="wm">Veilo</span>' in html, path     # 다른 화면은 그대로 Veilo 로고
         assert 'class="ut-tabs"' in html and "ps-skipnav" not in html, path
 
@@ -271,4 +271,12 @@ def test_veilo_css_does_not_reuse_analyzer_class_names():
     for name in ("post-head", "post-title", "post-body"):
         assert "." + name + "{" not in block, name
     assert not [n for n in mine if n in analyzer]
+
+
+def test_intro_link_is_quiet_only_after_about(client):
+    """상단바 「파도풀이란?」 — 소개를 안 본 사람은 버튼 · 본 사람은 작은 글씨 링크 (10/14)."""
+    html = client.get("/new").get_data(as_text=True)              # 쿠키 없음 — /new 는 소개로 보내지 않는다
+    assert 'class="intro-btn"' in html and "intro-btn quiet" not in html
+    client.get("/about")
+    assert 'class="intro-btn quiet"' in client.get("/new").get_data(as_text=True)
 

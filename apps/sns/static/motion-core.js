@@ -5,7 +5,8 @@
    움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · PIN_MQ 밖 = 폭 767px 이하 또는 높이 799px 이하)는
    html.ps-static + html.no-motion 둘 다 — 장면은 「다 켜진 정지 상태」, 공통 효과(.reveal 등장 · 호버 · 부드러운 스크롤 · 클릭 물결)도 끈다.
    PIN_MQ 는 pado-scene.css 의 정지 미디어쿼리와 같은 문자열이다(test_about.py 가 대조한다). 767 은 레이아웃 CSS 의 (max-width:767px) 와 같은 값.
-   높이 800 — 좁혀지기 장면 내용(약 660px) + 위 바(64) + 아래 소개 순서(72)가 한 화면에 들어가는 최소 높이(1400×900 실측).
+   높이 700 — 1366×768 노트북(브라우저 안 높이 약 650~700)에서도 장면이 고정되게. 700~799 는 pado-scene.css 가 카드 · 제목 · 그림판을
+   작게 줄여 좁혀지기 장면 내용 + 위 바(64) + 아래 소개 순서(72)가 한 화면에 들어가게 한다(10/14 · 800 → 700).
    관성 보간 — 휠 한 칸(약 100px)마다 연출 값이 뚝 뛰지 않게, 장면마다 목표(target = 그 장면 진행도)를 두고
    현재 값(cur)이 지수 감쇠로 따라간다: cur += (target − cur)·(1 − e^(−dt·K)). 장면은 cur 로만 그린다.
    네이티브 스크롤은 그대로다(가로채지 않는다) — 늦게 따라오는 것은 연출 값뿐. 수렴(|Δ| < EPS)하거나 탭이 숨으면 루프를 멈춘다.
@@ -15,7 +16,7 @@
   const root = document.documentElement;
   root.classList.add("js");   // .reveal 은 html.js 일 때만 숨는다 (veilo.css) — 스크립트가 안 돌면 글이 숨은 채 남지 않게
   const KEY = "padopool_motion";
-  const PIN_MQ = "(min-width:768px) and (min-height:800px)";
+  const PIN_MQ = "(min-width:768px) and (min-height:700px)";
   const PIN = matchMedia(PIN_MQ);
   const RM = matchMedia("(prefers-reduced-motion: reduce)");
   const STATIC = new URLSearchParams(location.search).get("view") === "static";

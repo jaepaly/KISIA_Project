@@ -482,7 +482,9 @@ def _inject_me() -> dict:
         n = len(_changes(me["author_id"])) if me else 0
     except sqlite3.Error:
         me, n = None, 0
-    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE}
+    # 소개(/about)를 본 사람 — 상단바 「파도풀이란?」을 작은 글씨 링크로 낮춘다(처음 온 사람만 버튼으로)
+    about_seen = request.cookies.get(ABOUT_COOKIE) == "1"
+    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE, "about_seen": about_seen}
 
 
 @app.post("/me")

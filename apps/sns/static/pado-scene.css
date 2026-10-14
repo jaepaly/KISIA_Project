@@ -2,8 +2,9 @@
    색 · 글꼴은 공통 토큰(veilo.css :root — --paper --ink --accent …)만 쓴다. 토큰이 아직 없을 때를 위해 var() 둘째 값에 기본값을 둔다.
    움직이는 속성은 transform · opacity · clip-path 뿐 — JS 는 CSS 변수(--in --a --w --p --d --s)만 쓴다.
    html.ps-static(움직임 끔 · 동작 줄이기 · ?view=static · PIN_MQ 밖) = 핀 없이 다 켜진 정지 상태. motion-core.js 가 html.no-motion 도 같이 붙인다.
-   PIN_MQ = (min-width:768px) and (min-height:800px) — motion-core.js 와 같은 문자열. 폭 767 은 레이아웃과 같은 값,
-   높이 800 은 좁혀지기 장면 내용 + 위 바 + 아래 소개 순서가 한 화면에 드는 최소값. 스크립트 전에도 맞게 아래 미디어쿼리가 같은 정지 모습을 그린다. */
+   PIN_MQ = (min-width:768px) and (min-height:700px) — motion-core.js 와 같은 문자열. 폭 767 은 레이아웃과 같은 값,
+   높이 700 은 노트북(1366×768)에서도 고정되게 고른 값 — 700~799 는 아래 「낮은 화면」 규칙이 장면을 작게 줄여 한 화면에 넣는다.
+   스크립트 전에도 맞게 아래 미디어쿼리가 같은 정지 모습을 그린다. */
 .ps-page{
   --ps-paper:var(--paper,#F7F2EA); --ps-paper2:var(--paper-2,#EFE7DC); --ps-ink:var(--ink,#26221F);
   --ps-body:var(--body,#4A433D); --ps-muted:var(--muted,#6B625B); --ps-line:var(--line,rgba(38,34,31,.14));
@@ -232,7 +233,23 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 .ps-static .ps-vis-i{position:relative;inset:auto;min-height:220px;--f:1;--t:1;opacity:1;transform:none;border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
 .ps-static .ps-pinm{--in:1}
 /* 스크립트 전 · 스크립트 없이도 같은 정지 모습 — PIN_MQ 밖이거나 동작 줄이기 (위 .ps-static 과 같은 규칙) */
-@media not all and (min-width:768px) and (min-height:800px),(prefers-reduced-motion:reduce){
+/* 낮은 화면(높이 700~799 · 핀) — 좁혀지기 카드 · 제목 · 네 단계 그림판을 줄여 위 바 · 아래 소개 순서 사이에 다 들어가게 */
+@media (min-width:768px) and (min-height:700px) and (max-height:799px){
+  .ps-sticky{padding:60px 0 70px}
+  .ps-h2{font-size:clamp(22px,2.4vw,30px);margin-bottom:14px}
+  .ps-narrow-txt>.eyebrow,.ps-steps .eyebrow.ko{margin-bottom:8px}
+  .ps-posts{gap:5px}
+  .ps-post{padding:6px 12px}
+  .ps-post .t{font-size:13px;line-height:1.4;margin-bottom:3px}
+  .ps-post .chip{font-size:11px;padding:1px 8px}
+  .ps-stage{width:min(100%,calc(100svh - 250px))}
+  .ps-count .num{font-size:clamp(24px,2.6vw,36px)}
+  .ps-vis{height:clamp(180px,30svh,230px)}
+  .ps-step{padding-top:28px}
+  .ps-step p{font-size:14px;line-height:1.55}
+  .ps-track{margin-top:18px}
+}
+@media not all and (min-width:768px) and (min-height:700px),(prefers-reduced-motion:reduce){
   .ps-pin{height:auto}
   .ps-sticky{position:static;height:auto;overflow:visible;padding:96px 0}
   .ps-post,.ps-step{--in:1;--a:1;opacity:1;transform:none;transition:none}

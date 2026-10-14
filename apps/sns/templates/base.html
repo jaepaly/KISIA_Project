@@ -59,7 +59,7 @@
       <nav class="ut-nav">
         {% block nav %}
         {# 1분 소개 화면(about.html) — 처음 온 사람은 홈(/) 대신 여기로 온다(app.py ABOUT_COOKIE). 다시 볼 땐 이 버튼 #}
-        <a href="/about" class="intro-btn" aria-label="파도풀 1분 소개 보기">파도풀이란?</a>
+        <a href="/about" class="intro-btn{% if about_seen %} quiet{% endif %}" aria-label="파도풀 1분 소개 보기">파도풀이란?</a>
         {# 내 계정을 골랐으면 「내 글 점검」은 바로 그 사람으로 (scan.html?u=) — 안 골랐으면 계정 찾기부터 #}
         <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}" class="chk"><span class="ic" aria-hidden="true">🌊</span> 내 글 점검</a>
         <a href="/new" class="write">✏️ 글쓰기</a>

@@ -9,7 +9,7 @@
 //   4) 끝나면 2) 에서 띄운 크롬만 끈다 (Start-Process -PassThru 로 받은 Id 로 Stop-Process).
 // 결과는 JSON 한 덩어리 { ok, failed, results:[{ mode, check, ok, got, want }] } — 하나라도 실패면 종료 코드 1.
 //
-// 모드: 첫 접속(쿠키 없음) · 관성 보간 · 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1280×640 · 1400×700
+// 모드: 첫 접속(쿠키 없음) · 관성 보간 · 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1366×768 · 1400×700(핀 · 줄인 장면) · 1280×640 · 1400×690(정지)
 // 검사: 첫 접속 홈 → /about · 소개 뒤 홈 · 소개 창(dialog) 없음 · 끝 화면 「Veilo 둘러보기」로 홈 ·
 //       관성 보간(휠 한 칸 뒤 수렴 시간 · 스크롤 중 rAF p95 · 수렴 뒤 cur = target · 카드 등장 겹침) ·
 //       .ps-sticky position · .reveal opacity · html scroll-behavior · 보간 루프(html[data-ps-loop])가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
@@ -443,8 +443,28 @@ async function main() {
     check(mode, "지도 핀이 무대 안 (잘린 핀 0)", pinOut.length === 0, pinOut, "[]");
   }
 
-  // ⑥ 낮은 데스크톱 — 핀 조건(높이 800) 밖이면 정지 흐름
-  for (const [w, h] of [[1280, 640], [1400, 700]]) {
+  // ⑥-a 노트북 높이(700~799) — 핀이고, 줄인 장면이 위 바 · 아래 소개 순서에 가리지 않는다 (10/14 · 기준 800 → 700)
+  for (const [w, h] of [[1366, 768], [1400, 700]]) {
+    const mode = `${w}×${h} 핀`;
+    await open("/about", { w, h });
+    const s = await state();
+    check(mode, "pinned() true", s.pinned === true, s.pinned, true);
+    check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
+    for (const p of [0.1, 0.5, 0.95]) {
+      await scrollTo(await posOf("#narrow", p));
+      const k = await clipping();
+      check(mode, `좁혀지기 내용 안 가림 (${p})`, k.top >= k.barBottom && k.bottom <= k.mapTop, k, "top ≥ barBottom · bottom ≤ mapTop");
+    }
+    for (const p of [0.1, 0.95]) {
+      await scrollTo(await posOf("#steps", p));
+      const k = await js(`(() => { const top = document.getElementById("utTop").getBoundingClientRect().bottom, mapTop = document.querySelector(".ps-map").getBoundingClientRect().top;
+        const r = document.querySelector("#steps .ps-sticky > .ps-in").getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), barBottom: Math.round(top), mapTop: Math.round(mapTop) }; })()`);
+      check(mode, `네 단계 내용 안 가림 (${p})`, k.top >= k.barBottom && k.bottom <= k.mapTop, k, "top ≥ barBottom · bottom ≤ mapTop");
+    }
+  }
+
+  // ⑥-b 더 낮은 데스크톱 — 핀 조건(높이 700) 밖이면 정지 흐름
+  for (const [w, h] of [[1280, 640], [1400, 690]]) {
     const mode = `${w}×${h}`;
     await open("/about", { w, h });
     const s = await state();
