@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import os
 import threading
@@ -294,6 +295,28 @@ def parse_findings(text: str) -> Any:
         return None
 
 
+_LOG = logging.getLogger(__name__)
+
+
+def _public_reason(e: BaseException) -> str:
+    """응답 provenance 에 싣는 실패 이유 — 고정 문구만. 원문(PC 경로 등)은 서버 로그에만 남긴다 (#347 리뷰).
+
+    /scan 응답 JSON 은 화면 밖으로도 나가므로, 예외 문장을 그대로 실으면 어댑터 절대 경로가 샌다.
+    """
+    msg = str(e)
+    if isinstance(e, FileNotFoundError):
+        return "2단 어댑터 없음"
+    if isinstance(e, ImportError):
+        return "추론 라이브러리 없음"
+    if msg.startswith("v1 어댑터를 v2 구성으로"):
+        return "v1 어댑터 거부 (v2 구성)"
+    if msg.startswith("CUDA GPU 가 없다"):
+        return "CUDA GPU 없음"
+    if "out of memory" in msg:
+        return "GPU 메모리 부족"
+    return type(e).__name__
+
+
 _MODEL: Stage2Model | None = None
 _MODEL_ERROR: str | None = None
 _MODEL_LOCK = threading.Lock()  # 동시 첫 요청이 모델을 두 번 올려 GPU 메모리가 터지지 않게
@@ -310,7 +333,8 @@ def _get_model() -> Stage2Model | None:
             try:
                 _MODEL = Stage2Model()
             except Exception as e:  # noqa: BLE001
-                _MODEL_ERROR = f"{type(e).__name__}: {str(e)[:120]}"
+                _LOG.warning("2단 모델 로드 실패 — 규칙으로 폴백: %s: %s", type(e).__name__, e)
+                _MODEL_ERROR = _public_reason(e)
         return _MODEL
 
 
@@ -381,7 +405,8 @@ def analyze(
             except Exception as e:  # noqa: BLE001 — 생성 중 GPU 오류 등. auto 면 규칙으로 넘어간다
                 if mode == "model":
                     raise
-                findings, reason = None, f"{type(e).__name__}: {str(e)[:120]}"
+                _LOG.warning("2단 생성 실패 — 규칙으로 폴백: %s: %s", type(e).__name__, e)
+                findings, reason = None, _public_reason(e)
             if findings is None:
                 if mode == "model":
                     raise RuntimeError("2단 모델 출력을 파싱하지 못했다")
