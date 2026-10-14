@@ -18,6 +18,8 @@
   const KEY = "padopool_motion";
   const PIN_MQ = "(min-width:768px) and (min-height:700px)";
   const PIN = matchMedia(PIN_MQ);
+  // 휴대폰(폭 767 이하) — 장면을 고정하진 않지만 움직임은 켠다(흐름 모드 · html.ps-flow). 좁혀지기 · 네 단계가 스크롤에 맞춰 반응한다 (10/14)
+  const FLOW = matchMedia("(max-width:767px)");
   const RM = matchMedia("(prefers-reduced-motion: reduce)");
   const STATIC = new URLSearchParams(location.search).get("view") === "static";
 
@@ -28,6 +30,9 @@
   try { paused = localStorage.getItem(KEY) === "off"; } catch (e) {}
 
   function pinned() { return !paused && !STATIC && !RM.matches && PIN.matches; }
+  // 모드 — pin(고정 장면) · flow(휴대폰 · 고정 없이 움직임) · still(정지 — 움직임 끔 · 동작 줄이기 · ?view=static · 낮은 데스크톱)
+  function mode() { return pinned() ? "pin" : (!paused && !STATIC && !RM.matches && FLOW.matches ? "flow" : "still"); }
+  const flowScenes = [];
 
   // ── 측정 캐시 ──
   const geo = new Map();   // el → { top, h }
@@ -60,6 +65,7 @@
     if (dirty) { dirty = false; refresh(); snap = true; }
     const y = scrollY;
     const on = pinned();
+    if (!on && mode() === "flow") for (const fn of flowScenes) fn(y, view);
     // dt — 쉬다가 다시 도는 첫 프레임(마지막 프레임이 0.1초보다 전)은 한 프레임(1/60)으로 친다
     const dt = lastT && t - lastT < 100 ? (t - lastT) / 1000 : 1 / 60;
     lastT = t;
@@ -133,11 +139,12 @@
   }
   function applyMode(keepSpot) {
     const spot = keepSpot ? readingSpot() : null;
-    const still = !pinned();
-    root.classList.toggle("ps-static", still);
-    root.classList.toggle("no-motion", still);   // 정지 상태는 이 클래스 하나로 공통 효과까지 끈다 (veilo.css · fx.css · fx.js)
+    const m = mode(), still = m !== "pin";
+    root.classList.toggle("ps-static", still);              // 고정 장면이 아니다(레이아웃은 흐르는 쪽)
+    root.classList.toggle("ps-flow", m === "flow");         // 휴대폰 흐름 모드 — 움직임은 켠다
+    root.classList.toggle("no-motion", m === "still");      // 정지 상태는 이 클래스 하나로 공통 효과까지 끈다 (veilo.css · fx.css · fx.js)
     snap = true;   // 모드가 바뀌면 보간 없이 바로 그 자리 모습으로
-    document.dispatchEvent(new CustomEvent("padomotion", { detail: { still } }));
+    document.dispatchEvent(new CustomEvent("padomotion", { detail: { still: m === "still", mode: m } }));
     document.querySelectorAll("[data-motion-toggle]").forEach((b) => {
       b.setAttribute("aria-pressed", String(!paused));
       b.textContent = paused ? "움직임 켜기" : "움직임 끄기";
@@ -157,6 +164,7 @@
   const onMedia = () => applyMode(true);
   (PIN.addEventListener ? PIN.addEventListener("change", onMedia) : PIN.addListener(onMedia));
   (RM.addEventListener ? RM.addEventListener("change", onMedia) : RM.addListener(onMedia));
+  (FLOW.addEventListener ? FLOW.addEventListener("change", onMedia) : FLOW.addListener(onMedia));
 
   function wireToggles() {
     document.querySelectorAll("[data-motion-toggle]").forEach((b) => {
@@ -166,6 +174,9 @@
   }
 
   window.PadoMotion = {
+    mode,
+    // addFlowScene(fn) — 휴대폰 흐름 모드에서만 fn(y, view) 로 스크롤마다 부른다(장면이 고정되지 않아 요소 자리로 직접 진행을 잰다)
+    addFlowScene(fn) { flowScenes.push(fn); schedule(); },
     clamp, smooth, local, top, height, release, track, pinned, PIN_MQ, schedule, invalidate, createTimeline, view,
     // addScene(fn, el) — el 을 주면 fn(cur, on, view) 로 그 장면의 보간된 진행도(0~1)를 받는다. 정지 상태면 cur = 1.
     //                    el 이 없으면 fn(y, on, view) — 스크롤 위치를 그대로 따라야 하는 것(읽기 진행 막대 등)

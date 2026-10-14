@@ -17,6 +17,38 @@
 {% block tabs %}{% endblock %}
 
 {% block body %}
+{# 네 단계 그림 — 데스크톱은 오른쪽 그림판(.ps-vis · 지금 단계만), 휴대폰은 각 단계 설명 위(.ps-vis-m)에 같은 그림을 쓴다 #}
+{% macro step_vis(n) -%}
+{%- if n == 0 -%}
+  {# 1 글 모으기 — 흩어진 글 카드가 한 묶음으로 #}
+  <span class="cap">STEP 1 · 글 모으기</span>
+  {% for dx, dy, r in [(-150, -70, -8), (130, -80, 7), (-170, 60, 5), (150, 70, -6), (0, -110, 3)] %}
+  <span class="card" style="--dx:{{ dx }}px;--dy:{{ dy }}px;--r:{{ r }}deg;--n:{{ loop.index0 }}"><i></i><i></i></span>
+  {% endfor %}
+  <span class="tag">공개 글 5편</span>
+{%- elif n == 1 -%}
+  {# 2 단서 찾기 — 한 편 속 단서 낱말에 형광펜이 그어진다 #}
+  <span class="cap">STEP 2 · 단서 찾기</span>
+  <p class="note">올해로 <mark style="--n:0">서른여덟</mark>. 첫차 운전 끝! <mark style="--n:1">버스 기사</mark> 3년 차예요. <mark style="--n:2">화요일 저녁</mark>엔 <mark style="--n:3">구민 수영장</mark>.</p>
+{%- elif n == 2 -%}
+  {# 3 엮어 보기 — 단서 원 세 개가 겹치며 가운데 「나」만 남는다 #}
+  <span class="cap">STEP 3 · 엮어 보기</span>
+  <svg viewBox="0 0 240 170" focusable="false">
+    <g class="ring" style="--dx:-34px;--dy:-14px"><circle cx="90" cy="76" r="54"/><text x="62" y="46">동네</text></g>
+    <g class="ring" style="--dx:34px;--dy:-14px"><circle cx="150" cy="76" r="54"/><text x="156" y="46">나이</text></g>
+    <g class="ring" style="--dx:0px;--dy:30px"><circle cx="120" cy="118" r="54"/><text x="106" y="160">하는 일</text></g>
+    <circle class="me" cx="120" cy="92" r="6"/>
+  </svg>
+{%- else -%}
+  {# 4 위험 판정 — 몇 명 중 한 명인지 · 고치면 덜 드러나는 글 #}
+  <span class="cap">STEP 4 · 위험 판정</span>
+  <div class="verdict">
+    <p class="big">약 <b>6</b>명 중 한 명</p>
+    <span class="meter"><i></i></span>
+    <p class="fix"><s>회사 앞 국밥집</s> → <ins>자주 가는 식당</ins></p>
+  </div>
+{%- endif -%}
+{%- endmacro %}
 {% set scan_url = pado_base ~ "/static/scan.html" ~ ("?u=" ~ me.user_ref if me else "") %}
 
 <nav class="ps-map" aria-label="소개 순서">
@@ -121,38 +153,8 @@
             <h2 class="ps-h2">누군가 내 글로 나를 찾으려 한다면 이렇게 합니다.<br>파도풀은 그 과정을 먼저 해 봅니다.</h2>
           </div>
           <div class="ps-vis" aria-hidden="true">
-            {# 1 글 모으기 — 흩어진 글 카드가 한 묶음으로 #}
-            <div class="ps-vis-i v1" data-vis="0">
-              <span class="cap">STEP 1 · 글 모으기</span>
-              {% for dx, dy, r in [(-150, -70, -8), (130, -80, 7), (-170, 60, 5), (150, 70, -6), (0, -110, 3)] %}
-              <span class="card" style="--dx:{{ dx }}px;--dy:{{ dy }}px;--r:{{ r }}deg;--n:{{ loop.index0 }}"><i></i><i></i></span>
-              {% endfor %}
-              <span class="tag">공개 글 5편</span>
-            </div>
-            {# 2 단서 찾기 — 한 편 속 단서 낱말에 형광펜이 그어진다 #}
-            <div class="ps-vis-i v2" data-vis="1">
-              <span class="cap">STEP 2 · 단서 찾기</span>
-              <p class="note">올해로 <mark style="--n:0">서른여덟</mark>. 첫차 운전 끝! <mark style="--n:1">버스 기사</mark> 3년 차예요. <mark style="--n:2">화요일 저녁</mark>엔 <mark style="--n:3">구민 수영장</mark>.</p>
-            </div>
-            {# 3 엮어 보기 — 단서 원 세 개가 겹치며 가운데 「나」만 남는다 #}
-            <div class="ps-vis-i v3" data-vis="2">
-              <span class="cap">STEP 3 · 엮어 보기</span>
-              <svg viewBox="0 0 240 170" focusable="false">
-                <g class="ring" style="--dx:-34px;--dy:-14px"><circle cx="90" cy="76" r="54"/><text x="62" y="46">동네</text></g>
-                <g class="ring" style="--dx:34px;--dy:-14px"><circle cx="150" cy="76" r="54"/><text x="156" y="46">나이</text></g>
-                <g class="ring" style="--dx:0px;--dy:30px"><circle cx="120" cy="118" r="54"/><text x="106" y="160">하는 일</text></g>
-                <circle class="me" cx="120" cy="92" r="6"/>
-              </svg>
-            </div>
-            {# 4 위험 판정 — 몇 명 중 한 명인지 · 고치면 덜 드러나는 글 #}
-            <div class="ps-vis-i v4" data-vis="3">
-              <span class="cap">STEP 4 · 위험 판정</span>
-              <div class="verdict">
-                <p class="big">약 <b>6</b>명 중 한 명</p>
-                <span class="meter"><i></i></span>
-                <p class="fix"><s>회사 앞 국밥집</s> → <ins>자주 가는 식당</ins></p>
-              </div>
-            </div>
+            {% for n in range(4) %}<div class="ps-vis-i v{{ n + 1 }}" data-vis="{{ n }}">{{ step_vis(n) }}</div>
+            {% endfor %}
           </div>
         </div>
         <div class="ps-track">
@@ -165,6 +167,8 @@
               ("위험 판정", "몇 명 중 한 명까지 좁혀질 수 있는지 보여 주고, 어떤 글을 고치면 덜 드러나는지 알려 드립니다."),
             ] %}
             <li class="ps-step" style="--i:{{ loop.index0 }}">
+              {# 휴대폰 — 이 단계 그림을 설명 바로 위에(데스크톱은 숨김 · 오른쪽 그림판을 쓴다) #}
+              <div class="ps-vis-m ps-vis-i v{{ loop.index }}" aria-hidden="true">{{ step_vis(loop.index0) }}</div>
               <span class="dot" aria-hidden="true"></span>
               <span class="eyebrow">STEP {{ loop.index }}</span>
               <h3>{{ name }}</h3>

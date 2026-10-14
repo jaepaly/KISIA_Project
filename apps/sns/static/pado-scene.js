@@ -140,8 +140,22 @@
 
   // 카드 i 의 등장 구간: s ∈ [i·GAP, i·GAP + RAMP] — GAP < RAMP 라 앞 카드가 다 나오기 전에 다음이 시작한다. 마지막 카드는 s=6 에서 끝
   const RAMP = 1.8, GAP = (6 - RAMP) / 5;   // 0.84 간격 · 1.8 램프 — 늘 한두 장이 같이 움직인다
+  // 카드 등장값(cs · 0~1) → 핀 · 지도 배율 · 숫자 · 점. 고정 장면(narrowScene)과 휴대폰 흐름(narrowFlow)이 같이 쓴다. 반환: 배율 z · 사람 수 k
+  function narrowApply(cs, zmax = ZMAX) {
+    let u = 0;                               // 나온 카드 수(소수) — 숫자 · 점이 이것을 따른다
+    cs.forEach((c, i) => { u += c; setVar(posts[i], "--in", c); });
+    pins.forEach((p) => setVar(p.el, "--in", cs[p.i] || 0));
+    const z = 1 + (zmax - 1) * smooth(u / 6);   // 글이 쌓일수록 지도가 「나」 쪽으로 다가간다
+    if (stageEl) setVar(stageEl, "--z", z);
+    const i0 = Math.min(5, Math.floor(u)), f = u - i0;
+    const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
+    countEl.textContent = `약 ${fmt(k)}명`;
+    announce(Math.min(6, Math.floor(u + 0.3)));
+    return { z, k };
+  }
   function narrowScene(p, on) {
     if (!narrow) return;
+    if (!on && M.mode() === "flow") return;   // 휴대폰 흐름 모드는 narrowFlow 가 그린다
     if (!on) {   // 정지 상태 — 다 켜진 모습
       posts.forEach((el) => setVar(el, "--in", 1));
       pins.forEach((p) => setVar(p.el, "--in", 1));
@@ -156,15 +170,7 @@
     }
     // 0~6 — 카드는 앞 62% 안에 다 나온다. 뒤 38% 는 「약 1명 · 나」가 다 보이는 채로 멈춘다(읽을 시간 — 14% 였을 땐 다 나오자마자 화면이 올라갔다 · 10/14)
     const s = clamp(p / 0.62) * 6;
-    let u = 0;                               // 나온 카드 수(소수) — 숫자 · 점이 이것을 따른다
-    const cs = posts.map((el, i) => { const c = smooth((s - i * GAP) / RAMP); u += c; setVar(el, "--in", c); return c; });
-    pins.forEach((p) => setVar(p.el, "--in", cs[p.i] || 0));
-    const z = 1 + (ZMAX - 1) * smooth(u / 6);   // 글이 쌓일수록 지도가 「나」 쪽으로 다가간다
-    if (stageEl) setVar(stageEl, "--z", z);
-    const i0 = Math.min(5, Math.floor(u)), f = u - i0;
-    const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
-    countEl.textContent = `약 ${fmt(k)}명`;
-    announce(Math.min(6, Math.floor(u + 0.3)));
+    const { z, k } = narrowApply(posts.map((el, i) => smooth((s - i * GAP) / RAMP)));
     const dark = smooth((p - 0.2) / 0.3) * 0.9;    // 글이 절반쯤 쌓인 뒤 어두워진다(0.5 에서 다 어두움)
     if (night) setVar(night, "--d", dark);
     setVar(narrow, "--pa", plate(dark));
@@ -231,6 +237,7 @@
   }
   function stepsScene(w, on) {
     if (!steps) return;
+    if (!on && M.mode() === "flow") { clearTimeout(stepTimer); stepTimer = 0; stepFirst = true; return; }   // 휴대폰은 stepsFlow
     if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = STEP_AT.length; stepFirst = true; applySteps(false); return; }
     let t = 0;
     STEP_AT.forEach((at, i) => { if (w >= at) t = i + 1; });
@@ -288,6 +295,37 @@
     }
   }
 
+  // ── 휴대폰 흐름 모드(html.ps-flow · 폭 767 이하) — 장면을 고정하지 않는다. 지도 · 숫자는 위에 붙어 있고(CSS sticky),
+  //    카드가 화면 중간 아래(66%)에서 올라올 때마다 하나씩 나오며 숫자가 줄고 핀이 꽂힌다. 네 단계는 단계마다 화면에 들면 한 번 재생된다.
+  //    요소 자리는 크기가 바뀔 때만 잰 값(M.track · M.top)이라 프레임마다 레이아웃을 읽지 않는다
+  posts.forEach((el) => M.track(el));
+  stepEls.forEach((el) => M.track(el));
+  function narrowFlow(y, view) {
+    if (!narrow) return;
+    if (night) setVar(night, "--d", 0);
+    setVar(narrow, "--pa", 0);
+    narrow.classList.remove("is-dark");
+    // 카드 위쪽이 화면 높이 66% 선을 지나 14% 더 올라오는 동안 나온다 — 장면에 막 들어섰을 땐 첫 카드부터(큰 숫자에서 시작)
+    const at = view.vh * 0.66, span = view.vh * 0.14;
+    // 휴대폰 지도는 작아서(약 230px) 끝 배율을 조금 낮춘다 — 가장자리 핀 라벨이 잘리지 않게
+    const { z, k } = narrowApply(posts.map((el) => smooth((at - (M.top(el) - y)) / span)), 1.45);
+    if (crowd) { crowd.setDark(false); crowd.setK(k, z); }
+  }
+  function stepsFlow(y, view) {
+    if (!steps) return;
+    stepEls.forEach((el, i) => {
+      const seen = M.top(el) - y < view.vh * 0.78;          // 화면 아래 22% 위로 들어오면 한 번 재생(전환은 CSS 시간 · 위로 되돌아가도 다시 접지 않는다)
+      if (seen) el.classList.add("seen");
+      const on = el.classList.contains("seen") ? 1 : 0;
+      setVar(el, "--a", on);
+      el.classList.toggle("reached", on === 1);
+      const mv = el.querySelector(".ps-vis-m");
+      if (mv) setVar(mv, "--t", on);
+    });
+    if (path) setVar(path, "--w", 1);
+  }
+  M.addFlowScene(narrowFlow);
+  M.addFlowScene(stepsFlow);
   M.addScene(narrowScene, narrow);   // 보간된 진행도(cur)로 그린다
   M.addScene(stepsScene, steps);
   M.addScene(chromeScene);           // 읽기 진행 막대 · 소개 순서는 실제 스크롤 위치 그대로

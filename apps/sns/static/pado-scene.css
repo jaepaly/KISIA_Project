@@ -230,6 +230,9 @@ html.dark-chapter .ps-map a[aria-current]{color:var(--ps-paper)}
 html.dark-chapter .ps-map a i{background:var(--ps-paper)}
 html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 
+/* ── 휴대폰 그림(.ps-vis-m) — 각 단계 설명 위에 그 단계 그림. 데스크톱은 숨기고 오른쪽 그림판(.ps-vis)을 쓴다 ── */
+.ps-vis-m{display:none}
+
 /* ── 정지 상태 — 핀 없이 다 켜진 모습 ── */
 .ps-static .ps-pin{height:auto}
 .ps-static .ps-sticky{position:static;height:auto;overflow:visible;padding:96px 0}
@@ -282,6 +285,12 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 
 @media (max-width:767px){
   .ps-in{padding:0 16px}
+  /* 네 단계 — 오른쪽 그림판 대신 단계마다 그림(같은 내용을 두 번 보이지 않게) */
+  html.ps-page .ps-vis{display:none}   /* .ps-static .ps-vis(정지 그림판 격자)보다 세게 */
+  .ps-vis-m{display:grid;position:relative;inset:auto;height:190px;margin:0 0 14px;border:1px solid var(--ps-line);border-radius:16px;background:var(--ps-paper2);overflow:clip;opacity:1;transform:none}
+  .ps-vis-m .cap{display:none}   /* 아래 STEP n 라벨과 겹친다 */
+  .ps-vis-m.v1 .card{width:96px;height:58px;margin:-29px 0 0 -48px}
+  .ps-vis-m svg{width:min(240px,70%)}
   .ps-hero{min-height:auto;padding:32px 0 24px}
   /* 들판은 글 아래 따로 한 칸 — 글자 위에 겹치지 않게 */
   .ps-field{position:relative;inset:auto;order:2;height:300px;margin-top:8px}
@@ -308,3 +317,26 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-btn,.ps-go span{transition:none}
   .ps-cue i{animation:none;transform:none}
 }
+
+/* ── 휴대폰 흐름 모드(html.ps-flow · motion-core) — 고정하지 않고 스크롤에 반응. 정지 레이아웃(.ps-static) 위에 움직임만 되살린다 ──
+   좁혀지기: 제목 → 지도 · 숫자(위에 붙어 있음) → 카드 순서. .ps-narrow-txt 를 풀어(display:contents) 카드 목록을 지도 뒤로 보낸다 */
+html.ps-flow .ps-narrow-grid{display:grid;grid-template-columns:1fr;gap:0}
+html.ps-flow .ps-narrow-txt{display:contents}
+html.ps-flow .ps-narrow-txt>.eyebrow{order:1}
+html.ps-flow .ps-narrow-txt>.ps-h2{order:2;margin-bottom:14px}
+/* 지도는 정사각형 그대로 작게(왼쪽) · 숫자는 오른쪽 — 가로로 자르면 핀이 지도 그림과 어긋난다 */
+html.ps-flow .ps-crowd{order:3;position:sticky;top:58px;z-index:2;flex-direction:row;align-items:center;gap:14px;padding:8px 0 12px;background:var(--ps-paper);box-shadow:0 14px 14px -14px rgba(31,28,25,.25)}
+html.ps-flow .ps-stage{width:min(52vw,230px);aspect-ratio:1/1;flex:none;border-radius:14px}
+html.ps-flow .ps-pinm{font-size:10px;padding:1px 6px 1px 3px}
+html.ps-flow .ps-count{flex:1;min-width:0;gap:4px}
+html.ps-flow .ps-count .num{font-size:26px}
+html.ps-flow .ps-count .ps-note{font-size:11px;line-height:1.45;word-break:keep-all}
+html.ps-flow .ps-posts{order:4;margin-top:16px;padding-bottom:45svh}   /* 마지막 카드 뒤에도 지도가 잠시 붙어 있게 — 다 나온 모습을 읽을 시간 */
+html.ps-flow .ps-post{opacity:var(--in);transform:translateY(calc((1 - var(--in)) * 24px))}
+html.ps-flow .ps-pinm{opacity:var(--in)}
+/* 네 단계 — 화면에 들면 그 단계가 켜지고(점 · 글자) 그림이 한 번 재생된다(전환은 CSS 시간 · @property) */
+html.ps-flow .ps-step{opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 14px));transition:--a .5s var(--ps-ease)}
+html.ps-flow .ps-step .dot{background:var(--ps-paper);border-color:var(--ps-muted)}
+html.ps-flow .ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
+html.ps-flow .ps-vis-m{transition:--t .8s var(--ps-ease) .1s}
+

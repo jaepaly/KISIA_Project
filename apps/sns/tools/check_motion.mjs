@@ -9,7 +9,7 @@
 //   4) 끝나면 2) 에서 띄운 크롬만 끈다 (Start-Process -PassThru 로 받은 Id 로 Stop-Process).
 // 결과는 JSON 한 덩어리 { ok, failed, results:[{ mode, check, ok, got, want }] } — 하나라도 실패면 종료 코드 1.
 //
-// 모드: 첫 접속(쿠키 없음) · 관성 보간 · 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1366×768 · 1400×700(핀 · 줄인 장면) · 1280×640 · 1400×690(정지)
+// 모드: 첫 접속(쿠키 없음) · 관성 보간 · 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px 흐름 · 390px 동작 줄이기 · 1366×768 · 1400×700(핀 · 줄인 장면) · 1280×640 · 1400×690(정지)
 // 검사: 첫 접속 홈 → /about · 소개 뒤 홈 · 소개 창(dialog) 없음 · 끝 화면 「Veilo 둘러보기」로 홈 ·
 //       관성 보간(휠 한 칸 뒤 수렴 시간 · 스크롤 중 rAF p95 · 수렴 뒤 cur = target · 카드 등장 겹침) ·
 //       .ps-sticky position · .reveal opacity · html scroll-behavior · 보간 루프(html[data-ps-loop])가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
@@ -467,16 +467,49 @@ async function main() {
     await tabReach(mode);
   }
 
-  // ⑤ 390px — 모바일은 다 켜진 정지 상태 · 소개 순서는 숨김
+  // ⑤ 390px — 휴대폰 흐름 모드(html.ps-flow · 10/14): 고정 장면은 없지만 움직임은 켠다. 지도 · 숫자는 위에 붙고 카드가 올라올 때마다 좁혀진다 ·
+  //    네 단계는 단계마다 그림 + 설명(그림판 중복 없음) · 화면에 들면 켜진다 · 첫 화면 돋보기가 돈다
   {
-    const mode = "390×844";
+    const mode = "390×844 흐름";
     await open("/about", { w: 390, h: 844, mobile: true });
-    await staticChecks(mode, await state());
-    // 지도 핀이 무대 밖으로 잘리지 않는다 (배율 1.6 · 오른쪽 핀은 라벨이 왼쪽으로 — Codex 10/14)
-    await scrollTo(await posOf("#narrow", 0));
+    const s = await state();
+    { const c = s.cls.split(/\s+/); check(mode, "html = ps-static ps-flow · no-motion 아님", c.includes("ps-flow") && c.includes("ps-static") && !c.includes("no-motion"), s.cls, "ps-static ps-flow"); }
+    check(mode, ".ps-sticky position (고정 장면 없음)", s.sticky === "static", s.sticky, "static");
+    const ox = await js(`document.documentElement.scrollWidth - innerWidth`);
+    check(mode, "가로 넘침 없음", ox <= 0, ox, "≤ 0");
+    await heroChecks(mode, { animated: true });
+    const hp = await js(`window.PadoHero ? window.PadoHero.probe() : null`);
+    check(mode, "첫 화면 돋보기가 돈다(떠돌기)", hp && hp.running, hp, "running");
+    // 좁혀지기 — 장면에 들어서면 큰 숫자에서 시작 · 마지막 카드가 올라오면 약 1명 · 지도가 위에 붙어 있다
+    const nTop = await js(`document.getElementById("narrow").getBoundingClientRect().top + scrollY`);
+    await scrollTo(nTop); await sleep(300);
+    const n0 = await js(`({ num: document.getElementById("psCount").textContent, ins: [...document.querySelectorAll("#narrow .ps-post")].map((e) => Number(e.style.getPropertyValue("--in"))) })`);
+    const big = Number((n0.num.match(/[\d,]+/) || ["0"])[0].replace(/,/g, ""));
+    check(mode, "좁혀지기 시작: 큰 숫자 · 뒤 카드는 아직", big >= 100000 && n0.ins.slice(2).every((v) => v < 0.05), n0, "≥ 100,000명 · 3번째 카드부터 안 나옴");
+    const last = await js(`(() => { const p = document.querySelectorAll("#narrow .ps-post"); return p[p.length - 1].getBoundingClientRect().top + scrollY; })()`);
+    await scrollTo(last - 300); await sleep(300);
+    const n1 = await js(`(() => { const c = document.querySelector("#narrow .ps-crowd").getBoundingClientRect(); return { num: document.getElementById("psCount").textContent, ins: [...document.querySelectorAll("#narrow .ps-post")].map((e) => Number(e.style.getPropertyValue("--in"))), crowdTop: Math.round(c.top), pos: getComputedStyle(document.querySelector("#narrow .ps-crowd")).position }; })()`);
+    check(mode, "좁혀지기 끝: 약 1명 · 카드 다 · 지도는 위에 붙어 있음", /약 1명/.test(n1.num) && n1.ins.every((v) => v > 0.95) && n1.pos === "sticky" && n1.crowdTop >= 50 && n1.crowdTop <= 70, n1, "약 1명 · sticky · top ≈ 58");
     const pinOut = await js(`(() => { const s = document.querySelector("#narrow .ps-stage").getBoundingClientRect();
       return [...document.querySelectorAll("#narrow .ps-pinm")].map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent.trim(), out: Math.round(Math.max(s.left - r.left, r.right - s.right, s.top - r.top, r.bottom - s.bottom)) }; }).filter((x) => x.out > 0); })()`);
     check(mode, "지도 핀이 무대 안 (잘린 핀 0)", pinOut.length === 0, pinOut, "[]");
+    // 네 단계 — 그림판(.ps-vis) 숨김 · 단계마다 그림(.ps-vis-m) · 끝까지 내리면 네 단계 다 켜짐
+    const v = await js(`({ board: getComputedStyle(document.querySelector("#steps .ps-vis")).display, mini: [...document.querySelectorAll("#steps .ps-vis-m")].filter((e) => getComputedStyle(e).display !== "none").length })`);
+    check(mode, "네 단계: 그림판 숨김 · 단계마다 그림 4개 (중복 없음)", v.board === "none" && v.mini === 4, v, "none · 4");
+    const sTop = await js(`document.getElementById("steps").getBoundingClientRect().top + scrollY`);
+    await scrollTo(sTop); await sleep(300);
+    const s0 = await js(`[...document.querySelectorAll("#steps .ps-step")].map((e) => e.classList.contains("seen"))`);
+    await scrollTo(await js(`(() => { const s = document.getElementById("steps"); return s.getBoundingClientRect().top + scrollY + s.offsetHeight - innerHeight; })()`)); await sleep(900);
+    const s1 = await js(`[...document.querySelectorAll("#steps .ps-step")].map((e) => ({ seen: e.classList.contains("seen"), a: Number(e.style.getPropertyValue("--a")), op: Number(getComputedStyle(e).opacity) }))`);
+    check(mode, "네 단계: 들어서면 아래 단계는 아직 · 끝까지 내리면 넷 다 켜짐", s0.includes(false) && s1.every((x) => x.seen && x.a === 1 && x.op > 0.95), { s0, s1 }, "처음 일부만 · 끝에 다");
+  }
+  // ⑤-b 390px + 동작 줄이기 — 휴대폰도 정지 화면(움직임 없음 · 다 켜진 모습)
+  {
+    const mode = "390×844 동작 줄이기";
+    await open("/about", { w: 390, h: 844, mobile: true, reduced: true });
+    await staticChecks(mode, await state());
+    const v = await js(`({ board: getComputedStyle(document.querySelector("#steps .ps-vis")).display, mini: [...document.querySelectorAll("#steps .ps-vis-m")].filter((e) => getComputedStyle(e).display !== "none").length, num: document.getElementById("psCount").textContent })`);
+    check(mode, "정지: 단계마다 그림 4개 · 그림판 숨김 · 숫자는 끝 모습", v.board === "none" && v.mini === 4 && /약 1명/.test(v.num), v, "none · 4 · 약 1명");
   }
 
   // ⑥-a 노트북 높이(700~799) — 핀이고, 줄인 장면이 위 바 · 아래 소개 순서에 가리지 않는다 (10/14 · 기준 800 → 700)
