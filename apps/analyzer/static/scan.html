@@ -2,35 +2,36 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>스캔 — 파도풀</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 글 점검 — 파도풀</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top">
   <div class="top-in">
-    <div class="brand">파도풀 <span class="brand-sub">올리기 전에, 내가 몇 명 중 한 명인지</span></div>
-    <a class="back-sns" href="/">🌱 Veilo 로 돌아가기</a>
+    <div class="brand">파도풀 <span class="brand-sub">공개 글을 모아 개인정보 노출 위험을 점검합니다</span></div>
+    <a class="back-sns" href="/">← Veilo로 돌아가기</a>
     <div class="engine" id="badge"></div>
   </div>
 </header>
 
 <nav class="steps">
-  <a href="scan.html" aria-current="step"><span class="n">1</span>스캔</a>
-  <a href="diagnosis.html"><span class="n">2</span>진단</a>
-  <a href="action.html"><span class="n">3</span>조치</a>
+  <a href="scan.html" aria-current="step"><span class="n">1</span>내 글 점검</a>
+  <a href="diagnosis.html"><span class="n">2</span>점검 결과</a>
+  <a href="action.html"><span class="n">3</span>위험 줄이기</a>
 </nav>
 
 <main>
-<h1>내 글 불러오기</h1>
-<p class="lede">분석할 글을 가져옵니다. 가상 SNS 계정을 이름으로 찾거나, 다른 서비스에서 내보낸 파일을 올릴 수 있습니다.</p>
+<h1>내 글 점검</h1>
+<p class="lede">Veilo 계정을 고르거나 내보낸 글 파일을 올려 점검하세요.</p>
 
 <div class="card" id="scanCard">
-  <h2>가상 SNS 계정에서 가져오기</h2>
-  <p class="hint">계정 이름을 치면 찾아 줍니다. 식별자(<code>u_…</code>)를 알고 있으면 그대로 넣어도 됩니다.</p>
+  <h2>Veilo 계정의 공개 글 불러오기</h2>
+  <p class="hint">Veilo 계정 이름으로 검색하세요.</p>
   <div class="finder">
     <div class="row">
-      <input id="userQ" type="text" placeholder="계정 이름 또는 u_…" autocomplete="off">
-      <button id="scanBtn" disabled>스캔 시작</button>
+      <input id="userQ" type="text" placeholder="Veilo 계정 이름" autocomplete="off">
+      <button id="scanBtn" disabled>공개 글 점검</button>
     </div>
     <ul class="finder-list" id="finderList" hidden></ul>
     <div class="picked" id="picked" hidden></div>
@@ -41,10 +42,10 @@
 <div class="card">
   <h2>다른 서비스에서 내보낸 파일 올리기</h2>
   <p class="hint">블로그나 SNS 에서 내려받은 <code>.txt</code>(줄마다 글 한 편) 또는 <code>.json</code> 을 올립니다.
-    올린 글은 메모리에서만 읽고 디스크에 저장하지 않습니다.</p>
+    올린 파일은 점검할 때만 읽고 파일로 저장하지 않습니다.</p>
   <div class="row">
     <input id="uploadFile" type="file" accept=".txt,.json">
-    <button id="uploadBtn">올리고 분석</button>
+    <button id="uploadBtn">파일로 점검</button>
   </div>
   <p id="uploadMsg" class="muted"></p>
 </div>
@@ -53,14 +54,14 @@
 
 </main>
 
-<footer>엔진 판정은 참고용입니다. 최종 판단과 조치는 사용자가 합니다.</footer>
+<footer>점검 결과는 참고용입니다. 내용을 확인하고 바꿀 방법을 직접 고르세요.</footer>
 
 <!-- 진행 표시 — 스캔은 한 번의 요청이라 퍼센트는 없다. 단계와 흐른 시간을 보여 준다 -->
 <div class="progress" id="progress" hidden>
   <div class="progress-in">
     <div class="pbar"><i></i></div>
     <div class="ptext"><b id="pTitle">읽는 중</b><span id="pStage"></span><span class="pt" id="pTime">0초</span></div>
-    <p class="muted" id="pNote">글이 많거나 길면 1분 가까이 걸립니다 — 창을 닫지 말고 기다려 주세요. 1단(단서 찾기) → 후보 수 → 2단(판정·조치) 순서로 돕니다.</p>
+    <p class="muted" id="pNote">글이 많거나 길면 1분 가까이 걸립니다. 창을 닫지 말고 기다려 주세요. 개인정보 단서를 찾고, 위험을 줄일 방법을 확인합니다.</p>
   </div>
 </div>
 
@@ -83,7 +84,7 @@ function progressStart(title, note) {
   if (note) $("pNote").textContent = note;
   $("progress").hidden = false; document.body.classList.add("busy");
   const t0 = performance.now();
-  const stages = [[0, "글 읽는 중"], [2, "1단 · 단서 찾는 중"], [6, "후보 수 세는 중"], [10, "2단 · 판정하고 조치 고르는 중"], [18, "거의 다 됐습니다"]];
+  const stages = [[0, "글 읽는 중"], [2, "개인정보 단서 찾는 중"], [6, "같은 조건의 사람 수 계산 중"], [10, "위험 줄일 방법 확인 중"], [18, "거의 다 됐습니다"]];
   _pt = setInterval(() => {
     const s = (performance.now() - t0) / 1000;
     $("pTime").textContent = `${Math.round(s)}초`;
@@ -96,20 +97,28 @@ async function runScan(user_ref, label) {
   const msg = $("scanMsg");
   msg.className = "muted"; msg.textContent = "";
   $("scanBtn").disabled = true;
-  progressStart(`${label || user_ref} 스캔 중`);
+  progressStart(`${label || user_ref} 점검 중`);
   try {
     const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
     if (!r.ok) {
-      msg.textContent = `실패: ${r.status} ${(await r.json().catch(() => ({}))).detail || ""}`; msg.className = "error"; return;
+      await failMsg(msg, r); return;
     }
     const data = await r.json();
-    if (label) data.nickname = label;   // 진단·조치 화면의 제목
+    if (label) data.nickname = label;   // 점검 결과 · 위험 줄이기 화면의 제목
+    data.source = "veilo";
     saveScan(data);
-    msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+    msg.textContent = `글 ${data.posts.length}편을 점검했습니다. 결과로 이동합니다.`;
     location.href = "diagnosis.html";
   } catch (e) {
-    msg.textContent = "서버에 닿지 못했습니다. 잠시 뒤 다시 눌러 주세요."; msg.className = "error";
+    msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
   } finally { progressStop(); $("scanBtn").disabled = !picked; }
+}
+
+// 실패 안내 — 상태 코드는 화면에 내지 않고 서버의 한국어 사유(detail)만 보인다 (B8)
+async function failMsg(msg, r) {
+  const detail = (await r.json().catch(() => ({}))).detail;
+  msg.textContent = `점검하지 못했습니다. ${typeof detail === "string" && detail ? detail : "잠시 뒤 다시 시도해 주세요."}`;
+  msg.className = "error"; msg.title = `오류 정보: ${r.status}`;
 }
 
 // ── 계정 찾기 ──
@@ -131,12 +140,12 @@ async function search(q) {
   }
   try {
     const rows = (await (await fetch(`${AUTHORS}?q=${encodeURIComponent(q)}`)).json()).map((a) => ({ ...a, hue: hueOf(a.user_ref) }));
-    if (!rows.length) { list.innerHTML = `<li class="none">「${esc(q)}」 — 없는 이름입니다</li>`; list.hidden = false; return; }
+    if (!rows.length) { list.innerHTML = `<li class="none">「${esc(q)}」에 맞는 계정을 찾지 못했습니다.</li>`; list.hidden = false; return; }
     list.innerHTML = rows.map((a, i) => `<li data-i="${i}"><span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
       <span class="nm">${esc(a.nickname)}</span><span class="muted">@${esc(a.user_ref)} · 글 ${a.n_posts}편</span></li>`).join("");
     list.hidden = false;
     list.querySelectorAll("li[data-i]").forEach((li) => li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(rows[+li.dataset.i]); }));
-  } catch { list.innerHTML = `<li class="none">계정 목록을 가져오지 못했습니다 — 잠시 뒤 다시 입력해 주세요</li>`; list.hidden = false; }
+  } catch { list.innerHTML = `<li class="none">계정 목록을 불러오지 못했습니다. 잠시 뒤 다시 검색해 주세요.</li>`; list.hidden = false; }
 }
 $("userQ").addEventListener("input", () => {
   picked = null; $("scanBtn").disabled = true; $("picked").hidden = true;
@@ -153,26 +162,27 @@ $("scanBtn").onclick = () => { if (picked) runScan(picked.user_ref, picked.nickn
 $("uploadBtn").onclick = async () => {
   const msg = $("uploadMsg");
   const f = $("uploadFile").files[0];
-  if (!f) { msg.textContent = "파일을 선택하세요"; return; }
+  if (!f) { msg.textContent = "점검할 파일을 선택해 주세요."; return; }
   msg.className = "muted"; msg.textContent = "";
   $("uploadBtn").disabled = true;   // 두 번 누르기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
-  progressStart(`${f.name} 분석 중`);
+  progressStart(`${f.name} 점검 중`);
   try {
     const form = new FormData();
     form.append("file", f);
     const r = await fetch("../upload", { method: "POST", body: form });
-    if (!r.ok) { msg.textContent = `실패: ${r.status} ${(await r.json().catch(() => ({}))).detail || ""}`; msg.className = "error"; return; }
+    if (!r.ok) { await failMsg(msg, r); return; }
     const data = await r.json();
     data.nickname = f.name;
+    data.source = "upload";   // 업로드 글은 Veilo 에 없다 — 위험 줄이기 화면이 Veilo 링크 · 다시 점검을 감춘다 (B3)
     saveScan(data);
-    msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
+    msg.textContent = `글 ${data.posts.length}편을 점검했습니다. 결과로 이동합니다.`;
     location.href = "diagnosis.html";
   } catch (e) {
-    msg.textContent = "서버에 닿지 못했습니다. 잠시 뒤 다시 눌러 주세요."; msg.className = "error";
+    msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
   } finally { progressStop(); $("uploadBtn").disabled = false; }
 };
 
-// Veilo 프로필의 「내 계정 진단」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
+// Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
 (async () => {
   const u = new URLSearchParams(location.search).get("u");
   if (!u) return;
@@ -182,14 +192,14 @@ $("uploadBtn").onclick = async () => {
     const a = rows.find((x) => x.user_ref === u);
     if (a) pick(a); else { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
   } catch { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
-  $("scanMsg").textContent = "이 계정의 공개 글을 모두 읽습니다. 「스캔 시작」을 누르세요.";
+  $("scanMsg").textContent = "이 계정의 공개 글을 점검합니다. 「공개 글 점검」을 누르세요.";
   $("scanBtn").focus();
 })();
 
 const cached = loadScan();
 if (cached) {
   $("postList").innerHTML =
-    `<div class="card"><h2>이어보기</h2><p class="hint">가장 최근 스캔 <b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">진단 화면으로 →</a></div>`;
+    `<div class="card"><h2>최근 점검 결과</h2><p class="hint">최근 점검 <b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">결과 보기 →</a></div>`;
 }
 </script>
 </body>

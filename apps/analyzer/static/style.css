@@ -326,3 +326,10 @@ footer{
   main{padding:18px 16px 44px}
   .top-in{padding:14px 16px}
 }
+
+/* ── 위험 줄이기: 맨 위 「전 → 후」 한 줄 — 사람 수가 주, 노출 위험도는 보조 ── */
+.before-after{border-color:var(--earth); background:var(--earth-soft)}
+.before-after .ba{margin:0; font-size:17px; line-height:1.5}
+.before-after .ba b{font-size:19px}
+.before-after .hint{margin:6px 0 0}
+.engine:empty{display:none}
