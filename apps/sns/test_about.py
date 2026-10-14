@@ -59,12 +59,12 @@ def test_pin_condition_same_in_js_and_css():
     assert f"@media not all and {mq}" in css
 
 
-def test_sticky_total_within_480svh(client):
-    """핀 장면 높이 합계는 화면 4.8개(480svh) 이내 — 네 단계가 단계마다 멈춰 보이도록 늘렸다(10/14 · 160 → 240)."""
+def test_sticky_total_within_500svh(client):
+    """핀 장면 높이 합계는 화면 5개(500svh) 이내 — 애니메이션이 다 나온 뒤 멈춰 읽는 구간을 두느라 늘렸다(10/14 · 좁혀지기 240 → 260 · 네 단계 160 → 240)."""
     import re
     html = client.get("/about").get_data(as_text=True)
     pins = [int(x) for x in re.findall(r'class="ps-pin[^"]*"[^>]*style="--pin:(\d+)"', html)]
-    assert pins and sum(pins) <= 480
+    assert pins and sum(pins) <= 500
 
 
 def test_nav_links_to_about(client):

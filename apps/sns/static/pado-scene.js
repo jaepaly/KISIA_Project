@@ -4,7 +4,7 @@
                카드가 나올 때 그 글이 가리키는 곳에 핀(.ps-pinm[data-card])이 꽂힌다.
                카드 · 숫자 · 점 · 밤 막이 모두 같은 진행도(motion-core 의 관성 보간 cur)를 쓴다. 카드 등장 구간은 겹친다
                (앞 카드가 다 나오기 전에 다음이 시작 — 계단처럼 안 보이게) · 숫자 = 나온 카드 수만큼 로그 공간에서 보간.
-   B #steps  : 네 단계가 한 단계씩 켜진다 — 스크롤은 「몇 단계까지 왔나」만 정하고, 보이는 단계는 한 번에 한 단계씩 같은 빠르기로 따라간다
+   B #steps  : 네 단계가 한 단계씩 켜진다 — 스크롤은 「몇 단계까지 왔나」만 정하고, 보이는 단계는 한 번에 한 단계씩 비슷한 빠르기로 따라간다(0.44초 · 뒤처지면 0.3초)
                (빨리 내려도 1 → 2 → 3 → 4 가 차례로). 그림판(.ps-vis-i)은 지금 단계 그림만(--f) · 그림 안 움직임(--t) · 전환은 CSS 시간
    C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter · 첫 화면 스크롤 신호(40px 넘게 내리면 숨김).
    정지 상태(html.ps-static)에서는 모든 장면이 끝난 모습 그대로다 — CSS 가 그렇게 그리고, 여기서는 캔버스만 끝 모습으로 한 번 그린다. */
@@ -154,7 +154,8 @@
       if (crowd) { crowd.setDark(false); crowd.setK(1, ZMAX); }
       return;
     }
-    const s = clamp(p / 0.86) * 6;           // 0~6 — 끝 14% 는 「나」만 남은 채 멈춤
+    // 0~6 — 카드는 앞 62% 안에 다 나온다. 뒤 38% 는 「약 1명 · 나」가 다 보이는 채로 멈춘다(읽을 시간 — 14% 였을 땐 다 나오자마자 화면이 올라갔다 · 10/14)
+    const s = clamp(p / 0.62) * 6;
     let u = 0;                               // 나온 카드 수(소수) — 숫자 · 점이 이것을 따른다
     const cs = posts.map((el, i) => { const c = smooth((s - i * GAP) / RAMP); u += c; setVar(el, "--in", c); return c; });
     pins.forEach((p) => setVar(p.el, "--in", cs[p.i] || 0));
@@ -164,10 +165,10 @@
     const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
     countEl.textContent = `약 ${fmt(k)}명`;
     announce(Math.min(6, Math.floor(u + 0.3)));
-    const dark = smooth((p - 0.3) / 0.35) * 0.9;   // 글이 절반쯤 쌓인 뒤 어두워진다
+    const dark = smooth((p - 0.2) / 0.3) * 0.9;    // 글이 절반쯤 쌓인 뒤 어두워진다(0.5 에서 다 어두움)
     if (night) setVar(night, "--d", dark);
     setVar(narrow, "--pa", plate(dark));
-    if (spot) setVar(spot, "--s", 1 - smooth((p - 0.35) / 0.55));   // 1 → 0 : 스포트라이트가 「나」로 조여 온다
+    if (spot) setVar(spot, "--s", 1 - smooth((p - 0.25) / 0.4));    // 1 → 0 : 스포트라이트가 「나」로 조여 온다(0.65 에서 끝)
     narrow.classList.toggle("is-dark", dark >= FLIP);
     if (crowd) { crowd.setDark(dark >= FLIP); crowd.setK(k, z); }
   }
@@ -180,8 +181,10 @@
   // 네 단계는 「스크롤로 문을 열고, 전환은 늘 같은 빠르기로」 — 2번(좁혀지기)처럼 스크롤 위치에 그림을 묶으면(스크러빙)
   // 빨리 내릴 때 네 번의 전환이 한꺼번에 몰려 슉 지나간다(10/14 사용자 피드백 두 번). 그래서 스크롤은 「몇 단계까지 왔나(target)」만 정하고,
   // 보이는 단계(shown)는 한 번에 한 단계씩 STEP_MS 간격으로 따라간다. 전환 자체는 CSS 가 같은 시간으로 그린다(@property --a --f --t --w).
-  // 칸 하나 = 진행도 1/4 · 칸의 30% 지점을 넘으면 그 단계 문이 열린다(1단계는 처음부터)
-  const STEP_SEG = 0.25, STEP_OPEN = 0.3, STEP_MS = 520;
+  // 단계 i 의 문이 열리는 진행도 — 앞 52% 안에 네 단계가 다 열리고, 뒤 48% 는 네 단계가 다 보이는 채로 멈춘다
+  // (한 단계씩 0.52초 늦게 따라와도 장면이 풀리기 전에 다 나온다 · 끝까지 나온 뒤 읽을 시간 — 10/14)
+  // 간격 STEP_MS · 두 단계 이상 뒤처지면 STEP_CATCH 로 따라잡는다(빨리 내려도 장면이 풀리기 전에 네 단계가 다 나오게)
+  const STEP_AT = [0, 0.16, 0.34, 0.52], STEP_MS = 440, STEP_CATCH = 300;
   let shown = 0, target = 0, stepTimer = 0, stepFirst = true, lastStep = -1e9;
   function applySteps(on) {
     stepEls.forEach((el, i) => {
@@ -206,18 +209,19 @@
     shown += shown < target ? 1 : -1;
     lastStep = performance.now();
     applySteps(true);
-    if (shown !== target) stepTimer = setTimeout(stepTick, STEP_MS);
+    if (shown !== target) stepTimer = setTimeout(stepTick, gap());
   }
+  const gap = () => (Math.abs(target - shown) >= 2 ? STEP_CATCH : STEP_MS);
   // 다음 단계는 마지막 전환에서 STEP_MS 가 지난 뒤에 — 관성 보간으로 목표가 프레임마다 하나씩 올라와도 몰려 넘어가지 않게
   function scheduleStep() {
     if (stepTimer || shown === target) return;
-    stepTimer = setTimeout(stepTick, Math.max(0, STEP_MS - (performance.now() - lastStep)));
+    stepTimer = setTimeout(stepTick, Math.max(0, gap() - (performance.now() - lastStep)));
   }
   function stepsScene(w, on) {
     if (!steps) return;
     if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = stepEls.length; stepFirst = true; applySteps(false); return; }
     let t = 0;
-    stepEls.forEach((_, i) => { if (w >= STEP_SEG * i + (i === 0 ? 0 : STEP_SEG * STEP_OPEN)) t = i + 1; });
+    stepEls.forEach((_, i) => { if (w >= STEP_AT[i]) t = i + 1; });
     if (t === target && !stepFirst) return;
     target = t;
     // 처음 그릴 때(새로고침 · 정지 → 움직임)는 그 자리 모습으로 바로 — 그 뒤로는 한 단계씩
@@ -245,8 +249,8 @@
     if (!narrow || !steps) return [];
     const a = M.top(narrow), b = M.release(narrow);
     return [
-      { at: a + (b - a) * 0.3, v: { night: 0 } },
-      { at: a + (b - a) * 0.65, v: { night: 0.9 } },
+      { at: a + (b - a) * 0.2, v: { night: 0 } },
+      { at: a + (b - a) * 0.5, v: { night: 0.9 } },
       { at: b, v: { night: 0.9 } },
       { at: M.top(steps) - M.view.vh * 0.3, v: { night: 0 } },
     ];

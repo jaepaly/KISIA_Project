@@ -245,7 +245,7 @@ async function main() {
     check(mode, "수렴 뒤 모든 장면 cur = target", pr.length === 2 && pr.every((x) => x.cur === x.target), pr, "cur === target");
     // 카드 등장 구간 겹침 — 좁혀지기 0.05~0.85 를 훑으며 반쯤 나온 카드가 2장 이상인 지점 수
     let overlap = 0;
-    for (let p = 0.05; p <= 0.85; p += 0.04) {
+    for (let p = 0.03; p <= 0.6; p += 0.03) {
       await scrollTo(await posOf("#narrow", p));
       const k = await js(`[...document.querySelectorAll("#narrow .ps-post")].filter((el) => { const v = Number(el.style.getPropertyValue("--in")); return v > 0.05 && v < 0.95; }).length`);
       if (k >= 2) overlap++;
@@ -303,13 +303,17 @@ async function main() {
     const m0 = await mapAt(0.02), m1 = await mapAt(0.95);
     check(mode, "지도 처음: 배율 < 1.05 · 핀 없음", m0.z < 1.05 && m0.pins.every((v) => v < 0.1), m0, "z < 1.05 · pins < .1");
     check(mode, "지도 끝: 배율 ≥ 1.5 · 핀 다섯 개", m1.z >= 1.5 && m1.pins.length === 5 && m1.pins.every((v) => v > 0.9), m1, "z ≥ 1.5 · pins > .9");
+    // 다 나온 뒤 멈추는 구간 — 진행도 0.66 ~ 0.98 동안 카드 · 숫자 · 배율이 그대로(읽을 시간 · 10/14)
+    const nAt = async (p) => { await scrollTo(await posOf("#narrow", p)); return js(`({ cards: [...document.querySelectorAll("#narrow .ps-post")].map((e) => Number(e.style.getPropertyValue("--in"))), num: document.getElementById("psCount").textContent, z: document.querySelector("#narrow .ps-stage").style.getPropertyValue("--z") })`); };
+    const nA = await nAt(0.66), nB = await nAt(0.98);
+    check(mode, "좁혀지기: 다 나온 뒤 멈추는 구간 (진행도 0.66 ~ 0.98 그대로)", JSON.stringify(nA) === JSON.stringify(nB) && nA.cards.every((v) => v === 1) && /약 1명/.test(nA.num), { nA, nB }, "같음 · 카드 6장 · 약 1명");
     // 네 단계 그림판 — 진행도마다 가장 진한 그림 = 그때 켜진 마지막 단계
     // 네 단계는 한 단계씩 같은 빠르기로 따라간다(약 0.5초 간격) — 보이는 단계가 목표에 닿고 전환이 끝날 때까지 기다린다
     const stepsSettled = async () => { for (let i = 0; i < 60; i++) { if (await js(`(() => { const s = document.getElementById("steps"); return s.dataset.shown === s.dataset.target; })()`)) break; await sleep(100); } await sleep(900); };
     const visAt = async (p) => { await scrollTo(await posOf("#steps", p)); await stepsSettled();
       return js(`(() => { const f = [...document.querySelectorAll("#steps .ps-vis-i")].map((e) => Number(e.style.getPropertyValue("--f") || 0)); return { f, top: f.indexOf(Math.max(...f)) }; })()`); };
     const vs = [];
-    for (const [p, want] of [[0.05, 0], [0.42, 1], [0.66, 2], [0.98, 3]]) { const v = await visAt(p); vs.push({ p, want, ...v }); }
+    for (const [p, want] of [[0.05, 0], [0.25, 1], [0.43, 2], [0.9, 3]]) { const v = await visAt(p); vs.push({ p, want, ...v }); }
     check(mode, "네 단계 그림판: 지금 단계 그림이 가장 진함", vs.every((v) => v.top === v.want && v.f[v.top] > 0.6), vs, "0 → 1 → 2 → 3");
     // 빠르게 휙 지나가도 단계는 한 단계씩 같은 간격(약 0.5초)으로 — 스크롤 위치에 묶었을 때는 네 번의 전환이 몰려 슉 지나갔다 (10/14)
     await scrollTo(await posOf("#steps", 0)); await stepsSettled();
@@ -319,19 +323,34 @@ async function main() {
     await sleep(2400);
     const seq = await js(`(() => { window.__stepObs.disconnect(); return window.__steps; })()`);
     const gaps = seq.slice(1).map((x, i) => x[0] - seq[i][0]);
-    check(mode, "빠르게 지나가도 단계가 한 단계씩 (간격 ≥ 0.4초)", seq.map((x) => x[1]).join("") === "234" && gaps.every((g) => g >= 400), seq, "2 → 3 → 4 · 간격 ≥ 400ms");
+    check(mode, "빠르게 지나가도 단계가 한 단계씩 (간격 ≥ 0.28초 · 뒤처지면 0.3초로 따라잡음)", seq.map((x) => x[1]).join("") === "234" && gaps.every((g) => g >= 280), seq, "2 → 3 → 4 · 간격 ≥ 280ms");
+    // 보통 빠르기로 휠을 굴려 장면을 지나갈 때(1초에 10칸 · 100px) — 장면이 풀리기(위로 올라가기) 전에 네 단계가 다 나온다
+    await scrollTo(await posOf("#steps", 0)); await stepsSettled();
+    const wheelRun = await (async () => {
+      const rel = await js(`(() => { const s = document.getElementById("steps"); return s.getBoundingClientRect().top + scrollY + s.offsetHeight - innerHeight; })()`);
+      for (let i = 0; i < 60; i++) {
+        await send("Input.dispatchMouseEvent", { type: "mouseWheel", x: 700, y: 450, deltaX: 0, deltaY: 100 });
+        await sleep(100);
+        const st = await js(`({ y: scrollY, shown: document.getElementById("steps").dataset.shown })`);
+        if (st.y >= rel - 2) return { atRelease: st.shown, y: Math.round(st.y), rel: Math.round(rel), wheels: i + 1 };
+      }
+      return { atRelease: null };
+    })();
+    check(mode, "휠로 지나갈 때 장면이 풀리기 전에 네 단계가 다 나옴", wheelRun.atRelease === "4", wheelRun, "풀릴 때 shown = 4");
     // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
     const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
       return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
     // 진행선 끝 = 켜진 마지막 단계 점의 가운데 (칸 사이 간격 때문에 i/4 가 아니다 · Codex 10/14)
-    for (const [p, k] of [[0.24, 0], [0.49, 1], [0.98, 3]]) {
+    for (const [p, k] of [[0.1, 0], [0.25, 1], [0.9, 3]]) {
       await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
       const g = await js(`(() => { const line = document.querySelector("#steps .ps-path i").getBoundingClientRect(), dot = document.querySelectorAll("#steps .ps-step .dot")[${k}].getBoundingClientRect();
         return { lineEnd: Math.round(line.right), dot: Math.round(dot.left + dot.width / 2), lineW: Math.round(line.width) }; })()`);
       check(mode, `진행선이 ${k + 1}단계 점까지 (진행도 ${p})`, k === 0 ? g.lineW <= 2 : Math.abs(g.lineEnd - g.dot) <= 3, g, k === 0 ? "길이 0" : "끝 = 점 가운데 ±3");
     }
-    const hA = await holdAt(0.19), hB = await holdAt(0.24);
-    check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.19 ~ 0.24 동안 값 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a[0] === 1 && hA.a[1] === 0, { hA, hB }, "같음 · 1단계만 켜짐");
+    const hA = await holdAt(0.6), hB = await holdAt(0.97);
+    check(mode, "네 단계: 다 나온 뒤 멈추는 구간 (진행도 0.6 ~ 0.97 동안 네 단계 다 켜진 채 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a.every((v) => v === 1), { hA, hB }, "같음 · 네 단계 다");
+    const h1 = await holdAt(0.06), h2 = await holdAt(0.14);
+    check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.06 ~ 0.14 동안 1단계만)", JSON.stringify(h1) === JSON.stringify(h2) && h1.a[0] === 1 && h1.a[1] === 0, { h1, h2 }, "같음 · 1단계만");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다
     await scrollTo(await posOf("#narrow", 0.8));
     await sleep(500);
@@ -366,7 +385,7 @@ async function main() {
       one("#narrow .ps-h2", true); one("#narrow .ps-count .num", true);
       return out; })()`;
     const sweep = { small: 99, large: 99, at: [] };
-    for (let p = 0.4; p <= 0.62; p += 0.01) {
+    for (let p = 0.26; p <= 0.48; p += 0.01) {
       await scrollTo(await posOf("#narrow", p));
       const r = await js(CONTRAST);
       sweep.small = Math.min(sweep.small, r.small); sweep.large = Math.min(sweep.large, r.large);
