@@ -46,7 +46,7 @@
   <p class="hint">점검할 계정을 아래에서 고르세요. 이름을 알면 검색해도 됩니다. Veilo의 계정은 모두 가상 인물입니다.</p>
   <div class="finder">
     <div class="row">
-      <input id="userQ" type="search" placeholder="계정 이름으로 거르기 (선택)" autocomplete="off" aria-controls="finderList">
+      <input id="userQ" type="search" placeholder="계정 이름으로 찾기 (선택)" autocomplete="off" aria-controls="finderList">
       <button id="scanBtn" disabled>공개 글 점검</button>
     </div>
     <div class="picked" id="picked" hidden></div>
@@ -132,7 +132,7 @@ async function failMsg(msg, r) {
 }
 
 // ── 계정 고르기 — 처음 온 사람은 계정 이름을 모른다. 목록을 처음부터 펼쳐 두고(공개 글 많은 순 12개 · 「더 보기」로 전부),
-//    검색창은 그 목록을 거르는 데만 쓴다. 계정을 고르면 목록을 접고 고른 계정을 보여 준다(「다른 계정」으로 다시 펼침)
+//    검색창은 그 목록을 이름으로 좁히는 데만 쓴다(고르는 것은 목록에서). 계정을 고르면 목록을 접고 고른 계정을 보여 준다(「다른 계정」으로 다시 펼침)
 const PAGE = 12, ALL = 200;
 function pick(a) {
   picked = a;

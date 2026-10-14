@@ -124,7 +124,7 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 /* 머리 — 제목(왼쪽) · 그림판(오른쪽). 그림판 = 네 장이 겹쳐 있고 지금 단계 그림만 보인다(--f) · 그림 안 움직임은 --t */
 .ps-steps-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:center}
 .ps-vis{position:relative;height:clamp(220px,34svh,300px);border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
-.ps-vis-i{--f:1;--t:1;position:absolute;inset:0;display:grid;place-items:center;opacity:var(--f);transform:translateX(calc((1 - var(--f)) * 14px))}
+.ps-vis-i{--f:1;--t:1;--dir:1;position:absolute;inset:0;display:grid;place-items:center;opacity:var(--f);transform:translateX(calc((1 - var(--f)) * var(--dir) * 40px))}
 .ps-vis-i .cap{position:absolute;left:16px;top:12px;font-size:12px;font-weight:600;color:var(--ps-muted)}   /* 한글이라 모노 대신 본문 글꼴 */
 /* 1 글 모으기 — 흩어진 카드(--dx --dy --r)가 가운데 묶음으로 */
 .v1 .card{position:absolute;left:50%;top:50%;width:120px;height:72px;margin:-36px 0 0 -60px;border:1px solid var(--ps-line);border-radius:10px;background:var(--ps-paper);

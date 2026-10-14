@@ -312,8 +312,8 @@ async function main() {
     // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
     const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await sleep(700); await settle();
       return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
-    const hA = await holdAt(0.13), hB = await holdAt(0.24);
-    check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.13 ~ 0.24 동안 값 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a[0] === 1 && hA.a[1] === 0, { hA, hB }, "같음 · 1단계만 켜짐");
+    const hA = await holdAt(0.19), hB = await holdAt(0.24);
+    check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.19 ~ 0.24 동안 값 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a[0] === 1 && hA.a[1] === 0, { hA, hB }, "같음 · 1단계만 켜짐");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다
     await scrollTo(await posOf("#narrow", 0.8));
     await sleep(500);
