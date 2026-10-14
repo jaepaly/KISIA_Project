@@ -220,6 +220,12 @@ def post(post_id: str):
         return _todo("글 본문", "§4")
 
 
+@app.get("/about")
+def about():
+    """「파도풀이란?」 1분 소개 — 스크롤 연출(pado-scene.js). ?view=static 이면 움직임 없이 다 펼친 화면."""
+    return render_template("about.html", static=request.args.get("view") == "static")
+
+
 @app.get("/new")
 def new():
     """작성 화면. ⚠️ 작성시각을 직접 입력받는다 — howto §4."""

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko"{% block html_attrs %}{% endblock %}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,7 +24,8 @@
       </a>
       <nav class="ut-nav">
         {% block nav %}
-        <button type="button" class="intro-btn" data-intro-open aria-label="파도풀 소개 다시 보기">파도풀이란?</button>
+        {# 1분 소개 화면(about.html) — 첫 방문 소개 창은 처음 한 번만 뜨고, 다시 볼 땐 이쪽으로 #}
+        <a href="/about" class="intro-btn" aria-label="파도풀 1분 소개 보기" style="display:inline-flex;align-items:center;text-decoration:none">파도풀이란?</a>
         {# 내 계정을 골랐으면 「내 글 점검」은 바로 그 사람으로 (scan.html?u=) — 안 골랐으면 계정 찾기부터 #}
         <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}" class="chk">🌊 내 글 점검</a>
         <a href="/new" class="write">✏️ 글쓰기</a>
@@ -71,17 +72,34 @@
       <button type="button" class="dismiss" data-intro-close>가상 글 둘러보기</button>
       <a class="start" href="/new" data-intro-go>글 쓰며 점검하기</a>
     </div>
+    <p class="more"><a href="/about" data-intro-go>1분 소개 보기 →</a></p>
   </dialog>
   <script src="/static/veilo.js"></script>
   <script src="/static/fx.js"></script>
   <script>
-    // 헤더 스크롤 shadow
+    // 헤더 스크롤 — scrolled(8px · 그림자) · is-scrolled(40px · 반투명 종이색)
     (function () {
       const top = document.getElementById("utTop");
       if (!top) return;
-      const apply = () => top.classList.toggle("scrolled", window.scrollY > 8);
+      const apply = () => {
+        const y = window.scrollY;
+        top.classList.toggle("scrolled", y > 8);
+        top.classList.toggle("is-scrolled", y > 40);
+      };
       apply();
       window.addEventListener("scroll", apply, { passive: true });
+    })();
+
+    // 등장 효과 — .reveal 이 화면에 들어오면 .in-view (한 번 보면 그만 본다). 동작 줄이기면 바로 다 보인다
+    (function () {
+      const els = document.querySelectorAll(".reveal");
+      if (!els.length) return;
+      const show = (el) => el.classList.add("in-view");
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) { els.forEach(show); return; }
+      const io = new IntersectionObserver((ents) => {
+        ents.forEach((e) => { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.01 });
+      els.forEach((el) => io.observe(el));
     })();
 
     // 모바일 사이드바 드로어 열기/닫기

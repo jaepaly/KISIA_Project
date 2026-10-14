@@ -1,0 +1,126 @@
+/* 「파도풀이란?」 소개 장면 (about.html · pado-scene.js · motion-core.js).
+   색 · 글꼴은 공통 토큰(veilo.css :root — --paper --ink --accent …)만 쓴다. 토큰이 아직 없을 때를 위해 var() 둘째 값에 기본값을 둔다.
+   움직이는 속성은 transform · opacity · clip-path 뿐 — JS 는 CSS 변수(--in --a --w --p --d --s)만 쓴다.
+   html.ps-static(움직임 끔 · 동작 줄이기 · ?view=static · 폭 760 이하) = 핀 없이 다 켜진 정지 상태. 브레이크포인트는 760 하나. */
+.ps-page{
+  --ps-paper:var(--paper,#F7F2EA); --ps-paper2:var(--paper-2,#EFE7DC); --ps-ink:var(--ink,#26221F);
+  --ps-body:var(--body,#4A433D); --ps-muted:var(--muted,#6B625B); --ps-line:var(--line,rgba(38,34,31,.14));
+  --ps-accent:var(--accent,#C2573A); --ps-accent-soft:var(--accent-soft,rgba(194,87,58,.12)); --ps-night:var(--night,#1C1A19);
+  --ps-sans:var(--font-sans,Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif);
+  --ps-mono:var(--font-mono,ui-monospace,"SF Mono",Consolas,monospace);
+  --ps-ease:var(--ease-out,cubic-bezier(.2,.7,.2,1));
+  /* 캔버스가 읽는 점 색 */
+  --ps-dot:var(--ps-muted); --ps-dot-dark:rgba(247,242,234,.75); --ps-hot:var(--ps-accent);
+}
+.ps-page body{background:var(--ps-paper)}
+.ps{font-family:var(--ps-sans);color:var(--ps-ink)}
+.ps .eyebrow{font-family:var(--ps-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ps-muted);margin:0 0 14px}
+.ps .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-accent-soft);color:var(--ps-ink);font-size:12px;font-weight:600;white-space:nowrap}
+.ps-in{max-width:1180px;margin:0 auto;padding:0 40px}
+.ps-h1{font-size:clamp(34px,5.4vw,72px);line-height:1.12;letter-spacing:-.05em;font-weight:700;word-break:keep-all;margin:0 0 24px;color:var(--ps-ink)}
+.ps-h2{font-size:clamp(24px,3vw,40px);line-height:1.22;letter-spacing:-.04em;font-weight:700;word-break:keep-all;margin:0 0 24px;color:inherit}
+.ps-lead{font-size:clamp(16px,1.4vw,19px);line-height:1.7;color:var(--ps-body);max-width:40em;word-break:keep-all;margin:0 0 28px}
+.ps-lead b{color:var(--ps-ink)}
+.ps-fine{font-size:13px;color:var(--ps-muted);margin:18px 0 0;word-break:keep-all}
+.ps-bt{display:flex;flex-wrap:wrap;gap:10px}
+.ps-btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:999px;border:1px solid var(--ps-line);background:transparent;color:var(--ps-ink);font-weight:700;font-size:15px;text-decoration:none;transition:transform .2s var(--ps-ease)}
+.ps-btn:hover{text-decoration:none;transform:translateY(-1px)}
+.ps-btn.primary{background:var(--ps-ink);border-color:var(--ps-ink);color:var(--ps-paper)}
+.ps-btn.primary:hover{color:var(--ps-paper)}
+.ps-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ── 히어로 ── */
+.ps-hero{min-height:calc(100svh - 64px);display:flex;align-items:center;padding:24px 0 64px}
+.ps-hero .ps-in{width:100%}
+.ps-skip{display:inline-block;margin:0 0 40px;font-size:14px;font-weight:700;color:var(--ps-ink);border-bottom:1px solid var(--ps-line);padding-bottom:2px}
+.ps-skip:hover{text-decoration:none;border-color:var(--ps-ink)}
+
+/* ── 핀 장면 공통 — 바깥 높이 N svh · 안쪽 100svh 고정 ── */
+.ps-pin{position:relative;height:calc(var(--pin,200) * 1svh)}
+.ps-sticky{position:sticky;top:0;height:100svh;overflow:clip;display:flex;align-items:center;padding-top:56px}
+.ps-sticky>.ps-in{position:relative;width:100%}
+
+/* ── 연출 A — 좁혀지기 ── */
+.ps-narrow{color:var(--ps-ink)}
+.ps-night{position:absolute;inset:0;background:var(--ps-night);opacity:var(--d,0);pointer-events:none}
+.ps-narrow.is-dark .ps-narrow-txt>.eyebrow,.ps-narrow.is-dark .ps-count .eyebrow,.ps-narrow.is-dark .ps-note{color:rgba(247,242,234,.7)}
+.ps-narrow.is-dark .ps-h2,.ps-narrow.is-dark .ps-count .num{color:var(--ps-paper)}
+.ps-narrow .ps-h2,.ps-count .num,.ps-count .eyebrow,.ps-note{transition:color .3s}
+.ps-narrow-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:center}
+.ps-posts{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ps-post{--in:1;background:var(--ps-paper);border:1px solid var(--ps-line);border-radius:14px;padding:10px 14px;opacity:var(--in);transform:translateY(calc((1 - var(--in)) * 24px))}
+.ps-post .t{margin:0 0 6px;font-size:14px;line-height:1.5;color:var(--ps-ink);word-break:keep-all}
+.ps-post .m{margin:0;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ps-post .k{font-family:var(--ps-mono);font-size:11px;letter-spacing:.04em;color:var(--ps-muted);white-space:nowrap}
+.ps-crowd{position:relative;margin:0;width:100%;display:flex;flex-direction:column;gap:14px}
+.ps-stage{position:relative;aspect-ratio:1/1;width:min(100%,calc(100svh - 260px));overflow:clip;border-radius:18px}
+.ps-crowd canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* 스포트라이트 — 가운데(「나」)만 뚫린 어두운 막. 크기(transform)만 바뀐다: --s 1 → 넓게, 0 → 「나」로 조여 옴 */
+.ps-spot{position:absolute;left:50%;top:50%;width:60%;aspect-ratio:1/1;margin:-30% 0 0 -30%;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 0 200vmax rgba(28,26,25,.55);opacity:calc(var(--d-spot,1) * (1 - var(--s,1)));transform:scale(calc(.32 + var(--s,1) * 2.2))}
+.ps-count{display:flex;flex-direction:column;align-items:flex-start;gap:2px;pointer-events:none}
+.ps-count .eyebrow{margin:0}
+.ps-count .num{font-size:clamp(28px,3.4vw,48px);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--ps-ink);line-height:1.1}
+.ps-note{font-size:12px;color:var(--ps-muted)}
+
+/* ── 연출 B — 네 단계 ── */
+.ps-track{position:relative;margin-top:16px}
+.ps-path{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--ps-line)}
+.ps-path i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--w,1))}
+.ps-step-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+.ps-step{--a:1;position:relative;padding-top:36px;opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 18px));transition:opacity .2s linear,transform .2s linear}
+.ps-step .dot{position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--ps-paper);border:1px solid var(--ps-muted)}
+.ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
+.ps-step .eyebrow{margin:0 0 6px}
+.ps-step h3{font-size:clamp(19px,1.8vw,24px);letter-spacing:-.03em;margin:0 0 8px}
+.ps-step p{margin:0;font-size:15px;line-height:1.65;color:var(--ps-body);word-break:keep-all}
+
+/* ── 마무리 ── */
+.ps-end{padding:120px 0 160px;border-top:1px solid var(--ps-line)}
+
+/* ── 연출 C — 읽기 진행 막대 · 소개 순서 ── */
+.ps-progress{position:fixed;left:0;right:0;top:0;height:2px;z-index:40;pointer-events:none}
+.ps-progress i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--p,0))}
+.ps-map{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;display:flex;align-items:center;gap:4px;padding:6px 6px 6px 12px;
+  border:1px solid var(--ps-line);border-radius:999px;background:color-mix(in srgb,var(--ps-paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--ps-mono)}
+.ps-map a{position:relative;display:inline-flex;align-items:baseline;gap:6px;padding:6px 8px;font-size:11px;letter-spacing:.08em;color:var(--ps-muted);text-decoration:none;white-space:nowrap}
+.ps-map a .n{font-size:10px;opacity:.7}
+.ps-map a i{position:absolute;left:8px;right:8px;bottom:2px;height:1px;background:var(--ps-ink);transform-origin:0 50%;transform:scaleX(var(--p,0))}
+.ps-map a[aria-current]{color:var(--ps-ink)}
+.ps-map a:hover{text-decoration:none;color:var(--ps-ink)}
+.ps-motion{margin-left:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ps-line);background:transparent;color:var(--ps-ink);font:inherit;font-size:11px;letter-spacing:.06em;cursor:pointer}
+.ps-motion[aria-pressed="false"]{background:var(--ps-ink);color:var(--ps-paper);border-color:var(--ps-ink)}
+html.dark-chapter .ps-map{background:color-mix(in srgb,var(--ps-night) 80%,transparent);border-color:rgba(247,242,234,.18)}
+html.dark-chapter .ps-map a,html.dark-chapter .ps-motion{color:rgba(247,242,234,.72)}
+html.dark-chapter .ps-map a[aria-current]{color:var(--ps-paper)}
+html.dark-chapter .ps-map a i{background:var(--ps-paper)}
+html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
+
+/* ── 정지 상태 — 핀 없이 다 켜진 모습 ── */
+.ps-static .ps-pin{height:auto}
+.ps-static .ps-sticky{position:static;height:auto;overflow:visible;padding:96px 0}
+.ps-static .ps-post,.ps-static .ps-step{--in:1;--a:1;opacity:1;transform:none;transition:none}
+.ps-static .ps-step .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
+.ps-static .ps-path i{transform:none}
+.ps-static .ps-night,.ps-static .ps-spot{display:none}
+.ps-static .ps-narrow{border-top:1px solid var(--ps-line)}
+.ps-static .ps-steps{border-top:1px solid var(--ps-line)}
+
+@media (max-width:760px){
+  .ps-in{padding:0 16px}
+  .ps-hero{min-height:auto;padding:32px 0 56px}
+  .ps-skip{margin-bottom:28px}
+  .ps-sticky{padding:64px 0}
+  .ps-narrow-grid{grid-template-columns:1fr;gap:32px}
+  .ps-stage{width:100%}
+  .ps-step-list{grid-template-columns:1fr;gap:24px}
+  .ps-path{left:6px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
+  .ps-step{padding:0 0 0 32px}
+  .ps-step .dot{top:4px}
+  .ps-end{padding:72px 0 120px}
+  .ps-map{display:none}
+  .ps-btn{flex:1 1 auto;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  .ps-btn,.ps-step{transition:none}
+}
