@@ -1,0 +1,5583 @@
+{
+ "fingerprint": {
+  "commit": "0b70fc00e97d90dcc4d2868464c4e7e70aa9cfd1",
+  "target": 40.0,
+  "weights": {
+   "main": [
+    1,
+    2,
+    3
+   ],
+   "count": [
+    1,
+    1,
+    1
+   ],
+   "steep": [
+    1,
+    2,
+    4
+   ]
+  },
+  "inputs_full_sha256": "6233749eb27114d14aad5c5f8db973a6b9be71523f00a2b302cf2eca39a05622",
+  "gold_files_sha256": "cb7832338f1e197198d20ed1035f623c9814768d52da166270c17002686d8e23",
+  "test_ids_sha256": "ba628bc4dccd0763128cc4a068b309e43f2fe820a3b35be23e0202c4f7213faf",
+  "measured_at": "2026-10-13T16:45:29"
+ },
+ "report": {
+  "main": {
+   "accounts": 87,
+   "over_target": 49,
+   "opt_unreachable": 0,
+   "rec_fail": 1,
+   "fail_rate": 0.0204,
+   "gap": {
+    "n": 48,
+    "median": 0.0,
+    "mean": 0.1458,
+    "zero": 47,
+    "max": 7.0
+   },
+   "rec_better_than_opt": 0,
+   "pass": {
+    "gap_median": true,
+    "fail_rate": true
+   }
+  },
+  "count": {
+   "accounts": 87,
+   "over_target": 49,
+   "opt_unreachable": 0,
+   "rec_fail": 1,
+   "fail_rate": 0.0204,
+   "gap": {
+    "n": 48,
+    "median": 0.0,
+    "mean": 0.0486,
+    "zero": 47,
+    "max": 2.3333
+   },
+   "rec_better_than_opt": 0
+  },
+  "steep": {
+   "accounts": 87,
+   "over_target": 49,
+   "opt_unreachable": 0,
+   "rec_fail": 1,
+   "fail_rate": 0.0204,
+   "gap": {
+    "n": 48,
+    "median": 0.0,
+    "mean": 0.1944,
+    "zero": 47,
+    "max": 9.3333
+   },
+   "rec_better_than_opt": 0
+  }
+ },
+ "accounts": [
+  {
+   "persona_id": "A01",
+   "n_posts": 14,
+   "k": 2,
+   "base": 35.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 35.714285714285715,
+    "unpublish": [
+     35.714285714285715,
+     27.142857142857142,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "tags": [
+     35.714285714285715,
+     35.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A02",
+   "n_posts": 16,
+   "k": 3,
+   "base": 35.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 35.714285714285715,
+    "unpublish": [
+     35.714285714285715,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     35.714285714285715,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "tags": [
+     35.714285714285715,
+     35.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A03",
+   "n_posts": 14,
+   "k": 2,
+   "base": 30.0,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.0
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.0,
+    "unpublish": [
+     30.0,
+     21.428571428571427,
+     15.714285714285714
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     30.0,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "tags": [
+     30.0,
+     30.0
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A04",
+   "n_posts": 16,
+   "k": 3,
+   "base": 30.0,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.0
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.0,
+    "unpublish": [
+     30.0,
+     21.428571428571427,
+     13.571428571428571,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0
+    ],
+    "tags": [
+     30.0,
+     30.0
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A05",
+   "n_posts": 14,
+   "k": 2,
+   "base": 46.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 32.1429,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 32.1429,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 46.42857142857143,
+    "unpublish": [
+     46.42857142857143,
+     32.142857142857146,
+     26.428571428571427
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     46.42857142857143,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     46.42857142857143,
+     46.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A07",
+   "n_posts": 18,
+   "k": 3,
+   "base": 47.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 33.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 47.857142857142854,
+    "unpublish": [
+     47.857142857142854,
+     33.57142857142857,
+     26.428571428571427,
+     18.571428571428573
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     47.857142857142854,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857
+    ],
+    "tags": [
+     47.857142857142854,
+     47.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A08",
+   "n_posts": 21,
+   "k": 3,
+   "base": 30.0,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.0
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.0,
+    "unpublish": [
+     30.0,
+     21.428571428571427,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     30.0,
+     21.428571428571427,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858
+    ],
+    "tags": [
+     30.0,
+     30.0
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A10",
+   "n_posts": 21,
+   "k": 3,
+   "base": 51.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 37.14
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 37.1429,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 37.1429,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 37.1429,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 51.42857142857143,
+    "unpublish": [
+     51.42857142857143,
+     37.142857142857146,
+     28.571428571428573,
+     20.714285714285715
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     51.42857142857143,
+     37.142857142857146,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285
+    ],
+    "tags": [
+     51.42857142857143,
+     51.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A11",
+   "n_posts": 29,
+   "k": 5,
+   "base": 55.7143,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 55.714285714285715,
+    "unpublish": [
+     55.714285714285715,
+     41.42857142857143,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     55.714285714285715,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143,
+     41.42857142857143
+    ],
+    "tags": [
+     55.714285714285715,
+     55.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "A12",
+   "n_posts": 28,
+   "k": 4,
+   "base": 57.1429,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": true
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 57.142857142857146,
+    "unpublish": [
+     57.142857142857146,
+     42.857142857142854,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     57.142857142857146,
+     42.857142857142854,
+     42.857142857142854,
+     42.857142857142854,
+     34.285714285714285
+    ],
+    "tags": [
+     57.142857142857146,
+     49.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "A13",
+   "n_posts": 26,
+   "k": 4,
+   "base": 41.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 25.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 25.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 25.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 25.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 41.42857142857143,
+    "unpublish": [
+     41.42857142857143,
+     25.0,
+     15.0,
+     7.142857142857143,
+     7.142857142857143
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     41.42857142857143,
+     33.57142857142857,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285
+    ],
+    "tags": [
+     41.42857142857143,
+     41.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A14",
+   "n_posts": 28,
+   "k": 4,
+   "base": 34.2857,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 34.285714285714285,
+    "unpublish": [
+     34.285714285714285,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     34.285714285714285,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573
+    ],
+    "tags": [
+     34.285714285714285,
+     34.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A15",
+   "n_posts": 28,
+   "k": 4,
+   "base": 42.1429,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 27.86
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.142857142857146,
+    "unpublish": [
+     42.142857142857146,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     42.142857142857146,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "tags": [
+     42.142857142857146,
+     42.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A16",
+   "n_posts": 29,
+   "k": 5,
+   "base": 38.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 38.57142857142857,
+    "unpublish": [
+     38.57142857142857,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     38.57142857142857,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285
+    ],
+    "tags": [
+     38.57142857142857,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A18",
+   "n_posts": 27,
+   "k": 4,
+   "base": 53.5714,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 53.57142857142857,
+    "unpublish": [
+     53.57142857142857,
+     39.285714285714285,
+     32.142857142857146,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     53.57142857142857,
+     39.285714285714285,
+     35.0,
+     35.0,
+     35.0,
+     35.0,
+     35.0,
+     35.0,
+     35.0,
+     35.0,
+     35.0
+    ],
+    "tags": [
+     53.57142857142857,
+     53.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A19",
+   "n_posts": 26,
+   "k": 4,
+   "base": 65.7143,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 39.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 39.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 65.71428571428571,
+    "unpublish": [
+     65.71428571428571,
+     51.42857142857143,
+     39.285714285714285,
+     27.857142857142858,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     65.71428571428571,
+     51.42857142857143,
+     43.57142857142857,
+     43.57142857142857,
+     43.57142857142857
+    ],
+    "tags": [
+     65.71428571428571,
+     65.71428571428571
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "A20",
+   "n_posts": 29,
+   "k": 5,
+   "base": 32.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 32.142857142857146,
+    "unpublish": [
+     32.142857142857146,
+     26.428571428571427,
+     20.714285714285715,
+     16.428571428571427,
+     16.428571428571427,
+     16.428571428571427
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     32.142857142857146,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     32.142857142857146,
+     32.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A21",
+   "n_posts": 28,
+   "k": 4,
+   "base": 57.1429,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 57.142857142857146,
+    "unpublish": [
+     57.142857142857146,
+     42.857142857142854,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     57.142857142857146,
+     42.857142857142854,
+     42.857142857142854,
+     42.857142857142854,
+     42.857142857142854
+    ],
+    "tags": [
+     57.142857142857146,
+     57.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "A22",
+   "n_posts": 29,
+   "k": 5,
+   "base": 30.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.714285714285715,
+    "unpublish": [
+     30.714285714285715,
+     25.0,
+     17.857142857142858,
+     13.571428571428571,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     30.714285714285715,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     30.714285714285715,
+     30.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A23",
+   "n_posts": 29,
+   "k": 5,
+   "base": 48.5714,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 48.57142857142857,
+    "unpublish": [
+     48.57142857142857,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     48.57142857142857,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     25.714285714285715,
+     25.714285714285715,
+     25.714285714285715,
+     25.714285714285715
+    ],
+    "tags": [
+     48.57142857142857,
+     48.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A24",
+   "n_posts": 28,
+   "k": 4,
+   "base": 42.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 28.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.857142857142854,
+    "unpublish": [
+     42.857142857142854,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     42.857142857142854,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573,
+     28.571428571428573
+    ],
+    "tags": [
+     42.857142857142854,
+     42.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "A25",
+   "n_posts": 28,
+   "k": 4,
+   "base": 38.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 38.57142857142857,
+    "unpublish": [
+     38.57142857142857,
+     30.0,
+     24.285714285714285,
+     24.285714285714285,
+     24.285714285714285
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     38.57142857142857,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0
+    ],
+    "tags": [
+     38.57142857142857,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "A26",
+   "n_posts": 26,
+   "k": 4,
+   "base": 27.8571,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 27.86
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 27.857142857142858,
+    "unpublish": [
+     27.857142857142858,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "tags": [
+     27.857142857142858,
+     27.857142857142858
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "B02",
+   "n_posts": 18,
+   "k": 3,
+   "base": 53.5714,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 53.57142857142857,
+    "unpublish": [
+     53.57142857142857,
+     39.285714285714285,
+     26.428571428571427,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     53.57142857142857,
+     39.285714285714285,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     53.57142857142857,
+     53.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B03",
+   "n_posts": 18,
+   "k": 3,
+   "base": 56.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 56.42857142857143,
+    "unpublish": [
+     56.42857142857143,
+     35.0,
+     26.428571428571427,
+     20.714285714285715
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     56.42857142857143,
+     40.714285714285715,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     56.42857142857143,
+     56.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B04",
+   "n_posts": 19,
+   "k": 3,
+   "base": 34.2857,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 34.285714285714285,
+    "unpublish": [
+     34.285714285714285,
+     27.142857142857142,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     34.285714285714285,
+     34.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "B05",
+   "n_posts": 18,
+   "k": 3,
+   "base": 50.7143,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 50.714285714285715,
+    "unpublish": [
+     50.714285714285715,
+     35.0,
+     20.714285714285715,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     50.714285714285715,
+     36.42857142857143,
+     23.571428571428573,
+     23.571428571428573
+    ],
+    "tags": [
+     50.714285714285715,
+     50.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B06",
+   "n_posts": 23,
+   "k": 4,
+   "base": 61.4286,
+   "rec": {
+    "hidden": 3,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 3,
+     "risk": 35.0,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 3,
+     "risk": 32.8571,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": true
+    },
+    "steep": {
+     "burden": 3,
+     "risk": 35.0,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 61.42857142857143,
+    "unpublish": [
+     61.42857142857143,
+     47.142857142857146,
+     40.714285714285715,
+     35.714285714285715,
+     32.142857142857146
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     61.42857142857143,
+     47.142857142857146,
+     42.142857142857146,
+     42.142857142857146
+    ],
+    "tags": [
+     61.42857142857143,
+     61.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 3,
+    "count": 3,
+    "steep": 3
+   }
+  },
+  {
+   "persona_id": "B07",
+   "n_posts": 27,
+   "k": 4,
+   "base": 50.0,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 50.0,
+    "unpublish": [
+     50.0,
+     35.714285714285715,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     50.0,
+     35.714285714285715,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     50.0,
+     42.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B08",
+   "n_posts": 29,
+   "k": 5,
+   "base": 49.2857,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 49.285714285714285,
+    "unpublish": [
+     49.285714285714285,
+     35.0,
+     26.428571428571427,
+     18.571428571428573,
+     11.428571428571429,
+     5.714285714285714
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     49.285714285714285,
+     35.0,
+     27.857142857142858
+    ],
+    "tags": [
+     49.285714285714285,
+     49.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B09",
+   "n_posts": 29,
+   "k": 5,
+   "base": 50.7143,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 33.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 33.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 50.714285714285715,
+    "unpublish": [
+     50.714285714285715,
+     33.57142857142857,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     50.714285714285715,
+     40.0,
+     40.0,
+     40.0,
+     40.0
+    ],
+    "tags": [
+     50.714285714285715,
+     50.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B10",
+   "n_posts": 27,
+   "k": 4,
+   "base": 56.4286,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 2,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 35.7143,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 56.42857142857143,
+    "unpublish": [
+     56.42857142857143,
+     42.142857142857146,
+     35.714285714285715,
+     30.0,
+     30.0
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     56.42857142857143,
+     42.142857142857146,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "tags": [
+     56.42857142857143,
+     56.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "B11",
+   "n_posts": 28,
+   "k": 4,
+   "base": 65.0,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 25.0
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 25.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 25.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 25.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 65.0,
+    "unpublish": [
+     65.0,
+     47.857142857142854,
+     25.0,
+     14.285714285714286,
+     14.285714285714286
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     65.0,
+     50.714285714285715,
+     40.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "tags": [
+     65.0,
+     65.0
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "B12",
+   "n_posts": 24,
+   "k": 4,
+   "base": 57.1429,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 2,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 57.142857142857146,
+    "unpublish": [
+     57.142857142857146,
+     42.857142857142854,
+     34.285714285714285,
+     26.428571428571427,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     57.142857142857146,
+     42.857142857142854,
+     34.285714285714285,
+     34.285714285714285
+    ],
+    "tags": [
+     57.142857142857146,
+     49.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "B13",
+   "n_posts": 26,
+   "k": 4,
+   "base": 61.4286,
+   "rec": {
+    "hidden": 3,
+    "tags_off": false,
+    "rewrite": 7,
+    "met": true,
+    "risk": 30.0
+   },
+   "opt": {
+    "main": {
+     "burden": 3,
+     "risk": 40.0,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 3,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 2,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 3,
+     "risk": 40.0,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 61.42857142857143,
+    "unpublish": [
+     61.42857142857143,
+     54.285714285714285,
+     48.57142857142857,
+     44.285714285714285,
+     44.285714285714285
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     61.42857142857143,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     57.142857142857146,
+     42.857142857142854
+    ],
+    "tags": [
+     61.42857142857143,
+     61.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 24,
+    "count": 10,
+    "steep": 31
+   }
+  },
+  {
+   "persona_id": "B14",
+   "n_posts": 28,
+   "k": 4,
+   "base": 44.2857,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 44.285714285714285,
+    "unpublish": [
+     44.285714285714285,
+     38.57142857142857,
+     34.285714285714285,
+     28.571428571428573,
+     28.571428571428573
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     44.285714285714285,
+     40.0,
+     40.0,
+     40.0,
+     40.0,
+     40.0
+    ],
+    "tags": [
+     44.285714285714285,
+     44.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B15",
+   "n_posts": 24,
+   "k": 4,
+   "base": 45.0,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.71
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 45.0,
+    "unpublish": [
+     45.0,
+     30.714285714285715,
+     25.0,
+     20.714285714285715,
+     20.714285714285715
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     45.0,
+     30.714285714285715,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     45.0,
+     45.0
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B16",
+   "n_posts": 27,
+   "k": 4,
+   "base": 55.7143,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 34.2857,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 55.714285714285715,
+    "unpublish": [
+     55.714285714285715,
+     41.42857142857143,
+     34.285714285714285,
+     34.285714285714285,
+     34.285714285714285
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     55.714285714285715,
+     41.42857142857143
+    ],
+    "tags": [
+     55.714285714285715,
+     55.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "B17",
+   "n_posts": 27,
+   "k": 4,
+   "base": 46.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 7,
+    "met": false,
+    "risk": 42.14
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 37.8571,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 37.8571,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 37.8571,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 46.42857142857143,
+    "unpublish": [
+     46.42857142857143,
+     46.42857142857143,
+     46.42857142857143,
+     46.42857142857143,
+     46.42857142857143
+    ],
+    "unpublish_stopped_at": 0,
+    "rewrite": [
+     46.42857142857143,
+     46.42857142857143,
+     46.42857142857143,
+     46.42857142857143,
+     42.142857142857146,
+     42.142857142857146,
+     42.142857142857146,
+     42.142857142857146
+    ],
+    "tags": [
+     46.42857142857143,
+     46.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 21,
+    "count": 7,
+    "steep": 28
+   }
+  },
+  {
+   "persona_id": "B18",
+   "n_posts": 28,
+   "k": 4,
+   "base": 67.8571,
+   "rec": {
+    "hidden": 3,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 3,
+     "risk": 38.5714,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 3,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 3,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 3,
+     "risk": 38.5714,
+     "hidden": 3,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 67.85714285714286,
+    "unpublish": [
+     67.85714285714286,
+     57.142857142857146,
+     47.142857142857146,
+     38.57142857142857,
+     30.714285714285715
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     67.85714285714286,
+     57.142857142857146,
+     47.142857142857146,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857,
+     34.285714285714285,
+     34.285714285714285
+    ],
+    "tags": [
+     67.85714285714286,
+     67.85714285714286
+    ]
+   },
+   "rec_burden": {
+    "main": 3,
+    "count": 3,
+    "steep": 3
+   }
+  },
+  {
+   "persona_id": "B19",
+   "n_posts": 29,
+   "k": 5,
+   "base": 42.1429,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.142857142857146,
+    "unpublish": [
+     42.142857142857146,
+     35.0,
+     30.714285714285715,
+     26.428571428571427,
+     22.142857142857142,
+     22.142857142857142
+    ],
+    "unpublish_stopped_at": 4,
+    "rewrite": [
+     42.142857142857146,
+     35.0,
+     30.714285714285715,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     42.142857142857146,
+     42.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "B20",
+   "n_posts": 29,
+   "k": 5,
+   "base": 53.5714,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 53.57142857142857,
+    "unpublish": [
+     53.57142857142857,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     53.57142857142857,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285
+    ],
+    "tags": [
+     53.57142857142857,
+     53.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D01",
+   "n_posts": 17,
+   "k": 3,
+   "base": 32.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 32.142857142857146,
+    "unpublish": [
+     32.142857142857146,
+     21.428571428571427,
+     12.857142857142858,
+     7.142857142857143
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     32.142857142857146,
+     32.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D02",
+   "n_posts": 17,
+   "k": 3,
+   "base": 33.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 33.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 33.57142857142857,
+    "unpublish": [
+     33.57142857142857,
+     26.428571428571427,
+     22.142857142857142,
+     22.142857142857142
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857
+    ],
+    "tags": [
+     33.57142857142857,
+     33.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D03",
+   "n_posts": 20,
+   "k": 3,
+   "base": 26.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 26.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 26.428571428571427,
+    "unpublish": [
+     26.428571428571427,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     26.428571428571427,
+     26.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D04",
+   "n_posts": 16,
+   "k": 3,
+   "base": 37.8571,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 37.86
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 37.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 37.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 37.8571,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 37.857142857142854,
+    "unpublish": [
+     37.857142857142854,
+     25.0,
+     13.571428571428571,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     37.857142857142854,
+     37.857142857142854,
+     37.857142857142854,
+     37.857142857142854
+    ],
+    "tags": [
+     37.857142857142854,
+     37.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D05",
+   "n_posts": 17,
+   "k": 3,
+   "base": 35.0,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 35.0,
+    "unpublish": [
+     35.0,
+     26.428571428571427,
+     19.285714285714285,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     35.0,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     35.0,
+     35.0
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D06",
+   "n_posts": 12,
+   "k": 2,
+   "base": 61.4286,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 61.42857142857143,
+    "unpublish": [
+     61.42857142857143,
+     47.142857142857146,
+     35.0
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     61.42857142857143,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146
+    ],
+    "tags": [
+     61.42857142857143,
+     61.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "D07",
+   "n_posts": 14,
+   "k": 2,
+   "base": 21.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 21.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 21.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 21.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 21.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 21.428571428571427,
+    "unpublish": [
+     21.428571428571427,
+     13.571428571428571,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     21.428571428571427,
+     13.571428571428571,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "tags": [
+     21.428571428571427,
+     21.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D08",
+   "n_posts": 25,
+   "k": 4,
+   "base": 30.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.714285714285715,
+    "unpublish": [
+     30.714285714285715,
+     22.142857142857142,
+     16.428571428571427,
+     12.142857142857142,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     30.714285714285715,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     30.714285714285715,
+     30.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D09",
+   "n_posts": 27,
+   "k": 4,
+   "base": 42.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 28.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 28.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.857142857142854,
+    "unpublish": [
+     42.857142857142854,
+     28.571428571428573,
+     20.714285714285715,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     42.857142857142854,
+     28.571428571428573,
+     28.571428571428573,
+     20.714285714285715,
+     12.857142857142858
+    ],
+    "tags": [
+     42.857142857142854,
+     42.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D10",
+   "n_posts": 27,
+   "k": 4,
+   "base": 26.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 26.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 26.428571428571427,
+    "unpublish": [
+     26.428571428571427,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     26.428571428571427,
+     26.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D11",
+   "n_posts": 29,
+   "k": 5,
+   "base": 42.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.857142857142854,
+    "unpublish": [
+     42.857142857142854,
+     34.285714285714285,
+     26.428571428571427,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     42.857142857142854,
+     34.285714285714285,
+     34.285714285714285,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     42.857142857142854,
+     42.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D12",
+   "n_posts": 26,
+   "k": 4,
+   "base": 32.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 32.142857142857146,
+    "unpublish": [
+     32.142857142857146,
+     23.571428571428573,
+     23.571428571428573,
+     23.571428571428573,
+     23.571428571428573
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     32.142857142857146,
+     32.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D13",
+   "n_posts": 28,
+   "k": 4,
+   "base": 32.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 32.142857142857146,
+    "unpublish": [
+     32.142857142857146,
+     17.857142857142858,
+     12.142857142857142,
+     7.857142857142857,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     32.142857142857146,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858
+    ],
+    "tags": [
+     32.142857142857146,
+     32.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D14",
+   "n_posts": 28,
+   "k": 4,
+   "base": 30.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 30.714285714285715,
+    "unpublish": [
+     30.714285714285715,
+     23.571428571428573,
+     17.857142857142858,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     30.714285714285715,
+     30.714285714285715,
+     30.714285714285715,
+     30.714285714285715,
+     30.714285714285715,
+     30.714285714285715
+    ],
+    "tags": [
+     30.714285714285715,
+     30.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D15",
+   "n_posts": 28,
+   "k": 4,
+   "base": 32.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 32.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 32.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 32.142857142857146,
+    "unpublish": [
+     32.142857142857146,
+     23.571428571428573,
+     17.857142857142858,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     32.142857142857146,
+     32.142857142857146
+    ],
+    "tags": [
+     32.142857142857146,
+     32.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D16",
+   "n_posts": 28,
+   "k": 4,
+   "base": 31.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 31.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 31.428571428571427,
+    "unpublish": [
+     31.428571428571427,
+     25.714285714285715,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     31.428571428571427,
+     31.428571428571427,
+     23.571428571428573,
+     23.571428571428573
+    ],
+    "tags": [
+     31.428571428571427,
+     31.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D17",
+   "n_posts": 29,
+   "k": 5,
+   "base": 55.7143,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 35.0,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 55.714285714285715,
+    "unpublish": [
+     55.714285714285715,
+     47.142857142857146,
+     38.57142857142857,
+     26.428571428571427,
+     19.285714285714285,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     55.714285714285715,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146,
+     39.285714285714285
+    ],
+    "tags": [
+     55.714285714285715,
+     55.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "D18",
+   "n_posts": 29,
+   "k": 5,
+   "base": 42.1429,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 27.86
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.142857142857146,
+    "unpublish": [
+     42.142857142857146,
+     27.857142857142858,
+     19.285714285714285,
+     13.571428571428571,
+     7.857142857142857,
+     7.857142857142857
+    ],
+    "unpublish_stopped_at": 4,
+    "rewrite": [
+     42.142857142857146,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "tags": [
+     42.142857142857146,
+     42.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D19",
+   "n_posts": 27,
+   "k": 4,
+   "base": 19.2857,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 19.29
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 19.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 19.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 19.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 19.285714285714285,
+    "unpublish": [
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": 0,
+    "rewrite": [
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285,
+     19.285714285714285
+    ],
+    "tags": [
+     19.285714285714285,
+     19.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D20",
+   "n_posts": 27,
+   "k": 4,
+   "base": 26.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 26.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 26.428571428571427,
+    "unpublish": [
+     26.428571428571427,
+     22.142857142857142,
+     14.285714285714286,
+     14.285714285714286,
+     14.285714285714286
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     26.428571428571427,
+     26.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D21",
+   "n_posts": 29,
+   "k": 5,
+   "base": 49.2857,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 49.285714285714285,
+    "unpublish": [
+     49.285714285714285,
+     35.0,
+     26.428571428571427,
+     20.714285714285715,
+     15.0,
+     7.142857142857143
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     49.285714285714285,
+     35.0,
+     35.0,
+     35.0
+    ],
+    "tags": [
+     49.285714285714285,
+     49.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D22",
+   "n_posts": 28,
+   "k": 4,
+   "base": 31.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 31.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 31.428571428571427,
+    "unpublish": [
+     31.428571428571427,
+     25.714285714285715,
+     21.428571428571427,
+     21.428571428571427,
+     21.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "tags": [
+     31.428571428571427,
+     31.428571428571427
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "D23",
+   "n_posts": 28,
+   "k": 4,
+   "base": 61.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 40.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 61.42857142857143,
+    "unpublish": [
+     61.42857142857143,
+     40.0,
+     31.428571428571427,
+     23.571428571428573,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     61.42857142857143,
+     47.142857142857146,
+     39.285714285714285,
+     39.285714285714285
+    ],
+    "tags": [
+     61.42857142857143,
+     61.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "D24",
+   "n_posts": 28,
+   "k": 4,
+   "base": 33.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 33.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 33.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 33.57142857142857,
+    "unpublish": [
+     33.57142857142857,
+     25.0,
+     17.857142857142858,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     33.57142857142857,
+     33.57142857142857,
+     33.57142857142857
+    ],
+    "tags": [
+     33.57142857142857,
+     33.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E01",
+   "n_posts": 17,
+   "k": 3,
+   "base": 52.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 52.857142857142854,
+    "unpublish": [
+     52.857142857142854,
+     38.57142857142857,
+     24.285714285714285,
+     17.857142857142858
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     52.857142857142854,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857
+    ],
+    "tags": [
+     52.857142857142854,
+     52.857142857142854
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E03",
+   "n_posts": 18,
+   "k": 3,
+   "base": 31.4286,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 31.43
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 31.428571428571427,
+    "unpublish": [
+     31.428571428571427,
+     15.0,
+     10.0,
+     5.714285714285714
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     31.428571428571427,
+     22.857142857142858,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858,
+     17.857142857142858
+    ],
+    "tags": [
+     31.428571428571427,
+     23.571428571428573
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E04",
+   "n_posts": 19,
+   "k": 3,
+   "base": 48.5714,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 34.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 34.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 48.57142857142857,
+    "unpublish": [
+     48.57142857142857,
+     34.285714285714285,
+     20.0,
+     11.428571428571429
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     48.57142857142857,
+     34.285714285714285,
+     25.714285714285715,
+     25.714285714285715,
+     25.714285714285715,
+     25.714285714285715
+    ],
+    "tags": [
+     48.57142857142857,
+     48.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E05",
+   "n_posts": 18,
+   "k": 3,
+   "base": 13.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 13.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 13.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 13.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 13.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 13.571428571428571,
+    "unpublish": [
+     13.571428571428571,
+     13.571428571428571,
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": 0,
+    "rewrite": [
+     13.571428571428571,
+     13.571428571428571
+    ],
+    "tags": [
+     13.571428571428571,
+     5.714285714285714
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E06",
+   "n_posts": 28,
+   "k": 4,
+   "base": 45.7143,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 31.43
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 31.4286,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 31.4286,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 31.4286,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 45.714285714285715,
+    "unpublish": [
+     45.714285714285715,
+     31.428571428571427,
+     27.142857142857142,
+     23.571428571428573,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     45.714285714285715,
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427
+    ],
+    "tags": [
+     45.714285714285715,
+     45.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E07",
+   "n_posts": 27,
+   "k": 4,
+   "base": 46.4286,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 37.86
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 37.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 37.8571,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 37.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 46.42857142857143,
+    "unpublish": [
+     46.42857142857143,
+     37.857142857142854,
+     30.0,
+     24.285714285714285,
+     18.571428571428573
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     46.42857142857143,
+     37.857142857142854,
+     37.857142857142854
+    ],
+    "tags": [
+     46.42857142857143,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E08",
+   "n_posts": 27,
+   "k": 4,
+   "base": 50.0,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 35.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 50.0,
+    "unpublish": [
+     50.0,
+     35.714285714285715,
+     27.142857142857142,
+     21.428571428571427,
+     15.714285714285714
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     50.0,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "tags": [
+     50.0,
+     50.0
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E10",
+   "n_posts": 25,
+   "k": 4,
+   "base": 54.2857,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 40.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 40.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 54.285714285714285,
+    "unpublish": [
+     54.285714285714285,
+     40.0,
+     31.428571428571427,
+     31.428571428571427,
+     31.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     54.285714285714285,
+     40.0,
+     40.0,
+     40.0,
+     40.0
+    ],
+    "tags": [
+     54.285714285714285,
+     54.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E11",
+   "n_posts": 28,
+   "k": 4,
+   "base": 39.2857,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 39.285714285714285,
+    "unpublish": [
+     39.285714285714285,
+     26.428571428571427,
+     20.714285714285715,
+     20.714285714285715,
+     20.714285714285715
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285
+    ],
+    "tags": [
+     39.285714285714285,
+     39.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E12",
+   "n_posts": 26,
+   "k": 4,
+   "base": 35.7143,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 35.71
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 35.7143,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 35.714285714285715,
+    "unpublish": [
+     35.714285714285715,
+     27.142857142857142,
+     22.857142857142858,
+     22.857142857142858,
+     22.857142857142858
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715,
+     35.714285714285715
+    ],
+    "tags": [
+     35.714285714285715,
+     35.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E13",
+   "n_posts": 26,
+   "k": 4,
+   "base": 57.8571,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 39.29
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 39.2857,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 57.857142857142854,
+    "unpublish": [
+     57.857142857142854,
+     39.285714285714285,
+     32.142857142857146,
+     24.285714285714285,
+     18.571428571428573
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     57.857142857142854,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285,
+     39.285714285714285
+    ],
+    "tags": [
+     57.857142857142854,
+     50.0
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E14",
+   "n_posts": 25,
+   "k": 4,
+   "base": 44.2857,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.0
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 30.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 30.0,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 30.0,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 44.285714285714285,
+    "unpublish": [
+     44.285714285714285,
+     30.0,
+     24.285714285714285,
+     20.714285714285715,
+     20.714285714285715
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     44.285714285714285,
+     30.0,
+     30.0,
+     30.0,
+     30.0
+    ],
+    "tags": [
+     44.285714285714285,
+     36.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E15",
+   "n_posts": 24,
+   "k": 4,
+   "base": 29.2857,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 29.29
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 29.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 29.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 29.2857,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 29.285714285714285,
+    "unpublish": [
+     29.285714285714285,
+     23.571428571428573,
+     16.428571428571427,
+     16.428571428571427,
+     16.428571428571427
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285,
+     29.285714285714285
+    ],
+    "tags": [
+     29.285714285714285,
+     29.285714285714285
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E16",
+   "n_posts": 26,
+   "k": 4,
+   "base": 45.0,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 30.71
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 30.7143,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 45.0,
+    "unpublish": [
+     45.0,
+     30.714285714285715,
+     23.571428571428573,
+     17.857142857142858,
+     17.857142857142858
+    ],
+    "unpublish_stopped_at": 3,
+    "rewrite": [
+     45.0,
+     30.714285714285715
+    ],
+    "tags": [
+     45.0,
+     45.0
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E17",
+   "n_posts": 27,
+   "k": 4,
+   "base": 40.7143,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 26.43
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 26.4286,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 26.4286,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 26.4286,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 40.714285714285715,
+    "unpublish": [
+     40.714285714285715,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     40.714285714285715,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427,
+     26.428571428571427
+    ],
+    "tags": [
+     40.714285714285715,
+     40.714285714285715
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  },
+  {
+   "persona_id": "E18",
+   "n_posts": 25,
+   "k": 4,
+   "base": 22.1429,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 22.14
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 22.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 22.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 22.1429,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 22.142857142857142,
+    "unpublish": [
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142
+    ],
+    "unpublish_stopped_at": 0,
+    "rewrite": [
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142,
+     22.142857142857142
+    ],
+    "tags": [
+     22.142857142857142,
+     22.142857142857142
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E19",
+   "n_posts": 27,
+   "k": 4,
+   "base": 61.4286,
+   "rec": {
+    "hidden": 2,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 2,
+     "risk": 38.5714,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 2,
+     "risk": 38.5714,
+     "hidden": 1,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 2,
+     "risk": 38.5714,
+     "hidden": 2,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 61.42857142857143,
+    "unpublish": [
+     61.42857142857143,
+     47.142857142857146,
+     38.57142857142857,
+     31.428571428571427,
+     27.142857142857142
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     61.42857142857143,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146,
+     47.142857142857146
+    ],
+    "tags": [
+     61.42857142857143,
+     61.42857142857143
+    ]
+   },
+   "rec_burden": {
+    "main": 2,
+    "count": 2,
+    "steep": 2
+   }
+  },
+  {
+   "persona_id": "E20",
+   "n_posts": 27,
+   "k": 4,
+   "base": 38.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 38.57142857142857,
+    "unpublish": [
+     38.57142857142857,
+     20.714285714285715,
+     12.142857142857142,
+     12.142857142857142,
+     12.142857142857142
+    ],
+    "unpublish_stopped_at": 2,
+    "rewrite": [
+     38.57142857142857,
+     20.714285714285715,
+     20.714285714285715,
+     20.714285714285715,
+     20.714285714285715
+    ],
+    "tags": [
+     38.57142857142857,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "E21",
+   "n_posts": 26,
+   "k": 4,
+   "base": 38.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 38.57142857142857,
+    "unpublish": [
+     38.57142857142857,
+     30.0,
+     30.0,
+     30.0,
+     30.0
+    ],
+    "unpublish_stopped_at": 1,
+    "rewrite": [
+     38.57142857142857,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     30.0,
+     22.142857142857142
+    ],
+    "tags": [
+     38.57142857142857,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "S01",
+   "n_posts": 16,
+   "k": 3,
+   "base": 38.5714,
+   "rec": {
+    "hidden": 0,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 38.57
+   },
+   "opt": {
+    "main": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 0,
+     "risk": 38.5714,
+     "hidden": 0,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 38.57142857142857,
+    "unpublish": [
+     38.57142857142857,
+     25.714285714285715,
+     19.285714285714285,
+     13.571428571428571
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857,
+     38.57142857142857
+    ],
+    "tags": [
+     38.57142857142857,
+     38.57142857142857
+    ]
+   },
+   "rec_burden": {
+    "main": 0,
+    "count": 0,
+    "steep": 0
+   }
+  },
+  {
+   "persona_id": "S01b",
+   "n_posts": 15,
+   "k": 2,
+   "base": 42.1429,
+   "rec": {
+    "hidden": 1,
+    "tags_off": false,
+    "rewrite": 0,
+    "met": true,
+    "risk": 27.86
+   },
+   "opt": {
+    "main": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    },
+    "count": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 0,
+     "rewrite": 1,
+     "tags_off": false
+    },
+    "steep": {
+     "burden": 1,
+     "risk": 27.8571,
+     "hidden": 1,
+     "rewrite": 0,
+     "tags_off": false
+    }
+   },
+   "curves": {
+    "base": 42.142857142857146,
+    "unpublish": [
+     42.142857142857146,
+     27.857142857142858,
+     19.285714285714285
+    ],
+    "unpublish_stopped_at": null,
+    "rewrite": [
+     42.142857142857146,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858,
+     27.857142857142858
+    ],
+    "tags": [
+     42.142857142857146,
+     42.142857142857146
+    ]
+   },
+   "rec_burden": {
+    "main": 1,
+    "count": 1,
+    "steep": 1
+   }
+  }
+ ]
+}
