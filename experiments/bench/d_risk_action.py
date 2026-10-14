@@ -34,9 +34,11 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-for _p in (ROOT / "src", ROOT / "scripts"):
+for _p in (ROOT / "src", ROOT / "scripts", Path(__file__).resolve().parent):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
+
+from d_preds import read_pred_rows  # noqa: E402 — spans 없음 · 중복 post_id 는 멈춘다 (#359 B 리뷰)
 
 CORPUS = ROOT / "data" / "corpus" / "v0"
 GOLD_DIR = CORPUS / "gold"
@@ -75,11 +77,7 @@ def load_test_ids(path: Path = TEST_IDS_PATH) -> frozenset[str]:
 def read_preds(preds_path: str | Path, *, post_ids: Iterable[str] | None = None,
                allow_test: bool = False, test_ids: frozenset[str] | None = None) -> dict[str, list[dict]]:
     """1단 예측 jsonl → {post_id: spans}. test 글이 섞이면 allow_test 없이는 멈춘다."""
-    preds: dict[str, list[dict]] = {}
-    for line in Path(preds_path).read_text(encoding="utf-8-sig").splitlines():
-        if line.strip():
-            row = json.loads(line)
-            preds[str(row["post_id"])] = list(row.get("spans") or [])
+    preds: dict[str, list[dict]] = {row["post_id"]: list(row["spans"]) for row in read_pred_rows(preds_path)}
     if post_ids is not None:
         keep = set(post_ids)
         preds = {pid: s for pid, s in preds.items() if pid in keep}

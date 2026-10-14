@@ -57,13 +57,10 @@ def _load_test_ids() -> frozenset[str]:
 
 
 def _read_preds(preds_path: Path) -> list[dict[str, Any]]:
-    """JSONL 예측 파일을 읽는다."""
-    rows = []
-    for line in preds_path.read_text(encoding="utf-8-sig").splitlines():
-        line = line.strip()
-        if line:
-            rows.append(json.loads(line))
-    return rows
+    """JSONL 예측 파일을 읽는다 — spans 없음 · 리스트 아님 · 중복 post_id 는 멈춘다 (d_preds · #359 B 리뷰)."""
+    _ensure_bench_path()
+    from d_preds import read_pred_rows
+    return read_pred_rows(preds_path)
 
 
 def _check_test_leak(preds: list[dict], allow_test: bool) -> None:

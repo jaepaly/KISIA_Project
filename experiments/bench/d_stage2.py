@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-for _p in (ROOT / "src", ROOT / "experiments" / "exp08-stage2-sft"):
+for _p in (ROOT / "src", ROOT / "experiments" / "exp08-stage2-sft", Path(__file__).resolve().parent):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
@@ -86,7 +86,9 @@ def check_no_test(post_ids: Iterable[str], *, allow_test: bool = False, splits: 
 
 
 def read_preds(path: Path) -> list[dict[str, Any]]:
-    return [json.loads(line) for line in Path(path).read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+    """spans 없음 · 리스트 아님 · 중복 post_id 는 멈춘다 (d_preds · #359 B 리뷰)."""
+    from d_preds import read_pred_rows
+    return read_pred_rows(path)
 
 
 def load_corpus(posts_dir: Path = CORPUS_POSTS) -> dict[str, dict[str, Any]]:
@@ -269,7 +271,11 @@ def run_stage2(preds_path: str | Path, out_dir: str | Path, *, mode: str = "rule
 def _read_verdicts(path: Path) -> dict[str, dict[str, str]]:
     """stage2_preds.jsonl → {user_ref: {속성: verdict}}."""
     out: dict[str, dict[str, str]] = {}
-    for r in read_preds(path):
+    # 2단 결과 파일(user_ref · findings)이라 1단 예측 검증(read_preds)을 거치지 않는다
+    for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
+        if not line.strip():
+            continue
+        r = json.loads(line)
         out[r["user_ref"]] = {a: r["findings"][a]["verdict"] for a in ATTRS}
     return out
 
