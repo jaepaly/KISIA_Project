@@ -476,3 +476,17 @@ def test_scan_export_path_has_same_caps(admission, monkeypatch):
                       for i in range(30)]}
     monkeypatch.setattr(server.sns_adapter, "load", lambda *a, **k: demo)
     assert c.post("/scan/u_00000000").json() == {"n": 30}
+
+
+def test_cancel_during_post_admission_disconnect_check_releases_slot():
+    """자리를 잡은 직후 끊김 확인 중에 취소돼도 자리를 돌려준다 (Codex 2차 — 예전엔 영구히 새어 이후 점검이 모두 429)."""
+    import asyncio
+    adm = server._Admission(1, 1, 0.5)
+
+    class Req:
+        async def is_disconnected(self):
+            raise asyncio.CancelledError
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(adm.run(Req(), lambda: None))
+    assert adm.sem.acquire(blocking=False) and not adm.sem.acquire(blocking=False)
+    adm.sem.release()

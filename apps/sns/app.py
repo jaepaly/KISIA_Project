@@ -444,6 +444,16 @@ def new():
         return _todo("글 작성", "§4")
 
 
+def _author_totals(author_id: str) -> tuple[int, int]:
+    """계정의 글 수 · 글자 수(제목 + 본문 + 사진 설명) — 공개 · 비공개 모두."""
+    n, chars = db().execute(
+        "SELECT COUNT(*), COALESCE(SUM(LENGTH(COALESCE(title,'')) + LENGTH(COALESCE(body,''))), 0) FROM posts WHERE author_id = ?",
+        (author_id,)).fetchone()
+    chars += db().execute("SELECT COALESCE(SUM(LENGTH(COALESCE(caption,''))), 0) FROM photos WHERE post_id IN"
+                          " (SELECT post_id FROM posts WHERE author_id = ?)", (author_id,)).fetchone()[0]
+    return n, chars
+
+
 @app.post("/posts")
 def create_post():
     """조치 시연의 재료가 되는 글을 여기서 만든다. source는 항상 'manual'이다 —
@@ -475,12 +485,10 @@ def create_post():
         _reject(413, f"사진 설명은 글 하나에 {MAX_CAPTIONS}개까지 쓸 수 있습니다.")
     for c in captions:
         _too_long(c, MAX_CAPTION_CHARS, "사진 설명")
-    # 계정 하나의 글 수 · 글자 수 — 파도풀 계정 점검의 상한과 같게 (넘으면 점검이 413 으로 막힌다)
-    n, chars = db().execute(
-        "SELECT COUNT(*), COALESCE(SUM(LENGTH(COALESCE(title,'')) + LENGTH(COALESCE(body,''))), 0) FROM posts WHERE author_id = ?",
-        (author_id,)).fetchone()
-    chars += db().execute("SELECT COALESCE(SUM(LENGTH(COALESCE(caption,''))), 0) FROM photos WHERE post_id IN"
-                          " (SELECT post_id FROM posts WHERE author_id = ?)", (author_id,)).fetchone()[0]
+    # 계정 하나의 글 수 · 글자 수 — 파도풀 계정 점검의 상한과 같게 (넘으면 점검이 413 으로 막힌다).
+    # 세는 것부터 저장까지 한 쓰기 트랜잭션 — 같은 세션의 동시 게시가 같은 잔여량을 읽고 둘 다 저장하지 않게 (Codex 2차)
+    db().execute("BEGIN IMMEDIATE")
+    n, chars = _author_totals(author_id)
     new_chars = len(f.get("title") or "") + len(f["body"]) + sum(map(len, captions))
     if n >= MAX_POSTS_PER_AUTHOR:
         _reject(413, f"이 계정은 글을 {MAX_POSTS_PER_AUTHOR}편까지 쓸 수 있습니다. 다른 글을 지우거나 계정을 처음 상태로 되돌려 주세요.")

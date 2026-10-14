@@ -263,9 +263,6 @@ class _Admission:
     async def run(self, request: Request | None, fn, *args):
         """자리를 잡고 fn(*args) 를 스레드에서 돌린다. 자리는 그 스레드가 끝날 때 돌려준다."""
         await self.acquire(request)
-        if request is not None and await request.is_disconnected():   # 자리를 잡는 사이 떠났다 — 돌리지 않는다
-            self.sem.release()
-            raise HTTPException(status_code=499, detail="요청이 취소되었습니다")
         # 자리를 돌려줄 쪽은 정확히 하나 — 스레드가 먼저 「시작」을 적으면 스레드가, 기다리던 쪽이 먼저 「취소」를 적으면
         # 기다리던 쪽이 돌려준다(취소된 뒤 늦게 도는 스레드는 점검도 반환도 하지 않는다). 둘 다 돌려주면 자리가 늘어난다 (Codex 검토)
         state = {"v": "pending"}
@@ -282,6 +279,9 @@ class _Admission:
                 self.sem.release()
 
         try:
+            # 자리를 잡는 사이 떠났으면 돌리지 않는다 — 이 확인도 반환 보호 안에서 (여기서 취소돼도 자리를 돌려준다 · Codex 2차)
+            if request is not None and await request.is_disconnected():
+                raise HTTPException(status_code=499, detail="요청이 취소되었습니다")
             return await self._in_thread(work)
         except BaseException:
             with state_lock:

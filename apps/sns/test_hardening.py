@@ -320,3 +320,33 @@ def test_too_large_form_is_korean_413(env):
     c, _ = _new_visitor(appmod.app)
     r = _write(c, body="a" * (300 * 1024))
     assert r.status_code == 413 and "너무 큽니다" in r.get_data(as_text=True)
+
+
+def test_concurrent_posts_cannot_both_pass_author_cap(env, monkeypatch):
+    """같은 세션의 동시 게시 — 세기부터 저장까지 한 쓰기 트랜잭션이라 둘 다 상한을 통과하지 못한다 (Codex 2차)."""
+    import threading
+    appmod, root = env
+    c, sid = _new_visitor(appmod.app)
+    monkeypatch.setattr(appmod, "MAX_POSTS_PER_AUTHOR", 2)      # 시드 1편 — 1편만 더 쓸 수 있다
+    real_totals = appmod._author_totals
+
+    def slow_totals(aid):
+        out = real_totals(aid)
+        time.sleep(0.3)                                          # 둘이 같은 잔여량을 읽을 틈
+        return out
+    monkeypatch.setattr(appmod, "_author_totals", slow_totals)
+    codes = []
+
+    def go():
+        cl = appmod.app.test_client()
+        cl.set_cookie(key="veilo_sid", value=sid)
+        codes.append(_write(cl).status_code)
+    ts = [threading.Thread(target=go) for _ in range(2)]
+    for t in ts:
+        t.start()
+    for t in ts:
+        t.join()
+    assert sorted(codes) == [302, 413]
+    con = sqlite3.connect(root / "sessions" / f"{sid}.db")
+    assert con.execute("SELECT COUNT(*) FROM posts WHERE author_id='S01'").fetchone()[0] == 2
+    con.close()
