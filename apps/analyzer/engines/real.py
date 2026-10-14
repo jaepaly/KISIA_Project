@@ -26,7 +26,7 @@ from pathlib import Path
 for _k in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE", "HF_HUB_DISABLE_TELEMETRY", "HF_HUB_DISABLE_IMPLICIT_TOKEN"):
     os.environ.setdefault(_k, "1")
 
-from .c23 import conditions, contribution, per_post_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
+from .c23 import conditions, contribution, per_post_k, projected_k, specificity  # noqa: F401 — C2·C3 실제 (k 엔진 · LOO)
 from . import c1_rules as _c1_rules
 
 _ROOT = Path(__file__).resolve().parents[3]

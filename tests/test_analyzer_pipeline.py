@@ -437,3 +437,112 @@ def test_failed_scan_does_not_learn_rate(monkeypatch):
     server._run_pipeline("u_00000000", posts)
     assert server._scan_rate["samples"] == 1
 
+
+# ── 조치별 「바꾸면 k」 (k_by_action · 화면 전용) — 비공개와 같은 k 계산을 위치 태그 · 바꿔 쓰기에도
+def _spans_by_post(posts: list[dict], spans: dict[str, list[dict]]) -> dict:
+    return {p["post_id"]: {"spans": spans.get(p["post_id"], [])} for p in posts}
+
+
+def _stage2_output(actions: list[dict], rewrites: list[dict] | None = None) -> dict:
+    return {"recommendation": {"actions": actions}, "rewrites": rewrites or []}
+
+
+def test_projected_k_matches_recomputed_k_per_action():
+    """각 조치 값 = 그 조치를 적용한 글 묶음으로 C2 k 를 처음부터 다시 센 값 (recommend 의 projected_delta 와 같은 단독 효과)."""
+    posts = [_post("p1", geo_tag="강남구 역삼동"), _post("p2"), _post("p3"), _post("p4", geo_tag="강남구 역삼동")]
+    spans = dict(SPANS)
+    sbp = _spans_by_post(posts, spans)
+    out = c23.projected_k(posts, sbp, _stage2_output(
+        [{"action_type": "unpublish", "targets": [{"kind": "post", "ref": "p4"}]},
+         {"action_type": "activity_meta", "targets": [{"kind": "meta_field", "ref": "geo_tag"}]},
+         {"action_type": "rewrite", "targets": [{"kind": "post", "ref": "p1"}, {"kind": "post", "ref": "p2"}]}],
+        [{"post_id": "p2", "span_id": "p2_s01", "suggestion": "40대", "residual_risk": "partial"},
+         {"post_id": "p2", "span_id": "p2_s01", "suggestion": "중년", "residual_risk": "partial"},  # 같은 스팬은 한 번만
+         {"post_id": "p9", "span_id": "p9_s01", "suggestion": "x", "residual_risk": "none"}]))     # 없는 글은 건너뛴다
+
+    def k_of(ps: list[dict], sp: dict) -> float | None:
+        return _k(_run("u_0000aaaa", ps, sp))
+
+    base = k_of(posts, spans)
+    assert out["k"] == base and base is not None
+    ka = out["by_action"]
+    # 비공개: p4 를 뺀 k — 글 한 편이면 k_by_post.per_post 와 같다
+    assert ka["unpublish"] == k_of([p for p in posts if p["post_id"] != "p4"], spans)
+    kp = c23.per_post_k(posts, sbp)
+    assert ka["unpublish"] == next(r["k_without"] for r in kp["per_post"] if r["post_id"] == "p4")
+    # 위치 태그: 비공개 대상(p4)이 아닌 글의 태그만 뗀다 — p4 태그는 남는다
+    assert ka["activity_meta"] == k_of([_post("p1"), posts[1], posts[2], posts[3]], spans)
+    # 바꿔 쓰기: 대상 글의 명시 스팬을 지운다 (p3 의 implicit 「남편이」는 대상 글이 아니어도 그대로)
+    assert ka["rewrite"] == k_of(posts, {**spans, "p1": [], "p2": []})
+    assert all(v >= base for v in ka.values())
+    # 후보 스팬 하나: 그 스팬만 지운다
+    assert out["by_span"] == [{"post_id": "p2", "span_id": "p2_s01", "k_after": k_of(posts, {**spans, "p2": []})}]
+    assert out["by_span"][0]["k_after"] > base
+
+
+def test_projected_k_follows_real_recommend_actions():
+    """실제 추천 엔진이 낸 조치 그대로 — 대상 해석(post · meta_field)이 어긋나지 않는다."""
+    from kopl.c4_stage2.recommend import recommend
+
+    posts = [_post("p1", geo_tag="강남구 역삼동"), _post("p2"), _post("p3"), _post("p4")]
+    rec = recommend(user_ref="u_0000aaaa", target_risk=0.0,
+                    posts=[{"post_id": p["post_id"], "spans": SPANS[p["post_id"]],
+                            "geo_tag": p["activity_meta"]["geo_tag"]} for p in posts])
+    out = c23.projected_k(posts, _spans_by_post(posts, SPANS), {"recommendation": rec})
+    kinds = {a["action_type"] for a in rec["actions"]}
+    assert kinds and set(out["by_action"]) == kinds
+    for v in out["by_action"].values():
+        assert v is None or v >= out["k"]
+
+
+def test_projected_k_without_actions_or_posts():
+    assert c23.projected_k([], {}, None) is None
+    out = c23.projected_k(POSTS, _spans_by_post(POSTS, SPANS), None)
+    assert out["by_action"] == {} and out["by_span"] == [] and out["k"] is not None
+
+
+def test_mock_projected_k_has_same_shape():
+    from apps.analyzer.engines import mock
+
+    posts = [_post("p1", body="저수지 옆 출근길"), _post("p2", body="아무 말")]
+    sbp = {p["post_id"]: mock.detect_spans(p) for p in posts}
+    st = mock.stage2("u_0000aaaa", posts)["output"]
+    st["rewrites"] = [{"post_id": "p1", "span_id": "p1_s01", "suggestion": "물가", "residual_risk": "none"}]
+    st["recommendation"]["actions"].append({"action_type": "rewrite", "targets": [{"kind": "post", "ref": "p1"}]})
+    out = mock.projected_k(posts, sbp, st)
+    assert out["k"] == 5.0                                   # 목 specificity — 위치 단서가 있으면 5
+    assert set(out["by_action"]) == {"unpublish", "rewrite"}
+    assert out["by_action"]["unpublish"] is None             # p1(위치 단서)을 빼면 목 k 도 산출 불가
+    assert out["by_span"][0]["k_after"] is None              # 「저수지」(위치)를 지우면 산출 불가
+
+
+def test_server_reports_k_by_action(monkeypatch):
+    """서버 응답에 k_by_action — 목 기본 경로(패치 없음)와 실제 k 엔진 둘 다."""
+    pytest.importorskip("fastapi")
+    from apps.analyzer import server
+    from apps.analyzer.engines import mock
+
+    posts = [_post("p1", body="저수지", geo_tag="강남구 역삼동"), _post("p2", body="출근")]
+    out = server._run_pipeline("u_0000aaaa", posts)          # ENGINE_MODE=mock 그대로
+    assert out["k_by_action"]["k"] == out["specificity"]["output"]["k"]
+    assert "unpublish" in out["k_by_action"]["by_action"]
+
+    def fake_detect(record: dict) -> dict:
+        return {"spans": SPANS.get(record["post_id"], [])}
+
+    def fake_stage2(user_ref, ps, risk_current=0.0, risk_target=40.0):
+        doc = mock.stage2(user_ref, ps, risk_current, risk_target)
+        doc["output"]["recommendation"]["actions"] = [
+            {"action_type": "activity_meta", "targets": [{"kind": "meta_field", "ref": "geo_tag"}]}]
+        return doc
+
+    for name, fn in (("detect_spans", fake_detect), ("conditions", c23.conditions), ("specificity", c23.specificity),
+                     ("contribution", c23.contribution), ("per_post_k", c23.per_post_k),
+                     ("projected_k", c23.projected_k), ("stage2", fake_stage2)):
+        monkeypatch.setattr(server.engine, name, fn)
+    posts = [dict(p) for p in POSTS]
+    posts[1] = _post("p2", geo_tag="강남구 역삼동")
+    out = server._run_pipeline("u_0000aaaa", posts)
+    ka = out["k_by_action"]
+    assert ka["k"] == out["specificity"]["output"]["k"]
+    assert ka["by_action"]["activity_meta"] == _k(_run("u_0000aaaa", [dict(p) for p in POSTS], SPANS))

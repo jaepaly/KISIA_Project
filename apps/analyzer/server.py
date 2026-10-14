@@ -194,6 +194,9 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
         "contribution": contrib,
         "k_by_post": engine.per_post_k(posts, spans_by_post),
         "stage2": stage2,
+        # 조치별 「바꾸면 같은 조건의 사람 몇 명」 — 비공개(k_by_post)와 같은 k 계산을 위치 태그 지우기 · 바꿔 쓰기에도.
+        # stage2-io Action 에 사람 수 칸이 없어 계약 밖 · 화면 전용으로 둔다 (k_by_post 와 같은 방식)
+        "k_by_action": engine.projected_k(posts, spans_by_post, stage2.get("output")),
         # 계정 링크 · 이메일 · 전화 · @아이디 — 하나만으로 글쓴이에게 닿는다. k 로 잴 대상이 아니라 위험 점수와 별개로 먼저 안내한다
         # (스팬 계약 밖 · 화면 전용). 글마다 [{text_id, start, end, kind, label, value}]
         "direct_identifiers": {p["post_id"]: find_direct_identifiers(_channels(p)) for p in posts},

@@ -4,6 +4,7 @@
 - k: ``estimate_k`` — 여러 글을 엮은 k (위치 교집합 · L2 감쇠 · 방어적 최소, #302)
 - 기여도: ``kopl.c3_contribution.leave_one_out`` — risk_fn 은 C2 ``risk_total`` (exp10 · 추천 엔진과 같은 위험도)
 - 글별 k: ``k_by_post`` — 「이 글을 내리면 후보가 몇 명이 되나」
+- 조치별 k: ``projected_k`` — 위치 태그를 떼거나 표현을 바꾸면 몇 명이 되나 (projection.py · 같은 k 엔진)
 
 목 엔진(mock.py)과 같은 함수 모양이다. 원문은 받은 그대로 계산에만 쓰고 저장하지 않는다.
 """
@@ -12,8 +13,10 @@ from __future__ import annotations
 from typing import Any, Mapping, Sequence
 
 from kopl.c2_specificity.engine import risk_total
-from kopl.c2_specificity.k_engine import conditions_from_posts, k_by_post, specificity_document
+from kopl.c2_specificity.k_engine import conditions_from_posts, estimate_k, k_by_post, specificity_document
 from kopl.c3_contribution.loo import leave_one_out
+
+from .projection import project
 
 # 단서가 하나도 없을 때 계약(conditions minItems 1)을 지키는 자리표시 — confidence 0 이라 k 를 좁히지 않는다
 _NONE_DETECTED = {"axis": "occupation", "kind": "none_detected", "value": "NONE",
@@ -80,3 +83,24 @@ def contribution(user_ref: str, posts: Sequence[Mapping[str, Any]], removed_post
 def per_post_k(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, Mapping[str, Any]]) -> dict:
     """화면용 — 글마다 「내리면 k」와 내리는 순서."""
     return k_by_post(_k_posts(posts, spans_by_post))
+
+
+def projected_k(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, Mapping[str, Any]],
+                stage2_output: Mapping[str, Any] | None) -> dict | None:
+    """화면용 — 조치마다 「바꾸면 k」 (비공개 · 위치 태그 지우기 · 바꿔 쓰기 · 바꿔 쓰기 후보 스팬 하나씩).
+
+    k_by_post 와 같은 계산이다 — 글마다 조건을 한 번 만들어 두고, 바뀐 글만 조건을 다시 만든 뒤 estimate_k 를 부른다.
+    """
+    kposts = _k_posts(posts, spans_by_post)
+    conds = {p["post_id"]: conditions_from_posts([p]) for p in kposts}
+
+    def k_of(change: Mapping[str, Any]) -> float | None:
+        out = []
+        for pid, c in conds.items():
+            if pid not in change:
+                out.extend(c)
+            elif change[pid] is not None:
+                out.extend(conditions_from_posts([change[pid]]))
+        return estimate_k(out)["k"]
+
+    return project(kposts, stage2_output, k_of)
