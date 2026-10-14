@@ -371,9 +371,10 @@ function renderRewrites(data) {
     const options = list.map(r => `
       <div class="rewrite">…${esc(before)}<mark>${esc(r.suggestion)}</mark>${esc(after)}…
         <span class="note">${r.residual_risk === "none" ? "이 표현의 단서가 사라집니다" : "단서가 남음 — 단서가 약해지지만 남습니다"}</span></div>`).join("");
+    // 사람 수는 그 스팬을 「완전히 지웠을 때」(k_by_action.by_span) — 「단서가 남음」 후보의 실제 효과보다 크다(상한). 그렇다고 적는다 (Codex 10/14)
     const ks = kEffect(data.specificity.output.k, kAfterSpan(data, postId, spanId), "다른 단서로 이미 좁혀집니다");
     cards.push(`<div class="card"><p class="rw-head">${postLink(data, postId)} 에서 <del>${esc(span.text)}</del> <span class="muted">(${esc(TYPE_LABEL[span.type] || span.type)})</span> 대신</p>${
-      ks ? `<div class="eff">이 표현의 단서를 지우면 ${ks}</div>` : ""}${options}
+      ks ? `<div class="eff">이 표현의 단서를 완전히 지우면 ${ks}${list.some((r) => r.residual_risk !== "none") ? `<span class="muted"> · 최대로 잡은 값입니다 — 아래 「단서가 남음」 표현으로 바꾸면 효과는 이보다 작습니다</span>` : ""}</div>` : ""}${options}
       ${isUpload(data) ? "" : `<p class="go"><a class="btn" href="${SNS}/posts/${encodeURIComponent(postId)}#fix">Veilo에서 이 글 고쳐 쓰기 →</a></p>`}</div>`);
   }
   if (!cards.length) return "";

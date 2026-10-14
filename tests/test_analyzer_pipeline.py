@@ -546,3 +546,11 @@ def test_server_reports_k_by_action(monkeypatch):
     ka = out["k_by_action"]
     assert ka["k"] == out["specificity"]["output"]["k"]
     assert ka["by_action"]["activity_meta"] == _k(_run("u_0000aaaa", [dict(p) for p in POSTS], SPANS))
+
+
+def test_rewrite_span_k_is_labeled_upper_bound():
+    """바꿔 쓰기 표현 카드의 사람 수는 단서를 완전히 지운 상한이다 — 「단서가 남음」 후보가 있으면 실제 효과가 더 작다고 적는다 (Codex 10/14 · 예: 실제 약 522명인데 2,589명으로 보이던 것)."""
+    html = (Path(__file__).resolve().parents[1] / "apps" / "analyzer" / "static" / "action.html").read_text(encoding="utf-8")
+    assert "이 표현의 단서를 완전히 지우면" in html
+    assert 'residual_risk !== "none"' in html and "효과는 이보다 작습니다" in html
+
