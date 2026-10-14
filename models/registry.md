@@ -19,7 +19,7 @@
 | 이름 | 단계 | 베이스 | 방식 | 위치 | 학습일 | 데이터 버전 | 지표 |
 |---|---|---|---|---|---|---|---|
 | koelectra-v1 | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO | `experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10` (B 데스크톱 로컬) | 2026-09-16 | corpus-v0 p2.3 · 검수 골드 · #244 split | 내부 eval partial/exact F1 0.4839/0.4194 · test 0.2940/0.1616 · 합성 CPU p95 최대 276.31ms (9/17) |
-| koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · 비공개 전달 예정) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | 모델 단독 내부 eval P/R/F1 0.4390/0.4500/0.4444 · 규칙 결합 exp17b 본인 재현율 0.699 (10/8) · exp17c 0.752 (10/9, #323 포함) |
+| koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · E 비공개 전달·SHA-256 확인 완료) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | 모델 단독 내부 eval P/R/F1 0.4390/0.4500/0.4444 · 규칙 결합 exp17b 본인 재현율 0.699 (10/8) · exp17c 0.752 (10/9, #323 포함) |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 | qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
 | **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달) | 2026-10-12 | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) |
@@ -76,6 +76,7 @@ C그룹·변이 글 보강 모델 또는 o_weight 0.05 모델을 뜻하지 않�
   `fcdd0da11e3cec5f01447c8cf864f60d0af84659e3e7bd35e003747e49199e6f`.
   labels SHA-256: `c86a42c44f615de74e5e1010352a8d384f2901ca3d34af43f91f46014f32aaff`.
   내부 eval 예제 ID SHA-256: `9a1736b690419e7e2054a98e1ea1873879501544e2fe4eca71e0bff672b49852`.
+- W7 `w7_teacher_lr1e-5_diagnostic`과 같은 BIO(`fcdd0da…`) · seed · deterministic 설정으로 다시 학습해 가중치가 바이트 단위로 같다. 따라서 W7 표의 「새 검수+교사」 test 수치는 v2와 같은 가중치의 모델 단독 값이다 (규칙 결합 test는 당시 규칙 기준).
 - 근거 파일: 로컬 `runs/variant_base_20261008/run_metrics.json`,
   `checkpoint-epoch-10/trainer_state.json`, `runs/bio_variant_base_20261008/metrics.json`.
   이 절의 `runs/` 경로는 모두 `experiments/exp06-finetune/` 아래다.
@@ -116,7 +117,7 @@ C그룹·변이 글 보강 모델 또는 o_weight 0.05 모델을 뜻하지 않�
 
 E 통합 검증 PC와 리허설 PC에는 위 로컬 폴더의 추론 파일
 `config.json` · `model.safetensors` · `tokenizer.json` · `tokenizer_config.json`을
-비공개 경로로 전달하고 같은 가중치 SHA-256을 확인한다. 전달 완료는 아직 별도 확인이 필요하다.
+E에게 비공개 전달 완료. E가 수령 PC에서 실행과 가중치 SHA-256(`d7dc7b06…`) 일치를 확인했다 (B 전달 확인 · 2026-10-14 기록).
 가중치·원문·자격증명은 저장소에 올리지 않는다. 앱의 `C1_CHECKPOINT_DIR`은
 각 PC의 해당 체크포인트 폴더, `C1_RULES`는 켬으로 맞춘다 (앱 기본값 변경은 D 담당).
 [#293](../../../issues/293) 민감도 분석 입력은 등록 v1·v1+규칙으로 유지하며 v2로 바꾸지 않는다.
