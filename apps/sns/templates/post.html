@@ -34,22 +34,28 @@
       </div>
       {% endif %}
 
-      <div class="ut-card rv {% if p.visibility == 'private' %}dim{% endif %}">
-        <h1 style="font-size:22px;margin:0 0 10px;letter-spacing:-.02em;">
-          {{ p.title or "(제목 없음)" }}
-        </h1>
-        <div style="font-size:13px;color:var(--ut-ink3);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
-          <a class="fx-link" href="/u/{{ p.user_ref }}"
-             style="color:var(--ut-earth-ink);font-weight:600;">{{ p.nickname }}</a>
-          <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
-          {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
-          {% if p.visibility == 'private' %}
-          <span style="font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;
-                       border-radius:99px;padding:2px 10px;">비공개</span>
+      <article class="ut-card post-card rv {% if p.visibility == 'private' %}dim{% endif %}">
+        {# 머리 구역 — 옅은 바탕으로 본문과 갈라 둔다. 작성자 줄(아바타 · 닉네임 · @아이디 · 날짜 · 위치) → 큰 제목.
+           본문보다 확실히 크고 진하게 — 「누가 · 무엇을」이 먼저 읽히게 (10/14) #}
+        <header class="post-head">
+          <a class="post-who" href="/u/{{ p.user_ref }}" aria-label="{{ p.nickname }} 프로필">
+            <span class="ut-av post-av" style="background:hsl({{ p.author_id|hue }},45%,86%);color:hsl({{ p.author_id|hue }},35%,32%);">{{ p.nickname[:1] }}</span>
+            <span class="post-who-txt">
+              <span class="nm">{{ p.nickname }}</span>
+              <span class="sub">@{{ p.user_ref }} · {{ p.created_at[:16].replace('T', ' ') }}</span>
+            </span>
+            <span class="post-who-go" aria-hidden="true">프로필 →</span>
+          </a>
+          <h1 class="post-title">{{ p.title or "(제목 없음)" }}</h1>
+          {% if p.geo_tag or p.visibility == 'private' %}
+          <div class="post-tags">
+            {% if p.geo_tag %}<span class="chip">📍 {{ p.geo_tag }}</span>{% endif %}
+            {% if p.visibility == 'private' %}<span class="chip solid">비공개</span>{% endif %}
+          </div>
           {% endif %}
-        </div>
+        </header>
 
-        <div id="postBody" style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
+        <div id="postBody" class="post-body">{{ p.body }}</div>
 
         {% if photos %}
         {# 사진 띠 — 피드 카드와 같은 모양. 캡션은 분석 채널(photo_caption:N) 이라 그대로 #}
@@ -86,7 +92,7 @@
             <button type="button" id="fixBtn" class="ghost" style="font-size:13px;padding:8px 14px;">✏️ 이 글을 옮겨 고쳐 쓰기</button>
           </div>
         </div>
-      </div>
+      </article>
 
       {# ── 파도풀 — 이 글 한 편 점검 ── #}
       <div class="ut-card rv pado-box">

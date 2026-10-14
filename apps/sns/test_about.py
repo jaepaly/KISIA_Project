@@ -236,3 +236,15 @@ def test_background_paper_and_map(client):
     css = (Path(__file__).resolve().parent / "static" / "veilo.css").read_text(encoding="utf-8")
     assert ".ps-page .ut-bg{display:none}" in css and ".ps-page body::after{display:none}" in css
 
+
+def test_post_page_has_head_section():
+    """글 보기 — 머리 구역(작성자 줄 · 큰 제목)을 본문과 가른다 (10/14). 스타일이 템플릿이 아닌 veilo.css 에 있는지도 본다."""
+    here = Path(__file__).resolve().parent
+    tpl = (here / "templates" / "post.html").read_text(encoding="utf-8")
+    assert '<header class="post-head">' in tpl and 'class="post-title"' in tpl and 'class="post-who"' in tpl
+    assert 'id="postBody" class="post-body"' in tpl          # 파도풀 「이 글 점검」이 읽는 자리 그대로
+    assert tpl.count("<article") == tpl.count("</article>") == 1
+    assert ".post-head{" not in tpl                          # CSS 는 템플릿이 아니라 veilo.css
+    css = (here / "static" / "veilo.css").read_text(encoding="utf-8")
+    assert ".post-head{" in css and ".post-title{" in css and ".post-body{" in css
+
