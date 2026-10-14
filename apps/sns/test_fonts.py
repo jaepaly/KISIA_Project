@@ -161,3 +161,13 @@ def test_subsets_partition_source_cmap():
             assert not (seen & cm), f"{name}: 다른 파트와 겹친다"
             seen |= cm
         assert seen == src, f"{stem}: 원본 대비 빠진 글자 {len(src - seen)}"
+
+
+def test_cors_header_not_leaking_outside_fonts():
+    """정규화한 경로가 글꼴 폴더 밖이면 CORS 를 붙이지 않는다 — %2e%2e%2f 로 꼬은 경로 (Codex 10/14)."""
+    import app as appmod
+    c = appmod.app.test_client()
+    for path in ("/static/fonts/%2e%2e%2fveilo.css", "/static/fonts/../veilo.css", "/static/veilo.css"):
+        r = c.get(path)
+        assert "Access-Control-Allow-Origin" not in r.headers, path
+

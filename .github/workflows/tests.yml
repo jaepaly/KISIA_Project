@@ -49,6 +49,16 @@ jobs:
           fi
           python -m pytest -q --import-mode=importlib $required
 
+      - name: Veilo 앱 테스트 (apps/sns 전체 · 글꼴 서브셋 검사 포함)
+        env:
+          PYTHONPATH: src
+          PYTHONIOENCODING: utf-8
+        # 위 필수 목록엔 apps/sns/test_export.py 하나뿐이었다 — 세션 · 계정 · 글꼴 검사가 CI 에서 돌지 않았다(10/14).
+        # 글꼴 검사는 fontTools · brotli 가 있어야 건너뛰지 않는다
+        run: |
+          python -m pip install --disable-pip-version-check fonttools brotli
+          python -m pytest -q apps/sns
+
       - name: 실험 테스트 (폴더마다 따로)
         env:
           PYTHONIOENCODING: utf-8
