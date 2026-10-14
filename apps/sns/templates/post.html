@@ -34,28 +34,28 @@
       </div>
       {% endif %}
 
-      <article class="ut-card post-card rv {% if p.visibility == 'private' %}dim{% endif %}">
+      <article class="ut-card vp-card rv {% if p.visibility == 'private' %}dim{% endif %}">
         {# 머리 구역 — 옅은 바탕으로 본문과 갈라 둔다. 작성자 줄(아바타 · 닉네임 · @아이디 · 날짜 · 위치) → 큰 제목.
            본문보다 확실히 크고 진하게 — 「누가 · 무엇을」이 먼저 읽히게 (10/14) #}
-        <header class="post-head">
-          <a class="post-who" href="/u/{{ p.user_ref }}" aria-label="{{ p.nickname }} 프로필">
-            <span class="ut-av post-av" style="background:hsl({{ p.author_id|hue }},45%,86%);color:hsl({{ p.author_id|hue }},35%,32%);">{{ p.nickname[:1] }}</span>
-            <span class="post-who-txt">
+        <header class="vp-head">
+          <a class="vp-who" href="/u/{{ p.user_ref }}" aria-label="{{ p.nickname }} 프로필">
+            <span class="ut-av vp-av" style="background:hsl({{ p.author_id|hue }},45%,86%);color:hsl({{ p.author_id|hue }},35%,32%);">{{ p.nickname[:1] }}</span>
+            <span class="vp-who-txt">
               <span class="nm">{{ p.nickname }}</span>
               <span class="sub">@{{ p.user_ref }} · {{ p.created_at[:16].replace('T', ' ') }}</span>
             </span>
-            <span class="post-who-go" aria-hidden="true">프로필 →</span>
+            <span class="vp-who-go" aria-hidden="true">프로필 →</span>
           </a>
-          <h1 class="post-title">{{ p.title or "(제목 없음)" }}</h1>
+          <h1 class="vp-title">{{ p.title or "(제목 없음)" }}</h1>
           {% if p.geo_tag or p.visibility == 'private' %}
-          <div class="post-tags">
+          <div class="vp-tags">
             {% if p.geo_tag %}<span class="chip">📍 {{ p.geo_tag }}</span>{% endif %}
             {% if p.visibility == 'private' %}<span class="chip solid">비공개</span>{% endif %}
           </div>
           {% endif %}
         </header>
 
-        <div id="postBody" class="post-body">{{ p.body }}</div>
+        <div id="postBody" class="vp-body">{{ p.body }}</div>
 
         {% if photos %}
         {# 사진 띠 — 피드 카드와 같은 모양. 캡션은 분석 채널(photo_caption:N) 이라 그대로 #}

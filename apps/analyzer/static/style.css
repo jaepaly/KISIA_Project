@@ -308,7 +308,12 @@ body.busy{cursor:progress}
 .progress{position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--glass,rgba(246,240,230,.92)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   border-top:1px solid var(--line)}
 .progress-in{max-width:var(--shell); margin:0 auto; padding:12px 20px 14px}
-.pbar{height:2px; border-radius:99px; background:var(--line); overflow:hidden}
+.pbar{height:3px; border-radius:99px; background:var(--line); overflow:hidden}
+/* 점검 중인 버튼 — 비활성 회색 대신 진한 색 그대로 + 회전 표시 */
+button.is-busy,button.is-busy:disabled{opacity:1; filter:none; background:var(--ink); border-color:var(--ink); color:var(--paper,#F7F2EA); cursor:progress; display:inline-flex; align-items:center; gap:8px}
+button.is-busy .spin{width:14px; height:14px; border-radius:50%; border:2px solid color-mix(in srgb,currentColor 35%,transparent); border-top-color:currentColor; animation:busy-spin .7s linear infinite}
+@keyframes busy-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){button.is-busy .spin{animation:none}}
 .pbar i{display:block; height:100%; width:40%; border-radius:99px; background:var(--ink); animation:pbar 1.3s ease-in-out infinite}
 @keyframes pbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
 .ptext{display:flex; align-items:baseline; gap:6px; margin-top:8px; font-size:14px}

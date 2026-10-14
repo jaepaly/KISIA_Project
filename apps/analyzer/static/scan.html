@@ -106,7 +106,10 @@ let picked = null;   // { user_ref, nickname, n_posts }
 async function runScan(user_ref, label) {
   const msg = $("scanMsg");
   msg.className = "muted"; msg.textContent = "";
-  $("scanBtn").disabled = true;
+  // 누른 버튼이 바로 「점검 중」으로 — 회색 비활성으로만 바뀌면 멈춘 것처럼 보였다(아래 진행 띠는 화면 끝이라 눈에 덜 띈다)
+  const btn = $("scanBtn");
+  btn.disabled = true; btn.classList.add("is-busy"); btn.dataset.label = btn.dataset.label || btn.textContent;
+  btn.innerHTML = `<span class="spin" aria-hidden="true"></span>점검 중…`;
   progressStart(`${label || user_ref} 점검 중`);
   try {
     const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
@@ -121,7 +124,11 @@ async function runScan(user_ref, label) {
     location.href = "diagnosis.html";
   } catch (e) {
     msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
-  } finally { progressStop(); $("scanBtn").disabled = !picked; }
+  } finally {
+    progressStop();
+    const btn = $("scanBtn");
+    btn.classList.remove("is-busy"); btn.textContent = btn.dataset.label || "공개 글 점검"; btn.disabled = !picked;
+  }
 }
 
 // 실패 안내 — 상태 코드는 화면에 내지 않고 서버의 한국어 사유(detail)만 보인다 (B8)
@@ -190,6 +197,31 @@ $("userQ").addEventListener("input", () => {
   _ft = setTimeout(() => browse($("userQ").value.trim()), 220);
 });
 $("userQ").addEventListener("keydown", (e) => { if (e.key === "Enter" && picked) { e.preventDefault(); $("scanBtn").click(); } });
+$("scanBtn").onclick = () => { if (picked) runScan(picked.user_ref, picked.nickname === picked.user_ref ? "" : picked.nickname); };
+
+$("uploadBtn").onclick = async () => {
+  const msg = $("uploadMsg");
+  const f = $("uploadFile").files[0];
+  if (!f) { msg.textContent = "점검할 파일을 선택해 주세요."; return; }
+  msg.className = "muted"; msg.textContent = "";
+  $("uploadBtn").disabled = true;   // 두 번 누르기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
+  progressStart(`${f.name} 점검 중`);
+  try {
+    const form = new FormData();
+    form.append("file", f);
+    const r = await fetch("../upload", { method: "POST", body: form });
+    if (!r.ok) { await failMsg(msg, r); return; }
+    const data = await r.json();
+    data.nickname = f.name;
+    data.source = "upload";   // 업로드 글은 Veilo 에 없다 — 위험 줄이기 화면이 Veilo 링크 · 다시 점검을 감춘다 (B3)
+    saveScan(data);
+    msg.textContent = `글 ${data.posts.length}편을 점검했습니다. 결과로 이동합니다.`;
+    location.href = "diagnosis.html";
+  } catch (e) {
+    msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
+  } finally { progressStop(); $("uploadBtn").disabled = false; }
+};
+
 // Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 골라 둔 채 보여 주고, 시작은 사용자가 누른다
 // Veilo 조치 띠의 「다시 점검 →」(?run=1)은 준비 화면에서 멈추지 않고 바로 점검을 시작한다 (UX N3)
 // 계정 정보를 못 불러와도 식별자로 골라 둔 모습(「다른 계정」 포함)은 보인다. 그 사이 사용자가 검색 · 선택을 했으면 덮지 않는다

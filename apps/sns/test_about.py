@@ -241,10 +241,34 @@ def test_post_page_has_head_section():
     """글 보기 — 머리 구역(작성자 줄 · 큰 제목)을 본문과 가른다 (10/14). 스타일이 템플릿이 아닌 veilo.css 에 있는지도 본다."""
     here = Path(__file__).resolve().parent
     tpl = (here / "templates" / "post.html").read_text(encoding="utf-8")
-    assert '<header class="post-head">' in tpl and 'class="post-title"' in tpl and 'class="post-who"' in tpl
-    assert 'id="postBody" class="post-body"' in tpl          # 파도풀 「이 글 점검」이 읽는 자리 그대로
+    assert '<header class="vp-head">' in tpl and 'class="vp-title"' in tpl and 'class="vp-who"' in tpl
+    assert 'id="postBody" class="vp-body"' in tpl          # 파도풀 「이 글 점검」이 읽는 자리 그대로
     assert tpl.count("<article") == tpl.count("</article>") == 1
-    assert ".post-head{" not in tpl                          # CSS 는 템플릿이 아니라 veilo.css
+    assert ".vp-head{" not in tpl                          # CSS 는 템플릿이 아니라 veilo.css
     css = (here / "static" / "veilo.css").read_text(encoding="utf-8")
-    assert ".post-head{" in css and ".post-title{" in css and ".post-body{" in css
+    assert ".vp-head{" in css and ".vp-title{" in css and ".vp-body{" in css
+
+
+def test_scan_page_buttons_are_wired():
+    """내 글 점검 — 「공개 글 점검」 · 「파일로 점검」 버튼이 실제로 연결돼 있다 (10/14 · 계정 고르기 스크립트를 바꾸다 둘 다 지워진 회귀)."""
+    root = Path(__file__).resolve().parents[2]
+    html = (root / "apps" / "analyzer" / "static" / "scan.html").read_text(encoding="utf-8")
+    assert '$("scanBtn").onclick' in html and "runScan(picked.user_ref" in html
+    assert '$("uploadBtn").onclick' in html and 'fetch("../upload"' in html
+    assert "progressStart(" in html and "progressStop()" in html
+
+
+def test_veilo_css_does_not_reuse_analyzer_class_names():
+    """분석기 화면(diagnosis · action · scan)도 veilo.css 를 읽는다 — 글 보기 클래스가 분석기 것과 겹치면 결과 화면 제목이 커진다 (10/14)."""
+    import re
+    root = Path(__file__).resolve().parents[2]
+    css = (Path(__file__).resolve().parent / "static" / "veilo.css").read_text(encoding="utf-8")
+    block = css[css.index("/* ── 글 보기 (post.html)"):]
+    mine = set(re.findall(r"\.(vp-[\w-]+)", block))
+    assert mine, "글 보기 클래스는 vp- 로 시작한다"
+    analyzer = "".join((root / "apps" / "analyzer" / "static" / f).read_text(encoding="utf-8")
+                       for f in ("diagnosis.html", "action.html", "scan.html", "style.css", "common.js"))
+    for name in ("post-head", "post-title", "post-body"):
+        assert "." + name + "{" not in block, name
+    assert not [n for n in mine if n in analyzer]
 
