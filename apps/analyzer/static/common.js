@@ -139,6 +139,14 @@ const GRAIN_LABEL = {
   exact: "정확", range: "범위", decade: "연령대",
 };
 
+// k 등급 — 코드 값은 영문 상수, 화면 문구는 여기서 (필드-대조표 §3 · 경계는 plan.md §13.1)
+const K_LEVEL_LABEL = {
+  VERY_HIGH: ["매우 높음", "후보 2명 이하 — 개인 특정 가능"],
+  HIGH: ["높음", "후보 2명 초과 5명 미만 — 소수로 좁혀짐"],
+  ACCEPTABLE: ["통상 허용", "후보 5명 이상 — 집단 안에서 익명"],
+  UNKNOWN: ["산출 불가", "조건이 부족해 후보 수를 셀 수 없음"],
+};
+
 const ATTR_LABEL = {
   age: "나이", sex: "성별", location: "거주지", occupation: "직업",
   family: "가족", commute: "통근", income: "소득",

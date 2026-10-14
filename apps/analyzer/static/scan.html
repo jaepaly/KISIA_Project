@@ -60,7 +60,7 @@
   <div class="progress-in">
     <div class="pbar"><i></i></div>
     <div class="ptext"><b id="pTitle">읽는 중</b><span id="pStage"></span><span class="pt" id="pTime">0초</span></div>
-    <p class="muted" id="pNote">글이 많으면 10~20초 걸립니다. 1단(단서 찾기) → 후보 수 → 2단(판정·조치) 순서로 돕니다.</p>
+    <p class="muted" id="pNote">글이 많거나 길면 1분 가까이 걸립니다 — 창을 닫지 말고 기다려 주세요. 1단(단서 찾기) → 후보 수 → 2단(판정·조치) 순서로 돕니다.</p>
   </div>
 </div>
 
@@ -155,6 +155,7 @@ $("uploadBtn").onclick = async () => {
   const f = $("uploadFile").files[0];
   if (!f) { msg.textContent = "파일을 선택하세요"; return; }
   msg.className = "muted"; msg.textContent = "";
+  $("uploadBtn").disabled = true;   // 두 번 누르기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
   progressStart(`${f.name} 분석 중`);
   try {
     const form = new FormData();
@@ -167,8 +168,8 @@ $("uploadBtn").onclick = async () => {
     msg.textContent = `완료 — 글 ${data.posts.length}편. 진단 화면으로 이동합니다.`;
     location.href = "diagnosis.html";
   } catch (e) {
-    msg.textContent = "서버에 닿지 못했습니다."; msg.className = "error";
-  } finally { progressStop(); }
+    msg.textContent = "서버에 닿지 못했습니다. 잠시 뒤 다시 눌러 주세요."; msg.className = "error";
+  } finally { progressStop(); $("uploadBtn").disabled = false; }
 };
 
 // Veilo 프로필의 「내 계정 진단」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
