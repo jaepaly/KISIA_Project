@@ -339,16 +339,22 @@ async function main() {
     check(mode, "휠로 지나갈 때 장면이 풀리기 전에 네 단계가 다 나옴", wheelRun.atRelease === "4", wheelRun, "풀릴 때 shown = 4");
     // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
     const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
-      return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
+      return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path").style.getPropertyValue("--w")) })`); };
     // 진행선 끝 = 켜진 마지막 단계 점의 가운데 (칸 사이 간격 때문에 i/4 가 아니다 · Codex 10/14)
-    for (const [p, k] of [[0.1, 0], [0.25, 1], [0.9, 3]]) {
+    for (const [p, k] of [[0.1, 0], [0.25, 1], [0.56, 3]]) {
       await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
       const g = await js(`(() => { const line = document.querySelector("#steps .ps-path i").getBoundingClientRect(), dot = document.querySelectorAll("#steps .ps-step .dot")[${k}].getBoundingClientRect();
         return { lineEnd: Math.round(line.right), dot: Math.round(dot.left + dot.width / 2), lineW: Math.round(line.width) }; })()`);
       check(mode, `진행선이 ${k + 1}단계 점까지 (진행도 ${p})`, k === 0 ? g.lineW <= 2 : Math.abs(g.lineEnd - g.dot) <= 3, g, k === 0 ? "길이 0" : "끝 = 점 가운데 ±3");
     }
     const hA = await holdAt(0.6), hB = await holdAt(0.97);
-    check(mode, "네 단계: 다 나온 뒤 멈추는 구간 (진행도 0.6 ~ 0.97 동안 네 단계 다 켜진 채 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a.every((v) => v === 1), { hA, hB }, "같음 · 네 단계 다");
+    check(mode, "네 단계: 다 나온 뒤 멈추는 구간 (진행도 0.6 ~ 0.97 동안 네 단계 다 켜진 채 그대로)", JSON.stringify(hA.a) === JSON.stringify(hB.a) && hA.a.every((v) => v === 1), { hA, hB }, "같음 · 네 단계 다");
+    // 멈춤 구간 동안 선이 4단계 점에서 오른쪽 끝까지 이어진다 — 끝에 닿은 뒤 장면이 넘어간다 (10/14)
+    const tipAt = async (p) => { await scrollTo(await posOf("#steps", p)); await settle(); await sleep(700);
+      return js(`(() => { const t = document.querySelector("#steps .ps-path").getBoundingClientRect(), h = document.querySelector("#steps .ps-path b").getBoundingClientRect(), d = document.querySelectorAll("#steps .ps-step .dot")[3].getBoundingClientRect();
+        return { tip: Math.round(h.left + h.width / 2), dot4: Math.round(d.left + d.width / 2), end: Math.round(t.right) }; })()`); };
+    const tA = await tipAt(0.56), tB = await tipAt(0.97);
+    check(mode, "선 끝 점: 4단계 점 → 멈춤 구간 끝에 오른쪽 끝", Math.abs(tA.tip - tA.dot4) <= 3 && Math.abs(tB.tip - tB.end) <= 3, { tA, tB }, "0.56 = 4단계 점 · 0.97 = 오른쪽 끝 ±3");
     const h1 = await holdAt(0.06), h2 = await holdAt(0.14);
     check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.06 ~ 0.14 동안 1단계만)", JSON.stringify(h1) === JSON.stringify(h2) && h1.a[0] === 1 && h1.a[1] === 0, { h1, h2 }, "같음 · 1단계만");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다

@@ -130,8 +130,8 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-steps .ps-step{transition:--a .5s var(--ps-ease)}
 .ps-steps .ps-step .dot{transition:background-color .3s,border-color .3s}
 .ps-steps .ps-vis-i{transition:--f .45s var(--ps-ease),--t .8s var(--ps-ease) .12s}
-.ps-steps .ps-path i{transition:--w .5s var(--ps-ease)}
-.no-motion .ps-steps .ps-step,.no-motion .ps-steps .ps-vis-i,.no-motion .ps-steps .ps-path i{transition:none}
+.ps-steps .ps-path{transition:--w .5s var(--ps-ease)}
+.no-motion .ps-steps .ps-step,.no-motion .ps-steps .ps-vis-i,.no-motion .ps-steps .ps-path{transition:none}
 /* 머리 — 제목(왼쪽) · 그림판(오른쪽). 그림판 = 네 장이 겹쳐 있고 지금 단계 그림만 보인다(--f) · 그림 안 움직임은 --t */
 .ps-steps-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:center}
 .ps-vis{position:relative;height:clamp(220px,34svh,300px);border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
@@ -167,6 +167,8 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-track{position:relative;margin-top:28px}
 .ps-path{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--ps-line)}
 .ps-path i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--w,1))}
+/* 선 끝 점(머리) — 지금 어디까지 왔는지. 선이 오른쪽 끝에 닿으면 장면이 넘어간다 */
+.ps-path b{position:absolute;top:0;left:calc(var(--w,1) * 100%);width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:var(--ps-accent);box-shadow:0 0 0 4px var(--ps-accent-soft);opacity:calc(var(--w,1) * 40)}
 .ps-step-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
 .ps-step{--a:1;position:relative;padding-top:36px;opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 18px))}   /* transition 없음 — 값은 motion-core 관성 보간이 이미 부드럽게 준다(겹치면 이중으로 늦어진다) */
 .ps-step .dot{position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--ps-paper);border:1px solid var(--ps-muted)}
@@ -234,6 +236,7 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 .ps-static .ps-post,.ps-static .ps-step{--in:1;--a:1;opacity:1;transform:none;transition:none}
 .ps-static .ps-step .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
 .ps-static .ps-path i{transform:none}
+.ps-static .ps-path b{display:none}
 .ps-static .ps-night,.ps-static .ps-spot{display:none}
 .ps-static .ps-narrow{border-top:1px solid var(--ps-line)}
 .ps-static .ps-steps{border-top:1px solid var(--ps-line)}
@@ -265,6 +268,7 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-post,.ps-step{--in:1;--a:1;opacity:1;transform:none;transition:none}
   .ps-step .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
   .ps-path i{transform:none}
+  .ps-path b{display:none}
   .ps-night,.ps-spot{display:none}
   .ps-narrow,.ps-steps{border-top:1px solid var(--ps-line)}
   .ps-steps-head{grid-template-columns:1fr}

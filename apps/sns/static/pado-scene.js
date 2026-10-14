@@ -176,7 +176,7 @@
   // ── 연출 B — 네 단계 점등 ───────────────────────────────────────────────
   const steps = M.track($("#steps"));
   const stepEls = $$(".ps-step", steps);
-  const path = $(".ps-path i", steps);
+  const path = $(".ps-path", steps);   // --w 를 여기 준다 — 선(i)과 선 끝 점(b)이 같이 따른다
   const vis = $$(".ps-vis-i", steps);
   // 네 단계는 「스크롤로 문을 열고, 전환은 늘 같은 빠르기로」 — 2번(좁혀지기)처럼 스크롤 위치에 그림을 묶으면(스크러빙)
   // 빨리 내릴 때 네 번의 전환이 한꺼번에 몰려 슉 지나간다(10/14 사용자 피드백 두 번). 그래서 스크롤은 「몇 단계까지 왔나(target)」만 정하고,
@@ -199,7 +199,7 @@
       setVar(el, "--t", !on || i < shown ? 1 : 0);
     });
     // 선 — 보이는 마지막 단계의 점까지. 점 자리는 칸 사이 간격 때문에 i/4 가 아니라 잰 값(dotAt)
-    if (path) setVar(path, "--w", on ? (shown <= 1 ? 0 : dotAt[shown - 1]) : 1);
+    setPath(on);
     steps.dataset.shown = String(shown);
     steps.dataset.target = String(target);
   }
@@ -217,9 +217,22 @@
     if (stepTimer || shown === target) return;
     stepTimer = setTimeout(stepTick, Math.max(0, gap() - (performance.now() - lastStep)));
   }
+  // 선 — 보이는 마지막 단계의 점까지(점 자리는 칸 사이 간격 때문에 i/4 가 아니라 잰 값 dotAt).
+  // 네 단계가 다 보이면 멈춤 구간 동안 스크롤에 맞춰 4단계 점에서 오른쪽 끝까지 마저 이어진다 — 끝에 닿으면 장면이 넘어간다(10/14)
+  const LINE_FROM = 0.6, LINE_TO = 0.92;
+  let lastW = 0;
+  function setPath(on) {
+    if (!path) return;
+    const n = stepEls.length;
+    let v = 1;
+    if (on) v = shown <= 1 ? 0 : shown < n ? dotAt[shown - 1] : dotAt[n - 1] + (1 - dotAt[n - 1]) * smooth((lastW - LINE_FROM) / (LINE_TO - LINE_FROM));
+    setVar(path, "--w", v);
+  }
   function stepsScene(w, on) {
     if (!steps) return;
+    lastW = w;
     if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = stepEls.length; stepFirst = true; applySteps(false); return; }
+    setPath(true);
     let t = 0;
     stepEls.forEach((_, i) => { if (w >= STEP_AT[i]) t = i + 1; });
     if (t === target && !stepFirst) return;
@@ -232,7 +245,7 @@
   // 점 i 의 가로 자리(선 길이 비율) — 크기가 바뀔 때만 잰다(프레임마다 레이아웃을 읽지 않는다)
   let dotAt = [0, 0.25, 0.5, 0.75];
   M.onRefresh(() => {
-    const track = path && path.parentElement.getBoundingClientRect();
+    const track = path && path.getBoundingClientRect();
     if (!track || !track.width) return;
     dotAt = stepEls.map((el) => { const d = el.querySelector(".dot"); const r = (d || el).getBoundingClientRect(); return clamp((r.left + r.width / 2 - track.left) / track.width); });
   });
