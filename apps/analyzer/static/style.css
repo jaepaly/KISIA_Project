@@ -1,6 +1,6 @@
 /* 분석 앱 3화면. 색·글꼴·간격은 Veilo 디자이너 핸드오프 v1.1 을 그대로 따른다 —
    가상 SNS 와 같은 결로 보여야 하나의 서비스로 읽힌다. 구조·동작은 건드리지 않았다. */
-@import url("fonts/pretendard.css");
+/* 글꼴(Pretendard)은 Veilo 의 /static/fonts/pretendard.css 를 head.js 가 붙인다 — 분석기에 사본을 두지 않는다 */
 
 /* Veilo 의 토큰을 그대로 받는다 (veilo.css 가 먼저 붙는다 — head.js). veilo.css 를 못 읽으면 괄호 안 값으로 */
 :root{

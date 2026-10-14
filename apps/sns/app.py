@@ -576,6 +576,17 @@ def _cors_api_me(resp):
     return resp
 
 
+@app.after_request
+def _cors_fonts(resp):
+    """글꼴은 누구에게나 공개된 정적 파일 — 교차 출처로 읽어도 되게 연다.
+    파도풀 분석기 화면은 Veilo 의 /static/fonts/pretendard.css 를 그대로 쓴다 (apps/analyzer/static/head.js).
+    운영은 같은 도메인(/check)이라 필요 없지만, 로컬 분리 실행(파도풀 :8000 · Veilo :3000)은 교차 출처라
+    @font-face 가 CORS 헤더 없이는 막힌다. 쿠키를 싣지 않는 요청이라 * 로 충분하다."""
+    if request.path.startswith("/static/fonts/"):
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
+
+
 @app.get("/u/<user_ref>")
 def profile(user_ref: str):
     a = db().execute(
