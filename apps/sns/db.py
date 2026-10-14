@@ -20,7 +20,14 @@ def connect(path: Path | None = None) -> sqlite3.Connection:
     c = sqlite3.connect(p)
     c.row_factory = sqlite3.Row          # dict 처럼 쓸 수 있게
     c.execute("PRAGMA foreign_keys = ON")
-    ensure_visitor_tables(c)
+    # 방문자 표 맞추기는 파일마다 이 프로세스에서 한 번만 — 요청마다 DDL 을 다시 돌리지 않는다 (A7).
+    # 새 세션 사본은 만들 때 표를 넣으므로(app._session_db_path) 지웠다 다시 만든 사본도 표가 있다
+    key = str(Path(p).resolve())
+    if key not in _ensured:
+        ensure_visitor_tables(c)
+        if len(_ensured) > 20_000:   # 세션 사본 경로가 계속 쌓이지 않게 — 비우면 다음에 한 번씩 다시 확인할 뿐이다
+            _ensured.clear()
+        _ensured.add(key)
     return c
 
 
@@ -35,6 +42,7 @@ def init(conn: sqlite3.Connection) -> None:
 # 열 때 맞물리게 — 전부 IF NOT EXISTS 라 이미 있으면 아무 일도 하지 않는다. 정본은 schema.sql 의 표시 줄 아래다
 _VISITOR_MARK = "-- ── 방문자 체험용"
 _visitor_ddl: str | None = None
+_ensured: set[str] = set()
 
 
 def ensure_visitor_tables(conn: sqlite3.Connection) -> None:

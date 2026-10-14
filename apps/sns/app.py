@@ -59,8 +59,17 @@ import uuid as _uuid
 from pathlib import Path as _Path
 
 SESSION_COOKIE = "veilo_sid"
-_SID_RE = _re.compile(r"^[0-9a-f]{16,32}$")
-SESSION_IDLE_SECONDS = 48 * 3600
+_SID_RE = _re.compile(r"[0-9a-f]{16,32}")
+# 쿠키 수명과 사본 보관 기간을 맞춘다 — 사본은 「마지막으로 연 때」부터 센다(열 때마다 수정 시각을 갱신).
+# 예전엔 쿠키 7일 · 사본 이틀이라, 글만 읽던 방문자의 사본이 사흘째 지워지고 바꿔 둔 것이 사라졌다 (A5a)
+SESSION_MAX_AGE = 7 * 24 * 3600
+SESSION_IDLE_SECONDS = SESSION_MAX_AGE
+# 오래된 사본 청소는 N분에 한 번만 — 새 방문자마다 폴더 전체를 훑지 않게 (A5b)
+SESSION_SWEEP_SECONDS = int(os.environ.get("SNS_SWEEP_MINUTES", "10")) * 60
+# 사본 수 상한 — 사본 하나가 시드 크기(약 5MB)라 상한이 곧 디스크 상한이다 (1,000개 ≈ 5GB) (A5c)
+SESSION_MAX = int(os.environ.get("SNS_SESSION_MAX", "1000"))
+# 쿠키 Secure — 운영은 nginx 뒤 HTTPS 라 Flask 가 http 로 본다(request.is_secure=False). COOKIE_SECURE=1 이면 늘 Secure (A7)
+COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "") == "1"
 
 
 def _seed_path() -> _Path:
@@ -82,28 +91,117 @@ def _sid() -> str | None:
 
     주소의 ?sid= 는 받지 않는다 — 주소를 공유하면 받은 사람이 그 방문자의 사본을 보고 고칠 수 있다 (#337 E 리뷰)."""
     s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session")
-    return s if s and _SID_RE.match(s) else None
+    return s if s and _SID_RE.fullmatch(s) else None
+
+
+import threading as _threading
+
+_sweep_lock = _threading.Lock()
+_sweep_state = {"at": 0.0, "count": None}   # 마지막 청소 시각 · 그때 센 사본 수(+ 그 뒤 만든 수)
 
 
 def _session_db_path(sid: str) -> _Path:
     d = _session_dir()
     d.mkdir(parents=True, exist_ok=True)
     p = d / f"{sid}.db"
-    if not p.exists():
-        _shutil.copyfile(_seed_path(), p)
-        _sweep_sessions(d)
+    if p.exists():
+        try:
+            _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
+        except OSError:
+            pass
+        return p
+    _make_room(d)
+    # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 한 번에 바꿔 단다 — 같은 쿠키의 동시 요청이 반쯤 복사된 파일을 열지 않게
+    tmp = d / f"{sid}.{_uuid.uuid4().hex[:8]}.tmp"
+    _shutil.copyfile(_seed_path(), tmp)
+    try:
+        from db import ensure_visitor_tables
+        c = sqlite3.connect(tmp)
+        try:
+            ensure_visitor_tables(c)
+            c.commit()
+        finally:
+            c.close()
+        os.replace(tmp, p)
+    finally:
+        if tmp.exists():
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+    with _sweep_lock:
+        if _sweep_state["count"] is not None:
+            _sweep_state["count"] += 1
     return p
 
 
-def _sweep_sessions(d: _Path) -> None:
-    """이틀 안 쓴 사본은 지운다 — 새 세션이 생길 때만 돈다."""
+def _os_utime(p: _Path) -> None:
+    os.utime(p, None)
+
+
+def _make_room(d: _Path) -> None:
+    """새 사본을 만들기 전에 — 청소 주기가 됐거나 상한에 닿았으면 청소한다."""
+    now = _time.time()
+    with _sweep_lock:
+        due = now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS or _sweep_state["count"] is None
+        full = _sweep_state["count"] is not None and _sweep_state["count"] >= SESSION_MAX
+        if not (due or full):
+            return
+        _sweep_state["at"] = now
+        _sweep_state["count"] = _sweep_sessions(d)
+
+
+def _sweep_sessions(d: _Path) -> int:
+    """오래 안 연 사본(SESSION_IDLE_SECONDS)을 지우고, 그래도 상한(SESSION_MAX)에 닿아 있으면 가장 오래 안 연 것부터
+    상한의 90% 까지 지운다 — 디스크가 차지 않게. 지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다
+    (가상 데이터라 체험한 수정만 사라진다). 남은 사본 수를 돌려준다."""
     cutoff = _time.time() - SESSION_IDLE_SECONDS
+    alive: list[tuple[float, _Path]] = []
     for f in d.glob("*.db"):
         try:
-            if f.stat().st_mtime < cutoff:
+            m = f.stat().st_mtime
+            if m < cutoff:
                 f.unlink()
+            else:
+                alive.append((m, f))
         except OSError:
             pass
+    removed = 0
+    if len(alive) >= SESSION_MAX:
+        alive.sort()
+        for _, f in alive[:len(alive) - int(SESSION_MAX * 0.9)]:
+            try:
+                f.unlink()
+                removed += 1
+            except OSError:   # 다른 요청이 열고 있는 파일(Windows) — 다음 청소에
+                pass
+    return len(alive) - removed
+
+
+# ── 같은 출처 확인 (A6) — 상태를 바꾸는 POST(글쓰기 · 비공개 · 위치 · 프로필 · 내 계정 · 되돌리기 · 초기화 · 단서 저장)를
+#    다른 사이트가 방문자의 쿠키로 보내지 못하게 한다. 브라우저는 다른 사이트에서 보내는 POST 에 Origin 을 반드시 싣는다 —
+#    Origin(없으면 Referer)이 있는데 이 사이트가 아니면 403. 둘 다 없으면(curl · 테스트 · 내부 호출) 쿠키 공격이 아니라 통과.
+#    nginx 가 Host 를 바꿔 넘기는 배치면 ALLOWED_ORIGINS=https://veilo.site 로 공개 주소를 알려 준다
+from urllib.parse import urlsplit as _urlsplit
+
+_ALLOWED_HOSTS = {_urlsplit(u.strip()).netloc.lower() for u in os.environ.get("ALLOWED_ORIGINS", "").split(",")
+                  if u.strip().startswith(("http://", "https://"))}
+
+
+def same_origin(req) -> bool:
+    src = req.headers.get("Origin") or req.headers.get("Referer")
+    if not src:
+        return True
+    if not src.startswith(("http://", "https://")):   # 「null」(샌드박스 iframe · 파일) 등
+        return False
+    own = {h.lower() for h in (req.headers.get("Host"), req.headers.get("X-Forwarded-Host")) if h}
+    return _urlsplit(src).netloc.lower() in own | _ALLOWED_HOSTS
+
+
+@app.before_request
+def _check_origin() -> None:
+    if request.method in ("POST", "PUT", "PATCH", "DELETE") and not same_origin(request):
+        abort(403)
 
 
 @app.before_request
@@ -111,17 +209,18 @@ def _ensure_session() -> None:
     if not isolation_on():
         return
     sid = _sid()
-    if sid is None and not request.path.startswith("/api/"):   # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB
+    # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB · HEAD(링크 미리보기 · 상태 확인)는 사본을 만들지 않는다 (A5d)
+    if sid is None and not request.path.startswith("/api/") and request.method not in ("HEAD", "OPTIONS"):
         sid = _uuid.uuid4().hex[:24]
         g.new_sid = sid
-    g.sid = sid
+    g.sid = sid if request.method not in ("HEAD", "OPTIONS") else None
 
 
 @app.after_request
 def _set_session_cookie(resp):
     if getattr(g, "new_sid", None):
-        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=7 * 24 * 3600, path="/", samesite="Lax",
-                        httponly=True, secure=request.is_secure)
+        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=SESSION_MAX_AGE, path="/", samesite="Lax",
+                        httponly=True, secure=COOKIE_SECURE or request.is_secure)
     return resp
 
 
@@ -139,7 +238,7 @@ def _about_seen() -> bool:
 def _set_about_cookie(resp):
     if (request.path == "/about" or request.args.get("skip_about") == "1") and request.cookies.get(ABOUT_COOKIE) != "1":
         resp.set_cookie(ABOUT_COOKIE, "1", max_age=365 * 24 * 3600, path="/", samesite="Lax",
-                        httponly=True, secure=request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
+                        httponly=True, secure=COOKIE_SECURE or request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
     return resp
 
 
@@ -395,6 +494,12 @@ def _me() -> dict | None:
     return dict(r) if r else None
 
 
+def _change_count(author_id: str) -> int:
+    """상단바 「바꾼 것 N」 — _changes 와 같은 조건(되돌리지 않은 조치)의 개수만. 글 본문을 읽지 않는다 (A7)."""
+    return db().execute("SELECT COUNT(*) FROM action_log WHERE undone_at IS NULL AND author_id = ?",
+                        (author_id,)).fetchone()[0]
+
+
 def _changes(author_id: str | None = None) -> list[dict]:
     """살아 있는(되돌리지 않은) 조치 — 최근 것부터. 글 제목을 붙여 화면에 그대로 쓴다."""
     q = ("SELECT l.*, p.title AS title, p.body AS body FROM action_log l"
@@ -479,7 +584,7 @@ def _inject_me() -> dict:
     """상단바 「내 계정」 — 고른 사람과 그 사람이 바꾼 것 수. 표·DB 가 아직 없으면 빈 값 (고르지 않아도 다 돈다)."""
     try:
         me = _me()
-        n = len(_changes(me["author_id"])) if me else 0
+        n = _change_count(me["author_id"]) if me else 0
     except sqlite3.Error:
         me, n = None, 0
     # 소개(/about)를 본 사람 — 상단바 「파도풀이란?」을 작은 글씨 링크로 낮춘다(처음 온 사람만 버튼으로)
@@ -586,7 +691,7 @@ def api_me():
     export 와 같은 규칙으로 플랫폼 내부 값(author_id)은 내보내지 않는다."""
     try:
         me = _me()
-        n = len(_changes(me["author_id"])) if me else 0
+        n = _change_count(me["author_id"]) if me else 0
     except sqlite3.Error:
         me = None
     if me is None:
@@ -642,8 +747,17 @@ _TRUTH_KEYS = ("age", "sex", "location", "occupation", "family", "commute", "inc
 
 
 def _persona_brief(author_id: str) -> dict | None:
-    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다."""
-    p = PERSONAS_DIR / f"{author_id}.json"
+    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다.
+    인물 파일은 실행 중에 바뀌지 않는다 — 글쓰기 화면이 작성자를 바꿀 때마다 JSON 을 다시 읽지 않게 기억해 둔다 (A7)."""
+    return _persona_brief_at(str(PERSONAS_DIR), author_id)
+
+
+from functools import lru_cache as _lru_cache
+
+
+@_lru_cache(maxsize=256)
+def _persona_brief_at(personas_dir: str, author_id: str) -> dict | None:
+    p = _Path(personas_dir) / f"{author_id}.json"
     if not p.exists():
         return None
     try:
@@ -806,6 +920,14 @@ def export(user_ref: str):
     })
 
 
+@app.errorhandler(403)
+def forbidden(_):
+    """같은 출처 확인(A6)에 걸린 요청 — 고정 문구만."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "forbidden"}), 403
+    return "다른 사이트에서 보낸 요청은 받지 않습니다.", 403, {"Content-Type": "text/plain; charset=utf-8"}
+
+
 @app.errorhandler(404)
 def not_found(_):
     """영어 기본 화면 대신 Veilo 꾸밈의 한국어 안내 (분석기 API 404 는 JSON 그대로 — export 는 직접 jsonify 한다)."""
@@ -817,4 +939,5 @@ def not_found(_):
 if __name__ == "__main__":
     with connect() as c:
         init(c)
-    app.run(port=int(os.getenv("SNS_PORT", "3000")), debug=True)
+    # 디버거는 FLASK_DEBUG=1 일 때만 — 켜 두면 오류 화면에서 서버 코드를 실행할 수 있다 (A7)
+    app.run(port=int(os.getenv("SNS_PORT", "3000")), debug=os.getenv("FLASK_DEBUG") == "1")
