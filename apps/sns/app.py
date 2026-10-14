@@ -719,10 +719,10 @@ def authors_search():
         sql += " WHERE a.nickname LIKE ? OR a.user_ref LIKE ?"
         args += [f"%{q}%", f"{q}%"]
     if q:
-        sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT ?"
+        sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname, a.user_ref LIMIT ?"
         args += [f"{q}%", limit]
     else:
-        sql += " GROUP BY a.author_id ORDER BY n DESC, a.nickname LIMIT ?"
+        sql += " GROUP BY a.author_id ORDER BY n DESC, a.nickname, a.user_ref LIMIT ?"   # 동률은 닉네임 · user_ref 순 — 늘 같은 순서
         args.append(limit)
     rows = db().execute(sql, args).fetchall()
     return jsonify([{"user_ref": r["user_ref"], "nickname": r["nickname"], "n_posts": r["n"]} for r in rows])
