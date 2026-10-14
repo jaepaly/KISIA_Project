@@ -312,6 +312,13 @@ async function main() {
     // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
     const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await sleep(700); await settle();
       return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
+    // 진행선 끝 = 켜진 마지막 단계 점의 가운데 (칸 사이 간격 때문에 i/4 가 아니다 · Codex 10/14)
+    for (const [p, k] of [[0.24, 0], [0.49, 1], [0.98, 3]]) {
+      await scrollTo(await posOf("#steps", p)); await sleep(500); await settle();
+      const g = await js(`(() => { const line = document.querySelector("#steps .ps-path i").getBoundingClientRect(), dot = document.querySelectorAll("#steps .ps-step .dot")[${k}].getBoundingClientRect();
+        return { lineEnd: Math.round(line.right), dot: Math.round(dot.left + dot.width / 2), lineW: Math.round(line.width) }; })()`);
+      check(mode, `진행선이 ${k + 1}단계 점까지 (진행도 ${p})`, k === 0 ? g.lineW <= 2 : Math.abs(g.lineEnd - g.dot) <= 3, g, k === 0 ? "길이 0" : "끝 = 점 가운데 ±3");
+    }
     const hA = await holdAt(0.19), hB = await holdAt(0.24);
     check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.19 ~ 0.24 동안 값 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a[0] === 1 && hA.a[1] === 0, { hA, hB }, "같음 · 1단계만 켜짐");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다

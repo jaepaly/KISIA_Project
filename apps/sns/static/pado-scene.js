@@ -198,9 +198,21 @@
       setVar(el, "--dir", on && (a[i + 1] || 0) > 0 ? -1 : 1);
       setVar(el, "--t", on ? a[i] : 1);
     });
-    // 선 — 켜진 단계의 점까지만(점 i 는 i/4 자리). 머무는 동안에는 선도 멈춘다
-    if (path) setVar(path, "--w", on ? clamp((a.reduce((s, v) => s + v, 0) - 1) / 4) : 1);
+    // 선 — 켜진 단계의 점까지만. 머무는 동안에는 선도 멈춘다.
+    // 점 자리는 칸 사이 간격(gap) 때문에 정확히 i/4 가 아니다 — 크기가 바뀔 때만 잰 실제 비율(dotAt)로 잇는다 (Codex 10/14)
+    if (path) {
+      const u = a.reduce((s, v) => s + v, 0) - 1, i = Math.max(0, Math.min(dotAt.length - 2, Math.floor(u)));
+      const w = u <= 0 ? 0 : dotAt[i] + (dotAt[i + 1] - dotAt[i]) * clamp(u - i);
+      setVar(path, "--w", on ? w : 1);
+    }
   }
+  // 점 i 의 가로 자리(선 길이 비율) — 크기가 바뀔 때만 잰다(프레임마다 레이아웃을 읽지 않는다)
+  let dotAt = [0, 0.25, 0.5, 0.75];
+  M.onRefresh(() => {
+    const track = path && path.parentElement.getBoundingClientRect();
+    if (!track || !track.width) return;
+    dotAt = stepEls.map((el) => { const d = el.querySelector(".dot"); const r = (d || el).getBoundingClientRect(); return clamp((r.left + r.width / 2 - track.left) / track.width); });
+  });
 
   // ── 연출 C — 읽기 진행 막대 · 소개 순서 · 어두운 구간 ─────────────────────
   const bar = $("#psBar");

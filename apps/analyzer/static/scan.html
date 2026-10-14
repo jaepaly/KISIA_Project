@@ -50,7 +50,7 @@
       <button id="scanBtn" disabled>공개 글 점검</button>
     </div>
     <div class="picked" id="picked" hidden></div>
-    <p class="finder-h" id="finderH">Veilo 계정 목록</p>
+    <p class="finder-h" id="finderH" aria-live="polite">Veilo 계정 목록</p>
     <ul class="finder-list" id="finderList" aria-labelledby="finderH"></ul>
     <button type="button" class="finder-more" id="finderMore" hidden>계정 더 보기</button>
   </div>
@@ -133,89 +133,79 @@ async function failMsg(msg, r) {
 
 // ── 계정 고르기 — 처음 온 사람은 계정 이름을 모른다. 목록을 처음부터 펼쳐 두고(공개 글 많은 순 12개 · 「더 보기」로 전부),
 //    검색창은 그 목록을 이름으로 좁히는 데만 쓴다(고르는 것은 목록에서). 계정을 고르면 목록을 접고 고른 계정을 보여 준다(「다른 계정」으로 다시 펼침)
+//    요청 번호(_seq) — 입력 · 선택 · 다시 고르기 · 처음 불러오기가 모두 번호를 올린다. 늦게 도착한 옛 응답은 버린다(Codex 10/14)
 const PAGE = 12, ALL = 200;
+let _ft = null, _seq = 0;
+const invalidate = () => { clearTimeout(_ft); return ++_seq; };
+const showList = (on) => { $("finderList").hidden = $("finderH").hidden = !on; if (!on) $("finderMore").hidden = true; };
 function pick(a) {
+  invalidate();
   picked = a;
-  $("finderList").hidden = $("finderH").hidden = $("finderMore").hidden = true;
+  showList(false);
   $("picked").hidden = false;
   $("picked").innerHTML = `<span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
-    <div><b>${esc(a.nickname)}</b> <span class="muted">@${esc(a.user_ref)} · 공개 글 ${a.n_posts}편</span>${a.bio ? `<div class="muted">${esc(a.bio)}</div>` : ""}</div>
+    <div><b>${esc(a.nickname)}</b> <span class="muted">@${esc(a.user_ref)} · 공개 글 ${esc(String(a.n_posts))}편</span>${a.bio ? `<div class="muted">${esc(a.bio)}</div>` : ""}</div>
     <button type="button" class="link" id="repick">다른 계정</button>`;
   $("repick").onclick = () => { unpick(); $("userQ").focus(); };
   $("scanBtn").disabled = false;
 }
+// 다시 고르기 — 검색칸을 비우고 전체 목록부터(식별자가 남아 있으면 같은 계정이 바로 다시 골라지던 것)
 function unpick() {
-  picked = null; $("scanBtn").disabled = true; $("picked").hidden = true;
-  $("finderList").hidden = $("finderH").hidden = false;
-  browse($("userQ").value.trim());
+  picked = null; $("scanBtn").disabled = true; $("picked").hidden = true; $("scanMsg").textContent = "";
+  $("userQ").value = "";
+  showList(true);
+  browse("");
 }
-let _ft = null, _seq = 0;
+const idOnly = (u) => ({ user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" });
 async function browse(q, limit) {
-  const list = $("finderList"), more = $("finderMore"), seq = ++_seq;
-  if (/^u_[0-9a-f]{8,}$/i.test(q)) {   // 식별자를 그대로 넣은 경우
-    pick({ user_ref: q, nickname: q, n_posts: "?", hue: 30, bio: "" }); return;
-  }
-  $("finderH").textContent = q ? `「${q}」이(가) 들어간 계정` : "Veilo 계정 목록";
-  if (!list.children.length) list.innerHTML = `<li class="none">계정 목록을 불러오는 중…</li>`;
+  const list = $("finderList"), more = $("finderMore"), seq = invalidate();
+  if (/^u_[0-9a-f]{8,}$/i.test(q)) { pick(idOnly(q)); return; }   // 식별자를 그대로 넣은 경우
+  const head = q ? `「${q}」이(가) 들어간 계정` : "Veilo 계정 목록";
+  $("finderH").textContent = head;
+  if (!list.children.length || list.querySelector(".none")) list.innerHTML = `<li class="none">계정 목록을 불러오는 중…</li>`;
   try {
     const url = `${AUTHORS}?q=${encodeURIComponent(q)}${limit ? `&limit=${limit}` : ""}`;
-    const rows = (await (await fetch(url)).json()).map((a) => ({ ...a, hue: hueOf(a.user_ref) }));
-    if (seq !== _seq) return;   // 더 늦게 친 검색어의 결과가 먼저 왔다 — 옛 결과로 덮지 않는다
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(String(r.status));
+    const rows = (await r.json()).map((a) => ({ ...a, hue: hueOf(a.user_ref) }));
+    if (seq !== _seq) return;   // 그 사이 다른 검색 · 선택이 있었다 — 옛 결과로 덮지 않는다
     more.hidden = !!limit || rows.length < PAGE;
+    $("finderH").textContent = rows.length ? `${head} · ${rows.length}명` : head;
     if (!rows.length) { list.innerHTML = `<li class="none">「${esc(q)}」에 맞는 계정을 찾지 못했습니다.</li>`; return; }
     list.innerHTML = rows.map((a, i) => `<li><button type="button" class="acct" data-i="${i}"><span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
-      <span class="who"><span class="nm">${esc(a.nickname)}</span><span class="muted">@${esc(a.user_ref)} · 글 ${a.n_posts}편</span></span></button></li>`).join("");
+      <span class="who"><span class="nm">${esc(a.nickname)}</span><span class="muted">@${esc(a.user_ref)} · 글 ${esc(String(a.n_posts))}편</span></span></button></li>`).join("");
     list.querySelectorAll("button[data-i]").forEach((b) => b.addEventListener("click", () => { pick(rows[+b.dataset.i]); $("scanBtn").focus(); }));
   } catch {
     if (seq !== _seq) return;
     more.hidden = true;
-    list.innerHTML = `<li class="none">계정 목록을 불러오지 못했습니다. 잠시 뒤 다시 열어 주세요.</li>`;
+    $("finderH").textContent = head;
+    list.innerHTML = `<li class="none">계정 목록을 불러오지 못했습니다. <button type="button" class="link" id="finderRetry">다시 불러오기</button></li>`;
+    $("finderRetry").onclick = () => browse($("userQ").value.trim(), limit);
   }
 }
 $("finderMore").onclick = () => browse($("userQ").value.trim(), ALL);
 $("userQ").addEventListener("input", () => {
-  if (picked) { picked = null; $("scanBtn").disabled = true; $("picked").hidden = true; $("finderList").hidden = $("finderH").hidden = false; }
-  clearTimeout(_ft);
+  invalidate();   // 치는 동안 도착하는 옛 응답(처음 불러오기 포함)은 버린다
+  if (picked) { picked = null; $("scanBtn").disabled = true; $("picked").hidden = true; showList(true); }
   _ft = setTimeout(() => browse($("userQ").value.trim()), 220);
 });
 $("userQ").addEventListener("keydown", (e) => { if (e.key === "Enter" && picked) { e.preventDefault(); $("scanBtn").click(); } });
-$("scanBtn").onclick = () => { if (picked) runScan(picked.user_ref, picked.nickname === picked.user_ref ? "" : picked.nickname); };
-
-$("uploadBtn").onclick = async () => {
-  const msg = $("uploadMsg");
-  const f = $("uploadFile").files[0];
-  if (!f) { msg.textContent = "점검할 파일을 선택해 주세요."; return; }
-  msg.className = "muted"; msg.textContent = "";
-  $("uploadBtn").disabled = true;   // 두 번 누르기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
-  progressStart(`${f.name} 점검 중`);
-  try {
-    const form = new FormData();
-    form.append("file", f);
-    const r = await fetch("../upload", { method: "POST", body: form });
-    if (!r.ok) { await failMsg(msg, r); return; }
-    const data = await r.json();
-    data.nickname = f.name;
-    data.source = "upload";   // 업로드 글은 Veilo 에 없다 — 위험 줄이기 화면이 Veilo 링크 · 다시 점검을 감춘다 (B3)
-    saveScan(data);
-    msg.textContent = `글 ${data.posts.length}편을 점검했습니다. 결과로 이동합니다.`;
-    location.href = "diagnosis.html";
-  } catch (e) {
-    msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
-  } finally { progressStop(); $("uploadBtn").disabled = false; }
-};
-
-// Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
+// Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 골라 둔 채 보여 주고, 시작은 사용자가 누른다
 // Veilo 조치 띠의 「다시 점검 →」(?run=1)은 준비 화면에서 멈추지 않고 바로 점검을 시작한다 (UX N3)
+// 계정 정보를 못 불러와도 식별자로 골라 둔 모습(「다른 계정」 포함)은 보인다. 그 사이 사용자가 검색 · 선택을 했으면 덮지 않는다
 const RUN_NOW = new URLSearchParams(location.search).get("run") === "1";
 (async () => {
   const u = new URLSearchParams(location.search).get("u");
   if (!u) { browse(""); return; }   // 계정을 안 정하고 왔으면 — 목록부터 펼친다
+  const seq = invalidate();
+  let a = null;
   try {
-    const rows = (await (await fetch(`${AUTHORS}?q=${encodeURIComponent(u)}`)).json()).map((a) => ({ ...a, hue: hueOf(a.user_ref) }));
-    const a = rows.find((x) => x.user_ref === u);
-    if (a) pick(a); else { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
-  } catch { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
-  if (RUN_NOW && picked) { $("scanBtn").click(); return; }
+    const r = await fetch(`${AUTHORS}?q=${encodeURIComponent(u)}`);
+    if (r.ok) a = (await r.json()).map((x) => ({ ...x, hue: hueOf(x.user_ref) })).find((x) => x.user_ref === u) || null;
+  } catch { /* 아래에서 식별자만으로 */ }
+  if (seq !== _seq) return;
+  pick(a || idOnly(u));
+  if (RUN_NOW) { $("scanBtn").click(); return; }
   $("scanMsg").textContent = "이 계정의 공개 글을 점검합니다. 「공개 글 점검」을 누르세요.";
   $("scanBtn").focus();
 })();
