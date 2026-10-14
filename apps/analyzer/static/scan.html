@@ -103,11 +103,17 @@ let picked = null;   // { user_ref, nickname, n_posts }
 
 // 진행 표시(progressStart · progressStop)는 common.js — 위험 줄이기의 「다시 점검」도 같은 띠를 쓴다
 
-let scanning = false;   // 점검 중 — 다른 계정을 고르거나 다시 눌러 요청이 겹치지 않게(Codex 10/14)
+// 점검 중 잠금 — 계정 점검 · 파일 점검이 같이 쓴다. 요청이 겹치면 진행 띠 · 저장 결과가 섞인다(Codex 10/14 두 번).
+// 마우스만 막으면 키보드로 검색창 · 계정을 바꿀 수 있어 실제로 disabled 로 잠근다
+let scanning = false;
+function setBusy(on) {
+  scanning = on;
+  document.getElementById("scanCard").classList.toggle("is-scanning", on);
+  for (const el of [$("userQ"), $("uploadBtn"), $("uploadFile"), $("finderMore"), $("repick"), ...document.querySelectorAll("#finderList button")]) if (el) el.disabled = on;
+}
 async function runScan(user_ref, label) {
   if (scanning) return;
-  scanning = true;
-  document.getElementById("scanCard").classList.add("is-scanning");
+  setBusy(true);
   const msg = $("scanMsg");
   msg.className = "muted"; msg.textContent = "";
   // 누른 버튼이 바로 「점검 중」으로 — 회색 비활성으로만 바뀌면 멈춘 것처럼 보였다(아래 진행 띠는 화면 끝이라 눈에 덜 띈다)
@@ -129,8 +135,7 @@ async function runScan(user_ref, label) {
   } catch (e) {
     msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
   } finally {
-    scanning = false;
-    document.getElementById("scanCard").classList.remove("is-scanning");
+    setBusy(false);
     progressStop();
     const btn = $("scanBtn");
     btn.classList.remove("is-busy"); btn.textContent = btn.dataset.label || "공개 글 점검"; btn.disabled = !picked;
@@ -152,6 +157,7 @@ let _ft = null, _seq = 0;
 const invalidate = () => { clearTimeout(_ft); return ++_seq; };
 const showList = (on) => { $("finderList").hidden = $("finderH").hidden = !on; if (!on) $("finderMore").hidden = true; };
 function pick(a) {
+  if (scanning) return;
   invalidate();
   picked = a;
   showList(false);
@@ -212,6 +218,7 @@ async function browse(q, limit) {
 }
 $("finderMore").onclick = () => browse($("userQ").value.trim(), ALL);
 $("userQ").addEventListener("input", () => {
+  if (scanning) return;
   invalidate();   // 치는 동안 도착하는 옛 응답(처음 불러오기 포함)은 버린다
   if (picked) { picked = null; $("scanBtn").disabled = true; $("picked").hidden = true; showList(true); }
   _ft = setTimeout(() => browse($("userQ").value.trim()), 220);
@@ -223,8 +230,10 @@ $("uploadBtn").onclick = async () => {
   const msg = $("uploadMsg");
   const f = $("uploadFile").files[0];
   if (!f) { msg.textContent = "점검할 파일을 선택해 주세요."; return; }
+  if (scanning) return;
   msg.className = "muted"; msg.textContent = "";
-  $("uploadBtn").disabled = true;   // 두 번 누르기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
+  setBusy(true);   // 두 번 누르기 · 계정 점검과 겹치기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
+  $("scanBtn").disabled = true;
   // 파일 크기로 글자 수를 어림한다(한글 UTF-8 ≈ 3바이트 · 공백 · 숫자는 1바이트 — 2.8로 나눈다) → 서버가 실측 속도로 곱한다
   let est;
   try { const r = await fetch(`../api/scan-estimate?chars=${Math.round(f.size / 2.8)}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
@@ -242,7 +251,7 @@ $("uploadBtn").onclick = async () => {
     location.href = "diagnosis.html";
   } catch (e) {
     msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
-  } finally { progressStop(); $("uploadBtn").disabled = false; }
+  } finally { progressStop(); setBusy(false); $("scanBtn").disabled = !picked; }
 };
 
 // Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 골라 둔 채 보여 주고, 시작은 사용자가 누른다

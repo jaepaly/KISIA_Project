@@ -100,6 +100,8 @@ async function main() {
     await js(`document.getElementById("scanBtn").click(); true`);
     const busy = await until(js, `document.getElementById("scanBtn").classList.contains("is-busy")`, 1000);
     check(step, "누르면 버튼이 「점검 중…」", busy, busy ? await js(`document.getElementById("scanBtn").textContent.trim()`) : null, "점검 중…");
+    const lock = await js(`({ q: document.getElementById("userQ").disabled, up: document.getElementById("uploadBtn").disabled, acct: [...document.querySelectorAll("#finderList button")].every((b) => b.disabled) })`);
+    check(step, "점검 중엔 검색창 · 계정 · 파일 점검이 잠김 (요청 겹침 방지 · 키보드 포함)", lock.q && lock.up && lock.acct, lock, "모두 disabled");
     const band = await until(js, `(() => { const p = document.getElementById("progress"); return p && !p.hidden; })()`, 1000);
     check(step, "아래 진행 띠가 보임", band, band, true);
     const det = band && await until(js, `document.querySelector("#progress .pbar").classList.contains("det") && /약/.test(document.getElementById("pTime").textContent)`, 1500);
