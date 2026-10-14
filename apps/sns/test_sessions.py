@@ -45,10 +45,12 @@ def test_first_visit_sets_cookie_and_edits_do_not_leak(app_iso):
     assert r.status_code == 302 and r.headers["Location"].endswith("/about")   # 첫 접속은 소개로 — 세션 쿠키는 그때 이미 받는다
     cookie = r.headers.get("Set-Cookie", "")
     assert "veilo_sid=" in cookie and "HttpOnly" in cookie
-    assert a.get("/?skip_about=1").status_code == 200   # 소개를 건너뛰고 홈 — 이때 이 방문자의 DB 사본이 생긴다
-    assert (root / "sessions").exists()
+    assert a.get("/?skip_about=1").status_code == 200   # 소개를 건너뛰고 홈 — 읽기만 해서는 사본이 생기지 않는다(시드를 읽기 전용으로)
+    sessions = root / "sessions"
+    assert not sessions.exists() or not list(sessions.glob("*.db"))
 
-    _toggle(a)   # 방문자 A 가 비공개로
+    _toggle(a)   # 방문자 A 가 비공개로 — 첫 쓰기에서 이 방문자의 DB 사본이 생긴다 (copy-on-write)
+    assert len(list((root / "sessions").glob("*.db"))) == 1
     body_a = a.get("/u/u_0123456789ab").get_data(as_text=True)
     assert "🌐 공개로" in body_a and "🔒 비공개로" not in body_a   # A 에게는 지금 비공개 → 「공개로」 버튼
 

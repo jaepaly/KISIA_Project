@@ -23,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 
 from flask import Flask, Response, abort, g, jsonify, redirect, render_template, request
 
-from db import connect, init
+from db import connect, connect_readonly, init
 
 app = Flask(__name__)
 # 글쓰기 한도 — 파도풀 점검(/scan)의 입력 상한(apps/analyzer/adapters/file_adapter.py)과 같은 값. 계정 글이 이 안에 있으면
@@ -153,14 +153,31 @@ def _sessions_locked(d: _Path):
             f.close()
 
 
+def _existing_copy(sid: str) -> _Path | None:
+    """이 방문자의 사본이 있으면 그 경로(마지막 사용 시각 갱신) · 없으면 None — 만들지 않는다 (읽기 요청용)."""
+    d = _session_dir()
+    p = d / f"{sid}.db"
+    if not p.exists():   # 잠금 없이 먼저 — 사본 없는 방문자(대부분 봇)의 읽기는 폴더를 잠그지도 않는다
+        return None
+    with _sessions_locked(d):
+        if not p.exists():
+            return None
+        try:
+            _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
+        except OSError:
+            pass
+        return p
+
+
 def _session_db_path(sid: str) -> _Path:
+    """(쓰기 요청) 이 방문자의 사본 — 없으면 시드를 복사해 만든다."""
     d = _session_dir()
     d.mkdir(parents=True, exist_ok=True)
     p = d / f"{sid}.db"
     with _sessions_locked(d):
         if p.exists():
             try:
-                _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
+                _os_utime(p)
             except OSError:
                 pass
             return p
@@ -324,10 +341,22 @@ def _set_about_cookie(resp):
     return resp
 
 
+WRITE_METHODS = ("POST", "PUT", "PATCH", "DELETE")
+
+
 def db() -> sqlite3.Connection:
+    """이 요청의 DB. 세션 격리가 켜져 있으면 — 사본이 있으면 사본, 없으면 시드를 읽기 전용으로 (copy-on-write).
+    사본은 첫 「쓰기」 요청(POST 등)에서만 만든다 — 쿠키 없이 GET 만 하는 봇 · 링크 미리보기가 요청마다 5MB 사본을
+    만들어 이틀 만에 340개(1.7GB)가 쌓였다 (10/14 운영 실측). 상태를 바꾸는 라우트는 모두 POST 다 (GET 은 쓰지 않는다)."""
     if "db" not in g:
         sid = getattr(g, "sid", None)
-        g.db = connect(_session_db_path(sid)) if (sid and isolation_on()) else connect()
+        if not (sid and isolation_on()):
+            g.db = connect()
+        elif request.method in WRITE_METHODS:
+            g.db = connect(_session_db_path(sid))
+        else:
+            p = _existing_copy(sid)
+            g.db = connect(p) if p else connect_readonly(_seed_path())
     return g.db
 
 
@@ -782,6 +811,10 @@ def _attach_clues(posts: list[dict]) -> None:
 @app.post("/api/clues/<post_id>")
 def save_clues(post_id: str):
     """브라우저가 센 단서 수를 저장한다 — 내 계정 글만. 해시는 서버가 지금 본문으로 계산한다."""
+    sid = getattr(g, "sid", None)
+    if sid and isolation_on() and not (_session_dir() / f"{sid}.db").exists():
+        # 사본이 없으면 「내 계정」도 없다 — 이 요청 때문에 사본을 만들지 않는다 (copy-on-write)
+        return jsonify({"error": "not my post"}), 403
     me = _me()
     row = db().execute("SELECT author_id, body FROM posts WHERE post_id = ?", (post_id,)).fetchone()
     if me is None or row is None or row["author_id"] != me["author_id"]:

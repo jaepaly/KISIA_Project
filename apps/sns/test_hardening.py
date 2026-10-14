@@ -32,9 +32,17 @@ def env(tmp_path, monkeypatch):
     return appmod, tmp_path
 
 
-def _new_visitor(app):
+def _first_write(app):
+    """새 방문자가 첫 화면을 보고(쿠키를 받고) 첫 쓰기를 한다 — 사본은 이 쓰기에서 생긴다 (copy-on-write). 쓰기 응답을 돌려준다."""
     c = app.test_client()
     sid = " ".join(c.get("/?skip_about=1").headers.getlist("Set-Cookie")).split("veilo_sid=")[1].split(";")[0]
+    return c, sid, c.post("/me", data={"author_id": ""})
+
+
+def _new_visitor(app):
+    """사본이 있는 방문자 — 첫 쓰기까지 한다."""
+    c, sid, r = _first_write(app)
+    assert r.status_code == 302, r.status_code
     return c, sid
 
 
@@ -220,8 +228,8 @@ def test_cap_one_allows_only_one_new_copy(env, monkeypatch):
     monkeypatch.setattr(appmod, "SESSION_MAX", 1)
     monkeypatch.setattr(appmod, "SESSION_SWEEP_SECONDS", 0)     # 매번 청소 — 다시 세도 넘지 않아야 한다
     first, _ = _new_visitor(appmod.app)
-    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
-    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
+    assert _first_write(appmod.app)[2].status_code == 503
+    assert _first_write(appmod.app)[2].status_code == 503
     assert len(list((root / "sessions").glob("*.db"))) == 1
     assert first.get(f"/u/{REF}").status_code == 200
 
@@ -233,7 +241,7 @@ def test_cap_counts_copies_made_by_other_processes(env, monkeypatch):
     monkeypatch.setattr(appmod, "SESSION_SWEEP_SECONDS", 3600)
     _new_visitor(appmod.app)                                    # 이 프로세스가 하나
     (root / "sessions" / ("c" * 24 + ".db")).write_bytes(b"")  # 다른 프로세스가 방금 하나
-    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
+    assert _first_write(appmod.app)[2].status_code == 503
 
 
 def test_sessions_lock_is_exclusive_across_handles(env):
@@ -267,7 +275,7 @@ def test_cap_is_hard_when_all_copies_are_in_use(env, monkeypatch):
     monkeypatch.setattr(appmod, "SESSION_MAX", 2)
     a, _ = _new_visitor(appmod.app)
     b, _ = _new_visitor(appmod.app)
-    r = appmod.app.test_client().get("/?skip_about=1")
+    r = _first_write(appmod.app)[2]
     assert r.status_code == 503 and "잠시 뒤" in r.get_data(as_text=True)
     assert len(list((root / "sessions").glob("*.db"))) == 2
     assert a.get(f"/u/{REF}").status_code == 200 and b.get(f"/u/{REF}").status_code == 200   # 있던 방문자는 그대로
@@ -350,3 +358,93 @@ def test_concurrent_posts_cannot_both_pass_author_cap(env, monkeypatch):
     con = sqlite3.connect(root / "sessions" / f"{sid}.db")
     assert con.execute("SELECT COUNT(*) FROM posts WHERE author_id='S01'").fetchone()[0] == 2
     con.close()
+
+
+# ── copy-on-write — 읽기만 하는 방문자(봇 · 링크 미리보기 포함)는 사본을 만들지 않는다 (10/14 운영 340개 · 1.7GB)
+import hashlib  # noqa: E402
+
+READ_PATHS = ["/", "/about", "/?skip_about=1", "/posts/S01_b01", f"/u/{REF}", "/api/authors", f"/api/export/{REF}", "/api/me",
+              "/api/author/S01/summary", "/new"]
+
+
+def _sha(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+
+def _copies(root: Path) -> list[Path]:
+    d = root / "sessions"
+    return list(d.glob("*.db")) if d.exists() else []
+
+
+def test_reads_create_no_copy_and_never_touch_seed(env):
+    appmod, root = env
+    seed = root / "sns.seed.db"
+    before = _sha(seed)
+    for path in READ_PATHS:
+        r = appmod.app.test_client().get(path)                  # 쿠키 없는 새 방문자마다
+        assert r.status_code in (200, 302), (path, r.status_code)
+    c = appmod.app.test_client()                                # 쿠키를 받은 방문자가 계속 읽기만
+    for path in READ_PATHS:
+        assert c.get(path).status_code in (200, 302), path
+    # 분석기처럼 헤더로 — 사본이 없는 세션은 시드를 읽는다 (새 방문자와 같다)
+    sid = "0f" * 12
+    ex = appmod.app.test_client().get(f"/api/export/{REF}", headers={"X-Veilo-Session": sid}).get_json()
+    assert len(ex["posts"]) == 1
+    assert appmod.app.test_client().get("/api/authors", headers={"X-Veilo-Session": sid}).status_code == 200
+    assert _copies(root) == [] and _sha(seed) == before
+
+
+def test_read_only_view_looks_like_fresh_copy(env):
+    appmod, root = env
+    c = appmod.app.test_client()
+    c.get("/?skip_about=1")
+    assert c.get("/api/me").get_json() == {"me": None}           # 내 계정 없음
+    body = c.get(f"/u/{REF}").get_data(as_text=True)
+    assert "🔒 비공개로" in body and "모두 되돌리기" not in body   # 시드 그대로 · 바꾼 것 없음
+    assert _copies(root) == []
+
+
+def test_first_write_creates_exactly_one_copy_and_change_sticks(env):
+    appmod, root = env
+    seed_hash = _sha(root / "sns.seed.db")
+    c = appmod.app.test_client()
+    c.get("/?skip_about=1")
+    assert _copies(root) == []
+    assert c.post("/posts/S01_b01/visibility", data={"back": f"/u/{REF}"}).status_code == 302
+    assert len(_copies(root)) == 1
+    assert "🌐 공개로" in c.get(f"/u/{REF}").get_data(as_text=True)    # 같은 방문자에게는 바뀐 상태
+    c.post("/me", data={"author_id": "S01"})
+    assert len(_copies(root)) == 1                               # 두 번째 쓰기는 같은 사본
+    assert c.get("/api/me").get_json()["me"]["user_ref"] == REF
+    other = appmod.app.test_client()
+    assert "🔒 비공개로" in other.get(f"/u/{REF}").get_data(as_text=True)   # 남에게는 시드 그대로
+    assert _sha(root / "sns.seed.db") == seed_hash
+
+
+def test_seed_without_visitor_tables_reads_fine(tmp_path, monkeypatch):
+    """운영 시드에는 방문자 표(me · action_log · clue_cache)가 없다 — 읽기 전용으로 읽어도 화면이 그대로 · 시드는 그대로."""
+    from test_account import _seed as seed_old
+    seed_old(tmp_path / "sns.db")
+    seed_old(tmp_path / "sns.seed.db", visitor_tables=False)
+    monkeypatch.setenv("SNS_DB_PATH", str(tmp_path / "sns.db"))
+    monkeypatch.delenv("SNS_SEED_DB", raising=False)
+    monkeypatch.delenv("SNS_SESSION_DIR", raising=False)
+    import app as appmod
+    before = _sha(tmp_path / "sns.seed.db")
+    c = appmod.app.test_client()
+    c.get("/?skip_about=1")
+    for path in READ_PATHS:
+        assert c.get(path).status_code in (200, 302), path
+    assert "모두 되돌리기" not in c.get(f"/u/{REF}").get_data(as_text=True)
+    assert _sha(tmp_path / "sns.seed.db") == before and _copies(tmp_path) == []
+    assert c.post("/me", data={"author_id": "S01"}).status_code == 302      # 첫 쓰기 — 사본에 표가 생기고 저장된다
+    assert c.get("/api/me").get_json()["me"]["user_ref"] == REF
+    assert _sha(tmp_path / "sns.seed.db") == before
+
+
+def test_clue_save_without_copy_makes_no_copy(env):
+    appmod, root = env
+    c = appmod.app.test_client()
+    c.get("/?skip_about=1")
+    assert c.post("/api/clues/S01_b01", json={"n": 1}).status_code == 403
+    assert _copies(root) == []
