@@ -143,3 +143,21 @@ def test_fonts_route_allows_cross_origin(tmp_path, monkeypatch):
     assert "Access-Control-Allow-Origin" not in r.headers       # 글꼴만 연다
     r.close()
 
+
+
+def test_subsets_partition_source_cmap():
+    """굵기마다 core + ext 를 합치면 원본(fonts-src) 글자 집합과 같고, 파트끼리 겹치지 않는다 — 잘라내다 잃은 글자가 없다."""
+    ttLib = pytest.importorskip("fontTools.ttLib")
+    pytest.importorskip("brotli")
+    src_dir = HERE / "fonts-src"
+    by_weight: dict[str, list[str]] = {}
+    for f in _faces():
+        by_weight.setdefault(f["file"].split(".")[0], []).append(f["file"])
+    for stem, files in by_weight.items():
+        src = set(ttLib.TTFont(str(src_dir / f"{stem}.woff2")).getBestCmap())
+        seen: set[int] = set()
+        for name in files:
+            cm = set(ttLib.TTFont(str(FONTS / name)).getBestCmap())
+            assert not (seen & cm), f"{name}: 다른 파트와 겹친다"
+            seen |= cm
+        assert seen == src, f"{stem}: 원본 대비 빠진 글자 {len(src - seen)}"
