@@ -171,6 +171,7 @@ def index():
                 caps.setdefault(r["post_id"], []).append(r["caption"])
             for p in posts:
                 p["photos"] = caps.get(p["post_id"], [])
+            _attach_clues(posts)
         next_url = None
         if has_more:
             next_url = f"/?page={page + 1}" + (f"&author={author_id}" if author_id else "")
@@ -360,6 +361,12 @@ def _changes(author_id: str | None = None) -> list[dict]:
         d["label"] = d["title"] or (d["body"] or "").replace("\n", " ")[:24] or "(지워진 글)"
         d["time"] = d["at"][11:16]
         out.append(d)
+    # 고쳐 쓰기와 원래 글 비공개는 한 묶음 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다 (_undo). 화면에 짝 표시
+    rewritten = {d["post_id"] for d in out if d["kind"] == "rewrite"}
+    hidden = {d["post_id"] for d in out if d["kind"] == "private"}
+    for d in out:
+        d["paired"] = (d["kind"] == "private" and d["post_id"] in rewritten) or \
+                      (d["kind"] == "rewrite" and d["post_id"] in hidden)
     return out
 
 
@@ -376,6 +383,11 @@ def _undo(entry) -> None:
         # 새 글에 했던 조치는 글이 없어졌으니 같이 닫는다
         c.execute("UPDATE action_log SET undone_at = ? WHERE (post_id = ? OR id = ?) AND undone_at IS NULL",
                   (now, nid, entry["id"]))
+        # 짝 — 원래 글을 비공개로 바꾼 조치도 함께 되돌린다 (가장 이른 것부터 되돌리면 뒤의 토글도 같이 닫힌다)
+        hid = c.execute("SELECT * FROM action_log WHERE post_id = ? AND kind = 'private' AND undone_at IS NULL"
+                        " ORDER BY id LIMIT 1", (entry["post_id"],)).fetchone()
+        if hid is not None:
+            _undo(hid)
         return
     field = _FIELD[entry["kind"]]
     c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
@@ -403,7 +415,7 @@ def _inject_me() -> dict:
         n = len(_changes(me["author_id"])) if me else 0
     except sqlite3.Error:
         me, n = None, 0
-    return {"me": me, "me_changes": n}
+    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE}
 
 
 @app.post("/me")
@@ -450,15 +462,95 @@ def undo_all():
     return redirect(_with_done(_back("/"), "undo"))
 
 
+# ── 위험 배지 「📍 단서 N곳」 — 내 계정 글에만. 서버 부담이 핵심 제약이다(글 하나 점검 ≈ 2초 · 운영 서버 하나) ──
+# Veilo 는 점검하지 않는다. 브라우저(clues.js)가 글쓰기 실시간 점검과 같은 글 점검 API 로 센 값을 여기 저장하고,
+# 다음부터는 저장된 값으로 배지만 그린다. 본문이 바뀌면(해시가 다르면) 무효라 다시 센다.
+CLUE_PER_PAGE = 5   # 한 화면에서 브라우저가 새로 세는 글 수 상한 — clues.js 가 이 값을 받는다
+
+
+def _body_hash(body: str | None) -> str:
+    import hashlib
+    return hashlib.sha256((body or "").encode("utf-8")).hexdigest()[:16]
+
+
+def _attach_clues(posts: list[dict]) -> None:
+    """내 계정의 공개 글에 p['clues'](저장된 단서 수) 또는 p['clue_need'](아직 안 셈)를 붙인다. 내 계정이 없으면 아무것도 안 한다."""
+    try:
+        me = _me()
+    except sqlite3.Error:
+        return
+    mine = [p for p in posts if me and p["author_id"] == me["author_id"] and p["visibility"] == "public"]
+    if not mine:
+        return
+    ids = [p["post_id"] for p in mine]
+    cache = {r["post_id"]: r for r in db().execute(
+        f"SELECT * FROM clue_cache WHERE post_id IN ({','.join('?' * len(ids))})", ids)}
+    for p in mine:
+        c = cache.get(p["post_id"])
+        if c is not None and c["body_hash"] == _body_hash(p["body"]):
+            p["clues"] = c["n_clues"]
+        else:
+            p["clue_need"] = True
+
+
+@app.post("/api/clues/<post_id>")
+def save_clues(post_id: str):
+    """브라우저가 센 단서 수를 저장한다 — 내 계정 글만. 해시는 서버가 지금 본문으로 계산한다."""
+    me = _me()
+    row = db().execute("SELECT author_id, body FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+    if me is None or row is None or row["author_id"] != me["author_id"]:
+        return jsonify({"error": "not my post"}), 403
+    n = (request.get_json(silent=True) or {}).get("n")
+    if not isinstance(n, int) or isinstance(n, bool) or not 0 <= n <= 500:
+        return jsonify({"error": "bad n"}), 400
+    db().execute("INSERT INTO clue_cache(post_id, body_hash, n_clues, at) VALUES (?,?,?,?)"
+                 " ON CONFLICT(post_id) DO UPDATE SET body_hash = excluded.body_hash,"
+                 " n_clues = excluded.n_clues, at = excluded.at",
+                 (post_id, _body_hash(row["body"]), n, _now()))
+    db().commit()
+    return jsonify({"ok": True, "n": n})
+
+
+@app.get("/api/me")
+def api_me():
+    """파도풀 화면 상단바의 내 계정 아바타 — 세션의 내 계정. 없으면 {"me": null}.
+    export 와 같은 규칙으로 플랫폼 내부 값(author_id)은 내보내지 않는다."""
+    try:
+        me = _me()
+        n = len(_changes(me["author_id"])) if me else 0
+    except sqlite3.Error:
+        me = None
+    if me is None:
+        return jsonify({"me": None})
+    return jsonify({"me": {"user_ref": me["user_ref"], "nickname": me["nickname"],
+                           "hue": _hue(me["author_id"]), "changes": n}})
+
+
+@app.after_request
+def _cors_api_me(resp):
+    """로컬 분리 실행(파도풀 :8000 · Veilo :3000)에서 파도풀 화면이 /api/me 를 쿠키와 함께 부를 수 있게 —
+    PADO_BASE 의 출처 하나만 허용한다. 운영은 같은 도메인(/check)이라 필요 없다."""
+    if request.path == "/api/me" and PADO_BASE.startswith(("http://", "https://")):
+        from urllib.parse import urlsplit
+        o = urlsplit(PADO_BASE)
+        origin = f"{o.scheme}://{o.netloc}"
+        if request.headers.get("Origin") == origin:
+            resp.headers["Access-Control-Allow-Origin"] = origin
+            resp.headers["Access-Control-Allow-Credentials"] = "true"
+            resp.headers["Vary"] = "Origin"
+    return resp
+
+
 @app.get("/u/<user_ref>")
 def profile(user_ref: str):
     a = db().execute(
         "SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
     if a is None:
         abort(404)
-    posts = db().execute(
+    posts = [dict(r) for r in db().execute(
         "SELECT * FROM posts WHERE author_id = ? ORDER BY created_at DESC",
-        (a["author_id"],)).fetchall()
+        (a["author_id"],)).fetchall()]
+    _attach_clues(posts)
     raw = db().execute(
         "SELECT CAST(substr(created_at, 12, 2) AS INTEGER) AS h, COUNT(*) AS cnt"
         " FROM posts WHERE author_id = ? GROUP BY h ORDER BY h",

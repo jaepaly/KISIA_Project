@@ -139,15 +139,16 @@
               {% elif c.kind == 'public' %}다시 공개함
               {% elif c.kind == 'geo' %}위치 태그 {{ c.before_val or '없음' }} → {{ c.after_val or '없음' }}
               {% else %}고쳐서 <a href="/posts/{{ c.new_post_id }}">새 글</a>로 올림{% endif %}
+              {% if c.paired %}<span class="pair" title="고쳐 쓰기를 되돌리면 원래 글도 다시 공개됩니다">고쳐 쓰기와 한 묶음</span>{% endif %}
             </span>
             <form method="post" action="/changes/{{ c.id }}/undo">
               <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
-              <button type="submit" class="ghost" {% if c.kind == 'rewrite' %}title="새로 올린 글이 지워집니다"{% endif %}>되돌리기</button>
+              <button type="submit" class="ghost" {% if c.kind == 'rewrite' %}title="새로 올린 글이 지워집니다{% if c.paired %}. 원래 글도 다시 공개됩니다{% endif %}"{% endif %}>되돌리기</button>
             </form>
           </li>
           {% endfor %}
         </ul>
-        <p class="note">되돌리면 파도풀에서 다시 점검했을 때 숫자도 바꾸기 전으로 돌아옵니다. 고쳐 쓴 것을 되돌리면 새로 올린 글이 지워집니다.</p>
+        <p class="note">되돌리면 파도풀에서 다시 점검했을 때 숫자도 바꾸기 전으로 돌아옵니다. 고쳐 쓴 것을 되돌리면 새로 올린 글이 지워지고, 원래 글을 비공개로 바꾼 것도 함께 되돌립니다.</p>
       </section>
       {% endif %}
 
@@ -171,6 +172,7 @@
         <div style="font-size:12px;color:var(--ut-ink3);margin-top:7px;display:flex;gap:10px;flex-wrap:wrap;">
           <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
           {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
+          {% include "_clue.html" %}
         </div>
         <form method="post" action="/posts/{{ p.post_id }}/visibility" style="margin-top:10px;">
           <input type="hidden" name="back" value="/u/{{ a.user_ref }}">

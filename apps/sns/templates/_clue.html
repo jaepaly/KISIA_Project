@@ -1,0 +1,7 @@
+{# 위험 배지 — 내 계정 공개 글만 (app.py _attach_clues). 저장된 값이 있으면 배지, 없으면 clues.js 가 채울 빈 자리.
+   0곳은 배지를 달지 않는다 — 「안전」으로 읽히지 않게. 누르면 글 화면의 「이 글 점검」으로 #}
+{% if p.clues %}
+<a class="clue-badge" href="/posts/{{ p.post_id }}#pado" title="이 글에서 찾은 개인정보 단서 {{ p.clues }}곳 — 누르면 이 글 점검">📍 단서 {{ p.clues }}곳</a>
+{% elif p.clue_need %}
+<span class="clue-slot" data-clue-need="{{ p.post_id }}" data-clue-body="{{ p.body }}" hidden></span>
+{% endif %}

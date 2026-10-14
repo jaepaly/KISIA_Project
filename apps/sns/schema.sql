@@ -66,3 +66,12 @@ CREATE TABLE IF NOT EXISTS action_log (
 );
 
 CREATE INDEX IF NOT EXISTS idx_action_log_author ON action_log(author_id, undone_at);
+
+-- 위험 배지 — 「내 계정」 글의 단서 수. 브라우저가 글 점검 API 로 센 값을 저장해 두고 다시 부르지 않는다.
+-- body_hash 가 지금 본문과 다르면 무효 (본문이 바뀌면 다시 센다)
+CREATE TABLE IF NOT EXISTS clue_cache (
+  post_id     TEXT PRIMARY KEY,
+  body_hash   TEXT NOT NULL,
+  n_clues     INTEGER NOT NULL,
+  at          TEXT NOT NULL
+);

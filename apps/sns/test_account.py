@@ -158,3 +158,84 @@ def _log_ids(app, sid, all_ids=False):
     rows = con.execute("SELECT id, kind FROM action_log" + ("" if all_ids else " WHERE undone_at IS NULL")).fetchall()
     con.close()
     return [r[0] for r in rows] if all_ids else {k: i for i, k in rows}
+
+
+# ── 위험 배지 · /api/me · 고쳐 쓰기 짝 (3차) ──
+
+def test_rewrite_undo_also_reopens_original(env):
+    """고쳐 쓰기와 원래 글 비공개는 한 묶음 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    before = _export(app, sid)
+    a.post("/posts", data={"author_id": "S01", "title": "고친 글", "body": "출근길",
+                           "created_at": "2026-01-03T09:00", "from_post": "S01_b01"})
+    a.post("/posts/S01_b01/visibility", data={"back": f"/u/{REF}"})
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert page.count("고쳐 쓰기와 한 묶음") == 2
+    a.post(f"/changes/{_log_ids(app, sid)['rewrite']}/undo", data={"back": f"/u/{REF}"})
+    assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_api_me(env):
+    app, _ = env
+    a = app.test_client()
+    _sid(a)
+    assert a.get("/api/me").get_json() == {"me": None}
+    a.post("/me", data={"author_id": "S01"})
+    a.post("/posts/S01_b01/visibility", data={"back": "/"})
+    me = a.get("/api/me").get_json()["me"]
+    assert me["user_ref"] == REF and me["nickname"] == "시드닉" and me["changes"] == 1
+    assert "author_id" not in me                     # 플랫폼 내부 값은 내보내지 않는다
+    assert app.test_client().get("/api/me").get_json() == {"me": None}   # 쿠키 없는 다른 방문자
+
+
+def test_api_me_cors_only_for_pado_origin(env, monkeypatch):
+    app, _ = env
+    import app as appmod
+    monkeypatch.setattr(appmod, "PADO_BASE", "http://localhost:8000")
+    c = app.test_client()
+    ok = c.get("/api/me", headers={"Origin": "http://localhost:8000"})
+    assert ok.headers.get("Access-Control-Allow-Origin") == "http://localhost:8000"
+    assert ok.headers.get("Access-Control-Allow-Credentials") == "true"
+    bad = c.get("/api/me", headers={"Origin": "http://evil.example"})
+    assert "Access-Control-Allow-Origin" not in bad.headers
+
+
+def test_clue_badge_cache_and_invalidation(env):
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    # 내 계정이 없으면 배지도 빈 자리도 없다 (점검을 부르지 않는다)
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert "data-clue-need" not in page and "clues.js" not in page
+    assert a.post("/api/clues/S01_b01", json={"n": 3}).status_code == 403
+
+    a.post("/me", data={"author_id": "S01"})
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert page.count("data-clue-need") == 2 and "clues.js" in page and "CLUE_PER_PAGE = 5" in page
+    assert a.post("/api/clues/S01_b01", json={"n": 3}).status_code == 200
+    assert a.post("/api/clues/S01_b02", json={"n": 0}).status_code == 200
+    assert a.post("/api/clues/S01_b01", json={"n": "3"}).status_code == 400
+    for path in (f"/u/{REF}", "/"):
+        page = a.get(path).get_data(as_text=True)
+        assert "📍 단서 3곳" in page and "/posts/S01_b01#pado" in page
+        assert "단서 0곳" not in page                 # 0곳은 배지 없음 — 안전으로 읽히지 않게
+        assert "data-clue-need" not in page           # 둘 다 저장됨 → 다시 세지 않는다
+
+    # 본문이 바뀌면 저장된 값은 무효 — 다시 셀 자리로 돌아간다
+    con = sqlite3.connect(Path(_session_db(sid)))
+    con.execute("UPDATE posts SET body = '바뀐 본문' WHERE post_id = 'S01_b01'")
+    con.commit(); con.close()
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert "📍 단서 3곳" not in page and 'data-clue-need="S01_b01"' in page
+
+    # 남의 글 · 비공개 글은 배지 대상이 아니다
+    assert a.post("/api/clues/S02_x", json={"n": 1}).status_code == 403
+    a.post("/posts/S01_b02/visibility", data={"back": "/"})
+    assert 'data-clue-need="S01_b02"' not in a.get(f"/u/{REF}").get_data(as_text=True)
+
+
+def _session_db(sid):
+    import app as appmod
+    return appmod._session_dir() / f"{sid}.db"

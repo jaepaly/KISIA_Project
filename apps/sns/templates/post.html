@@ -108,6 +108,8 @@ document.getElementById("fixBtn").addEventListener("click", () => {
   location.href = "/new?from=" + encodeURIComponent(draft.from);
 });
 // 파도풀 조치 화면에서 #fix 로 들어오면 고쳐 쓰기 안내를 바로 보여 준다
+// 피드·프로필의 「📍 단서 N곳」 배지로 들어오면(#pado) 이 글 점검을 바로 돌린다
+if (location.hash === "#pado") { const b = document.getElementById("padoBtn"); b.scrollIntoView({ block: "center" }); b.click(); }
 if (location.hash === "#fix") { const f = document.getElementById("fix"); f.style.boxShadow = "0 0 0 2px var(--ut-earth)"; f.scrollIntoView({ block: "center" }); }
 </script>
 {% endblock %}

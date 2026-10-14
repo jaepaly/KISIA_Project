@@ -188,6 +188,35 @@ const ATTR_LABEL = {
 // Veilo 상단바 · 하단 탭바의 링크와 그림 — Veilo 주소(head.js VEILO_BASE)를 붙인다. 인스턴스는 "" 라 같은 도메인 루트
 document.querySelectorAll("[data-veilo-href]").forEach((a) => { a.href = (window.VEILO_BASE || "") + a.dataset.veiloHref; });
 document.querySelectorAll("[data-veilo-src]").forEach((img) => { img.src = (window.VEILO_BASE || "") + img.dataset.veiloSrc; });
+// 상단바 「내 계정」 아바타 — Veilo 세션의 내 계정(GET VEILO_BASE/api/me). Veilo base.html 의 아바타와 같은 모양.
+// 운영은 같은 도메인이라 쿠키가 따라간다. 로컬 분리 실행에서 쿠키나 CORS 로 막히면 자리를 숨긴 채 둔다(오류 없이)
+(function acctAvatar() {
+  const slot = document.getElementById("acctSlot");
+  if (!slot || !window.fetch) return;
+  const base = window.VEILO_BASE || "";
+  fetch(base + "/api/me", { credentials: "include" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => {
+      const me = j && j.me;
+      if (!me || !me.user_ref) return;
+      const a = document.createElement("a");
+      a.className = "avatar me-av";
+      a.href = `${base}/u/${encodeURIComponent(me.user_ref)}`;
+      a.title = `내 계정 — ${me.nickname}` + (me.changes ? ` · 바꾼 것 ${me.changes}개` : "");
+      a.setAttribute("aria-label", `내 계정 ${me.nickname}`);
+      a.style.background = `hsl(${me.hue},45%,86%)`;
+      a.style.color = `hsl(${me.hue},35%,32%)`;
+      a.textContent = Array.from(me.nickname || "?")[0];
+      if (me.changes) {
+        const n = document.createElement("span");
+        n.className = "me-n";
+        n.textContent = me.changes;
+        a.appendChild(n);
+      }
+      slot.replaceWith(a);
+    })
+    .catch(() => {});
+})();
 // 상단바 스크롤 그림자 — Veilo base.html 과 같은 동작
 (function () {
   const top = document.getElementById("utTop");

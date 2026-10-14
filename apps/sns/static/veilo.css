@@ -457,3 +457,10 @@ dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
 .changes button{font-size:12px;padding:6px 12px;white-space:nowrap}
 .changes .note{font-size:12px;color:var(--ut-ink3);margin:8px 0 0}
 .me-pick button[hidden]{display:none}
+
+/* ── 위험 배지 「📍 단서 N곳」 — 내 계정 글만 (W-BADGE) ── */
+.clue-badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;color:var(--ut-earth-ink);background:var(--ut-earth-soft);border:1px solid var(--ut-earth);border-radius:99px;padding:2px 9px;white-space:nowrap;text-decoration:none;line-height:1.5}
+.clue-badge:hover{background:var(--ut-earth);color:#fff;text-decoration:none}
+.card-author .clue-badge{margin-left:auto}
+.card-author .clue-badge + .badge-private{margin-left:6px}
+.changes .pair{display:inline-block;font-size:11px;font-weight:600;color:var(--ut-sea);background:var(--ut-sea-soft);border-radius:99px;padding:0 7px;margin-left:4px}
