@@ -87,7 +87,11 @@ button.fx-busy::after{content:"";position:absolute;left:50%;top:50%;width:18px;h
   *,*::before,*::after{animation:none!important;transition:none!important}
   .ut-card[data-href]:hover,button:hover,.ut-nav a:hover{transform:none}
 }
-/* Motion 끄기(W-SCENE 버튼이 html 에 .no-motion) — reduced-motion 과 같은 정지 상태 */
+/* 정지 상태(html.no-motion — 소개 화면의 움직임 끄기 · 동작 줄이기 · ?view=static · 좁거나 낮은 화면. motion-core.js) — reduced-motion 과 같다.
+   호버에 뜨거나 커지는 것도 끈다. 클릭 물결은 fx.js 가 아예 만들지 않는다 */
 .no-motion .ut-main{animation:none}
 .no-motion *,.no-motion *::before,.no-motion *::after{animation:none!important;transition:none!important}
-.no-motion .ut-card[data-href]:hover,.no-motion button:hover,.no-motion .ut-nav a:hover{transform:none}
+.no-motion .ut-card[data-href]:hover,.no-motion button:hover,.no-motion .ut-nav a:hover,.no-motion .ut-tabs a:hover,.no-motion a.fx-btn:hover,
+.no-motion .ut-follow:hover,.no-motion .ut-tabs a:hover .ic,.no-motion mark:hover,.no-motion .fx-bar:hover,.no-motion .rail-who:hover .ut-av,
+.no-motion .ut-card[data-href]:hover::after{transform:none}
+.no-motion .fx-ripple{display:none}

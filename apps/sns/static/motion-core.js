@@ -2,14 +2,17 @@
    원칙: 스크롤 · 크기 변경 → rAF 에 한 번만 → 장면 함수들이 같은 y 로 갱신한다.
    위치 측정(getBoundingClientRect)은 refresh 에서만 — ResizeObserver · resize 가 「다시 재라」고 표시해 둔다.
    프레임 안에서는 읽은 값(캐시)만 쓰고 스타일만 바꾼다 — 쓰고 나서 다시 읽는 강제 레이아웃이 없다.
-   움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · 폭 767px 이하)는
-   html.ps-static — 장면은 「다 켜진 정지 상태」로 그린다. 767 은 레이아웃 CSS 의 @media (max-width:767px) 와 같은 값이다(하나로 통일). */
+   움직임을 안 쓰는 경우(움직임 끄기 · 시스템 「동작 줄이기」 · ?view=static · PIN_MQ 밖 = 폭 767px 이하 또는 높이 799px 이하)는
+   html.ps-static + html.no-motion 둘 다 — 장면은 「다 켜진 정지 상태」, 공통 효과(.reveal 등장 · 호버 · 부드러운 스크롤 · 클릭 물결)도 끈다.
+   PIN_MQ 는 pado-scene.css 의 정지 미디어쿼리와 같은 문자열이다(test_about.py 가 대조한다). 767 은 레이아웃 CSS 의 (max-width:767px) 와 같은 값.
+   높이 800 — 좁혀지기 장면 내용(약 660px) + 위 바(64) + 아래 소개 순서(72)가 한 화면에 들어가는 최소 높이(1400×900 실측). */
 (function () {
   "use strict";
   const root = document.documentElement;
   root.classList.add("js");   // .reveal 은 html.js 일 때만 숨는다 (veilo.css) — 스크립트가 안 돌면 글이 숨은 채 남지 않게
   const KEY = "padopool_motion";
-  const WIDE = matchMedia("(min-width:768px)");
+  const PIN_MQ = "(min-width:768px) and (min-height:800px)";
+  const PIN = matchMedia(PIN_MQ);
   const RM = matchMedia("(prefers-reduced-motion: reduce)");
   const STATIC = new URLSearchParams(location.search).get("view") === "static";
 
@@ -19,7 +22,7 @@
   let paused = false;
   try { paused = localStorage.getItem(KEY) === "off"; } catch (e) {}
 
-  function pinned() { return !paused && !STATIC && !RM.matches && WIDE.matches; }
+  function pinned() { return !paused && !STATIC && !RM.matches && PIN.matches; }
 
   // ── 측정 캐시 ──
   const geo = new Map();   // el → { top, h }
@@ -98,8 +101,10 @@
   }
   function applyMode(keepSpot) {
     const spot = keepSpot ? readingSpot() : null;
-    root.classList.toggle("ps-static", !pinned());
-    root.classList.toggle("no-motion", paused || RM.matches);
+    const still = !pinned();
+    root.classList.toggle("ps-static", still);
+    root.classList.toggle("no-motion", still);   // 정지 상태는 이 클래스 하나로 공통 효과까지 끈다 (veilo.css · fx.css · fx.js)
+    document.dispatchEvent(new CustomEvent("padomotion", { detail: { still } }));
     document.querySelectorAll("[data-motion-toggle]").forEach((b) => {
       b.setAttribute("aria-pressed", String(!paused));
       b.textContent = paused ? "움직임 켜기" : "움직임 끄기";
@@ -117,7 +122,7 @@
     applyMode(true);
   }
   const onMedia = () => applyMode(true);
-  (WIDE.addEventListener ? WIDE.addEventListener("change", onMedia) : WIDE.addListener(onMedia));
+  (PIN.addEventListener ? PIN.addEventListener("change", onMedia) : PIN.addListener(onMedia));
   (RM.addEventListener ? RM.addEventListener("change", onMedia) : RM.addListener(onMedia));
 
   function wireToggles() {
@@ -128,7 +133,7 @@
   }
 
   window.PadoMotion = {
-    clamp, smooth, local, top, height, release, track, pinned, schedule, invalidate, createTimeline, view,
+    clamp, smooth, local, top, height, release, track, pinned, PIN_MQ, schedule, invalidate, createTimeline, view,
     addScene(fn) { scenes.push(fn); schedule(); },
     onRefresh(fn) { refreshHooks.push(fn); },
     start() { wireToggles(); applyMode(false); },

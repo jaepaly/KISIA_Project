@@ -124,11 +124,19 @@
     stage = s;
     if (liveEl) liveEl.textContent = `글 ${s}편 — 예시로 약 ${fmt(K[s])}명 중 한 명`;
   }
+  // 밤 막(--d)이 짙어지는 동안의 글자 대비 — 글자색은 FLIP 에서 한 번만 바뀐다(먹 → 밤 글자 · 중간색으로 흐르지 않는다).
+  // 큰 글자(제목 · 숫자)는 d 0.49~0.63 에서 어느 쪽 색이든 3:1 이상이라 FLIP 0.56 이면 그대로 된다.
+  // 작은 라벨(4.5:1)은 먹 글자가 d 0.50 까지 · 밤 글자가 0.62 부터라 그 사이에만 라벨 뒤에 같은 쪽 바탕(--pa)을 깐다 —
+  // 종이 바탕 a 를 깔면 라벨 뒤 막 농도가 d(1-a), 밤 바탕 b 면 d+(1-d)b. 이것을 LIGHT_MAX 이하 · DARK_MIN 이상으로 맞춘다.
+  const FLIP = 0.56, LIGHT_MAX = 0.48, DARK_MIN = 0.65;
+  const plate = (d) => (d < FLIP ? (d > LIGHT_MAX ? 1 - LIGHT_MAX / d : 0) : (d < DARK_MIN ? (DARK_MIN - d) / (1 - d) : 0));
+
   function narrowScene(y, on) {
     if (!narrow) return;
     if (!on) {   // 정지 상태 — 다 켜진 모습
       posts.forEach((el) => setVar(el, "--in", 1));
       if (night) setVar(night, "--d", 0);
+      setVar(narrow, "--pa", 0);
       narrow.classList.remove("is-dark");
       countEl.textContent = `약 ${fmt(K[6])}명`;
       announce(6);
@@ -144,9 +152,10 @@
     announce(Math.min(6, Math.floor(s + 0.3)));
     const dark = smooth((p - 0.3) / 0.35) * 0.9;   // 글이 절반쯤 쌓인 뒤 어두워진다
     if (night) setVar(night, "--d", dark);
+    setVar(narrow, "--pa", plate(dark));
     if (spot) setVar(spot, "--s", 1 - smooth((p - 0.35) / 0.55));   // 1 → 0 : 스포트라이트가 「나」로 조여 온다
-    narrow.classList.toggle("is-dark", dark > 0.5);
-    if (crowd) { crowd.setDark(dark > 0.5); crowd.setK(k); }
+    narrow.classList.toggle("is-dark", dark >= FLIP);
+    if (crowd) { crowd.setDark(dark >= FLIP); crowd.setK(k); }
   }
 
   // ── 연출 B — 네 단계 점등 ───────────────────────────────────────────────

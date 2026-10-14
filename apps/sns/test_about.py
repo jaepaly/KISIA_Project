@@ -38,9 +38,24 @@ def test_about_opens(client):
 
 def test_about_static_view_has_no_pin(client):
     html = client.get("/about?view=static").get_data(as_text=True)
-    assert '<html lang="ko" class="ps-page ps-static">' in html   # .ps-static → CSS 가 sticky 를 푼다
+    # .ps-static → CSS 가 sticky 를 푼다 · .no-motion → 공통 효과(.reveal · 호버 · 부드러운 스크롤)도 끈다
+    assert '<html lang="ko" class="ps-page ps-static no-motion">' in html
     css = (Path(__file__).resolve().parent / "static" / "pado-scene.css").read_text(encoding="utf-8")
     assert ".ps-static .ps-sticky{position:static" in css
+    veilo = (Path(__file__).resolve().parent / "static" / "veilo.css").read_text(encoding="utf-8")
+    assert "html.no-motion{scroll-behavior:auto}" in veilo and ".no-motion .reveal" in veilo
+    # 실제 브라우저 동작(계산 스타일 · 캔버스 루프 · 키보드)은 tools/check_motion.mjs 가 본다 — CI 에 크롬이 없어 pytest 밖
+
+
+def test_pin_condition_same_in_js_and_css():
+    """핀 조건(폭 + 높이)은 JS pinned() 와 CSS 정지 미디어쿼리가 같은 문자열이다 — 어긋나면 낮은 화면에서 내용이 잘린다."""
+    import re
+    here = Path(__file__).resolve().parent / "static"
+    js = (here / "motion-core.js").read_text(encoding="utf-8")
+    css = (here / "pado-scene.css").read_text(encoding="utf-8")
+    mq = re.search(r'const PIN_MQ = "([^"]+)"', js).group(1)
+    assert "min-height" in mq and "min-width:768px" in mq
+    assert f"@media not all and {mq}" in css
 
 
 def test_sticky_total_within_400svh(client):

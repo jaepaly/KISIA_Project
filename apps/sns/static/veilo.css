@@ -544,6 +544,8 @@ button.pado-go{display:inline-flex;align-items:center;height:40px;padding:0 18px
 .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
 /* JS 가 안 돌면 숨은 채로 남지 않게 — html.no-js 가 없어도 .no-motion · 좁은 화면 · reduced-motion 은 즉시 다 보인다 */
 .no-motion .reveal,html:not(.js) .reveal{opacity:1;transform:none;transition:none}
+.no-motion .rv{opacity:1;transform:none;transition:none}
+html.no-motion{scroll-behavior:auto}   /* 정지 상태는 앵커 이동도 바로 — 부드러운 스크롤 끔 */
 @media (max-width:767px){.reveal{opacity:1;transform:none;transition:none}}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 

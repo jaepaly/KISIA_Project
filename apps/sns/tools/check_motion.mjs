@@ -1,0 +1,262 @@
+// 소개 화면(/about) 움직임 모드 브라우저 검증 — 실제 크롬에서 계산 스타일 · 캔버스 루프 · 키보드 도달을 본다.
+// pytest 에는 넣지 않는다(CI 에 크롬이 없다). 외부 패키지 없음 — Node 22 내장 fetch · WebSocket 으로 CDP 에 붙는다.
+//
+// 실행 방법
+//   1) Veilo 를 띄운다:   PADO_BASE=http://localhost:8020 SNS_PORT=3020 python apps/sns/app.py
+//   2) 크롬을 디버깅 포트로 띄운다 (PowerShell · 프로필은 짧은 임시 경로):
+//        Start-Process chrome.exe -ArgumentList '--headless=new','--remote-debugging-port=9333','--user-data-dir=C:\Temp\cm','--hide-scrollbars','about:blank'
+//   3) node apps/sns/tools/check_motion.mjs [--port 9333] [--base http://localhost:3020]
+//   4) 끝나면 2) 에서 띄운 크롬만 끈다 (Start-Process -PassThru 로 받은 Id 로 Stop-Process).
+// 결과는 JSON 한 덩어리 { ok, failed, results:[{ mode, check, ok, got, want }] } — 하나라도 실패면 종료 코드 1.
+//
+// 모드: 기본(1400×900 · 핀) · ?view=static · 동작 줄이기 에뮬레이션 · 움직임 끄기 버튼 · 390px · 1280×640 · 1400×700
+// 검사: .ps-sticky position · .reveal opacity · html scroll-behavior · 캔버스 data-loop 가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
+//       핀 장면 내용이 위 바 · 아래 소개 순서에 가리지 않음 · 움직임 토글 뒤 읽던 자리(±1화면) · Tab 으로 소개 순서 · 움직임 버튼 도달 ·
+//       밤 막이 짙어지는 동안 좁혀지기 글자 대비(작은 라벨 4.5:1 · 제목·숫자 3:1 — 실제 계산 색 · 막 농도 · 라벨 바탕으로 계산)
+
+const arg = (name, fb) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : fb; };
+const PORT = Number(arg("--port", process.env.CDP_PORT || 9333));
+const BASE = arg("--base", process.env.SNS_BASE || "http://localhost:3020").replace(/\/$/, "");
+const T = 10000;   // CDP 호출 하나의 타임아웃(ms)
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const withTimeout = (p, ms, what) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(`timeout: ${what}`)), ms))]);
+
+// ── CDP ──
+async function connect() {
+  const list = await withTimeout(fetch(`http://127.0.0.1:${PORT}/json`).then((r) => r.json()), T, "list targets");
+  let page = list.find((t) => t.type === "page");
+  if (!page) page = await withTimeout(fetch(`http://127.0.0.1:${PORT}/json/new?about:blank`, { method: "PUT" }).then((r) => r.json()), T, "new target");
+  const ws = new WebSocket(page.webSocketDebuggerUrl);
+  await withTimeout(new Promise((res, rej) => { ws.addEventListener("open", res, { once: true }); ws.addEventListener("error", rej, { once: true }); }), T, "ws open");
+  let id = 0;
+  const pending = new Map();
+  const waiters = [];
+  ws.addEventListener("message", (e) => {
+    const m = JSON.parse(e.data);
+    if (m.id && pending.has(m.id)) { const p = pending.get(m.id); pending.delete(m.id); m.error ? p.rej(new Error(`${p.method}: ${m.error.message}`)) : p.res(m.result); }
+    else if (m.method) for (let i = waiters.length - 1; i >= 0; i--) if (waiters[i].method === m.method) { waiters[i].res(m.params); waiters.splice(i, 1); }
+  });
+  const send = (method, params = {}) => withTimeout(new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej, method }); ws.send(JSON.stringify({ id: i, method, params })); }), T, method);
+  const once = (method, ms = T) => withTimeout(new Promise((res) => waiters.push({ method, res })), ms, `event ${method}`);
+  const js = async (expression) => {
+    const r = await send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
+    if (r.exceptionDetails) throw new Error(`JS: ${r.exceptionDetails.exception?.description || r.exceptionDetails.text}`);
+    return r.result.value;
+  };
+  return { ws, send, once, js };
+}
+
+const results = [];
+function check(mode, name, ok, got, want) { results.push({ mode, check: name, ok: !!ok, got, want }); }
+
+async function main() {
+  const c = await connect();
+  const { send, once, js } = c;
+  await send("Page.enable");
+  await send("Runtime.enable");
+  await send("Page.bringToFront");
+  await send("Emulation.setFocusEmulationEnabled", { enabled: true });
+
+  async function open(path, { w = 1400, h = 900, mobile = false, reduced = false, motion = "on" } = {}) {
+    await send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 1, mobile });
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }] });
+    // 움직임 설정(localStorage)은 같은 출처에서만 쓸 수 있다 — 한 번 열고 쓴 뒤 다시 연다
+    let load = once("Page.loadEventFired");
+    await send("Page.navigate", { url: `${BASE}/about?intro=0` });
+    await load;
+    await js(`localStorage.setItem("padopool_motion", ${JSON.stringify(motion)}); localStorage.setItem("padopool_intro_v1", "seen"); true`);
+    load = once("Page.loadEventFired");
+    await send("Page.navigate", { url: `${BASE}${path}` });
+    await load;
+    await sleep(700);
+  }
+  const scrollTo = async (y) => { await js(`window.scrollTo({ top: ${Math.round(y)}, behavior: "instant" }); true`); await sleep(350); };
+  // 섹션 안 비율 p 자리의 스크롤 값 (핀 장면은 풀리는 지점까지를 0~1 로)
+  const posOf = (sel, p) => js(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); const top = el.getBoundingClientRect().top + scrollY;
+    return Math.round(top + ${p} * Math.max(0, el.offsetHeight - innerHeight)); })()`);
+  const state = () => js(`(() => { const cs = (s, p) => { const el = document.querySelector(s); return el ? getComputedStyle(el)[p] : null; };
+    return { cls: document.documentElement.className, sticky: cs(".ps-sticky", "position"), reveal: cs(".reveal", "opacity"),
+      scroll: getComputedStyle(document.documentElement).scrollBehavior, loop: document.getElementById("psCrowd")?.dataset.loop,
+      pinned: window.PadoMotion ? window.PadoMotion.pinned() : null, vh: innerHeight }; })()`);
+  async function loopStops(mode) {
+    let loop = null;
+    for (let i = 0; i < 20; i++) { loop = await js(`document.getElementById("psCrowd").dataset.loop`); if (loop === "off") break; await sleep(250); }
+    check(mode, "canvas data-loop 멈춘 뒤 off", loop === "off", loop, "off");
+  }
+  // 물결 — pointerdown 을 n 번 보내고 남은 .fx-ripple 수
+  const ripple = (n) => js(`(() => { const b = document.querySelector("[data-motion-toggle]:not([hidden])") || document.querySelector(".ut-top a");
+    const r = b.getBoundingClientRect();
+    for (let i = 0; i < ${n}; i++) b.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, button: 0, clientX: r.left + 4, clientY: r.top + 4 }));
+    return document.querySelectorAll(".fx-ripple").length; })()`);
+  const ripples = () => js(`document.querySelectorAll(".fx-ripple").length`);
+  // Tab 을 눌러 가며 소개 순서 링크 · 움직임 버튼에 닿는지
+  async function tabReach(mode, { map = true, motion = true } = {}) {
+    await js(`window.scrollTo(0, 0); document.activeElement && document.activeElement.blur(); true`);
+    const seen = { map: false, motion: false };
+    for (let i = 0; i < 60 && !(seen.map && seen.motion); i++) {
+      await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+      const f = await js(`(() => { const a = document.activeElement; return { map: !!a.closest(".ps-map a"), motion: a.matches("[data-motion-toggle]") }; })()`);
+      seen.map ||= f.map; seen.motion ||= f.motion;
+    }
+    if (map) check(mode, "Tab 으로 소개 순서 링크 도달", seen.map, seen.map, true);
+    if (motion) check(mode, "Tab 으로 움직임 버튼 도달", seen.motion, seen.motion, true);
+  }
+  // 핀 장면 내용이 위 바 · 아래 소개 순서에 가리지 않는지 (핀일 때만 의미가 있다)
+  const clipping = () => js(`(() => { const top = document.getElementById("utTop")?.getBoundingClientRect().bottom || 0;
+    const map = document.querySelector(".ps-map"); const mapTop = map && getComputedStyle(map).display !== "none" ? map.getBoundingClientRect().top : innerHeight;
+    const r = document.querySelector("#narrow .ps-sticky > .ps-in").getBoundingClientRect();
+    return { top: Math.round(r.top), bottom: Math.round(r.bottom), barBottom: Math.round(top), mapTop: Math.round(mapTop) }; })()`);
+
+  // 정지 모드 공통 검사
+  async function staticChecks(mode, s) {
+    check(mode, "html 에 ps-static · no-motion", /\bps-static\b/.test(s.cls) && /\bno-motion\b/.test(s.cls), s.cls, "ps-static no-motion");
+    check(mode, ".ps-sticky position", s.sticky === "static", s.sticky, "static");
+    check(mode, ".reveal opacity (스크롤 전)", s.reveal === "1", s.reveal, "1");
+    check(mode, "html scroll-behavior", s.scroll === "auto", s.scroll, "auto");
+    await scrollTo(await posOf("#narrow", 0.5));
+    await loopStops(mode);
+    const n = await ripple(3);
+    check(mode, "클릭 물결 안 생김", n === 0, n, 0);
+  }
+
+  // ① 기본 — 1400×900 핀
+  {
+    const mode = "기본 1400×900";
+    await open("/about?intro=0");
+    let s = await state();
+    check(mode, "html 에 정지 클래스 없음", !/ps-static|no-motion/.test(s.cls), s.cls, "ps-page js");
+    check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
+    check(mode, ".reveal opacity (스크롤 전 숨김)", s.reveal === "0", s.reveal, "0");
+    check(mode, "html scroll-behavior", s.scroll === "smooth", s.scroll, "smooth");
+    for (const p of [0.1, 0.5, 0.9]) {
+      await scrollTo(await posOf("#narrow", p));
+      const k = await clipping();
+      check(mode, `핀 내용 안 가림 (좁혀지기 ${p})`, k.top >= k.barBottom && k.bottom <= k.mapTop, k, "top ≥ barBottom · bottom ≤ mapTop");
+    }
+    // 밤 막 전환 구간을 훑으며 글자 대비 — 글자 뒤 바탕 = 종이 위에 밤 막(opacity) · 그 위에 라벨 바탕(::before opacity)
+    const CONTRAST = `(() => {
+      const rgb = (s) => (s.match(/[\\d.]+/g) || []).map(Number);
+      const over = (top, a, bot) => bot.map((v, i) => top[i] * a + v * (1 - a));
+      const lum = (c) => { const [r, g, b] = c.slice(0, 3).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+      const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+      const paper = rgb(getComputedStyle(document.body).backgroundColor);
+      const nightEl = document.querySelector("#narrow .ps-night"), ns = getComputedStyle(nightEl);
+      const behind = over(rgb(ns.backgroundColor), Number(ns.opacity), paper);
+      const out = { d: Number(ns.opacity), small: 99, large: 99, worst: "" };
+      const one = (sel, big) => document.querySelectorAll(sel).forEach((el) => {
+        const pb = getComputedStyle(el, "::before"); let bg = behind;
+        if (pb.content !== "none" && pb.backgroundColor) bg = over(rgb(pb.backgroundColor), Number(pb.opacity), behind);
+        const c = rgb(getComputedStyle(el).color); const fg = c.length > 3 ? over(c, c[3], bg) : c;
+        const r = ratio(fg, bg); const k = big ? "large" : "small";
+        if (r < out[k]) { out[k] = Math.round(r * 100) / 100; if (r < (big ? 3 : 4.5)) out.worst = sel; }
+      });
+      one("#narrow .ps-narrow-txt > .eyebrow", false); one("#narrow .ps-count .eyebrow", false); one("#narrow .ps-count .ps-note", false);
+      one("#narrow .ps-h2", true); one("#narrow .ps-count .num", true);
+      return out; })()`;
+    const sweep = { small: 99, large: 99, at: [] };
+    for (let p = 0.4; p <= 0.62; p += 0.01) {
+      await js(`window.scrollTo({ top: ${await posOf("#narrow", p)}, behavior: "instant" }); true`);
+      await sleep(120);
+      const r = await js(CONTRAST);
+      sweep.small = Math.min(sweep.small, r.small); sweep.large = Math.min(sweep.large, r.large);
+      if (r.worst) sweep.at.push({ p: Math.round(p * 100) / 100, ...r });
+    }
+    check(mode, "밤 막 전환 중 작은 라벨 대비 ≥ 4.5", sweep.small >= 4.5, sweep, "≥ 4.5");
+    check(mode, "밤 막 전환 중 제목·숫자 대비 ≥ 3", sweep.large >= 3, sweep.large, "≥ 3");
+    await loopStops(mode);
+    const made = await ripple(1);
+    await sleep(1100);
+    const left = await ripples();
+    check(mode, "클릭 물결 생겼다 지워짐", made === 1 && left === 0, { made, left }, { made: 1, left: 0 });
+    await scrollTo(await posOf("#end", 0));
+    await sleep(900);
+    s = await state();
+    check(mode, ".reveal opacity (화면에 든 뒤)", s.reveal === "1", s.reveal, "1");
+    await tabReach(mode);
+  }
+
+  // ② 움직임 끄기 버튼 — 토글 뒤 읽던 자리 유지(±1화면) · 물결 정리
+  {
+    const mode = "움직임 끄기 버튼";
+    await open("/about?intro=0");
+    await scrollTo(await posOf("#narrow", 0.6));
+    const spot = () => js(`(() => { let cur = null; for (const s of document.querySelectorAll("[data-ps-section]")) if (s.getBoundingClientRect().top <= innerHeight * 0.1) cur = s;
+      const r = cur.getBoundingClientRect(); return { id: cur.id, ratio: Math.min(1, Math.max(0, -r.top / r.height)), y: scrollY, h: r.height, top: r.top + scrollY, vh: innerHeight }; })()`);
+    const click = async () => {
+      const r = await js(`(() => { const r = document.querySelector("[data-motion-toggle]").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+      for (const type of ["mousePressed", "mouseReleased"]) await send("Input.dispatchMouseEvent", { type, x: r.x, y: r.y, button: "left", clickCount: 1 });
+      await sleep(600);
+    };
+    for (const [label, want] of [["끄기", true], ["다시 켜기", false]]) {
+      const before = await spot();
+      await click();
+      const s = await state();
+      const after = await spot();
+      // 앞에서 읽던 섹션 · 비율이 가리키는 문서 위치와 지금 스크롤의 차이
+      const expect = after.top + before.ratio * after.h;
+      const diff = Math.round(Math.abs(after.y - expect));
+      check(mode, `${label} 뒤 정지 상태 = ${want}`, /\bno-motion\b/.test(s.cls) === want && /\bps-static\b/.test(s.cls) === want, s.cls, want ? "ps-static no-motion" : "정지 클래스 없음");
+      check(mode, `${label} 뒤 같은 섹션`, before.id === after.id, { before: before.id, after: after.id }, before.id);
+      check(mode, `${label} 뒤 스크롤 위치 차이 ±1화면`, diff <= after.vh, diff, `≤ ${after.vh}`);
+      check(mode, `${label} 뒤 남은 물결 0`, (await ripples()) === 0, await ripples(), 0);
+      if (want) {
+        check(mode, ".ps-sticky position", s.sticky === "static", s.sticky, "static");
+        check(mode, ".reveal opacity", s.reveal === "1", s.reveal, "1");
+        check(mode, "html scroll-behavior", s.scroll === "auto", s.scroll, "auto");
+        const n = await ripple(5);
+        check(mode, "끈 상태에서 클릭 물결 안 쌓임", n === 0, n, 0);
+        await loopStops(mode);
+      } else {
+        check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
+      }
+    }
+  }
+
+  // ③ ?view=static
+  {
+    const mode = "?view=static";
+    await open("/about?view=static&intro=0");
+    const s = await state();
+    await staticChecks(mode, s);
+    const hidden = await js(`document.querySelector("[data-motion-toggle]").hidden`);
+    check(mode, "움직임 버튼 숨김", hidden === true, hidden, true);
+    await tabReach(mode, { motion: false });
+  }
+
+  // ④ 동작 줄이기 에뮬레이션
+  {
+    const mode = "prefers-reduced-motion";
+    await open("/about?intro=0", { reduced: true });
+    await staticChecks(mode, await state());
+    await tabReach(mode);
+  }
+
+  // ⑤ 390px — 모바일은 다 켜진 정지 상태 · 소개 순서는 숨김
+  {
+    const mode = "390×844";
+    await open("/about?intro=0", { w: 390, h: 844, mobile: true });
+    await staticChecks(mode, await state());
+  }
+
+  // ⑥ 낮은 데스크톱 — 핀 조건(높이 800) 밖이면 정지 흐름
+  for (const [w, h] of [[1280, 640], [1400, 700]]) {
+    const mode = `${w}×${h}`;
+    await open("/about?intro=0", { w, h });
+    const s = await state();
+    check(mode, "pinned() false", s.pinned === false, s.pinned, false);
+    await staticChecks(mode, s);
+    await tabReach(mode);
+  }
+
+  await send("Emulation.setEmulatedMedia", { features: [] });
+  await send("Emulation.clearDeviceMetricsOverride");
+  c.ws.close();
+}
+
+let fatal = null;
+try { await main(); } catch (e) { fatal = String(e && e.stack || e); }
+const failed = results.filter((r) => !r.ok);
+const ok = !fatal && failed.length === 0 && results.length > 0;
+console.log(JSON.stringify({ ok, base: BASE, total: results.length, failed: failed.length, fatal, results }, null, 2));
+process.exit(ok ? 0 : 1);
