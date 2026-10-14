@@ -392,8 +392,11 @@ def _changes(author_id: str | None = None) -> list[dict]:
 _FIELD = {"private": "visibility", "public": "visibility", "geo": "geo_tag"}
 
 
-def _undo(entry) -> None:
-    """조치 하나를 되돌린다. 같은 글 같은 칸의 그 뒤 조치도 함께 닫는다 — 값이 이 조치 전으로 돌아가니까."""
+def _undo(entry, cascade: bool = True) -> None:
+    """조치 하나를 되돌린다. 같은 글 같은 칸의 그 뒤 조치도 함께 닫는다 — 값이 이 조치 전으로 돌아가니까.
+
+    cascade=False 는 고쳐 쓰기 묶음을 따라 되돌릴 때다 — 그 뒤에 같은 칸을 따로 바꾼 조치가 살아 있으면
+    이 조치의 효과는 이미 덮였으므로 값은 두고 이 항목만 닫는다 (뒤의 독립 조치를 취소하지 않는다 · S1)."""
     now, c = _now(), db()
     if entry["kind"] == "rewrite":
         nid = entry["new_post_id"]
@@ -405,7 +408,7 @@ def _undo(entry) -> None:
         for g in c.execute("SELECT * FROM action_log WHERE group_id = ? AND undone_at IS NULL ORDER BY id",
                            (entry["id"],)).fetchall():
             if c.execute("SELECT undone_at FROM action_log WHERE id = ?", (g["id"],)).fetchone()["undone_at"] is None:
-                _undo(g)
+                _undo(g, cascade=False)
         # ③ 새 글을 지우고, 새 글에 했던 조치(비공개·위치)는 글이 없어졌으니 같이 닫는다
         c.execute("DELETE FROM photos WHERE post_id = ?", (nid,))
         c.execute("DELETE FROM posts WHERE post_id = ?", (nid,))
@@ -413,8 +416,14 @@ def _undo(entry) -> None:
                   (now, nid, entry["id"]))
         return
     field = _FIELD[entry["kind"]]
-    c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
     kinds = ("private", "public") if field == "visibility" else ("geo",)
+    kind_in = f"kind IN ({','.join('?' * len(kinds))})"
+    if not cascade and c.execute(
+            f"SELECT 1 FROM action_log WHERE post_id = ? AND id > ? AND undone_at IS NULL AND {kind_in}",
+            (entry["post_id"], entry["id"], *kinds)).fetchone():
+        c.execute("UPDATE action_log SET undone_at = ? WHERE id = ?", (now, entry["id"]))
+        return
+    c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
     c.execute(
         f"UPDATE action_log SET undone_at = ? WHERE post_id = ? AND id >= ? AND undone_at IS NULL"
         f" AND kind IN ({','.join('?' * len(kinds))})", (now, entry["post_id"], entry["id"], *kinds))

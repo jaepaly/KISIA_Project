@@ -216,6 +216,23 @@ def test_rewrite_undo_keeps_separate_private(env):
     assert "고쳐 쓰기와 한 묶음" not in a.get(f"/u/{REF}").get_data(as_text=True)
 
 
+def test_rewrite_undo_keeps_later_separate_private(env):
+    """S1 회귀 (Codex 재현) — 묶음 비공개 → 공개 → 따로 비공개 뒤 고쳐 쓰기를 되돌려도 뒤의 따로 한 비공개는 남는다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    new_id = _rewrite(a, "S01_b01")
+    rid = _log_ids(app, sid)["rewrite"]
+    a.post("/posts/S01_b01/visibility", data={"back": f"/posts/{new_id}", "pair": rid})   # 묶음 비공개
+    a.post("/posts/S01_b01/visibility", data={"back": "/"})                               # 공개
+    a.post("/posts/S01_b01/visibility", data={"back": "/"})                               # 따로 비공개
+    assert _visibility(app, sid, "S01_b01") == "private"
+    a.post(f"/changes/{rid}/undo", data={"back": "/"})
+    assert _visibility(app, sid, "S01_b01") == "private"   # 뒤의 독립 조치는 취소되지 않는다
+    assert _visibility(app, sid, new_id) is None           # 고쳐 쓴 글은 지워졌다
+    assert "private" in _log_ids(app, sid)                 # 따로 한 비공개 이력도 살아 있다
+
+
 def test_rewrite_chain_undo_first(env):
     """B1 회귀 — A→B→C 에서 A→B 를 되돌리면 B→C 도 함께 되돌려 C 가 이력 없이 남지 않는다."""
     app, _ = env

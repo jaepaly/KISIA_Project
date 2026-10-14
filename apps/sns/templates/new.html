@@ -408,7 +408,7 @@ const AP = (function () {
     if (!current(g) || m.author_id !== sel.value) return;
     me = m;
     renderWho();
-    combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`;
+    combineBtn.disabled = false; combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`;
     autoScan(g);
   }
 
@@ -438,11 +438,11 @@ const AP = (function () {
   // 지금까지 쓴 글 + 이 글 — 계정 공개 글을 내보내 초안과 함께 한 번에 센다 (버튼 — 글이 많으면 몇 초)
   combineBtn.addEventListener("click", async () => {
     if (!me || !lastDraft) return;
-    const g = gen;
+    const g = gen, sig = ctrl ? ctrl.signal : undefined;   // 작성자를 바꾸면 loadWho 가 ctrl 을 끊는다
     combineBtn.disabled = true; combineBtn.textContent = "점검 중…";
     try {
       // export 형식(.json)에 초안을 글 하나로 붙인다 — .txt 로 보내면 위치태그·프로필이 빠져 /scan 의 숫자와 비교가 안 된다
-      const ex = await (await fetch(`/api/export/${encodeURIComponent(me.user_ref)}`)).json();
+      const ex = await (await fetch(`/api/export/${encodeURIComponent(me.user_ref)}`, { signal: sig })).json();
       const form = document.querySelector('form[action="/posts"]');
       const title = (form.querySelector('[name="title"]').value || "").trim() || null;
       const geo = (form.querySelector('[name="geo_tag"]').value || "").trim() || null;
@@ -454,15 +454,18 @@ const AP = (function () {
         post_date: now.toISOString().slice(0, 10),
         activity_meta: { nickname: ex.nickname || me.nickname, geo_tag: geo, post_time: now.toTimeString().slice(0, 5) },
       }]);
-      const r = await window.padoCheckExport(ex);
+      const r = await window.padoCheckExport(ex, sig);
       if (!current(g)) return;
       const before = scan ? scan.specificity.output.k : null;
       const kk = r.k === null || r.k === undefined ? null : r.k;
       const delta = before !== null && kk !== null ? (kk < before ? `<span class="u" style="color:var(--ut-red);">↓ 더 좁혀짐</span>` : kk > before ? `<span class="u" style="color:var(--ut-leaf);">↑ 넓어짐</span>` : `<span class="u">변화 없음</span>`) : "";
       combineOut.innerHTML = `<div class="kbox" style="margin-top:10px;"><b>${kk === null ? "—" : "약 " + fmtN(kk) + "명"}</b><span class="u">기존 공개 글과 이 글을 함께 점검${before !== null ? ` · 기존 공개 글만 보면 약 ${fmtN(before)}명` : ""}</span>${delta}</div>${stepsHtml(r.steps, 7, r.raw)}`;
     } catch {
-      combineOut.innerHTML = `<p class="muted" style="margin-top:8px;">점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>`;
-    } finally { combineBtn.disabled = false; if (me) combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`; }
+      // 작성자를 바꾼 뒤 늦게 실패한 옛 요청은 지금 작성자의 결과를 덮지 않는다 (B3 · Codex 재현)
+      if (current(g)) combineOut.innerHTML = `<p class="muted" style="margin-top:8px;">점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>`;
+    } finally {
+      if (current(g)) { combineBtn.disabled = false; if (me) combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`; }
+    }
   });
 
   sel && sel.addEventListener("change", loadWho);
