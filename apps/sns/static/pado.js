@@ -67,8 +67,27 @@
       if (!rewrites.has(rw.span_id)) rewrites.set(rw.span_id, []);
       rewrites.get(rw.span_id).push(rw);
     }
-    return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk };
+    return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk, raw: d };
   }
+
+  // 깔때기 조건의 «…» 가 행정코드(3171025000)뿐이면 글에서 찾은 지명으로 바꾼다 — 코드를 화면에 내지 않는다.
+  // 파도풀 화면 common.js placeName() 과 같은 규칙: 조건의 value → 그 조건을 낸 글의 본인 지역 단서 → 위치 태그 → 「사는 동네」
+  window.padoPlaceName = function (data, text) {
+    if (!/^\d{5,10}$/.test(String(text))) return text;
+    const conds = (((data || {}).specificity || {}).input || {}).conditions || [];
+    const posts = Object.fromEntries(((data || {}).posts || []).map((p) => [p.post_id, p]));
+    for (const c of conds) {
+      if (String(c.geo_code) !== String(text)) continue;
+      if (c.value && !/^\d+$/.test(String(c.value))) return c.value;
+      for (const pid of c.source_post_ids || []) {
+        const s = ((((data.spans || {})[pid]) || {}).spans || []).find((x) => x.subject !== "other" && String(x.type).startsWith("LOC"));
+        if (s) return s.text;
+        const p = posts[pid], geo = p && ((p.activity_meta || {}).geo_tag || p.geo_tag);   // 위치 태그는 export 계약대로 activity_meta 안
+        if (geo) return geo;
+      }
+    }
+    return "사는 동네";
+  };
   window.padoCheck = check;
   // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
   window.padoCheckExport = async function (exportObj, signal) {

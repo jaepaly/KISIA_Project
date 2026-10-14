@@ -105,7 +105,7 @@ def test_log_and_undo_restore_export(env):
     a.post("/posts/S01_b02/edit", data={"geo_tag": "성동구"})                 # 같은 값 — 기록하지 않는다
     r = a.post("/posts", data={"author_id": "S01", "title": "첫 글", "body": "출근길",       # 고쳐 쓰기
                                "created_at": "2026-01-03T09:00", "from_post": "S01_b01"})
-    new_id = r.headers["Location"].rsplit("/", 1)[1]
+    new_id = r.headers["Location"].split("?")[0].rsplit("/", 1)[1]
 
     after = _export(app, sid)
     assert after != before
@@ -162,19 +162,105 @@ def _log_ids(app, sid, all_ids=False):
 
 # ── 위험 배지 · /api/me · 고쳐 쓰기 짝 (3차) ──
 
+def _rewrite(a, src, title="고친 글"):
+    r = a.post("/posts", data={"author_id": "S01", "title": title, "body": "출근길",
+                               "created_at": "2026-01-03T09:00", "from_post": src})
+    return r.headers["Location"].split("?")[0].rsplit("/", 1)[1]
+
+
+def _visibility(app, sid, post_id):
+    con = sqlite3.connect(_session_db(sid))
+    v = con.execute("SELECT visibility FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+    con.close()
+    return v[0] if v else None
+
+
 def test_rewrite_undo_also_reopens_original(env):
-    """고쳐 쓰기와 원래 글 비공개는 한 묶음 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다."""
+    """고쳐 쓴 글 화면의 「원래 글 비공개로」(pair)는 한 묶음 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다."""
     app, _ = env
     a = app.test_client()
     sid = _sid(a)
     before = _export(app, sid)
-    a.post("/posts", data={"author_id": "S01", "title": "고친 글", "body": "출근길",
-                           "created_at": "2026-01-03T09:00", "from_post": "S01_b01"})
-    a.post("/posts/S01_b01/visibility", data={"back": f"/u/{REF}"})
+    new_id = _rewrite(a, "S01_b01")
+    page = a.get(f"/posts/{new_id}?done=posted").get_data(as_text=True)
+    assert "아직 공개입니다" in page and "원래 글 비공개로" in page        # N2 안내
+    rid = _log_ids(app, sid)["rewrite"]
+    assert f'name="pair" value="{rid}"' in page
+    a.post("/posts/S01_b01/visibility", data={"back": f"/posts/{new_id}", "pair": rid})
+    assert "아직 공개입니다" not in a.get(f"/posts/{new_id}").get_data(as_text=True)
     page = a.get(f"/u/{REF}").get_data(as_text=True)
     assert page.count("고쳐 쓰기와 한 묶음") == 2
-    a.post(f"/changes/{_log_ids(app, sid)['rewrite']}/undo", data={"back": f"/u/{REF}"})
+    a.post(f"/changes/{rid}/undo", data={"back": f"/u/{REF}"})
     assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_rewrite_undo_keeps_separate_private(env):
+    """S1 회귀 — 고쳐 쓰기 전에 따로 한 비공개(토글 여러 번 포함)는 고쳐 쓰기를 되돌려도 그대로다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    for _ in range(3):                                   # 비공개 → 공개 → 비공개 (따로 한 조치)
+        a.post("/posts/S01_b01/visibility", data={"back": "/"})
+    assert _visibility(app, sid, "S01_b01") == "private"
+    mid = _export(app, sid)
+    new_id = _rewrite(a, "S01_b01")                      # 이미 비공개인 글을 옮겨 고쳐 씀
+    assert "아직 공개입니다" not in a.get(f"/posts/{new_id}").get_data(as_text=True)
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert "고쳐 쓰기와 한 묶음" not in page            # 시간·글만 같다고 짝으로 보이지 않는다
+    a.post(f"/changes/{_log_ids(app, sid)['rewrite']}/undo", data={"back": "/"})
+    assert _visibility(app, sid, "S01_b01") == "private"  # 앞서 한 비공개는 그대로
+    assert _export(app, sid) == mid
+    assert sorted(_log_ids(app, sid, all_ids=True)) and "private" in _log_ids(app, sid)
+    # 묶음 표시 없이 나중에 따로 누른 비공개도 묶이지 않는다 (pair 없이)
+    a.post("/posts/S01_b02/visibility", data={"back": "/", "pair": 99999})
+    assert "고쳐 쓰기와 한 묶음" not in a.get(f"/u/{REF}").get_data(as_text=True)
+
+
+def test_rewrite_chain_undo_first(env):
+    """B1 회귀 — A→B→C 에서 A→B 를 되돌리면 B→C 도 함께 되돌려 C 가 이력 없이 남지 않는다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    before = _export(app, sid)
+    b = _rewrite(a, "S01_b01", "B")
+    c = _rewrite(a, b, "C")
+    page = a.get(f"/u/{REF}").get_data(as_text=True)
+    assert "다시 고쳐 쓴 글과 이어짐" in page
+    first = min(_log_ids(app, sid, all_ids=True))
+    a.post(f"/changes/{first}/undo", data={"back": "/"})
+    assert a.get(f"/posts/{b}").status_code == 404 and a.get(f"/posts/{c}").status_code == 404
+    assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_rewrite_chain_undo_all(env):
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    before = _export(app, sid)
+    b = _rewrite(a, "S01_b01", "B")
+    rid = _log_ids(app, sid)["rewrite"]
+    a.post("/posts/S01_b01/visibility", data={"back": "/", "pair": rid})
+    _rewrite(a, b, "C")
+    a.post("/changes/undo-all", data={"author_id": "S01", "back": "/"})
+    assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_old_action_log_gets_group_column(env):
+    """group_id 칸이 생기기 전에 만든 action_log — 열 때 칸만 더한다."""
+    app, root = env
+    sid = "fedcba9876543210fedcba98"
+    (root / "sessions").mkdir(exist_ok=True)
+    old = root / "sessions" / f"{sid}.db"
+    _seed(old, visitor_tables=False)
+    con = sqlite3.connect(old)
+    con.execute("CREATE TABLE action_log (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, kind TEXT NOT NULL,"
+                " author_id TEXT NOT NULL, post_id TEXT NOT NULL, before_val TEXT, after_val TEXT,"
+                " new_post_id TEXT, undone_at TEXT)")
+    con.commit(); con.close()
+    c = app.test_client()
+    c.set_cookie(key="veilo_sid", value=sid)
+    c.post("/posts/S01_b01/visibility", data={"back": "/"})
+    assert sqlite3.connect(old).execute("SELECT kind, group_id FROM action_log").fetchall() == [("private", None)]
 
 
 def test_api_me(env):

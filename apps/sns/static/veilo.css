@@ -464,3 +464,5 @@ dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
 .card-author .clue-badge{margin-left:auto}
 .card-author .clue-badge + .badge-private{margin-left:6px}
 .changes .pair{display:inline-block;font-size:11px;font-weight:600;color:var(--ut-sea);background:var(--ut-sea-soft);border-radius:99px;padding:0 7px;margin-left:4px}
+.pado-strip button.go{background:var(--ut-sea);color:#fff;border:0;border-radius:10px;padding:7px 14px;font:inherit;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;height:auto}
+.pado-strip button.go:hover{background:#285F5B}

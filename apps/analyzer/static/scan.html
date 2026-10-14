@@ -99,21 +99,7 @@ const hueOf = (s) => [...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) 
 const $ = (id) => document.getElementById(id);
 let picked = null;   // { user_ref, nickname, n_posts }
 
-// ── 진행 표시 ──
-let _pt = null;
-function progressStart(title, note) {
-  $("pTitle").textContent = title; $("pStage").textContent = ""; $("pTime").textContent = "0초";
-  if (note) $("pNote").textContent = note;
-  $("progress").hidden = false; document.body.classList.add("busy");
-  const t0 = performance.now();
-  const stages = [[0, "글 읽는 중"], [2, "개인정보 단서 찾는 중"], [6, "같은 조건의 사람 수 계산 중"], [10, "위험 줄일 방법 확인 중"], [18, "거의 다 됐습니다"]];
-  _pt = setInterval(() => {
-    const s = (performance.now() - t0) / 1000;
-    $("pTime").textContent = `${Math.round(s)}초`;
-    const st = stages.filter(([at]) => s >= at).pop(); if (st) $("pStage").textContent = " · " + st[1];
-  }, 250);
-}
-function progressStop() { clearInterval(_pt); $("progress").hidden = true; document.body.classList.remove("busy"); }
+// 진행 표시(progressStart · progressStop)는 common.js — 위험 줄이기의 「다시 점검」도 같은 띠를 쓴다
 
 async function runScan(user_ref, label) {
   const msg = $("scanMsg");
@@ -205,6 +191,8 @@ $("uploadBtn").onclick = async () => {
 };
 
 // Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 채워 보여 주고, 시작은 사용자가 누른다
+// Veilo 조치 띠의 「다시 점검 →」(?run=1)은 준비 화면에서 멈추지 않고 바로 점검을 시작한다 (UX N3)
+const RUN_NOW = new URLSearchParams(location.search).get("run") === "1";
 (async () => {
   const u = new URLSearchParams(location.search).get("u");
   if (!u) return;
@@ -214,14 +202,17 @@ $("uploadBtn").onclick = async () => {
     const a = rows.find((x) => x.user_ref === u);
     if (a) pick(a); else { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
   } catch { picked = { user_ref: u, nickname: u, n_posts: "?", hue: 30, bio: "" }; $("scanBtn").disabled = false; }
+  if (RUN_NOW && picked) { $("scanBtn").click(); return; }
   $("scanMsg").textContent = "이 계정의 공개 글을 점검합니다. 「공개 글 점검」을 누르세요.";
   $("scanBtn").focus();
 })();
 
+// 최근 점검 결과 — 다시 점검하러 왔으면 옛 결과(바꾸기 전 숫자)를 띄우지 않는다.
+// 그 밖에는 「마지막으로 점검했을 때 기준」임을 적는다 — 그 뒤에 바꾼 것은 다시 점검해야 반영된다
 const cached = loadScan();
-if (cached) {
+if (cached && !RUN_NOW) {
   $("postList").innerHTML =
-    `<div class="card"><h2>최근 점검 결과</h2><p class="hint">최근 점검 <b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편</p><a href="diagnosis.html">결과 보기 →</a></div>`;
+    `<div class="card"><h2>최근 점검 결과</h2><p class="hint"><b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편 — 마지막으로 점검했을 때 기준입니다. 그 뒤에 Veilo에서 바꾼 것은 다시 점검해야 반영됩니다.</p><a href="diagnosis.html">그때 결과 보기 →</a></div>`;
 }
 </script>
 </body>

@@ -50,6 +50,49 @@ function fmtOneOf(k) {
   return `약 ${Math.round(k).toLocaleString("ko-KR")}명 중 한 명`;
 }
 
+// ── 진행 표시 — 점검은 한 번의 요청이라 퍼센트는 없다. 단계와 흐른 시간을 아래 띠로 보여 준다 ──
+// 내 글 점검(scan.html)과 위험 줄이기의 「다시 점검」(action.html)이 같이 쓴다. 띠가 없는 화면이면 만든다
+let _pt = null;
+function progressStart(title, note) {
+  let box = document.getElementById("progress");
+  if (!box) {
+    box = document.createElement("div");
+    box.className = "progress"; box.id = "progress"; box.hidden = true;
+    box.innerHTML = `<div class="progress-in"><div class="pbar"><i></i></div>
+      <div class="ptext"><b id="pTitle">읽는 중</b><span id="pStage"></span><span class="pt" id="pTime">0초</span></div>
+      <p class="muted" id="pNote">글이 많거나 길면 1분 가까이 걸립니다. 창을 닫지 말고 기다려 주세요.</p></div>`;
+    document.body.appendChild(box);
+  }
+  const el = (id) => document.getElementById(id);
+  el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = "0초";
+  if (note) el("pNote").textContent = note;
+  box.hidden = false; document.body.classList.add("busy");
+  const t0 = performance.now();
+  const stages = [[0, "글 읽는 중"], [2, "개인정보 단서 찾는 중"], [6, "같은 조건의 사람 수 계산 중"], [10, "위험 줄일 방법 확인 중"], [18, "거의 다 됐습니다"]];
+  clearInterval(_pt);
+  _pt = setInterval(() => {
+    const s = (performance.now() - t0) / 1000;
+    el("pTime").textContent = `${Math.round(s)}초`;
+    const st = stages.filter(([at]) => s >= at).pop(); if (st) el("pStage").textContent = " · " + st[1];
+  }, 250);
+}
+function progressStop() {
+  clearInterval(_pt);
+  const box = document.getElementById("progress");
+  if (box) box.hidden = true;
+  document.body.classList.remove("busy");
+}
+
+// 서버가 만든 설명 문장(추천 근거 rationale)을 화면 용어로 — 「명시 단서」 → 「직접 쓴 정보」 (문구 통일 §8 · M1)
+function uiText(s) {
+  return String(s || "").replace(/명시 단서/g, "직접 쓴 정보").replace(/명시적 단서/g, "직접 쓴 정보");
+}
+
+// 글의 위치 태그 — export 계약(sns-minimal-spec)은 posts[].activity_meta.geo_tag 다. 최상위 geo_tag 는 없다 (B4)
+function geoTagOf(post) {
+  return (post && ((post.activity_meta || {}).geo_tag || post.geo_tag)) || null;
+}
+
 // 깔때기 조건의 «…» 가 행정코드(3171025000)뿐이면 글에서 찾은 지명으로 바꾼다 — 코드를 화면에 내지 않는다.
 // 조건(specificity.input.conditions)의 geo_code → 그 조건을 낸 글의 본인 지역 단서 → 위치 태그 순. 못 찾으면 「사는 동네」
 function placeName(data, text) {
@@ -63,7 +106,8 @@ function placeName(data, text) {
       const s = (((data.spans || {})[pid] || { spans: [] }).spans || [])
         .find(x => x.subject !== "other" && String(x.type).startsWith("LOC"));
       if (s) return s.text;
-      if (posts[pid] && posts[pid].geo_tag) return posts[pid].geo_tag;
+      const geo = geoTagOf(posts[pid]);
+      if (geo) return geo;
     }
   }
   return "사는 동네";
@@ -173,11 +217,13 @@ const GRAIN_LABEL = {
 };
 
 // k 등급 — 코드 값은 영문 상수, 화면 문구는 여기서 (필드-대조표 §3 · 경계는 plan.md §13.1)
+// 배지는 「같은 조건의 사람 수」만 말한다 — 「위험 낮은 편」이라 쓰면 옆의 노출 위험도(95/100)와 부딪힌다 (UX N1 · M1).
+// 두 숫자는 따로 계산한다. 등급 이름 대신 구간(5명 이상 등)만 — 「5명 이상」도 안전하다는 뜻이 아니다(툴팁)
 const K_LEVEL_LABEL = {
-  VERY_HIGH: ["매우 높음", "같은 조건의 사람 2명 이하 — 한 사람으로 좁혀질 수 있음"],
-  HIGH: ["높음", "같은 조건의 사람 2명 초과 5명 미만 — 몇 사람으로 좁혀짐"],
-  ACCEPTABLE: ["낮은 편", "같은 조건의 사람 5명 이상 — 다른 글과 합치면 달라질 수 있음"],
-  UNKNOWN: ["계산할 수 없음", "단서가 부족해 같은 조건의 사람 수를 셀 수 없음"],
+  VERY_HIGH: ["2명 이하", "같은 조건의 사람 2명 이하 — 한 사람으로 좁혀질 수 있음"],
+  HIGH: ["5명 미만", "같은 조건의 사람 2명 초과 5명 미만 — 몇 사람으로 좁혀짐"],
+  ACCEPTABLE: ["5명 이상", "같은 조건의 사람 5명 이상 — 다른 글과 합치면 줄어들 수 있음. 노출 위험도와는 따로 계산함"],
+  UNKNOWN: ["셀 수 없음", "단서가 부족해 같은 조건의 사람 수를 셀 수 없음"],
 };
 
 const ATTR_LABEL = {

@@ -285,6 +285,7 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
 .finder-list .nm{font-weight:600}
 .finder .av,.picked .av{width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none}
 .picked{display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border:1px solid var(--earth); border-radius:10px; background:var(--earth-soft); font-size:14px}
+.picked[hidden]{display:none}   /* 계정을 고르기 전 빈 분홍 막대 — display:flex 가 hidden 을 이기던 것 (UX N4) */
 .picked .av{width:34px; height:34px}
 button:disabled{background:var(--panel2); border-color:var(--line); color:var(--ink3); cursor:not-allowed}
 

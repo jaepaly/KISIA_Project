@@ -80,9 +80,13 @@
 
   // ── 제출 버튼 — 서버가 답할 때까지 스피너 ──
   document.querySelectorAll("form[method=post]").forEach((f) => {
-    f.addEventListener("submit", () => {
-      const b = f.querySelector("button[type=submit]:not(.ghost)");
-      if (b) b.classList.add("fx-busy");
+    f.addEventListener("submit", (e) => {
+      // 다른 처리(글쓰기의 「단서가 칠해진 채 올리기」 확인)가 제출을 멈췄으면 스피너를 돌리지 않는다
+      setTimeout(() => {
+        if (e.defaultPrevented) return;
+        const b = f.querySelector("button[type=submit]:not(.ghost)");
+        if (b) b.classList.add("fx-busy");
+      }, 0);
     });
   });
 })();

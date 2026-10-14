@@ -259,11 +259,17 @@ function renderActions(data) {
             : fmtN(kw) === fmtN(k) ? ` · 같은 조건의 사람 수는 그대로 — 같은 단서가 다른 글에도 있습니다`   // E 리뷰: 「15,069 → 15,069」 는 헷갈린다
             : ` · 같은 조건의 사람 약 ${fmtN(k)}명 → <b>약 ${fmtN(kw)}명</b>`}</div></li>`;
       }).join("")}</ul>`;
-      why = `이 단서들이 글쓴이를 좁히는 조건입니다. 글을 비공개로 바꾸면 그 조건이 빠져 같은 조건의 사람이 다시 늘고, 그만큼 노출 위험도가 내려갑니다. 글은 지워지지 않고 비공개로만 바뀝니다.`;
+      // 사람 수와 노출 위험도는 따로 계산한다 — 인과로 묶지 않는다 (M1)
+      why = `이 단서들이 글쓴이를 좁히는 조건입니다. 비공개로 바꾼 글은 다음 점검에서 빠집니다. 남은 글의 단서에 따라 같은 조건의 사람 수나 노출 위험도가 달라질 수 있습니다. 글은 지워지지 않고 비공개로만 바뀝니다.`;
     } else if (a.action_type === "activity_meta") {
-      const tagged = (data.posts || []).filter(p => p.geo_tag);
+      // 위치 태그는 export 계약대로 activity_meta.geo_tag (B4). 위에서 비공개로 바꾸라고 한 글은 빼고 남은 글만
+      const hidden = new Set(rec.actions.filter(x => x.action_type === "unpublish").flatMap(x => x.targets.map(t => t.ref)));
+      const all = (data.posts || []).filter(p => geoTagOf(p));
+      const tagged = all.filter(p => !hidden.has(p.post_id));
       what = tagged.length
-        ? `<ul class="targets">${tagged.map(p => `<li>${postLink(data, p.post_id)} <span class="geochip">📍 ${esc(p.geo_tag)}</span></li>`).join("")}</ul>`
+        ? `<ul class="targets">${tagged.map(p => `<li>${postLink(data, p.post_id)} <span class="geochip">📍 ${esc(geoTagOf(p))}</span></li>`).join("")}</ul>${
+            all.length > tagged.length ? `<p class="muted">비공개로 바꾸라고 한 글 ${all.length - tagged.length}편은 뺐습니다.</p>` : ""}`
+        : all.length ? `<p class="muted">위치 태그가 붙은 글은 모두 위에서 비공개로 바꾸라고 한 글입니다.</p>`
         : `<p class="muted">위치 태그가 붙은 글이 없습니다.</p>`;
       why = `위치 태그도 사는 곳을 짐작할 단서가 됩니다. 본문을 고쳐도 위치 태그가 남아 있으면 같은 정보를 드러낼 수 있습니다.${a.projected_delta === 0 ? " 지금은 본문에 같은 동네가 이미 드러나 있어 노출 위험도 변화가 0으로 나옵니다. 본문을 고친 뒤에는 이 태그가 마지막 단서로 남습니다." : ""}`;
     } else if (a.action_type === "rewrite") {
@@ -285,7 +291,7 @@ function renderActions(data) {
       <div class="what">${what}</div>
       <details class="more">
         <summary>어떻게 하고, 왜 노출 위험도가 내려가나</summary>
-        ${a.rationale ? `<p class="rationale">${esc(a.rationale)}</p>` : ""}
+        ${a.rationale ? `<p class="rationale">${esc(uiText(a.rationale))}</p>` : ""}
         <h4>어떻게</h4><p>${esc(A.how)}</p>
         <h4>왜 노출 위험도가 내려가나</h4><p>${why}</p>
       </details>
@@ -430,6 +436,7 @@ function renderManualTips(data) {
 async function rescan(prev) {
   const b = document.getElementById("rescanBtn");
   if (b) { b.disabled = true; b.textContent = "다시 점검하는 중…"; }
+  progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`);   // 내 글 점검 화면과 같은 진행 띠 (UX #31)
   try {
     const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST" });
     if (!r.ok) throw new Error(String(r.status));
@@ -439,7 +446,7 @@ async function rescan(prev) {
     render();
   } catch (e) {
     if (b) { b.disabled = false; b.textContent = "다시 점검하지 못했습니다. 다시 누르기"; }
-  }
+  } finally { progressStop(); }
 }
 
 function render() {

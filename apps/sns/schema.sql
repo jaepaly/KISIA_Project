@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS action_log (
   before_val  TEXT,                      -- 바꾸기 전 값 (visibility · geo_tag)
   after_val   TEXT,
   new_post_id TEXT,                      -- rewrite 로 새로 올린 글
-  undone_at   TEXT                       -- 되돌렸으면 그 시각. NULL 이면 아직 살아 있는 조치
+  undone_at   TEXT,                      -- 되돌렸으면 그 시각. NULL 이면 아직 살아 있는 조치
+  group_id    INTEGER                    -- 고쳐 쓰기 묶음 — 고쳐 쓴 글 화면의 「원래 글 비공개로」가 그 rewrite 의 id 를 단다
 );
 
 CREATE INDEX IF NOT EXISTS idx_action_log_author ON action_log(author_id, undone_at);

@@ -205,8 +205,17 @@ def post(post_id: str):
     photos = db().execute(
         "SELECT idx, caption FROM photos WHERE post_id = ? ORDER BY idx",
         (post_id,)).fetchall()
+    # 고쳐 쓰기로 올린 글이면 원래 글 — 원래 글이 아직 공개면 「원래 글 비공개로」 띠 (같은 묶음으로 기록)
+    rw = None
     try:
-        return render_template("post.html", p=p, photos=photos)
+        rw = db().execute(
+            "SELECT l.id, l.post_id, o.visibility, o.title FROM action_log l JOIN posts o ON o.post_id = l.post_id"
+            " WHERE l.kind = 'rewrite' AND l.new_post_id = ? AND l.undone_at IS NULL ORDER BY l.id DESC LIMIT 1",
+            (post_id,)).fetchone()
+    except sqlite3.Error:
+        pass
+    try:
+        return render_template("post.html", p=p, photos=photos, rw=rw)
     except sqlite3.OperationalError:
         return _todo("글 본문", "§4")
 
@@ -264,7 +273,7 @@ def create_post():
         _log("rewrite", author_id, src, new_post_id=post_id)
 
     db().commit()
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/posts/{post_id}?done=posted")
 
 
 @app.post("/posts/<post_id>/visibility")
@@ -282,9 +291,16 @@ def toggle_visibility(post_id: str):
     if row is None:
         abort(404)
     new_v = "private" if row["visibility"] == "public" else "public"
+    # 고쳐 쓴 글 화면의 「원래 글 비공개로」 — 그 고쳐 쓰기(pair)와 한 묶음으로 남긴다. 따로 누른 비공개는 묶지 않는다 (S1)
+    group = None
+    pair = request.form.get("pair", type=int)
+    if pair and new_v == "private" and db().execute(
+            "SELECT 1 FROM action_log WHERE id = ? AND kind = 'rewrite' AND post_id = ? AND undone_at IS NULL",
+            (pair, post_id)).fetchone():
+        group = pair
     db().execute(
         "UPDATE posts SET visibility = ? WHERE post_id = ?", (new_v, post_id))
-    _log(new_v, row["author_id"], post_id, row["visibility"], new_v)
+    _log(new_v, row["author_id"], post_id, row["visibility"], new_v, group_id=group)
     db().commit()
 
     # 돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단) · ?done= 은 화면 맨 위 「다시 점검」 띠
@@ -334,10 +350,10 @@ def _now() -> str:
 
 
 def _log(kind: str, author_id: str, post_id: str, before: str | None = None,
-         after: str | None = None, new_post_id: str | None = None) -> None:
+         after: str | None = None, new_post_id: str | None = None, group_id: int | None = None) -> None:
     db().execute(
-        "INSERT INTO action_log(at, kind, author_id, post_id, before_val, after_val, new_post_id)"
-        " VALUES (?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id))
+        "INSERT INTO action_log(at, kind, author_id, post_id, before_val, after_val, new_post_id, group_id)"
+        " VALUES (?,?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id, group_id))
 
 
 def _me() -> dict | None:
@@ -361,12 +377,15 @@ def _changes(author_id: str | None = None) -> list[dict]:
         d["label"] = d["title"] or (d["body"] or "").replace("\n", " ")[:24] or "(지워진 글)"
         d["time"] = d["at"][11:16]
         out.append(d)
-    # 고쳐 쓰기와 원래 글 비공개는 한 묶음 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다 (_undo). 화면에 짝 표시
-    rewritten = {d["post_id"] for d in out if d["kind"] == "rewrite"}
-    hidden = {d["post_id"] for d in out if d["kind"] == "private"}
+    # 한 묶음 — 고쳐 쓴 글 화면에서 누른 「원래 글 비공개로」만 그 고쳐 쓰기에 묶인다(group_id). 화면에 짝 표시
+    # 사슬 — 고쳐 쓴 글을 다시 고쳐 쓴 항목이 있으면 앞 항목을 되돌릴 때 뒤 항목도 함께 되돌린다 (_undo)
+    active = {d["id"] for d in out}
+    grouped = {d["group_id"] for d in out if d.get("group_id") in active}
+    rewrites_of = {d["post_id"] for d in out if d["kind"] == "rewrite"}
     for d in out:
-        d["paired"] = (d["kind"] == "private" and d["post_id"] in rewritten) or \
-                      (d["kind"] == "rewrite" and d["post_id"] in hidden)
+        d["paired"] = (d["kind"] == "private" and d.get("group_id") in active) or \
+                      (d["kind"] == "rewrite" and d["id"] in grouped)
+        d["chained"] = d["kind"] == "rewrite" and d["new_post_id"] in rewrites_of
     return out
 
 
@@ -378,16 +397,20 @@ def _undo(entry) -> None:
     now, c = _now(), db()
     if entry["kind"] == "rewrite":
         nid = entry["new_post_id"]
+        # ① 사슬 — 새 글(B)을 다시 고쳐 쓴 항목(B→C)부터 끝에서 되돌린다. C 가 이력 없이 남지 않게 (B1)
+        for dep in c.execute("SELECT * FROM action_log WHERE kind = 'rewrite' AND post_id = ? AND undone_at IS NULL"
+                             " ORDER BY id DESC", (nid,)).fetchall():
+            _undo(dep)
+        # ② 묶음 — 이 고쳐 쓰기 화면에서 누른 「원래 글 비공개로」만 함께 되돌린다. 따로 한 비공개는 그대로 (S1)
+        for g in c.execute("SELECT * FROM action_log WHERE group_id = ? AND undone_at IS NULL ORDER BY id",
+                           (entry["id"],)).fetchall():
+            if c.execute("SELECT undone_at FROM action_log WHERE id = ?", (g["id"],)).fetchone()["undone_at"] is None:
+                _undo(g)
+        # ③ 새 글을 지우고, 새 글에 했던 조치(비공개·위치)는 글이 없어졌으니 같이 닫는다
         c.execute("DELETE FROM photos WHERE post_id = ?", (nid,))
         c.execute("DELETE FROM posts WHERE post_id = ?", (nid,))
-        # 새 글에 했던 조치는 글이 없어졌으니 같이 닫는다
         c.execute("UPDATE action_log SET undone_at = ? WHERE (post_id = ? OR id = ?) AND undone_at IS NULL",
                   (now, nid, entry["id"]))
-        # 짝 — 원래 글을 비공개로 바꾼 조치도 함께 되돌린다 (가장 이른 것부터 되돌리면 뒤의 토글도 같이 닫힌다)
-        hid = c.execute("SELECT * FROM action_log WHERE post_id = ? AND kind = 'private' AND undone_at IS NULL"
-                        " ORDER BY id LIMIT 1", (entry["post_id"],)).fetchone()
-        if hid is not None:
-            _undo(hid)
         return
     field = _FIELD[entry["kind"]]
     c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))

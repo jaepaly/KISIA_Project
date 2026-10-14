@@ -43,3 +43,8 @@ def ensure_visitor_tables(conn: sqlite3.Connection) -> None:
         text = (HERE / "schema.sql").read_text(encoding="utf-8")
         _visitor_ddl = text[text.index(_VISITOR_MARK):]
     conn.executescript(_visitor_ddl)
+    # 표는 있는데 나중에 생긴 칸이 없는 옛 세션 사본 — 칸만 더한다
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(action_log)")}
+    if "group_id" not in cols:
+        conn.execute("ALTER TABLE action_log ADD COLUMN group_id INTEGER")
+        conn.commit()

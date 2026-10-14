@@ -99,7 +99,7 @@
       {% if done in ('private', 'public', 'undo') %}
       <div class="pado-strip done" role="status">
         <span class="tx"><b>{% if done == 'private' %}비공개로 바꿨습니다.{% elif done == 'public' %}다시 공개했습니다.{% else %}바꾼 것을 되돌렸습니다.{% endif %}</b> 파도풀에서 다시 점검하면 숫자가 바뀝니다.</span>
-        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}">다시 점검 →</a>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}&run=1">다시 점검 →</a>
       </div>
       {% elif done == 'me' %}
       <div class="pado-strip done" role="status">
@@ -139,16 +139,17 @@
               {% elif c.kind == 'public' %}다시 공개함
               {% elif c.kind == 'geo' %}위치 태그 {{ c.before_val or '없음' }} → {{ c.after_val or '없음' }}
               {% else %}고쳐서 <a href="/posts/{{ c.new_post_id }}">새 글</a>로 올림{% endif %}
-              {% if c.paired %}<span class="pair" title="고쳐 쓰기를 되돌리면 원래 글도 다시 공개됩니다">고쳐 쓰기와 한 묶음</span>{% endif %}
+              {% if c.paired %}<span class="pair" title="고쳐 쓰기를 되돌리면 이 비공개도 함께 되돌립니다">고쳐 쓰기와 한 묶음</span>{% endif %}
+              {% if c.chained %}<span class="pair" title="이 새 글을 다시 고쳐 쓴 글이 있습니다. 되돌리면 그 글도 함께 지워집니다">다시 고쳐 쓴 글과 이어짐</span>{% endif %}
             </span>
             <form method="post" action="/changes/{{ c.id }}/undo">
               <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
-              <button type="submit" class="ghost" {% if c.kind == 'rewrite' %}title="새로 올린 글이 지워집니다{% if c.paired %}. 원래 글도 다시 공개됩니다{% endif %}"{% endif %}>되돌리기</button>
+              <button type="submit" class="ghost" {% if c.kind == 'rewrite' %}title="새로 올린 글이 지워집니다{% if c.paired %}. 원래 글도 다시 공개됩니다{% endif %}{% if c.chained %}. 그 글을 다시 고쳐 쓴 글도 지워집니다{% endif %}"{% endif %}>되돌리기</button>
             </form>
           </li>
           {% endfor %}
         </ul>
-        <p class="note">되돌리면 파도풀에서 다시 점검했을 때 숫자도 바꾸기 전으로 돌아옵니다. 고쳐 쓴 것을 되돌리면 새로 올린 글이 지워지고, 원래 글을 비공개로 바꾼 것도 함께 되돌립니다.</p>
+        <p class="note">되돌리면 파도풀에서 다시 점검했을 때 숫자도 바꾸기 전으로 돌아옵니다. 고쳐 쓴 것을 되돌리면 새로 올린 글이 지워집니다. 「한 묶음」 표시가 붙은 비공개도 함께 되돌립니다.</p>
       </section>
       {% endif %}
 
