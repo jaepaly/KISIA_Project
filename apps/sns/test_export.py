@@ -230,3 +230,17 @@ def test_파도풀_진입점이_PADO_BASE_를_따른다(client, monkeypatch):
     html = client.get("/u/u_3f2a91c4").get_data(as_text=True)
     assert 'href="http://localhost:8000/static/scan.html?u=u_3f2a91c4"' in html
     assert 'window.PADO_BASE = "http://localhost:8000"' in html
+
+
+def test_계정찾기_빈_검색어는_둘러보기_글많은순_limit(client):
+    """처음 온 사람은 계정 이름을 모른다 — 빈 검색어는 공개 글 많은 순 목록 · limit 으로 더 보기 (10/14)."""
+    with connect() as c:
+        c.execute("INSERT INTO authors(author_id,user_ref,nickname,bio,joined_at)"
+                  " VALUES('S02','u_4b5c6d7e','가나다','','2026-01-03T09:00:00+09:00')")
+        c.execute("INSERT INTO posts(post_id,author_id,title,body,created_at,visibility)"
+                  " VALUES('S02_b01','S02',NULL,'한 편','2026-03-10T21:38:20+09:00','public')")
+        c.commit()
+    rows = client.get("/api/authors").get_json()
+    assert [a["user_ref"] for a in rows][:2] == ["u_3f2a91c4", "u_4b5c6d7e"], "글 2편인 계정이 1편보다 먼저(가나다 순이면 뒤집힌다)"
+    assert len(client.get("/api/authors?limit=1").get_json()) == 1
+    assert client.get("/api/authors?limit=abc").status_code == 200   # 잘못된 값은 기본 12

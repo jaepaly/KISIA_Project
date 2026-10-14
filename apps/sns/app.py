@@ -699,14 +699,23 @@ def authors_search():
     export 다음의 두 번째 창구다 (sns-minimal-spec §6). 분석기에 넘기는 값이라 export 와 같은 규칙으로
     플랫폼 내부 값(author_id)은 내보내지 않는다 — user_ref · nickname · n_posts 만 (#337 리뷰 (나))."""
     q = (request.args.get("q") or "").strip()
+    # 처음 온 사람은 계정 이름을 모른다 — 빈 검색어는 「둘러보기」(공개 글 많은 순). limit 으로 더 보기 (기본 12 · 최대 200)
+    try:
+        limit = max(1, min(200, int(request.args.get("limit") or 12)))
+    except ValueError:
+        limit = 12
     sql = ("SELECT a.author_id, a.nickname, a.user_ref, a.bio, COUNT(p.post_id) AS n"
            " FROM authors a LEFT JOIN posts p ON p.author_id = a.author_id AND p.visibility = 'public'")
     args: list = []
     if q:
         sql += " WHERE a.nickname LIKE ? OR a.user_ref LIKE ?"
         args += [f"%{q}%", f"{q}%"]
-    sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT 12"
-    args.append(f"{q}%")
+    if q:
+        sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT ?"
+        args += [f"{q}%", limit]
+    else:
+        sql += " GROUP BY a.author_id ORDER BY n DESC, a.nickname LIMIT ?"
+        args.append(limit)
     rows = db().execute(sql, args).fetchall()
     return jsonify([{"user_ref": r["user_ref"], "nickname": r["nickname"], "n_posts": r["n"]} for r in rows])
 

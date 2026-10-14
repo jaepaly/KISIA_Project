@@ -326,6 +326,26 @@ def test_sns_authors_goes_through_adapter_and_drops_internal_fields(monkeypatch)
     assert headers == {"X-Veilo-Session": "ab" * 12}, "방문자 사본을 읽도록 세션을 넘긴다"
 
 
+def test_sns_authors_browse_passes_limit_only_when_asked(monkeypatch):
+    """계정 둘러보기 — 빈 q 는 그대로 넘기고, 「더 보기」의 limit 은 줄 때만 넘긴다 · 범위 밖(0 · 201)은 422 (10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    from apps.analyzer.adapters import sns_adapter
+
+    class _Resp:
+        def raise_for_status(self): pass
+        def json(self): return []
+    calls = []
+    monkeypatch.setattr(sns_adapter.requests, "get", lambda url, params=None, timeout=None, headers=None: calls.append(params) or _Resp())
+    client = TestClient(server.app)
+    assert client.get("/sns/authors").status_code == 200
+    assert client.get("/sns/authors", params={"q": "", "limit": 200}).status_code == 200
+    assert calls == [{"q": ""}, {"q": "", "limit": 200}]
+    for bad in (0, 201):
+        assert client.get("/sns/authors", params={"limit": bad}).status_code == 422
+
+
 def test_upstream_errors_hide_internal_address(monkeypatch):
     """Veilo 호출이 실패해도 응답에 내부 주소(SNS_BASE_URL)가 나가지 않는다 — 없는 계정은 404, 그 밖은 502 (#343 리뷰)."""
     pytest.importorskip("fastapi")

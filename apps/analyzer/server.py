@@ -14,7 +14,7 @@ import os
 
 import requests
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -67,10 +67,12 @@ def _upstream_error(what: str, exc: Exception, missing_account: bool = False) ->
 
 
 @app.get("/sns/authors")
-def sns_authors(request: Request, q: str = ""):
-    """스캔 화면 계정 자동완성 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰)."""
+def sns_authors(request: Request, q: str = "", limit: int | None = Query(default=None, ge=1, le=200)):
+    """스캔 화면 계정 고르기 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰).
+    빈 q 는 둘러보기(공개 글 많은 순) — 처음 온 사람은 계정 이름을 모른다. limit 은 「더 보기」."""
     try:
-        return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
+        kw = {"limit": limit} if limit is not None else {}
+        return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"), **kw)
     except Exception as exc:  # SNS 서버 다운 등
         raise _upstream_error("계정 찾기", exc) from exc
 

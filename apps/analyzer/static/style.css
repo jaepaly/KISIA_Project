@@ -282,14 +282,21 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
   .axes li{grid-template-columns:44px 1fr 30px}
 }
 
-/* ── 스캔: 계정 찾기 ───────────────────────── */
+/* ── 스캔: 계정 고르기 — 목록이 처음부터 펼쳐져 있다(드롭다운 아님). 검색창은 거르기 ───────────────────────── */
 .finder{position:relative}
-.finder-list{position:absolute; left:0; right:0; z-index:5; list-style:none; margin:4px 0 0; padding:6px;
-  background:var(--panel); border:1px solid var(--line-hi); border-radius:12px; box-shadow:var(--shadow-hi); max-height:300px; overflow:auto}
-.finder-list li{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:14px}
-.finder-list li:hover{background:var(--panel2)}
-.finder-list li.none{cursor:default; color:var(--ink3); font-size:13px}
+.finder-h{margin:16px 0 8px; font-size:13px; font-weight:600; color:var(--ink3)}
+.finder-h[hidden],.finder-list[hidden]{display:none}
+.finder-list{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; max-height:420px; overflow:auto}
+.finder-list li.none{grid-column:1/-1; color:var(--ink3); font-size:13px; padding:8px 2px}
+.finder-list .acct{display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+  background:var(--panel); color:inherit; font:inherit; font-size:14px; text-align:left; cursor:pointer}
+.finder-list .acct:hover,.finder-list .acct:focus-visible{border-color:var(--line-hi); background:var(--panel2)}
+.finder-list .who{display:flex; flex-direction:column; min-width:0}
+.finder-list .who .muted{font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .finder-list .nm{font-weight:600}
+.finder-more[hidden]{display:none}
+.finder-more{margin-top:10px; background:transparent; border:1px solid var(--line-hi); color:var(--ink); font-size:13px}
+.picked .link{margin-left:auto; flex:none; background:none; border:0; padding:4px 6px; color:var(--ink2); font-size:13px; text-decoration:underline; cursor:pointer}
 .finder .av,.picked .av{width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none}
 .picked{display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border:1px solid var(--line-hi); border-radius:10px; background:var(--panel2); font-size:14px}
 .picked[hidden]{display:none}   /* 계정을 고르기 전 빈 분홍 막대 — display:flex 가 hidden 을 이기던 것 (UX N4) */
