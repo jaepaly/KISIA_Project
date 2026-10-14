@@ -8,15 +8,19 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
 import threading
 import time
+from collections import Counter
+from urllib.parse import urlsplit
 
 import requests
 
 from fastapi import FastAPI, HTTPException, Query, Request
+from starlette.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -41,7 +45,6 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 # Veilo 화면(다른 포트)이 점검을 부를 수 있게 — SNS_PUBLIC_URL 이 다른 출처일 때만 그 하나를 허용한다.
 # 인스턴스는 같은 도메인이라 켜지지 않는다. 외부로 나가는 요청이 아니라 들어오는 요청의 허용이다
 if SNS_PUBLIC_URL.startswith(("http://", "https://")):
-    from urllib.parse import urlsplit
     _o = urlsplit(SNS_PUBLIC_URL)
     app.add_middleware(CORSMiddleware, allow_origins=[f"{_o.scheme}://{_o.netloc}"],
                        allow_methods=["GET", "POST"], allow_headers=["*"])
@@ -110,7 +113,7 @@ def _check_posts(posts: list[dict]) -> None:
     ids = [p.get("post_id") for p in posts]
     if any(not isinstance(i, str) or not i for i in ids):
         raise HTTPException(status_code=400, detail="모든 글에 post_id 가 있어야 합니다")
-    dup = sorted({i for i in ids if ids.count(i) > 1})
+    dup = sorted(i for i, n in Counter(ids).items() if n > 1)
     if dup:
         raise HTTPException(status_code=400, detail=f"같은 post_id 가 여러 번 있습니다: {', '.join(dup[:5])}")
 
@@ -184,7 +187,8 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
 
     baseline = contrib["output"]["baseline_risk"]
     target = round(max(baseline - 40.0, 0.0), 1)
-    stage2 = engine.stage2(user_ref, posts, risk_current=baseline, risk_target=target)
+    # 이번 요청의 스팬을 그대로 넘긴다 — 엔진 전역에 원문을 두지 않는다 (A3 · 동시 점검이 섞이지 않게)
+    stage2 = engine.stage2(user_ref, posts, risk_current=baseline, risk_target=target, spans_by_post=spans_by_post)
 
     return {
         "user_ref": user_ref,
@@ -204,14 +208,111 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
     }
 
 
+# ── 점검 입장 제한 (A1) — 점검 하나가 2 vCPU 를 15~60초 다 쓴다. 동시에 여러 개를 돌리면 모두 느려지고 메모리가 모자란다.
+#    한 번에 SCAN_CONCURRENCY 개(기본 1)만 돌리고, 기다리는 요청은 SCAN_QUEUE_MAX 개(기본 3)까지 SCAN_QUEUE_WAIT 초(기본 90)만 기다린다.
+#    넘치면 429 + 고정 문구 — 화면(scan.html failMsg · action.html 다시 점검 · Veilo 글쓰기 점검)이 이 문구를 그대로 보인다
+BUSY_DETAIL = "지금 다른 점검이 진행 중입니다. 잠시 뒤 다시 시도해 주세요."
+SCAN_CONCURRENCY = max(1, int(os.getenv("SCAN_CONCURRENCY", "1")))
+SCAN_QUEUE_MAX = max(0, int(os.getenv("SCAN_QUEUE_MAX", "3")))
+SCAN_QUEUE_WAIT = max(0.0, float(os.getenv("SCAN_QUEUE_WAIT", "90")))
+_POLL_S = 0.2
+
+
+class _Admission:
+    """프로세스 하나에 하나 — 점검 자리(세마포어)와 기다리는 줄의 길이.
+
+    자리는 이벤트 루프에서 「막지 않고」 잡는다(acquire(blocking=False) + 짧은 sleep) — 기다리는 동안에도 다른 요청
+    (엔진 배지 · 계정 찾기 · Veilo 화면)을 받는다. 기다리다 브라우저가 떠나면(글쓰기 실시간 점검의 abort) 줄에서 빠진다.
+    자리는 점검을 실제로 돌린 스레드가 돌려준다 — 기다리던 코루틴이 취소돼도 점검이 끝나기 전에 자리가 풀리지 않게."""
+
+    def __init__(self, concurrency: int, queue_max: int, wait_s: float):
+        self.sem = threading.BoundedSemaphore(concurrency)
+        self.queue_max, self.wait_s = queue_max, wait_s
+        self._lock = threading.Lock()
+        self.waiting = 0
+
+    async def acquire(self, request: Request | None = None) -> None:
+        if self.sem.acquire(blocking=False):
+            return
+        with self._lock:
+            if self.waiting >= self.queue_max:
+                raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
+            self.waiting += 1
+        try:
+            deadline = time.monotonic() + self.wait_s
+            while not self.sem.acquire(blocking=False):
+                if time.monotonic() >= deadline:
+                    raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
+                if request is not None and await request.is_disconnected():
+                    raise HTTPException(status_code=499, detail="요청이 취소되었습니다")
+                await asyncio.sleep(_POLL_S)
+        finally:
+            with self._lock:
+                self.waiting -= 1
+
+    async def run(self, request: Request | None, fn, *args):
+        """자리를 잡고 fn(*args) 를 스레드에서 돌린다. 자리는 그 스레드가 끝날 때 돌려준다."""
+        await self.acquire(request)
+        started = False
+
+        def work():
+            nonlocal started
+            started = True
+            try:
+                return fn(*args)
+            finally:
+                self.sem.release()
+
+        try:
+            return await run_in_threadpool(work)
+        except BaseException:
+            if not started:   # 스레드가 시작도 못 하고 취소됐다 — 잡은 자리를 여기서 돌려준다
+                self.sem.release()
+            raise
+
+
+_admission = _Admission(SCAN_CONCURRENCY, SCAN_QUEUE_MAX, SCAN_QUEUE_WAIT)
+
+
+# ── 같은 출처 확인 (A6) — 점검 POST 는 이 화면(같은 출처)과 Veilo(SNS_PUBLIC_URL · 로컬 분리 실행)에서만 부른다.
+#    브라우저는 다른 사이트에서 보내는 POST 에 Origin 을 반드시 싣는다 — Origin(없으면 Referer)이 있는데 허용 목록 밖이면 403.
+#    둘 다 없으면(curl · 내부 호출) 통과 — 쿠키를 실어 보내는 브라우저 공격이 아니다.
+#    nginx 가 Host 를 바꿔 넘기는 배치면 ALLOWED_ORIGINS=https://veilo.site 로 공개 주소를 알려 준다
+def _origin_hosts() -> set[str]:
+    hosts = set()
+    for u in [SNS_PUBLIC_URL, *os.getenv("ALLOWED_ORIGINS", "").split(",")]:
+        u = u.strip()
+        if u.startswith(("http://", "https://")):
+            hosts.add(urlsplit(u).netloc.lower())
+    return hosts
+
+
+_ALLOWED_HOSTS = _origin_hosts()
+
+
+def _check_origin(request: Request) -> None:
+    src = request.headers.get("origin") or request.headers.get("referer")
+    if not src:
+        return
+    netloc = urlsplit(src).netloc.lower() if src.startswith(("http://", "https://")) else None
+    own = {h.lower() for h in (request.headers.get("host"), request.headers.get("x-forwarded-host")) if h}
+    if netloc is None or netloc not in own | _ALLOWED_HOSTS:
+        log.warning("다른 출처의 점검 요청 거부: %r", src[:100])
+        raise HTTPException(status_code=403, detail="이 화면에서 보낸 요청만 받습니다")
+
+
 @app.post("/scan/{user_ref}")
-def scan(user_ref: str, request: Request):
+async def scan(user_ref: str, request: Request):
+    _check_origin(request)
     try:
         # 같은 도메인이라 Veilo 의 방문자 쿠키가 여기까지 온다 — 그 사람의 사본을 읽도록 넘긴다
-        export = sns_adapter.load(user_ref, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
+        export = await run_in_threadpool(sns_adapter.load, user_ref, base=SNS_BASE,
+                                         session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:  # SNS 서버 다운·404 등
         raise _upstream_error("내보내기 조회", exc, missing_account=True) from exc
-    return _run_pipeline(user_ref, export.get("posts", []))
+    posts = export.get("posts", [])
+    _check_posts(posts)   # 줄에 서기 전에 — 틀린 입력이 자리를 차지하지 않게
+    return await _admission.run(request, _run_pipeline, user_ref, posts)
 
 
 # 업로드 상한 — 멀티파트 해석기는 1MiB(1,048,576B)를 넘는 파일을 임시 파일(디스크)로 넘긴다. 받은 본문 전체를
@@ -230,7 +331,10 @@ async def _read_capped(request: Request) -> bytes:
 
 @app.post("/upload")
 async def upload_and_scan(request: Request):
-    """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다."""
+    """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다.
+
+    점검은 스레드에서 돈다(A2) — 이벤트 루프를 15~60초 막아 다른 요청까지 멈추던 것."""
+    _check_origin(request)
     body = await _read_capped(request)
 
     async def _replay() -> dict:
@@ -244,9 +348,11 @@ async def upload_and_scan(request: Request):
     await form.close()
     try:
         export = file_adapter.load_from_bytes(content, getattr(file, "filename", None) or "upload.txt")
-    except (ValueError, UnicodeDecodeError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return _run_pipeline(export["user_ref"], export.get("posts", []))
+    except file_adapter.UploadError as exc:   # 고정 문구만 — 해석기 예외 원문을 화면에 내지 않는다
+        raise HTTPException(status_code=exc.status, detail=str(exc)) from exc
+    posts = export["posts"]
+    _check_posts(posts)
+    return await _admission.run(request, _run_pipeline, export["user_ref"], posts)
 
 
 if __name__ == "__main__":
