@@ -209,3 +209,19 @@ def test_hero_field_has_no_external_requests():
     for bad in ("http://", "https://", "fetch(", "XMLHttpRequest", "import("):
         assert bad not in js, bad
     assert 'classList.contains("no-motion")' in js               # 정지 상태면 한 장면만
+
+
+def test_home_head_stats_and_no_pado_box(client):
+    """홈 — 피드 머리(돋보기 들판) · 왼쪽 레일 숫자 · 위치 태그 막대 · 파도풀 설명 카드 없음 (10/14)."""
+    client.get("/about")
+    html = client.get("/").get_data(as_text=True)
+    assert 'class="feed-head" data-field-host' in html and "<canvas class=\"feed-field\" data-field" in html
+    assert "/static/pado-hero.js" in html
+    assert 'class="rail-stats"' in html
+    tpl = (Path(__file__).resolve().parent / "templates" / "list.html").read_text(encoding="utf-8")
+    assert 'class="tag-bars"' in tpl                           # 위치 태그 막대 — 글이 없는 테스트 DB 에선 카드째 안 그린다
+    assert "pado-box" not in html and "tag-cloud" not in html
+    assert '<span class="ic" aria-hidden="true">🌊</span> 내 글 점검' in html   # 상단바 「내 글 점검」 — 출렁이는 🌊
+    js = (Path(__file__).resolve().parent / "static" / "pado-hero.js").read_text(encoding="utf-8")
+    assert "prefers-reduced-motion" in js                     # 홈엔 motion-core 가 없다 — 시스템 「동작 줄이기」를 직접 본다
+

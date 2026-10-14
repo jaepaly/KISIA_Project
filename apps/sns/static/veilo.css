@@ -417,8 +417,16 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);box
 .ut-nav .intro-btn{height:40px;padding:0 14px;border-radius:999px;background:transparent;border:1px solid var(--line-strong);color:var(--ut-ink2);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
 .ut-nav .intro-btn:hover{background:var(--ut-panel2);color:var(--ut-ink)}
 .ut-nav a.intro-btn{display:inline-flex;align-items:center;text-decoration:none}   /* 상단바 「파도풀이란?」 = /about 링크 */
-.ut-nav a.chk{color:var(--ink);font-weight:700;border:1px solid var(--line-strong);background:var(--surface)}
-.ut-nav a.chk:hover{background:var(--paper-2)}
+/* 「내 글 점검」 — 파도풀 입구라 바다색(--sea)으로 다른 버튼과 갈라 둔다. 호버하면 바다색으로 차고, 아래로 물결이 흐르고, 🌊 가 출렁인다 */
+.ut-nav a.chk{position:relative;overflow:hidden;color:var(--sea);font-weight:700;border:1px solid color-mix(in srgb,var(--sea) 45%,transparent);background:color-mix(in srgb,var(--sea) 9%,var(--paper))}
+.ut-nav a.chk .ic{display:inline-block;margin-right:4px;transform-origin:50% 80%}
+.ut-nav a.chk:hover{background:var(--sea);border-color:var(--sea);color:var(--paper)}
+.ut-nav a.chk::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:8px;opacity:0;pointer-events:none;
+  background:radial-gradient(circle at 6px -2px,transparent 6px,color-mix(in srgb,var(--paper) 55%,transparent) 7px) 0 0/16px 8px repeat-x;transition:opacity .2s}
+.ut-nav a.chk:hover::after{opacity:1;animation:fx-wave 1.1s linear infinite}
+.ut-nav a.chk:hover .ic{animation:chk-bob .9s var(--ease) infinite}
+@keyframes chk-bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-10deg)}}
+@media (prefers-reduced-motion:reduce){.ut-nav a.chk:hover::after,.ut-nav a.chk:hover .ic{animation:none}}
 .ut-top-in .ut-nav{margin-left:auto}
 /* 홈 피드 맨 위 한 줄 · 조치 뒤 안내 띠 */
 .pado-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line-strong);border-left:3px solid var(--sea);border-radius:var(--ut-radius);padding:10px 14px;margin:0 0 16px;font-size:13.5px;color:var(--ut-ink2);line-height:1.55}
@@ -528,3 +536,32 @@ html.dark-chapter .ut-top .ut-search input{background-color:rgba(239,232,220,.06
 html.dark-chapter .ut-tabs{background:var(--glass-night);border-top-color:var(--night-line)}
 html.dark-chapter .ut-tabs a{color:var(--night-muted)}
 html.dark-chapter .ut-tabs a.on{color:var(--night-ink);background:rgba(239,232,220,.08)}
+
+/* ── 홈 — 피드 머리(돋보기 들판) · 왼쪽 레일 숫자 · 위치 태그 막대 (10/14 · 소개 화면과 같은 시각 언어) ── */
+.feed-head{position:relative;overflow:hidden;min-height:184px;margin:0 0 16px;padding:22px 24px;border:1px solid var(--line);border-radius:var(--ut-radius);background:var(--paper-2);touch-action:pan-y}
+.feed-field{position:absolute;inset:0;width:100%;height:100%;display:block}
+.feed-head-txt{position:relative;z-index:1;max-width:min(60%,420px);pointer-events:none}
+.feed-head-txt .eyebrow{margin:0}
+.feed-h{margin:8px 0 8px;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:-.04em;font-weight:700;color:var(--ink);word-break:keep-all}
+.feed-sub{margin:0;font-size:14px;line-height:1.6;color:var(--body);word-break:keep-all}
+.feed-try{margin:10px 0 0;font-size:11.5px;color:var(--muted);word-break:keep-all}
+.feed-try .touch{display:none}
+@media (hover:none){.feed-try .hover{display:none}.feed-try .touch{display:inline}}
+@media (max-width:767px){
+  .feed-head{min-height:236px;padding:18px 16px 120px}   /* 휴대폰 — 글 아래 빈 칸이 돋보기 자리 */
+  .feed-head-txt{max-width:none}
+}
+.rail-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 0;padding:14px 0 0;border-top:1px solid var(--line)}
+.rail-stats div{min-width:0}
+.rail-stats dt{margin:0 0 2px;font-size:11px;color:var(--muted);white-space:nowrap}
+.rail-stats dd{margin:0;font-size:12px;color:var(--body);white-space:nowrap}
+.rail-stats dd b{margin-right:1px;font-size:22px;font-weight:700;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+.rail-fine{margin:12px 0 0;font-size:12px;line-height:1.55;color:var(--muted);word-break:keep-all}
+.tag-bars{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.tag-bars li{display:grid;grid-template-columns:minmax(0,1fr) 72px 22px;align-items:center;gap:8px;font-size:12.5px;color:var(--body)}
+.tag-bars .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag-bars .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.tag-bars .bar i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(0);transition:transform .7s var(--ease) calc(var(--i) * 70ms)}
+.rv.in .tag-bars .bar i,.tag-bars:not(.rv *) .bar i{transform:scaleX(var(--w))}
+.tag-bars b{text-align:right;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.tag-bars .bar i{transform:scaleX(var(--w));transition:none}}

@@ -31,8 +31,8 @@
   {# ── 히어로 — 할 일은 하나: 아래로 내려 보기. 버튼으로 끌어내리지 않는다(스크롤이 확 내려가는 이동 없음).
      뒤 들판(pado-hero.js) — 점 하나가 사람 하나, 흐린 낱말이 글 속 단서. 마우스(터치)를 따라가는 돋보기 안에서만 단서가 또렷해진다.
      움직임 끔이면 돋보기가 한자리에 멈춘 한 장면 #}
-  <section class="ps-hero" id="hero" data-ps-section>
-    <canvas class="ps-field" id="psField" aria-hidden="true"></canvas>
+  <section class="ps-hero" id="hero" data-ps-section data-field-host data-field-keep=".ps-in > *">
+    <canvas class="ps-field" id="psField" data-field aria-hidden="true"></canvas>
     <div class="ps-in">
       <p class="eyebrow ko">01 / 파도풀이란?</p>
       <h1 class="ps-h1">이름을 안 써도,<br>글이 쌓이면 내가 보일 수 있습니다.</h1>
@@ -40,7 +40,7 @@
       <p class="ps-hint">1분이면 됩니다 · 아래로 내려 보세요</p>
       <p class="ps-fine">이 화면의 글과 숫자는 모두 꾸며 낸 예시입니다.</p>
     </div>
-    <p class="ps-try" id="psTry" aria-hidden="true"><span class="hover">마우스를 움직여 보세요</span><span class="touch">화면을 눌러 끌어 보세요</span> — 평범한 글 속 단서가 돋보기 안에서만 보입니다</p>
+    <p class="ps-try" id="psTry" data-field-try aria-hidden="true"><span class="hover">마우스를 움직여 보세요</span><span class="touch">화면을 눌러 끌어 보세요</span> — 평범한 글 속 단서가 돋보기 안에서만 보입니다</p>
   </section>
   {# 스크롤 신호 — 화면 아래 가운데. 40px 넘게 내리면 사라진다(pado-scene.js) · 정지 상태면 화살표가 멈춰 있다 #}
   <p class="ps-cue" id="psCue" aria-hidden="true"><span>아래로 스크롤</span><i></i></p>

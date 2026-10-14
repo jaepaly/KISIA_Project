@@ -207,9 +207,15 @@ def index():
             "SELECT geo_tag, COUNT(*) AS n FROM posts"
             " WHERE visibility = 'public' AND geo_tag IS NOT NULL AND geo_tag != ''"
             " GROUP BY geo_tag ORDER BY n DESC LIMIT 6").fetchall()
+        # 왼쪽 레일 숫자 — 공개 글 수 · 위치 태그를 단 공개 글 비율(가상 데이터 그대로)
+        st = db().execute(
+            "SELECT COUNT(*) AS n, SUM(CASE WHEN geo_tag IS NOT NULL AND geo_tag != '' THEN 1 ELSE 0 END) AS g"
+            " FROM posts WHERE visibility = 'public'").fetchone()
+        stats = {"authors": len(authors), "posts": st["n"] or 0,
+                 "geo_pct": round(100 * (st["g"] or 0) / st["n"]) if st["n"] else 0}
         return render_template("list.html", posts=posts, authors=authors,
                                 selected_author=author_id, next_url=next_url,
-                                recent_authors=recent_authors, top_tags=top_tags)
+                                recent_authors=recent_authors, top_tags=top_tags, stats=stats)
     except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 
