@@ -17,6 +17,25 @@
   // 스팬 오프셋은 코드포인트 단위 — 이모지 뒤에서 UTF-16 slice 가 어긋난다
   const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
 
+  // 스팬 범위 보정 — 엔진이 준 start/end 로 자른 글자가 스팬 text 와 다르면(바꿔 쓰기 뒤 「주간조」가 「조」로 칠해지던 일)
+  // 같은 text 가 나오는 자리 중 원래 start 에 가장 가까운 곳으로 옮긴다. 못 찾으면 원래 범위를 그대로 둔다.
+  // 엔진 쪽 원인은 따로 본다(콘솔에 남긴다) — 화면은 적어도 엉뚱한 글자를 칠하지 않는다
+  function anchor(text, spans) {
+    const arr = Array.from(text || "");
+    const nfc = (x) => (x || "").normalize("NFC");
+    return spans.map((s) => {
+      if (!s.text || nfc(arr.slice(s.start, s.end).join("")) === nfc(s.text)) return s;
+      const want = Array.from(nfc(s.text)), n = want.length;
+      let best = -1;
+      for (let i = 0; i + n <= arr.length; i++) {
+        if (nfc(arr.slice(i, i + n).join("")) === want.join("") && (best < 0 || Math.abs(i - s.start) < Math.abs(best - s.start))) best = i;
+      }
+      console.warn("[pado] 스팬 범위가 text 와 다름", { span_id: s.span_id, start: s.start, end: s.end, text: s.text, got: arr.slice(s.start, s.end).join(""), moved_to: best });
+      return best < 0 ? s : { ...s, start: best, end: best + n };
+    });
+  }
+  window.padoAnchor = anchor;
+
   // 본문 텍스트에 스팬 형광을 입힌 HTML. 줄바꿈은 그대로 둔다 (overlay 가 pre-wrap).
   // 형광판이 textarea 위에 있을 때(실시간)는 반투명(alpha)으로 — 실제 글자가 비쳐야 한다
   function markup(text, spans, { alpha = false, hint = "" } = {}) {
@@ -39,7 +58,7 @@
     if (!r.ok) throw new Error(await r.text());
     const d = await r.json();
     const post = (d.posts || [])[0] || {};
-    const spans = (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other");
+    const spans = anchor(text, (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other"));
     const spec = ((d.specificity || {}).output || {});
     const k = spec.k;
     // 바꿔 쓰기 후보 — span_id 별로 묶는다 (조사까지 맞춘 suggestion · residual_risk none|partial)
@@ -48,8 +67,27 @@
       if (!rewrites.has(rw.span_id)) rewrites.set(rw.span_id, []);
       rewrites.get(rw.span_id).push(rw);
     }
-    return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk };
+    return { spans, k, rewrites, steps: spec.steps || [], risk: spec.risk, raw: d };
   }
+
+  // 깔때기 조건의 «…» 가 행정코드(3171025000)뿐이면 글에서 찾은 지명으로 바꾼다 — 코드를 화면에 내지 않는다.
+  // 파도풀 화면 common.js placeName() 과 같은 규칙: 조건의 value → 그 조건을 낸 글의 본인 지역 단서 → 위치 태그 → 「사는 동네」
+  window.padoPlaceName = function (data, text) {
+    if (!/^\d{5,10}$/.test(String(text))) return text;
+    const conds = (((data || {}).specificity || {}).input || {}).conditions || [];
+    const posts = Object.fromEntries(((data || {}).posts || []).map((p) => [p.post_id, p]));
+    for (const c of conds) {
+      if (String(c.geo_code) !== String(text)) continue;
+      if (c.value && !/^\d+$/.test(String(c.value))) return c.value;
+      for (const pid of c.source_post_ids || []) {
+        const s = ((((data.spans || {})[pid]) || {}).spans || []).find((x) => x.subject !== "other" && String(x.type).startsWith("LOC"));
+        if (s) return s.text;
+        const p = posts[pid], geo = p && ((p.activity_meta || {}).geo_tag || p.geo_tag);   // 위치 태그는 export 계약대로 activity_meta 안
+        if (geo) return geo;
+      }
+    }
+    return "사는 동네";
+  };
   window.padoCheck = check;
   // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
   window.padoCheckExport = async function (exportObj, signal) {
@@ -64,14 +102,14 @@
 
   // 후보가 없는 유형 — 고치는 방향 한 줄 (분석 앱 action.html MANUAL_TIP 의 짧은 판)
   const TIP = {
-    JOB: "업종·가게 이름·하는 일의 세부는 「일하는 곳」 「일」 정도로 넓혀 보세요.",
-    LOC_FACILITY: "가게·공원·학교 이름 대신 「근처 공원」 「한 카페」처럼 종류만 남겨 보세요.",
-    LOC_ADMIN: "동·구 이름은 시나 도 단위로 넓혀 보세요.",
-    AGE: "나이는 「30대」처럼 범위로 바꾸거나 빼 보세요.",
-    FAM: "몇째인지, 가족의 나이·학년은 「가족」 「아이」처럼 넓혀 보세요.",
-    COMMUTE: "노선·정류장·걸리는 시간은 빼거나 「버스로」 정도만 남겨 보세요.",
-    INCOME: "금액·대출이나 수당 종류는 빼거나 「돈」 「비용」처럼 넓혀 보세요.",
-    SEX: "호칭(언니·오빠·남편 등)은 성별 단서가 됩니다. 「가족」 「친구」로 바꿔도 뜻이 통하는지 보세요.",
+    JOB: "업종이나 가게, 회사 이름 대신 「일하는 곳」처럼 써 보세요. 업무 이름과 도구도 구체적으로 적었는지 확인하세요.",
+    LOC_FACILITY: "가게나 공원, 학교 이름 대신 「근처 공원」이나 「한 카페」처럼 종류만 써 보세요.",
+    LOC_ADMIN: "동이나 구 이름 대신 시나 도 이름을 써 보세요.",
+    AGE: "나이는 「30대」처럼 넓게 쓰거나 빼 보세요.",
+    FAM: "몇째인지, 나이나 학년을 적는 대신 「가족」이나 「아이」로 써도 뜻이 통하는지 보세요.",
+    COMMUTE: "노선이나 정류장 이름, 걸리는 시간은 빼고 「버스로」 정도만 써 보세요.",
+    INCOME: "금액이나 대출, 수당의 종류는 빼거나 「돈」, 「비용」처럼 넓게 써 보세요.",
+    SEX: "「언니」, 「오빠」, 「남편」 같은 호칭은 성별 단서가 될 수 있습니다. 「가족」이나 「친구」로 바꿔도 뜻이 통하는지 보세요.",
   };
   const cpLen = (s) => Array.from(s || "").length;
 
@@ -83,7 +121,7 @@
     let undo = null;                                 // { before, after } — 바꾼 직후 되돌리기
     const setChip = (html, cls) => { chip.innerHTML = html; chip.className = "pado-chip" + (cls ? " " + cls : ""); };
     const paint = (text, spans) => {
-      backdrop.innerHTML = markup(text, spans, { alpha: false, hint: spans.length ? " · 누르면 바꿀 후보" : "" }) + "\n";   // 불투명 + CSS multiply
+      backdrop.innerHTML = markup(text, spans, { alpha: false, hint: spans.length ? " · 누르면 바꿔 쓸 표현 보기" : "" }) + "\n";   // 불투명 + CSS multiply
       // 후보가 있는 형광은 점선 밑줄로 「누를 수 있다」를 미리 보여 준다
       backdrop.querySelectorAll("mark[data-id]").forEach((m) => { if (cur.rewrites.has(m.dataset.id)) m.classList.add("has-cand"); });
     };
@@ -111,19 +149,19 @@
         paint(text, spans);   // cur 를 먼저 — paint 가 후보 유무를 본다
         if (onResult) onResult({ spans, k, steps, risk, text });
         if (!spans.length) {
-          setChip("읽히는 단서 없음", "ok"); if (warn) warn.hidden = true; hidePick();
+          setChip("개인정보 단서를 찾지 못함", "ok"); if (warn) warn.hidden = true; hidePick();
         } else {
           const types = [...new Set(spans.map((s) => LABEL[s.type] || s.type))];
           const nCand = spans.filter((s) => rewrites.has(s.span_id)).length;
-          setChip(`단서 <b>${spans.length}</b>곳${k ? ` · 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명 중 한 명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
+          setChip(`개인정보 단서 <b>${spans.length}</b>곳${k ? ` · 같은 조건의 사람 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
           if (warn) {
             warn.hidden = false;
-            warn.innerHTML = `형광으로 칠한 ${spans.length}곳이 나를 드러냅니다. <b>형광 단어를 누르면</b> ${nCand ? `바꿀 후보가 나옵니다(${nCand}곳).` : "고치는 방향을 알려 드립니다."}`;
+            warn.innerHTML = `색칠한 ${spans.length}곳은 개인정보 단서가 될 수 있습니다. <b>누르면</b> ${nCand ? `바꿔 쓸 표현이 나옵니다(${nCand}곳).` : "직접 고치는 방법을 볼 수 있습니다."} 같은 조건의 사람 수가 적을수록 글쓴이를 좁히기 쉽습니다.`;
           }
         }
       } catch (e) {
         if (e.name === "AbortError") return;
-        setChip("점검 실패 — 잠시 뒤 다시", "err");
+        setChip("점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.", "err");
       }
     }
 
@@ -143,7 +181,7 @@
         body = `<div class="pado-cands">${cands.map((c, i) => `
           <button type="button" class="pado-cand" data-i="${i}">
             <span class="sug">${esc(c.suggestion)}</span>
-            <span class="rr ${c.residual_risk === "none" ? "none" : "part"}">${c.residual_risk === "none" ? "단서가 사라짐" : "약해지지만 남음"}</span>
+            <span class="rr ${c.residual_risk === "none" ? "none" : "part"}">${c.residual_risk === "none" ? "이 표현의 단서가 사라짐" : "약해지지만 남음"}</span>
           </button>`).join("")}</div>`;
       } else {
         body = `<p class="pado-tip">${esc(TIP[s.type] || "이 표현은 빼거나 더 넓은 말로 바꿔 보세요.")}</p>`;
@@ -155,7 +193,7 @@
         <div class="pado-pick-f">
           <button type="button" class="ghost" data-self>직접 고치기</button>
           ${undo ? `<button type="button" class="ghost" data-undo>방금 바꾼 것 되돌리기</button>` : ""}
-          <span class="muted">${cands.length ? "안전할수록 원문에서 멀어집니다." : "자동으로 바꿀 말을 정하기 어려운 단서입니다."}</span>
+          <span class="muted">${cands.length ? "더 넓은 표현으로 바꾸면 원래 뜻도 달라질 수 있습니다." : "바꿔 쓸 표현을 추천하기 어렵습니다."}</span>
         </div>`;
       pick.hidden = false;
       backdrop.querySelectorAll("mark.on").forEach((m) => m.classList.remove("on"));
@@ -215,7 +253,7 @@
       const text = (getText() || "").trim();
       if (!text) { out.innerHTML = muted("본문을 먼저 써 주세요."); return; }
       btn.disabled = true;
-      out.innerHTML = '<p style="color:var(--ut-ink3);margin:0;">읽는 중<span data-dots></span></p>';
+      out.innerHTML = '<p style="color:var(--ut-ink3);margin:0;">점검 중<span data-dots></span></p>';
       let di = 0;
       const dots = setInterval(() => {
         const el = out.querySelector("[data-dots]");
@@ -229,37 +267,38 @@
         const d = await r.json();
         const post = (d.posts || [])[0] || {};
         const body = post.body || "";
-        const spans = (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other");
+        const spans = anchor(body, (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other"));
         const k = ((d.specificity || {}).output || {}).k;
 
         if (!spans.length) {
-          out.innerHTML = muted("읽히는 단서가 없습니다. 이대로 둬도 괜찮아 보입니다.");
+          out.innerHTML = muted("이 글에서는 개인정보 단서를 찾지 못했습니다. 다른 공개 글과 함께 보면 결과가 달라질 수 있습니다.");
           return;
         }
+        // 오프셋은 코드포인트 단위 — cp() 로 자른다 (UTF-16 slice 는 이모지 뒤에서 어긋난다)
         let marked = "", last = 0;
         for (const s of [...spans].sort((a, b) => a.start - b.start)) {
           if (s.start < last) continue;
-          marked += esc(body.slice(last, s.start))
+          marked += esc(cp(body, last, s.start))
             + `<mark style="background:${COLOR[s.type] || "#F9E0B8"};border-radius:3px;padding:1px 2px;" title="${LABEL[s.type] || s.type}">`
-            + esc(body.slice(s.start, s.end)) + "</mark>";
+            + esc(cp(body, s.start, s.end)) + "</mark>";
           last = s.end;
         }
-        marked += esc(body.slice(last));
+        marked += esc(cp(body, last));
         const types = [...new Set(spans.map((s) => LABEL[s.type] || s.type))];
         out.innerHTML =
-          `<p style="margin:0 0 8px;"><b style="font-size:20px;">${spans.length}</b>곳에서 단서가 읽힙니다`
-          + (k ? ` · 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명 중 한 명` : "")   // 실시간 칩(118행)과 같게 — 사람 수에 소수점을 쓰지 않는다
+          `<p style="margin:0 0 8px;">개인정보 단서 <b style="font-size:20px;">${spans.length}</b>곳`
+          + (k ? ` · 같은 조건의 사람 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명` : "")   // 실시간 칩(118행)과 같게 — 사람 수에 소수점을 쓰지 않는다
           + `</p>`
           + `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">`
           + types.map((t) => `<span style="font-size:11px;font-weight:600;color:var(--ut-ink2);background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:99px;padding:2px 9px;">${esc(t)}</span>`).join("")
           + `</div>`
           + `<div style="white-space:pre-wrap;background:var(--ut-bg);border-radius:10px;padding:12px 14px;line-height:1.85;font-size:13px;">${marked}</div>`
           + `<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px;">`
-          + (userRef ? `<a class="fx-link" href="${BASE}/static/scan.html?u=${encodeURIComponent(userRef)}" style="color:var(--ut-earth-ink);">이 계정 전체 진단 →</a>` : "")
-          + `<a class="fx-link" href="${BASE}/static/scan.html" style="color:var(--ut-earth-ink);">파도풀 열기 →</a>`
+          + (userRef ? `<a class="fx-link" href="${BASE}/static/scan.html?u=${encodeURIComponent(userRef)}" style="color:var(--ut-earth-ink);">계정 전체 점검 →</a>` : "")
+          + `<a class="fx-link" href="${BASE}/static/scan.html" style="color:var(--ut-earth-ink);">다른 계정 점검 →</a>`
           + `</div>`;
       } catch {
-        out.innerHTML = muted("점검에 실패했습니다. 잠시 뒤 다시 눌러 주세요.");
+        out.innerHTML = muted("점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
       } finally {
         clearInterval(dots);
         btn.disabled = false;

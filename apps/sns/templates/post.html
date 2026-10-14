@@ -5,7 +5,34 @@
 <div class="ut-shell no-rail">
   <main class="ut-main">
     <div class="ut-wrap" style="max-width:720px;margin:24px auto;padding:0 16px;">
-      <a class="ut-back fx-link" href="javascript:history.back()">← 뒤로</a>
+      {# 새 창(파도풀 조치 화면)이나 공유 링크로 들어오면 돌아갈 기록이 없다 — 늘 작성자 글 목록으로 #}
+      <a class="ut-back fx-link" href="/u/{{ p.user_ref }}">← {{ p.nickname }}님 글 목록</a>
+
+      {% set done = request.args.get('done') %}
+      {# 조치 띠 — 「다시 점검 →」은 준비 화면을 거치지 않고 바로 점검을 시작한다 (scan.html ?run=1) #}
+      {% if done in ('private', 'public', 'geo') %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>{% if done == 'private' and rw and rw.visibility == 'private' %}원래 글을 비공개로 바꿨습니다.{% elif done == 'private' %}비공개로 바꿨습니다.{% elif done == 'public' %}다시 공개했습니다.{% else %}위치 태그를 저장했습니다.{% endif %}</b> 파도풀에서 다시 점검하면 숫자가 바뀝니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ p.user_ref }}&run=1">다시 점검 →</a>
+        <a class="more" href="/u/{{ p.user_ref }}#changes">바꾼 것 되돌리기</a>
+      </div>
+      {% elif rw and rw.visibility == 'public' %}
+      {# 고쳐 쓰기로 올린 글 — 원래 글이 아직 공개면 고쳐 쓴 효과가 없다. 버튼 하나로 원래 글을 비공개로(같은 묶음으로 기록) #}
+      <div class="pado-strip" role="status">
+        <span class="tx"><b>{% if done == 'posted' %}고쳐 쓴 글을 올렸습니다. {% endif %}원래 글이 아직 공개입니다.</b> 원래 글을 비공개로 바꿔야 고쳐 쓴 효과가 납니다.</span>
+        <form method="post" action="/posts/{{ rw.post_id }}/visibility" style="margin:0;">
+          <input type="hidden" name="back" value="/posts/{{ p.post_id }}">
+          <input type="hidden" name="pair" value="{{ rw.id }}">
+          <button type="submit" class="go">원래 글 비공개로</button>
+        </form>
+        <a class="more" href="/posts/{{ rw.post_id }}">원래 글 「{{ rw.title or '제목 없음' }}」 보기</a>
+      </div>
+      {% elif done == 'posted' %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>{% if rw %}고쳐 쓴 글을 올렸습니다.{% else %}글을 올렸습니다.{% endif %}</b> 이 글에 남은 단서는 아래 「이 글 점검」으로 볼 수 있습니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ p.user_ref }}&run=1">계정 다시 점검 →</a>
+      </div>
+      {% endif %}
 
       <div class="ut-card rv {% if p.visibility == 'private' %}dim{% endif %}">
         <h1 style="font-size:22px;margin:0 0 10px;letter-spacing:-.02em;">
@@ -51,6 +78,14 @@
             <button type="submit" class="ghost" style="font-size:13px;padding:8px 14px;white-space:nowrap;">위치 저장</button>
           </form>
         </div>
+
+        {# 본문 고치기 — 이 화면엔 본문 수정 기능이 없다. 본문을 글쓰기 화면으로 옮겨 고쳐 쓰고 새 글로 올린 뒤, 원래 글은 비공개로 바꾸는 길 #}
+        <div id="fix" style="margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--ut-panel2);font-size:13px;color:var(--ut-ink2);line-height:1.6;">
+          <b style="color:var(--ut-ink);">본문을 고치고 싶다면</b> — 이 글은 여기서 바로 고칠 수 없습니다. 본문을 글쓰기 화면으로 옮겨 고친 뒤 새 글로 올리고, 이 글은 비공개로 바꿔 주세요.
+          <div style="margin-top:8px;">
+            <button type="button" id="fixBtn" class="ghost" style="font-size:13px;padding:8px 14px;">✏️ 이 글을 옮겨 고쳐 쓰기</button>
+          </div>
+        </div>
       </div>
 
       {# ── 파도풀 — 이 글 한 편 점검 ── #}
@@ -60,7 +95,7 @@
           <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
                        border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
         </div>
-        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">이 글 한 편이 {{ p.nickname }}님을 얼마나 드러내는지 봅니다. 계정 전체는 결과 아래 링크에서.</p>
+        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">이 글에서 {{ p.nickname }}님을 알아볼 단서를 찾습니다. 공개 글 전체도 결과 아래에서 점검할 수 있습니다.</p>
         <button type="button" id="padoBtn" class="fx-wave"
                 style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
                        height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
@@ -82,5 +117,16 @@ padoWidget({
   getText: () => document.getElementById("postBody").textContent,
   userRef: {{ p.user_ref | tojson }}
 });
+// 「이 글을 옮겨 고쳐 쓰기」 — 글쓰기 화면이 sessionStorage 의 초안을 받아 채운다 (new.html)
+document.getElementById("fixBtn").addEventListener("click", () => {
+  const draft = {{ {"from": p.post_id, "author_id": p.author_id, "title": p.title or "", "body": p.body or "",
+                     "geo_tag": p.geo_tag or "", "captions": photos | map(attribute="caption") | list} | tojson }};
+  try { sessionStorage.setItem("veilo.draft", JSON.stringify(draft)); } catch (e) {}
+  location.href = "/new?from=" + encodeURIComponent(draft.from);
+});
+// 파도풀 조치 화면에서 #fix 로 들어오면 고쳐 쓰기 안내를 바로 보여 준다
+// 피드·프로필의 「📍 단서 N곳」 배지로 들어오면(#pado) 이 글 점검을 바로 돌린다
+if (location.hash === "#pado") { const b = document.getElementById("padoBtn"); b.scrollIntoView({ block: "center" }); b.click(); }
+if (location.hash === "#fix") { const f = document.getElementById("fix"); f.style.boxShadow = "0 0 0 2px var(--ut-earth)"; f.scrollIntoView({ block: "center" }); }
 </script>
 {% endblock %}

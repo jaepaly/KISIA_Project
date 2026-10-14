@@ -12,7 +12,7 @@
             <a class="nm" href="/u/{{ a.user_ref }}" style="text-decoration:none;color:var(--ut-ink);">
               {{ a.nickname }}
             </a>
-            <div class="handle">@{{ a.user_ref }}</div>
+            <div class="handle">@{{ a.user_ref }}{% if me and me.author_id == a.author_id %}<span class="me-badge">내 계정</span>{% endif %}</div>
             {% if a.bio %}<div class="bio">{{ a.bio }}</div>{% endif %}
           </div>
         </div>
@@ -20,12 +20,24 @@
           <span><b>{{ posts|length }}</b> 글</span>
           <span><b>{{ a.joined_at[:10] }}</b> 가입</span>
         </div>
+        {# 내 계정 — 이 사람으로 체험하면 상단바에 내 아바타가 뜨고, 글쓰기·내 글 점검이 이 사람으로 시작한다 (고르지 않아도 된다) #}
+        <form method="post" action="/me" class="me-pick">
+          <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
+          {% if me and me.author_id == a.author_id %}
+          <input type="hidden" name="author_id" value="">
+          <span>지금 이 사람으로 체험하고 있습니다.</span>
+          <button type="submit" class="ghost">내 계정에서 빼기</button>
+          {% else %}
+          <input type="hidden" name="author_id" value="{{ a.author_id }}">
+          <button type="submit" style="width:100%;font-size:13px;padding:9px;">🙋 이 사람으로 체험하기</button>
+          {% endif %}
+        </form>
         {# 공용 테스트 서버라 한 사람이 바꾸면 모두에게 보인다 — 이 계정만 시드 상태로 되돌린다 #}
         <form method="post" action="/u/{{ a.user_ref }}/reset" style="margin-top:12px;"
-              onsubmit="return confirm('이 계정의 글·프로필·공개 여부를 처음 상태로 되돌립니다. 이 계정에 새로 쓴 글은 지워집니다. 계속할까요?')">
-          <button type="submit" class="ghost" style="width:100%;font-size:12px;padding:8px;">⟲ 이 계정 처음 상태로</button>
+              onsubmit="return confirm('이 계정의 글과 프로필, 공개 범위를 처음 상태로 되돌릴까요? 새로 쓴 글은 지워집니다.')">
+          <button type="submit" class="ghost" style="width:100%;font-size:12px;padding:8px;">⟲ 이 계정 초기화</button>
         </form>
-        <p style="font-size:11px;color:var(--ut-ink3);margin:6px 0 0;line-height:1.4;">여기서 바꾼 것은 <b>이 브라우저에서만</b> 보입니다. 다른 사람에겐 원래 상태로 보이고, 이틀 안 쓰면 사본은 지워집니다.</p>
+        <p style="font-size:11px;color:var(--ut-ink3);margin:6px 0 0;line-height:1.4;">여기서 바꾼 내용은 <b>이 브라우저에서만</b> 보입니다. 이틀 동안 사용하지 않으면 바꾼 내용은 지워집니다.</p>
         <details style="margin-top:14px;">
           <summary style="cursor:pointer;font-size:12px;color:var(--ut-ink3);">프로필 수정</summary>
           <form method="post" action="/u/{{ a.user_ref }}/edit" style="margin-top:10px;">
@@ -43,13 +55,12 @@
           🌊 파도풀 <span class="tag nosave" style="background:var(--ut-earth-soft);color:var(--ut-earth-ink);border:1px solid var(--ut-earth);">개인정보 점검</span>
         </div>
         <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;line-height:1.5;">
-          이 계정의 글 {{ posts|length }}편을 모두 읽어,<br>
-          몇 명 중 한 명까지 좁혀지는지 봅니다.
+          이 계정의 공개 글을 모아, 글쓴이를 얼마나 좁힐 수 있는지 점검합니다.
         </p>
         <a class="fx-btn fx-wave" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}"
            style="display:block;text-align:center;background:var(--ut-earth);color:#fff;
                   border-radius:12px;padding:10px;font-size:14px;font-weight:700;text-decoration:none;">
-          내 계정 진단 →
+          계정 전체 점검 →
         </a>
       </div>
 
@@ -84,6 +95,64 @@
         <span class="sub">{{ posts|length }}편</span>
       </div>
 
+      {% set done = request.args.get('done') %}
+      {% if done in ('private', 'public', 'undo') %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>{% if done == 'private' %}비공개로 바꿨습니다.{% elif done == 'public' %}다시 공개했습니다.{% else %}바꾼 것을 되돌렸습니다.{% endif %}</b> 파도풀에서 다시 점검하면 숫자가 바뀝니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}&run=1">다시 점검 →</a>
+      </div>
+      {% elif done == 'me' %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>이제 {{ a.nickname }}님으로 체험합니다.</b> 글쓰기와 내 글 점검이 이 계정으로 시작하고, 바꾼 것은 이 화면에서 되돌릴 수 있습니다.</span>
+        <a class="go" href="/new">글쓰기 →</a>
+      </div>
+      {% elif done == 'me_off' %}
+      <div class="pado-strip done" role="status">
+        <span class="tx"><b>내 계정에서 뺐습니다.</b> 다른 사람을 골라 체험해도 되고, 고르지 않아도 모든 기능을 쓸 수 있습니다.</span>
+      </div>
+      {% else %}
+      {# 휴대폰에서는 왼쪽 카드가 ☰ 서랍 속에 들어간다 — 계정 전체 점검을 본문에도 한 번 둔다 #}
+      <div class="pado-strip ut-mobile-only">
+        <span class="tx">🌊 이 계정의 공개 글을 모아 점검합니다.</span>
+        <a class="go" href="{{ pado_base }}/static/scan.html?u={{ a.user_ref }}">계정 전체 점검 →</a>
+      </div>
+      {% endif %}
+
+      {% if changes %}
+      {# 조치 이력 — 이 브라우저에서 이 계정에 바꾼 것. 되돌리면 export 도 그 전으로 → 다시 점검하면 숫자가 돌아온다 #}
+      <section class="ut-card changes" id="changes" aria-labelledby="chH">
+        <div class="ch-h">
+          <h2 id="chH">{% if changes | selectattr('at', 'lt', today) | list %}바꾼 것{% else %}오늘 바꾼 것{% endif %} {{ changes|length }}개</h2>
+          <form method="post" action="/changes/undo-all"
+                onsubmit="return confirm('이 계정에서 바꾼 것을 모두 되돌릴까요? 고쳐 쓴 새 글은 지워집니다.')">
+            <input type="hidden" name="author_id" value="{{ a.author_id }}">
+            <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
+            <button type="submit" class="ghost">모두 되돌리기</button>
+          </form>
+        </div>
+        <ul>
+          {% for c in changes %}
+          <li>
+            <span class="t">{% if c.at[:10] != today %}{{ c.at[5:10].replace('-', '/') }} {% endif %}{{ c.time }}</span>
+            <span class="w"><a href="/posts/{{ c.post_id }}">「{{ c.label }}」</a>
+              {% if c.kind == 'private' %}비공개로 바꿈
+              {% elif c.kind == 'public' %}다시 공개함
+              {% elif c.kind == 'geo' %}위치 태그 {{ c.before_val or '없음' }} → {{ c.after_val or '없음' }}
+              {% else %}고쳐서 <a href="/posts/{{ c.new_post_id }}">새 글</a>로 올림{% endif %}
+              {% if c.paired %}<span class="pair" title="고쳐 쓰기를 되돌리면 이 비공개도 함께 되돌립니다">고쳐 쓰기와 한 묶음</span>{% endif %}
+              {% if c.chained %}<span class="pair" title="이 새 글을 다시 고쳐 쓴 글이 있습니다. 되돌리면 그 글도 함께 지워집니다">다시 고쳐 쓴 글과 이어짐</span>{% endif %}
+            </span>
+            <form method="post" action="/changes/{{ c.id }}/undo">
+              <input type="hidden" name="back" value="/u/{{ a.user_ref }}">
+              <button type="submit" class="ghost" {% if c.kind == 'rewrite' %}title="새로 올린 글이 지워집니다{% if c.paired %}. 원래 글도 다시 공개됩니다{% endif %}{% if c.chained %}. 그 글을 다시 고쳐 쓴 글도 지워집니다{% endif %}"{% endif %}>되돌리기</button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+        <p class="note">되돌리면 파도풀에서 다시 점검했을 때 숫자도 바꾸기 전으로 돌아옵니다. 고쳐 쓴 것을 되돌리면 새로 올린 글이 지워집니다. 「한 묶음」 표시가 붙은 비공개도 함께 되돌립니다.</p>
+      </section>
+      {% endif %}
+
       {% if not posts %}
       <p style="color:var(--ut-ink3);text-align:center;padding:48px 0;">아직 쓴 글이 없습니다.</p>
       {% endif %}
@@ -104,6 +173,7 @@
         <div style="font-size:12px;color:var(--ut-ink3);margin-top:7px;display:flex;gap:10px;flex-wrap:wrap;">
           <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
           {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
+          {% include "_clue.html" %}
         </div>
         <form method="post" action="/posts/{{ p.post_id }}/visibility" style="margin-top:10px;">
           <input type="hidden" name="back" value="/u/{{ a.user_ref }}">

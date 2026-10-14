@@ -257,8 +257,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-taupe
 .rail-note{font-size:12px;color:var(--ut-ink3);line-height:1.6;background:var(--ut-panel2)}
 .rail-note b{color:var(--ut-ink2)}
 .rail-note p{margin:6px 0 0}
-.rail-tour{font-size:12px;color:var(--ut-ink3)}
-.rail-tour button{background:transparent;color:var(--ut-sea);padding:0;height:auto;font-size:12px;font-weight:700}
 
 .rail-pado{border-color:#BFD6D3;background:linear-gradient(160deg,#FFFDFA,#EEF4F3)}
 .rail-pado-body{display:flex;gap:14px;align-items:center}
@@ -290,9 +288,6 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ut-taupe
 .tick{display:inline-block;animation:tick .5s var(--ease)}
 @keyframes tick{from{opacity:0;transform:translateY(6px)}}
 
-.welcome-overlay{position:fixed;inset:0;z-index:40;background:rgba(62,58,54,.5);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:fadein .25s}
-.welcome-overlay[hidden]{display:none}
-body.welcome-open{overflow:hidden}
 @keyframes fadein{from{opacity:0}}
 .welcome{position:relative;min-width:0;background:radial-gradient(circle at calc(100% + 60px) calc(100% + 80px),rgba(216,137,111,.14) 0 220px,transparent 221px),linear-gradient(135deg,#FFFDFA,#F6EEE5 70%,#F3EAE1);border:1px solid var(--ut-line);
   border-radius:20px;padding:26px 28px;width:min(760px,100%);max-height:calc(100vh - 40px);overflow-y:auto;box-shadow:0 30px 80px -30px rgba(0,0,0,.4);animation:popin .3s var(--ease)}
@@ -303,14 +298,12 @@ body.welcome-open{overflow:hidden}
 .welcome h2 b{color:var(--ut-sea);font-weight:700}
 .welcome p{margin:0 0 12px;font-size:13.5px;color:var(--ut-ink2);line-height:1.7}
 /* 글자 크기가 다른 문단마다 max-width 를 em 으로 주면 줄바꿈 위치가 제각각이 된다 — 카드 폭에 맡긴다 (9/16) */
-.welcome h2,.welcome p,.welcome li,.welcome .tour-line{word-break:keep-all;overflow-wrap:break-word}
+.welcome h2,.welcome p,.welcome li{word-break:keep-all;overflow-wrap:break-word}
 .welcome .how-lab{font-size:11.5px;color:var(--ut-earth-ink);font-weight:700;letter-spacing:.06em;margin:2px 0 6px}
 .welcome ol{margin:0 0 14px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .welcome li{background:rgba(255,253,250,.9);border:1px solid var(--ut-line);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--ut-ink2);line-height:1.55}
 .welcome li b{display:block;color:var(--ut-ink);font-size:13.5px;margin-bottom:2px}
 .welcome li .k{font-variant-numeric:tabular-nums;color:var(--ut-sea);font-weight:700}
-.welcome .tour-line{font-size:12px;color:var(--ut-ink3);margin:0 0 14px;line-height:1.6}
-.welcome .tour-line .k{font-variant-numeric:tabular-nums;color:var(--ut-sea);font-weight:700}
 .welcome .bt{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative}
 .welcome .bt .start{background:var(--ut-earth);color:#fff;border-radius:12px;height:44px;padding:0 18px;font-size:14px;font-weight:700}
 .welcome .bt .start:hover{background:#C97A5F}
@@ -318,38 +311,7 @@ body.welcome-open{overflow:hidden}
 .welcome .bt .dismiss:hover{border-color:var(--ut-taupe,#A89B91);color:var(--ut-ink)}
 .welcome .bt .note{font-size:11.5px;color:var(--ut-ink3);margin-left:auto}
 
-.tour-hole{position:fixed;z-index:18;pointer-events:none;border-radius:12px;opacity:0;transition:top .35s var(--ease),left .35s var(--ease),width .35s var(--ease),height .35s var(--ease),opacity .3s;box-shadow:0 0 0 9999px rgba(62,58,54,.42)}
-.tour-hole.on{opacity:1}
-.welcome-bar{display:flex;align-items:center;gap:12px;font-size:13.5px;background:var(--ut-panel);border:1px solid var(--ut-earth);border-radius:14px;padding:10px 16px;margin-bottom:16px;box-shadow:var(--ut-shadow)}
-.welcome-bar .n{font-weight:700;color:var(--ut-earth-ink)}
-.welcome-bar .p{font-variant-numeric:tabular-nums;background:var(--ut-earth);color:#fff;border-radius:99px;padding:1px 10px;font-size:12px}
-.welcome-bar .t{color:var(--ut-ink2)}
-.welcome-bar button{margin-left:auto;background:transparent;color:var(--ut-ink3);font-weight:400;height:32px;padding:0 10px;font-size:12.5px;border:1px solid var(--ut-line);border-radius:8px}
-.tour-spot{position:relative;z-index:31;box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-earth),0 0 0 14px rgba(216,137,111,.18)!important;border-radius:10px;animation:spot 1.6s ease-in-out infinite}
-@keyframes spot{50%{box-shadow:0 0 0 3px var(--ut-panel),0 0 0 6px var(--ut-earth),0 0 0 22px rgba(216,137,111,0)}}
-.tour-mark{position:absolute;z-index:19;width:min(340px,calc(100vw - 24px));background:var(--ut-ink);color:#fff;border-radius:14px;padding:13px 15px 11px;box-shadow:0 18px 40px -14px rgba(0,0,0,.5);animation:popin .22s var(--ease);font-size:13px;line-height:1.55}
-.tour-mark::before{content:"";position:absolute;left:22px;top:-7px;width:14px;height:14px;background:var(--ut-ink);transform:rotate(45deg);border-radius:2px}
-.tour-mark.above::before{top:auto;bottom:-7px}
-.tour-mark.floating{position:fixed;left:50%!important;top:auto!important;bottom:90px;transform:translateX(-50%)}
-.tour-mark.floating::before{display:none}
-.tour-mark .tt{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.tour-mark .tt .ti{flex:1;min-width:0}
-.tour-mark .fold{background:rgba(255,255,255,.12);color:#fff;border-radius:6px;width:24px;height:24px;padding:0;font-size:13px;line-height:1;flex:0 0 24px;justify-content:center}
-.tour-mark .fold:hover{background:rgba(255,255,255,.24)}
-.tour-mark.folded{width:auto;max-width:min(340px,calc(100vw - 24px));padding:7px 10px 7px 12px}
-.tour-mark.folded .tt{margin:0;font-size:13px}
-.tour-mark.folded .tt .ti{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tour-mark.folded .tx,.tour-mark.folded .bt{display:none}
-.tour-mark .tt .n{font-variant-numeric:tabular-nums;font-size:11px;font-weight:500;background:rgba(255,255,255,.14);border-radius:99px;padding:1px 8px}
-.tour-mark .tx{color:rgba(255,255,255,.85)}
-.tour-mark .bt{display:flex;gap:8px;align-items:center;margin-top:10px}
-.tour-mark .bt .go{margin-left:auto;background:var(--ut-earth);color:#fff;border-radius:8px;height:32px;padding:0 14px;font-size:12.5px;font-weight:700}
-.tour-mark .bt .skip{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.28);border-radius:8px;height:30px;padding:0 11px;font-size:12px;font-weight:600;white-space:nowrap}
-.tour-mark .bt .skip:hover{background:rgba(255,255,255,.2)}
-.tour-mark .bt .hint{margin-left:auto;font-size:12px;color:#F6D3C4;text-align:right}
-.tour-mark.done{background:var(--ut-sea)}
 @keyframes popin{0%{opacity:0;transform:translateY(-10px) scale(.96)}60%{transform:translateY(3px) scale(1.01)}100%{opacity:1;transform:none}}
-.tour-mark.floating{animation:none}
 
 .ut-tabs{display:none}
 
@@ -374,9 +336,9 @@ body.welcome-open{overflow:hidden}
   .ut-logo .wm{font-size:20px}
   .welcome{min-width:0;padding:20px 18px}
   .welcome h2 br,.welcome p br{display:none}
-  .welcome h2,.welcome p,.welcome li,.welcome .tour-line{overflow-wrap:anywhere;word-break:keep-all}
+  .welcome h2,.welcome p,.welcome li{overflow-wrap:anywhere;word-break:keep-all}
   .welcome .bt .note{margin-left:0}
-  .ut-shell{grid-template-columns:minmax(0,1fr);padding:0 16px}
+  .ut-shell{grid-template-columns:minmax(0,1fr);padding:0 16px;z-index:auto}   /* 쌓임 맥락을 풀어야 서랍(.ut-side 45)이 스크림(44) 위로 올라온다 */
   .ut-side{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);z-index:45;background:var(--ut-bg);transform:translateX(-100%);transition:transform .25s var(--ease);box-shadow:0 0 60px rgba(0,0,0,.25)}
   .ut-side.open{transform:none}
   .ut-side-in{position:static;max-height:100vh;padding:16px;margin:0}
@@ -393,7 +355,6 @@ body.welcome-open{overflow:hidden}
   .ut-pado a.go{width:100%;justify-content:center}
   .welcome ol{grid-template-columns:1fr}
   .welcome h2{font-size:18px}
-  .tour-mark.floating{bottom:96px}
   .ut-foot{padding:0 16px}
   .ut-tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(248,243,237,.95);backdrop-filter:blur(10px);border-top:1px solid var(--ut-line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
   .ut-tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ut-ink3);padding:4px 10px;border-radius:12px;min-width:64px;transition:color .15s,background .15s}
@@ -422,7 +383,7 @@ body.welcome-open{overflow:hidden}
 .ut-shell.right-only{grid-template-columns:minmax(0,1fr) 320px;max-width:1100px}
 @media (max-width:1199px){
   .ut-shell.three{grid-template-columns:var(--side-w) minmax(0,1fr)}
-  .ut-rail-r{display:none}
+  .ut-shell.three .ut-rail-r{display:none}   /* 글쓰기(right-only)의 오른쪽 패널은 999px 까지 그대로 둔다 */
 }
 @media (max-width:999px){
   .ut-shell.right-only{grid-template-columns:minmax(0,1fr)}
@@ -445,6 +406,63 @@ body.welcome-open{overflow:hidden}
 .ut-busy span{font-size:12.5px;color:var(--ut-ink3);line-height:1.5}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* 처리방침 — 바닥글은 글이 103편이라 도달하지 못한다. 첫 화면에서 보이는 자리에 둔다 (9/17) */
-.rail-tour .pp-link{display:inline-block;margin-top:10px;padding-top:10px;border-top:1px solid var(--ut-line);width:100%;font-size:12.5px;font-weight:600;color:var(--ut-earth-ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
-.rail-tour .pp-link::before{content:"🛡 ";text-decoration:none;font-weight:400}
-.rail-tour .pp-link:hover{color:var(--ut-earth);text-decoration-thickness:2px}
+
+/* ── 파도풀 입구 · 소개 창 · 조치 띠 (10/14) ── */
+.ut-menu[hidden]{display:none!important}
+.ut-nav .intro-btn{height:40px;padding:0 12px;border-radius:12px;background:transparent;border:1px solid var(--ut-line);color:var(--ut-ink2);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer}
+.ut-nav .intro-btn:hover{background:var(--ut-panel2);color:var(--ut-ink)}
+.ut-nav a.chk{color:var(--ut-sea);font-weight:700;border:1px solid var(--ut-sea);background:var(--ut-sea-soft)}
+.ut-nav a.chk:hover{background:#D3E7E4}
+.ut-top-in .ut-nav{margin-left:auto}
+/* 소개 창 — 네이티브 <dialog>. 모양은 .welcome 을 그대로 쓴다 */
+dialog.intro{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 40px);margin:auto;color:var(--ut-ink)}
+dialog.intro::backdrop{background:rgba(62,58,54,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+dialog.intro h2{font-size:19px}
+dialog.intro .bt{margin-top:16px}
+dialog.intro .bt .start{display:inline-flex;align-items:center;text-decoration:none}
+dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
+/* 홈 피드 맨 위 한 줄 · 조치 뒤 안내 띠 */
+.pado-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--ut-sea-soft);border:1px solid var(--ut-sea);border-radius:14px;padding:10px 14px;margin:0 0 16px;font-size:13.5px;color:var(--ut-ink2);line-height:1.55}
+.pado-strip[hidden]{display:none}
+.pado-strip .tx{flex:1 1 240px;min-width:0;word-break:keep-all}
+.pado-strip .tx b{color:var(--ut-sea)}
+.pado-strip a.go{background:var(--ut-sea);color:#fff;border-radius:10px;padding:7px 14px;font-weight:700;font-size:13px;white-space:nowrap;text-decoration:none}
+.pado-strip a.go:hover{background:#285F5B;text-decoration:none}
+.pado-strip .more{background:transparent;border:0;padding:0;height:auto;font:inherit;font-size:12.5px;color:var(--ut-sea);text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
+.pado-strip.done{background:var(--ut-leaf-soft,#E6F0E3);border-color:var(--ut-leaf,#5E7F52)}
+.pado-strip.done .tx b{color:var(--ut-ink)}
+.ut-mobile-only{display:none}
+@media (max-width:767px){
+  .ut-nav .intro-btn{height:36px;padding:0 10px;font-size:12px}
+  .ut-mobile-only{display:block}
+  .pado-strip.ut-mobile-only{display:flex}
+  .pado-strip{padding:10px 12px;font-size:13px}
+}
+
+/* ── 내 계정 · 바꾼 것 (W-ACCT) ── */
+.ut-nav a.me-av{position:relative;font-size:15px;font-weight:700;color:var(--ut-ink);border-color:transparent;text-decoration:none}
+.ut-nav a.me-av .me-n{position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--ut-earth);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 0 0 2px var(--ut-panel)}
+.me-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--ut-sea);background:var(--ut-sea-soft);border:1px solid var(--ut-sea);border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.me-pick{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--ut-ink3)}
+.me-pick button{font-size:12px;padding:6px 12px}
+.changes{border:1px solid var(--ut-earth);background:var(--ut-panel)}
+.changes .ch-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.changes .ch-h h2{font-size:15px;margin:0}
+.changes ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.changes li{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--ut-panel2);line-height:1.45}
+.changes li .t{color:var(--ut-ink3);font-variant-numeric:tabular-nums;flex:none}
+.changes li .w{flex:1;min-width:0;word-break:keep-all}
+.changes li .w a{color:var(--ut-ink);font-weight:600}
+.changes li form{flex:none;margin:0}
+.changes button{font-size:12px;padding:6px 12px;white-space:nowrap}
+.changes .note{font-size:12px;color:var(--ut-ink3);margin:8px 0 0}
+.me-pick button[hidden]{display:none}
+
+/* ── 위험 배지 「📍 단서 N곳」 — 내 계정 글만 (W-BADGE) ── */
+.clue-badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;color:var(--ut-earth-ink);background:var(--ut-earth-soft);border:1px solid var(--ut-earth);border-radius:99px;padding:2px 9px;white-space:nowrap;text-decoration:none;line-height:1.5}
+.clue-badge:hover{background:var(--ut-earth);color:#fff;text-decoration:none}
+.card-author .clue-badge{margin-left:auto}
+.card-author .clue-badge + .badge-private{margin-left:6px}
+.changes .pair{display:inline-block;font-size:11px;font-weight:600;color:var(--ut-sea);background:var(--ut-sea-soft);border-radius:99px;padding:0 7px;margin-left:4px}
+.pado-strip button.go{background:var(--ut-sea);color:#fff;border:0;border-radius:10px;padding:7px 14px;font:inherit;font-weight:700;font-size:13px;white-space:nowrap;cursor:pointer;height:auto}
+.pado-strip button.go:hover{background:#285F5B}

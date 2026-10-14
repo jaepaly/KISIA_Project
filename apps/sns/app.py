@@ -171,6 +171,7 @@ def index():
                 caps.setdefault(r["post_id"], []).append(r["caption"])
             for p in posts:
                 p["photos"] = caps.get(p["post_id"], [])
+            _attach_clues(posts)
         next_url = None
         if has_more:
             next_url = f"/?page={page + 1}" + (f"&author={author_id}" if author_id else "")
@@ -204,8 +205,17 @@ def post(post_id: str):
     photos = db().execute(
         "SELECT idx, caption FROM photos WHERE post_id = ? ORDER BY idx",
         (post_id,)).fetchall()
+    # 고쳐 쓰기로 올린 글이면 원래 글 — 원래 글이 아직 공개면 「원래 글 비공개로」 띠 (같은 묶음으로 기록)
+    rw = None
     try:
-        return render_template("post.html", p=p, photos=photos)
+        rw = db().execute(
+            "SELECT l.id, l.post_id, o.visibility, o.title FROM action_log l JOIN posts o ON o.post_id = l.post_id"
+            " WHERE l.kind = 'rewrite' AND l.new_post_id = ? AND l.undone_at IS NULL ORDER BY l.id DESC LIMIT 1",
+            (post_id,)).fetchone()
+    except sqlite3.Error:
+        pass
+    try:
+        return render_template("post.html", p=p, photos=photos, rw=rw)
     except sqlite3.OperationalError:
         return _todo("글 본문", "§4")
 
@@ -257,8 +267,13 @@ def create_post():
             "INSERT INTO photos(post_id, idx, caption) VALUES (?,?,?)",
             (post_id, idx, caption))
 
+    # 글 화면 「이 글을 옮겨 고쳐 쓰기」로 온 새 글이면 — 원래 글과 묶어 이력에 남긴다 (되돌리면 새 글을 지운다)
+    src = f.get("from_post") or ""
+    if src and db().execute("SELECT 1 FROM posts WHERE post_id = ? AND author_id = ?", (src, author_id)).fetchone():
+        _log("rewrite", author_id, src, new_post_id=post_id)
+
     db().commit()
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/posts/{post_id}?done=posted")
 
 
 @app.post("/posts/<post_id>/visibility")
@@ -276,12 +291,23 @@ def toggle_visibility(post_id: str):
     if row is None:
         abort(404)
     new_v = "private" if row["visibility"] == "public" else "public"
+    # 고쳐 쓴 글 화면의 「원래 글 비공개로」 — 그 고쳐 쓰기(pair)와 한 묶음으로 남긴다. 따로 누른 비공개는 묶지 않는다 (S1)
+    group = None
+    pair = request.form.get("pair", type=int)
+    if pair and new_v == "private" and db().execute(
+            "SELECT 1 FROM action_log WHERE id = ? AND kind = 'rewrite' AND post_id = ? AND undone_at IS NULL",
+            (pair, post_id)).fetchone():
+        group = pair
     db().execute(
         "UPDATE posts SET visibility = ? WHERE post_id = ?", (new_v, post_id))
+    _log(new_v, row["author_id"], post_id, row["visibility"], new_v, group_id=group)
     db().commit()
 
-    back = request.form.get("back") or f"/posts/{post_id}"
-    return redirect(back)
+    # 돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단) · ?done= 은 화면 맨 위 「다시 점검」 띠
+    back = request.form.get("back") or ""
+    if not back.startswith("/") or back.startswith("//"):
+        back = f"/posts/{post_id}"
+    return redirect(f"{back}{'&' if '?' in back else '?'}done={new_v}")
 
 
 @app.post("/u/<user_ref>/edit")
@@ -305,14 +331,249 @@ def edit_profile(user_ref: str):
 def edit_post_meta(post_id: str):
     """활동 메타 관리 — geo_tag 수정. W6."""
     row = db().execute(
-        "SELECT author_id FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+        "SELECT author_id, geo_tag FROM posts WHERE post_id = ?", (post_id,)).fetchone()
     if row is None:
         abort(404)
     geo_tag = request.form.get("geo_tag", "").strip() or None
     db().execute(
         "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
+    if geo_tag != row["geo_tag"]:
+        _log("geo", row["author_id"], post_id, row["geo_tag"], geo_tag)
     db().commit()
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/posts/{post_id}?done=geo")
+
+
+# ── 내 계정 · 조치 이력 — 방문자 체험용. 세션 사본의 me · action_log 표 (schema.sql 끝) ──
+# 고르지 않아도 모든 화면이 지금처럼 돈다. 이력은 export 에 섞지 않는다 — 분석기는 글의 지금 상태만 본다.
+def _now() -> str:
+    return datetime.now(KST).isoformat(timespec="seconds")
+
+
+def _log(kind: str, author_id: str, post_id: str, before: str | None = None,
+         after: str | None = None, new_post_id: str | None = None, group_id: int | None = None) -> None:
+    db().execute(
+        "INSERT INTO action_log(at, kind, author_id, post_id, before_val, after_val, new_post_id, group_id)"
+        " VALUES (?,?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id, group_id))
+
+
+def _me() -> dict | None:
+    r = db().execute(
+        "SELECT a.author_id, a.user_ref, a.nickname FROM me JOIN authors a ON a.author_id = me.author_id"
+        " WHERE me.id = 1").fetchone()
+    return dict(r) if r else None
+
+
+def _changes(author_id: str | None = None) -> list[dict]:
+    """살아 있는(되돌리지 않은) 조치 — 최근 것부터. 글 제목을 붙여 화면에 그대로 쓴다."""
+    q = ("SELECT l.*, p.title AS title, p.body AS body FROM action_log l"
+         " LEFT JOIN posts p ON p.post_id = l.post_id WHERE l.undone_at IS NULL")
+    args: list = []
+    if author_id:
+        q += " AND l.author_id = ?"
+        args.append(author_id)
+    out = []
+    for r in db().execute(q + " ORDER BY l.id DESC", args).fetchall():
+        d = dict(r)
+        d["label"] = d["title"] or (d["body"] or "").replace("\n", " ")[:24] or "(지워진 글)"
+        d["time"] = d["at"][11:16]
+        out.append(d)
+    # 한 묶음 — 고쳐 쓴 글 화면에서 누른 「원래 글 비공개로」만 그 고쳐 쓰기에 묶인다(group_id). 화면에 짝 표시
+    # 사슬 — 고쳐 쓴 글을 다시 고쳐 쓴 항목이 있으면 앞 항목을 되돌릴 때 뒤 항목도 함께 되돌린다 (_undo)
+    active = {d["id"] for d in out}
+    grouped = {d["group_id"] for d in out if d.get("group_id") in active}
+    rewrites_of = {d["post_id"] for d in out if d["kind"] == "rewrite"}
+    for d in out:
+        d["paired"] = (d["kind"] == "private" and d.get("group_id") in active) or \
+                      (d["kind"] == "rewrite" and d["id"] in grouped)
+        d["chained"] = d["kind"] == "rewrite" and d["new_post_id"] in rewrites_of
+    return out
+
+
+_FIELD = {"private": "visibility", "public": "visibility", "geo": "geo_tag"}
+
+
+def _undo(entry, cascade: bool = True) -> None:
+    """조치 하나를 되돌린다. 같은 글 같은 칸의 그 뒤 조치도 함께 닫는다 — 값이 이 조치 전으로 돌아가니까.
+
+    cascade=False 는 고쳐 쓰기 묶음을 따라 되돌릴 때다 — 그 뒤에 같은 칸을 따로 바꾼 조치가 살아 있으면
+    이 조치의 효과는 이미 덮였으므로 값은 두고 이 항목만 닫는다 (뒤의 독립 조치를 취소하지 않는다 · S1)."""
+    now, c = _now(), db()
+    if entry["kind"] == "rewrite":
+        nid = entry["new_post_id"]
+        # ① 사슬 — 새 글(B)을 다시 고쳐 쓴 항목(B→C)부터 끝에서 되돌린다. C 가 이력 없이 남지 않게 (B1)
+        for dep in c.execute("SELECT * FROM action_log WHERE kind = 'rewrite' AND post_id = ? AND undone_at IS NULL"
+                             " ORDER BY id DESC", (nid,)).fetchall():
+            _undo(dep)
+        # ② 묶음 — 이 고쳐 쓰기 화면에서 누른 「원래 글 비공개로」만 함께 되돌린다. 따로 한 비공개는 그대로 (S1)
+        for g in c.execute("SELECT * FROM action_log WHERE group_id = ? AND undone_at IS NULL ORDER BY id",
+                           (entry["id"],)).fetchall():
+            if c.execute("SELECT undone_at FROM action_log WHERE id = ?", (g["id"],)).fetchone()["undone_at"] is None:
+                _undo(g, cascade=False)
+        # ③ 새 글을 지우고, 새 글에 했던 조치(비공개·위치)는 글이 없어졌으니 같이 닫는다
+        c.execute("DELETE FROM photos WHERE post_id = ?", (nid,))
+        c.execute("DELETE FROM posts WHERE post_id = ?", (nid,))
+        c.execute("UPDATE action_log SET undone_at = ? WHERE (post_id = ? OR id = ?) AND undone_at IS NULL",
+                  (now, nid, entry["id"]))
+        return
+    field = _FIELD[entry["kind"]]
+    kinds = ("private", "public") if field == "visibility" else ("geo",)
+    kind_in = f"kind IN ({','.join('?' * len(kinds))})"
+    nxt = None if cascade else c.execute(
+        f"SELECT id FROM action_log WHERE post_id = ? AND id > ? AND undone_at IS NULL AND {kind_in} ORDER BY id LIMIT 1",
+        (entry["post_id"], entry["id"], *kinds)).fetchone()
+    if nxt:
+        # 이 조치를 이력에서 빼면 바로 다음 조치의 「바꾸기 전 값」은 이 조치 전의 값이 된다 — 나중에 그것을 되돌려도 원래로 간다
+        c.execute("UPDATE action_log SET before_val = ? WHERE id = ?", (entry["before_val"], nxt["id"]))
+        c.execute("UPDATE action_log SET undone_at = ? WHERE id = ?", (now, entry["id"]))
+        return
+    c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
+    c.execute(
+        f"UPDATE action_log SET undone_at = ? WHERE post_id = ? AND id >= ? AND undone_at IS NULL"
+        f" AND kind IN ({','.join('?' * len(kinds))})", (now, entry["post_id"], entry["id"], *kinds))
+
+
+def _back(default: str) -> str:
+    """돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단)."""
+    back = request.form.get("back") or ""
+    return back if back.startswith("/") and not back.startswith("//") else default
+
+
+def _with_done(url: str, done: str) -> str:
+    return f"{url}{'&' if '?' in url else '?'}done={done}"
+
+
+@app.context_processor
+def _inject_me() -> dict:
+    """상단바 「내 계정」 — 고른 사람과 그 사람이 바꾼 것 수. 표·DB 가 아직 없으면 빈 값 (고르지 않아도 다 돈다)."""
+    try:
+        me = _me()
+        n = len(_changes(me["author_id"])) if me else 0
+    except sqlite3.Error:
+        me, n = None, 0
+    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE}
+
+
+@app.post("/me")
+def set_me():
+    """이 사람으로 체험하기 — author_id 가 비어 있으면 「내 계정」을 푼다."""
+    aid = (request.form.get("author_id") or "").strip()
+    if aid:
+        if db().execute("SELECT 1 FROM authors WHERE author_id = ?", (aid,)).fetchone() is None:
+            abort(404)
+        db().execute("INSERT INTO me(id, author_id, chosen_at) VALUES (1, ?, ?)"
+                     " ON CONFLICT(id) DO UPDATE SET author_id = excluded.author_id, chosen_at = excluded.chosen_at",
+                     (aid, _now()))
+    else:
+        db().execute("DELETE FROM me")
+    db().commit()
+    if request.headers.get("X-Requested-With") == "fetch":   # 글쓰기 화면 — 쓰던 글을 날리지 않게 새로고침 없이
+        return jsonify({"me": _me()})
+    return redirect(_with_done(_back("/"), "me" if aid else "me_off"))
+
+
+@app.post("/changes/<int:log_id>/undo")
+def undo_change(log_id: int):
+    e = db().execute("SELECT * FROM action_log WHERE id = ? AND undone_at IS NULL", (log_id,)).fetchone()
+    if e is None:
+        abort(404)
+    _undo(e)
+    db().commit()
+    return redirect(_with_done(_back("/"), "undo"))
+
+
+@app.post("/changes/undo-all")
+def undo_all():
+    """모두 되돌리기 — 최근 것부터 차례로. author_id 를 주면 그 계정만."""
+    aid = request.form.get("author_id") or None
+    q, args = "SELECT * FROM action_log WHERE undone_at IS NULL", []
+    if aid:
+        q += " AND author_id = ?"
+        args.append(aid)
+    for row in db().execute(q + " ORDER BY id DESC", args).fetchall():
+        # 앞서 되돌린 조치가 이 줄을 이미 닫았을 수 있다 (같은 글 같은 칸)
+        if db().execute("SELECT undone_at FROM action_log WHERE id = ?", (row["id"],)).fetchone()["undone_at"] is None:
+            _undo(row)
+    db().commit()
+    return redirect(_with_done(_back("/"), "undo"))
+
+
+# ── 위험 배지 「📍 단서 N곳」 — 내 계정 글에만. 서버 부담이 핵심 제약이다(글 하나 점검 ≈ 2초 · 운영 서버 하나) ──
+# Veilo 는 점검하지 않는다. 브라우저(clues.js)가 글쓰기 실시간 점검과 같은 글 점검 API 로 센 값을 여기 저장하고,
+# 다음부터는 저장된 값으로 배지만 그린다. 본문이 바뀌면(해시가 다르면) 무효라 다시 센다.
+CLUE_PER_PAGE = 5   # 한 화면에서 브라우저가 새로 세는 글 수 상한 — clues.js 가 이 값을 받는다
+
+
+def _body_hash(body: str | None) -> str:
+    import hashlib
+    return hashlib.sha256((body or "").encode("utf-8")).hexdigest()[:16]
+
+
+def _attach_clues(posts: list[dict]) -> None:
+    """내 계정의 공개 글에 p['clues'](저장된 단서 수) 또는 p['clue_need'](아직 안 셈)를 붙인다. 내 계정이 없으면 아무것도 안 한다."""
+    try:
+        me = _me()
+    except sqlite3.Error:
+        return
+    mine = [p for p in posts if me and p["author_id"] == me["author_id"] and p["visibility"] == "public"]
+    if not mine:
+        return
+    ids = [p["post_id"] for p in mine]
+    cache = {r["post_id"]: r for r in db().execute(
+        f"SELECT * FROM clue_cache WHERE post_id IN ({','.join('?' * len(ids))})", ids)}
+    for p in mine:
+        c = cache.get(p["post_id"])
+        if c is not None and c["body_hash"] == _body_hash(p["body"]):
+            p["clues"] = c["n_clues"]
+        else:
+            p["clue_need"] = True
+
+
+@app.post("/api/clues/<post_id>")
+def save_clues(post_id: str):
+    """브라우저가 센 단서 수를 저장한다 — 내 계정 글만. 해시는 서버가 지금 본문으로 계산한다."""
+    me = _me()
+    row = db().execute("SELECT author_id, body FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+    if me is None or row is None or row["author_id"] != me["author_id"]:
+        return jsonify({"error": "not my post"}), 403
+    n = (request.get_json(silent=True) or {}).get("n")
+    if not isinstance(n, int) or isinstance(n, bool) or not 0 <= n <= 500:
+        return jsonify({"error": "bad n"}), 400
+    db().execute("INSERT INTO clue_cache(post_id, body_hash, n_clues, at) VALUES (?,?,?,?)"
+                 " ON CONFLICT(post_id) DO UPDATE SET body_hash = excluded.body_hash,"
+                 " n_clues = excluded.n_clues, at = excluded.at",
+                 (post_id, _body_hash(row["body"]), n, _now()))
+    db().commit()
+    return jsonify({"ok": True, "n": n})
+
+
+@app.get("/api/me")
+def api_me():
+    """파도풀 화면 상단바의 내 계정 아바타 — 세션의 내 계정. 없으면 {"me": null}.
+    export 와 같은 규칙으로 플랫폼 내부 값(author_id)은 내보내지 않는다."""
+    try:
+        me = _me()
+        n = len(_changes(me["author_id"])) if me else 0
+    except sqlite3.Error:
+        me = None
+    if me is None:
+        return jsonify({"me": None})
+    return jsonify({"me": {"user_ref": me["user_ref"], "nickname": me["nickname"],
+                           "hue": _hue(me["author_id"]), "changes": n}})
+
+
+@app.after_request
+def _cors_api_me(resp):
+    """로컬 분리 실행(파도풀 :8000 · Veilo :3000)에서 파도풀 화면이 /api/me 를 쿠키와 함께 부를 수 있게 —
+    PADO_BASE 의 출처 하나만 허용한다. 운영은 같은 도메인(/check)이라 필요 없다."""
+    if request.path == "/api/me" and PADO_BASE.startswith(("http://", "https://")):
+        from urllib.parse import urlsplit
+        o = urlsplit(PADO_BASE)
+        origin = f"{o.scheme}://{o.netloc}"
+        if request.headers.get("Origin") == origin:
+            resp.headers["Access-Control-Allow-Origin"] = origin
+            resp.headers["Access-Control-Allow-Credentials"] = "true"
+            resp.headers["Vary"] = "Origin"
+    return resp
 
 
 @app.get("/u/<user_ref>")
@@ -321,16 +582,18 @@ def profile(user_ref: str):
         "SELECT * FROM authors WHERE user_ref = ?", (user_ref,)).fetchone()
     if a is None:
         abort(404)
-    posts = db().execute(
+    posts = [dict(r) for r in db().execute(
         "SELECT * FROM posts WHERE author_id = ? ORDER BY created_at DESC",
-        (a["author_id"],)).fetchall()
+        (a["author_id"],)).fetchall()]
+    _attach_clues(posts)
     raw = db().execute(
         "SELECT CAST(substr(created_at, 12, 2) AS INTEGER) AS h, COUNT(*) AS cnt"
         " FROM posts WHERE author_id = ? GROUP BY h ORDER BY h",
         (a["author_id"],)).fetchall()
     hour_dist = {r["h"]: r["cnt"] for r in raw}
     try:
-        return render_template("profile.html", a=a, posts=posts, hour_dist=hour_dist)
+        return render_template("profile.html", a=a, posts=posts, hour_dist=hour_dist,
+                               changes=_changes(a["author_id"]), today=datetime.now(KST).date().isoformat())
     except sqlite3.OperationalError:
         return _todo("프로필", "§4")
 
@@ -392,6 +655,8 @@ def reset_author(user_ref: str):
         c.execute("INSERT INTO posts SELECT * FROM seed.posts WHERE author_id = ?", (aid,))
         c.execute("INSERT INTO photos SELECT * FROM seed.photos"
                   " WHERE post_id IN (SELECT post_id FROM seed.posts WHERE author_id = ?)", (aid,))
+        # 처음 상태로 돌아갔으니 이 계정의 조치 이력도 모두 되돌린 것으로
+        c.execute("UPDATE action_log SET undone_at = ? WHERE author_id = ? AND undone_at IS NULL", (_now(), aid))
         c.commit()
     except Exception:
         c.rollback()
@@ -496,6 +761,14 @@ def export(user_ref: str):
             },
         } for r in rows],
     })
+
+
+@app.errorhandler(404)
+def not_found(_):
+    """영어 기본 화면 대신 Veilo 꾸밈의 한국어 안내 (분석기 API 404 는 JSON 그대로 — export 는 직접 jsonify 한다)."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "not found"}), 404
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":

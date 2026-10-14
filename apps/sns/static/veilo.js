@@ -134,13 +134,13 @@
           w.classList.remove("loading"); sub && sub.classList.remove("shimmer");
           if (num) { num.dataset.from = "0"; countTo(num, d.k, { from: 0, dur: 1400 }); }
           if (lvl) { lvl.textContent = d.label + ", 공개 글 " + d.n_posts + "편"; lvl.className = "lvl " + d.css; }
-          if (sub) sub.innerHTML = "이름·전화번호 <b>" + d.n_direct + "건</b>인데 나일 수 있는 사람이 <b>" + fmt(d.k) + "명</b>까지 줄어요. 조치 " + d.n_actions + "개를 다 하면 <b>" + fmt(d.projected_k) + "명</b>이 돼요.";
+          if (sub) sub.innerHTML = "이름과 전화번호 <b>" + d.n_direct + "건</b> / 같은 조건의 사람 약 <b>" + fmt(d.k) + "명</b> / 추천 방법 " + d.n_actions + "개를 모두 적용하면 약 <b>" + fmt(d.projected_k) + "명</b>";
           if (ring) drawRing(ring, d.risk, d.css);
         })
         .catch(() => {
           w.classList.remove("loading"); sub && sub.classList.remove("shimmer");
           if (num) num.textContent = "—";
-          if (lvl) { lvl.textContent = "파도풀에 연결하지 못했어요"; lvl.className = "lvl"; }
+          if (lvl) { lvl.textContent = "파도풀에 연결하지 못했습니다."; lvl.className = "lvl"; }
         });
     });
   }
@@ -161,13 +161,13 @@
     }));
     $$(".ut-follow").forEach((btn) => btn.addEventListener("click", () => {
       const on = btn.classList.toggle("done");
-      btn.textContent = on ? "✓ 이웃" : "+ 이웃추가";
+      btn.textContent = on ? "✓ 이웃" : "+ 이웃 추가";
     }));
     // 점검 중 표시 — 파도풀 호출은 0.7초(규칙)에서 3~10초(Claude 켬)까지 걸린다. 누르자마자 가운데에 원이 돌고 글이 뜬다
     const busy = (msg) => {
       if ($(".ut-busy")) return;
       const o = document.createElement("div"); o.className = "ut-busy";
-      o.innerHTML = '<div class="box"><div class="spin"></div><b>' + (msg || "파도풀이 세는 중이에요") + '</b><span>공개 글을 모아 나일 수 있는 사람 수를 세고, 표현마다 어울리는 후보를 만들어요</span></div>';
+      o.innerHTML = '<div class="box"><div class="spin"></div><b>' + (msg || "파도풀로 점검 중…") + '</b><span>공개 글의 개인정보 단서를 찾고 있습니다.</span></div>';
       document.body.appendChild(o);
     };
     const unbusy = () => { const o = $(".ut-busy"); o && o.remove(); };
@@ -195,7 +195,7 @@
       } catch (err) { took = 0; }
       const left = Math.round(MIN_CHECK_MS - took);
       if (took > 0 && left > 120) {
-        busy("파도풀이 세는 중이에요");
+        busy("파도풀로 점검 중…");
         setTimeout(() => { const o = $(".ut-busy"); o && o.remove(); }, left);
       }
     }
@@ -221,7 +221,7 @@
   }
 
   // ── 점검 화면의 네 걸음(탭) — 한 번에 한 카드만. 해시로 어디든 바로 갈 수 있다 ──────────
-  const TAB_NAMES = { sum: "요약", funnel: "어떻게 좁혀지나", evidence: "근거 문장", actions: "이렇게 하면 넓어져요" };
+  const TAB_NAMES = { sum: "요약", funnel: "어떻게 좁혀지나", evidence: "근거 문장", actions: "위험 줄이기" };
   function tabList() { return $$(".pado-tabs a[data-tab]").map((a) => a.dataset.tab); }
   function showTab(name, opts) {
     opts = opts || {};
@@ -233,9 +233,6 @@
     });
     const card = $('.card[data-tab="' + name + '"]');
     if (card) { $$(".rv", card).forEach(reveal); if (card.classList.contains("rv")) reveal(card); }
-    // 투어 말풍선 — 가리키던 곳이 다른 탭으로 숨으면 아래에 띄우고, 다시 보이면 제자리로
-    const tm = $(".tour-mark:not(.done)"), ts = $(".tour-spot");
-    if (tm && ts) { if (ts.offsetParent === null) tm.classList.add("floating"); else { tm.classList.remove("floating"); place(tm, ts); } }
     try { history.replaceState(null, "", "#" + (card ? card.id : name)); } catch (e) {}
     if (!opts.keepScroll) { const bar = $(".pado-tabs"); if (bar && bar.getBoundingClientRect().top < 0) bar.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" }); }
     return true;
@@ -252,7 +249,7 @@
       const nav = document.createElement("div"); nav.className = "tab-nav";
       nav.innerHTML = '<button type="button" class="prev"' + (i === 0 ? " disabled" : "") + '>← 이전</button>'
         + '<span class="pos">' + (i + 1) + " / " + tabs.length + "</span>"
-        + (i < tabs.length - 1 ? '<button type="button" class="next">다음: ' + TAB_NAMES[tabs[i + 1]] + " →</button>" : '<span style="margin-left:auto">여기가 마지막이에요. 조치를 누르면 1번부터 다시 계산돼요</span>');
+        + (i < tabs.length - 1 ? '<button type="button" class="next">다음: ' + TAB_NAMES[tabs[i + 1]] + " →</button>" : '<span style="margin-left:auto">바꾼 뒤 다시 점검하면 결과를 확인할 수 있습니다.</span>');
       card.appendChild(nav);
       const prev = $(".prev", nav), next = $(".next", nav);
       prev && prev.addEventListener("click", () => showTab(tabs[i - 1]));
@@ -305,171 +302,6 @@
     }));
   }
 
-  // ── 투어 — 처음 온 사람을 시연 순서대로 데려간다. 상태는 localStorage, 페이지가 바뀌어도 이어진다 ──
-  const TOUR_KEY = "pado_tour";
-  const TOUR = [
-    { page: (p) => p === "/", target: '.rail-nb a[href="/u/u_1a2e7dcc"]',
-      title: "① 마당일기 님의 블로그로", text: "68세 할머니의 글 18편이에요. 이름도 지명도 한 번 안 나와요. 그런데도 사람이 좁혀지는지 볼게요.",
-      advance: "click" },
-    { page: (p) => p === "/u/u_1a2e7dcc", target: ".ut-pado a.go",
-      title: "② 내 글 점검", text: "Veilo 가 이 계정의 공개 글만 파도풀에 보내요. 파도풀은 저장하지 않고 결과만 돌려줘요.",
-      advance: "click" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#sum .hero", when: () => !$(".delta-banner"),
-      title: "③ 이름도 전화번호도 없는데 421명", text: "이름과 전화번호만 찾는 검사기라면 «안전»이에요. 파도풀은 글들을 합쳐서 봐서 전 국민 5,100만 명 중 421명까지 좁혀요.",
-      advance: "next" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#funnel ul.funnel", when: () => !$(".delta-banner"),
-      title: "④ 어떻게 좁혀지나", text: "말투 → 면사무소 → 위치태그 → 「예순여덟」. 단계마다 실제 주민등록 인구예요. 줄을 누르면 그 문장으로 가요.",
-      advance: "next" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: "#evidence .evi:first-child", when: () => !$(".delta-banner"),
-      title: "⑤ 근거 문장", text: "숫자가 나온 자리예요. 글은 원문 그대로이고 색칠된 부분이 신상이 드러나는 표현, 점선은 잡았지만 걸러낸 표현이에요. 갈색 칩은 말투로 잡은 지역이고요.",
-      advance: "next" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: '#actions form[action$="/geo_tag"] button',
-      when: () => !$(".delta-banner") && !!$('#actions form[action$="/geo_tag"] button'),   // 태그를 이미 지웠으면 건너뛴다
-      title: "⑥ 가장 가벼운 조치 하나", text: "글을 지우지 않고 위치태그만 꺼요. 눌러 보세요. 화면이 다시 계산돼요.",
-      advance: "click" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".delta-banner", when: () => !!$(".delta-banner"),
-      title: "⑦ 421 → 111,069", text: "글은 하나도 안 지웠어요. 사라진 단서는 아래 표에 취소선으로 남아요.",
-      advance: "next" },
-    { page: (p) => p === "/u/u_1a2e7dcc/check", target: ".ut-nav a.write, .ut-tabs a[href='/new']",
-      title: "⑧ 이번엔 올리기 전에", text: "체험 계정으로 아무 글이나 써 볼게요. 올리기 전에 한 번 점검해요.",
-      advance: "click" },
-    { page: (p) => p === "/new", target: 'button[formaction="/check-draft"]', when: () => !$("#draftSpans"),
-      title: "⑨ 예문을 넣고 점검", text: "본문에 예문을 넣어 뒀어요. 「난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다.」 작성자는 체험 계정이에요. 이 버튼을 누르면 올리기 전에 점검해요.",
-      advance: "click", hint: "👆 이 버튼을 누르면 이어져요",
-      onShow: () => { const t = $("#body"); if (t && !t.value.trim()) { t.value = "난 김해시 진영읍에 산다. 쉰셋이 되니 무릎이 아프다."; t.dispatchEvent(new Event("input")); } const s = $("#author_id"); if (s && s.querySelector('option[value="GUEST"]')) s.value = "GUEST"; } },
-    { page: (p) => p === "/check-draft" || p === "/new", target: "#draftPreview mark[data-span], #draftPreview .fixed[data-span]", when: () => !!$("#draftSpans"), place: "above",
-      title: "⑩ 색칠된 표현을 눌러 보세요", text: "지우지 않고 넓히는 안(진영읍 → 김해시 → 경남)과 각각의 숫자, 그리고 「그대로 두기」가 나와요. 고르는 건 글쓴이예요. 한 번 고른 표현도 다시 눌러 바꿀 수 있어요.",
-      advance: "next" },
-    { page: (p) => p === "/check-draft" || p === "/new", target: "#cmpBtn", when: () => !!$("#draftSpans") && !!$("#cmpBtn") && !$("#cmpTbl tbody tr"),
-      title: "⑪ 같은 글을 다른 사람이 올리면?", text: "파도풀은 글 한 편이 아니라 «이미 올린 글까지 합쳐서» 봐요. 그래서 같은 문장이라도 누가 올리느냐에 따라 숫자가 달라요. 눌러서 비교해 보세요.",
-      advance: "click", hint: "👆 이 버튼을 누르면 이어져요" },
-    { page: (p) => p === "/check-draft" || p === "/new", target: "#cmpTbl", when: () => !!$("#cmpTbl tbody tr"),
-      title: "⑫ 사람마다 다른 숫자", text: "체험 계정은 이 글 하나뿐이라 넓고, 글이 많은 계정은 이미 좁혀진 위에 얹혀요. 그래서 파도풀은 계정 단위로 봐요.",
-      advance: "done" },
-  ];
-  function tourState() { try { return JSON.parse(localStorage.getItem(TOUR_KEY) || "null"); } catch (e) { return null; } }
-  function tourSave(s) { try { if (s) localStorage.setItem(TOUR_KEY, JSON.stringify(s)); else localStorage.removeItem(TOUR_KEY); } catch (e) {} }
-  // 모달의 «3분 체험 시작» · 레일의 «다시 보기» — 여기서 비로소 글 데이터(끈 태그·비공개·고친 본문·새 글)를 시딩 값으로 되돌린다.
-  // 되돌리기는 "/" 로 보내 주므로 1단계 상태만 미리 저장해 두면 돌아오자마자 투어가 붙는다.
-  window.padoTourStart = function () {
-    tourSave({ step: 0 });
-    const f = document.createElement("form"); f.method = "post"; f.action = "/demo/reset"; f.style.display = "none";
-    document.body.appendChild(f); f.submit();
-  };
-  // 헤더·탭바의 «3분 체험 시작» — 안내 모달을 다시 띄우기만 한다.
-  // 여기서 글을 되돌리면 «그냥 둘러볼게요» 를 고를 사람의 조치까지 지워 버린다 (9/16 사용자 지적)
-  window.padoTourReset = function () {
-    tourSave(null);
-    if (location.pathname !== "/" || location.search) { location.href = "/"; return; }
-    renderTour();
-    window.scrollTo({ top: 0 });
-  };
-  window.padoTourRefresh = function (quiet) { renderTour(quiet); };   // 페이지를 안 바꾸고 화면이 바뀌었을 때(작성자 비교 표·고친 표현). quiet 면 자리만 다시 잡고 스포트라이트는 안 켠다
-  window.padoTourStop = function () { tourSave({ done: true }); const c = $(".tour-mark"); c && c.remove(); const h = $(".tour-hole"); h && h.remove(); $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot")); updateTourLinks(); updateWelcome(null); };
-  // 첫 방문 카드 — 투어 중엔 한 줄 진행바로 접힌다 (시작을 눌렀는데 아무것도 안 바뀌면 눌린 줄 모른다)
-  function updateWelcome(step) {
-    const slot = $(".welcome-bar-slot"); if (!slot) return;
-    let bar = $(".welcome-bar", slot);
-    if (step == null) { bar && bar.remove(); return; }
-    if (!bar) { bar = document.createElement("div"); bar.className = "welcome-bar"; slot.appendChild(bar); }
-    bar.innerHTML = '<span class="n">▶ 3분 체험 진행 중</span><span class="p">' + (step + 1) + " / " + TOUR.length + '</span><span class="t">밝게 뚫린 곳을 따라가세요</span><button type="button" onclick="padoTourStop()">그만하기</button>';
-  }
-  function updateTourLinks() {
-    const s = tourState();
-    $$("[data-tour-welcome]").forEach((el) => { el.hidden = !!s; });   // 첫 방문(상태 없음)에만 모달. 시작·둘러보기·처음부터 가 상태를 정한다
-    document.body.classList.toggle("welcome-open", !s && !!$("[data-tour-welcome]"));
-    $$("[data-tour-restart]").forEach((el) => { el.hidden = !(s && s.done); });
-  }
-  function renderTour(quiet) {
-    const s = tourState();
-    updateTourLinks();
-    const stale = $(".tour-mark"); stale && stale.remove();
-    $$(".tour-spot").forEach((e) => e.classList.remove("tour-spot"));
-    if (!s || s.done || s.step == null) { const h = $(".tour-hole"); h && h.remove(); updateWelcome(null); return; }
-    const p = location.pathname;
-    let i = s.step;
-    // 현재 페이지에 맞는 단계로 — 앞 단계를 건너뛰었으면 따라잡고, 조건(when)이 안 맞으면 기다린다
-    while (i < TOUR.length && !(TOUR[i].page(p) && (!TOUR[i].when || TOUR[i].when()))) {
-      if (TOUR[i].page(p)) { i++; continue; }
-      const later = TOUR.slice(i).findIndex((t) => t.page(p) && (!t.when || t.when()));
-      if (later < 0) return;   // 이 페이지엔 할 일이 없다 — 사용자가 딴 데로 갔다. 원래 단계로 돌아오면 이어진다
-      i += later;
-    }
-    if (i >= TOUR.length) { window.padoTourStop(); return; }
-    if (i !== s.step) tourSave({ step: i });
-    const st = TOUR[i];
-    const visible = (el) => el && el.offsetParent !== null;
-    let target = $$(st.target).find(visible) || null;
-    if (!target) {   // 다른 탭(점검의 네 걸음) 안에 있으면 그 탭을 켠다
-      const cand = $$(st.target)[0];
-      if (cand && tabOf(cand)) { showTab(tabOf(cand), { keepScroll: true }); target = $$(st.target).find(visible) || null; }
-    }
-    st.onShow && st.onShow();
-    const card = document.createElement("div");
-    card.className = "tour-mark";
-    if (st.place) card.dataset.place = st.place;
-    card.innerHTML = '<div class="tt"><span class="n">' + (i + 1) + "/" + TOUR.length + "</span><span class=\"ti\">" + st.title + '</span><button type="button" class="fold" data-fold title="접기 / 펼치기" aria-label="접기">▾</button></div><div class="tx">' + st.text + "</div>"
-      + '<div class="bt"><button type="button" class="skip" data-skip>건너뛰기</button>'
-      + (st.advance === "next" ? '<button type="button" class="go" data-next>다음 →</button>' : st.advance === "done" ? '<button type="button" class="go" data-next>체험 끝 ✓</button>'
-         : '<span class="hint">' + (target ? (st.hint || "👆 위 버튼을 누르면 이어져요") : "이 화면에는 그 버튼이 없어요. 건너뛰기를 눌러 주세요") + "</span>") + "</div>";
-    document.body.appendChild(card);
-    card.querySelector("[data-fold]").addEventListener("click", () => {      // 뒤가 안 보이면 접는다 — 링은 그대로라 뭘 누를지는 안 잃는다
-      const f = card.classList.toggle("folded"); card.querySelector("[data-fold]").textContent = f ? "▸" : "▾";
-      const t = $(".tour-spot"); t && place(card, t);
-    });
-    card.querySelector("[data-skip]").addEventListener("click", () => window.padoTourStop());
-    const nextBtn = card.querySelector("[data-next]");
-    nextBtn && nextBtn.addEventListener("click", () => { if (st.advance === "done") { window.padoTourStop(); finishTour(); } else { tourSave({ step: i + 1 }); renderTour(); } });
-    if (target) {
-      target.classList.add("tour-spot");
-      if (!quiet) spotlight(target);
-      const clickEl = st.clickTarget ? ($$(st.clickTarget).find(visible) || null) : target;
-      if (st.advance === "click" && clickEl) {
-        clickEl.classList.add("tour-spot");
-        clickEl.addEventListener("click", () => tourSave({ step: i + 1 }), { once: true });
-      }
-      place(card, target);
-      if (!quiet) {
-        target.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
-        setTimeout(() => { place(card, target); spotlight(target); }, RM ? 0 : 500);
-        setTimeout(() => spotlight(target), RM ? 0 : 900);
-      }
-    } else {
-      card.classList.add("floating");
-      const hole = $(".tour-hole"); hole && hole.classList.remove("on");
-    }
-    updateWelcome(i);
-  }
-  let holeTimer = null;
-  function spotlight(target, follow) {
-    let hole = $(".tour-hole");
-    if (!hole) { hole = document.createElement("div"); hole.className = "tour-hole"; document.body.appendChild(hole); }
-    const r = target.getBoundingClientRect(), pad = 8;
-    hole.style.transition = follow ? "none" : "";   // 스크롤을 따라갈 땐 전환 없이 — 전환이 있으면 구멍이 뒤늦게 따라온다
-    hole.style.top = (r.top - pad) + "px"; hole.style.left = (r.left - pad) + "px";
-    hole.style.width = (r.width + pad * 2) + "px"; hole.style.height = (r.height + pad * 2) + "px";
-    if (follow) return;                              // 따라가기만 — 켜진 시간(1.1초)은 늘리지 않는다
-    hole.classList.add("on");
-    clearTimeout(holeTimer);
-    holeTimer = setTimeout(() => hole.classList.remove("on"), 1100);   // 잠깐만 어둡게 — 계속 두면 다른 데를 안 둘러본다
-  }
-  function place(card, target) {
-    const r = target.getBoundingClientRect();
-    const w = card.offsetWidth, h = card.offsetHeight;
-    let top = scrollY + r.bottom + 12, left = scrollX + r.left;
-    const wantAbove = card.dataset.place === "above" && r.top - 12 - h > 0;
-    if (wantAbove || (r.bottom + 12 + h > innerHeight && r.top - 12 - h > 0)) { top = scrollY + r.top - 12 - h; card.classList.add("above"); } else card.classList.remove("above");
-    left = Math.max(8, Math.min(left, scrollX + innerWidth - w - 8));
-    card.style.top = top + "px"; card.style.left = left + "px";
-  }
-  function finishTour() {
-    const d = document.createElement("div");
-    d.className = "tour-mark floating done";
-    d.innerHTML = '<div class="tt">🌊 체험 끝</div><div class="tx">이제 자유롭게 둘러보세요. 다른 인물도 보고(느린 기록은 위치태그 하나가 20만 → 5명), 고친 표현을 골라 저장해 보고, 비공개도 눌러 보세요. 파도풀은 권하기만 하고, 누르는 건 Veilo 예요.</div><div class="bt"><button type="button" class="go" data-x>닫기</button></div>';
-    document.body.appendChild(d);
-    d.querySelector("[data-x]").addEventListener("click", () => d.remove());
-  }
-
   // ── 「더 보기」 — 미리보기가 실제로 잘린 글에만 붙인다 (… 만으로는 글이 거기서 끝나는지 알 수 없다) ──
   function initMore() {
     $$(".ut-excerpt").forEach((el) => {
@@ -482,16 +314,45 @@
     });
   }
 
+  // ── 첫 방문 소개 창 (base.html #intro) — 처음 한 번만. 닫으면(버튼 · Esc · 바깥) 다시 안 뜬다. 상단바 「파도풀이란?」로 다시 연다 ──
+  // 영상 녹화용: ?intro=0 이면 안 띄우고, ?intro=1 이면 본 적이 있어도 띄운다
+  const INTRO_KEY = "padopool_intro_v1";
+  function initIntro() {
+    const dlg = $("#intro");
+    if (!dlg || typeof dlg.showModal !== "function") return;
+    const seen = () => { try { return localStorage.getItem(INTRO_KEY) === "seen"; } catch (e) { return false; } };
+    const markSeen = () => { try { localStorage.setItem(INTRO_KEY, "seen"); } catch (e) {} };
+    const open = () => { if (!dlg.open) dlg.showModal(); };
+    const close = () => { markSeen(); dlg.close(); };   // 표시를 먼저 — close 이벤트는 비동기라 바로 새로고침하면 놓친다
+    dlg.addEventListener("close", markSeen);
+    dlg.addEventListener("cancel", markSeen);   // Esc
+    dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });   // 창 바깥(::backdrop)을 누르면 닫기
+    $$("[data-intro-close]", dlg).forEach((b) => b.addEventListener("click", close));
+    $$("[data-intro-go]", dlg).forEach((a) => a.addEventListener("click", markSeen));
+    $$("[data-intro-open]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); open(); }));
+    const q = new URLSearchParams(location.search).get("intro");
+    if (q === "1" || (q !== "0" && !seen())) open();
+  }
+
+  // ── 조치(비공개 · 위치 · 프로필 · 새 글 · 되돌리기)를 하면 글쓰기 화면의 「기존 공개 글」 점검 캐시를 지운다 ──
+  // new.html 이 sessionStorage "veilo.scan.<user_ref>" 에 한 번 센 결과를 둔다 — 지우지 않으면 조치 뒤에도 옛 숫자가 나온다 (B5)
+  function initFreshScan() {
+    const clear = () => {
+      try { Object.keys(sessionStorage).filter((k) => k.indexOf("veilo.scan.") === 0).forEach((k) => sessionStorage.removeItem(k)); } catch (e) {}
+    };
+    document.addEventListener("submit", (e) => { const f = e.target; if (f && (f.method || "").toLowerCase() === "post") clear(); }, true);
+    // 조치 뒤 ?done=… 로 돌아온다 — 띠를 보여 준 뒤 주소에서 떼어 새로고침해도 다시 안 나오게 한다
+    const u = new URL(location.href);
+    if (u.searchParams.has("done")) {
+      clear();
+      u.searchParams.delete("done");
+      try { history.replaceState(null, "", u.pathname + (u.search || "") + u.hash); } catch (e) {}
+    }
+  }
+
   function boot() {
-    // 새로고침은 «처음부터» — 심사자가 F5 를 누르면 첫 화면 모달로 돌아간다 (글 데이터는 그대로, 투어 상태만 지운다)
-    try {
-      const nav = performance.getEntriesByType("navigation")[0];
-      if (nav && nav.type === "reload" && !sessionStorage.getItem("pado_reload_done")) {
-        sessionStorage.setItem("pado_reload_done", "1"); tourSave(null);
-        if (location.pathname !== "/" || location.search) { location.replace("/"); return; }
-      }
-      sessionStorage.removeItem("pado_reload_done");
-    } catch (e) {}
+    initIntro();
+    initFreshScan();
     initMore();
     initFunnels(document);
     initReveal();
@@ -503,14 +364,6 @@
     initEvidence();
     initRewriteChips();
     initActRail();
-    renderTour();
-    const follow = () => { const c = $(".tour-mark:not(.floating)"), t = $(".tour-spot"); if (c && t) { place(c, t); spotlight(t); } };
-    addEventListener("resize", follow);
-    addEventListener("scroll", () => { const t = $(".tour-spot"), h = $(".tour-hole"); if (t && h && h.classList.contains("on")) spotlight(t, true); }, { passive: true });
-    // 모달: 바깥 클릭·Esc 는 「그냥 둘러볼게요」
-    const ov = $("[data-tour-welcome]");
-    if (ov) { ov.addEventListener("click", (e) => { if (e.target === ov) window.padoTourStop(); });
-      addEventListener("keydown", (e) => { if (e.key === "Escape" && !ov.hidden) window.padoTourStop(); }); }
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(initMore);   // 웹폰트가 늦게 오면 줄 높이가 바뀐다
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();

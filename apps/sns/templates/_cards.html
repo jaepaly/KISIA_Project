@@ -9,6 +9,7 @@
       <a class="nm fx-link" href="/u/{{ p.user_ref }}">{{ p.nickname }}</a>
       <span class="when">{{ p.created_at[:16].replace('T', ' ') }}{% if p.geo_tag %} · 📍 {{ p.geo_tag }}{% endif %}</span>
     </div>
+    {% include "_clue.html" %}
     {% if p.visibility == 'private' %}
     <span class="badge-private">비공개</span>
     {% endif %}

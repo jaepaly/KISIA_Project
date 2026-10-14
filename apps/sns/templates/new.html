@@ -75,8 +75,8 @@
   .ap details summary{cursor:pointer;font-size:12px;color:var(--ut-ink3);margin-top:10px;list-style:none}
   .ap details summary::before{content:"⌄ ";}
   .ap details[open] summary::before{content:"⌃ ";}
-  .ap .kbox{display:flex;align-items:baseline;gap:8px;margin:4px 0 2px}
-  .ap .kbox b{font-size:24px;letter-spacing:-.02em;transition:color .3s}
+  .ap .kbox{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;margin:4px 0 2px}
+  .ap .kbox b{font-size:24px;letter-spacing:-.02em;white-space:nowrap;transition:color .3s}
   .ap .kbox .u{font-size:12px;color:var(--ut-ink3)}
   .ap .steps{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:4px}
   .ap .steps li{position:relative;font-size:12px;padding:5px 8px;border-radius:8px;background:var(--ut-panel2);overflow:hidden;display:flex;justify-content:space-between;gap:8px}
@@ -91,6 +91,7 @@
   .ap .try{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-earth-soft);border-radius:10px;padding:8px 10px;line-height:1.55}
   .ap .try b{color:var(--ut-ink)}
   .ap .scan-btn{width:100%;margin-top:10px;font-size:13px;padding:9px}
+  .ap .scan-btn[hidden]{display:none}
   .ap .muted{font-size:12px;color:var(--ut-ink3)}
   .ap .cnt.busy::after{content:"…";animation:pado-dots 1.2s steps(3,end) infinite}
   #apLive .kbox b.up{color:var(--ut-red)}
@@ -107,21 +108,31 @@
 
       {% if not authors %}
       <div class="ut-card" style="color:var(--ut-ink3);">
-        작성자가 아직 없습니다. <code>authors</code> 테이블에 최소 1명을 먼저 넣어야 합니다.
+        글을 쓸 수 있는 작성자가 없습니다. 잠시 뒤 다시 시도해 주세요.
       </div>
       {% endif %}
+
+      {# 글 화면 「이 글을 옮겨 고쳐 쓰기」로 오면 — 옮겨 온 글과 남은 할 일(원래 글 비공개)을 알린다 #}
+      <div class="pado-strip" id="fromNote" hidden></div>
 
       <div class="ut-card rv">
         <form method="post" action="/posts">
           <div style="margin-bottom:14px;">
-            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자 <span style="font-weight:400;">— 이 사람이 되어 씁니다. 오른쪽에 누구인지 나옵니다</span></label>
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자 <span style="font-weight:400;">— 가상 인물을 골라 글을 써 보세요.</span></label>
             <select name="author_id" id="authorSel" required
                     style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
                            background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
               {% for a in authors %}
-              <option value="{{ a.author_id }}">{{ a.nickname }}</option>
+              <option value="{{ a.author_id }}" {% if me and me.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}{% if me and me.author_id == a.author_id %} (내 계정){% endif %}</option>
               {% endfor %}
             </select>
+            {# 내 계정 — 정해 두면 다음부터 글쓰기와 내 글 점검이 이 사람으로 시작하고, 상단바 아바타에서 바꾼 것을 되돌린다. 안 골라도 된다 #}
+            <div class="me-pick" id="mePick">
+              <span id="meNote">{% if me %}내 계정은 <b>{{ me.nickname }}</b>입니다.{% else %}이 사람을 내 계정으로 정해 두면 글쓰기와 내 글 점검이 이 사람으로 시작합니다.{% endif %}</span>
+              <button type="button" class="ghost" id="meBtn" {% if me %}hidden{% endif %}>🙋 이 사람으로 체험하기</button>
+            </div>
+            {# 글 화면 「이 글을 옮겨 고쳐 쓰기」로 왔으면 원래 글 — 이력에 「고쳐 쓰기」로 남아 되돌릴 수 있다 #}
+            <input type="hidden" name="from_post" id="fromPost" value="">
           </div>
 
           <div style="margin-bottom:14px;">
@@ -133,7 +144,7 @@
 
           <div style="margin-bottom:14px;">
             <div class="pado-head">
-              <label for="body" style="font-size:12px;font-weight:700;color:var(--ut-ink3);">본문</label>
+              <label for="body" style="font-size:12px;font-weight:700;color:var(--ut-ink3);white-space:nowrap;flex:none;">본문</label>
               <span class="pado-chip" id="padoChip" aria-live="polite"></span>
             </div>
             <div class="pado-wrap">
@@ -157,7 +168,7 @@
 
           <div style="margin-bottom:14px;">
             <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">
-              사진 캡션 (선택, 한 줄에 하나씩)
+              사진 설명 (선택, 한 줄에 하나씩)
             </label>
             <textarea name="captions" rows="3"
                       placeholder="집 근처라 자주 가는 곳&#10;저녁노을이 예뻤음"
@@ -185,27 +196,16 @@
             </select>
           </div>
 
-          <button type="submit" {% if not authors %}disabled{% endif %}
+          <div class="pado-strip" id="postConfirm" hidden style="margin:0 0 10px;">
+            <span class="tx" id="postConfirmTx"></span>
+            <button type="button" class="ghost" id="postFix" style="font-size:13px;padding:7px 12px;">고치러 가기</button>
+            <button type="button" class="go" id="postAnyway">그대로 올리기</button>
+          </div>
+          <button type="submit" id="postSubmit" {% if not authors %}disabled{% endif %}
                   style="width:100%;height:48px;font-size:15px;">올리기</button>
         </form>
       </div>
 
-      {# ── 파도풀 위젯 — 자세한 결과 ── #}
-      <div class="ut-card rv" id="padoCard"
-           style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="font-weight:700;font-size:15px;color:var(--ut-ink);">🌊 파도풀</span>
-          <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
-                       border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
-        </div>
-        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">쓰는 동안 본문 위에 형광으로 표시됩니다. 자세한 결과는 여기서.</p>
-        <button type="button" id="padoBtn" class="fx-wave"
-                style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
-                       height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
-          이 글 점검
-        </button>
-        <div id="padoOut" style="margin-top:14px;font-size:14px;"></div>
-      </div>
     </div>
   </main>
 
@@ -213,15 +213,15 @@
     <div class="ut-rail-r-in">
       {# 맨 위 — 쓰는 동안 계속 보여야 하는 것 #}
       <div class="rail-card rv ap live" id="apLive">
-        <div class="rail-h" style="color:var(--ut-earth-ink);">지금 쓰는 글 — 왜 이 숫자인가 <span class="cnt" id="apLiveState"></span></div>
-        <div id="apLiveOut"><p class="muted" style="margin:0;">쓰기 시작하면 여기에 「이 글만으로 몇 명 · 어떤 표현이 몇 명까지」가 바로 나옵니다.</p></div>
-        <button type="button" class="ghost scan-btn" id="apCombineBtn" hidden>지금까지 쓴 글에 더해서 세기</button>
+        <div class="rail-h" style="color:var(--ut-earth-ink);">지금 쓰는 글의 점검 결과 <span class="cnt" id="apLiveState"></span></div>
+        <div id="apLiveOut"><p class="muted" style="margin:0;">본문을 쓰면 개인정보 단서와 같은 조건의 사람 수가 나옵니다.</p></div>
+        <button type="button" class="ghost scan-btn" id="apCombineBtn" hidden>기존 공개 글과 함께 점검</button>
         <div id="apCombineOut"></div>
       </div>
-      <div class="rail-card rv ap" id="apWho"><div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오는 중…</p></div>
+      <div class="rail-card rv ap" id="apWho"><div class="rail-h">선택한 가상 인물</div><p class="muted">불러오는 중…</p></div>
       <div class="rail-card rv ap" id="apK">
-        <div class="rail-h">지금까지 쓴 글로는 몇 명 중 한 명? <span class="cnt busy" id="apKState">세는 중</span></div>
-        <div id="apKOut"><p class="muted" style="margin:0;">이 사람의 공개 글을 전부 읽어 후보 수를 셉니다. 글이 많으면 10초쯤.</p></div>
+        <div class="rail-h">기존 공개 글의 점검 결과 <span class="cnt busy" id="apKState">점검 중…</span></div>
+        <div id="apKOut"><p class="muted" style="margin:0;">공개 글을 모아 점검합니다. 글이 많으면 10초쯤 걸립니다.</p></div>
       </div>
     </div>
   </aside>
@@ -231,11 +231,49 @@
 {% block scripts %}
 <script src="/static/pado.js"></script>
 <script>
-padoWidget({
-  btn: document.getElementById("padoBtn"),
-  out: document.getElementById("padoOut"),
-  getText: () => document.getElementById("body").value
-});
+// 글 화면에서 옮겨 온 초안 채우기 (post.html 「이 글을 옮겨 고쳐 쓰기」) — 오른쪽 패널이 작성자를 읽기 전에 채워야 한다
+(function () {
+  const from = new URLSearchParams(location.search).get("from");
+  if (!from) return;
+  let d = null;
+  try { d = JSON.parse(sessionStorage.getItem("veilo.draft") || "null"); sessionStorage.removeItem("veilo.draft"); } catch (e) {}
+  if (!d || d.from !== from) return;
+  const f = document.querySelector('form[action="/posts"]');
+  const sel = document.getElementById("authorSel");
+  if (sel && [...sel.options].some((o) => o.value === d.author_id)) sel.value = d.author_id;
+  f.querySelector('[name="title"]').value = d.title || "";
+  f.querySelector('[name="body"]').value = d.body || "";
+  f.querySelector('[name="geo_tag"]').value = d.geo_tag || "";
+  f.querySelector('[name="captions"]').value = (d.captions || []).join("\n");
+  document.getElementById("fromPost").value = from;
+  const note = document.getElementById("fromNote");
+  note.innerHTML = '<span class="tx">원래 글을 옮겨 왔습니다. 형광 표현을 고쳐 새 글로 올린 뒤, <b>원래 글은 비공개로 바꿔 주세요.</b></span>'
+    + '<a class="go" href="/posts/' + encodeURIComponent(from) + '" target="_blank" rel="noopener">원래 글 보기 →</a>';
+  note.hidden = false;
+})();
+
+// 「이 사람으로 체험하기」 — 쓰던 글이 날아가지 않게 새로고침 없이 저장. 상단바 아바타는 다음 화면부터 뜬다
+(function () {
+  const btn = document.getElementById("meBtn"), note = document.getElementById("meNote"), sel = document.getElementById("authorSel");
+  let mine = {{ (me.author_id if me else "") | tojson }};
+  if (!btn || !sel) return;
+  const sync = () => { btn.hidden = sel.value === mine; };
+  sel.addEventListener("change", sync);
+  btn.addEventListener("click", async () => {
+    const fd = new FormData(); fd.append("author_id", sel.value);
+    btn.disabled = true;
+    try {
+      const r = await fetch("/me", { method: "POST", body: fd, headers: { "X-Requested-With": "fetch" } });
+      const j = await r.json();
+      if (!r.ok || !j.me) throw new Error(r.status);
+      mine = j.me.author_id;
+      note.textContent = "";
+      note.append("내 계정을 ", Object.assign(document.createElement("b"), { textContent: j.me.nickname }), "(으)로 정했습니다.");
+    } catch (e) { note.textContent = "저장하지 못했습니다. 잠시 뒤 다시 눌러 주세요."; }
+    btn.disabled = false; sync();
+  });
+  sync();
+})();
 
 // ── 오른쪽 패널 ─────────────────────────────────────────────────────────
 const AP = (function () {
@@ -253,12 +291,12 @@ const AP = (function () {
   const sexKo = (s) => s === "M" ? "남성" : s === "F" ? "여성" : s;
 
   // 깔때기 — 「전 국민 → 조건마다 남는 사람」. 첫 줄은 기준(전 국민)
-  function stepsHtml(steps, max = 7) {
-    if (!steps || steps.length < 2) return `<p class="muted" style="margin:6px 0 0;">아직 좁히는 조건이 없습니다.</p>`;
+  function stepsHtml(steps, max = 7, data = null) {
+    if (!steps || steps.length < 2) return `<p class="muted" style="margin:6px 0 0;">아직 글쓴이를 좁힐 단서를 찾지 못했습니다.</p>`;
     const nation = steps[0].n_after;
     return `<ul class="steps"><li class="base"><span>전 국민</span><span class="n">${fmtN(nation)}명</span></li>${steps.slice(1, max + 1).map((s) => {
       const w = Math.max(2, 100 * Math.log10(s.n_after + 1) / Math.log10(nation + 1));
-      const q = quotes(s.condition);
+      const q = quotes(s.condition).map((t) => data ? window.padoPlaceName(data, t) : (/^\d{5,10}$/.test(t) ? "사는 동네" : t));
       return `<li><i style="width:${w}%"></i><span>${esc(AXIS[s.axis] || s.axis)}${q.length ? " 「" + esc(q.join("·")) + "」" : ""}</span><span class="n">${fmtN(s.n_after)}명</span></li>`;
     }).join("")}</ul>`;
   }
@@ -267,7 +305,7 @@ const AP = (function () {
     const p = me.persona;
     const h = me.hue;
     let html = `
-      <div class="rail-h">이 사람은 누구인가</div>
+      <div class="rail-h">선택한 가상 인물</div>
       <div class="who">
         <a class="ut-av sm" href="/u/${esc(me.user_ref)}" style="background:hsl(${h},45%,86%);color:hsl(${h},35%,32%);">${esc(me.nickname.slice(0, 1))}</a>
         <div><a class="nm" href="/u/${esc(me.user_ref)}">${esc(me.nickname)}</a><div class="handle">@${esc(me.user_ref)}${me.bio ? " · " + esc(me.bio) : ""}</div></div>
@@ -277,15 +315,15 @@ const AP = (function () {
         <dl class="truth">${AXIS_ORDER.map((a) => { const v = p.truth[a]; return `<dt class="k">${AXIS[a]}</dt><dd class="v${v ? "" : " na"}">${v ? esc(a === "sex" ? sexKo(v) : a === "age" ? v + "세" : v) : "—"}</dd>`; }).join("")}</dl>`;
       // 쓰는 말은 펼쳐 둔다 — 글에 들어가면 칩이 진해지는 걸 봐야 한다. 말투·소재·시간은 접는다
       if (p.words && p.words.length) {
-        html += `<div class="sub">이 사람이 실제로 쓰는 말</div><div class="chips" id="apWords">${p.words.map((w) => `<span data-w="${esc(w)}">${esc(w)}</span>`).join("")}</div>`;
+        html += `<div class="sub">이 가상 인물이 쓰는 말</div><div class="chips" id="apWords">${p.words.map((w) => `<span data-w="${esc(w)}">${esc(w)}</span>`).join("")}</div>`;
       }
       let more = "";
       if (Object.keys(p.voice || {}).length) more += `<div class="sub">말투</div><p class="voice">${Object.entries(p.voice).map(([k, v]) => `<b>${esc(k)}</b> ${esc(v)}`).join(" · ")}</p>`;
       if (p.topics && p.topics.length) more += `<div class="sub">평소 소재</div><div class="chips">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
       if (p.hours) more += `<p class="muted" style="margin:10px 0 0;">주로 쓰는 시간 ${esc(p.hours)}</p>`;
-      if (more) html += `<details><summary>말투 · 평소 소재 · 쓰는 시간</summary>${more}</details>`;
+      if (more) html += `<details><summary>말투와 평소 글쓰기 습관</summary>${more}</details>`;
     } else {
-      html += `<p class="muted" style="margin:10px 0 0;">설정 파일이 없는 작성자입니다 — 글에서 드러나는 것만 있습니다.</p>`;
+      html += `<p class="muted" style="margin:10px 0 0;">자세한 인물 소개가 없습니다. 기존 글을 참고해 보세요.</p>`;
     }
     html += `<details><summary>최근 글 ${me.n_posts}편 중 ${me.recent.length}편</summary><ul class="recent">${me.recent.map((r) => `<li><a href="/posts/${esc(r.post_id)}" target="veilo">${esc(r.title || "(제목 없음)")}</a><span class="sn">${esc(r.snippet)}</span></li>`).join("")}</ul></details>`;
     who.innerHTML = html;
@@ -304,57 +342,84 @@ const AP = (function () {
         const truth = p && p.truth[a], words = p && p.words_by_axis && p.words_by_axis[a];
         return `<b>${AXIS[a]}</b>${truth ? ` — 설정은 「${esc(a === "sex" ? sexKo(truth) : truth)}」` : ""}${words && words.length ? ` · 이 사람 말로는 ${words.map((w) => "「" + esc(w) + "」").join(" ")}` : ""}`;
       }).join("<br>");
-      tryHtml = `<p class="try">해 보기 — 아직 안 읽힌 신상을 새 글에 넣어 보세요:<br>${tips}<br>본문 위 형광과 아래 「지금 쓰는 글」 숫자가 바로 바뀝니다.</p>`;
+      tryHtml = `<p class="try">해 보기 — 가상 인물의 정보를 넣어 단서가 어떻게 달라지는지 살펴보세요.<br>${tips}</p>`;
     } else {
-      tryHtml = `<p class="try">7가지 신상이 모두 읽힌 계정입니다. 지금은 같은 단서를 더 구체적으로 쓸 때(동 이름·정확한 나이)만 더 좁혀집니다 — 거꾸로, 위 깔때기의 표현을 넓게 바꿔 쓰면 후보가 늘어나는 것도 볼 수 있습니다.</p>`;
+      tryHtml = `<p class="try">7가지 개인정보 항목 모두에서 단서를 찾았습니다. 동 이름이나 정확한 나이 대신 넓은 표현을 써서 결과를 비교해 보세요.</p>`;
     }
     kOut.innerHTML = `
-      <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 위험 점수 ${Number(risk).toFixed(1)}</span></div>
-      <div class="sub">어떤 표현이 몇 명까지 좁혔나</div>${stepsHtml(spec.steps, 6)}
-      <div class="sub">읽힌 신상 / 아직 안 읽힌 신상</div>
-      <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 아직</span>`).join("")}</div>
+      <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 노출 위험도 ${Number(risk).toFixed(1)}</span></div>
+      <div class="sub">글 속 단서에 따른 사람 수 변화</div>${stepsHtml(spec.steps, 6, d)}
+      <div class="sub">단서를 찾은 항목 / 단서를 찾지 못한 항목</div>
+      <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 단서 없음</span>`).join("")}</div>
       ${tryHtml}
       <p class="muted" style="margin:8px 0 0;"><a href="${PADO}/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
   }
 
-  async function autoScan() {
-    if (!me) return;
-    const key = "veilo.scan." + me.user_ref;
+  // 파도풀이 다른 출처(로컬 분리 포트)면 /scan 에 방문자 쿠키가 따라가지 않아 공용 DB 를 센다 (B2).
+  // 그때는 이 화면(같은 출처)이 방문자 사본의 /api/export 를 읽어 /upload 로 넘긴다 — /scan 과 같은 파이프라인.
+  // 운영(같은 도메인 /check)은 지금처럼 /scan
+  const PADO_CROSS = (() => { try { return new URL(PADO, location.href).origin !== location.origin; } catch (e) { return false; } })();
+
+  // 작성자를 빠르게 바꾸면 늦게 온 앞 사람 응답이 지금 사람 자리에 그려졌다 (B3) — 선택마다 세대 번호를 올리고,
+  // 이전 요청은 취소하고, 응답은 시작할 때의 세대·작성자와 같을 때만 반영한다
+  let gen = 0, ctrl = null;
+  const current = (g) => g === gen;
+
+  async function autoScan(g = gen) {
+    const m = me;
+    if (!m || !current(g)) return;
+    const key = "veilo.scan." + m.user_ref + "." + m.n_posts + "." + (m.last || "");   // 공개 글 수가 바뀌면 다시 센다 · 조치 뒤엔 veilo.js 가 통째로 지운다
     const cached = sessionStorage.getItem(key);
     if (cached) { scan = JSON.parse(cached); renderK(); return; }
-    kState.className = "cnt busy"; kState.textContent = "세는 중";
+    kState.className = "cnt busy"; kState.textContent = "점검 중…";
     try {
-      const r = await fetch(`${PADO}/scan/${encodeURIComponent(me.user_ref)}`, { method: "POST" });
-      if (!r.ok) throw new Error(r.status);
-      scan = await r.json();
-      try { sessionStorage.setItem(key, JSON.stringify(scan)); } catch {}
-      if (sel.value === me.author_id) renderK();
-    } catch {
+      let d;
+      if (PADO_CROSS) {
+        const ex = await (await fetch(`/api/export/${encodeURIComponent(m.user_ref)}`, { signal: ctrl.signal })).json();
+        d = (await window.padoCheckExport(ex, ctrl.signal)).raw;
+      } else {
+        const r = await fetch(`${PADO}/scan/${encodeURIComponent(m.user_ref)}`, { method: "POST", signal: ctrl.signal });
+        if (!r.ok) throw new Error(r.status);
+        d = await r.json();
+      }
+      if (!current(g) || me !== m) return;
+      scan = d;
+      try { sessionStorage.setItem(key, JSON.stringify(d)); } catch {}
+      renderK();
+    } catch (e) {
+      if (!current(g)) return;   // 작성자를 바꿔 취소된 요청 — 조용히
       kState.className = "cnt"; kState.textContent = "";
-      kOut.innerHTML = `<p class="muted" style="margin:0;">세지 못했습니다. <a href="#" id="apRetry" style="color:var(--ut-earth-ink);">다시</a></p>`;
-      document.getElementById("apRetry").addEventListener("click", (e) => { e.preventDefault(); autoScan(); });
+      kOut.innerHTML = `<p class="muted" style="margin:0;">점검하지 못했습니다. <a href="#" id="apRetry" style="color:var(--ut-earth-ink);">다시 시도</a></p>`;
+      document.getElementById("apRetry").addEventListener("click", (e) => { e.preventDefault(); autoScan(g); });
     }
   }
 
   async function loadWho() {
     if (!sel || !sel.value) return;
-    scan = null; combineOut.innerHTML = "";
-    who.innerHTML = `<div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오는 중…</p>`;
-    kOut.innerHTML = ""; kState.className = "cnt busy"; kState.textContent = "세는 중";
-    try { me = await (await fetch(`/api/author/${encodeURIComponent(sel.value)}/summary`)).json(); }
-    catch { who.innerHTML = `<div class="rail-h">이 사람은 누구인가</div><p class="muted">불러오지 못했습니다.</p>`; return; }
+    const g = ++gen, aid = sel.value;
+    if (ctrl) ctrl.abort();
+    ctrl = new AbortController();
+    me = null; scan = null; combineOut.innerHTML = "";
+    who.innerHTML = `<div class="rail-h">선택한 가상 인물</div><p class="muted">불러오는 중…</p>`;
+    kOut.innerHTML = ""; kState.className = "cnt busy"; kState.textContent = "점검 중…";
+    let m;
+    try { m = await (await fetch(`/api/author/${encodeURIComponent(aid)}/summary`, { signal: ctrl.signal })).json(); }
+    catch { if (current(g)) who.innerHTML = `<div class="rail-h">선택한 가상 인물</div><p class="muted">불러오지 못했습니다.</p>`; return; }
+    if (!current(g) || m.author_id !== sel.value) return;
+    me = m;
     renderWho();
-    combineBtn.textContent = `지금까지 쓴 글 ${me.n_posts}편에 더해서 세기`;
-    autoScan();
+    combineBtn.disabled = false; combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`;
+    autoScan(g);
   }
 
   // 실시간 — 점검이 끝날 때마다 「이 글만으로」 깔때기. 설정의 「쓰는 말」 중 글에 들어간 것은 칩이 진해진다
   function onLive(res) {
     lastDraft = res;
+    window.__padoLiveSpans = res ? res.spans.length : 0;
     combineOut.innerHTML = "";
     if (!res) {
       combineBtn.hidden = true; liveState.textContent = ""; live.dataset.k = "";
-      liveOut.innerHTML = `<p class="muted" style="margin:0;">쓰기 시작하면 여기에 「이 글만으로 몇 명 · 어떤 표현이 몇 명까지」가 바로 나옵니다.</p>`;
+      liveOut.innerHTML = `<p class="muted" style="margin:0;">본문을 쓰면 개인정보 단서와 같은 조건의 사람 수가 나옵니다.</p>`;
       return;
     }
     combineBtn.hidden = false;
@@ -364,8 +429,8 @@ const AP = (function () {
     const dir = prev !== null && k !== null && k !== undefined ? (k < prev ? " up" : "") : "";
     liveState.textContent = res.spans.length ? `단서 ${res.spans.length}곳` : "단서 없음";
     liveOut.innerHTML = res.spans.length
-      ? `<div class="kbox"><b class="${dir}">${k === null || k === undefined ? "—" : "약 " + fmtN(k) + "명"}</b><span class="u">이 글만으로 · 중 한 명</span></div>${stepsHtml(res.steps, 6)}`
-      : `<p class="muted" style="margin:0;">이 글만으로는 아무도 좁혀지지 않습니다 — 전 국민이 후보입니다.</p>`;
+      ? `<div class="kbox"><b class="${dir}">${k === null || k === undefined ? "—" : "약 " + fmtN(k) + "명"}</b><span class="u">이 글만으로 · 중 한 명</span></div>${stepsHtml(res.steps, 6, res.raw)}`
+      : `<p class="muted" style="margin:0;">이 글에서는 글쓴이를 좁힐 단서를 찾지 못했습니다.</p>`;
     const words = document.getElementById("apWords");
     if (words) words.querySelectorAll("span[data-w]").forEach((s) => s.classList.toggle("hot", res.text.includes(s.dataset.w)));
   }
@@ -373,10 +438,11 @@ const AP = (function () {
   // 지금까지 쓴 글 + 이 글 — 계정 공개 글을 내보내 초안과 함께 한 번에 센다 (버튼 — 글이 많으면 몇 초)
   combineBtn.addEventListener("click", async () => {
     if (!me || !lastDraft) return;
-    combineBtn.disabled = true; combineBtn.textContent = "세는 중…";
+    const g = gen, sig = ctrl ? ctrl.signal : undefined;   // 작성자를 바꾸면 loadWho 가 ctrl 을 끊는다
+    combineBtn.disabled = true; combineBtn.textContent = "점검 중…";
     try {
       // export 형식(.json)에 초안을 글 하나로 붙인다 — .txt 로 보내면 위치태그·프로필이 빠져 /scan 의 숫자와 비교가 안 된다
-      const ex = await (await fetch(`/api/export/${encodeURIComponent(me.user_ref)}`)).json();
+      const ex = await (await fetch(`/api/export/${encodeURIComponent(me.user_ref)}`, { signal: sig })).json();
       const form = document.querySelector('form[action="/posts"]');
       const title = (form.querySelector('[name="title"]').value || "").trim() || null;
       const geo = (form.querySelector('[name="geo_tag"]').value || "").trim() || null;
@@ -388,14 +454,18 @@ const AP = (function () {
         post_date: now.toISOString().slice(0, 10),
         activity_meta: { nickname: ex.nickname || me.nickname, geo_tag: geo, post_time: now.toTimeString().slice(0, 5) },
       }]);
-      const r = await window.padoCheckExport(ex);
+      const r = await window.padoCheckExport(ex, sig);
+      if (!current(g)) return;
       const before = scan ? scan.specificity.output.k : null;
       const kk = r.k === null || r.k === undefined ? null : r.k;
       const delta = before !== null && kk !== null ? (kk < before ? `<span class="u" style="color:var(--ut-red);">↓ 더 좁혀짐</span>` : kk > before ? `<span class="u" style="color:var(--ut-leaf);">↑ 넓어짐</span>` : `<span class="u">변화 없음</span>`) : "";
-      combineOut.innerHTML = `<div class="kbox" style="margin-top:10px;"><b>${kk === null ? "—" : "약 " + fmtN(kk) + "명"}</b><span class="u">지금까지 쓴 글 + 이 글${before !== null ? ` · 전에는 약 ${fmtN(before)}명` : ""}</span>${delta}</div>${stepsHtml(r.steps, 7)}`;
+      combineOut.innerHTML = `<div class="kbox" style="margin-top:10px;"><b>${kk === null ? "—" : "약 " + fmtN(kk) + "명"}</b><span class="u">기존 공개 글과 이 글을 함께 점검${before !== null ? ` · 기존 공개 글만 보면 약 ${fmtN(before)}명` : ""}</span>${delta}</div>${stepsHtml(r.steps, 7, r.raw)}`;
     } catch {
-      combineOut.innerHTML = `<p class="muted" style="margin-top:8px;">세지 못했습니다. 잠시 뒤 다시.</p>`;
-    } finally { combineBtn.disabled = false; combineBtn.textContent = `지금까지 쓴 글 ${me.n_posts}편에 더해서 세기`; }
+      // 작성자를 바꾼 뒤 늦게 실패한 옛 요청은 지금 작성자의 결과를 덮지 않는다 (B3 · Codex 재현)
+      if (current(g)) combineOut.innerHTML = `<p class="muted" style="margin-top:8px;">점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>`;
+    } finally {
+      if (current(g)) { combineBtn.disabled = false; if (me) combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`; }
+    }
   });
 
   sel && sel.addEventListener("change", loadWho);
@@ -412,6 +482,26 @@ padoLive({
   pick: document.getElementById("padoPick"),
   onResult: AP.onLive
 });
+// 단서가 칠해진 채 올리면 — 버튼 위에 한 줄로 한 번만 묻는다 (#10). 「그대로 올리기」를 누르면 그대로 올린다
+(function () {
+  const form = document.querySelector('form[action="/posts"]'), box = document.getElementById("postConfirm"),
+        tx = document.getElementById("postConfirmTx");
+  if (!form || !box) return;
+  let ok = false;
+  form.addEventListener("submit", (e) => {
+    const n = window.__padoLiveSpans || 0;
+    if (ok || !n) return;
+    e.preventDefault();
+    tx.innerHTML = `<b>개인정보 단서 ${n}곳이 칠해져 있습니다.</b> 이대로 올릴까요?`;
+    box.hidden = false;
+    box.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+  document.getElementById("postAnyway").addEventListener("click", () => { ok = true; form.requestSubmit(); });
+  document.getElementById("postFix").addEventListener("click", () => {
+    box.hidden = true;
+    const t = document.getElementById("body"); t.scrollIntoView({ block: "center", behavior: "smooth" }); t.focus();
+  });
+})();
 // textarea 를 세로로 늘리면 뒤판도 따라간다
 new ResizeObserver(() => {
   const t = document.getElementById("body"), b = document.getElementById("padoBackdrop");

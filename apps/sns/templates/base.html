@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Veilo{% endblock %}</title>
+  <meta name="description" content="파도풀 — 내 글이 나를 얼마나 드러내는지 점검합니다. Veilo는 이걸 체험해 보라고 만든 가상 SNS입니다.">
+  {# 파비콘 — 파도풀 심볼. 분석기 화면도 같은 파일을 쓸 수 있다(/static/padopool-symbol.svg) #}
+  <link rel="icon" type="image/svg+xml" href="/static/padopool-symbol.svg">
   <link rel="stylesheet" href="/static/fonts/pretendard.css">
   <link rel="stylesheet" href="/static/veilo.css">
   <link rel="stylesheet" href="/static/fx.css">
@@ -21,7 +24,16 @@
       </a>
       <nav class="ut-nav">
         {% block nav %}
+        <button type="button" class="intro-btn" data-intro-open aria-label="파도풀 소개 다시 보기">파도풀이란?</button>
+        {# 내 계정을 골랐으면 「내 글 점검」은 바로 그 사람으로 (scan.html?u=) — 안 골랐으면 계정 찾기부터 #}
+        <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}" class="chk">🌊 내 글 점검</a>
         <a href="/new" class="write">✏️ 글쓰기</a>
+        {% if me %}
+        <a href="/u/{{ me.user_ref }}" class="avatar me-av" title="내 계정 — {{ me.nickname }}{% if me_changes %} · 바꾼 것 {{ me_changes }}개{% endif %}"
+           aria-label="내 계정 {{ me.nickname }}" style="background:hsl({{ me.author_id|hue }},45%,86%);color:hsl({{ me.author_id|hue }},35%,32%);">
+          {{ me.nickname[:1] }}{% if me_changes %}<span class="me-n">{{ me_changes }}</span>{% endif %}
+        </a>
+        {% endif %}
         {% endblock %}
       </nav>
     </div>
@@ -37,10 +49,29 @@
     <a href="/" class="{% if request.path == '/' %}on{% endif %}">
       <span class="ic">🏠</span>홈
     </a>
+    <a href="{{ pado_base }}/static/scan.html{% if me %}?u={{ me.user_ref }}{% endif %}">
+      <span class="ic">🌊</span>내 글 점검
+    </a>
     <a href="/new" class="{% if request.path == '/new' %}on{% endif %}">
       <span class="ic">✏️</span>글쓰기
     </a>
   </nav>
+
+  {# 첫 방문 소개 창 — 처음 한 번만 뜬다(veilo.js initIntro · localStorage padopool_intro_v1). 상단바 「파도풀이란?」로 다시 연다 #}
+  <dialog class="welcome intro" id="intro" aria-labelledby="introTitle">
+    <div class="welcome-brand">
+      <img class="sym" src="/static/padopool-symbol.svg" alt="" width="26" height="26">파도풀
+      <small>in Veilo</small>
+    </div>
+    <h2 id="introTitle">🌊 파도풀 — 내 글이 나를 얼마나 드러내는지 봅니다</h2>
+    <p>이름이나 전화번호를 쓰지 않아도, 사는 동네와 나이와 직업 이야기가 글마다 쌓이면 「몇백 명 중 한 명」까지 좁혀질 수 있습니다.</p>
+    <p>파도풀은 글에서 이런 단서를 찾고, 어떤 글을 고치면 위험이 얼마나 줄어드는지 알려 드립니다.</p>
+    <p>Veilo는 이걸 체험해 보라고 만든 가상 SNS입니다. 여기서 쓰고 바꾼 내용은 이 브라우저에서만 보입니다.</p>
+    <div class="bt">
+      <button type="button" class="dismiss" data-intro-close>가상 글 둘러보기</button>
+      <a class="start" href="/new" data-intro-go>글 쓰며 점검하기</a>
+    </div>
+  </dialog>
   <script src="/static/veilo.js"></script>
   <script src="/static/fx.js"></script>
   <script>
@@ -58,7 +89,8 @@
       const btn = document.getElementById("utMenuBtn");
       const scrim = document.getElementById("utScrim");
       const side = document.querySelector(".ut-side");
-      if (!btn || !side) return;
+      if (!btn) return;
+      if (!side) { btn.hidden = true; return; }   // 글·글쓰기 화면엔 서랍이 없다 — 눌러도 아무 일 없는 버튼을 두지 않는다
       function open() { side.classList.add("open"); scrim.hidden = false; document.body.style.overflow = "hidden"; }
       function close() { side.classList.remove("open"); scrim.hidden = true; document.body.style.overflow = ""; }
       btn.addEventListener("click", open);
@@ -67,5 +99,10 @@
     })();
   </script>
   {% block scripts %}{% endblock %}
+  {% if me %}
+  {# 위험 배지 — 내 계정 글 중 아직 안 센 글만, 화면당 최대 {{ clue_per_page }}편 (clues.js) #}
+  <script>window.CLUE_PER_PAGE = {{ clue_per_page }};</script>
+  <script src="/static/clues.js" defer></script>
+  {% endif %}
 </body>
 </html>
