@@ -184,19 +184,22 @@
   // 단계 i 의 문이 열리는 진행도 — 앞 52% 안에 네 단계가 다 열리고, 뒤 48% 는 네 단계가 다 보이는 채로 멈춘다
   // (한 단계씩 0.52초 늦게 따라와도 장면이 풀리기 전에 다 나온다 · 끝까지 나온 뒤 읽을 시간 — 10/14)
   // 간격 STEP_MS · 두 단계 이상 뒤처지면 STEP_CATCH 로 따라잡는다(빨리 내려도 장면이 풀리기 전에 네 단계가 다 나오게)
-  const STEP_AT = [0, 0.16, 0.34, 0.52], STEP_MS = 440, STEP_CATCH = 300;
+  // 다섯 번째 문(0.6) = 「끝」 — 네 단계가 다 나온 뒤 선이 4단계 점에서 오른쪽 끝까지 한 번에 늘어난다(다른 단계와 같은 방식 · 스크롤에 묶지 않는다)
+  // 간격 STEP_MS · 두 단계 이상 뒤처지면 STEP_CATCH · 4단계 → 끝은 STEP_END(선만 늘어나 짧게) — 휠 1초 10칸으로 지나가도 풀리기 전에 끝까지
+  const STEP_AT = [0, 0.14, 0.3, 0.46, 0.6], STEP_MS = 400, STEP_CATCH = 280, STEP_END = 250;
   let shown = 0, target = 0, stepTimer = 0, stepFirst = true, lastStep = -1e9;
   function applySteps(on) {
+    const cur = Math.min(shown, stepEls.length);   // 보이는 단계(「끝」 단계에서도 4단계 그림 그대로)
     stepEls.forEach((el, i) => {
-      const v = !on || i < shown ? 1 : 0;
+      const v = !on || i < cur ? 1 : 0;
       setVar(el, "--a", v);
       el.classList.toggle("reached", v === 1);
     });
     // 그림판 — 지금 단계 그림만(정지 상태는 네 장 다). 지나간 그림은 왼쪽으로, 아직인 그림은 오른쪽에서 들어온다
     vis.forEach((el, i) => {
-      setVar(el, "--f", !on || i === shown - 1 ? 1 : 0);
-      setVar(el, "--dir", on && i < shown - 1 ? -1 : 1);
-      setVar(el, "--t", !on || i < shown ? 1 : 0);
+      setVar(el, "--f", !on || i === cur - 1 ? 1 : 0);
+      setVar(el, "--dir", on && i < cur - 1 ? -1 : 1);
+      setVar(el, "--t", !on || i < cur ? 1 : 0);
     });
     // 선 — 보이는 마지막 단계의 점까지. 점 자리는 칸 사이 간격 때문에 i/4 가 아니라 잰 값(dotAt)
     setPath(on);
@@ -211,30 +214,26 @@
     applySteps(true);
     if (shown !== target) stepTimer = setTimeout(stepTick, gap());
   }
-  const gap = () => (Math.abs(target - shown) >= 2 ? STEP_CATCH : STEP_MS);
+  const gap = () => (shown === STEP_AT.length - 1 && target > shown ? STEP_END : Math.abs(target - shown) >= 2 ? STEP_CATCH : STEP_MS);
   // 다음 단계는 마지막 전환에서 STEP_MS 가 지난 뒤에 — 관성 보간으로 목표가 프레임마다 하나씩 올라와도 몰려 넘어가지 않게
   function scheduleStep() {
     if (stepTimer || shown === target) return;
     stepTimer = setTimeout(stepTick, Math.max(0, gap() - (performance.now() - lastStep)));
   }
   // 선 — 보이는 마지막 단계의 점까지(점 자리는 칸 사이 간격 때문에 i/4 가 아니라 잰 값 dotAt).
-  // 네 단계가 다 보이면 멈춤 구간 동안 스크롤에 맞춰 4단계 점에서 오른쪽 끝까지 마저 이어진다 — 끝에 닿으면 장면이 넘어간다(10/14)
-  const LINE_FROM = 0.6, LINE_TO = 0.92;
-  let lastW = 0;
+  // 네 단계가 다 보인 뒤 「끝」 단계에서 오른쪽 끝까지 — 끝에 닿은 뒤 멈춤 구간을 지나 장면이 넘어간다(10/14)
   function setPath(on) {
     if (!path) return;
     const n = stepEls.length;
     let v = 1;
-    if (on) v = shown <= 1 ? 0 : shown < n ? dotAt[shown - 1] : dotAt[n - 1] + (1 - dotAt[n - 1]) * smooth((lastW - LINE_FROM) / (LINE_TO - LINE_FROM));
+    if (on) v = shown <= 1 ? 0 : shown <= n ? dotAt[shown - 1] : 1;   // 「끝」 단계(n + 1) = 오른쪽 끝
     setVar(path, "--w", v);
   }
   function stepsScene(w, on) {
     if (!steps) return;
-    lastW = w;
-    if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = stepEls.length; stepFirst = true; applySteps(false); return; }
-    setPath(true);
+    if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = STEP_AT.length; stepFirst = true; applySteps(false); return; }
     let t = 0;
-    stepEls.forEach((_, i) => { if (w >= STEP_AT[i]) t = i + 1; });
+    STEP_AT.forEach((at, i) => { if (w >= at) t = i + 1; });
     if (t === target && !stepFirst) return;
     target = t;
     // 처음 그릴 때(새로고침 · 정지 → 움직임)는 그 자리 모습으로 바로 — 그 뒤로는 한 단계씩
