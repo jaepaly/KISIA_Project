@@ -565,3 +565,19 @@ html.dark-chapter .ut-tabs a.on{color:var(--night-ink);background:rgba(239,232,2
 .rv.in .tag-bars .bar i,.tag-bars:not(.rv *) .bar i{transform:scaleX(var(--w))}
 .tag-bars b{text-align:right;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:reduce){.tag-bars .bar i{transform:scaleX(var(--w));transition:none}}
+
+/* ── 배경 (base.html .ut-bg) — 종이 질감(맨 위층) + 가장자리 가상 지도 선(스크롤 시차). 아주 옅게. 글 카드는 불투명이라 글 뒤엔 지도가 안 비친다 ── */
+.ut-bg{position:fixed;inset:0;z-index:0;pointer-events:none;color:var(--ink);overflow:hidden}
+/* 종이 질감은 맨 위층(상단바 · 카드까지 한 장의 종이처럼) — 본문 아래에만 깔면 불투명한 상단바와 색 띠가 갈린다. 클릭은 통과 */
+body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ut-bg .map{position:absolute;left:0;top:-2vh;width:100%;height:116vh;will-change:transform;transform:translate3d(0,calc(var(--bgp,0) * -12vh),0);   /* 스크롤 시차 — base.html 이 --bgp(0~1)를 준다 */
+  -webkit-mask-image:radial-gradient(ellipse 46% 60% at 50% 46%,transparent 55%,#000 100%);mask-image:radial-gradient(ellipse 46% 60% at 50% 46%,transparent 55%,#000 100%)}
+.ut-bg .map .alley line{stroke:currentColor;stroke-opacity:.05;stroke-width:1}
+.ut-bg .map .road path{fill:none;stroke:currentColor;stroke-opacity:.11;stroke-width:6;stroke-linecap:round}
+.ut-bg .map .river{fill:none;stroke:currentColor;stroke-opacity:.035;stroke-width:60;stroke-linecap:round}
+.ut-bg .map .bridge{fill:none;stroke:currentColor;stroke-opacity:.16;stroke-width:5;stroke-linecap:round}
+.ut-bg .map .park{fill:currentColor;fill-opacity:.03;stroke:currentColor;stroke-opacity:.09;stroke-width:1.5;stroke-dasharray:6 6}
+.ps-page body::after{display:none}
+.ps-page .ut-bg{display:none}   /* 소개 화면은 자체 배경(들판 · 밤 막 · 물결) */
+

@@ -225,3 +225,14 @@ def test_home_head_stats_and_no_pado_box(client):
     js = (Path(__file__).resolve().parent / "static" / "pado-hero.js").read_text(encoding="utf-8")
     assert "prefers-reduced-motion" in js                     # 홈엔 motion-core 가 없다 — 시스템 「동작 줄이기」를 직접 본다
 
+
+def test_background_paper_and_map(client):
+    """배경 — 종이 질감 + 가장자리 가상 지도(스크롤 시차). 비교용 ?bg= 는 없다 · 소개 화면은 끈다 (10/14)."""
+    client.get("/about")
+    html = client.get("/").get_data(as_text=True)
+    assert '<div class="ut-bg" aria-hidden="true">' in html and '<svg class="map"' in html
+    assert "data-bg" not in html and "?bg=" not in html and 'class="wave"' not in html
+    assert 'setProperty("--bgp"' in html and "prefers-reduced-motion" in html   # 시차 · 동작 줄이기면 멈춤
+    css = (Path(__file__).resolve().parent / "static" / "veilo.css").read_text(encoding="utf-8")
+    assert ".ps-page .ut-bg{display:none}" in css and ".ps-page body::after{display:none}" in css
+
