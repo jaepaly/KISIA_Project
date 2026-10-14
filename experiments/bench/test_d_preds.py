@@ -63,8 +63,8 @@ def test_empty_spans_is_normal(tmp_path: Path, name: str) -> None:
     """탐지가 정말 없는 글은 spans: [] — 이것은 정상이고 글은 그대로 남는다."""
     p = _write(tmp_path, [{"post_id": "U1_a", "spans": []}, {"post_id": "U1_b", "spans": [SPAN]}])
     out = READERS[name](p)
-    ids = sorted(out) if isinstance(out, dict) else sorted(r["post_id"] for r in out)
-    assert ids == ["U1_a", "U1_b"]
+    got = out if isinstance(out, dict) else {r["post_id"]: r["spans"] for r in out}
+    assert got == {"U1_a": [], "U1_b": [SPAN]}   # 빈 목록도 · 스팬 내용도 그대로 (Codex 10/14)
 
 
 def test_bad_post_id_and_span_type(tmp_path: Path) -> None:
