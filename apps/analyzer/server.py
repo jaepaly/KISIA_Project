@@ -15,6 +15,7 @@ import os
 import threading
 import time
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlsplit
 
 import requests
@@ -179,7 +180,8 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
 
 
 def _pipeline(user_ref: str, posts: list[dict]) -> dict:
-    spans_by_post = {p["post_id"]: engine.detect_spans(_detect_input(p)) for p in posts}
+    inputs = {p["post_id"]: _detect_input(p) for p in posts}
+    spans_by_post = {pid: engine.detect_spans(rec) for pid, rec in inputs.items()}
     # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
     conditions = engine.conditions(posts, spans_by_post)
     spec = engine.specificity({"user_ref": user_ref, "conditions": conditions})
@@ -188,7 +190,9 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
     baseline = contrib["output"]["baseline_risk"]
     target = round(max(baseline - 40.0, 0.0), 1)
     # 이번 요청의 스팬을 그대로 넘긴다 — 엔진 전역에 원문을 두지 않는다 (A3 · 동시 점검이 섞이지 않게)
-    stage2 = engine.stage2(user_ref, posts, risk_current=baseline, risk_target=target, spans_by_post=spans_by_post)
+    # 1단에 넣은 입력(채널)도 그대로 — 2단 근거의 원문과 스팬 offset 이 같은 글에서 나온다
+    stage2 = engine.stage2(user_ref, posts, risk_current=baseline, risk_target=target, spans_by_post=spans_by_post,
+                           detect_inputs=inputs)
 
     return {
         "user_ref": user_ref,
@@ -227,6 +231,9 @@ class _Admission:
 
     def __init__(self, concurrency: int, queue_max: int, wait_s: float):
         self.sem = threading.BoundedSemaphore(concurrency)
+        # 점검 전용 스레드 — 공용 스레드 풀(AnyIO 기본 40개)이 다른 요청으로 차 있어도 자리를 잡은 점검은 바로 시작한다.
+        # 공용 풀에서 스레드를 기다리면 그 기다림은 90초 한도 · 연결 끊김 확인 밖이라, 떠난 요청의 점검이 나중에 돌았다 (Codex 검토)
+        self.pool = ThreadPoolExecutor(max_workers=concurrency, thread_name_prefix="scan")
         self.queue_max, self.wait_s = queue_max, wait_s
         self._lock = threading.Lock()
         self.waiting = 0
@@ -250,9 +257,15 @@ class _Admission:
             with self._lock:
                 self.waiting -= 1
 
+    async def _in_thread(self, work):
+        return await asyncio.get_running_loop().run_in_executor(self.pool, work)
+
     async def run(self, request: Request | None, fn, *args):
         """자리를 잡고 fn(*args) 를 스레드에서 돌린다. 자리는 그 스레드가 끝날 때 돌려준다."""
         await self.acquire(request)
+        if request is not None and await request.is_disconnected():   # 자리를 잡는 사이 떠났다 — 돌리지 않는다
+            self.sem.release()
+            raise HTTPException(status_code=499, detail="요청이 취소되었습니다")
         # 자리를 돌려줄 쪽은 정확히 하나 — 스레드가 먼저 「시작」을 적으면 스레드가, 기다리던 쪽이 먼저 「취소」를 적으면
         # 기다리던 쪽이 돌려준다(취소된 뒤 늦게 도는 스레드는 점검도 반환도 하지 않는다). 둘 다 돌려주면 자리가 늘어난다 (Codex 검토)
         state = {"v": "pending"}
@@ -269,7 +282,7 @@ class _Admission:
                 self.sem.release()
 
         try:
-            return await run_in_threadpool(work)
+            return await self._in_thread(work)
         except BaseException:
             with state_lock:
                 if state["v"] == "pending":
@@ -321,7 +334,12 @@ async def scan(user_ref: str, request: Request):
                                          session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:  # SNS 서버 다운·404 등
         raise _upstream_error("내보내기 조회", exc, missing_account=True) from exc
-    posts = export.get("posts", [])
+    # 업로드와 같은 상한 · 형식 검사 — Veilo 세션 사본에 아주 긴 글을 써 두고 /scan 으로 점검 자리를 오래 붙잡지 못하게 (Codex 검토).
+    # 시드 계정은 모두 안에 들어간다 (가장 긴 E15 30편 · 약 97,000자)
+    try:
+        posts = file_adapter.clean_posts(export.get("posts", []))
+    except file_adapter.UploadError as exc:
+        raise HTTPException(status_code=exc.status, detail=str(exc)) from exc
     _check_posts(posts)   # 줄에 서기 전에 — 틀린 입력이 자리를 차지하지 않게
     return await _admission.run(request, _run_pipeline, user_ref, posts)
 

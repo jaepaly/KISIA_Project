@@ -88,6 +88,25 @@ def validate_posts(posts) -> int:
     return total
 
 
+def _clean_post(p: dict) -> dict:
+    """계약(sns-minimal-spec) 칸만 남긴다 — photo_captions 같은 계약 밖 칸이 1단 · 2단에 서로 다르게 읽히지 않게.
+    사진은 [{"caption": 문자열|None}] 한 모양으로."""
+    meta = p.get("activity_meta") or {}
+    out = {"post_id": p["post_id"], "user_ref": p.get("user_ref") if isinstance(p.get("user_ref"), str) else None,
+           "title": p.get("title"), "body": p.get("body"),
+           "photos": [{"caption": _caption(ph)} for ph in p.get("photos") or []],
+           "activity_meta": {k: meta.get(k) for k in ("nickname", "geo_tag", "post_time")}}
+    if p.get("post_date") is not None:
+        out["post_date"] = p["post_date"]
+    return out
+
+
+def clean_posts(posts) -> list[dict]:
+    """검사(validate_posts) 후 계약 칸만 남긴 글 목록 — 업로드와 Veilo 내보내기(/scan)가 같이 쓴다."""
+    validate_posts(posts)
+    return [_clean_post(p) for p in posts]
+
+
 def load_from_bytes(content: bytes, filename: str) -> dict:
     """.txt(줄마다 글 한 편) 또는 .json(export 형식과 동일) 둘 다 받는다."""
     try:
@@ -102,13 +121,16 @@ def load_from_bytes(content: bytes, filename: str) -> dict:
             raise UploadError("JSON 형식이 올바르지 않습니다") from exc
         if not isinstance(data, dict) or "posts" not in data:
             raise UploadError("json 업로드는 export 형식(posts 배열)이어야 한다")
-        validate_posts(data["posts"])
+        posts = clean_posts(data["posts"])
         ref = data.get("user_ref")
         if ref is None:
             data["user_ref"] = "u_" + uuid.uuid4().hex[:12]
         elif not isinstance(ref, str) or not _USER_REF.fullmatch(ref):
             raise UploadError("user_ref 형식이 올바르지 않습니다 (u_ + 16진수)")
-        return data
+        return {"schema_version": "1.0", "user_ref": data["user_ref"],
+                "nickname": data.get("nickname") if isinstance(data.get("nickname"), str) else None,
+                "profile_bio": data.get("profile_bio") if isinstance(data.get("profile_bio"), str) else None,
+                "posts": posts}
 
     lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
     user_ref = "u_" + uuid.uuid4().hex[:12]  # 계약 형식 (^u_[0-9a-f]{8,}$) — 「u_upload00」은 16진수가 아니라 LOO 가 거부한다
@@ -126,5 +148,5 @@ def load_from_bytes(content: bytes, filename: str) -> dict:
             "activity_meta": {"nickname": None, "geo_tag": None, "post_time": None},
         } for i, line in enumerate(lines)],
     }
-    validate_posts(export["posts"])
+    export["posts"] = clean_posts(export["posts"])
     return export

@@ -139,7 +139,7 @@ def _texts(record: dict) -> dict[str, str]:
 
 
 def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_target: float = 40.0, *,
-           spans_by_post: dict[str, dict] | None = None) -> dict:
+           spans_by_post: dict[str, dict] | None = None, detect_inputs: dict[str, dict] | None = None) -> dict:
     """D(c4) 자리. output 은 stage2-io Stage2Output 그대로 (findings · recommendation · provenance).
 
     - findings 는 2단 모델(GPU·어댑터가 없거나 출력이 깨지면 규칙 폴백 — provenance.model_version 에 이유)
@@ -148,11 +148,14 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_tar
     - 스팬의 level·subject 는 규칙 판정기(_attributes · #306)로 붙는다
     - spans_by_post: 서버가 이번 요청에서 탐지한 결과 — 진단 화면 하이라이트와 2단 근거가 같은 스팬을 쓴다.
       없는 글만 여기서 다시 탐지한다 (채널은 서버 _detect_input 과 같다 — 제목 · 본문 · 캡션)
+    - detect_inputs: 서버가 1단에 넣은 입력 그대로 — 2단 원문(texts)도 이것으로 만든다. 글에 photos 와 photo_captions 가
+      둘 다 있어도 1단과 2단이 다른 캡션을 보지 않게 (Codex 검토)
     """
     spans_by_post = spans_by_post or {}
+    detect_inputs = detect_inputs or {}
     entries = []
     for post in posts:
-        record = _record(post)
+        record = _record(detect_inputs.get(post["post_id"]) or post)
         result = spans_by_post.get(post["post_id"])
         if result is None:
             result = detect_spans(record)

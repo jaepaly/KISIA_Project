@@ -200,13 +200,15 @@ def test_real_engine_has_no_global_span_cache_and_concurrent_scans_do_not_mix(mo
 def test_server_passes_request_spans_to_stage2(monkeypatch):
     seen = {}
 
-    def fake_stage2(user_ref, posts, risk_current=0.0, risk_target=40.0, *, spans_by_post=None):
+    def fake_stage2(user_ref, posts, risk_current=0.0, risk_target=40.0, *, spans_by_post=None, detect_inputs=None):
         seen["spans"] = spans_by_post
+        seen["inputs"] = detect_inputs
         from apps.analyzer.engines import mock
         return mock.stage2(user_ref, posts, risk_current, risk_target)
     monkeypatch.setattr(server.engine, "stage2", fake_stage2)
     out = server._run_pipeline("u_00000000", [{"post_id": "p1", "body": "저수지 산책"}])
     assert seen["spans"] is out["spans"] and "p1" in seen["spans"]
+    assert seen["inputs"]["p1"]["body"] == "저수지 산책"
 
 
 # ── A4 업로드 입력 상한 · 형식 검사
@@ -295,7 +297,7 @@ def test_cancel_before_thread_starts_releases_slot_exactly_once(monkeypatch):
     adm = server._Admission(1, 1, 0.5)
     ran, errors, done = [], [], threading.Event()
 
-    async def fake_threadpool(work):
+    async def fake_threadpool(work):  # 점검 스레드에 넘기는 자리
         def late():
             time.sleep(0.1)
             try:
@@ -305,7 +307,7 @@ def test_cancel_before_thread_starts_releases_slot_exactly_once(monkeypatch):
             done.set()
         threading.Thread(target=late).start()
         raise asyncio.CancelledError
-    monkeypatch.setattr(server, "run_in_threadpool", fake_threadpool)
+    monkeypatch.setattr(adm, "_in_thread", fake_threadpool)
     with pytest.raises(asyncio.CancelledError):
         asyncio.run(adm.run(None, lambda: ran.append(1)))
     assert done.wait(5)
@@ -319,7 +321,7 @@ def test_cancel_after_thread_started_lets_thread_release(monkeypatch):
     adm = server._Admission(1, 1, 0.5)
     ran, errors, done = [], [], threading.Event()
 
-    async def fake_threadpool(work):
+    async def fake_threadpool(work):  # 점검 스레드에 넘기는 자리
         def run():
             try:
                 work()
@@ -333,7 +335,7 @@ def test_cancel_after_thread_started_lets_thread_release(monkeypatch):
     def slow():
         time.sleep(0.2)
         ran.append(1)
-    monkeypatch.setattr(server, "run_in_threadpool", fake_threadpool)
+    monkeypatch.setattr(adm, "_in_thread", fake_threadpool)
     with pytest.raises(asyncio.CancelledError):
         asyncio.run(adm.run(None, slow))
     assert not adm.sem.acquire(blocking=False)      # 점검이 아직 돈다 — 자리를 먼저 돌려주지 않았다
@@ -356,3 +358,121 @@ def test_sec_fetch_site_same_origin_passes_behind_proxy(admission, monkeypatch):
 def test_deeply_nested_json_is_400(admission):
     r = TestClient(server.app).post("/upload", files={"file": ("a.json", b"[" * 5000 + b"]" * 5000)})
     assert r.status_code == 400 and "JSON" in r.json()["detail"]
+
+
+# ── 2차 Codex 검토 반례
+async def _call_asgi(path: str, receive_msgs: list[dict], headers=None, disconnect: bool = True):
+    """ASGI 앱을 직접 부른다 — receive 가 정해 둔 메시지를 차례로 주고, 다 쓰면 끊김(http.disconnect) ·
+    disconnect=False 면 연결이 살아 있는 브라우저처럼 다음 메시지를 기다린다."""
+    import asyncio
+    msgs = list(receive_msgs)
+    sent = []
+
+    async def receive():
+        if msgs:
+            return msgs.pop(0)
+        if not disconnect:
+            await asyncio.sleep(3600)
+        return {"type": "http.disconnect"}
+
+    async def send(m):
+        sent.append(m)
+    scope = {"type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1", "method": "POST", "scheme": "http",
+             "path": path, "raw_path": path.encode(), "query_string": b"", "root_path": "",
+             "headers": headers or [], "client": ("127.0.0.1", 1), "server": ("testserver", 80)}
+    await server.app(scope, receive, send)
+    return next(m["status"] for m in sent if m["type"] == "http.response.start")
+
+
+def test_real_disconnect_while_waiting_never_runs_scan(admission, monkeypatch):
+    """줄에서 기다리는 동안 브라우저가 실제로 떠나면(ASGI http.disconnect) — 줄에서 빠지고 점검은 끝내 돌지 않는다."""
+    import asyncio
+    admission.wait_s = 10.0
+    ran = []
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: ran.append(1) or {"ok": True})
+    monkeypatch.setattr(server.sns_adapter, "load", lambda *a, **k: {"posts": [{"post_id": "p1", "body": "글"}]})
+    assert admission.sem.acquire(blocking=False)
+    try:
+        t0 = time.monotonic()
+        status = asyncio.run(_call_asgi("/scan/u_00000000", [{"type": "http.request", "body": b"", "more_body": False}]))
+        assert status == 499 and time.monotonic() - t0 < 3 and admission.waiting == 0
+    finally:
+        admission.sem.release()
+    time.sleep(0.3)
+    assert ran == []
+    assert admission.sem.acquire(blocking=False)
+    admission.sem.release()
+
+
+def test_scan_starts_even_when_shared_thread_pool_is_full(admission, monkeypatch):
+    """공용 스레드 풀(AnyIO 기본)이 다 차 있어도 자리를 잡은 점검은 전용 스레드에서 바로 돈다."""
+    import asyncio
+    import anyio.to_thread
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: {"ok": True})
+    boundary = b"b0"
+    body = (b"--b0\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.txt\"\r\n\r\n"
+            + "첫 글".encode() + b"\r\n--b0--\r\n")
+
+    async def main():
+        lim = anyio.to_thread.current_default_thread_limiter()
+        old = lim.total_tokens
+        lim.total_tokens = 1
+        await lim.acquire()                      # 공용 풀의 자리를 다른 요청이 다 쓰고 있다
+        try:
+            return await asyncio.wait_for(_call_asgi(
+                "/upload", [{"type": "http.request", "body": body, "more_body": False}],
+                headers=[(b"content-type", b"multipart/form-data; boundary=" + boundary)], disconnect=False), 5)
+        finally:
+            lim.release()
+            lim.total_tokens = old
+    assert asyncio.run(main()) == 200
+
+
+def test_upload_strips_non_contract_fields_and_stage2_sees_stage1_input(admission, monkeypatch):
+    """photos 와 photo_captions 가 다르게 와도 1단 · 2단이 같은 캡션(계약 칸 photos)을 본다 · 정수 캡션은 400."""
+    seen = {}
+    from apps.analyzer.engines import mock
+
+    def fake_detect(rec):
+        seen.setdefault("detect", []).append(rec)
+        return mock.detect_spans(rec)
+
+    def fake_stage2(user_ref, posts, risk_current=0.0, risk_target=40.0, *, spans_by_post=None, detect_inputs=None):
+        seen["posts"], seen["inputs"] = posts, detect_inputs
+        return mock.stage2(user_ref, posts, risk_current, risk_target)
+    monkeypatch.setattr(server.engine, "detect_spans", fake_detect)
+    monkeypatch.setattr(server.engine, "stage2", fake_stage2)
+    c = TestClient(server.app)
+    post = {"post_id": "a", "body": "저수지", "photos": [{"caption": "성수동"}], "photo_captions": ["다른 곳", 3], "extra": "x"}
+    r = c.post("/upload", files=_json({"posts": [post]}))
+    assert r.status_code == 200, r.text
+    assert "photo_captions" not in seen["posts"][0] and "extra" not in seen["posts"][0]
+    assert seen["detect"][0]["photo_captions"] == ["성수동"] and seen["inputs"]["a"]["photo_captions"] == ["성수동"]
+    assert "photo_captions" not in r.json()["posts"][0]
+    bad = c.post("/upload", files=_json({"posts": [{"post_id": "a", "photos": [{"caption": 3}]}]}))
+    assert bad.status_code == 400
+
+
+def test_real_stage2_uses_stage1_input(monkeypatch, tmp_path):
+    real = _load_real(monkeypatch, tmp_path)
+    monkeypatch.setattr(real, "_stage2_analyze", lambda user_ref, entries, target_risk, mode:
+                        {"recommendation": {"projected": {"current_risk": 0.0}}, "entries": entries})
+    post = {"post_id": "p1", "body": "본문", "photos": [{"caption": "성수동"}], "photo_captions": ["다른 곳"]}
+    rec = server._detect_input(post)
+    out = real.stage2("u_00000000", [post], spans_by_post={"p1": {"spans": []}}, detect_inputs={"p1": rec})
+    assert out["output"]["entries"][0]["texts"]["photo_caption:0"] == "성수동"
+
+
+def test_scan_export_path_has_same_caps(admission, monkeypatch):
+    """Veilo 내보내기(/scan)도 업로드와 같은 상한 — 긴 글로 점검 자리를 오래 붙잡지 못한다. 시연 크기는 통과."""
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: {"n": len(posts)})
+    c = TestClient(server.app)
+    huge = {"posts": [{"post_id": f"p{i}", "body": "가" * 19_000} for i in range(8)]}
+    monkeypatch.setattr(server.sns_adapter, "load", lambda *a, **k: huge)
+    r = c.post("/scan/u_00000000")
+    assert r.status_code == 413 and "모두 합쳐" in r.json()["detail"]
+    demo = {"posts": [{"post_id": f"E15_b{i:02d}", "title": "제목", "body": "가" * 3_300, "photos": [{"caption": "캡션"}] * 2,
+                       "post_date": "2026-01-01", "activity_meta": {"nickname": "닉", "geo_tag": "성수동", "post_time": "10:00"}}
+                      for i in range(30)]}
+    monkeypatch.setattr(server.sns_adapter, "load", lambda *a, **k: demo)
+    assert c.post("/scan/u_00000000").json() == {"n": 30}
