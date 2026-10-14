@@ -32,7 +32,7 @@ def test_about_opens(client):
     assert '<html lang="ko" class="ps-page">' in html          # 기본은 움직임 모드 — 정지 클래스 없음
     for sid in ('id="hero"', 'id="narrow"', 'id="steps"', 'id="end"'):
         assert sid in html
-    assert "건너뛰고 써 보기" in html and 'href="/new"' in html   # 처음부터 건너뛸 수 있다
+    assert 'aria-label="소개 건너뛰고 Veilo 로">건너뛰기</a>' in html   # 처음부터 건너뛸 수 있다 — 상단바의 작은 글자 하나
     assert "예시" in html                                         # 숫자는 가상 예시라고 적는다
     assert "/static/motion-core.js" in html and "/static/pado-scene.js" in html
 
@@ -126,4 +126,49 @@ def test_about_end_leads_into_veilo(client):
     html = client.get("/about").get_data(as_text=True)
     assert "이제 Veilo 에서" in html and "직접 해 보세요" in html
     assert 'href="/?skip_about=1">Veilo 둘러보기' in html
-    assert '<a class="ps-skip" href="/new">건너뛰고 써 보기' in html   # /about 을 연 순간 쿠키가 있어 /new 뒤 홈도 바로 열린다
+
+
+# ── 첫 화면 = 이해시키기 — Veilo 로 나가는 길은 「건너뛰기」 하나 ─────────────────
+def _hero(html: str) -> str:
+    return html[html.index('id="hero"'):html.index('id="narrow"')]
+
+
+def _top(html: str) -> str:
+    return html[html.index('id="utTop"'):html.index('<main')]
+
+
+def test_about_header_is_minimal(client):
+    html = client.get("/about").get_data(as_text=True)
+    top = _top(html)
+    assert 'class="ut-top ps-top"' in html
+    assert '<a class="ut-logo" href="/?skip_about=1">' in top
+    assert '<a class="ps-skipnav" href="/?skip_about=1" aria-label="소개 건너뛰고 Veilo 로">건너뛰기</a>' in top
+    for gone in ('class="intro-btn"', 'class="chk"', 'class="write"', "/static/scan.html", 'href="/new"'):
+        assert gone not in top, gone
+    assert 'class="ut-tabs"' not in html                       # 모바일 하단 탭바도 뺀다
+    assert 'id="psBar"' in top                                  # 읽기 진행 막대는 상단바 선 위에
+
+
+def test_other_pages_keep_full_header(client):
+    client.get("/about")
+    for path in ("/", "/new"):
+        html = client.get(path).get_data(as_text=True)
+        assert 'class="ut-top" id="utTop"' in html and 'ps-top' not in html, path
+        assert '<a class="ut-logo" href="/">' in html and 'class="intro-btn"' in html and 'class="write"' in html, path
+        assert 'class="ut-tabs"' in html and "ps-skipnav" not in html, path
+
+
+def test_hero_has_one_action_and_scroll_cue(client):
+    import re
+    html = client.get("/about").get_data(as_text=True)
+    hero = _hero(html)
+    hrefs = re.findall(r'href="([^"]+)"', hero)
+    assert hrefs == ["#narrow"], hrefs                          # 중심 행동 하나 — 바로 써 보기 · 건너뛰고 써 보기 없음
+    assert "어떻게 좁혀지는지 보기" in hero and "바로 써 보기" not in html and "건너뛰고 써 보기" not in html
+    assert "아래로 내려 보세요" in hero and "예시" in hero        # 안내 한 줄 · 숫자는 예시
+    assert 'id="psCue"' in html and "아래로 스크롤" in html
+    assert html.count("Veilo 둘러보기") == 1 and html.index("Veilo 둘러보기") > html.index('id="end"')   # 끝 화면에만
+    css = (Path(__file__).resolve().parent / "static" / "pado-scene.css").read_text(encoding="utf-8")
+    assert ".no-motion .ps-cue i{animation:none" in css          # 정지 상태 — 멈춘 화살표
+    js = (Path(__file__).resolve().parent / "static" / "pado-scene.js").read_text(encoding="utf-8")
+    assert "CUE_GONE = 40" in js

@@ -3,7 +3,7 @@
                카드 · 숫자 · 점 · 밤 막이 모두 같은 진행도(motion-core 의 관성 보간 cur)를 쓴다. 카드 등장 구간은 겹친다
                (앞 카드가 다 나오기 전에 다음이 시작 — 계단처럼 안 보이게) · 숫자 = 나온 카드 수만큼 로그 공간에서 보간.
    B #steps  : 네 단계가 차례로 켜진다 (0.22 간격 · 0.34 램프 — 역시 겹친다).
-   C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter.
+   C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter · 첫 화면 스크롤 신호(40px 넘게 내리면 숨김).
    정지 상태(html.ps-static)에서는 모든 장면이 끝난 모습 그대로다 — CSS 가 그렇게 그리고, 여기서는 캔버스만 끝 모습으로 한 번 그린다. */
 (function () {
   "use strict";
@@ -169,6 +169,9 @@
 
   // ── 연출 C — 읽기 진행 막대 · 소개 순서 · 어두운 구간 ─────────────────────
   const bar = $("#psBar");
+  const cue = $("#psCue");
+  const CUE_GONE = 40;   // 이만큼(px) 내리면 스크롤 신호를 거둔다 — 이미 내릴 줄 안다
+  let cueGone = null;
   const secs = $$("[data-ps-section]").map((el) => M.track(el));
   const mapLinks = new Map($$(".ps-map a[data-map]").map((a) => [a.dataset.map, a]));
   // 어두운 정도 — 섹션 위치로 만든 키프레임. 같은 값 두 번 = 멈춤 구간
@@ -185,6 +188,7 @@
   let darkOn = false, current = null;
   function chromeScene(y, on) {
     if (bar) setVar(bar, "--p", clamp(y / M.view.max));
+    if (cue && (y > CUE_GONE) !== cueGone) { cueGone = y > CUE_GONE; cue.classList.toggle("is-gone", cueGone); }
     const night = on ? (tl.sample(y).night || 0) : 0;
     if ((night > 0.5) !== darkOn) { darkOn = night > 0.5; root.classList.toggle("dark-chapter", darkOn); }
     let cur = secs[0];

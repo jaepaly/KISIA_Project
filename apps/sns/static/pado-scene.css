@@ -31,11 +31,31 @@
 .ps-btn.primary:hover{color:var(--ps-paper)}
 .ps-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* ── 히어로 ── */
-.ps-hero{min-height:calc(100svh - 64px);display:flex;align-items:center;padding:24px 0 64px}
-.ps-hero .ps-in{width:100%}
-.ps-skip{display:inline-block;margin:0 0 40px;font-size:14px;font-weight:700;color:var(--ps-ink);border-bottom:1px solid var(--ps-line);padding-bottom:2px}
-.ps-skip:hover{text-decoration:none;border-color:var(--ps-ink)}
+/* ── 간소 헤더 (/about 만 · base.html 블록) — 로고 + 작은 「건너뛰기」. 처음부터 또렷한 1px 선(--line-strong) · 그 선 위를 읽기 진행 막대(2px)가 채운다 ── */
+.ut-top.ps-top{border-bottom-color:var(--line-strong,rgba(31,28,25,.24))}   /* .ut-top.scrolled(--line)보다 뒤에 와서 이긴다 */
+html.dark-chapter .ut-top.ps-top{border-bottom-color:color-mix(in srgb,var(--night-ink,#EFE8DC) 34%,transparent)}   /* 밤 장면에서도 선이 보이게 */
+.ps-top .ut-nav{margin-left:auto;min-height:40px}   /* 높이는 기본 상단바와 같게 — 핀 장면 위 여백(64)이 이 높이를 전제로 한다 */
+.ps-top .ut-nav a.ps-skipnav{height:auto;padding:6px 4px;border-radius:4px;background:none;font-size:13px;font-weight:500;color:var(--ps-muted);text-decoration:underline;text-decoration-color:var(--ps-line);text-underline-offset:4px}
+.ps-top .ut-nav a.ps-skipnav:hover{background:none;color:var(--ps-ink);text-decoration-color:currentColor}
+html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night-muted,#B5AB9E)}
+
+/* ── 히어로 — 한 화면보다 10vh 낮게: 아래 끝에 다음 장면(첫 카드 윗부분)이 걸쳐 보인다 ── */
+.ps-hero{position:relative;min-height:calc(100svh - 61px - 10vh);display:flex;flex-direction:column;padding:24px 0 0}
+.ps-hero>.ps-in{width:100%;margin:auto;padding-top:16px;padding-bottom:24px}
+.ps-down span{display:inline-block;margin-left:8px}
+.ps-hint{font-size:14px;font-weight:600;color:var(--ps-body);margin:16px 0 0;word-break:keep-all}
+.ps-hint+.ps-fine{margin-top:6px}
+.ps-peek{height:52px;overflow:clip;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent);pointer-events:none;user-select:none}
+.ps-peek .ps-post{max-width:440px}
+/* 스크롤 신호 — 아래 가운데(소개 순서 위). 화살표는 transform 으로만 천천히 오르내린다 · 40px 넘게 내리면 .is-gone */
+.ps-cue{position:fixed;left:50%;bottom:84px;z-index:24;margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;transform:translateX(-50%);
+  font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ps-muted);pointer-events:none;transition:opacity .3s var(--ps-ease),visibility 0s linear 0s}
+.ps-cue i{position:relative;display:block;width:1px;height:22px;background:var(--ps-ink);animation:ps-bob 2.4s var(--ps-ease) infinite}
+.ps-cue i::after{content:"";position:absolute;left:-4px;bottom:0;width:8px;height:8px;border-right:1px solid var(--ps-ink);border-bottom:1px solid var(--ps-ink);transform:rotate(45deg)}
+.ps-cue.is-gone{opacity:0;visibility:hidden;transition:opacity .3s var(--ps-ease),visibility 0s linear .3s}
+@keyframes ps-bob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(5px)}}
+.no-motion .ps-cue i{animation:none;transform:none}   /* 정지 상태 — 화살표는 멈춘 채 보인다 */
+.no-motion .ps-cue,.no-motion .ps-cue.is-gone{transition:none}
 
 /* ── 핀 장면 공통 — 바깥 높이 N svh · 안쪽 100svh 고정 ── */
 .ps-pin{position:relative;height:calc(var(--pin,200) * 1svh)}
@@ -95,14 +115,18 @@
 .ps-end-more{margin-top:14px}
 
 /* ── 연출 C — 읽기 진행 막대 · 소개 순서 ── */
-.ps-progress{position:fixed;left:0;right:0;top:0;height:2px;z-index:40;pointer-events:none}
+/* 읽기 진행 막대 — 상단바 아래 1px 선을 덮는 2px (선 1px + 아래로 1px) */
+.ps-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;z-index:1;pointer-events:none}
 .ps-progress i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--p,0))}
-.ps-map{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;display:flex;align-items:center;gap:4px;padding:6px 6px 6px 12px;
+.ps-map{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;
   border:1px solid var(--ps-line);border-radius:999px;background:color-mix(in srgb,var(--ps-paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:var(--ps-mono)}
 .ps-map a{position:relative;display:inline-flex;align-items:baseline;gap:6px;padding:6px 8px;font-family:var(--ps-sans);font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--ps-muted);text-decoration:none;white-space:nowrap}
 .ps-map a .n{font-family:var(--ps-mono);font-size:10px;font-weight:500;letter-spacing:.08em;opacity:.7}
 .ps-map a i{position:absolute;left:8px;right:8px;bottom:2px;height:1px;background:var(--ps-ink);transform-origin:0 50%;transform:scaleX(var(--p,0))}
-.ps-map a[aria-current]{color:var(--ps-ink)}
+.ps-map a[aria-current]{color:var(--ps-ink);font-weight:700}
+.ps-map a[aria-current] .n{color:var(--ps-accent);opacity:1}   /* 지금 장면 — 번호만 강조색 */
+/* 이어지는 순서 — 링크 사이 짧은 선(01 — 02 — 03 — 04) */
+.ps-map a+a::before{content:"";position:absolute;left:-7px;top:50%;width:6px;height:1px;background:currentColor;opacity:.4}
 .ps-map a:hover{text-decoration:none;color:var(--ps-ink)}
 .ps-motion{margin-left:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ps-line);background:transparent;color:var(--ps-ink);font:inherit;font-family:var(--ps-sans);font-size:12px;font-weight:600;cursor:pointer}
 .ps-motion[aria-pressed="false"]{background:var(--ps-ink);color:var(--ps-paper);border-color:var(--ps-ink)}
@@ -136,7 +160,11 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 @media (max-width:767px){
   .ps-in{padding:0 16px}
   .ps-hero{min-height:auto;padding:32px 0 56px}
-  .ps-skip{margin-bottom:28px}
+  .ps-peek{display:none}   /* 모바일은 정지 흐름 — 다음 장면이 바로 이어진다 */
+  /* 소개 순서 · 하단 탭이 없다 — 정지 흐름이라 아래 글 위에 겹치므로 종이 바탕 알약에 담는다 */
+  .ps-cue{bottom:calc(16px + env(safe-area-inset-bottom));flex-direction:row;gap:8px;padding:6px 14px;border:1px solid var(--ps-line);border-radius:999px;background:var(--ps-paper)}
+  .ps-cue i{height:14px}
+  .ps-page body{padding-bottom:0}   /* 하단 탭바를 뺐으니 그 자리 여백도 */
   .ps-sticky{padding:64px 0}
   .ps-narrow-grid{grid-template-columns:1fr;gap:32px}
   .ps-stage{width:100%}
@@ -151,4 +179,5 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 }
 @media (prefers-reduced-motion:reduce){
   .ps-btn,.ps-go span{transition:none}
+  .ps-cue i{animation:none;transform:none}
 }

@@ -15,10 +15,11 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  <div class="ut-top" id="utTop">
+  {# 상단바 — /about 은 블록을 덮어 간소 헤더(로고 + 「건너뛰기」)로 쓴다. 다른 화면은 기본 그대로 #}
+  <div class="ut-top{% block top_class %}{% endblock %}" id="utTop">
     <div class="ut-top-in">
       <button class="ut-menu" id="utMenuBtn" aria-label="메뉴 열기">☰</button>
-      <a class="ut-logo" href="/">
+      <a class="ut-logo" href="{% block logo_href %}/{% endblock %}">
         <img class="sym" src="/static/veilo-symbol.svg" alt="" width="28" height="28">
         <span class="wm">Veilo</span>
       </a>
@@ -38,6 +39,7 @@
         {% endblock %}
       </nav>
     </div>
+    {% block top_extra %}{% endblock %}
   </div>
 
   {# 모바일 사이드바 딤 오버레이 #}
@@ -45,7 +47,8 @@
 
   {% block body %}{% endblock %}
 
-  {# 모바일 하단 탭바 #}
+  {# 모바일 하단 탭바 — /about 은 비운다(소개 화면에서 Veilo 로 나가는 길은 「건너뛰기」 하나) #}
+  {% block tabs %}
   <nav class="ut-tabs">
     <a href="/" class="{% if request.path == '/' %}on{% endif %}">
       <span class="ic">🏠</span>홈
@@ -57,6 +60,7 @@
       <span class="ic">✏️</span>글쓰기
     </a>
   </nav>
+  {% endblock %}
 
   <script src="/static/veilo.js"></script>
   <script src="/static/fx.js"></script>

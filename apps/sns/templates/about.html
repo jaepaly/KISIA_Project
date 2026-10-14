@@ -5,9 +5,16 @@
 <link rel="stylesheet" href="/static/pado-scene.css">
 {% endblock %}
 
+{# ── 간소 헤더 — 로고 + 작은 「건너뛰기」 하나. 파도풀이란? · 내 글 점검 · 글쓰기 · 하단 탭은 이 화면에서 뺀다(목적은 넘어가기가 아니라 이해하기).
+   로고 · 건너뛰기 둘 다 ?skip_about=1 — 쿠키를 막아 둔 브라우저에서도 홈이 열리게. 아래 1px 선 위를 읽기 진행 막대가 채운다 #}
+{% block top_class %} ps-top{% endblock %}
+{% block logo_href %}/?skip_about=1{% endblock %}
+{% block nav %}<a class="ps-skipnav" href="/?skip_about=1" aria-label="소개 건너뛰고 Veilo 로">건너뛰기</a>{% endblock %}
+{% block top_extra %}<div class="ps-progress" aria-hidden="true"><i id="psBar"></i></div>{% endblock %}
+{% block tabs %}{% endblock %}
+
 {% block body %}
 {% set scan_url = pado_base ~ "/static/scan.html" ~ ("?u=" ~ me.user_ref if me else "") %}
-<div class="ps-progress" aria-hidden="true"><i id="psBar"></i></div>
 
 <nav class="ps-map" aria-label="소개 순서">
   <a href="#hero" data-map="hero"><span class="n">01</span>파도풀<i></i></a>
@@ -18,20 +25,25 @@
 </nav>
 
 <main class="ps" id="psMain">
-  {# ── 히어로 — 처음부터 건너뛸 수 있다 ── #}
+  {# ── 히어로 — 할 일은 하나: 아래로 내려 보기. 높이를 한 화면보다 조금 줄여 다음 장면이 이어진다는 게 보이게 ── #}
   <section class="ps-hero" id="hero" data-ps-section>
     <div class="ps-in">
-      <a class="ps-skip" href="/new">건너뛰고 써 보기 →</a>
       <p class="eyebrow ko">01 / 파도풀이란?</p>
       <h1 class="ps-h1">이름을 안 써도,<br>글이 쌓이면 내가 보일 수 있습니다.</h1>
       <p class="ps-lead">파도풀은 내 글에서 동네·나이·하는 일 같은 <b>단서</b>를 찾아, 몇 명 중 한 명까지 좁혀질 수 있는지 미리 보여 줍니다. 그리고 어떤 글을 고치면 덜 드러나는지 알려 드립니다.</p>
       <div class="ps-bt">
-        <a class="ps-btn primary" href="/new">바로 써 보기</a>
-        <a class="ps-btn" href="#narrow">어떻게 좁혀지는지 보기 ↓</a>
+        <a class="ps-btn primary ps-down" href="#narrow">어떻게 좁혀지는지 보기 <span aria-hidden="true">↓</span></a>
       </div>
-      <p class="ps-fine">1분이면 다 봅니다 · 이 화면의 글과 숫자는 모두 꾸며 낸 예시입니다.</p>
+      <p class="ps-hint">1분이면 됩니다 · 아래로 내려 보세요</p>
+      <p class="ps-fine">이 화면의 글과 숫자는 모두 꾸며 낸 예시입니다.</p>
+    </div>
+    {# 다음 장면 첫 카드의 윗부분 — 「아래에 더 있다」는 신호. 장식이라 읽지 않는다(같은 글이 바로 아래 장면에 나온다) #}
+    <div class="ps-peek" aria-hidden="true">
+      <div class="ps-in"><div class="ps-post"><p class="t">집 앞 공원 단풍이 벌써 들었어요. 산책하기 딱 좋네요</p><p class="m"><span class="chip">📍 사는 동네</span><span class="k">예시 → 약 400,000명</span></p></div></div>
     </div>
   </section>
+  {# 스크롤 신호 — 화면 아래 가운데. 40px 넘게 내리면 사라진다(pado-scene.js) · 정지 상태면 화살표가 멈춰 있다 #}
+  <p class="ps-cue" id="psCue" aria-hidden="true"><span>아래로 스크롤</span><i></i></p>
 
   {# ── 연출 A — 글이 쌓일수록 좁혀진다 (pado-scene.js · 숫자는 가상 예시) ── #}
   <section class="ps-pin ps-narrow" id="narrow" data-ps-section style="--pin:240">

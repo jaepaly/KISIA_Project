@@ -14,7 +14,9 @@
 //       관성 보간(휠 한 칸 뒤 수렴 시간 · 스크롤 중 rAF p95 · 수렴 뒤 cur = target · 카드 등장 겹침) ·
 //       .ps-sticky position · .reveal opacity · html scroll-behavior · 보간 루프(html[data-ps-loop])가 멈춘 뒤 off · 클릭 물결이 남지 않음 ·
 //       핀 장면 내용이 위 바 · 아래 소개 순서에 가리지 않음 · 움직임 토글 뒤 읽던 자리(±1화면) · Tab 으로 소개 순서 · 움직임 버튼 도달 ·
-//       밤 막이 짙어지는 동안 좁혀지기 글자 대비(작은 라벨 4.5:1 · 제목·숫자 3:1 — 실제 계산 색 · 막 농도 · 라벨 바탕으로 계산)
+//       밤 막이 짙어지는 동안 좁혀지기 글자 대비(작은 라벨 4.5:1 · 제목·숫자 3:1 — 실제 계산 색 · 막 농도 · 라벨 바탕으로 계산) ·
+//       첫 화면(W-HERO): Veilo 로 나가는 링크는 로고 말고 「건너뛰기」 하나 · 스크롤 신호가 40px 뒤 사라짐 · 정지 모드는 멈춘 화살표 ·
+//       상단바 1px 선(--line-strong) 위 진행 막대 2px · 밤 장면에서도 선이 보임 · 「어떻게 좁혀지는지 보기」→ #narrow · 다음 장면이 아래 끝에 걸침
 
 const arg = (name, fb) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : fb; };
 const PORT = Number(arg("--port", process.env.CDP_PORT || 9333));
@@ -97,13 +99,14 @@ async function main() {
   // Tab 을 눌러 가며 소개 순서 링크 · 움직임 버튼에 닿는지
   async function tabReach(mode, { map = true, motion = true } = {}) {
     await js(`window.scrollTo(0, 0); document.activeElement && document.activeElement.blur(); true`);
-    const seen = { map: false, motion: false };
-    for (let i = 0; i < 60 && !(seen.map && seen.motion); i++) {
+    const seen = { map: false, motion: false, skip: false };
+    for (let i = 0; i < 60 && !(seen.map && seen.motion && seen.skip); i++) {
       await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
       await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
-      const f = await js(`(() => { const a = document.activeElement; return { map: !!a.closest(".ps-map a"), motion: a.matches("[data-motion-toggle]") }; })()`);
-      seen.map ||= f.map; seen.motion ||= f.motion;
+      const f = await js(`(() => { const a = document.activeElement; return { map: !!a.closest(".ps-map a"), motion: a.matches("[data-motion-toggle]"), skip: a.matches(".ps-skipnav") }; })()`);
+      seen.map ||= f.map; seen.motion ||= f.motion; seen.skip ||= f.skip;
     }
+    check(mode, "Tab 으로 「건너뛰기」 도달", seen.skip, seen.skip, true);
     if (map) check(mode, "Tab 으로 소개 순서 링크 도달", seen.map, seen.map, true);
     if (motion) check(mode, "Tab 으로 움직임 버튼 도달", seen.motion, seen.motion, true);
   }
@@ -113,8 +116,34 @@ async function main() {
     const r = document.querySelector("#narrow .ps-sticky > .ps-in").getBoundingClientRect();
     return { top: Math.round(r.top), bottom: Math.round(r.bottom), barBottom: Math.round(top), mapTop: Math.round(mapTop) }; })()`);
 
+  // 첫 화면(스크롤 0) — 화면 안에 보이는 링크 중 Veilo 로 나가는 것(# 앵커가 아닌 것 · 로고 제외) · 스크롤 신호 상태
+  const heroState = () => js(`(() => {
+    const vis = (el) => { const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+      return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth && cs.visibility !== "hidden" && Number(cs.opacity) > 0; };
+    const exits = [...document.querySelectorAll("a[href]")].filter((a) => !a.getAttribute("href").startsWith("#") && !a.classList.contains("ut-logo") && vis(a))
+      .map((a) => ({ text: a.textContent.trim(), href: a.getAttribute("href"), label: a.getAttribute("aria-label") }));
+    const cue = document.getElementById("psCue"), ci = cue.querySelector("i"), cs = getComputedStyle(cue);
+    return { y: scrollY, exits, cue: { opacity: Number(cs.opacity), visibility: cs.visibility, anim: getComputedStyle(ci).animationName, gone: cue.classList.contains("is-gone") } }; })()`);
+  async function heroChecks(mode, { animated }) {
+    await js(`window.scrollTo({ top: 0, behavior: "instant" }); true`);
+    await sleep(450);
+    const h = await heroState();
+    check(mode, "첫 화면 Veilo 로 나가는 링크 = 「건너뛰기」 하나 (로고 제외)", h.exits.length === 1 && h.exits[0].text === "건너뛰기" && h.exits[0].label === "소개 건너뛰고 Veilo 로", h.exits, "[건너뛰기]");
+    check(mode, "스크롤 신호 보임 (스크롤 0)", h.cue.opacity === 1 && h.cue.visibility === "visible", h.cue, "opacity 1");
+    check(mode, animated ? "스크롤 신호 화살표 오르내림" : "스크롤 신호 화살표 정지", animated ? h.cue.anim === "ps-bob" : h.cue.anim === "none", h.cue.anim, animated ? "ps-bob" : "none");
+    await js(`window.scrollTo({ top: 41, behavior: "instant" }); true`);
+    await sleep(450);
+    const g = await heroState();
+    check(mode, "40px 넘게 내리면 스크롤 신호 사라짐", g.cue.gone && g.cue.opacity === 0 && g.cue.visibility === "hidden", g.cue, "is-gone · opacity 0 · hidden");
+    await js(`window.scrollTo({ top: 0, behavior: "instant" }); true`);
+    await sleep(450);
+    const b = await heroState();
+    check(mode, "맨 위로 돌아오면 스크롤 신호 다시", !b.cue.gone && b.cue.opacity === 1, b.cue, "보임");
+  }
+
   // 정지 모드 공통 검사
   async function staticChecks(mode, s) {
+    await heroChecks(mode, { animated: false });
     check(mode, "html 에 ps-static · no-motion", /\bps-static\b/.test(s.cls) && /\bno-motion\b/.test(s.cls), s.cls, "ps-static no-motion");
     check(mode, ".ps-sticky position", s.sticky === "static", s.sticky, "static");
     check(mode, ".reveal opacity (스크롤 전)", s.reveal === "1", s.reveal, "1");
@@ -227,6 +256,34 @@ async function main() {
     check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
     check(mode, ".reveal opacity (스크롤 전 숨김)", s.reveal === "0", s.reveal, "0");
     check(mode, "html scroll-behavior", s.scroll === "smooth", s.scroll, "smooth");
+    await heroChecks(mode, { animated: true });
+    // 상단바 선 · 진행 막대 · 소개 순서 · 다음 장면 걸침
+    const top0 = await js(`(() => { const t = document.getElementById("utTop"), cs = getComputedStyle(t), tr = t.getBoundingClientRect();
+      const b = document.querySelector(".ps-progress").getBoundingClientRect(), hero = document.getElementById("hero").getBoundingClientRect();
+      const peek = document.querySelector(".ps-peek").getBoundingClientRect(), map = document.querySelector(".ps-map").getBoundingClientRect();
+      const a = (cs.borderBottomColor.match(/[\\d.]+/g) || []).map(Number);
+      return { line: cs.borderBottomColor, lineW: cs.borderBottomWidth, alpha: a.length > 3 ? a[3] : 1, barH: Math.round(b.height), barBottom: Math.round(b.bottom), topBottom: Math.round(tr.bottom),
+        heroBottom: Math.round(hero.bottom), peekTop: Math.round(peek.top), mapTop: Math.round(map.top), vh: innerHeight,
+        current: document.querySelector(".ps-map a[aria-current]")?.dataset.map }; })()`);
+    check(mode, "상단바 아래 1px 선이 처음부터 또렷 (알파 ≥ 0.2)", top0.lineW === "1px" && top0.alpha >= 0.2, top0, "1px · α ≥ .2");
+    check(mode, "진행 막대 2px 가 상단바 선 위", top0.barH === 2 && Math.abs(top0.barBottom - top0.topBottom) <= 1, top0, "높이 2 · 아래 끝 = 상단바 아래 끝 ±1");
+    check(mode, "첫 화면 소개 순서 현재 = 01 파도풀", top0.current === "hero", top0.current, "hero");
+    check(mode, "히어로가 한 화면보다 낮고 다음 장면 카드가 아래에 걸침", top0.heroBottom < top0.vh && top0.peekTop < top0.mapTop, top0, "heroBottom < vh · peekTop < mapTop");
+    // 「어떻게 좁혀지는지 보기 ↓」 → #narrow 로 부드럽게
+    const btn = await js(`(() => { const r = document.querySelector(".ps-down").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+    for (const type of ["mousePressed", "mouseReleased"]) await send("Input.dispatchMouseEvent", { type, x: btn.x, y: btn.y, button: "left", clickCount: 1 });
+    const mid = await js(`new Promise((r) => setTimeout(() => r(scrollY), 120))`);
+    await sleep(1500);
+    const land = await js(`({ y: Math.round(scrollY), top: Math.round(document.getElementById("narrow").getBoundingClientRect().top + scrollY) })`);
+    check(mode, "「어떻게 좁혀지는지 보기」→ #narrow (부드럽게)", Math.abs(land.y - land.top) <= 2 && mid > 0 && mid < land.top, { mid: Math.round(mid), ...land }, "도착 = #narrow 위 · 중간값이 그 사이");
+    // 밤 장면 — 상단바 선이 밝은 색으로 보인다
+    await scrollTo(await posOf("#narrow", 0.8));
+    await sleep(500);
+    const dk = await js(`(() => { const a = (getComputedStyle(document.getElementById("utTop")).borderBottomColor.match(/[\\d.]+/g) || []).map(Number);
+      const k = /^color\\(/.test(getComputedStyle(document.getElementById("utTop")).borderBottomColor) ? 255 : 1;   // color-mix 는 color(srgb 0~1 / a) 로 나온다
+      return { dark: document.documentElement.classList.contains("dark-chapter"), rgb: a.slice(0, 3).map((v) => Math.round(v * k)), alpha: a.length > 3 ? a[3] : 1 }; })()`);
+    check(mode, "밤 장면에서도 상단바 선이 보임 (밝은 선 · 알파 ≥ 0.25)", dk.dark && dk.rgb[0] > 150 && dk.alpha >= 0.25, dk, "dark-chapter · 밝은 선");
+    await js(`history.replaceState(null, "", location.pathname); true`);
     for (const p of [0.1, 0.5, 0.9]) {
       await scrollTo(await posOf("#narrow", p));
       const k = await clipping();
