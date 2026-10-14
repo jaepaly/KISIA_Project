@@ -415,3 +415,25 @@ def test_scan_estimate_learns_from_real_scans(monkeypatch):
     posts = [{"post_id": "a", "title": "제목", "body": "본문 열자", "photos": [{"caption": "캡션"}, "글"]}]
     assert server._chars(posts) == 2 + 5 + 2 + 1
 
+
+def test_failed_scan_does_not_learn_rate(monkeypatch):
+    """점검이 실패(예외)하면 예상 속도를 배우지 않는다 — 빨리 끝난 실패가 「약 1초」로 예상을 망치던 것 (Codex 10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    monkeypatch.setitem(server._scan_rate, "ms_per_char", 1.45)
+    monkeypatch.setitem(server._scan_rate, "samples", 0)
+    def boom(user_ref, posts):
+        raise RuntimeError("엔진 실패")
+    monkeypatch.setattr(server, "_pipeline", boom)
+    posts = [{"post_id": f"p{i}", "body": "가" * 1000} for i in range(5)]   # 5,000자 — 배울 만큼 길다
+    with pytest.raises(RuntimeError):
+        server._run_pipeline("u_00000000", posts)
+    assert server._scan_rate == {"ms_per_char": 1.45, "samples": 0}
+    c = TestClient(server.app)
+    assert c.get("/api/scan-estimate", params={"chars": 10000}).json()["calibrated"] is False
+    # 성공하면 배운다
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: {"ok": True})
+    server._run_pipeline("u_00000000", posts)
+    assert server._scan_rate["samples"] == 1
+

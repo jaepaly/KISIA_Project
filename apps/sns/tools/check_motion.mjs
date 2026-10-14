@@ -542,6 +542,60 @@ async function main() {
     await tabReach(mode);
   }
 
+  // ⑦ 같은 페이지에서 바뀌는 경우 (Codex 전체 검토 10/14) — 단계 전환 도중 창 크기 pin → flow → pin · 보는 도중 동작 줄이기 켰다 끄기 ·
+  //    휴대폰 「움직임 끄기」 버튼 · 아직 안 켜진 단계 글자 대비 · 홈 배경 시차가 동작 줄이기에서 멈춤 · 그동안 스크립트 오류 0
+  {
+    const mode = "같은 페이지 전환";
+    const stepsSettled = async () => { for (let i = 0; i < 60; i++) { if (await js(`(() => { const s = document.getElementById("steps"); return s.dataset.shown === s.dataset.target; })()`)) break; await sleep(100); } await sleep(900); };
+    await open("/about");
+    await js(`window.__errs = []; addEventListener("error", (e) => window.__errs.push(String(e.message))); true`);
+    // 안 켜진 단계 글자 대비 — 네 단계 처음(1단계만 켜짐)에서 2~4단계 설명 글자 vs 종이
+    await scrollTo(await posOf("#steps", 0.04)); await sleep(900);
+    const cr = await js(`(() => { const rgb = (s) => (s.match(/[\\d.]+/g) || []).map(Number);
+      const lum = (c) => { const [r, g, b] = c.slice(0, 3).map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+      const bg = rgb(getComputedStyle(document.body).backgroundColor);
+      return [...document.querySelectorAll("#steps .ps-step:not(.reached) p")].map((p) => { const cs = getComputedStyle(p), li = getComputedStyle(p.closest(".ps-step"));
+        const fg = rgb(cs.color), a = Number(li.opacity), x = lum(fg), y = lum(bg); return { ratio: Math.round(((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)) * 100) / 100, opacity: a }; }); })()`);
+    check(mode, "안 켜진 단계 설명 글자 대비 ≥ 4.5 (단계를 통째로 흐리게 하지 않음)", cr.length >= 2 && cr.every((x) => x.ratio >= 4.5 && x.opacity === 1), cr, "≥ 4.5 · opacity 1");
+    // 단계 전환 도중 휴대폰 크기로 → 다시 데스크톱
+    await js(`window.scrollTo({ top: ${await posOf("#steps", 0.5)}, behavior: "instant" }); true`); await sleep(120);
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await sleep(900);
+    const f = await js(`({ cls: document.documentElement.className, mode: PadoMotion.mode(), seen: [...document.querySelectorAll("#steps .ps-step")].filter((e) => e.classList.contains("seen")).length })`);
+    check(mode, "전환 도중 휴대폰 크기 → 흐름 모드", f.mode === "flow" && f.cls.split(" ").includes("ps-flow") && !f.cls.split(" ").includes("no-motion"), f, "flow");
+    await send("Emulation.setDeviceMetricsOverride", { width: 1400, height: 900, deviceScaleFactor: 1, mobile: false }); await sleep(900);
+    await scrollTo(await posOf("#steps", 0.5)); await stepsSettled();
+    const b = await js(`({ cls: document.documentElement.className, mode: PadoMotion.mode(), shown: document.getElementById("steps").dataset.shown, target: document.getElementById("steps").dataset.target, sticky: getComputedStyle(document.querySelector(".ps-sticky")).position })`);
+    check(mode, "다시 데스크톱 → 고정 장면 · 단계가 목표에 닿음", b.mode === "pin" && b.sticky === "sticky" && b.shown === b.target && Number(b.shown) >= 3, b, "pin · shown = target");
+    // 보는 도중 동작 줄이기 켰다 끄기
+    await js(`window.scrollTo({ top: 0, behavior: "instant" }); true`); await sleep(400);
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] }); await sleep(700);
+    const r1 = await js(`({ cls: document.documentElement.className, hero: window.PadoHero.probe().running })`);
+    check(mode, "보는 도중 동작 줄이기 → 정지 · 돋보기 멈춤", r1.cls.split(" ").includes("no-motion") && r1.hero === false, r1, "no-motion · running false");
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] }); await sleep(700);
+    const r2 = await js(`({ cls: document.documentElement.className, hero: window.PadoHero.probe().running })`);
+    check(mode, "다시 풀면 → 움직임 · 돋보기 다시 돎", !r2.cls.split(" ").includes("no-motion") && r2.hero === true, r2, "running true");
+    const errs = await js(`window.__errs`);
+    check(mode, "전환하는 동안 스크립트 오류 0", errs.length === 0, errs, 0);
+    // 휴대폰에서도 「움직임 끄기」 버튼이 보이고 눌린다
+    await open("/about", { w: 390, h: 844, mobile: true });
+    const tg = await js(`(() => { const b = document.querySelector("[data-motion-toggle]"); const r = b.getBoundingClientRect(); return { vis: r.width > 0 && r.bottom <= innerHeight && getComputedStyle(b).visibility !== "hidden", x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+    check(mode, "휴대폰에 「움직임 끄기」 버튼이 보임", tg.vis, tg, "보임");
+    for (const type of ["mousePressed", "mouseReleased"]) await send("Input.dispatchMouseEvent", { type, x: tg.x, y: tg.y, button: "left", clickCount: 1 });
+    await sleep(600);
+    const m1 = await js(`document.documentElement.className`);
+    check(mode, "휴대폰 버튼으로 끄면 정지", m1.split(" ").includes("no-motion"), m1, "no-motion");
+    await js(`localStorage.setItem("padopool_motion", "on"); true`);
+    // 홈 배경 시차 — 동작 줄이기로 바뀌면 제자리(0)에서 멈춘다
+    await send("Emulation.setDeviceMetricsOverride", { width: 1400, height: 900, deviceScaleFactor: 1, mobile: false });
+    let ld = once("Page.loadEventFired"); await send("Page.navigate", { url: `${BASE}/?skip_about=1` }); await ld; await sleep(800);
+    await js(`window.scrollTo({ top: document.documentElement.scrollHeight / 2, behavior: "instant" }); true`); await sleep(1500);
+    const p1 = await js(`Number(document.querySelector(".ut-bg").style.getPropertyValue("--bgp"))`);
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] }); await sleep(500);
+    const p2 = await js(`document.querySelector(".ut-bg").style.getPropertyValue("--bgp")`);
+    check(mode, "홈 배경 시차: 스크롤하면 움직이고 동작 줄이기면 0 에서 멈춤", p1 > 0.1 && p2 === "0", { p1, p2 }, "p1 > 0.1 · p2 = 0");
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
+  }
+
   await send("Emulation.setEmulatedMedia", { features: [] });
   await send("Emulation.clearDeviceMetricsOverride");
   c.ws.close();

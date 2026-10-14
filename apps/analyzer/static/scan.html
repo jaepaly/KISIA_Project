@@ -103,7 +103,11 @@ let picked = null;   // { user_ref, nickname, n_posts }
 
 // 진행 표시(progressStart · progressStop)는 common.js — 위험 줄이기의 「다시 점검」도 같은 띠를 쓴다
 
+let scanning = false;   // 점검 중 — 다른 계정을 고르거나 다시 눌러 요청이 겹치지 않게(Codex 10/14)
 async function runScan(user_ref, label) {
+  if (scanning) return;
+  scanning = true;
+  document.getElementById("scanCard").classList.add("is-scanning");
   const msg = $("scanMsg");
   msg.className = "muted"; msg.textContent = "";
   // 누른 버튼이 바로 「점검 중」으로 — 회색 비활성으로만 바뀌면 멈춘 것처럼 보였다(아래 진행 띠는 화면 끝이라 눈에 덜 띈다)
@@ -125,6 +129,8 @@ async function runScan(user_ref, label) {
   } catch (e) {
     msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
   } finally {
+    scanning = false;
+    document.getElementById("scanCard").classList.remove("is-scanning");
     progressStop();
     const btn = $("scanBtn");
     btn.classList.remove("is-busy"); btn.textContent = btn.dataset.label || "공개 글 점검"; btn.disabled = !picked;
@@ -153,8 +159,8 @@ function pick(a) {
   $("picked").innerHTML = `<span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
     <div><b>${esc(a.nickname)}</b> <span class="muted">@${esc(a.user_ref)} · 공개 글 ${esc(String(a.n_posts))}편</span>${a.bio ? `<div class="muted">${esc(a.bio)}</div>` : ""}</div>
     <button type="button" class="link" id="repick">다른 계정</button>`;
-  $("repick").onclick = () => { unpick(); $("userQ").focus(); };
-  $("scanBtn").disabled = false;
+  $("repick").onclick = () => { if (scanning) return; unpick(); $("userQ").focus(); };
+  $("scanBtn").disabled = scanning;
   loadEstimate(a);
 }
 // 예상 점검 시간 — 서버가 이 계정 글자 수 × 이 서버의 실측 속도로 어림한다(/sns/estimate). 고른 계정 옆에 미리 보여 주고 진행 띠에도 쓴다.

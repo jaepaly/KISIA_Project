@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import threading
 import time
 
 import requests
@@ -119,6 +120,7 @@ def _check_posts(posts: list[dict]) -> None:
 #    실제 점검이 끝날 때마다 이 프로세스의 속도로 고쳐 간다(지수 평균). 글자 수가 적은 점검은 고정 시간 몫이 커서 속도 추정에 쓰지 않는다
 SCAN_BASE_S = 1.0
 #    목업 엔진은 모델을 안 돌려 거의 즉시 끝난다 — 처음부터 그 속도로(첫 예상이 「12초」로 나와 시연을 헷갈리게 하지 않게)
+_rate_lock = threading.Lock()   # 동시 점검이 속도를 같이 고칠 때 — 읽고 고치고 세는 것을 한 번에
 _scan_rate = {"ms_per_char": float(os.getenv("SCAN_MS_PER_CHAR", "1.45" if os.getenv("ENGINE_MODE", "mock") == "real" else "0.02")),
               "samples": 0}
 
@@ -134,16 +136,18 @@ def _chars(posts: list[dict]) -> int:
 
 
 def _estimate(chars: int) -> dict:
-    return {"n_chars": chars, "seconds": round(SCAN_BASE_S + chars * _scan_rate["ms_per_char"] / 1000, 1),
-            "calibrated": _scan_rate["samples"] > 0}
+    with _rate_lock:
+        rate, n = _scan_rate["ms_per_char"], _scan_rate["samples"]
+    return {"n_chars": chars, "seconds": round(SCAN_BASE_S + chars * rate / 1000, 1), "calibrated": n > 0}
 
 
 def _learn_rate(chars: int, seconds: float) -> None:
     if chars < 2000:
         return
     r = max(0.0, seconds - SCAN_BASE_S) * 1000 / chars
-    _scan_rate["ms_per_char"] = r if _scan_rate["samples"] == 0 else 0.5 * _scan_rate["ms_per_char"] + 0.5 * r
-    _scan_rate["samples"] += 1
+    with _rate_lock:
+        _scan_rate["ms_per_char"] = r if _scan_rate["samples"] == 0 else 0.5 * _scan_rate["ms_per_char"] + 0.5 * r
+        _scan_rate["samples"] += 1
 
 
 @app.get("/sns/estimate/{user_ref}")
@@ -166,10 +170,9 @@ def scan_estimate(chars: int = Query(ge=0, le=5_000_000)):
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
     _check_posts(posts)
     t0 = time.perf_counter()
-    try:
-        return _pipeline(user_ref, posts)
-    finally:
-        _learn_rate(_chars(posts), time.perf_counter() - t0)
+    out = _pipeline(user_ref, posts)   # 실패한 점검(예외)은 속도를 배우지 않는다 — 빨리 끝난 실패가 예상을 망치지 않게 (Codex 10/14)
+    _learn_rate(_chars(posts), time.perf_counter() - t0)
+    return out
 
 
 def _pipeline(user_ref: str, posts: list[dict]) -> dict:

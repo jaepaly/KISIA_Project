@@ -36,13 +36,17 @@
       function goal() { var max = document.documentElement.scrollHeight - innerHeight; return max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0; }
       function frame(t) {
         raf = 0;
+        if (rm.matches) { stop(); return; }
         var dt = last && t - last < 100 ? (t - last) / 1000 : 1 / 60; last = t;
         cur += (target - cur) * (1 - Math.exp(-dt * 6));
         if (Math.abs(target - cur) < 0.0005) cur = target; else raf = requestAnimationFrame(frame);
         bg.style.setProperty("--bgp", cur.toFixed(4));
         if (!raf) last = 0;
       }
-      function kick() { target = goal(); if (rm.matches) { cur = target; bg.style.setProperty("--bgp", "0"); return; } if (!raf) raf = requestAnimationFrame(frame); }
+      function kick() { target = goal(); if (rm.matches) { stop(); return; } if (!raf) raf = requestAnimationFrame(frame); }
+      // 동작 줄이기로 바뀌면 — 돌던 rAF 를 거두고 제자리(0). 다시 풀리면 지금 자리부터 (Codex 10/14)
+      function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; last = 0; cur = 0; bg.style.setProperty("--bgp", "0"); }
+      (rm.addEventListener ? rm.addEventListener("change", kick) : rm.addListener(kick));
       addEventListener("scroll", kick, { passive: true });
       addEventListener("resize", kick, { passive: true });
       kick();

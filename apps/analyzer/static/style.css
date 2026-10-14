@@ -361,3 +361,5 @@ footer{
 .before-after .ba b{font-size:19px; letter-spacing:-.03em}
 .before-after .hint{margin:6px 0 0}
 .engine:empty{display:none}
+/* 점검 중 — 계정 고르기 · 검색 · 다른 계정을 잠근다(요청이 겹치지 않게) */
+#scanCard.is-scanning .finder input,#scanCard.is-scanning .finder-list,#scanCard.is-scanning .finder-more,#scanCard.is-scanning #repick{pointer-events:none;opacity:.55}

@@ -170,7 +170,9 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 /* 선 끝 점(머리) — 지금 어디까지 왔는지. 선이 오른쪽 끝에 닿으면 장면이 넘어간다 */
 .ps-path b{position:absolute;top:0;left:calc(var(--w,1) * 100%);width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:var(--ps-accent);box-shadow:0 0 0 4px var(--ps-accent-soft);opacity:calc(var(--w,1) * 40)}
 .ps-step-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
-.ps-step{--a:1;position:relative;padding-top:36px;opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 18px))}   /* transition 없음 — 값은 motion-core 관성 보간이 이미 부드럽게 준다(겹치면 이중으로 늦어진다) */
+.ps-step{--a:1;position:relative;padding-top:36px;transform:translateY(calc((1 - var(--a)) * 18px))}
+/* 아직 안 켜진 단계 — 전체를 투명하게 하면 설명 글자 대비가 1.7:1 로 떨어졌다(Codex 10/14). 글자는 회색(--ps-muted · 종이 위 4.5:1 이상)으로만 낮춘다 */
+.ps-step:not(.reached) h3,.ps-step:not(.reached) p,.ps-step:not(.reached) .eyebrow{color:var(--ps-muted)}   /* transition 없음 — 값은 motion-core 관성 보간이 이미 부드럽게 준다(겹치면 이중으로 늦어진다) */
 .ps-step .dot{position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--ps-paper);border:1px solid var(--ps-muted)}
 .ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
 .ps-step .eyebrow{margin:0 0 6px}
@@ -310,7 +312,10 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-step .dot{top:4px}
   .ps-end{min-height:auto;padding:72px 0 120px}
   .ps-go{width:100%;justify-content:center}
-  .ps-map{display:none}
+  /* 소개 순서 링크는 숨기고 「움직임 끄기」 버튼만 오른쪽 아래에 남긴다 — 휴대폰도 끌 수 있게(Codex 10/14) */
+  .ps-map{left:auto;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));transform:none;padding:4px;gap:0}
+  .ps-map a{display:none}
+  .ps-motion{margin-left:0;height:30px;font-size:11.5px}
   .ps-btn{flex:1 1 auto;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){
@@ -335,7 +340,7 @@ html.ps-flow .ps-posts{order:4;margin-top:16px;padding-bottom:45svh}   /* 마지
 html.ps-flow .ps-post{opacity:var(--in);transform:translateY(calc((1 - var(--in)) * 24px))}
 html.ps-flow .ps-pinm{opacity:var(--in)}
 /* 네 단계 — 화면에 들면 그 단계가 켜지고(점 · 글자) 그림이 한 번 재생된다(전환은 CSS 시간 · @property) */
-html.ps-flow .ps-step{opacity:calc(.3 + .7 * var(--a));transform:translateY(calc((1 - var(--a)) * 14px));transition:--a .5s var(--ps-ease)}
+html.ps-flow .ps-step{opacity:1;transform:translateY(calc((1 - var(--a)) * 14px));transition:--a .5s var(--ps-ease)}
 html.ps-flow .ps-step .dot{background:var(--ps-paper);border-color:var(--ps-muted)}
 html.ps-flow .ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
 html.ps-flow .ps-vis-m{transition:--t .8s var(--ps-ease) .1s}

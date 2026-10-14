@@ -204,13 +204,16 @@
     if (s) { lx = tx = home.x; ly = ty = home.y; draw(0); } else kick();
   }
 
-  hero.addEventListener("pointermove", (e) => {
+  // 누른 자리(pointerdown)도 — 움직이지 않고 톡 누른 터치도 돋보기가 그리로 간다 (Codex 10/14)
+  const follow = (e) => {
     if (still()) return;
     const c = cv.getBoundingClientRect();
     tx = e.clientX - c.left; ty = e.clientY - c.top;   // 마우스는 그대로 따른다 — 범위(fit)는 혼자 떠돌 때만
     pointerIn = true; lastMove = performance.now();
     kick();
-  }, { passive: true });
+  };
+  hero.addEventListener("pointermove", follow, { passive: true });
+  hero.addEventListener("pointerdown", follow, { passive: true });
   hero.addEventListener("pointerleave", () => { pointerIn = false; });
   document.addEventListener("visibilitychange", kick);
   (RM.addEventListener ? RM.addEventListener("change", setStill) : RM.addListener(setStill));
