@@ -253,11 +253,16 @@ class _Admission:
     async def run(self, request: Request | None, fn, *args):
         """자리를 잡고 fn(*args) 를 스레드에서 돌린다. 자리는 그 스레드가 끝날 때 돌려준다."""
         await self.acquire(request)
-        started = False
+        # 자리를 돌려줄 쪽은 정확히 하나 — 스레드가 먼저 「시작」을 적으면 스레드가, 기다리던 쪽이 먼저 「취소」를 적으면
+        # 기다리던 쪽이 돌려준다(취소된 뒤 늦게 도는 스레드는 점검도 반환도 하지 않는다). 둘 다 돌려주면 자리가 늘어난다 (Codex 검토)
+        state = {"v": "pending"}
+        state_lock = threading.Lock()
 
         def work():
-            nonlocal started
-            started = True
+            with state_lock:
+                if state["v"] == "cancelled":
+                    return None
+                state["v"] = "running"
             try:
                 return fn(*args)
             finally:
@@ -266,8 +271,10 @@ class _Admission:
         try:
             return await run_in_threadpool(work)
         except BaseException:
-            if not started:   # 스레드가 시작도 못 하고 취소됐다 — 잡은 자리를 여기서 돌려준다
-                self.sem.release()
+            with state_lock:
+                if state["v"] == "pending":
+                    state["v"] = "cancelled"
+                    self.sem.release()
             raise
 
 
@@ -291,6 +298,10 @@ _ALLOWED_HOSTS = _origin_hosts()
 
 
 def _check_origin(request: Request) -> None:
+    # 요즘 브라우저는 Sec-Fetch-Site 를 싣는다(페이지 스크립트가 못 바꾼다) — same-origin 이면 Host 헤더와 상관없이 통과.
+    # nginx 가 Host 를 내부 주소로 바꿔 넘겨도 운영(veilo.site/check) 화면이 막히지 않게 (Codex 검토)
+    if request.headers.get("sec-fetch-site") == "same-origin":
+        return
     src = request.headers.get("origin") or request.headers.get("referer")
     if not src:
         return

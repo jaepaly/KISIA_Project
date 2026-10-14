@@ -192,3 +192,49 @@ def test_change_count_matches_changes(env):
 def test_debug_off_by_default():
     src = (Path(__file__).resolve().parent / "app.py").read_text(encoding="utf-8")
     assert 'debug=os.getenv("FLASK_DEBUG") == "1"' in src and "debug=True" not in src
+
+
+# ── Codex 검토 반례
+def test_concurrent_creation_does_not_overwrite_existing_copy(env, monkeypatch):
+    """같은 쿠키의 두 요청이 동시에 사본을 만들 때 — 늦은 쪽이 먼저 만든 사본(그 사이 저장한 수정)을 덮지 않는다."""
+    appmod, root = env
+    sid = "ab" * 12
+    target = root / "sessions" / f"{sid}.db"
+    real_reserve = appmod._reserve_slot
+
+    def reserve_and_lose_race(d):
+        ok = real_reserve(d)
+        _seed(target)                                            # 다른 요청이 먼저 만들고
+        con = sqlite3.connect(target)
+        con.execute("UPDATE posts SET visibility='private' WHERE post_id='S01_b01'")   # 수정까지 저장했다
+        con.commit(); con.close()
+        return ok
+    monkeypatch.setattr(appmod, "_reserve_slot", reserve_and_lose_race)
+    with appmod.app.test_request_context():
+        assert appmod._session_db_path(sid) == target
+    con = sqlite3.connect(target)
+    assert con.execute("SELECT visibility FROM posts WHERE post_id='S01_b01'").fetchone()[0] == "private"
+    con.close()
+    assert appmod._sweep_state["count"] == 0                     # 못 쓴 자리는 돌려줬다
+    assert not list((root / "sessions").glob("*.tmp"))
+
+
+def test_cap_is_hard_when_all_copies_are_in_use(env, monkeypatch):
+    """상한에 닿았는데 전부 방금 쓴 사본이면 — 지우지 않고, 새 방문자에게 사본 대신 503 (디스크를 채우지 않는다)."""
+    appmod, root = env
+    monkeypatch.setattr(appmod, "SESSION_MAX", 2)
+    a, _ = _new_visitor(appmod.app)
+    b, _ = _new_visitor(appmod.app)
+    r = appmod.app.test_client().get("/?skip_about=1")
+    assert r.status_code == 503 and "잠시 뒤" in r.get_data(as_text=True)
+    assert len(list((root / "sessions").glob("*.db"))) == 2
+    assert a.get(f"/u/{REF}").status_code == 200 and b.get(f"/u/{REF}").status_code == 200   # 있던 방문자는 그대로
+
+
+def test_sec_fetch_site_same_origin_passes_behind_proxy(env):
+    appmod, _ = env
+    c, _ = _new_visitor(appmod.app)
+    h = {"Origin": "https://veilo.site", "Host": "127.0.0.1:3000"}
+    assert c.post("/me", data={"author_id": ""}, headers=h).status_code == 403
+    assert c.post("/me", data={"author_id": ""}, headers={**h, "Sec-Fetch-Site": "same-origin"}).status_code == 302
+    assert c.post("/me", data={"author_id": ""}, headers={"Origin": "https://evil.example", "Sec-Fetch-Site": "cross-site"}).status_code == 403

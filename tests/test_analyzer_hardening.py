@@ -286,3 +286,73 @@ def test_allowed_origins_env(monkeypatch):
     monkeypatch.setattr(server, "SNS_PUBLIC_URL", "http://localhost:3000")
     monkeypatch.setenv("ALLOWED_ORIGINS", "https://veilo.site, https://www.veilo.site")
     assert server._origin_hosts() == {"localhost:3000", "veilo.site", "www.veilo.site"}
+
+
+# ── Codex 검토 반례
+def test_cancel_before_thread_starts_releases_slot_exactly_once(monkeypatch):
+    """스레드가 시작되기 전에 기다리던 쪽이 취소되면 — 자리는 기다리던 쪽이 한 번만 돌려주고, 늦게 도는 스레드는 점검하지 않는다."""
+    import asyncio
+    adm = server._Admission(1, 1, 0.5)
+    ran, errors, done = [], [], threading.Event()
+
+    async def fake_threadpool(work):
+        def late():
+            time.sleep(0.1)
+            try:
+                work()
+            except Exception as e:   # noqa: BLE001 — 이중 반환(ValueError)을 잡아 확인
+                errors.append(e)
+            done.set()
+        threading.Thread(target=late).start()
+        raise asyncio.CancelledError
+    monkeypatch.setattr(server, "run_in_threadpool", fake_threadpool)
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(adm.run(None, lambda: ran.append(1)))
+    assert done.wait(5)
+    assert ran == [] and errors == []
+    assert adm.sem.acquire(blocking=False) and not adm.sem.acquire(blocking=False)   # 자리는 정확히 1
+    adm.sem.release()
+
+
+def test_cancel_after_thread_started_lets_thread_release(monkeypatch):
+    import asyncio
+    adm = server._Admission(1, 1, 0.5)
+    ran, errors, done = [], [], threading.Event()
+
+    async def fake_threadpool(work):
+        def run():
+            try:
+                work()
+            except Exception as e:   # noqa: BLE001
+                errors.append(e)
+            done.set()
+        threading.Thread(target=run).start()
+        await asyncio.sleep(0.05)     # 스레드가 시작을 적은 뒤 취소
+        raise asyncio.CancelledError
+
+    def slow():
+        time.sleep(0.2)
+        ran.append(1)
+    monkeypatch.setattr(server, "run_in_threadpool", fake_threadpool)
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(adm.run(None, slow))
+    assert not adm.sem.acquire(blocking=False)      # 점검이 아직 돈다 — 자리를 먼저 돌려주지 않았다
+    assert done.wait(5) and ran == [1] and errors == []
+    assert adm.sem.acquire(blocking=False) and not adm.sem.acquire(blocking=False)
+    adm.sem.release()
+
+
+def test_sec_fetch_site_same_origin_passes_behind_proxy(admission, monkeypatch):
+    """nginx 가 Host 를 내부 주소로 바꿔 넘겨도 — 브라우저의 Sec-Fetch-Site: same-origin 이면 통과. 다른 사이트는 여전히 403."""
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: {"ok": True})
+    c = TestClient(server.app)
+    h = {"Origin": "https://veilo.site", "Host": "127.0.0.1:8020"}
+    assert c.post("/upload", files=_txt(), headers=h).status_code == 403
+    assert c.post("/upload", files=_txt(), headers={**h, "Sec-Fetch-Site": "same-origin"}).status_code == 200
+    evil = {"Origin": "https://evil.example", "Sec-Fetch-Site": "cross-site"}
+    assert c.post("/upload", files=_txt(), headers=evil).status_code == 403
+
+
+def test_deeply_nested_json_is_400(admission):
+    r = TestClient(server.app).post("/upload", files={"file": ("a.json", b"[" * 5000 + b"]" * 5000)})
+    assert r.status_code == 400 and "JSON" in r.json()["detail"]

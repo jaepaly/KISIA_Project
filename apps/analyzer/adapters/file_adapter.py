@@ -98,7 +98,7 @@ def load_from_bytes(content: bytes, filename: str) -> dict:
     if filename.lower().endswith(".json"):
         try:
             data = json.loads(text)
-        except ValueError as exc:
+        except (ValueError, RecursionError) as exc:   # 깊게 중첩된 JSON 도 4xx (Codex 검토)
             raise UploadError("JSON 형식이 올바르지 않습니다") from exc
         if not isinstance(data, dict) or "posts" not in data:
             raise UploadError("json 업로드는 export 형식(posts 배열)이어야 한다")

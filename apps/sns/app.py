@@ -100,6 +100,9 @@ _sweep_lock = _threading.Lock()
 _sweep_state = {"at": 0.0, "count": None}   # 마지막 청소 시각 · 그때 센 사본 수(+ 그 뒤 만든 수)
 
 
+SESSION_RECENT_SECONDS = 60   # 상한 청소가 지우지 않는 「방금 연」 사본 — 쓰는 중인 사본을 지우지 않게
+
+
 def _session_db_path(sid: str) -> _Path:
     d = _session_dir()
     d.mkdir(parents=True, exist_ok=True)
@@ -110,11 +113,16 @@ def _session_db_path(sid: str) -> _Path:
         except OSError:
             pass
         return p
-    _make_room(d)
-    # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 한 번에 바꿔 단다 — 같은 쿠키의 동시 요청이 반쯤 복사된 파일을 열지 않게
+    if not _reserve_slot(d):
+        # 상한에 닿았고 방금 쓴 사본뿐이라 지울 것도 없다 — 짧은 시간에 새 방문자가 몰린 경우다. 공용 DB 로 보내면
+        # 그 사람의 수정이 남에게 보이므로 새 사본 없이 잠시 뒤 다시 오게 한다 (상한을 넘겨 디스크를 채우지 않는다)
+        abort(503, "지금 체험하는 사람이 많습니다. 잠시 뒤 다시 와 주세요.")
+    # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 「없을 때만」 붙인다(os.link 는 이미 있으면 실패한다) — 같은 쿠키의
+    # 동시 요청이 각자 복사해 먼저 만든 사본(그 사이 저장한 수정)을 덮지 않게 (Codex 검토)
     tmp = d / f"{sid}.{_uuid.uuid4().hex[:8]}.tmp"
-    _shutil.copyfile(_seed_path(), tmp)
+    made = False
     try:
+        _shutil.copyfile(_seed_path(), tmp)
         from db import ensure_visitor_tables
         c = sqlite3.connect(tmp)
         try:
@@ -122,16 +130,22 @@ def _session_db_path(sid: str) -> _Path:
             c.commit()
         finally:
             c.close()
-        os.replace(tmp, p)
+        try:
+            os.link(tmp, p)
+            made = True
+        except FileExistsError:
+            pass   # 다른 요청이 먼저 만들었다 — 그 사본을 쓴다
+        except OSError:   # 하드 링크를 못 쓰는 파일 시스템 — 없을 때만 바꿔 단다
+            if not p.exists():
+                os.replace(tmp, p)
+                made = True
     finally:
-        if tmp.exists():
-            try:
-                tmp.unlink()
-            except OSError:
-                pass
-    with _sweep_lock:
-        if _sweep_state["count"] is not None:
-            _sweep_state["count"] += 1
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        if not made:
+            _release_slot()
     return p
 
 
@@ -139,42 +153,59 @@ def _os_utime(p: _Path) -> None:
     os.utime(p, None)
 
 
-def _make_room(d: _Path) -> None:
-    """새 사본을 만들기 전에 — 청소 주기가 됐거나 상한에 닿았으면 청소한다."""
+def _reserve_slot(d: _Path) -> bool:
+    """새 사본 자리를 하나 잡는다 — 청소 주기가 됐거나 상한에 닿았으면 먼저 청소한다. 셈은 잠금 안에서 올려
+    동시에 만들어도 상한을 넘지 않는다. 자리가 없으면 False."""
     now = _time.time()
     with _sweep_lock:
-        due = now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS or _sweep_state["count"] is None
-        full = _sweep_state["count"] is not None and _sweep_state["count"] >= SESSION_MAX
-        if not (due or full):
-            return
-        _sweep_state["at"] = now
-        _sweep_state["count"] = _sweep_sessions(d)
+        due = _sweep_state["count"] is None or now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS
+        if due or _sweep_state["count"] >= SESSION_MAX:
+            _sweep_state["at"] = now
+            _sweep_state["count"] = _sweep_sessions(d)
+        if _sweep_state["count"] >= SESSION_MAX:
+            return False
+        _sweep_state["count"] += 1
+        return True
+
+
+def _release_slot() -> None:
+    with _sweep_lock:
+        if _sweep_state["count"]:
+            _sweep_state["count"] -= 1
+
+
+def _unlink_if_older(f: _Path, cutoff: float) -> bool:
+    """지우기 직전에 다시 본다 — 그 사이 누가 열었으면(수정 시각 갱신) 지우지 않는다."""
+    try:
+        if f.stat().st_mtime >= cutoff:
+            return False
+        f.unlink()
+        return True
+    except OSError:   # 이미 없다 · 다른 요청이 열고 있다(Windows) — 다음 청소에
+        return False
 
 
 def _sweep_sessions(d: _Path) -> int:
     """오래 안 연 사본(SESSION_IDLE_SECONDS)을 지우고, 그래도 상한(SESSION_MAX)에 닿아 있으면 가장 오래 안 연 것부터
-    상한의 90% 까지 지운다 — 디스크가 차지 않게. 지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다
-    (가상 데이터라 체험한 수정만 사라진다). 남은 사본 수를 돌려준다."""
-    cutoff = _time.time() - SESSION_IDLE_SECONDS
+    상한의 90% 까지 지운다 — 디스크가 차지 않게. 방금(SESSION_RECENT_SECONDS) 연 사본은 지우지 않는다.
+    지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다 (가상 데이터라 체험한 수정만 사라진다). 남은 사본 수를 돌려준다."""
+    now = _time.time()
+    cutoff = now - SESSION_IDLE_SECONDS
     alive: list[tuple[float, _Path]] = []
     for f in d.glob("*.db"):
         try:
             m = f.stat().st_mtime
-            if m < cutoff:
-                f.unlink()
-            else:
-                alive.append((m, f))
         except OSError:
-            pass
+            continue
+        if not (m < cutoff and _unlink_if_older(f, cutoff)):
+            alive.append((m, f))
     removed = 0
     if len(alive) >= SESSION_MAX:
         alive.sort()
-        for _, f in alive[:len(alive) - int(SESSION_MAX * 0.9)]:
-            try:
-                f.unlink()
+        recent = now - SESSION_RECENT_SECONDS
+        for m, f in alive[:len(alive) - int(SESSION_MAX * 0.9)]:
+            if m < recent and _unlink_if_older(f, recent):
                 removed += 1
-            except OSError:   # 다른 요청이 열고 있는 파일(Windows) — 다음 청소에
-                pass
     return len(alive) - removed
 
 
@@ -189,6 +220,10 @@ _ALLOWED_HOSTS = {_urlsplit(u.strip()).netloc.lower() for u in os.environ.get("A
 
 
 def same_origin(req) -> bool:
+    # 요즘 브라우저는 Sec-Fetch-Site 를 싣는다(페이지 스크립트가 못 바꾼다) — same-origin 이면 Host 헤더와 상관없이 같은 출처.
+    # nginx 가 Host 를 내부 주소로 바꿔 넘겨도 운영 화면이 막히지 않게 (Codex 검토)
+    if req.headers.get("Sec-Fetch-Site") == "same-origin":
+        return True
     src = req.headers.get("Origin") or req.headers.get("Referer")
     if not src:
         return True
@@ -926,6 +961,12 @@ def forbidden(_):
     if request.path.startswith("/api/"):
         return jsonify({"error": "forbidden"}), 403
     return "다른 사이트에서 보낸 요청은 받지 않습니다.", 403, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.errorhandler(503)
+def unavailable(e):
+    """세션 사본 상한(A5c) · 시드 사본 없음 — 고정 문구만."""
+    return str(e.description), 503, {"Content-Type": "text/plain; charset=utf-8", "Retry-After": "60"}
 
 
 @app.errorhandler(404)
