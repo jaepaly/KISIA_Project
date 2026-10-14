@@ -50,10 +50,13 @@ function fmtOneOf(k) {
   return `약 ${Math.round(k).toLocaleString("ko-KR")}명 중 한 명`;
 }
 
-// ── 진행 표시 — 점검은 한 번의 요청이라 퍼센트는 없다. 단계와 흐른 시간을 아래 띠로 보여 준다 ──
-// 내 글 점검(scan.html)과 위험 줄이기의 「다시 점검」(action.html)이 같이 쓴다. 띠가 없는 화면이면 만든다
+// ── 진행 표시 — 점검은 한 번의 요청이라 서버가 진행률을 주지 않는다. 단계와 흐른 시간을 아래 띠로 보여 준다 ──
+// 내 글 점검(scan.html)과 위험 줄이기의 「다시 점검」(action.html)이 같이 쓴다. 띠가 없는 화면이면 만든다.
+// est(초)를 주면 막대가 그 시간에 맞춰 90%까지 차오르고 「3초 / 약 20초」로 보인다(서버 /sns/estimate — 글자 수 × 이 서버의 실측 속도).
+// 예상을 넘기면 막대는 멈춘 채 「예상보다 오래 걸리고 있습니다」. est 가 없으면 예전처럼 오가는 막대
 let _pt = null;
-function progressStart(title, note) {
+function fmtSec(s) { s = Math.max(1, Math.round(s)); return s < 60 ? `${s}초` : `${Math.floor(s / 60)}분 ${s % 60 ? (s % 60) + "초" : ""}`.trim(); }
+function progressStart(title, note, est) {
   let box = document.getElementById("progress");
   if (!box) {
     box = document.createElement("div");
@@ -64,16 +67,26 @@ function progressStart(title, note) {
     document.body.appendChild(box);
   }
   const el = (id) => document.getElementById(id);
-  el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = "0초";
+  const bar = box.querySelector(".pbar");
+  const hasEst = typeof est === "number" && est > 0;
+  bar.classList.toggle("det", hasEst); bar.style.setProperty("--p", "0");
+  el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = hasEst ? `0초 / 약 ${fmtSec(est)}` : "0초";
   if (note) el("pNote").textContent = note;
+  else if (hasEst) el("pNote").textContent = `글 길이로 어림한 예상 시간은 약 ${fmtSec(est)}입니다. 창을 닫지 말고 기다려 주세요.`;
   box.hidden = false; document.body.classList.add("busy");
   const t0 = performance.now();
-  const stages = [[0, "글 읽는 중"], [2, "개인정보 단서 찾는 중"], [6, "같은 조건의 사람 수 계산 중"], [10, "위험 줄일 방법 확인 중"], [18, "거의 다 됐습니다"]];
+  // 단계 — 예상 시간이 있으면 그 비율로(0 · 10 · 35 · 60 · 85%), 없으면 예전 초 기준
+  const at = hasEst ? [0, 0.1, 0.35, 0.6, 0.85].map((f) => f * est) : [0, 2, 6, 10, 18];
+  const names = ["글 읽는 중", "개인정보 단서 찾는 중", "같은 조건의 사람 수 계산 중", "위험 줄일 방법 확인 중", "거의 다 됐습니다"];
   clearInterval(_pt);
   _pt = setInterval(() => {
     const s = (performance.now() - t0) / 1000;
-    el("pTime").textContent = `${Math.round(s)}초`;
-    const st = stages.filter(([at]) => s >= at).pop(); if (st) el("pStage").textContent = " · " + st[1];
+    if (hasEst) {
+      el("pTime").textContent = s <= est ? `${Math.round(s)}초 / 약 ${fmtSec(est)}` : `${Math.round(s)}초 · 예상보다 오래 걸리고 있습니다`;
+      bar.style.setProperty("--p", String(Math.min(0.9, (s / est) * 0.9)));
+    } else el("pTime").textContent = `${Math.round(s)}초`;
+    let i = 0; at.forEach((t, j) => { if (s >= t) i = j; });
+    el("pStage").textContent = " · " + names[i];
   }, 250);
 }
 function progressStop() {

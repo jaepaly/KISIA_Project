@@ -309,6 +309,8 @@ body.busy{cursor:progress}
   border-top:1px solid var(--line)}
 .progress-in{max-width:var(--shell); margin:0 auto; padding:12px 20px 14px}
 .pbar{height:3px; border-radius:99px; background:var(--line); overflow:hidden}
+/* 예상 시간이 있으면 차오르는 막대(--p 0~0.9 · common.js) */
+.pbar.det i{width:100%; animation:none; transform-origin:0 50%; transform:scaleX(var(--p,0)); transition:transform .25s linear}
 /* 점검 중인 버튼 — 비활성 회색 대신 진한 색 그대로 + 회전 표시 */
 button.is-busy,button.is-busy:disabled{opacity:1; filter:none; background:var(--ink); border-color:var(--ink); color:var(--paper,#F7F2EA); cursor:progress; display:inline-flex; align-items:center; gap:8px}
 button.is-busy .spin{width:14px; height:14px; border-radius:50%; border:2px solid color-mix(in srgb,currentColor 35%,transparent); border-top-color:currentColor; animation:busy-spin .7s linear infinite}

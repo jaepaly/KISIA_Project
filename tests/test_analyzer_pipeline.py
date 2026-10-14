@@ -394,3 +394,24 @@ def test_engine_mode_reports_checkpoint_folder_without_full_path():
         == "variant_base_20261008/checkpoint-epoch-10"
     body = TestClient(server.app).get("/api/engine-mode").json()
     assert body["mode"] == "mock" and body["c1_checkpoint"] is None and "c1_rules" in body
+
+
+def test_scan_estimate_learns_from_real_scans(monkeypatch):
+    """예상 점검 시간 — 글자 수 × 이 프로세스의 속도. 점검이 끝날 때마다 실측으로 고친다 · 글자 수가 적은 점검은 배우지 않는다 (10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    monkeypatch.setitem(server._scan_rate, "ms_per_char", 1.45)
+    monkeypatch.setitem(server._scan_rate, "samples", 0)
+    c = TestClient(server.app)
+    r = c.get("/api/scan-estimate", params={"chars": 10000}).json()
+    assert r == {"n_chars": 10000, "seconds": round(server.SCAN_BASE_S + 14.5, 1), "calibrated": False}
+    server._learn_rate(10000, 1.0 + 6.0)                       # 실측 0.6ms/자
+    assert abs(server._scan_rate["ms_per_char"] - 0.6) < 1e-9 and server._scan_rate["samples"] == 1
+    server._learn_rate(500, 30.0)                              # 짧은 점검은 고정 시간 몫이 커서 배우지 않는다
+    assert server._scan_rate["samples"] == 1
+    assert c.get("/api/scan-estimate", params={"chars": 10000}).json()["seconds"] == round(server.SCAN_BASE_S + 6.0, 1)
+    assert c.get("/api/scan-estimate", params={"chars": -1}).status_code == 422
+    posts = [{"post_id": "a", "title": "제목", "body": "본문 열자", "photos": [{"caption": "캡션"}, "글"]}]
+    assert server._chars(posts) == 2 + 5 + 2 + 1
+
