@@ -309,6 +309,11 @@ async function main() {
     const vs = [];
     for (const [p, want] of [[0.05, 0], [0.42, 1], [0.66, 2], [0.98, 3]]) { const v = await visAt(p); vs.push({ p, want, ...v }); }
     check(mode, "네 단계 그림판: 지금 단계 그림이 가장 진함", vs.every((v) => v.top === v.want && v.f[v.top] > 0.6), vs, "0 → 1 → 2 → 3");
+    // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
+    const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await sleep(700); await settle();
+      return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
+    const hA = await holdAt(0.13), hB = await holdAt(0.24);
+    check(mode, "네 단계: 단계 사이에 멈추는 구간 (진행도 0.13 ~ 0.24 동안 값 그대로)", JSON.stringify(hA) === JSON.stringify(hB) && hA.a[0] === 1 && hA.a[1] === 0, { hA, hB }, "같음 · 1단계만 켜짐");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다
     await scrollTo(await posOf("#narrow", 0.8));
     await sleep(500);
@@ -424,6 +429,11 @@ async function main() {
     const mode = "390×844";
     await open("/about", { w: 390, h: 844, mobile: true });
     await staticChecks(mode, await state());
+    // 지도 핀이 무대 밖으로 잘리지 않는다 (배율 1.6 · 오른쪽 핀은 라벨이 왼쪽으로 — Codex 10/14)
+    await scrollTo(await posOf("#narrow", 0));
+    const pinOut = await js(`(() => { const s = document.querySelector("#narrow .ps-stage").getBoundingClientRect();
+      return [...document.querySelectorAll("#narrow .ps-pinm")].map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent.trim(), out: Math.round(Math.max(s.left - r.left, r.right - s.right, s.top - r.top, r.bottom - s.bottom)) }; }).filter((x) => x.out > 0); })()`);
+    check(mode, "지도 핀이 무대 안 (잘린 핀 0)", pinOut.length === 0, pinOut, "[]");
   }
 
   // ⑥ 낮은 데스크톱 — 핀 조건(높이 800) 밖이면 정지 흐름

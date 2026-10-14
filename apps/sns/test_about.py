@@ -59,12 +59,12 @@ def test_pin_condition_same_in_js_and_css():
     assert f"@media not all and {mq}" in css
 
 
-def test_sticky_total_within_400svh(client):
-    """핀 장면 높이 합계는 화면 4개(400svh) 이내."""
+def test_sticky_total_within_480svh(client):
+    """핀 장면 높이 합계는 화면 4.8개(480svh) 이내 — 네 단계가 단계마다 멈춰 보이도록 늘렸다(10/14 · 160 → 240)."""
     import re
     html = client.get("/about").get_data(as_text=True)
     pins = [int(x) for x in re.findall(r'class="ps-pin[^"]*"[^>]*style="--pin:(\d+)"', html)]
-    assert pins and sum(pins) <= 400
+    assert pins and sum(pins) <= 480
 
 
 def test_nav_links_to_about(client):
@@ -183,7 +183,8 @@ def test_hero_has_no_jump_button_and_scroll_cue(client):
 def test_scene_pictures(client):
     html = client.get("/about").get_data(as_text=True)
     narrow = html[html.index('id="narrow"'):html.index('id="steps"')]
-    assert 'class="ps-mapbg"' in narrow and narrow.count('class="ps-pinm"') == 5
+    assert 'class="ps-mapbg"' in narrow and narrow.count('class="ps-pinm') == 5
+    assert '<span class="ps-pinm r" data-card="2"' in narrow       # 오른쪽 끝 핀(차고지)은 라벨을 왼쪽으로 — 좁은 화면에서 안 잘리게
     assert "실제 장소나 실제 사람이 아닙니다" in narrow             # 지도도 가상이라고 적는다
     steps = html[html.index('id="steps"'):html.index('id="end"')]
     assert [f'data-vis="{i}"' in steps for i in range(4)] == [True] * 4

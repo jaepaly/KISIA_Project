@@ -100,10 +100,16 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-narrow.is-dark .ps-mapbg{color:var(--ps-night-ink)}
 /* 핀 — 지도 좌표(--px --py, %)를 배율대로 옮긴다. 크기는 그대로. 카드가 나올 때(--in) 꽂힌다 */
 .ps-pins{position:absolute;inset:0;pointer-events:none}
-.ps-pinm{--in:1;position:absolute;left:calc(50% + (var(--px) - 50) * var(--z) * 1%);top:calc(50% + (var(--py) - 50) * var(--z) * 1%);
+/* 자리 = 배율 1 의 지도 좌표(left/top 고정) + 배율이 늘린 만큼의 거리(transform). --sw --sh 는 무대 크기(px) — pado-scene.js 가 크기가 바뀔 때만 쓴다.
+   --z 가 바뀌어도 레이아웃이 없다(transform 만 · Codex 10/14) */
+.ps-stage{--sw:0;--sh:0}
+.ps-pinm{--in:1;--ox:-8px;position:absolute;left:calc(var(--px) * 1%);top:calc(var(--py) * 1%);
   display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 4px;border-radius:999px;background:var(--ps-paper);border:1px solid var(--ps-line);
-  font-size:11px;font-weight:700;color:var(--ps-ink);white-space:nowrap;
-  opacity:var(--in);transform:translate(-8px,calc(-100% - 4px - (1 - var(--in)) * 10px))}
+  font-size:11px;font-weight:700;color:var(--ps-ink);white-space:nowrap;opacity:var(--in);
+  transform:translate(calc((var(--px) - 50) * (var(--z) - 1) * var(--sw) / 100 * 1px),calc((var(--py) - 50) * (var(--z) - 1) * var(--sh) / 100 * 1px))
+            translate(var(--ox),calc(-100% - 4px - (1 - var(--in)) * 10px))}
+.ps-pinm.r{--ox:calc(-100% + 8px);flex-direction:row-reverse;padding:2px 4px 2px 8px}   /* 오른쪽 핀 — 라벨이 왼쪽으로 */
+.ps-pinm.r::after{left:auto;right:7px}
 .ps-pinm i{width:8px;height:8px;border-radius:50%;background:var(--ps-ink)}
 .ps-pinm::after{content:"";position:absolute;left:7px;top:100%;width:1px;height:4px;background:var(--ps-ink)}
 /* 스포트라이트 — 가운데(「나」)만 뚫린 어두운 막. 크기(transform)만 바뀐다: --s 1 → 넓게, 0 → 「나」로 조여 옴 */

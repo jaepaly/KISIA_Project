@@ -167,7 +167,7 @@
 
   function frame(t) {
     raf = 0;
-    if (!visible || document.hidden || still()) { lastT = 0; return; }
+    if (!visible || document.hidden || still() || !w || !h) { lastT = 0; return; }
     const dt = lastT && t - lastT < 100 ? (t - lastT) / 1000 : 1 / 60;
     lastT = t;
     if (!pointerIn || t - lastMove > 2500) { const p = wander(t); tx = p.x; ty = p.y; }
@@ -176,7 +176,7 @@
     draw(t);
     raf = requestAnimationFrame(frame);   // 떠돌기가 있어 늘 움직인다 — 화면 밖 · 탭 숨김 · 정지 상태에서만 멈춘다
   }
-  function kick() { if (!raf && visible && !document.hidden && !still()) raf = requestAnimationFrame(frame); }
+  function kick() { if (!raf && visible && w && h && !document.hidden && !still()) raf = requestAnimationFrame(frame); }
 
   function setStill() {
     const s = still();
@@ -195,7 +195,8 @@
   document.addEventListener("visibilitychange", kick);
   document.addEventListener("padomotion", () => { requestAnimationFrame(() => { layout(); setStill(); }); });
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver((e) => { visible = e[0].isIntersecting; kick(); }).observe(hero);
+    // 아래 끝이 화면 위에 딱 닿으면 isIntersecting 은 true · 비율은 0 이다 — 비율로 본다 (Codex 10/14)
+    new IntersectionObserver((e) => { visible = e[0].intersectionRatio > 0; kick(); }, { threshold: [0, 0.01] }).observe(hero);
   }
   if ("ResizeObserver" in window) new ResizeObserver(() => { layout(); setStill(); }).observe(cv);
   // 글꼴이 늦게 들어오면 낱말 폭 · 글자 영역이 바뀐다 — 다시 잰다

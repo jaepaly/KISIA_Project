@@ -4,7 +4,8 @@
                카드가 나올 때 그 글이 가리키는 곳에 핀(.ps-pinm[data-card])이 꽂힌다.
                카드 · 숫자 · 점 · 밤 막이 모두 같은 진행도(motion-core 의 관성 보간 cur)를 쓴다. 카드 등장 구간은 겹친다
                (앞 카드가 다 나오기 전에 다음이 시작 — 계단처럼 안 보이게) · 숫자 = 나온 카드 수만큼 로그 공간에서 보간.
-   B #steps  : 네 단계가 차례로 켜진다 (0.22 간격 · 0.34 램프 — 역시 겹친다). 그림판(.ps-vis-i)은 지금 단계 그림만 보인다(--f) ·
+   B #steps  : 네 단계가 한 단계씩 켜진다 — 진행도를 네 칸으로 나눠, 칸마다 앞 STEP_RAMP 동안 넘어가고 나머지는 멈춘다
+               (단계 사이에 「머무는」 구간 · 한 장면 안에서 다음 단계가 겹쳐 시작하지 않는다). 그림판(.ps-vis-i)은 지금 단계 그림만 보인다(--f) ·
                그림 안 움직임은 그 단계의 점등값(--t)을 따른다.
    C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter · 첫 화면 스크롤 신호(40px 넘게 내리면 숨김).
    정지 상태(html.ps-static)에서는 모든 장면이 끝난 모습 그대로다 — CSS 가 그렇게 그리고, 여기서는 캔버스만 끝 모습으로 한 번 그린다. */
@@ -34,6 +35,10 @@
   const stageEl = $(".ps-stage", narrow);
   const pins = $$(".ps-pinm", narrow).map((el) => ({ el, i: +el.dataset.card }));
   const ZMAX = 1.6;   // 지도 최대 배율 — 핀(가운데에서 가장 먼 것이 약 30%)이 화면 안에 남는 값
+  // 무대 크기(px) — 핀이 배율만큼 transform 으로 움직일 거리. 크기가 바뀔 때만 쓴다(프레임마다 재지 않는다)
+  if (stageEl && "ResizeObserver" in window) {
+    new ResizeObserver((e) => { const r = e[0].contentRect; stageEl.style.setProperty("--sw", String(Math.round(r.width))); stageEl.style.setProperty("--sh", String(Math.round(r.height))); }).observe(stageEl);
+  }
   const night = $(".ps-night", narrow);
   const spot = $(".ps-spot", narrow);
   const countEl = $("#psCount");
@@ -173,10 +178,12 @@
   const stepEls = $$(".ps-step", steps);
   const path = $(".ps-path i", steps);
   const vis = $$(".ps-vis-i", steps);
+  // 칸 하나 = 진행도 1/4. 칸의 앞 40% 동안 그 단계가 켜지고(그림이 바뀌고) 나머지 60% 는 그대로 멈춘다
+  const STEP_SEG = 0.25, STEP_RAMP = 0.4;
   function stepsScene(w, on) {
     if (!steps) return;
     const a = stepEls.map((el, i) => {
-      const v = on ? smooth((w - 0.22 * i) / 0.34) : 1;
+      const v = on ? smooth((w - STEP_SEG * i) / (STEP_SEG * STEP_RAMP)) : 1;
       setVar(el, "--a", v);
       el.classList.toggle("reached", v >= 0.5);
       return v;
@@ -188,7 +195,8 @@
       setVar(el, "--f", f);
       setVar(el, "--t", on ? a[i] : 1);
     });
-    if (path) setVar(path, "--w", w);
+    // 선 — 켜진 단계의 점까지만(점 i 는 i/4 자리). 머무는 동안에는 선도 멈춘다
+    if (path) setVar(path, "--w", on ? clamp((a.reduce((s, v) => s + v, 0) - 1) / 4) : 1);
   }
 
   // ── 연출 C — 읽기 진행 막대 · 소개 순서 · 어두운 구간 ─────────────────────

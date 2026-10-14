@@ -92,8 +92,9 @@
             <canvas id="psCrowd" aria-hidden="true"></canvas>
             {# 핀 — 카드 i 가 가리키는 곳(나이 카드는 장소가 없어 핀이 없다). 자리 = 지도 좌표(%) · 배율을 따라 움직이되 크기는 그대로 #}
             <div class="ps-pins" aria-hidden="true">
+              {# 가운데보다 오른쪽(x > 60) 핀은 라벨을 왼쪽으로 펼친다 — 확대했을 때 좁은 화면 오른쪽 끝에서 잘리지 않게 #}
               {% for i, x, y, name in [(0, 28, 25, "공원"), (2, 74, 30, "차고지"), (3, 29, 54, "수영장"), (4, 65, 44, "국밥집"), (5, 61, 73, "다리")] %}
-              <span class="ps-pinm" data-card="{{ i }}" style="--px:{{ x }};--py:{{ y }}"><i></i>{{ name }}</span>
+              <span class="ps-pinm{% if x > 60 %} r{% endif %}" data-card="{{ i }}" style="--px:{{ x }};--py:{{ y }}"><i></i>{{ name }}</span>
               {% endfor %}
             </div>
             <div class="ps-spot" aria-hidden="true"></div>
@@ -111,7 +112,7 @@
 
   {# ── 연출 B — 네 단계 점등. 오른쪽 그림판이 지금 단계를 간단한 그림으로 보여 준다(단계가 바뀔 때마다 겹쳐 바뀐다).
      정지 상태에서는 그림 네 장을 단계 순서대로 나란히 ── #}
-  <section class="ps-pin ps-steps" id="steps" data-ps-section style="--pin:160">
+  <section class="ps-pin ps-steps" id="steps" data-ps-section style="--pin:240">
     <div class="ps-sticky">
       <div class="ps-in">
         <div class="ps-steps-head">
