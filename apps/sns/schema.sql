@@ -40,3 +40,29 @@ CREATE TABLE IF NOT EXISTS photos (
 
 CREATE INDEX IF NOT EXISTS idx_posts_author_created
   ON posts(author_id, created_at DESC);
+
+-- ── 방문자 체험용 (세션 사본마다 따로) — export 에는 나가지 않는다 ──
+-- 시드 사본·옛 세션 사본엔 이 표가 없다 → db.ensure_visitor_tables() 가 열 때마다 IF NOT EXISTS 로 만든다.
+
+-- 「내 계정」 — 방문자가 고른 가상 인물 하나. 행은 늘 0개나 1개다
+CREATE TABLE IF NOT EXISTS me (
+  id          INTEGER PRIMARY KEY CHECK (id = 1),
+  author_id   TEXT NOT NULL,
+  chosen_at   TEXT NOT NULL
+);
+
+-- 조치 이력 — 비공개·공개 전환 · 위치 태그 변경 · 고쳐 쓰기(새 글로 옮김). 되돌리기의 재료.
+-- posts 에 FK 를 걸지 않는다: 되돌리기·「처음 상태로」가 글을 지워도 이력은 남아야 한다
+CREATE TABLE IF NOT EXISTS action_log (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  at          TEXT NOT NULL,             -- ISO8601 KST
+  kind        TEXT NOT NULL CHECK (kind IN ('private','public','geo','rewrite')),
+  author_id   TEXT NOT NULL,
+  post_id     TEXT NOT NULL,             -- 바꾼 글 (rewrite 는 원래 글)
+  before_val  TEXT,                      -- 바꾸기 전 값 (visibility · geo_tag)
+  after_val   TEXT,
+  new_post_id TEXT,                      -- rewrite 로 새로 올린 글
+  undone_at   TEXT                       -- 되돌렸으면 그 시각. NULL 이면 아직 살아 있는 조치
+);
+
+CREATE INDEX IF NOT EXISTS idx_action_log_author ON action_log(author_id, undone_at);

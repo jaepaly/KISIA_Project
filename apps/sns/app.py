@@ -257,6 +257,11 @@ def create_post():
             "INSERT INTO photos(post_id, idx, caption) VALUES (?,?,?)",
             (post_id, idx, caption))
 
+    # 글 화면 「이 글을 옮겨 고쳐 쓰기」로 온 새 글이면 — 원래 글과 묶어 이력에 남긴다 (되돌리면 새 글을 지운다)
+    src = f.get("from_post") or ""
+    if src and db().execute("SELECT 1 FROM posts WHERE post_id = ? AND author_id = ?", (src, author_id)).fetchone():
+        _log("rewrite", author_id, src, new_post_id=post_id)
+
     db().commit()
     return redirect(f"/posts/{post_id}")
 
@@ -278,6 +283,7 @@ def toggle_visibility(post_id: str):
     new_v = "private" if row["visibility"] == "public" else "public"
     db().execute(
         "UPDATE posts SET visibility = ? WHERE post_id = ?", (new_v, post_id))
+    _log(new_v, row["author_id"], post_id, row["visibility"], new_v)
     db().commit()
 
     # 돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단) · ?done= 은 화면 맨 위 「다시 점검」 띠
@@ -308,14 +314,140 @@ def edit_profile(user_ref: str):
 def edit_post_meta(post_id: str):
     """활동 메타 관리 — geo_tag 수정. W6."""
     row = db().execute(
-        "SELECT author_id FROM posts WHERE post_id = ?", (post_id,)).fetchone()
+        "SELECT author_id, geo_tag FROM posts WHERE post_id = ?", (post_id,)).fetchone()
     if row is None:
         abort(404)
     geo_tag = request.form.get("geo_tag", "").strip() or None
     db().execute(
         "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
+    if geo_tag != row["geo_tag"]:
+        _log("geo", row["author_id"], post_id, row["geo_tag"], geo_tag)
     db().commit()
     return redirect(f"/posts/{post_id}?done=geo")
+
+
+# ── 내 계정 · 조치 이력 — 방문자 체험용. 세션 사본의 me · action_log 표 (schema.sql 끝) ──
+# 고르지 않아도 모든 화면이 지금처럼 돈다. 이력은 export 에 섞지 않는다 — 분석기는 글의 지금 상태만 본다.
+def _now() -> str:
+    return datetime.now(KST).isoformat(timespec="seconds")
+
+
+def _log(kind: str, author_id: str, post_id: str, before: str | None = None,
+         after: str | None = None, new_post_id: str | None = None) -> None:
+    db().execute(
+        "INSERT INTO action_log(at, kind, author_id, post_id, before_val, after_val, new_post_id)"
+        " VALUES (?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id))
+
+
+def _me() -> dict | None:
+    r = db().execute(
+        "SELECT a.author_id, a.user_ref, a.nickname FROM me JOIN authors a ON a.author_id = me.author_id"
+        " WHERE me.id = 1").fetchone()
+    return dict(r) if r else None
+
+
+def _changes(author_id: str | None = None) -> list[dict]:
+    """살아 있는(되돌리지 않은) 조치 — 최근 것부터. 글 제목을 붙여 화면에 그대로 쓴다."""
+    q = ("SELECT l.*, p.title AS title, p.body AS body FROM action_log l"
+         " LEFT JOIN posts p ON p.post_id = l.post_id WHERE l.undone_at IS NULL")
+    args: list = []
+    if author_id:
+        q += " AND l.author_id = ?"
+        args.append(author_id)
+    out = []
+    for r in db().execute(q + " ORDER BY l.id DESC", args).fetchall():
+        d = dict(r)
+        d["label"] = d["title"] or (d["body"] or "").replace("\n", " ")[:24] or "(지워진 글)"
+        d["time"] = d["at"][11:16]
+        out.append(d)
+    return out
+
+
+_FIELD = {"private": "visibility", "public": "visibility", "geo": "geo_tag"}
+
+
+def _undo(entry) -> None:
+    """조치 하나를 되돌린다. 같은 글 같은 칸의 그 뒤 조치도 함께 닫는다 — 값이 이 조치 전으로 돌아가니까."""
+    now, c = _now(), db()
+    if entry["kind"] == "rewrite":
+        nid = entry["new_post_id"]
+        c.execute("DELETE FROM photos WHERE post_id = ?", (nid,))
+        c.execute("DELETE FROM posts WHERE post_id = ?", (nid,))
+        # 새 글에 했던 조치는 글이 없어졌으니 같이 닫는다
+        c.execute("UPDATE action_log SET undone_at = ? WHERE (post_id = ? OR id = ?) AND undone_at IS NULL",
+                  (now, nid, entry["id"]))
+        return
+    field = _FIELD[entry["kind"]]
+    c.execute(f"UPDATE posts SET {field} = ? WHERE post_id = ?", (entry["before_val"], entry["post_id"]))
+    kinds = ("private", "public") if field == "visibility" else ("geo",)
+    c.execute(
+        f"UPDATE action_log SET undone_at = ? WHERE post_id = ? AND id >= ? AND undone_at IS NULL"
+        f" AND kind IN ({','.join('?' * len(kinds))})", (now, entry["post_id"], entry["id"], *kinds))
+
+
+def _back(default: str) -> str:
+    """돌아갈 곳은 이 사이트 안의 경로만 (//evil.example 같은 바깥 주소 차단)."""
+    back = request.form.get("back") or ""
+    return back if back.startswith("/") and not back.startswith("//") else default
+
+
+def _with_done(url: str, done: str) -> str:
+    return f"{url}{'&' if '?' in url else '?'}done={done}"
+
+
+@app.context_processor
+def _inject_me() -> dict:
+    """상단바 「내 계정」 — 고른 사람과 그 사람이 바꾼 것 수. 표·DB 가 아직 없으면 빈 값 (고르지 않아도 다 돈다)."""
+    try:
+        me = _me()
+        n = len(_changes(me["author_id"])) if me else 0
+    except sqlite3.Error:
+        me, n = None, 0
+    return {"me": me, "me_changes": n}
+
+
+@app.post("/me")
+def set_me():
+    """이 사람으로 체험하기 — author_id 가 비어 있으면 「내 계정」을 푼다."""
+    aid = (request.form.get("author_id") or "").strip()
+    if aid:
+        if db().execute("SELECT 1 FROM authors WHERE author_id = ?", (aid,)).fetchone() is None:
+            abort(404)
+        db().execute("INSERT INTO me(id, author_id, chosen_at) VALUES (1, ?, ?)"
+                     " ON CONFLICT(id) DO UPDATE SET author_id = excluded.author_id, chosen_at = excluded.chosen_at",
+                     (aid, _now()))
+    else:
+        db().execute("DELETE FROM me")
+    db().commit()
+    if request.headers.get("X-Requested-With") == "fetch":   # 글쓰기 화면 — 쓰던 글을 날리지 않게 새로고침 없이
+        return jsonify({"me": _me()})
+    return redirect(_with_done(_back("/"), "me" if aid else "me_off"))
+
+
+@app.post("/changes/<int:log_id>/undo")
+def undo_change(log_id: int):
+    e = db().execute("SELECT * FROM action_log WHERE id = ? AND undone_at IS NULL", (log_id,)).fetchone()
+    if e is None:
+        abort(404)
+    _undo(e)
+    db().commit()
+    return redirect(_with_done(_back("/"), "undo"))
+
+
+@app.post("/changes/undo-all")
+def undo_all():
+    """모두 되돌리기 — 최근 것부터 차례로. author_id 를 주면 그 계정만."""
+    aid = request.form.get("author_id") or None
+    q, args = "SELECT * FROM action_log WHERE undone_at IS NULL", []
+    if aid:
+        q += " AND author_id = ?"
+        args.append(aid)
+    for row in db().execute(q + " ORDER BY id DESC", args).fetchall():
+        # 앞서 되돌린 조치가 이 줄을 이미 닫았을 수 있다 (같은 글 같은 칸)
+        if db().execute("SELECT undone_at FROM action_log WHERE id = ?", (row["id"],)).fetchone()["undone_at"] is None:
+            _undo(row)
+    db().commit()
+    return redirect(_with_done(_back("/"), "undo"))
 
 
 @app.get("/u/<user_ref>")
@@ -333,7 +465,8 @@ def profile(user_ref: str):
         (a["author_id"],)).fetchall()
     hour_dist = {r["h"]: r["cnt"] for r in raw}
     try:
-        return render_template("profile.html", a=a, posts=posts, hour_dist=hour_dist)
+        return render_template("profile.html", a=a, posts=posts, hour_dist=hour_dist,
+                               changes=_changes(a["author_id"]), today=datetime.now(KST).date().isoformat())
     except sqlite3.OperationalError:
         return _todo("프로필", "§4")
 
@@ -395,6 +528,8 @@ def reset_author(user_ref: str):
         c.execute("INSERT INTO posts SELECT * FROM seed.posts WHERE author_id = ?", (aid,))
         c.execute("INSERT INTO photos SELECT * FROM seed.photos"
                   " WHERE post_id IN (SELECT post_id FROM seed.posts WHERE author_id = ?)", (aid,))
+        # 처음 상태로 돌아갔으니 이 계정의 조치 이력도 모두 되돌린 것으로
+        c.execute("UPDATE action_log SET undone_at = ? WHERE author_id = ? AND undone_at IS NULL", (_now(), aid))
         c.commit()
     except Exception:
         c.rollback()

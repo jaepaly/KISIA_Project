@@ -123,9 +123,16 @@
                     style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
                            background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
               {% for a in authors %}
-              <option value="{{ a.author_id }}">{{ a.nickname }}</option>
+              <option value="{{ a.author_id }}" {% if me and me.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}{% if me and me.author_id == a.author_id %} (내 계정){% endif %}</option>
               {% endfor %}
             </select>
+            {# 내 계정 — 정해 두면 다음부터 글쓰기와 내 글 점검이 이 사람으로 시작하고, 상단바 아바타에서 바꾼 것을 되돌린다. 안 골라도 된다 #}
+            <div class="me-pick" id="mePick">
+              <span id="meNote">{% if me %}내 계정은 <b>{{ me.nickname }}</b>입니다.{% else %}이 사람을 내 계정으로 정해 두면 글쓰기와 내 글 점검이 이 사람으로 시작합니다.{% endif %}</span>
+              <button type="button" class="ghost" id="meBtn" {% if me %}hidden{% endif %}>🙋 이 사람으로 체험하기</button>
+            </div>
+            {# 글 화면 「이 글을 옮겨 고쳐 쓰기」로 왔으면 원래 글 — 이력에 「고쳐 쓰기」로 남아 되돌릴 수 있다 #}
+            <input type="hidden" name="from_post" id="fromPost" value="">
           </div>
 
           <div style="margin-bottom:14px;">
@@ -249,6 +256,7 @@
   f.querySelector('[name="body"]').value = d.body || "";
   f.querySelector('[name="geo_tag"]').value = d.geo_tag || "";
   f.querySelector('[name="captions"]').value = (d.captions || []).join("\n");
+  document.getElementById("fromPost").value = from;
   const note = document.getElementById("fromNote");
   note.innerHTML = '<span class="tx">원래 글을 옮겨 왔습니다. 형광 표현을 고쳐 새 글로 올린 뒤, <b>원래 글은 비공개로 바꿔 주세요.</b></span>'
     + '<a class="go" href="/posts/' + encodeURIComponent(from) + '" target="_blank" rel="noopener">원래 글 보기 →</a>';
@@ -259,6 +267,29 @@ padoWidget({
   out: document.getElementById("padoOut"),
   getText: () => document.getElementById("body").value
 });
+
+// 「이 사람으로 체험하기」 — 쓰던 글이 날아가지 않게 새로고침 없이 저장. 상단바 아바타는 다음 화면부터 뜬다
+(function () {
+  const btn = document.getElementById("meBtn"), note = document.getElementById("meNote"), sel = document.getElementById("authorSel");
+  let mine = {{ (me.author_id if me else "") | tojson }};
+  if (!btn || !sel) return;
+  const sync = () => { btn.hidden = sel.value === mine; };
+  sel.addEventListener("change", sync);
+  btn.addEventListener("click", async () => {
+    const fd = new FormData(); fd.append("author_id", sel.value);
+    btn.disabled = true;
+    try {
+      const r = await fetch("/me", { method: "POST", body: fd, headers: { "X-Requested-With": "fetch" } });
+      const j = await r.json();
+      if (!r.ok || !j.me) throw new Error(r.status);
+      mine = j.me.author_id;
+      note.textContent = "";
+      note.append("내 계정을 ", Object.assign(document.createElement("b"), { textContent: j.me.nickname }), "(으)로 정했습니다.");
+    } catch (e) { note.textContent = "저장하지 못했습니다. 잠시 뒤 다시 눌러 주세요."; }
+    btn.disabled = false; sync();
+  });
+  sync();
+})();
 
 // ── 오른쪽 패널 ─────────────────────────────────────────────────────────
 const AP = (function () {

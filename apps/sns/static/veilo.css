@@ -438,3 +438,22 @@ dialog.intro .bt .start:hover{color:#fff;text-decoration:none}
   .pado-strip.ut-mobile-only{display:flex}
   .pado-strip{padding:10px 12px;font-size:13px}
 }
+
+/* ── 내 계정 · 바꾼 것 (W-ACCT) ── */
+.ut-nav a.me-av{position:relative;font-size:15px;font-weight:700;color:var(--ut-ink);border-color:transparent;text-decoration:none}
+.ut-nav a.me-av .me-n{position:absolute;top:-4px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--ut-earth);color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 0 0 2px var(--ut-panel)}
+.me-badge{display:inline-block;font-size:11px;font-weight:700;color:var(--ut-sea);background:var(--ut-sea-soft);border:1px solid var(--ut-sea);border-radius:99px;padding:1px 8px;margin-left:6px;vertical-align:middle}
+.me-pick{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--ut-ink3)}
+.me-pick button{font-size:12px;padding:6px 12px}
+.changes{border:1px solid var(--ut-earth);background:var(--ut-panel)}
+.changes .ch-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.changes .ch-h h2{font-size:15px;margin:0}
+.changes ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.changes li{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--ut-panel2);line-height:1.45}
+.changes li .t{color:var(--ut-ink3);font-variant-numeric:tabular-nums;flex:none}
+.changes li .w{flex:1;min-width:0;word-break:keep-all}
+.changes li .w a{color:var(--ut-ink);font-weight:600}
+.changes li form{flex:none;margin:0}
+.changes button{font-size:12px;padding:6px 12px;white-space:nowrap}
+.changes .note{font-size:12px;color:var(--ut-ink3);margin:8px 0 0}
+.me-pick button[hidden]{display:none}
