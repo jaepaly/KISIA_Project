@@ -185,11 +185,23 @@ const ATTR_LABEL = {
   family: "가족", commute: "통근", income: "소득",
 };
 
-// 「Veilo로 돌아가기」 — Veilo 주소는 config.js(SNS_PUBLIC). 빈 값이면 같은 도메인 루트 (인스턴스)
+// Veilo 상단바 · 하단 탭바의 링크와 그림 — Veilo 주소(head.js VEILO_BASE)를 붙인다. 인스턴스는 "" 라 같은 도메인 루트
+document.querySelectorAll("[data-veilo-href]").forEach((a) => { a.href = (window.VEILO_BASE || "") + a.dataset.veiloHref; });
+document.querySelectorAll("[data-veilo-src]").forEach((img) => { img.src = (window.VEILO_BASE || "") + img.dataset.veiloSrc; });
+// 상단바 스크롤 그림자 — Veilo base.html 과 같은 동작
+(function () {
+  const top = document.getElementById("utTop");
+  if (!top) return;
+  const apply = () => top.classList.toggle("scrolled", window.scrollY > 8);
+  apply();
+  window.addEventListener("scroll", apply, { passive: true });
+})();
+
+// 「Veilo로 돌아가기」 — Veilo 주소는 head.js 의 VEILO_BASE (config.js SNS_PUBLIC 에서). 빈 값이면 같은 도메인 루트 (인스턴스)
 // 점검한 계정이 있으면 그 사람 프로필로 보낸다 — 비공개로 바꾸기 같은 실제 변경은 거기서 한다 (M2).
 // 주소의 ?u= (Veilo 프로필에서 넘어옴) → 저장된 점검 결과 순. 파일 업로드 결과는 Veilo 계정이 아니라 홈으로
 (function backToVeilo() {
-  const base = window.SNS_PUBLIC || "";
+  const base = window.VEILO_BASE || "";
   const scan = loadScan();
   const u = new URLSearchParams(location.search).get("u") || (scan && !isUpload(scan) ? scan.user_ref : null);
   const nick = scan && scan.user_ref === u ? scan.nickname : "";

@@ -2,18 +2,19 @@
    가상 SNS 와 같은 결로 보여야 하나의 서비스로 읽힌다. 구조·동작은 건드리지 않았다. */
 @import url("fonts/pretendard.css");
 
+/* Veilo 의 토큰을 그대로 받는다 (veilo.css 가 먼저 붙는다 — head.js). veilo.css 를 못 읽으면 괄호 안 값으로 */
 :root{
-  --ground:#F8F3ED; --panel:#FFFDFA; --panel2:#F3ECE3; --line:#E6DCD0;
-  --ink:#3E3A36; --ink2:#6B625B; --ink3:#A89B91;
-  --earth:#D8896F; --earth-soft:#F6E6DD; --earth-ink:#B8664B;
-  --leaf:#6F8F6E; --leaf-soft:#E6EEE3;
-  --red:#B9553F; --red-soft:#F7E4DE;
+  --ground:var(--ut-bg,#F8F3ED); --panel:var(--ut-panel,#FFFDFA); --panel2:var(--ut-panel2,#F3ECE3); --line:var(--ut-line,#E6DCD0);
+  --ink:var(--ut-ink,#3E3A36); --ink2:var(--ut-ink2,#6B625B); --ink3:var(--ut-ink3,#A89B91);
+  --earth:var(--ut-earth,#D8896F); --earth-soft:var(--ut-earth-soft,#F6E6DD); --earth-ink:var(--ut-earth-ink,#B8664B);
+  --leaf:var(--ut-leaf,#6F8F6E); --leaf-soft:var(--ut-leaf-soft,#E6EEE3);
+  --red:var(--ut-red,#B9553F); --red-soft:var(--ut-red-soft,#F7E4DE);
   --amber:#996A00; --amber-soft:#F6ECD4;
-  --sea:#2F6F6A; --sea-soft:#E1EEEC;
-  --shadow:0 1px 2px rgba(62,58,54,.04);
-  --shadow-hi:0 2px 4px rgba(62,58,54,.05), 0 12px 28px -18px rgba(62,58,54,.22);
-  --radius:16px;
-  --font:"Pretendard",-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --sea:var(--ut-sea,#2F6F6A); --sea-soft:var(--ut-sea-soft,#E1EEEC);
+  --shadow:var(--ut-shadow,0 1px 2px rgba(62,58,54,.04));
+  --shadow-hi:var(--ut-shadow-hi,0 2px 4px rgba(62,58,54,.05), 0 12px 28px -18px rgba(62,58,54,.22));
+  --radius:var(--ut-radius,16px);
+  --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
   --shell:860px;
 }
 
@@ -24,39 +25,37 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ── 상단 ───────────────────────────────── */
-.top{background:var(--panel); border-bottom:1px solid var(--line)}
-.top-in{
-  max-width:var(--shell); margin:0 auto; padding:16px 20px;
-  display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
-}
-.brand{font-size:17px; font-weight:700; letter-spacing:-.01em}
-.brand-sub{font-size:13px; font-weight:400; color:var(--ink3); margin-left:2px}
-.top-in .engine{font-size:12px; color:var(--ink3)}
-/* 돌아갈 길 — 인스턴스에선 / 가 Veilo 다. 로컬 단독 실행이면 분석 앱 루트(스캔)로 간다 */
+/* ── 상단바 — veilo.css 의 .ut-top 을 그대로 쓴다. 파도풀 쪽은 「내 계정」 자리만 ── */
+.acct-slot{width:40px; height:40px}
+
+/* ── 파도풀 보조 줄 — 상단바 아래. 단계 탭 + 프로필로 돌아가기 + 예시 배지 ── */
+.pado-sub{border-bottom:1px solid var(--line); background:var(--panel)}
+.pado-sub-in{max-width:var(--shell); margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.pado-meta{margin-left:auto; display:flex; align-items:center; gap:10px}
+.pado-meta .engine{font-size:12px; color:var(--ink3)}
+.engine:empty{display:none}
 .back-sns{
-  margin-left:auto; font-size:13px; font-weight:600; color:var(--earth-ink); text-decoration:none;
+  font-size:13px; font-weight:600; color:var(--earth-ink); text-decoration:none;
   border:1px solid var(--line); border-radius:999px; padding:5px 12px; white-space:nowrap;
   transition:border-color .15s, background .15s;
 }
-.back-sns:hover{border-color:var(--earth); background:var(--earth-soft)}
+.back-sns:hover{border-color:var(--earth); background:var(--earth-soft); text-decoration:none}
 
-/* ── 단계 ───────────────────────────────── */
-.steps{max-width:var(--shell); margin:0 auto; padding:18px 20px 0; display:flex; gap:8px}
+.steps{display:flex; gap:6px}
 .steps a{
-  flex:1; display:flex; align-items:center; gap:9px;
-  padding:11px 14px; border:1px solid var(--line); border-radius:12px;
+  display:flex; align-items:center; gap:7px; height:36px;
+  padding:0 12px; border:1px solid var(--line); border-radius:12px;
   background:var(--panel); color:var(--ink2); text-decoration:none;
-  font-size:14px; transition:border-color .15s, background .15s;
+  font-size:13.5px; white-space:nowrap; transition:border-color .15s, background .15s;
 }
-.steps a:hover{border-color:var(--earth); background:var(--panel)}
+.steps a:hover{border-color:var(--earth); text-decoration:none}
 .steps a .n{
-  flex:none; width:22px; height:22px; border-radius:50%;
+  flex:none; width:20px; height:20px; border-radius:50%;
   background:var(--panel2); color:var(--ink3);
-  font-size:12px; font-weight:700;
+  font-size:11.5px; font-weight:700;
   display:grid; place-items:center;
 }
-.steps a[aria-current]{background:var(--earth-soft); border-color:var(--earth); color:var(--earth-ink); font-weight:600}
+.steps a[aria-current]{background:var(--earth-soft); border-color:var(--earth); color:var(--earth-ink); font-weight:700}
 .steps a[aria-current] .n{background:var(--earth); color:#fff}
 
 /* ── 본문 ───────────────────────────────── */
@@ -81,15 +80,15 @@ a{color:var(--earth-ink)}
 .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 input[type=text]{
   flex:1; min-width:200px; padding:10px 13px;
-  border:1px solid var(--line); border-radius:10px; background:var(--panel);
-  font-family:var(--font); font-size:14px; color:var(--ink);
+  border:1px solid var(--line); border-radius:12px; background:var(--panel);
+  font-family:var(--font); font-size:14px; color:var(--ink); min-height:40px; margin:0;
 }
 input[type=text]:focus{outline:none; border-color:var(--earth); box-shadow:0 0 0 3px var(--earth-soft)}
 input[type=file]{font-family:var(--font); font-size:13px; color:var(--ink2); max-width:100%}
 button{
-  padding:10px 18px; border:1px solid var(--earth); border-radius:10px;
+  height:40px; padding:0 16px; border:1px solid var(--earth); border-radius:12px;
   background:var(--earth); color:#fff; cursor:pointer;
-  font-family:var(--font); font-size:14px; font-weight:600;
+  font-family:var(--font); font-size:14px; font-weight:700;
   transition:filter .15s;
 }
 button:hover{filter:brightness(.95)}
@@ -154,12 +153,14 @@ code{
 
 /* ── 링크형 버튼 · 보조 버튼 ───────────────── */
 .btn{
-  display:inline-block; padding:9px 16px; border-radius:10px; text-decoration:none;
-  background:var(--earth); color:#fff; font-size:14px; font-weight:600; white-space:nowrap;
+  display:inline-flex; align-items:center; height:40px; padding:0 16px; border-radius:12px; text-decoration:none;
+  background:var(--earth); color:#fff; font-size:14px; font-weight:700; white-space:nowrap;
   transition:filter .15s, transform .15s;
 }
-.btn:hover{filter:brightness(.95); transform:translateY(-1px); color:#fff}
-button.ghost{background:var(--panel); color:var(--ink2); border-color:var(--line); font-size:13px; padding:7px 14px}
+.btn:hover{filter:brightness(.95); transform:translateY(-1px); color:#fff; text-decoration:none}
+a.btn.ghost{background:var(--panel); color:var(--ink2); border:1px solid var(--line)}
+a.btn.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:none}
+button.ghost{background:var(--panel); color:var(--ink2); border-color:var(--line); font-size:13px; height:36px; padding:0 14px}
 button.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:none}
 .row.between{justify-content:space-between}
 .row.between h2{margin:0}
@@ -321,10 +322,15 @@ footer{
   font-size:12px; color:var(--ink3);
 }
 
-@media (max-width:620px){
-  .steps{flex-direction:column}
+@media (max-width:767px){
+  /* Veilo 하단 탭바(veilo.css .ut-tabs · 약 64px)가 바닥에 붙는다 — 고정 띠는 그 위로 */
+  .cta-bar,.progress{bottom:calc(64px + env(safe-area-inset-bottom))}
+  .pado-sub-in{padding:8px 16px; gap:8px}
+  .steps{width:100%}
+  .steps a{flex:1; justify-content:center; padding:0 6px; font-size:12.5px; gap:5px}
+  .steps a .n{width:18px; height:18px; font-size:11px}
+  .pado-meta{margin-left:0; width:100%; justify-content:space-between}
   main{padding:18px 16px 44px}
-  .top-in{padding:14px 16px}
 }
 
 /* ── 위험 줄이기: 맨 위 「전 → 후」 한 줄 — 사람 수가 주, 노출 위험도는 보조 ── */

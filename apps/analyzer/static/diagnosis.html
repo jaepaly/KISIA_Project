@@ -4,22 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>점검 결과 — 파도풀</title>
+<script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
+<script src="head.js"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <div class="top-in">
-    <div class="brand">파도풀 <span class="brand-sub">공개 글을 모아 개인정보 노출 위험을 점검합니다</span></div>
-    <a class="back-sns" href="/">← Veilo로 돌아가기</a>
-    <div class="engine" id="badge"></div>
+<!-- Veilo 상단바 — apps/sns/templates/base.html 과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
+<div class="ut-top" id="utTop">
+  <div class="ut-top-in">
+    <a class="ut-logo" data-veilo-href="/">
+      <img class="sym" data-veilo-src="/static/veilo-symbol.svg" alt="" width="28" height="28">
+      <span class="wm">Veilo</span>
+    </a>
+    <nav class="ut-nav">
+      <a class="intro-btn" data-veilo-href="/?intro=1" aria-label="파도풀 소개 다시 보기">파도풀이란?</a>
+      <a href="scan.html" class="chk on" aria-current="page">🌊 내 글 점검</a>
+      <a data-veilo-href="/new" class="write">✏️ 글쓰기</a>
+      <!-- 「내 계정」 아바타 자리 — W-ACCT 가 Veilo 쪽에 만든 뒤 마지막 통합 때 연결한다 -->
+      <span class="acct-slot" id="acctSlot" hidden></span>
+    </nav>
   </div>
-</header>
+</div>
 
-<nav class="steps">
-  <a href="scan.html"><span class="n">1</span>내 글 점검</a>
-  <a href="diagnosis.html" aria-current="step"><span class="n">2</span>점검 결과</a>
-  <a href="action.html"><span class="n">3</span>위험 줄이기</a>
-</nav>
+<div class="pado-sub">
+<div class="pado-sub-in">
+  <nav class="steps" aria-label="파도풀 단계">
+    <a href="scan.html"><span class="n">1</span>내 글 점검</a>
+    <a href="diagnosis.html" aria-current="step"><span class="n">2</span>점검 결과</a>
+    <a href="action.html"><span class="n">3</span>위험 줄이기</a>
+  </nav>
+  <div class="pado-meta"><a class="back-sns" href="/">← Veilo로 돌아가기</a><span class="engine" id="badge"></span></div>
+</div>
+</div>
 
 <main>
 <h1>공개 글에서 드러나는 내 정보</h1>
@@ -36,7 +52,13 @@
   </div>
 </div>
 
-<script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) — common.js 보다 먼저 -->
+<!-- Veilo 모바일 하단 탭바 — base.html 과 같은 세 칸 -->
+<nav class="ut-tabs">
+  <a data-veilo-href="/"><span class="ic">🏠</span>홈</a>
+  <a href="scan.html" class="on"><span class="ic">🌊</span>내 글 점검</a>
+  <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
+</nav>
+
 <script src="common.js"></script>
 <script>
 showEngineBadge("badge");

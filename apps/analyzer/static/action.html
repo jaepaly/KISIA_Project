@@ -4,22 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>위험 줄이기 — 파도풀</title>
+<script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
+<script src="head.js"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <div class="top-in">
-    <div class="brand">파도풀 <span class="brand-sub">공개 글을 모아 개인정보 노출 위험을 점검합니다</span></div>
-    <a class="back-sns" href="/">← Veilo로 돌아가기</a>
-    <div class="engine" id="badge"></div>
+<!-- Veilo 상단바 — apps/sns/templates/base.html 과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
+<div class="ut-top" id="utTop">
+  <div class="ut-top-in">
+    <a class="ut-logo" data-veilo-href="/">
+      <img class="sym" data-veilo-src="/static/veilo-symbol.svg" alt="" width="28" height="28">
+      <span class="wm">Veilo</span>
+    </a>
+    <nav class="ut-nav">
+      <a class="intro-btn" data-veilo-href="/?intro=1" aria-label="파도풀 소개 다시 보기">파도풀이란?</a>
+      <a href="scan.html" class="chk on" aria-current="page">🌊 내 글 점검</a>
+      <a data-veilo-href="/new" class="write">✏️ 글쓰기</a>
+      <!-- 「내 계정」 아바타 자리 — W-ACCT 가 Veilo 쪽에 만든 뒤 마지막 통합 때 연결한다 -->
+      <span class="acct-slot" id="acctSlot" hidden></span>
+    </nav>
   </div>
-</header>
+</div>
 
-<nav class="steps">
-  <a href="scan.html"><span class="n">1</span>내 글 점검</a>
-  <a href="diagnosis.html"><span class="n">2</span>점검 결과</a>
-  <a href="action.html" aria-current="step"><span class="n">3</span>위험 줄이기</a>
-</nav>
+<div class="pado-sub">
+<div class="pado-sub-in">
+  <nav class="steps" aria-label="파도풀 단계">
+    <a href="scan.html"><span class="n">1</span>내 글 점검</a>
+    <a href="diagnosis.html"><span class="n">2</span>점검 결과</a>
+    <a href="action.html" aria-current="step"><span class="n">3</span>위험 줄이기</a>
+  </nav>
+  <div class="pado-meta"><a class="back-sns" href="/">← Veilo로 돌아가기</a><span class="engine" id="badge"></span></div>
+</div>
+</div>
 
 <main>
 <h1>개인정보 노출 위험 줄이기</h1>
@@ -29,19 +45,25 @@
 
 <footer>점검 결과는 참고용입니다. 내용을 확인하고 바꿀 방법을 직접 고르세요.</footer>
 
-<script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) — common.js 보다 먼저 -->
+<!-- Veilo 모바일 하단 탭바 — base.html 과 같은 세 칸 -->
+<nav class="ut-tabs">
+  <a data-veilo-href="/"><span class="ic">🏠</span>홈</a>
+  <a href="scan.html" class="on"><span class="ic">🌊</span>내 글 점검</a>
+  <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
+</nav>
+
 <script src="common.js"></script>
 <script>
 showEngineBadge("badge");
 
-const SNS = window.SNS_PUBLIC || "";   // Veilo 주소 — 기본은 같은 도메인 루트 (server.py SNS_PUBLIC_URL) · /posts/<id>
+const SNS = window.VEILO_BASE || "";   // Veilo 주소 — head.js (인스턴스는 같은 도메인 루트) · /posts/<id>
 const BURDEN = { low: ["낮음", "low"], medium: ["보통", "mid"], high: ["높음 — 내용 변경 큼", "hi"] };
 const SURE = { highest: "가장 확실", high: "확실", medium: "단서가 남을 수 있음", low: "효과를 확신하기 어려움" };
 // 번호(①②③)는 붙이지 않는다 — 엔진이 부담 순으로 주므로 화면 순서와 어긋날 수 있다 (M3). 아이콘으로 구분
 const ACTION = {
   unpublish:     { no: "🔒", nm: "비공개로 바꾸기", how: "Veilo 글 화면 아래 「🔒 비공개로 전환」 버튼을 누릅니다. 삭제가 아니라 언제든 되돌릴 수 있습니다." },
   activity_meta: { no: "📍", nm: "위치 태그 지우기", how: "Veilo 글 화면의 「📍 위치 태그」 칸을 비우고 「위치 저장」을 누릅니다. 본문은 그대로 둡니다." },
-  rewrite:       { no: "✏️", nm: "바꿔 쓰기", how: "아래 표현 중 하나를 골라 Veilo 글 화면에서 그 부분만 고쳐 씁니다. 바꾼 뒤 말투와 뜻이 맞는지 확인하세요." },
+  rewrite:       { no: "✏️", nm: "바꿔 쓰기", how: "Veilo 글 화면의 「✏️ 이 글을 옮겨 고쳐 쓰기」를 누르면 본문이 글쓰기 화면으로 옮겨집니다. 아래 표현 중 하나를 골라 그 부분만 고쳐 새 글로 올린 뒤, 원래 글은 비공개로 바꾸세요. 바꾼 뒤 말투와 뜻이 맞는지 확인하세요." },
 };
 // 파일 업로드 결과 — 글이 Veilo 에 없어 실행 위치를 글을 올린 서비스로 안내한다 (B3)
 const ACTION_HOW_UPLOAD = {
@@ -76,7 +98,7 @@ function postLink(data, postId) {
   const p = postsOf(data)[postId];
   const label = `「${esc(postLabel(p) || postId)}」`;
   if (isUpload(data)) return label;   // 업로드 글은 Veilo 에 없다 — 링크 대신 제목만 (B3)
-  return `<a href="${SNS}/posts/${encodeURIComponent(postId)}" target="veilo">${label}</a>`;
+  return `<a href="${SNS}/posts/${encodeURIComponent(postId)}">${label}</a>`;   // 같은 탭 — Veilo 안의 한 화면처럼 이어진다
 }
 // 깔때기 조건 문자열 «텍스트» 에서 단서를 뽑아 어느 글인지 찾는다
 function condParts(cond) {
@@ -322,7 +344,7 @@ function renderRewrites(data) {
       <div class="rewrite">…${esc(before)}<mark>${esc(r.suggestion)}</mark>${esc(after)}…
         <span class="note">${r.residual_risk === "none" ? "이 표현의 단서가 사라집니다" : "단서가 남음 — 단서가 약해지지만 남습니다"}</span></div>`).join("");
     cards.push(`<div class="card"><p class="rw-head">${postLink(data, postId)} 에서 <del>${esc(span.text)}</del> <span class="muted">(${TYPE_LABEL[span.type] || span.type})</span> 대신</p>${options}
-      ${isUpload(data) ? "" : `<p class="go"><a class="btn" href="${SNS}/posts/${encodeURIComponent(postId)}" target="veilo">Veilo에서 이 글 고치기 →</a></p>`}</div>`);
+      ${isUpload(data) ? "" : `<p class="go"><a class="btn" href="${SNS}/posts/${encodeURIComponent(postId)}#fix">Veilo에서 이 글 고쳐 쓰기 →</a></p>`}</div>`);
   }
   if (!cards.length) return "";
   return `<details class="more sec" id="rewrites">
