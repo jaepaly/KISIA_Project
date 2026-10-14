@@ -288,3 +288,8 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_ta
     }
 
     return {"input": stage2_input, "output": output}
+
+
+def c1_checkpoint() -> None:
+    """목 엔진은 체크포인트를 쓰지 않는다."""
+    return None

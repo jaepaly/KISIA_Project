@@ -79,9 +79,9 @@ def sns_authors(request: Request, q: str = "", limit: int | None = Query(default
 
 @app.get("/api/engine-mode")
 def engine_mode():
-    """화면 하단 배지용 — 지금 mock인지 real인지."""
+    """화면 하단 배지용 — 지금 mock인지 real인지 · 1단 체크포인트 폴더(시연 PC 확인용 · 마지막 두 단계만)."""
     # 엔진이 실제로 쓰는 값(import 때 고정)을 그대로 — 환경변수를 다시 읽으면 배지와 동작이 어긋날 수 있다 (Codex 10/9)
-    return {"mode": os.getenv("ENGINE_MODE", "mock"), "c1_rules": c1_rules.enabled()}
+    return {"mode": os.getenv("ENGINE_MODE", "mock"), "c1_rules": c1_rules.enabled(), "c1_checkpoint": engine.c1_checkpoint()}
 
 
 def _detect_input(post: dict) -> dict:

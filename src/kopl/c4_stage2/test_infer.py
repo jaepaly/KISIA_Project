@@ -156,7 +156,7 @@ def test_generation_error_falls_back_in_auto() -> None:
             raise RuntimeError("CUDA out of memory")
 
     out = analyze(USER, _posts(), model=Boom(), mode="auto")
-    assert "CUDA out of memory" in out["provenance"]["model_version"]
+    assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: GPU 메모리 부족)"
     with pytest.raises(RuntimeError):
         analyze(USER, _posts(), model=Boom(), mode="model")
 
@@ -367,3 +367,42 @@ def test_v1_adapter_is_refused_with_v2_prompt(tmp_path) -> None:
             infer_mod.Stage2Model(tmp_path)
     finally:
         infer_mod.V1_ADAPTER_SHA256 = orig
+
+
+def test_fallback_reason_hides_adapter_path(tmp_path, monkeypatch) -> None:
+    """어댑터가 없을 때 응답에는 고정 문구만 — PC 절대 경로가 /scan JSON 에 실리지 않는다 (#347 리뷰)."""
+    from kopl.c4_stage2 import infer as infer_mod
+
+    missing = tmp_path / "secret_dir" / "adapter_v2"
+    monkeypatch.setenv("STAGE2_ADAPTER_DIR", str(missing))
+    infer_mod.reset_model()
+    try:
+        out = analyze(USER, _posts(), mode="auto")
+        assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: 2단 어댑터 없음)"
+        assert "secret_dir" not in json.dumps(out, ensure_ascii=False)
+        with pytest.raises(RuntimeError) as ei:
+            analyze(USER, _posts(), mode="model")
+        assert "secret_dir" not in str(ei.value)
+    finally:
+        infer_mod.reset_model()
+
+
+def test_public_reason_is_fixed_text(tmp_path) -> None:
+    from kopl.c4_stage2.infer import _public_reason
+
+    p = str(tmp_path)
+    assert _public_reason(FileNotFoundError(f"2단 어댑터가 없다: {p}")) == "2단 어댑터 없음"
+    assert _public_reason(RuntimeError(f"v1 어댑터를 v2 구성으로 돌리려 했다: {p}")) == "v1 어댑터 거부 (v2 구성)"
+    assert _public_reason(RuntimeError("CUDA GPU 가 없다 — …")) == "CUDA GPU 없음"
+    assert _public_reason(ModuleNotFoundError("No module named 'peft'")) == "추론 라이브러리 없음"
+    assert _public_reason(OSError(f"디스크 오류 {p}")) == "OSError"
+
+
+class _BoomModel:
+    def generate(self, user_prompt: str) -> str:
+        raise OSError("C:/Users/someone/cuda.dll 을 읽지 못했다")
+
+
+def test_generation_error_reason_hides_message() -> None:
+    out = analyze(USER, _posts(), model=_BoomModel(), mode="auto")
+    assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: OSError)"

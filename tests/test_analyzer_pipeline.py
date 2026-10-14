@@ -381,3 +381,16 @@ def test_upstream_errors_hide_internal_address(monkeypatch):
             raise sns_adapter.requests.ConnectionError("transport failed", response=self)
     monkeypatch.setattr(sns_adapter.requests, "get", lambda *a, **k: _ConnWith404())
     assert c.post("/scan/u_00000000").status_code == 502
+
+
+def test_engine_mode_reports_checkpoint_folder_without_full_path():
+    """시연 PC 확인용 — 체크포인트는 마지막 두 단계만 (README D 12번 · PC 절대경로를 싣지 않는다)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import engines, server
+
+    assert engines.checkpoint_label("C:/Users/someone/kisia-ckpt/v2") == "kisia-ckpt/v2"
+    assert engines.checkpoint_label("/srv/app/experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10") \
+        == "variant_base_20261008/checkpoint-epoch-10"
+    body = TestClient(server.app).get("/api/engine-mode").json()
+    assert body["mode"] == "mock" and body["c1_checkpoint"] is None and "c1_rules" in body

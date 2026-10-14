@@ -60,8 +60,18 @@ def _attributes(texts: dict, candidate: dict) -> dict:
     return resolve_attributes(texts, candidate)
 
 
+_CHECKPOINT = Path(os.getenv("C1_CHECKPOINT_DIR", _DEFAULT_CHECKPOINT))
+
+
+def c1_checkpoint() -> str:
+    """지금 올라간 1단 체크포인트 — /api/engine-mode 에서 시연 PC 가 어느 폴더를 쓰는지 확인용 (README D 12번)."""
+    from . import checkpoint_label
+
+    return checkpoint_label(_CHECKPOINT)
+
+
 def _load_detector() -> "infer.SpanDetector":
-    checkpoint = Path(os.getenv("C1_CHECKPOINT_DIR", _DEFAULT_CHECKPOINT))
+    checkpoint = _CHECKPOINT
     if not (checkpoint / "config.json").is_file():
         raise RuntimeError(
             f"c1 체크포인트가 없다: {checkpoint}\n"
