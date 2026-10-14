@@ -71,7 +71,17 @@ def test_nav_links_to_about(client):
     client.get("/about")   # 소개를 본 방문자 — 홈이 열린다
     html = client.get("/").get_data(as_text=True)
     assert 'href="/about" class="intro-btn"' in html
-    assert html.count('href="/about"') >= 3   # 상단바 · 오른쪽 레일 「파도풀이 뭔가요?」 · 피드 위 「파도풀이란?」
+    assert html.count('href="/about"') == 1   # 상단바 하나 — 왼쪽 레일 · 피드 위 띠의 같은 링크는 뺐다 (10/14)
+
+
+def test_home_has_one_entry_each(client):
+    """홈에서 글쓰기 · 내 글 점검 · 파도풀이란? 은 상단바 하나씩(+ 휴대폰 하단 탭) — 같은 버튼이 세 번씩 나오던 것 (10/14)."""
+    client.get("/about")
+    html = client.get("/").get_data(as_text=True)
+    body = html[html.index('class="ut-shell'):html.index('class="ut-tabs"')]   # 상단바 · 하단 탭을 뺀 본문
+    assert 'href="/new"' not in body.replace('href="/new">첫 글을 써보세요', "")   # 글이 없을 때 안내 링크만 예외
+    assert "scan.html" not in body and 'href="/about"' not in body
+    assert "pado-strip" not in html and "pado-go" not in html
 
 
 # ── 첫 접속 = /about ──────────────────────────────────────────────────

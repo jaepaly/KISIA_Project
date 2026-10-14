@@ -178,7 +178,7 @@ async function main() {
     n = await js(DLG);
     check(mode, "소개 창(dialog) 없음 · 홈", n === 0, n, 0);
     const links = await js(`document.querySelectorAll('a[href="/about"]').length`);
-    check(mode, "홈의 「파도풀이란?」 링크 → /about (상단바 · 레일 · 피드 위)", links >= 3, links, "≥ 3");
+    check(mode, "홈의 「파도풀이란?」 링크 → /about 은 상단바 하나", links === 1, links, 1);
     at = await fresh("/new");
     check(mode, "쿠키 없음 /new → 그대로", at === "/new", at, "/new");
     at = await fresh("/?skip_about=1");
