@@ -128,7 +128,7 @@ def test_about_end_leads_into_veilo(client):
     assert 'href="/?skip_about=1">Veilo 둘러보기' in html
 
 
-# ── 첫 화면 = 이해시키기 — Veilo 로 나가는 길은 「건너뛰기」 하나 ─────────────────
+# ── 첫 화면 = 이해시키기 — Veilo 로 나가는 길은 「건너뛰기」 하나 · 로고는 파도풀 ─────────────────
 def _hero(html: str) -> str:
     return html[html.index('id="hero"'):html.index('id="narrow"')]
 
@@ -141,7 +141,9 @@ def test_about_header_is_minimal(client):
     html = client.get("/about").get_data(as_text=True)
     top = _top(html)
     assert 'class="ut-top ps-top"' in html
-    assert '<a class="ut-logo" href="/?skip_about=1">' in top
+    assert '<a class="ut-logo" href="/about">' in top            # 파도풀 소개 화면이라 로고도 파도풀 — 이 화면 맨 위로
+    assert '<span class="wm">파도풀</span>' in top and "padopool-symbol.svg" in top
+    assert '<span class="wm">Veilo</span>' not in top
     assert '<a class="ps-skipnav" href="/?skip_about=1" aria-label="소개 건너뛰고 Veilo 로">건너뛰기</a>' in top
     for gone in ('class="intro-btn"', 'class="chk"', 'class="write"', "/static/scan.html", 'href="/new"'):
         assert gone not in top, gone
@@ -155,16 +157,19 @@ def test_other_pages_keep_full_header(client):
         html = client.get(path).get_data(as_text=True)
         assert 'class="ut-top" id="utTop"' in html and 'ps-top' not in html, path
         assert '<a class="ut-logo" href="/">' in html and 'class="intro-btn"' in html and 'class="write"' in html, path
+        assert '<span class="wm">Veilo</span>' in html, path     # 다른 화면은 그대로 Veilo 로고
         assert 'class="ut-tabs"' in html and "ps-skipnav" not in html, path
 
 
-def test_hero_has_one_action_and_scroll_cue(client):
+def test_hero_has_no_jump_button_and_scroll_cue(client):
     import re
     html = client.get("/about").get_data(as_text=True)
     hero = _hero(html)
     hrefs = re.findall(r'href="([^"]+)"', hero)
-    assert hrefs == ["#narrow"], hrefs                          # 중심 행동 하나 — 바로 써 보기 · 건너뛰고 써 보기 없음
-    assert "어떻게 좁혀지는지 보기" in hero and "바로 써 보기" not in html and "건너뛰고 써 보기" not in html
+    assert hrefs == [], hrefs                                   # 할 일은 스크롤 하나 — 아래로 끌어내리는 버튼 · 바로 써 보기 없음
+    assert "어떻게 좁혀지는지 보기" not in html and "ps-down" not in html and "ps-peek" not in html
+    assert "바로 써 보기" not in html and "건너뛰고 써 보기" not in html
+    assert 'id="psField"' in hero and "/static/pado-hero.js" in html   # 마우스를 따라오는 돋보기 들판
     assert "아래로 내려 보세요" in hero and "예시" in hero        # 안내 한 줄 · 숫자는 예시
     assert 'id="psCue"' in html and "아래로 스크롤" in html
     assert html.count("Veilo 둘러보기") == 1 and html.index("Veilo 둘러보기") > html.index('id="end"')   # 끝 화면에만
@@ -172,3 +177,24 @@ def test_hero_has_one_action_and_scroll_cue(client):
     assert ".no-motion .ps-cue i{animation:none" in css          # 정지 상태 — 멈춘 화살표
     js = (Path(__file__).resolve().parent / "static" / "pado-scene.js").read_text(encoding="utf-8")
     assert "CUE_GONE = 40" in js
+
+
+# ── 장면 그림 — 좁혀지기 지도 · 네 단계 그림판 · 끝 화면 배경 ─────────────────
+def test_scene_pictures(client):
+    html = client.get("/about").get_data(as_text=True)
+    narrow = html[html.index('id="narrow"'):html.index('id="steps"')]
+    assert 'class="ps-mapbg"' in narrow and narrow.count('class="ps-pinm"') == 5
+    assert "실제 장소나 실제 사람이 아닙니다" in narrow             # 지도도 가상이라고 적는다
+    steps = html[html.index('id="steps"'):html.index('id="end"')]
+    assert [f'data-vis="{i}"' in steps for i in range(4)] == [True] * 4
+    end = html[html.index('id="end"'):]
+    assert 'class="ps-waves"' in end and 'class="ps-demo reveal" aria-hidden="true"' in end
+    css = (Path(__file__).resolve().parent / "static" / "pado-scene.css").read_text(encoding="utf-8")
+    assert ".no-motion .ps-waves path{animation:none}" in css      # 정지 상태 — 물결도 멈춘다
+
+
+def test_hero_field_has_no_external_requests():
+    js = (Path(__file__).resolve().parent / "static" / "pado-hero.js").read_text(encoding="utf-8")
+    for bad in ("http://", "https://", "fetch(", "XMLHttpRequest", "import("):
+        assert bad not in js, bad
+    assert 'classList.contains("no-motion")' in js               # 정지 상태면 한 장면만

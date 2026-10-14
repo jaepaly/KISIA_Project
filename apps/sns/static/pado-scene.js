@@ -1,8 +1,11 @@
 /* 「파도풀이란?」 소개 장면 (about.html) — motion-core.js 위에서 돈다.
    A #narrow : 글 카드가 하나씩 쌓이고, 조건에 맞는 사람 수(가상 예시)가 로그 단위로 줄며 점이 꺼진다. 「나」 하나만 남는다.
+               점은 가상의 동네 지도 위에 있다 — 「나」(가운데)에서 먼 점부터 꺼지고, 지도가 가운데로 다가간다(배율 --z 1 → ZMAX).
+               카드가 나올 때 그 글이 가리키는 곳에 핀(.ps-pinm[data-card])이 꽂힌다.
                카드 · 숫자 · 점 · 밤 막이 모두 같은 진행도(motion-core 의 관성 보간 cur)를 쓴다. 카드 등장 구간은 겹친다
                (앞 카드가 다 나오기 전에 다음이 시작 — 계단처럼 안 보이게) · 숫자 = 나온 카드 수만큼 로그 공간에서 보간.
-   B #steps  : 네 단계가 차례로 켜진다 (0.22 간격 · 0.34 램프 — 역시 겹친다).
+   B #steps  : 네 단계가 차례로 켜진다 (0.22 간격 · 0.34 램프 — 역시 겹친다). 그림판(.ps-vis-i)은 지금 단계 그림만 보인다(--f) ·
+               그림 안 움직임은 그 단계의 점등값(--t)을 따른다.
    C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter · 첫 화면 스크롤 신호(40px 넘게 내리면 숨김).
    정지 상태(html.ps-static)에서는 모든 장면이 끝난 모습 그대로다 — CSS 가 그렇게 그리고, 여기서는 캔버스만 끝 모습으로 한 번 그린다. */
 (function () {
@@ -28,6 +31,9 @@
   // ── 연출 A — 글이 쌓일수록 좁혀진다 ─────────────────────────────────────
   const narrow = M.track($("#narrow"));
   const posts = $$(".ps-post", narrow);
+  const stageEl = $(".ps-stage", narrow);
+  const pins = $$(".ps-pinm", narrow).map((el) => ({ el, i: +el.dataset.card }));
+  const ZMAX = 1.6;   // 지도 최대 배율 — 핀(가운데에서 가장 먼 것이 약 30%)이 화면 안에 남는 값
   const night = $(".ps-night", narrow);
   const spot = $(".ps-spot", narrow);
   const countEl = $("#psCount");
@@ -46,18 +52,19 @@
     const small = !matchMedia("(min-width:768px)").matches;
     const N = small ? 900 : 2000;
     // 자리와 꺼지는 순서는 고정 난수 — 새로고침해도 같은 그림. 0번이 「나」(가운데)
+    // 꺼지는 순서 = 「나」에서 먼 점부터(거리 + 약간의 흔들림) — 지도 위에서 범위가 「나」 쪽으로 오그라든다
     let seed = 7;
     const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     const pts = [];
-    pts.push({ x: 0.5, y: 0.5, a: 1, t: 1 });
-    while (pts.length < N) {
+    while (pts.length < N - 1) {
       const x = rnd(), y = rnd();
       if (Math.hypot(x - 0.5, y - 0.5) < 0.05) continue;   // 「나」 둘레는 비워 둔다
-      pts.push({ x, y, a: 0.9, t: 0.9 });
+      pts.push({ x, y, key: Math.hypot(x - 0.5, y - 0.5) + rnd() * 0.22 });
     }
-    for (let i = N - 1; i > 1; i--) { const j = 1 + Math.floor(rnd() * i); const tmp = pts[i]; pts[i] = pts[j]; pts[j] = tmp; }
+    pts.sort((a, b) => a.key - b.key);
+    pts.unshift({ x: 0.5, y: 0.5, key: 0 });
 
-    let w = 0, h = 0, dpr = 1, nf = N, drawn = -1, visible = true, dirty = false, dark = false;
+    let w = 0, h = 0, dpr = 1, nf = N, z = 1, drawn = -1, drawnZ = -1, visible = true, dirty = false, dark = false;
     function size() {
       dpr = Math.min(1.5, window.devicePixelRatio || 1);
       w = cv.clientWidth; h = cv.clientHeight;
@@ -74,14 +81,16 @@
     }
     function draw() {
       if (!visible) { dirty = true; return; }   // 화면 밖이면 그리지 않고, 다시 보일 때 한 번
-      dirty = false; drawn = nf;
+      dirty = false; drawn = nf; drawnZ = z;
       ctx.clearRect(0, 0, w, h);
       const r = Math.max(1.6, Math.min(w, h) / 170);
       ctx.fillStyle = ink;
       for (let i = 1; i < pts.length; i++) {
         const p = pts[i];
+        const x = ((p.x - 0.5) * z + 0.5) * w, y = ((p.y - 0.5) * z + 0.5) * h;   // 지도 배율을 따라 가운데에서 퍼진다
+        if (x < -r || y < -r || x > w + r || y > h + r) continue;
         ctx.globalAlpha = alpha(i);
-        ctx.fillRect(p.x * w - r / 2, p.y * h - r / 2, r, r);
+        ctx.fillRect(x - r / 2, y - r / 2, r, r);
       }
       ctx.globalAlpha = 1;
       ctx.fillStyle = hot;
@@ -89,11 +98,12 @@
       ctx.strokeStyle = hot; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(w / 2, h / 2, r * 7, 0, Math.PI * 2); ctx.stroke();
     }
-    // 남는 점 수 = N^(log K / log Kmax) — K 를 로그 공간에서 점 개수로 옮긴다. 0.05개 넘게 바뀔 때만 다시 그린다
-    function setK(k) {
+    // 남는 점 수 = N^(log K / log Kmax) — K 를 로그 공간에서 점 개수로 옮긴다. 0.05개 · 배율 0.002 넘게 바뀔 때만 다시 그린다
+    function setK(k, zoom) {
       const n = Math.max(1, Math.pow(N, Math.log(Math.max(1, k)) / LOGMAX));
-      if (Math.abs(n - drawn) < 0.05) return;
-      nf = n;
+      const zz = zoom || 1;
+      if (Math.abs(n - drawn) < 0.05 && Math.abs(zz - drawnZ) < 0.002) return;
+      nf = n; z = zz;
       draw();
     }
     function setDark(v) {
@@ -130,17 +140,22 @@
     if (!narrow) return;
     if (!on) {   // 정지 상태 — 다 켜진 모습
       posts.forEach((el) => setVar(el, "--in", 1));
+      pins.forEach((p) => setVar(p.el, "--in", 1));
+      if (stageEl) setVar(stageEl, "--z", ZMAX);
       if (night) setVar(night, "--d", 0);
       setVar(narrow, "--pa", 0);
       narrow.classList.remove("is-dark");
       countEl.textContent = `약 ${fmt(K[6])}명`;
       announce(6);
-      if (crowd) { crowd.setDark(false); crowd.setK(1); }
+      if (crowd) { crowd.setDark(false); crowd.setK(1, ZMAX); }
       return;
     }
     const s = clamp(p / 0.86) * 6;           // 0~6 — 끝 14% 는 「나」만 남은 채 멈춤
     let u = 0;                               // 나온 카드 수(소수) — 숫자 · 점이 이것을 따른다
-    posts.forEach((el, i) => { const c = smooth((s - i * GAP) / RAMP); u += c; setVar(el, "--in", c); });
+    const cs = posts.map((el, i) => { const c = smooth((s - i * GAP) / RAMP); u += c; setVar(el, "--in", c); return c; });
+    pins.forEach((p) => setVar(p.el, "--in", cs[p.i] || 0));
+    const z = 1 + (ZMAX - 1) * smooth(u / 6);   // 글이 쌓일수록 지도가 「나」 쪽으로 다가간다
+    if (stageEl) setVar(stageEl, "--z", z);
     const i0 = Math.min(5, Math.floor(u)), f = u - i0;
     const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
     countEl.textContent = `약 ${fmt(k)}명`;
@@ -150,19 +165,28 @@
     setVar(narrow, "--pa", plate(dark));
     if (spot) setVar(spot, "--s", 1 - smooth((p - 0.35) / 0.55));   // 1 → 0 : 스포트라이트가 「나」로 조여 온다
     narrow.classList.toggle("is-dark", dark >= FLIP);
-    if (crowd) { crowd.setDark(dark >= FLIP); crowd.setK(k); }
+    if (crowd) { crowd.setDark(dark >= FLIP); crowd.setK(k, z); }
   }
 
   // ── 연출 B — 네 단계 점등 ───────────────────────────────────────────────
   const steps = M.track($("#steps"));
   const stepEls = $$(".ps-step", steps);
   const path = $(".ps-path i", steps);
+  const vis = $$(".ps-vis-i", steps);
   function stepsScene(w, on) {
     if (!steps) return;
-    stepEls.forEach((el, i) => {
-      const a = on ? smooth((w - 0.22 * i) / 0.34) : 1;
-      setVar(el, "--a", a);
-      el.classList.toggle("reached", a >= 0.5);
+    const a = stepEls.map((el, i) => {
+      const v = on ? smooth((w - 0.22 * i) / 0.34) : 1;
+      setVar(el, "--a", v);
+      el.classList.toggle("reached", v >= 0.5);
+      return v;
+    });
+    // 그림판 — 그림 i 는 「i 단계가 켜졌고 다음 단계는 아직」일 때 보인다(첫 그림은 처음부터). 정지 상태는 네 장 다
+    // 겹쳐 바뀌는 구간은 짧게(smooth 0.3~0.7) — 두 그림이 반씩 겹쳐 보이는 때를 줄인다
+    vis.forEach((el, i) => {
+      const f = on ? smooth((clamp((i === 0 ? 1 : a[i]) - (a[i + 1] || 0)) - 0.3) / 0.4) : 1;
+      setVar(el, "--f", f);
+      setVar(el, "--t", on ? a[i] : 1);
     });
     if (path) setVar(path, "--w", w);
   }

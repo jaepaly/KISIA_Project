@@ -20,8 +20,8 @@
     <div class="ut-top-in">
       <button class="ut-menu" id="utMenuBtn" aria-label="메뉴 열기">☰</button>
       <a class="ut-logo" href="{% block logo_href %}/{% endblock %}">
-        <img class="sym" src="/static/veilo-symbol.svg" alt="" width="28" height="28">
-        <span class="wm">Veilo</span>
+        {% block logo %}<img class="sym" src="/static/veilo-symbol.svg" alt="" width="28" height="28">
+        <span class="wm">Veilo</span>{% endblock %}
       </a>
       <nav class="ut-nav">
         {% block nav %}

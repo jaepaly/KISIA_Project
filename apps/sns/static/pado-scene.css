@@ -14,7 +14,7 @@
   /* 캔버스가 읽는 점 색 */
   --ps-dot:var(--ps-muted); --ps-dot-dark:rgba(247,242,234,.75); --ps-hot:var(--ps-accent);
 }
-.ps-page body{background:var(--ps-paper)}
+.ps-page body{background:var(--ps-paper);padding-bottom:0}   /* 하단 탭바 자리 여백 없음 — 끝 화면 물결이 화면 바닥까지 */
 .ps{font-family:var(--ps-sans);color:var(--ps-ink)}
 .ps .eyebrow{display:flex;margin:0 0 14px}   /* 글꼴 · 자간은 veilo.css .eyebrow / .eyebrow.ko — 한글 라벨은 .ko */
 .ps .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-accent-soft);color:var(--ps-ink);font-size:12px;font-weight:600;white-space:nowrap}
@@ -39,14 +39,17 @@ html.dark-chapter .ut-top.ps-top{border-bottom-color:color-mix(in srgb,var(--nig
 .ps-top .ut-nav a.ps-skipnav:hover{background:none;color:var(--ps-ink);text-decoration-color:currentColor}
 html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night-muted,#B5AB9E)}
 
-/* ── 히어로 — 한 화면보다 10vh 낮게: 아래 끝에 다음 장면(첫 카드 윗부분)이 걸쳐 보인다 ── */
-.ps-hero{position:relative;min-height:calc(100svh - 61px - 10vh);display:flex;flex-direction:column;padding:24px 0 0}
-.ps-hero>.ps-in{width:100%;margin:auto;padding-top:16px;padding-bottom:24px}
-.ps-down span{display:inline-block;margin-left:8px}
+/* ── 히어로 — 한 화면. 뒤에 들판 캔버스(pado-hero.js) · 글자는 그 위. 들판은 글자 영역에 낱말을 두지 않고 점도 흐리게 그린다 ── */
+.ps-hero{position:relative;min-height:calc(100svh - 61px);display:flex;flex-direction:column;padding:24px 0 0;overflow:clip;touch-action:pan-y}
+.ps-field{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.ps-hero>.ps-in{position:relative;z-index:1;width:100%;margin:auto;padding-top:16px;padding-bottom:24px;pointer-events:none}
+.ps-hero>.ps-in a{pointer-events:auto}
 .ps-hint{font-size:14px;font-weight:600;color:var(--ps-body);margin:16px 0 0;word-break:keep-all}
 .ps-hint+.ps-fine{margin-top:6px}
-.ps-peek{height:52px;overflow:clip;-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent);pointer-events:none;user-select:none}
-.ps-peek .ps-post{max-width:440px}
+/* 들판 안내 — 오른쪽 위 작은 글씨(아래쪽은 돋보기 라벨 · 스크롤 신호 자리). 마우스 기기는 「움직여」, 터치 기기는 「눌러 끌어」 */
+.ps-try{position:absolute;right:40px;top:20px;z-index:1;margin:0;font-size:12px;color:var(--ps-muted);pointer-events:none;word-break:keep-all}
+.ps-try .touch{display:none}
+@media (hover:none){.ps-try .hover{display:none}.ps-try .touch{display:inline}}
 /* 스크롤 신호 — 아래 가운데(소개 순서 위). 화살표는 transform 으로만 천천히 오르내린다 · 40px 넘게 내리면 .is-gone */
 .ps-cue{position:fixed;left:50%;bottom:84px;z-index:24;margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;transform:translateX(-50%);
   font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ps-muted);pointer-events:none;transition:opacity .3s var(--ps-ease),visibility 0s linear 0s}
@@ -84,6 +87,25 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-crowd{position:relative;margin:0;width:100%;display:flex;flex-direction:column;gap:14px}
 .ps-stage{position:relative;aspect-ratio:1/1;width:min(100%,calc(100svh - 260px));overflow:clip;border-radius:18px}
 .ps-crowd canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+/* 가상의 동네 지도 — 선은 먹색을 옅게. 배율(--z)은 pado-scene.js · 밤 장면(.is-dark)에선 밝은 선으로 */
+.ps-stage{--z:1;background:var(--ps-paper2);border:1px solid var(--ps-line)}
+.ps-mapbg{position:absolute;inset:0;width:100%;height:100%;display:block;color:var(--ps-ink)}
+.ps-mapbg .zoom{transform-origin:50px 50px;transform:scale(var(--z))}
+.ps-mapbg .alley line{stroke:currentColor;stroke-opacity:.08;stroke-width:.35}
+.ps-mapbg .road path{fill:none;stroke:currentColor;stroke-opacity:.2;stroke-width:1.3;stroke-linecap:round}
+.ps-mapbg .river{fill:none;stroke:currentColor;stroke-opacity:.09;stroke-width:9;stroke-linecap:round}
+.ps-mapbg .bridge{fill:none;stroke:currentColor;stroke-opacity:.38;stroke-width:1.6;stroke-linecap:round}
+.ps-mapbg .park{fill:currentColor;fill-opacity:.06;stroke:currentColor;stroke-opacity:.18;stroke-width:.4;stroke-dasharray:1 1}
+.ps-narrow.is-dark .ps-stage{background:transparent;border-color:rgba(247,242,234,.16)}
+.ps-narrow.is-dark .ps-mapbg{color:var(--ps-night-ink)}
+/* 핀 — 지도 좌표(--px --py, %)를 배율대로 옮긴다. 크기는 그대로. 카드가 나올 때(--in) 꽂힌다 */
+.ps-pins{position:absolute;inset:0;pointer-events:none}
+.ps-pinm{--in:1;position:absolute;left:calc(50% + (var(--px) - 50) * var(--z) * 1%);top:calc(50% + (var(--py) - 50) * var(--z) * 1%);
+  display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 4px;border-radius:999px;background:var(--ps-paper);border:1px solid var(--ps-line);
+  font-size:11px;font-weight:700;color:var(--ps-ink);white-space:nowrap;
+  opacity:var(--in);transform:translate(-8px,calc(-100% - 4px - (1 - var(--in)) * 10px))}
+.ps-pinm i{width:8px;height:8px;border-radius:50%;background:var(--ps-ink)}
+.ps-pinm::after{content:"";position:absolute;left:7px;top:100%;width:1px;height:4px;background:var(--ps-ink)}
 /* 스포트라이트 — 가운데(「나」)만 뚫린 어두운 막. 크기(transform)만 바뀐다: --s 1 → 넓게, 0 → 「나」로 조여 옴 */
 .ps-spot{position:absolute;left:50%;top:50%;width:60%;aspect-ratio:1/1;margin:-30% 0 0 -30%;border-radius:50%;pointer-events:none;
   box-shadow:0 0 0 200vmax rgba(28,26,25,.55);opacity:calc(var(--d-spot,1) * (1 - var(--s,1)));transform:scale(calc(.32 + var(--s,1) * 2.2))}
@@ -93,7 +115,39 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-note{font-size:12px;color:var(--ps-muted)}
 
 /* ── 연출 B — 네 단계 ── */
-.ps-track{position:relative;margin-top:16px}
+/* 머리 — 제목(왼쪽) · 그림판(오른쪽). 그림판 = 네 장이 겹쳐 있고 지금 단계 그림만 보인다(--f) · 그림 안 움직임은 --t */
+.ps-steps-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:center}
+.ps-vis{position:relative;height:clamp(220px,34svh,300px);border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
+.ps-vis-i{--f:1;--t:1;position:absolute;inset:0;display:grid;place-items:center;opacity:var(--f);transform:translateX(calc((1 - var(--f)) * 14px))}
+.ps-vis-i .cap{position:absolute;left:16px;top:12px;font-size:12px;font-weight:600;color:var(--ps-muted)}   /* 한글이라 모노 대신 본문 글꼴 */
+/* 1 글 모으기 — 흩어진 카드(--dx --dy --r)가 가운데 묶음으로 */
+.v1 .card{position:absolute;left:50%;top:50%;width:120px;height:72px;margin:-36px 0 0 -60px;border:1px solid var(--ps-line);border-radius:10px;background:var(--ps-paper);
+  display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 14px;
+  transform:translate(calc(var(--dx) * (1 - var(--t)) + var(--n) * 3px),calc(var(--dy) * (1 - var(--t)) - var(--n) * 3px)) rotate(calc(var(--r) * (1 - var(--t) * .7)))}
+.v1 .card i{display:block;height:6px;border-radius:3px;background:var(--ps-line)}
+.v1 .card i+i{width:60%}
+.v1 .tag{position:absolute;left:50%;top:calc(50% + 58px);transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--ps-ink);opacity:var(--t)}
+/* 2 단서 찾기 — 형광펜이 낱말 순서대로(--n) 그어진다 */
+.v2 .note{max-width:340px;margin:0 24px;font-size:clamp(15px,1.4vw,18px);line-height:1.9;color:var(--ps-ink);word-break:keep-all}
+.v2 mark{--m:clamp(0,(var(--t) * 4 - var(--n)),1);color:inherit;padding:0 2px;
+  background:linear-gradient(var(--ps-accent-soft),var(--ps-accent-soft)) no-repeat 0 100%/calc(var(--m) * 100%) 100%;
+  box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--ps-accent) calc(var(--m) * 100%),transparent)}
+/* 3 엮어 보기 — 단서 원 세 개가 밖에서 겹쳐 들어와 가운데 「나」만 남는다 */
+.v3 svg{width:min(300px,80%);height:auto;overflow:visible}
+.v3 .ring{transform:translate(calc(var(--dx) * (1 - var(--t))),calc(var(--dy) * (1 - var(--t))))}
+.v3 circle{fill:var(--ps-ink);fill-opacity:.05;stroke:var(--ps-ink);stroke-opacity:.45;stroke-width:1}
+.v3 text{font-family:var(--ps-sans);font-size:12px;font-weight:700;fill:var(--ps-ink)}
+.v3 .me{fill:var(--ps-accent);fill-opacity:1;stroke:none;opacity:var(--t)}
+/* 4 위험 판정 — 숫자 · 위험 막대 · 고치면 덜 드러나는 말 */
+.v4 .verdict{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:240px}
+.v4 .big{margin:0;font-size:clamp(22px,2.2vw,30px);font-weight:700;letter-spacing:-.03em;color:var(--ps-ink)}
+.v4 .big b{color:var(--ps-accent)}
+.v4 .meter{position:relative;display:block;width:100%;height:8px;border-radius:4px;background:var(--ps-line);overflow:hidden}
+.v4 .meter i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(calc(var(--t) * .86))}
+.v4 .fix{margin:0;font-size:14px;color:var(--ps-body)}
+.v4 .fix s{color:var(--ps-muted)}
+.v4 .fix ins{text-decoration:none;font-weight:700;color:var(--ps-ink);border-bottom:2px solid var(--ps-ink)}
+.ps-track{position:relative;margin-top:28px}
 .ps-path{position:absolute;left:0;right:0;top:9px;height:1px;background:var(--ps-line)}
 .ps-path i{position:absolute;inset:0;background:var(--ps-accent);transform-origin:0 50%;transform:scaleX(var(--w,1))}
 .ps-step-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
@@ -106,8 +160,29 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 
 /* ── 마무리 ── */
 /* 스크롤 끝 한 화면 — 「이제 Veilo 에서 직접 해 보세요」 + 큰 「Veilo 둘러보기」. 아래 소개 순서(72)를 피해 가운데 */
-.ps-end{min-height:100svh;display:flex;align-items:center;padding:64px 0 96px;border-top:1px solid var(--ps-line)}
-.ps-end .ps-in{width:100%}
+.ps-end{position:relative;min-height:100svh;display:flex;align-items:center;padding:64px 0 96px;border-top:1px solid var(--ps-line);overflow:clip}
+.ps-end .ps-in{position:relative;z-index:1;width:100%}
+.ps-end-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center}
+/* 아래 물결 — 파도풀. 세 겹이 서로 다른 빠르기로 옆으로 흐른다(transform 만) · 정지 상태는 멈춤 */
+.ps-waves{position:absolute;left:0;bottom:0;width:200%;height:clamp(120px,22svh,220px);z-index:0;pointer-events:none}
+.ps-waves path{fill:var(--ps-ink)}
+.ps-waves .w1{fill-opacity:.035;animation:ps-wave 38s linear infinite}
+.ps-waves .w2{fill-opacity:.05;animation:ps-wave 26s linear infinite reverse}
+.ps-waves .w3{fill-opacity:.07;animation:ps-wave 18s linear infinite}
+@keyframes ps-wave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.no-motion .ps-waves path{animation:none}
+/* 미리 보기 — Veilo 글쓰기에 파도풀이 붙은 모습(장식) */
+.ps-demo{border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper);padding:18px 20px 20px;max-width:440px;justify-self:end;width:100%}
+.ps-demo .bar{display:flex;align-items:center;gap:8px;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--ps-line);font-size:12px;font-weight:700;color:var(--ps-muted)}
+.ps-demo .draft{margin:0 0 16px;font-size:15px;line-height:1.7;color:var(--ps-ink);word-break:keep-all}
+.ps-demo .draft mark{color:inherit;background:var(--ps-accent-soft);box-shadow:inset 0 -2px 0 var(--ps-accent);padding:0 2px}
+.ps-demo .pado{border:1px solid var(--ps-line);border-radius:12px;padding:12px 14px;background:var(--ps-paper2)}
+.ps-demo .pado p{margin:0;font-size:13px;line-height:1.6;color:var(--ps-body);word-break:keep-all}
+.ps-demo .pado .h{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-weight:700;color:var(--ps-ink)}
+.ps-demo .pado .chip{margin-left:auto;background:var(--ps-ink);border-color:var(--ps-ink);color:var(--ps-paper)}
+.ps-demo .pado b{color:var(--ps-ink)}
+.ps-demo .pado .s{margin-top:6px}
+.ps-demo .pado ins{text-decoration:none;font-weight:700;color:var(--ps-ink);border-bottom:2px solid var(--ps-ink)}
 .ps-end-h{font-size:clamp(30px,4.4vw,60px);line-height:1.14;letter-spacing:-.05em}
 .ps-go{min-height:64px;padding:0 32px;font-size:clamp(17px,1.6vw,20px);gap:10px}
 .ps-go span{transition:transform .2s var(--ps-ease)}
@@ -145,6 +220,11 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
 .ps-static .ps-night,.ps-static .ps-spot{display:none}
 .ps-static .ps-narrow{border-top:1px solid var(--ps-line)}
 .ps-static .ps-steps{border-top:1px solid var(--ps-line)}
+/* 정지 상태 그림판 — 네 장을 단계 순서대로 나란히(겹치지 않게) */
+.ps-static .ps-steps-head{grid-template-columns:1fr}
+.ps-static .ps-vis{height:auto;border:0;background:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;overflow:visible}
+.ps-static .ps-vis-i{position:relative;inset:auto;min-height:220px;--f:1;--t:1;opacity:1;transform:none;border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
+.ps-static .ps-pinm{--in:1}
 /* 스크립트 전 · 스크립트 없이도 같은 정지 모습 — PIN_MQ 밖이거나 동작 줄이기 (위 .ps-static 과 같은 규칙) */
 @media not all and (min-width:768px) and (min-height:800px),(prefers-reduced-motion:reduce){
   .ps-pin{height:auto}
@@ -154,21 +234,31 @@ html.dark-chapter .ps-motion{border-color:rgba(247,242,234,.25)}
   .ps-path i{transform:none}
   .ps-night,.ps-spot{display:none}
   .ps-narrow,.ps-steps{border-top:1px solid var(--ps-line)}
+  .ps-steps-head{grid-template-columns:1fr}
+  .ps-vis{height:auto;border:0;background:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;overflow:visible}
+  .ps-vis-i{position:relative;inset:auto;min-height:220px;--f:1;--t:1;opacity:1;transform:none;border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}
+  .ps-stage{--z:1.6}
+  .ps-pinm{--in:1}
+  .ps-waves path{animation:none}
 }
 .no-motion .ps-btn:hover,.no-motion .ps-go:hover span{transform:none}
 
 @media (max-width:767px){
   .ps-in{padding:0 16px}
-  .ps-hero{min-height:auto;padding:32px 0 56px}
-  .ps-peek{display:none}   /* 모바일은 정지 흐름 — 다음 장면이 바로 이어진다 */
+  .ps-hero{min-height:auto;padding:32px 0 24px}
+  /* 들판은 글 아래 따로 한 칸 — 글자 위에 겹치지 않게 */
+  .ps-field{position:relative;inset:auto;order:2;height:300px;margin-top:8px}
+  .ps-hero>.ps-in{margin:0}
+  .ps-try{position:relative;right:auto;top:auto;order:3;padding:8px 16px 0}
   /* 소개 순서 · 하단 탭이 없다 — 정지 흐름이라 아래 글 위에 겹치므로 종이 바탕 알약에 담는다 */
   .ps-cue{bottom:calc(16px + env(safe-area-inset-bottom));flex-direction:row;gap:8px;padding:6px 14px;border:1px solid var(--ps-line);border-radius:999px;background:var(--ps-paper)}
   .ps-cue i{height:14px}
-  .ps-page body{padding-bottom:0}   /* 하단 탭바를 뺐으니 그 자리 여백도 */
   .ps-sticky{padding:64px 0}
   .ps-narrow-grid{grid-template-columns:1fr;gap:32px}
   .ps-stage{width:100%}
   .ps-step-list{grid-template-columns:1fr;gap:24px}
+  .ps-end-grid{grid-template-columns:1fr;gap:32px}
+  .ps-demo{justify-self:stretch;max-width:none}
   .ps-path{left:6px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
   .ps-step{padding:0 0 0 32px}
   .ps-step .dot{top:4px}

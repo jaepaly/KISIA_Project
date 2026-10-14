@@ -16,7 +16,9 @@
 //       핀 장면 내용이 위 바 · 아래 소개 순서에 가리지 않음 · 움직임 토글 뒤 읽던 자리(±1화면) · Tab 으로 소개 순서 · 움직임 버튼 도달 ·
 //       밤 막이 짙어지는 동안 좁혀지기 글자 대비(작은 라벨 4.5:1 · 제목·숫자 3:1 — 실제 계산 색 · 막 농도 · 라벨 바탕으로 계산) ·
 //       첫 화면(W-HERO): Veilo 로 나가는 링크는 로고 말고 「건너뛰기」 하나 · 스크롤 신호가 40px 뒤 사라짐 · 정지 모드는 멈춘 화살표 ·
-//       상단바 1px 선(--line-strong) 위 진행 막대 2px · 밤 장면에서도 선이 보임 · 「어떻게 좁혀지는지 보기」→ #narrow · 다음 장면이 아래 끝에 걸침
+//       상단바 1px 선(--line-strong) 위 진행 막대 2px · 밤 장면에서도 선이 보임 · 히어로 = 한 화면(끌어내리는 버튼 없음) · 로고 = 파도풀 ·
+//       첫 화면 들판(pado-hero.js): 낱말 · 점이 그려짐 · 돋보기가 마우스를 따라옴 · 가만있으면 떠돎 · 정지 모드는 루프 없음 ·
+//       좁혀지기 지도: 배율이 커지고 핀이 카드를 따라 꽂힘 · 네 단계 그림판: 지금 단계 그림이 가장 진함 · 끝 화면 물결(정지 모드는 멈춤)
 
 const arg = (name, fb) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : fb; };
 const PORT = Number(arg("--port", process.env.CDP_PORT || 9333));
@@ -148,6 +150,10 @@ async function main() {
     check(mode, ".ps-sticky position", s.sticky === "static", s.sticky, "static");
     check(mode, ".reveal opacity (스크롤 전)", s.reveal === "1", s.reveal, "1");
     check(mode, "html scroll-behavior", s.scroll === "auto", s.scroll, "auto");
+    const hs = await js(`window.PadoHero ? window.PadoHero.probe() : null`);
+    check(mode, "들판 루프 없음 (한 장면만)", hs && !hs.running, hs, "running false");
+    const wave = await js(`getComputedStyle(document.querySelector(".ps-waves .w1")).animationName`);
+    check(mode, "끝 화면 물결 멈춤", wave === "none", wave, "none");
     await scrollTo(await posOf("#narrow", 0.5));
     await loopStops(mode);
     const n = await ripple(3);
@@ -254,28 +260,55 @@ async function main() {
     let s = await state();
     check(mode, "html 에 정지 클래스 없음", !/ps-static|no-motion/.test(s.cls), s.cls, "ps-page js");
     check(mode, ".ps-sticky position", s.sticky === "sticky", s.sticky, "sticky");
-    check(mode, ".reveal opacity (스크롤 전 숨김)", s.reveal === "0", s.reveal, "0");
+    check(mode, ".reveal opacity (스크롤 전 숨김)", Number(s.reveal) < 0.01, s.reveal, "< 0.01 (전환 끝자락 값 허용)");
     check(mode, "html scroll-behavior", s.scroll === "smooth", s.scroll, "smooth");
     await heroChecks(mode, { animated: true });
     // 상단바 선 · 진행 막대 · 소개 순서 · 다음 장면 걸침
     const top0 = await js(`(() => { const t = document.getElementById("utTop"), cs = getComputedStyle(t), tr = t.getBoundingClientRect();
       const b = document.querySelector(".ps-progress").getBoundingClientRect(), hero = document.getElementById("hero").getBoundingClientRect();
-      const peek = document.querySelector(".ps-peek").getBoundingClientRect(), map = document.querySelector(".ps-map").getBoundingClientRect();
+      const map = document.querySelector(".ps-map").getBoundingClientRect();
       const a = (cs.borderBottomColor.match(/[\\d.]+/g) || []).map(Number);
       return { line: cs.borderBottomColor, lineW: cs.borderBottomWidth, alpha: a.length > 3 ? a[3] : 1, barH: Math.round(b.height), barBottom: Math.round(b.bottom), topBottom: Math.round(tr.bottom),
-        heroBottom: Math.round(hero.bottom), peekTop: Math.round(peek.top), mapTop: Math.round(map.top), vh: innerHeight,
+        heroBottom: Math.round(hero.bottom), mapTop: Math.round(map.top), vh: innerHeight, logo: document.querySelector(".ut-logo .wm").textContent,
         current: document.querySelector(".ps-map a[aria-current]")?.dataset.map }; })()`);
     check(mode, "상단바 아래 1px 선이 처음부터 또렷 (알파 ≥ 0.2)", top0.lineW === "1px" && top0.alpha >= 0.2, top0, "1px · α ≥ .2");
     check(mode, "진행 막대 2px 가 상단바 선 위", top0.barH === 2 && Math.abs(top0.barBottom - top0.topBottom) <= 1, top0, "높이 2 · 아래 끝 = 상단바 아래 끝 ±1");
     check(mode, "첫 화면 소개 순서 현재 = 01 파도풀", top0.current === "hero", top0.current, "hero");
-    check(mode, "히어로가 한 화면보다 낮고 다음 장면 카드가 아래에 걸침", top0.heroBottom < top0.vh && top0.peekTop < top0.mapTop, top0, "heroBottom < vh · peekTop < mapTop");
-    // 「어떻게 좁혀지는지 보기 ↓」 → #narrow 로 부드럽게
-    const btn = await js(`(() => { const r = document.querySelector(".ps-down").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
-    for (const type of ["mousePressed", "mouseReleased"]) await send("Input.dispatchMouseEvent", { type, x: btn.x, y: btn.y, button: "left", clickCount: 1 });
-    const mid = await js(`new Promise((r) => setTimeout(() => r(scrollY), 120))`);
-    await sleep(1500);
-    const land = await js(`({ y: Math.round(scrollY), top: Math.round(document.getElementById("narrow").getBoundingClientRect().top + scrollY) })`);
-    check(mode, "「어떻게 좁혀지는지 보기」→ #narrow (부드럽게)", Math.abs(land.y - land.top) <= 2 && mid > 0 && mid < land.top, { mid: Math.round(mid), ...land }, "도착 = #narrow 위 · 중간값이 그 사이");
+    check(mode, "히어로 = 한 화면 (아래 끝 = 화면 아래 ±2)", Math.abs(top0.heroBottom - top0.vh) <= 2, top0, "heroBottom ≈ vh");
+    check(mode, "로고 = 파도풀", top0.logo === "파도풀", top0.logo, "파도풀");
+    const jump = await js(`document.querySelectorAll("#hero a[href^='#'], .ps-down").length`);
+    check(mode, "히어로에 끌어내리는 버튼 없음", jump === 0, jump, 0);
+    // 첫 화면 들판 — 낱말 · 점 · 돋보기가 마우스를 따라온다 · 가만있으면 떠돈다
+    const hp = () => js(`window.PadoHero ? window.PadoHero.probe() : null`);
+    let h0 = await hp();
+    check(mode, "들판 낱말 ≥ 8 · 점 ≥ 300", h0 && h0.words >= 8 && h0.dots >= 300, h0, "words ≥ 8 · dots ≥ 300");
+    check(mode, "들판 루프 돎 (첫 화면 · 움직임 모드)", h0 && h0.running, h0 && h0.running, true);
+    const ink = await js(`(() => { const c = document.getElementById("psField"), x = c.getContext("2d").getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < x.length; i += 4) if (x[i] > 0) n++; return n; })()`);
+    check(mode, "들판 캔버스에 그림이 있음", ink > 1000, ink, "> 1000 픽셀");
+    const t1 = await js(`(() => { const r = document.getElementById("psField").getBoundingClientRect(); return { x: Math.round(r.left + r.width * 0.8), y: Math.round(r.top + r.height * 0.75) }; })()`);
+    for (let i = 0; i < 6; i++) { await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: t1.x - 30 + i * 5, y: t1.y }); await sleep(30); }
+    await sleep(900);
+    h0 = await hp();
+    const cr = await js(`(() => { const r = document.getElementById("psField").getBoundingClientRect(); return { l: r.left, t: r.top }; })()`);
+    const off = Math.round(Math.hypot(h0.lx + cr.l - t1.x, h0.ly + cr.t - t1.y));
+    check(mode, "돋보기가 마우스를 따라옴 (0.9초 뒤 ±24px)", off <= 24, { off, h0, t1 }, "≤ 24");
+    await sleep(3200);
+    const a1 = await hp(); await sleep(600); const a2 = await hp();
+    const drift = Math.round(Math.hypot(a2.lx - a1.lx, a2.ly - a1.ly));
+    check(mode, "가만있으면 돋보기가 떠돎 (2.5초 뒤)", drift >= 2, drift, "≥ 2px / 0.6초");
+    await send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 5, y: 5 });
+    // 좁혀지기 지도 — 처음엔 배율 1 · 핀 없음 → 끝엔 배율 ≥ 1.5 · 핀 다섯 개 다
+    const mapAt = async (p) => { await scrollTo(await posOf("#narrow", p));
+      return js(`({ z: Number(document.querySelector("#narrow .ps-stage").style.getPropertyValue("--z")), pins: [...document.querySelectorAll("#narrow .ps-pinm")].map((e) => Number(e.style.getPropertyValue("--in"))) })`); };
+    const m0 = await mapAt(0.02), m1 = await mapAt(0.95);
+    check(mode, "지도 처음: 배율 < 1.05 · 핀 없음", m0.z < 1.05 && m0.pins.every((v) => v < 0.1), m0, "z < 1.05 · pins < .1");
+    check(mode, "지도 끝: 배율 ≥ 1.5 · 핀 다섯 개", m1.z >= 1.5 && m1.pins.length === 5 && m1.pins.every((v) => v > 0.9), m1, "z ≥ 1.5 · pins > .9");
+    // 네 단계 그림판 — 진행도마다 가장 진한 그림 = 그때 켜진 마지막 단계
+    const visAt = async (p) => { await scrollTo(await posOf("#steps", p));
+      return js(`(() => { const f = [...document.querySelectorAll("#steps .ps-vis-i")].map((e) => Number(e.style.getPropertyValue("--f") || 0)); return { f, top: f.indexOf(Math.max(...f)) }; })()`); };
+    const vs = [];
+    for (const [p, want] of [[0.05, 0], [0.42, 1], [0.66, 2], [0.98, 3]]) { const v = await visAt(p); vs.push({ p, want, ...v }); }
+    check(mode, "네 단계 그림판: 지금 단계 그림이 가장 진함", vs.every((v) => v.top === v.want && v.f[v.top] > 0.6), vs, "0 → 1 → 2 → 3");
     // 밤 장면 — 상단바 선이 밝은 색으로 보인다
     await scrollTo(await posOf("#narrow", 0.8));
     await sleep(500);
