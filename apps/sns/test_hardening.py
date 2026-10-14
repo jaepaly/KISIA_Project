@@ -29,7 +29,6 @@ def env(tmp_path, monkeypatch):
     import app as appmod
     appmod.app.config["TESTING"] = True
     monkeypatch.setitem(appmod._sweep_state, "at", 0.0)
-    monkeypatch.setitem(appmod._sweep_state, "count", None)
     return appmod, tmp_path
 
 
@@ -195,28 +194,71 @@ def test_debug_off_by_default():
 
 
 # ── Codex 검토 반례
-def test_concurrent_creation_does_not_overwrite_existing_copy(env, monkeypatch):
-    """같은 쿠키의 두 요청이 동시에 사본을 만들 때 — 늦은 쪽이 먼저 만든 사본(그 사이 저장한 수정)을 덮지 않는다."""
+def test_install_never_overwrites_existing_copy(env, monkeypatch):
+    """같은 쿠키의 두 요청이 사본을 만들 때 — 늦은 쪽이 먼저 만든 사본(그 사이 저장한 수정)을 덮지 않는다.
+    하드 링크를 못 쓰는 파일 시스템(대체 경로)에서도 같다."""
     appmod, root = env
-    sid = "ab" * 12
-    target = root / "sessions" / f"{sid}.db"
-    real_reserve = appmod._reserve_slot
+    d = root / "sessions"
+    d.mkdir()
+    target = d / ("ab" * 12 + ".db")
+    target.write_bytes(b"first")
+    for link_fails in (False, True):
+        tmp = d / "x.tmp"
+        tmp.write_bytes(b"second")
+        if link_fails:
+            def no_link(*a, **k):
+                raise OSError("no hard links")
+            monkeypatch.setattr(appmod.os, "link", no_link)
+        appmod._install(tmp, target)
+        assert target.read_bytes() == b"first"
+        tmp.unlink()
 
-    def reserve_and_lose_race(d):
-        ok = real_reserve(d)
-        _seed(target)                                            # 다른 요청이 먼저 만들고
-        con = sqlite3.connect(target)
-        con.execute("UPDATE posts SET visibility='private' WHERE post_id='S01_b01'")   # 수정까지 저장했다
-        con.commit(); con.close()
-        return ok
-    monkeypatch.setattr(appmod, "_reserve_slot", reserve_and_lose_race)
-    with appmod.app.test_request_context():
-        assert appmod._session_db_path(sid) == target
-    con = sqlite3.connect(target)
-    assert con.execute("SELECT visibility FROM posts WHERE post_id='S01_b01'").fetchone()[0] == "private"
-    con.close()
-    assert appmod._sweep_state["count"] == 0                     # 못 쓴 자리는 돌려줬다
-    assert not list((root / "sessions").glob("*.tmp"))
+
+def test_cap_one_allows_only_one_new_copy(env, monkeypatch):
+    """상한 1 — 새 방문자 둘이 연달아 와도 사본은 하나 (예전엔 청소가 셈을 다시 세며 예약을 잊어 둘 다 받았다)."""
+    appmod, root = env
+    monkeypatch.setattr(appmod, "SESSION_MAX", 1)
+    monkeypatch.setattr(appmod, "SESSION_SWEEP_SECONDS", 0)     # 매번 청소 — 다시 세도 넘지 않아야 한다
+    first, _ = _new_visitor(appmod.app)
+    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
+    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
+    assert len(list((root / "sessions").glob("*.db"))) == 1
+    assert first.get(f"/u/{REF}").status_code == 200
+
+
+def test_cap_counts_copies_made_by_other_processes(env, monkeypatch):
+    """사본 수는 디스크에서 센다 — 다른 프로세스(워커)가 만든 사본도 상한에 들어간다."""
+    appmod, root = env
+    monkeypatch.setattr(appmod, "SESSION_MAX", 2)
+    monkeypatch.setattr(appmod, "SESSION_SWEEP_SECONDS", 3600)
+    _new_visitor(appmod.app)                                    # 이 프로세스가 하나
+    (root / "sessions" / ("c" * 24 + ".db")).write_bytes(b"")  # 다른 프로세스가 방금 하나
+    assert appmod.app.test_client().get("/?skip_about=1").status_code == 503
+
+
+def test_sessions_lock_is_exclusive_across_handles(env):
+    """잠금 파일은 다른 핸들(다른 프로세스와 같은 조건)에서 잡으려 하면 막힌다."""
+    import subprocess
+    appmod, root = env
+    d = root / "sessions"
+    d.mkdir()
+    code = chr(10).join([
+        "import sys, os",
+        "f = open(sys.argv[1], 'a+b')",
+        "try:",
+        "    if os.name == 'nt':",
+        "        import msvcrt; f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_NBLCK, 1)",
+        "    else:",
+        "        import fcntl; fcntl.flock(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)",
+        "    print('got')",
+        "except OSError:",
+        "    print('blocked')",
+    ])
+    with appmod._sessions_locked(d):
+        out = subprocess.run([sys.executable, "-c", code, str(d / ".lock")], capture_output=True, text=True).stdout.strip()
+    assert out == "blocked"
+    out = subprocess.run([sys.executable, "-c", code, str(d / ".lock")], capture_output=True, text=True).stdout.strip()
+    assert out == "got"
 
 
 def test_cap_is_hard_when_all_copies_are_in_use(env, monkeypatch):
@@ -238,3 +280,43 @@ def test_sec_fetch_site_same_origin_passes_behind_proxy(env):
     assert c.post("/me", data={"author_id": ""}, headers=h).status_code == 403
     assert c.post("/me", data={"author_id": ""}, headers={**h, "Sec-Fetch-Site": "same-origin"}).status_code == 302
     assert c.post("/me", data={"author_id": ""}, headers={"Origin": "https://evil.example", "Sec-Fetch-Site": "cross-site"}).status_code == 403
+
+
+# ── 글쓰기 한도 — 파도풀 점검 상한과 같은 값 (2차 Codex 검토)
+def _write(c, **kw):
+    data = {"author_id": "S01", "body": "새 글", "created_at": "2026-01-03T09:00", **kw}
+    return c.post("/posts", data=data)
+
+
+def test_post_field_limits_give_korean_message(env):
+    appmod, _ = env
+    c, _ = _new_visitor(appmod.app)
+    for kw, word in ((dict(body="가" * (appmod.MAX_BODY_CHARS + 1)), "본문"),
+                     (dict(title="가" * (appmod.MAX_TITLE_CHARS + 1)), "제목"),
+                     (dict(geo_tag="가" * (appmod.MAX_GEO_CHARS + 1)), "위치 태그"),
+                     (dict(captions="\n".join(f"사진{i}" for i in range(appmod.MAX_CAPTIONS + 1))), "사진 설명")):
+        r = _write(c, **kw)
+        assert r.status_code == 413 and word in r.get_data(as_text=True), (kw.keys(), r.status_code)
+    assert _write(c, body="가" * appmod.MAX_BODY_CHARS).status_code == 302   # 한도까지는 된다
+    assert c.post(f"/u/{REF}/edit", data={"nickname": "가" * 51}).status_code == 413
+    assert c.post("/posts/S01_b01/edit", data={"geo_tag": "가" * 201}).status_code == 413
+
+
+def test_per_author_total_matches_scan_cap(env, monkeypatch):
+    appmod, _ = env
+    monkeypatch.setattr(appmod, "MAX_CHARS_PER_AUTHOR", 50)
+    c, _ = _new_visitor(appmod.app)
+    assert _write(c, body="가" * 30).status_code == 302
+    r = _write(c, body="가" * 30)
+    assert r.status_code == 413 and "모두 합쳐" in r.get_data(as_text=True)
+    monkeypatch.setattr(appmod, "MAX_CHARS_PER_AUTHOR", 150_000)
+    monkeypatch.setattr(appmod, "MAX_POSTS_PER_AUTHOR", 2)
+    assert _write(c).status_code == 413     # 시드 1편 + 위의 1편 = 2편 — 3편째는 막힌다
+    assert appmod.MAX_CHARS_PER_AUTHOR >= 97_074 + appmod.MAX_BODY_CHARS // 4   # 가장 긴 시드 계정(E15)에도 글을 더 쓸 수 있다
+
+
+def test_too_large_form_is_korean_413(env):
+    appmod, _ = env
+    c, _ = _new_visitor(appmod.app)
+    r = _write(c, body="a" * (300 * 1024))
+    assert r.status_code == 413 and "너무 큽니다" in r.get_data(as_text=True)

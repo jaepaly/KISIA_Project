@@ -21,11 +21,28 @@ import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
 
-from flask import Flask, abort, g, jsonify, redirect, render_template, request
+from flask import Flask, Response, abort, g, jsonify, redirect, render_template, request
 
 from db import connect, init
 
 app = Flask(__name__)
+# 글쓰기 한도 — 파도풀 점검(/scan)의 입력 상한(apps/analyzer/adapters/file_adapter.py)과 같은 값. 계정 글이 이 안에 있으면
+# 「내 계정 점검」이 413 으로 막히지 않고, 아주 긴 글로 점검 자리를 오래 붙잡지 못한다. 시드 계정은 모두 안에 있다
+# (가장 긴 E15 30편 · 약 97,000자). 경계 규칙상 분석기 모듈을 import 하지 않고 값을 맞춰 둔다
+MAX_TITLE_CHARS, MAX_BODY_CHARS, MAX_CAPTIONS, MAX_CAPTION_CHARS = 300, 20_000, 10, 1_000
+MAX_GEO_CHARS, MAX_NICK_CHARS, MAX_BIO_CHARS = 200, 50, 500
+MAX_POSTS_PER_AUTHOR, MAX_CHARS_PER_AUTHOR = 200, 150_000
+app.config["MAX_CONTENT_LENGTH"] = 256 * 1024   # 폼 전체 — 본문 20,000자(한글 약 60KB)에 넉넉히
+
+
+def _reject(code: int, msg: str):
+    """고정 한국어 안내로 거절한다 (글쓰기 화면이 그대로 보인다)."""
+    abort(Response(msg, code, {"Content-Type": "text/plain; charset=utf-8"}))
+
+
+def _too_long(value: str | None, limit: int, what: str) -> None:
+    if value and len(value) > limit:
+        _reject(413, f"{what}이(가) 너무 깁니다 ({limit:,}자 이하로 줄여 주세요).")
 KST = timezone(timedelta(hours=9))
 PAGE_SIZE = 20
 
@@ -95,87 +112,114 @@ def _sid() -> str | None:
 
 
 import threading as _threading
+from contextlib import contextmanager as _contextmanager
 
-_sweep_lock = _threading.Lock()
-_sweep_state = {"at": 0.0, "count": None}   # 마지막 청소 시각 · 그때 센 사본 수(+ 그 뒤 만든 수)
-
-
+_sweep_state = {"at": 0.0}   # 이 프로세스가 마지막으로 청소한 시각 — 청소 주기만 정한다. 사본 수는 늘 디스크에서 센다
 SESSION_RECENT_SECONDS = 60   # 상한 청소가 지우지 않는 「방금 연」 사본 — 쓰는 중인 사본을 지우지 않게
+_thread_lock = _threading.Lock()
+
+
+@_contextmanager
+def _sessions_locked(d: _Path):
+    """세션 폴더 잠금 — 프로세스 사이에도 하나만 (잠금 파일 · Linux fcntl.flock · Windows msvcrt.locking).
+    사본 열기(수정 시각 갱신) · 만들기 · 청소 지우기를 모두 이 안에서 한다 — 서버를 여러 프로세스로 띄워도
+    상한을 넘지 않고, 청소가 방금 연 사본을 지우지 않고, 같은 쿠키의 동시 생성이 사본을 덮지 않는다 (Codex 검토)."""
+    with _thread_lock:   # 같은 프로세스 안의 스레드끼리 먼저
+        f = open(d / ".lock", "a+b")
+        try:
+            if os.name == "nt":
+                import msvcrt
+                f.seek(0)
+                while True:
+                    try:
+                        msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)   # 10초 기다리다 실패하면 다시
+                        break
+                    except OSError:
+                        continue
+            else:
+                import fcntl
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                if os.name == "nt":
+                    import msvcrt
+                    f.seek(0)
+                    msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+        finally:
+            f.close()
 
 
 def _session_db_path(sid: str) -> _Path:
     d = _session_dir()
     d.mkdir(parents=True, exist_ok=True)
     p = d / f"{sid}.db"
-    if p.exists():
+    with _sessions_locked(d):
+        if p.exists():
+            try:
+                _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
+            except OSError:
+                pass
+            return p
+        if not _has_room(d):
+            # 상한에 닿았고 방금 쓴 사본뿐이라 지울 것도 없다 — 짧은 시간에 새 방문자가 몰린 경우다. 공용 DB 로 보내면
+            # 그 사람의 수정이 남에게 보이므로 새 사본 없이 잠시 뒤 다시 오게 한다 (상한을 넘겨 디스크를 채우지 않는다)
+            abort(503, "지금 체험하는 사람이 많습니다. 잠시 뒤 다시 와 주세요.")
+        # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 붙인다. 잠금 안이라 그 사이 같은 이름이 생기지 않는다
+        tmp = d / f"{sid}.{_uuid.uuid4().hex[:8]}.tmp"
         try:
-            _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
-        except OSError:
-            pass
-        return p
-    if not _reserve_slot(d):
-        # 상한에 닿았고 방금 쓴 사본뿐이라 지울 것도 없다 — 짧은 시간에 새 방문자가 몰린 경우다. 공용 DB 로 보내면
-        # 그 사람의 수정이 남에게 보이므로 새 사본 없이 잠시 뒤 다시 오게 한다 (상한을 넘겨 디스크를 채우지 않는다)
-        abort(503, "지금 체험하는 사람이 많습니다. 잠시 뒤 다시 와 주세요.")
-    # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 「없을 때만」 붙인다(os.link 는 이미 있으면 실패한다) — 같은 쿠키의
-    # 동시 요청이 각자 복사해 먼저 만든 사본(그 사이 저장한 수정)을 덮지 않게 (Codex 검토)
-    tmp = d / f"{sid}.{_uuid.uuid4().hex[:8]}.tmp"
-    made = False
-    try:
-        _shutil.copyfile(_seed_path(), tmp)
-        from db import ensure_visitor_tables
-        c = sqlite3.connect(tmp)
-        try:
-            ensure_visitor_tables(c)
-            c.commit()
+            _shutil.copyfile(_seed_path(), tmp)
+            from db import ensure_visitor_tables
+            c = sqlite3.connect(tmp)
+            try:
+                ensure_visitor_tables(c)
+                c.commit()
+            finally:
+                c.close()
+            _install(tmp, p)
         finally:
-            c.close()
-        try:
-            os.link(tmp, p)
-            made = True
-        except FileExistsError:
-            pass   # 다른 요청이 먼저 만들었다 — 그 사본을 쓴다
-        except OSError:   # 하드 링크를 못 쓰는 파일 시스템 — 없을 때만 바꿔 단다
-            if not p.exists():
-                os.replace(tmp, p)
-                made = True
-    finally:
-        try:
-            tmp.unlink()
-        except OSError:
-            pass
-        if not made:
-            _release_slot()
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
     return p
+
+
+def _install(tmp: _Path, p: _Path) -> None:
+    """없을 때만 붙인다 — os.link 는 이미 있으면 실패한다. 하드 링크를 못 쓰는 파일 시스템은 잠금 안의 exists → replace."""
+    try:
+        os.link(tmp, p)
+    except FileExistsError:
+        pass
+    except OSError:
+        if not p.exists():
+            os.replace(tmp, p)
 
 
 def _os_utime(p: _Path) -> None:
     os.utime(p, None)
 
 
-def _reserve_slot(d: _Path) -> bool:
-    """새 사본 자리를 하나 잡는다 — 청소 주기가 됐거나 상한에 닿았으면 먼저 청소한다. 셈은 잠금 안에서 올려
-    동시에 만들어도 상한을 넘지 않는다. 자리가 없으면 False."""
+def _count(d: _Path) -> int:
+    return sum(1 for _ in d.glob("*.db"))
+
+
+def _has_room(d: _Path) -> bool:
+    """(잠금 안) 새 사본 자리가 있는지 — 사본 수는 디스크에서 센다(프로세스마다 따로 세면 여러 프로세스가 상한을 넘긴다).
+    청소 주기가 됐거나 상한에 닿았으면 먼저 청소한다."""
     now = _time.time()
-    with _sweep_lock:
-        due = _sweep_state["count"] is None or now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS
-        if due or _sweep_state["count"] >= SESSION_MAX:
-            _sweep_state["at"] = now
-            _sweep_state["count"] = _sweep_sessions(d)
-        if _sweep_state["count"] >= SESSION_MAX:
-            return False
-        _sweep_state["count"] += 1
-        return True
-
-
-def _release_slot() -> None:
-    with _sweep_lock:
-        if _sweep_state["count"]:
-            _sweep_state["count"] -= 1
+    n = _count(d)
+    if n >= SESSION_MAX or now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS:
+        _sweep_state["at"] = now
+        n = _sweep_sessions(d)
+    return n < SESSION_MAX
 
 
 def _unlink_if_older(f: _Path, cutoff: float) -> bool:
-    """지우기 직전에 다시 본다 — 그 사이 누가 열었으면(수정 시각 갱신) 지우지 않는다."""
+    """지우기 직전에 다시 본다 (잠금 안이라 그 사이 열리지 않는다)."""
     try:
         if f.stat().st_mtime >= cutoff:
             return False
@@ -186,10 +230,13 @@ def _unlink_if_older(f: _Path, cutoff: float) -> bool:
 
 
 def _sweep_sessions(d: _Path) -> int:
-    """오래 안 연 사본(SESSION_IDLE_SECONDS)을 지우고, 그래도 상한(SESSION_MAX)에 닿아 있으면 가장 오래 안 연 것부터
-    상한의 90% 까지 지운다 — 디스크가 차지 않게. 방금(SESSION_RECENT_SECONDS) 연 사본은 지우지 않는다.
-    지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다 (가상 데이터라 체험한 수정만 사라진다). 남은 사본 수를 돌려준다."""
+    """(잠금 안) 오래 안 연 사본(SESSION_IDLE_SECONDS)을 지우고, 그래도 상한(SESSION_MAX)에 닿아 있으면 가장 오래 안 연
+    것부터 상한의 90% 까지 지운다 — 디스크가 차지 않게. 방금(SESSION_RECENT_SECONDS) 연 사본은 지우지 않는다.
+    지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다 (가상 데이터라 체험한 수정만 사라진다).
+    죽은 프로세스가 남긴 임시 파일(*.tmp · 1시간 넘은 것)도 지운다. 남은 사본 수를 돌려준다."""
     now = _time.time()
+    for t in d.glob("*.tmp"):
+        _unlink_if_older(t, now - 3600)
     cutoff = now - SESSION_IDLE_SECONDS
     alive: list[tuple[float, _Path]] = []
     for f in d.glob("*.db"):
@@ -420,6 +467,26 @@ def create_post():
     if visibility not in ("public", "private"):
         abort(400)
 
+    captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
+    _too_long(f.get("title"), MAX_TITLE_CHARS, "제목")
+    _too_long(f["body"], MAX_BODY_CHARS, "본문")
+    _too_long(f.get("geo_tag"), MAX_GEO_CHARS, "위치 태그")
+    if len(captions) > MAX_CAPTIONS:
+        _reject(413, f"사진 설명은 글 하나에 {MAX_CAPTIONS}개까지 쓸 수 있습니다.")
+    for c in captions:
+        _too_long(c, MAX_CAPTION_CHARS, "사진 설명")
+    # 계정 하나의 글 수 · 글자 수 — 파도풀 계정 점검의 상한과 같게 (넘으면 점검이 413 으로 막힌다)
+    n, chars = db().execute(
+        "SELECT COUNT(*), COALESCE(SUM(LENGTH(COALESCE(title,'')) + LENGTH(COALESCE(body,''))), 0) FROM posts WHERE author_id = ?",
+        (author_id,)).fetchone()
+    chars += db().execute("SELECT COALESCE(SUM(LENGTH(COALESCE(caption,''))), 0) FROM photos WHERE post_id IN"
+                          " (SELECT post_id FROM posts WHERE author_id = ?)", (author_id,)).fetchone()[0]
+    new_chars = len(f.get("title") or "") + len(f["body"]) + sum(map(len, captions))
+    if n >= MAX_POSTS_PER_AUTHOR:
+        _reject(413, f"이 계정은 글을 {MAX_POSTS_PER_AUTHOR}편까지 쓸 수 있습니다. 다른 글을 지우거나 계정을 처음 상태로 되돌려 주세요.")
+    if chars + new_chars > MAX_CHARS_PER_AUTHOR:
+        _reject(413, f"이 계정의 글이 너무 많습니다 (모두 합쳐 {MAX_CHARS_PER_AUTHOR:,}자까지). 글을 줄이거나 계정을 처음 상태로 되돌려 주세요.")
+
     post_id = f"{author_id}_m{os.urandom(4).hex()}"
     db().execute(
         "INSERT INTO posts(post_id, author_id, title, body, created_at,"
@@ -427,7 +494,6 @@ def create_post():
         (post_id, author_id, f.get("title") or None, f["body"], created_at,
          f.get("geo_tag") or None, visibility))
 
-    captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
     for idx, caption in enumerate(captions):
         db().execute(
             "INSERT INTO photos(post_id, idx, caption) VALUES (?,?,?)",
@@ -486,6 +552,8 @@ def edit_profile(user_ref: str):
     f = request.form
     nickname = f.get("nickname", "").strip() or a["nickname"]
     bio = f.get("bio", "").strip() or None
+    _too_long(nickname, MAX_NICK_CHARS, "닉네임")
+    _too_long(bio, MAX_BIO_CHARS, "소개")
     db().execute(
         "UPDATE authors SET nickname = ?, bio = ? WHERE user_ref = ?",
         (nickname, bio, user_ref))
@@ -501,6 +569,7 @@ def edit_post_meta(post_id: str):
     if row is None:
         abort(404)
     geo_tag = request.form.get("geo_tag", "").strip() or None
+    _too_long(geo_tag, MAX_GEO_CHARS, "위치 태그")
     db().execute(
         "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
     if geo_tag != row["geo_tag"]:
@@ -961,6 +1030,12 @@ def forbidden(_):
     if request.path.startswith("/api/"):
         return jsonify({"error": "forbidden"}), 403
     return "다른 사이트에서 보낸 요청은 받지 않습니다.", 403, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.errorhandler(413)
+def too_large(_):
+    """폼 전체가 MAX_CONTENT_LENGTH 를 넘었다 — 고정 문구."""
+    return "보낸 글이 너무 큽니다. 본문을 줄여 주세요.", 413, {"Content-Type": "text/plain; charset=utf-8"}
 
 
 @app.errorhandler(503)

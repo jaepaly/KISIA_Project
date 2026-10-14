@@ -137,7 +137,7 @@
 
           <div style="margin-bottom:14px;">
             <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">제목 (선택)</label>
-            <input type="text" name="title" id="title"
+            <input type="text" name="title" id="title" maxlength="300"
                    style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
                           background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">
           </div>
@@ -148,7 +148,7 @@
               <span class="pado-chip" id="padoChip" aria-live="polite"></span>
             </div>
             <div class="pado-wrap">
-              <textarea name="body" id="body" rows="8" required
+              <textarea name="body" id="body" rows="8" required maxlength="20000"
                         style="border:1px solid var(--ut-line);border-radius:10px;
                                background:var(--ut-panel2);font:inherit;font-size:14px;
                                padding:12px 14px;resize:vertical;line-height:1.7;"></textarea>
@@ -160,7 +160,7 @@
 
           <div style="margin-bottom:14px;">
             <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">위치 태그 (선택)</label>
-            <input type="text" name="geo_tag"
+            <input type="text" name="geo_tag" maxlength="200"
                    placeholder="예: 용인시 기흥구"
                    style="height:44px;border:1px solid var(--ut-line);border-radius:10px;
                           background:var(--ut-panel2);font:inherit;font-size:14px;padding:0 14px;">

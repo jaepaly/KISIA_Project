@@ -77,7 +77,7 @@
           </form>
           <form method="post" action="/posts/{{ p.post_id }}/edit"
                 style="display:flex;gap:6px;align-items:center;flex:1;min-width:200px;">
-            <input type="text" name="geo_tag" value="{{ p.geo_tag or '' }}"
+            <input type="text" name="geo_tag" maxlength="200" value="{{ p.geo_tag or '' }}"
                    placeholder="📍 위치 태그 (예: 용인시 기흥구)"
                    style="flex:1;height:38px;font-size:13px;padding:0 10px;
                           border:1px solid var(--ut-line);border-radius:8px;background:var(--ut-panel2);">
