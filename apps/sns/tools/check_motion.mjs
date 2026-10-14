@@ -304,17 +304,28 @@ async function main() {
     check(mode, "지도 처음: 배율 < 1.05 · 핀 없음", m0.z < 1.05 && m0.pins.every((v) => v < 0.1), m0, "z < 1.05 · pins < .1");
     check(mode, "지도 끝: 배율 ≥ 1.5 · 핀 다섯 개", m1.z >= 1.5 && m1.pins.length === 5 && m1.pins.every((v) => v > 0.9), m1, "z ≥ 1.5 · pins > .9");
     // 네 단계 그림판 — 진행도마다 가장 진한 그림 = 그때 켜진 마지막 단계
-    const visAt = async (p) => { await scrollTo(await posOf("#steps", p));
+    // 네 단계는 한 단계씩 같은 빠르기로 따라간다(약 0.5초 간격) — 보이는 단계가 목표에 닿고 전환이 끝날 때까지 기다린다
+    const stepsSettled = async () => { for (let i = 0; i < 60; i++) { if (await js(`(() => { const s = document.getElementById("steps"); return s.dataset.shown === s.dataset.target; })()`)) break; await sleep(100); } await sleep(900); };
+    const visAt = async (p) => { await scrollTo(await posOf("#steps", p)); await stepsSettled();
       return js(`(() => { const f = [...document.querySelectorAll("#steps .ps-vis-i")].map((e) => Number(e.style.getPropertyValue("--f") || 0)); return { f, top: f.indexOf(Math.max(...f)) }; })()`); };
     const vs = [];
     for (const [p, want] of [[0.05, 0], [0.42, 1], [0.66, 2], [0.98, 3]]) { const v = await visAt(p); vs.push({ p, want, ...v }); }
     check(mode, "네 단계 그림판: 지금 단계 그림이 가장 진함", vs.every((v) => v.top === v.want && v.f[v.top] > 0.6), vs, "0 → 1 → 2 → 3");
+    // 빠르게 휙 지나가도 단계는 한 단계씩 같은 간격(약 0.5초)으로 — 스크롤 위치에 묶었을 때는 네 번의 전환이 몰려 슉 지나갔다 (10/14)
+    await scrollTo(await posOf("#steps", 0)); await stepsSettled();
+    await js(`(() => { window.__steps = []; const t0 = performance.now(), s = document.getElementById("steps");
+      window.__stepObs = new MutationObserver(() => window.__steps.push([Math.round(performance.now() - t0), s.dataset.shown])); window.__stepObs.observe(s, { attributes: true, attributeFilter: ["data-shown"] }); return true; })()`);
+    await js(`window.scrollTo({ top: ${await posOf("#steps", 0.99)}, behavior: "instant" }); true`);
+    await sleep(2400);
+    const seq = await js(`(() => { window.__stepObs.disconnect(); return window.__steps; })()`);
+    const gaps = seq.slice(1).map((x, i) => x[0] - seq[i][0]);
+    check(mode, "빠르게 지나가도 단계가 한 단계씩 (간격 ≥ 0.4초)", seq.map((x) => x[1]).join("") === "234" && gaps.every((g) => g >= 400), seq, "2 → 3 → 4 · 간격 ≥ 400ms");
     // 단계 사이 머무는 구간 — 칸(1/4) 뒤쪽 60% 에서는 스크롤해도 단계 값 · 선이 그대로
-    const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await sleep(700); await settle();
+    const holdAt = async (p) => { await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
       return js(`({ a: [...document.querySelectorAll("#steps .ps-step")].map((e) => Number(e.style.getPropertyValue("--a"))), w: Number(document.querySelector("#steps .ps-path i").style.getPropertyValue("--w")) })`); };
     // 진행선 끝 = 켜진 마지막 단계 점의 가운데 (칸 사이 간격 때문에 i/4 가 아니다 · Codex 10/14)
     for (const [p, k] of [[0.24, 0], [0.49, 1], [0.98, 3]]) {
-      await scrollTo(await posOf("#steps", p)); await sleep(500); await settle();
+      await scrollTo(await posOf("#steps", p)); await settle(); await stepsSettled();
       const g = await js(`(() => { const line = document.querySelector("#steps .ps-path i").getBoundingClientRect(), dot = document.querySelectorAll("#steps .ps-step .dot")[${k}].getBoundingClientRect();
         return { lineEnd: Math.round(line.right), dot: Math.round(dot.left + dot.width / 2), lineW: Math.round(line.width) }; })()`);
       check(mode, `진행선이 ${k + 1}단계 점까지 (진행도 ${p})`, k === 0 ? g.lineW <= 2 : Math.abs(g.lineEnd - g.dot) <= 3, g, k === 0 ? "길이 0" : "끝 = 점 가운데 ±3");

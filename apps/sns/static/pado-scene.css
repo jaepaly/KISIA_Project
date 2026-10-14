@@ -122,6 +122,16 @@ html.dark-chapter .ps-top .ut-nav a.ps-skipnav{background:none;color:var(--night
 .ps-note{font-size:12px;color:var(--ps-muted)}
 
 /* ── 연출 B — 네 단계 ── */
+/* 전환은 CSS 시간으로 — JS(pado-scene.js)는 단계마다 0/1 만 준다. 숫자 변수를 등록해야 사이 값을 그린다(@property) */
+@property --a{syntax:"<number>";inherits:true;initial-value:1}
+@property --f{syntax:"<number>";inherits:true;initial-value:1}
+@property --t{syntax:"<number>";inherits:true;initial-value:1}
+@property --w{syntax:"<number>";inherits:true;initial-value:1}
+.ps-steps .ps-step{transition:--a .5s var(--ps-ease)}
+.ps-steps .ps-step .dot{transition:background-color .3s,border-color .3s}
+.ps-steps .ps-vis-i{transition:--f .45s var(--ps-ease),--t .8s var(--ps-ease) .12s}
+.ps-steps .ps-path i{transition:--w .5s var(--ps-ease)}
+.no-motion .ps-steps .ps-step,.no-motion .ps-steps .ps-vis-i,.no-motion .ps-steps .ps-path i{transition:none}
 /* 머리 — 제목(왼쪽) · 그림판(오른쪽). 그림판 = 네 장이 겹쳐 있고 지금 단계 그림만 보인다(--f) · 그림 안 움직임은 --t */
 .ps-steps-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:center}
 .ps-vis{position:relative;height:clamp(220px,34svh,300px);border:1px solid var(--ps-line);border-radius:18px;background:var(--ps-paper2);overflow:clip}

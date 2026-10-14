@@ -4,9 +4,8 @@
                카드가 나올 때 그 글이 가리키는 곳에 핀(.ps-pinm[data-card])이 꽂힌다.
                카드 · 숫자 · 점 · 밤 막이 모두 같은 진행도(motion-core 의 관성 보간 cur)를 쓴다. 카드 등장 구간은 겹친다
                (앞 카드가 다 나오기 전에 다음이 시작 — 계단처럼 안 보이게) · 숫자 = 나온 카드 수만큼 로그 공간에서 보간.
-   B #steps  : 네 단계가 한 단계씩 켜진다 — 진행도를 네 칸으로 나눠, 칸마다 앞 STEP_RAMP(70%) 동안 천천히 넘어가고 나머지는 멈춘다
-               (단계 사이에 「머무는」 구간 · 한 장면 안에서 다음 단계가 겹쳐 시작하지 않는다). 그림판(.ps-vis-i)은 지금 단계 그림만 보인다(--f) ·
-               그림 안 움직임은 그 단계의 점등값(--t)을 따른다.
+   B #steps  : 네 단계가 한 단계씩 켜진다 — 스크롤은 「몇 단계까지 왔나」만 정하고, 보이는 단계는 한 번에 한 단계씩 같은 빠르기로 따라간다
+               (빨리 내려도 1 → 2 → 3 → 4 가 차례로). 그림판(.ps-vis-i)은 지금 단계 그림만(--f) · 그림 안 움직임(--t) · 전환은 CSS 시간
    C         : 읽기 진행 막대 · 소개 순서(Page map) · 어두운 구간이면 html.dark-chapter · 첫 화면 스크롤 신호(40px 넘게 내리면 숨김).
    정지 상태(html.ps-static)에서는 모든 장면이 끝난 모습 그대로다 — CSS 가 그렇게 그리고, 여기서는 캔버스만 끝 모습으로 한 번 그린다. */
 (function () {
@@ -178,33 +177,53 @@
   const stepEls = $$(".ps-step", steps);
   const path = $(".ps-path i", steps);
   const vis = $$(".ps-vis-i", steps);
-  // 칸 하나 = 진행도 1/4. 칸의 앞 70% 동안 그 단계가 천천히 켜지고(그림이 바뀌고) 나머지 30% 는 그대로 멈춘다
-  // (40% 였을 때는 넘어가는 순간이 짧아 뚝뚝 끊겨 보였다 — 10/14 사용자 피드백)
-  const STEP_SEG = 0.25, STEP_RAMP = 0.7;
+  // 네 단계는 「스크롤로 문을 열고, 전환은 늘 같은 빠르기로」 — 2번(좁혀지기)처럼 스크롤 위치에 그림을 묶으면(스크러빙)
+  // 빨리 내릴 때 네 번의 전환이 한꺼번에 몰려 슉 지나간다(10/14 사용자 피드백 두 번). 그래서 스크롤은 「몇 단계까지 왔나(target)」만 정하고,
+  // 보이는 단계(shown)는 한 번에 한 단계씩 STEP_MS 간격으로 따라간다. 전환 자체는 CSS 가 같은 시간으로 그린다(@property --a --f --t --w).
+  // 칸 하나 = 진행도 1/4 · 칸의 30% 지점을 넘으면 그 단계 문이 열린다(1단계는 처음부터)
+  const STEP_SEG = 0.25, STEP_OPEN = 0.3, STEP_MS = 520;
+  let shown = 0, target = 0, stepTimer = 0, stepFirst = true, lastStep = -1e9;
+  function applySteps(on) {
+    stepEls.forEach((el, i) => {
+      const v = !on || i < shown ? 1 : 0;
+      setVar(el, "--a", v);
+      el.classList.toggle("reached", v === 1);
+    });
+    // 그림판 — 지금 단계 그림만(정지 상태는 네 장 다). 지나간 그림은 왼쪽으로, 아직인 그림은 오른쪽에서 들어온다
+    vis.forEach((el, i) => {
+      setVar(el, "--f", !on || i === shown - 1 ? 1 : 0);
+      setVar(el, "--dir", on && i < shown - 1 ? -1 : 1);
+      setVar(el, "--t", !on || i < shown ? 1 : 0);
+    });
+    // 선 — 보이는 마지막 단계의 점까지. 점 자리는 칸 사이 간격 때문에 i/4 가 아니라 잰 값(dotAt)
+    if (path) setVar(path, "--w", on ? (shown <= 1 ? 0 : dotAt[shown - 1]) : 1);
+    steps.dataset.shown = String(shown);
+    steps.dataset.target = String(target);
+  }
+  function stepTick() {
+    stepTimer = 0;
+    if (shown === target) return;
+    shown += shown < target ? 1 : -1;
+    lastStep = performance.now();
+    applySteps(true);
+    if (shown !== target) stepTimer = setTimeout(stepTick, STEP_MS);
+  }
+  // 다음 단계는 마지막 전환에서 STEP_MS 가 지난 뒤에 — 관성 보간으로 목표가 프레임마다 하나씩 올라와도 몰려 넘어가지 않게
+  function scheduleStep() {
+    if (stepTimer || shown === target) return;
+    stepTimer = setTimeout(stepTick, Math.max(0, STEP_MS - (performance.now() - lastStep)));
+  }
   function stepsScene(w, on) {
     if (!steps) return;
-    const a = stepEls.map((el, i) => {
-      const v = on ? smooth((w - STEP_SEG * i) / (STEP_SEG * STEP_RAMP)) : 1;
-      setVar(el, "--a", v);
-      el.classList.toggle("reached", v >= 0.5);
-      return v;
-    });
-    // 그림판 — 그림 i 는 「i 단계가 켜졌고 다음 단계는 아직」일 때 보인다(첫 그림은 처음부터). 정지 상태는 네 장 다
-    // 겹쳐 바뀌는 구간은 짧게(smooth 0.3~0.7) — 두 그림이 반씩 겹쳐 보이는 때를 줄인다
-    vis.forEach((el, i) => {
-      const f = on ? smooth((clamp((i === 0 ? 1 : a[i]) - (a[i + 1] || 0)) - 0.15) / 0.7) : 1;
-      setVar(el, "--f", f);
-      // 나가는 그림은 왼쪽으로, 들어오는 그림은 오른쪽에서 — 두 장이 같은 자리에서 겹쳐 흐려지지 않게
-      setVar(el, "--dir", on && (a[i + 1] || 0) > 0 ? -1 : 1);
-      setVar(el, "--t", on ? a[i] : 1);
-    });
-    // 선 — 켜진 단계의 점까지만. 머무는 동안에는 선도 멈춘다.
-    // 점 자리는 칸 사이 간격(gap) 때문에 정확히 i/4 가 아니다 — 크기가 바뀔 때만 잰 실제 비율(dotAt)로 잇는다 (Codex 10/14)
-    if (path) {
-      const u = a.reduce((s, v) => s + v, 0) - 1, i = Math.max(0, Math.min(dotAt.length - 2, Math.floor(u)));
-      const w = u <= 0 ? 0 : dotAt[i] + (dotAt[i + 1] - dotAt[i]) * clamp(u - i);
-      setVar(path, "--w", on ? w : 1);
-    }
+    if (!on) { clearTimeout(stepTimer); stepTimer = 0; shown = target = stepEls.length; stepFirst = true; applySteps(false); return; }
+    let t = 0;
+    stepEls.forEach((_, i) => { if (w >= STEP_SEG * i + (i === 0 ? 0 : STEP_SEG * STEP_OPEN)) t = i + 1; });
+    if (t === target && !stepFirst) return;
+    target = t;
+    // 처음 그릴 때(새로고침 · 정지 → 움직임)는 그 자리 모습으로 바로 — 그 뒤로는 한 단계씩
+    if (stepFirst) { stepFirst = false; shown = target; applySteps(true); return; }
+    steps.dataset.target = String(target);
+    scheduleStep();
   }
   // 점 i 의 가로 자리(선 길이 비율) — 크기가 바뀔 때만 잰다(프레임마다 레이아웃을 읽지 않는다)
   let dotAt = [0, 0.25, 0.5, 0.75];
