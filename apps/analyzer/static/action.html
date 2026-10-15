@@ -259,7 +259,15 @@ function renderActions(data) {
     }
     return `<h3>추천 방법</h3><div class="card"><p>${msg}</p>${limit}</div>`;
   }
-  const cards = rec.actions.map(a => {
+  // 지금은 효과가 없는 방법 — 노출 위험도도 그대로(projected_delta 0)이고 사람 수도 그대로(k_by_action)인 것. 추천 목록 맨 아래 접힌 칸으로 내린다.
+  // 「효과 없는 조치를 왜 추천하나」로 읽히지 않게(E 리뷰 #369). 계약 출력(recommendation.actions)은 그대로 두고 화면에서만 나눈다.
+  // 비공개(unpublish)는 글마다 효과가 따로 보여 내리지 않는다 · 사람 수를 모르면(k_by_action 없음) 내리지 않는다
+  const noEffect = (a) => {
+    if (a.action_type === "unpublish" || (a.projected_delta || 0) !== 0) return false;
+    const kw = kAfterAction(data, a.action_type);
+    return kw !== null && k !== null && k !== undefined && fmtN(kw) === fmtN(k);
+  };
+  const card = (a) => {
     const A0 = ACTION[a.action_type] || { no: "", nm: "기타 방법", how: "" };
     const A = isUpload(data) && ACTION_HOW_UPLOAD[a.action_type] ? { ...A0, how: ACTION_HOW_UPLOAD[a.action_type] } : A0;
     const [bl, bc] = BURDEN[a.burden] || [a.burden, ""];
@@ -318,7 +326,14 @@ function renderActions(data) {
         <h4>왜 노출 위험도가 내려가나</h4><p>${why}</p>
       </details>
     </div>`;
-  }).join("");
+  };
+  const live = rec.actions.filter(a => !noEffect(a)), idle = rec.actions.filter(noEffect);
+  const cards = live.map(card).join("") + (idle.length ? `
+    <details class="more sec idle">
+      <summary>지금은 효과가 없는 방법 ${idle.length}개 <small>— 다른 글의 단서로 이미 좁혀져 노출 위험도도 사람 수도 그대로입니다</small></summary>
+      <p class="note">${live.length ? "위의 방법을 먼저 적용한 뒤 다시 점검하면 이 방법의 효과가 생길 수 있습니다." : "다른 글의 단서를 먼저 줄여야 효과가 생깁니다. 아래 「어떤 글부터」를 참고하세요."}</p>
+      ${idle.map(card).join("")}
+    </details>` : "");
   return `
     <h3>추천 방법 <small>— 부담이 낮은 것부터. 모두 할 필요는 없습니다</small></h3>
     ${cards}
@@ -466,7 +481,8 @@ async function rescan(prev) {
   try { const r = await fetch(`../sns/estimate/${encodeURIComponent(prev.user_ref)}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
   progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`, null, est);
   try {
-    const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST" });
+    const ticket = scanTicket(); watchQueue(ticket);
+    const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST", headers: { "X-Scan-Ticket": ticket } });
     if (!r.ok) {
       // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 등)를 버튼에 그대로 — 상태 코드는 내지 않는다
       const detail = (await r.json().catch(() => ({}))).detail;

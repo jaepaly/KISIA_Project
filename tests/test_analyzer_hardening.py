@@ -87,6 +87,41 @@ def test_waiting_scan_starts_when_slot_frees_and_rate_excludes_wait(admission, m
     assert len(learned) == 1 and 0.15 <= learned[0] < 0.8, learned
 
 
+def test_scan_queue_reports_people_ahead_by_ticket(admission, monkeypatch):
+    """대기 순서 — 기다리는 점검의 대기표로 묻으면 앞사람 수(점검 중 1명), 차례가 와서 시작하면 줄에서 빠진다(E 리뷰 #368)."""
+    admission.wait_s = 5.0
+    gate = threading.Event()
+
+    def slow(user_ref, posts):
+        gate.wait(5)
+        return {"ok": True}
+    monkeypatch.setattr(server, "_pipeline", slow)
+    c = TestClient(server.app)
+    first = threading.Thread(target=lambda: c.post("/upload", files=_txt(), headers={"X-Scan-Ticket": "aaaaaaaa1111"}))
+    first.start()
+    for _ in range(50):
+        if admission.running == 1:
+            break
+        time.sleep(0.05)
+    assert admission.running == 1
+    # 바로 자리를 잡은 점검은 줄에 없다
+    assert c.get("/api/scan-queue", params={"ticket": "aaaaaaaa1111"}).json() == {"waiting": False, "ahead": 0}
+    second = threading.Thread(target=lambda: c.post("/upload", files=_txt(), headers={"X-Scan-Ticket": "bbbbbbbb2222"}))
+    second.start()
+    for _ in range(50):
+        if admission.waiting == 1:
+            break
+        time.sleep(0.05)
+    assert c.get("/api/scan-queue", params={"ticket": "bbbbbbbb2222"}).json() == {"waiting": True, "ahead": 1}
+    gate.set()
+    first.join(5); second.join(5)
+    assert c.get("/api/scan-queue", params={"ticket": "bbbbbbbb2222"}).json() == {"waiting": False, "ahead": 0}
+    assert admission.running == 0 and admission.waiting == 0 and not admission._tickets
+    # 대기표 모양이 아니면 받지 않는다(서버 줄에도 안 들어간다)
+    assert c.get("/api/scan-queue", params={"ticket": "x"}).status_code == 422
+    assert c.get("/api/scan-queue", params={"ticket": "<script>aa"}).status_code == 422
+
+
 def test_failed_pipeline_releases_slot(admission, monkeypatch):
     def boom(user_ref, posts):
         raise RuntimeError("엔진 실패")

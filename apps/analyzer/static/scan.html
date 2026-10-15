@@ -122,7 +122,8 @@ async function runScan(user_ref, label) {
   btn.innerHTML = `<span class="spin" aria-hidden="true"></span>점검 중…`;
   progressStart(`${label || user_ref} 점검 중`, null, picked && picked.user_ref === user_ref ? picked.est : undefined);
   try {
-    const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST" });
+    const ticket = scanTicket(); watchQueue(ticket);   // 앞에 다른 점검이 있으면 진행 띠에 차례를 보인다
+    const r = await fetch(`../scan/${encodeURIComponent(user_ref)}`, { method: "POST", headers: { "X-Scan-Ticket": ticket } });
     if (!r.ok) {
       await failMsg(msg, r); return;
     }
@@ -241,7 +242,8 @@ $("uploadBtn").onclick = async () => {
   try {
     const form = new FormData();
     form.append("file", f);
-    const r = await fetch("../upload", { method: "POST", body: form });
+    const ticket = scanTicket(); watchQueue(ticket);
+    const r = await fetch("../upload", { method: "POST", body: form, headers: { "X-Scan-Ticket": ticket } });
     if (!r.ok) { await failMsg(msg, r); return; }
     const data = await r.json();
     data.nickname = f.name;
