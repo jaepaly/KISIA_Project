@@ -240,11 +240,13 @@ def _default_input_post(post_id: str = "mock_post") -> dict:
     }
 
 
-def stage2(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_target: float = 40.0) -> dict:
+def stage2(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_target: float = 40.0, *,
+           spans_by_post: dict | None = None, detect_inputs: dict | None = None) -> dict:
     """D(c4) 자리. stage2-io.schema.json 준수 (input+output 둘 다 담아 반환).
 
     findings 7속성 중 location 만 narrowed, 나머지 6개는 abstain으로 심어
     화면이 "판단 보류"를 표시할 수 있는지 확인한다 (howto §2 표).
+    spans_by_post · detect_inputs 는 real 과 같은 자리(서버가 이번 요청에서 탐지한 스팬 · 1단 입력) — 목은 쓰지 않는다.
     """
     now = _now()
     input_posts = [_default_input_post(p["post_id"]) for p in posts] or [_default_input_post()]

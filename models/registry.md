@@ -22,14 +22,17 @@
 | koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · E 비공개 전달·SHA-256 확인 완료) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | 모델 단독 내부 eval P/R/F1 0.4390/0.4500/0.4444 · 규칙 결합 exp17b 본인 재현율 0.699 (10/8) · exp17c 0.752 (10/9, #323 포함) |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 | qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
-| **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달) | 2026-10-12 | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) |
+| **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달 · 보관본 저장소 밖) | 2026-10-12 (10/15 같은 명령으로 재학습) | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) · 10/15 재학습본 dev loss 0.0006 · exp22b 재채점 M1 1.0 · M5 0.995 · 폴백 0/30 |
 
 **모든 행에 학습일 · 데이터 버전 · 지표를 함께 적는다.** 없으면 10주 뒤에
 그 체크포인트가 무엇이었는지 복원할 수 없다.
 
 ### 2단 qwen3-4b-qlora-v2 — 앱 기본 교체 (2026-10-12 · [DEC-012](../docs/decisions.md))
 
-- 어댑터 `adapter_model.safetensors` SHA-256 `94ada34de0f1e49c859f2102e311bf42c0683768ec779ca8aab243f63a950190` (47 MB)
+- 어댑터 `adapter_model.safetensors` SHA-256 `c045d35324f0ed6c90a2b4e84106a02eb6750e38c0f5c1b73be107ba4d882c7e` (47 MB) · `adapter_config.json` `e534cc2f2a6dec9de5bfe5d2387afe74a9a8008288d30e43653804488e9495d1` — **2026-10-15 재학습본**
+  - 10/12 학습본(`94ada34de0f1e49c859f2102e311bf42c0683768ec779ca8aab243f63a950190`)은 학습 폴더와 함께 지워져 남아 있지 않다. 같은 명령 · 같은 데이터(train 606 · dev 92)로 다시 학습했다 — 학습 전 dev loss 0.3499 동일 · 학습 후 0.0006
+  - exp22b 를 같은 1단 예측(`stage1.jsonl`)으로 다시 채점(저장소 밖 사본): M1 1.0 · M2 1.0 · M3 0.9978 · M5 0.9952 · 폴백 0/30 · 기준 1~5 통과. 30계정 중 22계정은 원시 출력이 10/12 와 글자까지 같다. exp22b · exp09 의 기록된 결과(`raw_v2_meta.json` 의 `94ada34d…`)는 10/12 학습본 것이다
+  - 보관본: D 로컬 저장소 밖(`SHA256SUMS` 동봉). 다른 PC 에는 비공개로 전달한다
 - 학습: `exp08-stage2-sft/make_sft_v2.py` → `train.py --train data/v2_train.jsonl --dev data/v2_dev.jsonl --max-len 2048 --completion-logits` · RTX 3060 · 피크 VRAM 5.62 GB · 228 업데이트
 - 앱 구성(`src/kopl/c4_stage2/infer.py`): `SYSTEM_V2`(v1 + #296 판정 기준 한 줄) · 모델 입력 상한 16/4 · 스팬 없는 글 뺌 · 출력 상한 `output_budget(entries)`(#346) · `MODEL_VERSION = qwen3-4b-qlora-v2`
 - 판정: [exp22b](../experiments/exp22b-stage2-judge/README.md) §5 — 기준 1~5 통과 · 기준 6 미달은 규칙 대조로 DEC-011 예외

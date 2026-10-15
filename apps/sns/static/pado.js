@@ -279,7 +279,7 @@
         for (const s of [...spans].sort((a, b) => a.start - b.start)) {
           if (s.start < last) continue;
           marked += esc(cp(body, last, s.start))
-            + `<mark style="background:${COLOR[s.type] || "#F9E0B8"};border-radius:3px;padding:1px 2px;" title="${LABEL[s.type] || s.type}">`
+            + `<mark style="background:${COLOR[s.type] || "#F9E0B8"};border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}">`
             + esc(cp(body, s.start, s.end)) + "</mark>";
           last = s.end;
         }
@@ -297,8 +297,11 @@
           + (userRef ? `<a class="fx-link" href="${BASE}/static/scan.html?u=${encodeURIComponent(userRef)}" style="color:var(--ut-earth-ink);">계정 전체 점검 →</a>` : "")
           + `<a class="fx-link" href="${BASE}/static/scan.html" style="color:var(--ut-earth-ink);">다른 계정 점검 →</a>`
           + `</div>`;
-      } catch {
-        out.innerHTML = muted("점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
+      } catch (e) {
+        // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 · 너무 긴 글 등)가 있으면 그대로
+        let detail = "";
+        try { detail = JSON.parse(e.message).detail; } catch { /* 네트워크 오류 등 */ }
+        out.innerHTML = muted(typeof detail === "string" && detail ? `점검하지 못했습니다. ${esc(detail)}` : "점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
       } finally {
         clearInterval(dots);
         btn.disabled = false;
