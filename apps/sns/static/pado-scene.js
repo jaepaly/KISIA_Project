@@ -313,6 +313,7 @@
     // 휴대폰 지도는 작아서(약 230px) 끝 배율을 조금 낮춘다 — 가장자리 핀 라벨이 잘리지 않게
     const { z, k } = narrowApply(posts.map((el) => smooth((at - (M.top(el) - y)) / span)), 1.45);
     if (crowd) { crowd.setDark(false); crowd.setK(k, z); }
+    if (window.PadoCity3D) window.PadoCity3D.setDark(false);   // 밤 장면(pin)에서 휴대폰 폭으로 바뀌어도 도시만 어둡게 남지 않게(Codex P2)
   }
   function stepsFlow(y, view) {
     if (!steps) return;

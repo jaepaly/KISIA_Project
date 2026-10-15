@@ -90,8 +90,9 @@
   let camU = 0, camLast = 0, camRaf = 0;
   const CAM_K = 2.6;   // 시간 상수 약 0.38초 — 칸 사이 간격(0.1~0.2초)보다 길어 칸들이 한 번의 미끄러짐으로 이어진다
   const css = (n, fb) => getComputedStyle(stage).getPropertyValue(n).trim() || fb;
-  let C = {};
+  let C = {}, FONT = "sans-serif";
   function palette() {
+    FONT = css("--ps-sans", "sans-serif");   // 그릴 때마다 계산 스타일을 읽지 않게 여기서 한 번(Codex P3)
     const ink = css("--ps-ink", "#26221F"), accent = css("--ps-accent", "#C2573A");
     C = dark
       ? { top: "#4A4440", side1: "#37322F", side2: "#2D2927", line: "rgba(247,242,234,.16)", ground: "rgba(247,242,234,.05)",
@@ -226,7 +227,7 @@
 
     // 핀 — 그 글이 나오면 땅에서 솟는다. 막대 + 동그라미 + 이름표(항상 맨 위)
     const fs = Math.round(Math.max(10, Math.min(13, w / 46)));
-    ctx.font = `700 ${fs}px ${css("--ps-sans", "sans-serif")}`;
+    ctx.font = `700 ${fs}px ${FONT}`;
     ctx.textBaseline = "middle";
     for (const pin of PINS) {
       const v = sm(CS[pin.i] || 0);
@@ -281,7 +282,16 @@
   palette();
   if ("ResizeObserver" in window) new ResizeObserver(size).observe(cv); else size();
 
+  // 카메라를 목표로 바로 — 정지 모드로 바뀌었거나 화면 밖일 때(Codex P2 · P3)
+  function snap() {
+    if (camRaf) cancelAnimationFrame(camRaf);
+    camRaf = 0; camLast = 0;
+    if (camU === U) return;
+    camU = U;
+    draw();   // 화면 밖이면 draw 가 dirty 로 미뤄 두고, 다시 보일 때 한 번 그린다
+  }
   function glide(t) {
+    if (!visible || root.classList.contains("no-motion")) { camRaf = 0; snap(); return; }
     const dt = camLast ? Math.min(0.1, (t - camLast) / 1000) : 1 / 60;
     camLast = t;
     camU += (U - camU) * (1 - Math.exp(-dt * CAM_K));
@@ -290,14 +300,18 @@
     camRaf = camU === U ? 0 : requestAnimationFrame(glide);
   }
 
+  // 움직임 끄기 · 동작 줄이기로 바뀌면 진행 중인 카메라 보간을 끊고 목표 모습으로 (motion-core 가 padomotion 을 보낸다)
+  document.addEventListener("padomotion", (e) => { if (e.detail && e.detail.still) snap(); });
+
   // pado-scene.js 가 부른다 — cs: 카드별 등장값(0~1) · u: 나온 카드 수(소수) · k: 조건에 맞는 사람 수(가상 예시)
   let last = "";
   window.PadoCity3D = {
     set(cs, u, k) {
+      const still = root.classList.contains("no-motion");
       const key = cs.map((c) => c.toFixed(3)).join() + "|" + u.toFixed(3) + "|" + Math.round(k);
-      if (key === last) return;
+      if (key === last) { if (still) snap(); return; }   // 같은 입력이어도 정지면 카메라 보간을 끊는다
       last = key; CS = cs; U = u; K = k;
-      if (root.classList.contains("no-motion") || !camLast && !camRaf && camU === 0 && u > 5.9) camU = u;   // 정지 · 처음부터 끝 모습이면 바로
+      if (still || !visible || !camLast && !camRaf && camU === 0 && u > 5.9) { snap(); draw(); return; }   // 정지 · 화면 밖 · 처음부터 끝 모습이면 바로
       draw();
       if (!camRaf && Math.abs(U - camU) > 0.001) { camLast = 0; camRaf = requestAnimationFrame(glide); }
     },
