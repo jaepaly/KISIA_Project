@@ -70,6 +70,7 @@
 | | 확인 | 방법 |
 |---|---|---|
 | ☐ | 1단이 **v2 + 규칙**인가 | 파도풀 화면 하단 배지 「엔진 · 실제 · 명시 규칙 병합」 · `/api/engine-mode` 의 `c1_rules: true` |
+| ☐ | 2단 구성 (GPU 시연 PC 만) | 2단을 모델로 돌릴 때만 — `experiments/exp08-stage2-sft/results/adapter_v2/` 에 `adapter_config.json` · `adapter_model.safetensors` 가 있고 SHA-256 이 registry(10/15 재학습본 `c045d353…` · `e534cc2f…`)와 같은지. 없거나 GPU 가 없으면 규칙으로 폴백하고 응답 `model_version` 에 이유가 적힌다(E 노트북 10/15: 어댑터는 있음 · `rules-v1 (fallback: 추론 라이브러리 없음)`). 라이브 데모는 `STAGE2_MODE=rules` 권장(GPU 모델이면 계정당 약 51초) |
 | ☐ | 외부 요청 0 | 허브 접속은 실제 모드에서 기본으로 꺼짐([#320](../../../pull/320)) — DevTools Network `Preserve log` 켜 두기 |
 | ☐ | 메인 계정 처음 상태 | 인스턴스: Veilo 프로필 「⟲ 이 계정 처음 상태로」 · 로컬: `seed_sns.py --reset` |
 | ☐ | 서버 예열 | 메인 계정 스캔 1회 (첫 스캔은 모델 로드로 느리다) |
