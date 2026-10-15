@@ -11,10 +11,12 @@ from __future__ import annotations
 import json
 import logging
 import os
+import threading
+import time
 
 import requests
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -67,10 +69,12 @@ def _upstream_error(what: str, exc: Exception, missing_account: bool = False) ->
 
 
 @app.get("/sns/authors")
-def sns_authors(request: Request, q: str = ""):
-    """스캔 화면 계정 자동완성 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰)."""
+def sns_authors(request: Request, q: str = "", limit: int | None = Query(default=None, ge=1, le=200)):
+    """스캔 화면 계정 고르기 — Veilo 를 화면이 직접 부르지 않고 어댑터를 거친다 (sns-minimal-spec §6 · #337 리뷰).
+    빈 q 는 둘러보기(공개 글 많은 순) — 처음 온 사람은 계정 이름을 모른다. limit 은 「더 보기」."""
     try:
-        return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
+        kw = {"limit": limit} if limit is not None else {}
+        return sns_adapter.search_authors(q, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"), **kw)
     except Exception as exc:  # SNS 서버 다운 등
         raise _upstream_error("계정 찾기", exc) from exc
 
@@ -111,8 +115,67 @@ def _check_posts(posts: list[dict]) -> None:
         raise HTTPException(status_code=400, detail=f"같은 post_id 가 여러 번 있습니다: {', '.join(dup[:5])}")
 
 
+# ── 예상 점검 시간 — 시간의 95% 이상이 1단 탐지이고 글자 수에 거의 비례한다(integration-W08 「스캔 시간」).
+#    기계마다 2배 넘게 달라(이 PC 0.6ms/자 · veilo.site 서버 1.4ms/자) 숫자를 고정하지 않는다 — 서버 실측(1.45ms/자)에서 시작해
+#    실제 점검이 끝날 때마다 이 프로세스의 속도로 고쳐 간다(지수 평균). 글자 수가 적은 점검은 고정 시간 몫이 커서 속도 추정에 쓰지 않는다
+SCAN_BASE_S = 1.0
+#    목업 엔진은 모델을 안 돌려 거의 즉시 끝난다 — 처음부터 그 속도로(첫 예상이 「12초」로 나와 시연을 헷갈리게 하지 않게)
+_rate_lock = threading.Lock()   # 동시 점검이 속도를 같이 고칠 때 — 읽고 고치고 세는 것을 한 번에
+_scan_rate = {"ms_per_char": float(os.getenv("SCAN_MS_PER_CHAR", "1.45" if os.getenv("ENGINE_MODE", "mock") == "real" else "0.02")),
+              "samples": 0}
+
+
+def _chars(posts: list[dict]) -> int:
+    """점검에 들어가는 글자 수 — 제목 · 본문 · 사진 캡션 (1단 입력과 같은 채널)"""
+    n = 0
+    for p in posts:
+        n += len(p.get("title") or "") + len(p.get("body") or "")
+        for ph in p.get("photos") or []:
+            n += len((ph.get("caption") if isinstance(ph, dict) else ph) or "")
+    return n
+
+
+def _estimate(chars: int) -> dict:
+    with _rate_lock:
+        rate, n = _scan_rate["ms_per_char"], _scan_rate["samples"]
+    return {"n_chars": chars, "seconds": round(SCAN_BASE_S + chars * rate / 1000, 1), "calibrated": n > 0}
+
+
+def _learn_rate(chars: int, seconds: float) -> None:
+    if chars < 2000:
+        return
+    r = max(0.0, seconds - SCAN_BASE_S) * 1000 / chars
+    with _rate_lock:
+        _scan_rate["ms_per_char"] = r if _scan_rate["samples"] == 0 else 0.5 * _scan_rate["ms_per_char"] + 0.5 * r
+        _scan_rate["samples"] += 1
+
+
+@app.get("/sns/estimate/{user_ref}")
+def sns_estimate(user_ref: str, request: Request):
+    """계정 점검 예상 시간 — 내보내기(계약 그대로)로 글자 수를 세고 이 프로세스의 속도로 곱한다. 화면이 「예상 약 N초」를 띄운다."""
+    try:
+        export = sns_adapter.load(user_ref, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
+    except Exception as exc:
+        raise _upstream_error("내보내기 조회", exc, missing_account=True) from exc
+    posts = export.get("posts", [])
+    return {"n_posts": len(posts), **_estimate(_chars(posts))}
+
+
+@app.get("/api/scan-estimate")
+def scan_estimate(chars: int = Query(ge=0, le=5_000_000)):
+    """파일 업로드 예상 시간 — 화면이 파일 크기로 어림한 글자 수를 준다."""
+    return _estimate(chars)
+
+
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
     _check_posts(posts)
+    t0 = time.perf_counter()
+    out = _pipeline(user_ref, posts)   # 실패한 점검(예외)은 속도를 배우지 않는다 — 빨리 끝난 실패가 예상을 망치지 않게 (Codex 10/14)
+    _learn_rate(_chars(posts), time.perf_counter() - t0)
+    return out
+
+
+def _pipeline(user_ref: str, posts: list[dict]) -> dict:
     spans_by_post = {p["post_id"]: engine.detect_spans(_detect_input(p)) for p in posts}
     # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
     conditions = engine.conditions(posts, spans_by_post)

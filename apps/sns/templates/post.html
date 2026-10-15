@@ -34,22 +34,28 @@
       </div>
       {% endif %}
 
-      <div class="ut-card rv {% if p.visibility == 'private' %}dim{% endif %}">
-        <h1 style="font-size:22px;margin:0 0 10px;letter-spacing:-.02em;">
-          {{ p.title or "(제목 없음)" }}
-        </h1>
-        <div style="font-size:13px;color:var(--ut-ink3);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
-          <a class="fx-link" href="/u/{{ p.user_ref }}"
-             style="color:var(--ut-earth-ink);font-weight:600;">{{ p.nickname }}</a>
-          <span>{{ p.created_at[:16].replace('T', ' ') }}</span>
-          {% if p.geo_tag %}<span>📍 {{ p.geo_tag }}</span>{% endif %}
-          {% if p.visibility == 'private' %}
-          <span style="font-size:11px;font-weight:600;background:var(--ut-ink);color:#fff;
-                       border-radius:99px;padding:2px 10px;">비공개</span>
+      <article class="ut-card vp-card rv {% if p.visibility == 'private' %}dim{% endif %}">
+        {# 머리 구역 — 옅은 바탕으로 본문과 갈라 둔다. 작성자 줄(아바타 · 닉네임 · @아이디 · 날짜 · 위치) → 큰 제목.
+           본문보다 확실히 크고 진하게 — 「누가 · 무엇을」이 먼저 읽히게 (10/14) #}
+        <header class="vp-head">
+          <a class="vp-who" href="/u/{{ p.user_ref }}" aria-label="{{ p.nickname }} 프로필">
+            <span class="ut-av vp-av" style="background:hsl({{ p.author_id|hue }},45%,86%);color:hsl({{ p.author_id|hue }},35%,32%);">{{ p.nickname[:1] }}</span>
+            <span class="vp-who-txt">
+              <span class="nm">{{ p.nickname }}</span>
+              <span class="sub">@{{ p.user_ref }} · {{ p.created_at[:16].replace('T', ' ') }}</span>
+            </span>
+            <span class="vp-who-go" aria-hidden="true">프로필 →</span>
+          </a>
+          <h1 class="vp-title">{{ p.title or "(제목 없음)" }}</h1>
+          {% if p.geo_tag or p.visibility == 'private' %}
+          <div class="vp-tags">
+            {% if p.geo_tag %}<span class="chip">📍 {{ p.geo_tag }}</span>{% endif %}
+            {% if p.visibility == 'private' %}<span class="chip solid">비공개</span>{% endif %}
+          </div>
           {% endif %}
-        </div>
+        </header>
 
-        <div id="postBody" style="white-space:pre-wrap;line-height:1.8;font-size:15px;color:var(--ut-ink);">{{ p.body }}</div>
+        <div id="postBody" class="vp-body">{{ p.body }}</div>
 
         {% if photos %}
         {# 사진 띠 — 피드 카드와 같은 모양. 캡션은 분석 채널(photo_caption:N) 이라 그대로 #}
@@ -86,19 +92,16 @@
             <button type="button" id="fixBtn" class="ghost" style="font-size:13px;padding:8px 14px;">✏️ 이 글을 옮겨 고쳐 쓰기</button>
           </div>
         </div>
-      </div>
+      </article>
 
       {# ── 파도풀 — 이 글 한 편 점검 ── #}
-      <div class="ut-card rv" style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
+      <div class="ut-card rv pado-box">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-          <span style="font-weight:700;font-size:15px;color:var(--ut-ink);">🌊 파도풀</span>
-          <span style="font-size:11px;font-weight:600;color:var(--ut-earth-ink);background:var(--ut-earth-soft);
-                       border:1px solid var(--ut-earth);border-radius:99px;padding:2px 8px;">개인정보 점검</span>
+          <span style="font-weight:700;font-size:15px;color:var(--ink);">🌊 파도풀</span>
+          <span class="pado-tag">개인정보 점검</span>
         </div>
-        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 12px;">이 글에서 {{ p.nickname }}님을 알아볼 단서를 찾습니다. 공개 글 전체도 결과 아래에서 점검할 수 있습니다.</p>
-        <button type="button" id="padoBtn" class="fx-wave"
-                style="background:var(--ut-earth);color:#fff;border:none;border-radius:10px;
-                       height:40px;padding:0 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;">
+        <p class="pado-note">이 글에서 {{ p.nickname }}님을 알아볼 단서를 찾습니다. 공개 글 전체도 결과 아래에서 점검할 수 있습니다.</p>
+        <button type="button" id="padoBtn" class="fx-wave pado-go">
           이 글 점검
         </button>
         <div id="padoOut" style="margin-top:14px;font-size:14px;"></div>

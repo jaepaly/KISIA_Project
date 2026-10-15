@@ -12,17 +12,17 @@
           </span>
           <div>
             <span class="nm" style="font-size:16px;">Veilo</span>
-            <div class="handle">파도풀을 체험하는 가상 SNS</div>
-            <div class="bio">파도풀은 글에 드러난 개인정보를 점검하고, 위험을 줄일 방법을 추천합니다.</div>
+            <div class="handle ko">파도풀을 체험하는 가상 SNS</div>
           </div>
         </div>
-        <div class="rail-btns" style="margin-top:14px;">
-          <a class="ut-btn fx-btn" href="/new" style="flex:1;text-align:center;background:var(--ut-earth);color:#fff;border-radius:12px;padding:10px;font-weight:700;text-decoration:none;">✏️ 글쓰기</a>
-        </div>
-        <a class="fx-btn" href="{{ pado_base }}/static/scan.html"
-           style="display:block;margin-top:8px;text-align:center;background:var(--ut-sea-soft);color:var(--ut-sea);border:1px solid var(--ut-sea);border-radius:12px;padding:9px;font-weight:700;font-size:14px;text-decoration:none;">🌊 내 글 점검</a>
-        <button type="button" data-intro-open
-                style="display:block;margin:10px auto 0;background:transparent;border:0;height:auto;padding:0;font:inherit;font-size:12.5px;color:var(--ut-sea);text-decoration:underline;text-underline-offset:3px;cursor:pointer;">파도풀이 뭔가요?</button>
+        {# 숫자 — 이 SNS 가 얼마나 큰지 한눈에(모두 가상). 화면에 들면 0 에서 세어 오른다(veilo.js data-count) #}
+        <dl class="rail-stats">
+          <div><dt>가상 인물</dt><dd><b data-count="{{ stats.authors }}">{{ stats.authors }}</b>명</dd></div>
+          <div><dt>공개 글</dt><dd><b data-count="{{ stats.posts }}">{{ '{:,}'.format(stats.posts) }}</b>편</dd></div>
+          <div><dt>위치 태그 단 글</dt><dd><b data-count="{{ stats.geo_pct }}">{{ stats.geo_pct }}</b>%</dd></div>
+        </dl>
+        <p class="rail-fine">사람도 글도 모두 꾸며 낸 것입니다. 파도풀은 이런 글이 글쓴이를 얼마나 드러내는지 점검합니다.</p>
+        {# 글쓰기 · 내 글 점검 · 파도풀이란? 은 상단바(휴대폰은 상단바 + 하단 탭)에만 둔다 — 같은 버튼이 화면에 세 번씩 나오던 것 (10/14) #}
       </div>
 
       <div class="rail-card rv">
@@ -52,12 +52,16 @@
 
   <main class="ut-main">
     <div class="ut-wrap" id="feed">
-      {# 파도풀 입구 한 줄 — 오른쪽 레일이 숨는 노트북 · 휴대폰에서도 첫 화면에 보이게 피드 맨 위에 둔다 #}
-      <div class="pado-strip">
-        <span class="tx">🌊 <b>파도풀</b> — 글이 글쓴이를 얼마나 드러내는지 점검해 보세요.</span>
-        <a class="go" href="{{ pado_base }}/static/scan.html">내 글 점검 →</a>
-        <button type="button" class="more" data-intro-open>파도풀이란?</button>
-      </div>
+      {# 피드 머리 — 여기가 어떤 곳인지 한 줄 + 돋보기 들판(소개 화면과 같은 pado-hero.js). 입구 버튼은 두지 않는다(상단바 · 하단 탭에 있다) #}
+      <section class="feed-head" data-field-host data-field-keep=".feed-head-txt > *" aria-labelledby="feedH">
+        <canvas class="feed-field" data-field aria-hidden="true"></canvas>
+        <div class="feed-head-txt">
+          <p class="eyebrow ko">Veilo · 파도풀을 체험하는 가상 SNS</p>
+          <h1 class="feed-h" id="feedH">{% if selected_author %}{% for a in authors if a.author_id == selected_author %}{{ a.nickname }}의 글{% endfor %}{% else %}지금 올라온 글{% endif %}</h1>
+          <p class="feed-sub">한 편 한 편은 평범한 일상이지만, 모아 보면 단서가 됩니다.</p>
+          <p class="feed-try" data-field-try aria-hidden="true"><span class="hover">마우스를 올려 보세요 — 돋보기 안에서만 단서가 보입니다</span><span class="touch">눌러 끌어 보세요 — 돋보기 안에서만 단서가 보입니다</span></p>
+        </div>
+      </section>
       {% if not posts %}
       <p style="color:var(--ut-ink3);text-align:center;padding:48px 0;">
         아직 글이 없습니다. <a href="/new">첫 글을 써보세요</a>.
@@ -87,30 +91,25 @@
       </div>
       {% endif %}
 
-      <div class="rail-card rv" style="background:var(--ut-earth-soft);border-color:var(--ut-earth);">
-        <div class="rail-h" style="color:var(--ut-earth-ink);">🌊 파도풀</div>
-        <p style="font-size:13px;color:var(--ut-ink2);margin:0 0 10px;line-height:1.55;">
-          이름과 전화번호가 없어도 여러 글을 모아 보면 글쓴이가 누구인지 좁혀질 수 있습니다. 파도풀로 공개 글을 점검해 보세요.
-        </p>
-        <a class="fx-btn fx-wave" href="/new"
-           style="display:block;text-align:center;background:var(--ut-earth);color:#fff;border-radius:12px;padding:9px;font-size:13.5px;font-weight:700;text-decoration:none;">
-          글 쓰며 파도풀로 점검 →
-        </a>
-        <p style="font-size:12px;color:var(--ut-ink3);margin:8px 0 0;">계정의 공개 글은 프로필에서 「계정 전체 점검」을 누르세요.</p>
-      </div>
+      {# 파도풀 설명 카드는 뺐다 — 설명은 /about · 입구는 상단바 (10/14) #}
 
       {% if top_tags %}
       <div class="rail-card rv">
         <div class="rail-h">자주 쓰인 위치 태그</div>
-        <div class="tag-cloud">
+        {# 막대 — 가장 많은 태그를 꽉 찬 길이로. 카드가 화면에 들 때 왼쪽에서 차오른다(.rv.in) #}
+        <ul class="tag-bars">
           {% for t in top_tags %}
-          <span class="tag">📍 {{ t.geo_tag }} <b>{{ t.n }}</b></span>
+          <li><span class="nm">📍 {{ t.geo_tag }}</span><span class="bar" aria-hidden="true"><i style="--w:{{ '%.3f'|format(t.n / top_tags[0].n) }};--i:{{ loop.index0 }}"></i></span><b>{{ t.n }}</b></li>
           {% endfor %}
-        </div>
+        </ul>
         <p style="font-size:12px;color:var(--ut-ink3);margin:8px 0 0;">위치 태그만으로도 사는 곳을 짐작할 수 있습니다.</p>
       </div>
       {% endif %}
     </div>
   </aside>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/pado-hero.js"></script>
 {% endblock %}

@@ -326,6 +326,26 @@ def test_sns_authors_goes_through_adapter_and_drops_internal_fields(monkeypatch)
     assert headers == {"X-Veilo-Session": "ab" * 12}, "방문자 사본을 읽도록 세션을 넘긴다"
 
 
+def test_sns_authors_browse_passes_limit_only_when_asked(monkeypatch):
+    """계정 둘러보기 — 빈 q 는 그대로 넘기고, 「더 보기」의 limit 은 줄 때만 넘긴다 · 범위 밖(0 · 201)은 422 (10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    from apps.analyzer.adapters import sns_adapter
+
+    class _Resp:
+        def raise_for_status(self): pass
+        def json(self): return []
+    calls = []
+    monkeypatch.setattr(sns_adapter.requests, "get", lambda url, params=None, timeout=None, headers=None: calls.append(params) or _Resp())
+    client = TestClient(server.app)
+    assert client.get("/sns/authors").status_code == 200
+    assert client.get("/sns/authors", params={"q": "", "limit": 200}).status_code == 200
+    assert calls == [{"q": ""}, {"q": "", "limit": 200}]
+    for bad in (0, 201):
+        assert client.get("/sns/authors", params={"limit": bad}).status_code == 422
+
+
 def test_upstream_errors_hide_internal_address(monkeypatch):
     """Veilo 호출이 실패해도 응답에 내부 주소(SNS_BASE_URL)가 나가지 않는다 — 없는 계정은 404, 그 밖은 502 (#343 리뷰)."""
     pytest.importorskip("fastapi")
@@ -374,3 +394,46 @@ def test_engine_mode_reports_checkpoint_folder_without_full_path():
         == "variant_base_20261008/checkpoint-epoch-10"
     body = TestClient(server.app).get("/api/engine-mode").json()
     assert body["mode"] == "mock" and body["c1_checkpoint"] is None and "c1_rules" in body
+
+
+def test_scan_estimate_learns_from_real_scans(monkeypatch):
+    """예상 점검 시간 — 글자 수 × 이 프로세스의 속도. 점검이 끝날 때마다 실측으로 고친다 · 글자 수가 적은 점검은 배우지 않는다 (10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    monkeypatch.setitem(server._scan_rate, "ms_per_char", 1.45)
+    monkeypatch.setitem(server._scan_rate, "samples", 0)
+    c = TestClient(server.app)
+    r = c.get("/api/scan-estimate", params={"chars": 10000}).json()
+    assert r == {"n_chars": 10000, "seconds": round(server.SCAN_BASE_S + 14.5, 1), "calibrated": False}
+    server._learn_rate(10000, 1.0 + 6.0)                       # 실측 0.6ms/자
+    assert abs(server._scan_rate["ms_per_char"] - 0.6) < 1e-9 and server._scan_rate["samples"] == 1
+    server._learn_rate(500, 30.0)                              # 짧은 점검은 고정 시간 몫이 커서 배우지 않는다
+    assert server._scan_rate["samples"] == 1
+    assert c.get("/api/scan-estimate", params={"chars": 10000}).json()["seconds"] == round(server.SCAN_BASE_S + 6.0, 1)
+    assert c.get("/api/scan-estimate", params={"chars": -1}).status_code == 422
+    posts = [{"post_id": "a", "title": "제목", "body": "본문 열자", "photos": [{"caption": "캡션"}, "글"]}]
+    assert server._chars(posts) == 2 + 5 + 2 + 1
+
+
+def test_failed_scan_does_not_learn_rate(monkeypatch):
+    """점검이 실패(예외)하면 예상 속도를 배우지 않는다 — 빨리 끝난 실패가 「약 1초」로 예상을 망치던 것 (Codex 10/14)."""
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+    from apps.analyzer import server
+    monkeypatch.setitem(server._scan_rate, "ms_per_char", 1.45)
+    monkeypatch.setitem(server._scan_rate, "samples", 0)
+    def boom(user_ref, posts):
+        raise RuntimeError("엔진 실패")
+    monkeypatch.setattr(server, "_pipeline", boom)
+    posts = [{"post_id": f"p{i}", "body": "가" * 1000} for i in range(5)]   # 5,000자 — 배울 만큼 길다
+    with pytest.raises(RuntimeError):
+        server._run_pipeline("u_00000000", posts)
+    assert server._scan_rate == {"ms_per_char": 1.45, "samples": 0}
+    c = TestClient(server.app)
+    assert c.get("/api/scan-estimate", params={"chars": 10000}).json()["calibrated"] is False
+    # 성공하면 배운다
+    monkeypatch.setattr(server, "_pipeline", lambda user_ref, posts: {"ok": True})
+    server._run_pipeline("u_00000000", posts)
+    assert server._scan_rate["samples"] == 1
+

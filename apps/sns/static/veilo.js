@@ -314,26 +314,6 @@
     });
   }
 
-  // ── 첫 방문 소개 창 (base.html #intro) — 처음 한 번만. 닫으면(버튼 · Esc · 바깥) 다시 안 뜬다. 상단바 「파도풀이란?」로 다시 연다 ──
-  // 영상 녹화용: ?intro=0 이면 안 띄우고, ?intro=1 이면 본 적이 있어도 띄운다
-  const INTRO_KEY = "padopool_intro_v1";
-  function initIntro() {
-    const dlg = $("#intro");
-    if (!dlg || typeof dlg.showModal !== "function") return;
-    const seen = () => { try { return localStorage.getItem(INTRO_KEY) === "seen"; } catch (e) { return false; } };
-    const markSeen = () => { try { localStorage.setItem(INTRO_KEY, "seen"); } catch (e) {} };
-    const open = () => { if (!dlg.open) dlg.showModal(); };
-    const close = () => { markSeen(); dlg.close(); };   // 표시를 먼저 — close 이벤트는 비동기라 바로 새로고침하면 놓친다
-    dlg.addEventListener("close", markSeen);
-    dlg.addEventListener("cancel", markSeen);   // Esc
-    dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });   // 창 바깥(::backdrop)을 누르면 닫기
-    $$("[data-intro-close]", dlg).forEach((b) => b.addEventListener("click", close));
-    $$("[data-intro-go]", dlg).forEach((a) => a.addEventListener("click", markSeen));
-    $$("[data-intro-open]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); open(); }));
-    const q = new URLSearchParams(location.search).get("intro");
-    if (q === "1" || (q !== "0" && !seen())) open();
-  }
-
   // ── 조치(비공개 · 위치 · 프로필 · 새 글 · 되돌리기)를 하면 글쓰기 화면의 「기존 공개 글」 점검 캐시를 지운다 ──
   // new.html 이 sessionStorage "veilo.scan.<user_ref>" 에 한 번 센 결과를 둔다 — 지우지 않으면 조치 뒤에도 옛 숫자가 나온다 (B5)
   function initFreshScan() {
@@ -351,7 +331,6 @@
   }
 
   function boot() {
-    initIntro();
     initFreshScan();
     initMore();
     initFunnels(document);

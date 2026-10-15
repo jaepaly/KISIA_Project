@@ -17,7 +17,7 @@
       <span class="wm">Veilo</span>
     </a>
     <nav class="ut-nav">
-      <a class="intro-btn" data-veilo-href="/?intro=1" aria-label="파도풀 소개 다시 보기">파도풀이란?</a>
+      <a class="intro-btn" data-veilo-href="/about" aria-label="파도풀 1분 소개 보기">파도풀이란?</a>
       <a href="scan.html" class="chk on" aria-current="page">🌊 내 글 점검</a>
       <a data-veilo-href="/new" class="write">✏️ 글쓰기</a>
       <!-- 「내 계정」 아바타 자리 — common.js acctAvatar 가 Veilo /api/me 로 채운다. 내 계정이 없거나 못 부르면 숨긴 채 -->
@@ -436,7 +436,10 @@ function renderManualTips(data) {
 async function rescan(prev) {
   const b = document.getElementById("rescanBtn");
   if (b) { b.disabled = true; b.textContent = "다시 점검하는 중…"; }
-  progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`);   // 내 글 점검 화면과 같은 진행 띠 (UX #31)
+  // 내 글 점검 화면과 같은 진행 띠 (UX #31) · 예상 시간은 서버 어림(못 받으면 없이)
+  let est;
+  try { const r = await fetch(`../sns/estimate/${encodeURIComponent(prev.user_ref)}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
+  progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`, null, est);
   try {
     const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST" });
     if (!r.ok) throw new Error(String(r.status));
