@@ -106,6 +106,24 @@ def per_post_k(posts: list[dict], spans_by_post: dict[str, dict]) -> None:
     return None
 
 
+def projected_k(posts: list[dict], spans_by_post: dict[str, dict], stage2_output: dict | None) -> dict | None:
+    """조치별 「바꾸면 k」 — 실제 엔진과 같은 바꾸기(projection.py)에 목 conditions·specificity 를 붙인다. 값은 의미 없다."""
+    from .projection import project
+
+    kposts = [{"post_id": p["post_id"], "spans": list((spans_by_post.get(p["post_id"]) or {}).get("spans") or []),
+               "geo_tag": (p.get("activity_meta") or {}).get("geo_tag")} for p in posts]
+    by_id = {kp["post_id"]: kp for kp in kposts}
+
+    def k_of(change: dict) -> float | None:
+        keep = [change.get(pid, kp) for pid, kp in by_id.items()]
+        keep = [kp for kp in keep if kp is not None]
+        conds = conditions([{"post_id": kp["post_id"]} for kp in keep],
+                           {kp["post_id"]: {"spans": kp["spans"]} for kp in keep})
+        return specificity({"user_ref": "u_00000000", "conditions": conds})["output"]["k"]
+
+    return project(kposts, stage2_output, k_of)
+
+
 def specificity(payload: dict) -> dict:
     """C(c2) 자리. specificity.schema.json 준수.
 
