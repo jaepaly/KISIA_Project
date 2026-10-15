@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+import posixpath
 import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
@@ -607,6 +608,18 @@ def _cors_api_me(resp):
             resp.headers["Access-Control-Allow-Origin"] = origin
             resp.headers["Access-Control-Allow-Credentials"] = "true"
             resp.headers["Vary"] = "Origin"
+    return resp
+
+
+@app.after_request
+def _cors_fonts(resp):
+    """글꼴은 누구에게나 공개된 정적 파일 — 교차 출처로 읽어도 되게 연다.
+    파도풀 분석기 화면은 Veilo 의 /static/fonts/pretendard.css 를 그대로 쓴다 (apps/analyzer/static/head.js).
+    운영은 같은 도메인(/check)이라 필요 없지만, 로컬 분리 실행(파도풀 :8000 · Veilo :3000)은 교차 출처라
+    @font-face 가 CORS 헤더 없이는 막힌다. 쿠키를 싣지 않는 요청이라 * 로 충분하다."""
+    # 경로를 정규화한 뒤 판단 — /static/fonts/%2e%2e%2fveilo.css 처럼 꼬아도 글꼴 폴더 밖엔 붙지 않게 (Codex 10/14)
+    if posixpath.normpath(request.path).startswith("/static/fonts/"):
+        resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
 
