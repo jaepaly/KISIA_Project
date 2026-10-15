@@ -84,6 +84,10 @@
   // ── 상태 · 색 ──
   let w = 0, h = 0, dpr = 1, visible = true, dirty = false;
   let U = 0, K = 5000000, CS = [0, 0, 0, 0, 0, 0], dark = false;
+  // 카메라는 진행도(U)를 바로 쓰지 않고 따로 천천히 따라간다(camU) — 휠 한 칸마다 카메라가 크게 움직였다 서는 「뚝뚝」을 없앤다.
+  // motion-core 보간(K 9 · 약 0.35초에 수렴)은 평면 지도엔 충분하지만, 3D 는 한 칸에 시점이 크게 바뀌어 섰다 가는 게 보인다
+  let camU = 0, camLast = 0, camRaf = 0;
+  const CAM_K = 2.6;   // 시간 상수 약 0.38초 — 칸 사이 간격(0.1~0.2초)보다 길어 칸들이 한 번의 미끄러짐으로 이어진다
   const css = (n, fb) => getComputedStyle(stage).getPropertyValue(n).trim() || fb;
   let C = {};
   function palette() {
@@ -101,7 +105,7 @@
   const sm = (t) => { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
   let cam = null;
   function camera() {
-    const t = sm(U / 6);
+    const t = sm(camU / 6);
     const yaw = -0.55 + t * 0.75;
     const pitch = 1.12 - t * 0.3;              // 약 64° → 47°
     const dist = 3.3 - t * 1.5;
@@ -200,7 +204,7 @@
     const items = [];
     for (let i = 0; i < ppl.length; i++) {
       const a = 0.08 + 0.8 * sm((nf - (i + 1)) / band + 0.5);
-      if (a < 0.1) continue;
+      if (a < 0.085) continue;
       const p = P(ppl[i].x, 0.004, ppl[i].z);
       if (!p || p[0] < -4 || p[1] < -4 || p[0] > w + 4 || p[1] > h + 4) continue;
       items.push({ d: p[2], dot: p, a });
@@ -274,6 +278,15 @@
   palette();
   if ("ResizeObserver" in window) new ResizeObserver(size).observe(cv); else size();
 
+  function glide(t) {
+    const dt = camLast ? Math.min(0.1, (t - camLast) / 1000) : 1 / 60;
+    camLast = t;
+    camU += (U - camU) * (1 - Math.exp(-dt * CAM_K));
+    if (Math.abs(U - camU) < 0.001) camU = U;
+    draw();
+    camRaf = camU === U ? 0 : requestAnimationFrame(glide);
+  }
+
   // pado-scene.js 가 부른다 — cs: 카드별 등장값(0~1) · u: 나온 카드 수(소수) · k: 조건에 맞는 사람 수(가상 예시)
   let last = "";
   window.PadoCity3D = {
@@ -281,7 +294,9 @@
       const key = cs.map((c) => c.toFixed(3)).join() + "|" + u.toFixed(3) + "|" + Math.round(k);
       if (key === last) return;
       last = key; CS = cs; U = u; K = k;
+      if (root.classList.contains("ps-static") || !camLast && !camRaf && camU === 0 && u > 5.9) camU = u;   // 정지 · 처음부터 끝 모습이면 바로
       draw();
+      if (!camRaf && Math.abs(U - camU) > 0.001) { camLast = 0; camRaf = requestAnimationFrame(glide); }
     },
     setDark(v) { if (v === dark) return; dark = v; palette(); draw(); },
   };
