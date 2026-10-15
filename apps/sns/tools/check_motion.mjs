@@ -18,7 +18,8 @@
 //       첫 화면(W-HERO): Veilo 로 나가는 링크는 로고 말고 「건너뛰기」 하나 · 스크롤 신호가 40px 뒤 사라짐 · 정지 모드는 멈춘 화살표 ·
 //       상단바 1px 선(--line-strong) 위 진행 막대 2px · 밤 장면에서도 선이 보임 · 히어로 = 한 화면(끌어내리는 버튼 없음) · 로고 = 파도풀 ·
 //       첫 화면 들판(pado-hero.js): 낱말 · 점이 그려짐 · 돋보기가 마우스를 따라옴 · 가만있으면 떠돎 · 정지 모드는 루프 없음 ·
-//       좁혀지기 지도: 배율이 커지고 핀이 카드를 따라 꽂힘 · 네 단계 그림판: 지금 단계 그림이 가장 진함 · 끝 화면 물결(정지 모드는 멈춤)
+//       좁혀지기 지도: 배율이 커지고 핀이 카드를 따라 꽂힘 · 3D 도시(pado-city3d.js): 캔버스가 그려지고 카메라가 끝(6)까지 따라감 · 핀 다섯 개 · 이름표 안 잘림 ·
+//       ?scene=flat 이면 평면 지도 · 네 단계 그림판: 지금 단계 그림이 가장 진함 · 끝 화면 물결(정지 모드는 멈춤)
 
 const arg = (name, fb) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : fb; };
 const PORT = Number(arg("--port", process.env.CDP_PORT || 9333));
@@ -87,6 +88,9 @@ async function main() {
     return { cls: document.documentElement.className, sticky: cs(".ps-sticky", "position"), reveal: cs(".reveal", "opacity"),
       scroll: getComputedStyle(document.documentElement).scrollBehavior, loop: document.documentElement.dataset.psLoop,
       pinned: window.PadoMotion ? window.PadoMotion.pinned() : null, vh: innerHeight }; })()`);
+  // 3D 도시 상태 — pado-city3d.js probe + 평면 지도가 숨었는지
+  const city = () => js(`(() => { const C = window.PadoCity3D; if (!C) return null; const m = document.querySelector("#narrow .ps-mapbg");
+    return { ...C.probe(), cls: document.documentElement.classList.contains("ps-3d"), flatShown: !!m && getComputedStyle(m).display !== "none" }; })()`);
   async function loopStops(mode) {
     let loop = null;
     for (let i = 0; i < 20; i++) { loop = await js(`document.documentElement.dataset.psLoop`); if (loop === "off") break; await sleep(250); }
@@ -303,6 +307,29 @@ async function main() {
     const m0 = await mapAt(0.02), m1 = await mapAt(0.95);
     check(mode, "지도 처음: 배율 < 1.05 · 핀 없음", m0.z < 1.05 && m0.pins.every((v) => v < 0.1), m0, "z < 1.05 · pins < .1");
     check(mode, "지도 끝: 배율 ≥ 1.5 · 핀 다섯 개", m1.z >= 1.5 && m1.pins.length === 5 && m1.pins.every((v) => v > 0.9), m1, "z ≥ 1.5 · pins > .9");
+    // 3D 도시 — 카메라는 따로 천천히 따라간다(약 0.4초 시간 상수) · 끝에서 기다리면 6 에 닿는다
+    await sleep(2500);
+    const c1 = await city();
+    check(mode, "3D 도시: html.ps-3d · 캔버스 크기 · 그려짐", c1 && c1.cls && c1.w > 100 && c1.h > 100 && c1.draws > 0 && !c1.flatShown, c1, "ps-3d · w,h > 100 · draws > 0 · 평면 지도 숨김");
+    check(mode, "3D 도시 끝: 카메라 6 · 핀 다섯 개 · 이름표 안 잘림", c1 && c1.camU >= 5.99 && c1.pins.every((v) => v > 0.9) && c1.out.length === 0, c1, "camU 6 · pins > .9 · out []");
+    await scrollTo(await posOf("#narrow", 0.02)); await sleep(2500);
+    const c0 = await city();
+    check(mode, "3D 도시 처음: 카메라 0 근처 · 핀 없음", c0 && c0.camU < 0.3 && c0.pins.every((v) => v < 0.1), c0, "camU < .3 · pins < .1");
+    // 카메라가 따라가는 도중에 동작 줄이기 → 보간을 끊고 바로 목표(Codex P2)
+    await js(`(() => { const el = document.getElementById("narrow"); window.scrollTo({ top: el.getBoundingClientRect().top + scrollY + 0.95 * (el.offsetHeight - innerHeight), behavior: "instant" }); return true; })()`);
+    await sleep(350);
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] }); await sleep(300);
+    const r1 = await city(); await sleep(400); const r2 = await city();
+    check(mode, "3D 도시: 보간 중 동작 줄이기 → 카메라 바로 목표 · 더 안 움직임", r1 && r1.camU === r1.U && r2.camU === r1.camU, { r1, r2 }, "camU = U · 그대로");
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] }); await sleep(700);
+    // 밤 장면(pin)에서 휴대폰 폭(flow)으로 → 도시도 밝게(Codex P2)
+    await scrollTo(await posOf("#narrow", 0.95)); await sleep(300);
+    const cdk = await city();
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await sleep(900);
+    await js(`window.scrollBy(0, 1); true`); await sleep(400);
+    const lt = await city();
+    check(mode, "3D 도시: 밤 장면에서 휴대폰 폭으로 → 도시도 밝게", cdk && cdk.dark === true && lt && lt.dark === false, { before: cdk && cdk.dark, after: lt && lt.dark }, "true → false");
+    await send("Emulation.setDeviceMetricsOverride", { width: 1400, height: 900, deviceScaleFactor: 1, mobile: false }); await sleep(900);
     // 다 나온 뒤 멈추는 구간 — 진행도 0.66 ~ 0.98 동안 카드 · 숫자 · 배율이 그대로(읽을 시간 · 10/14)
     const nAt = async (p) => { await scrollTo(await posOf("#narrow", p)); return js(`({ cards: [...document.querySelectorAll("#narrow .ps-post")].map((e) => Number(e.style.getPropertyValue("--in"))), num: document.getElementById("psCount").textContent, z: document.querySelector("#narrow .ps-stage").style.getPropertyValue("--z") })`); };
     const nA = await nAt(0.66), nB = await nAt(0.98);
@@ -457,7 +484,17 @@ async function main() {
     const hidden = await js(`document.querySelector("[data-motion-toggle]").hidden`);
     check(mode, "움직임 버튼 숨김", hidden === true, hidden, true);
     await tabReach(mode, { motion: false });
+    const cs = await city();
+    check(mode, "3D 도시 정지: 끝 모습 바로(카메라 6 · 핀 다섯 개)", cs && cs.camU === 6 && cs.pins.every((v) => v === 1) && cs.draws > 0, cs, "camU 6 · pins 1");
   }
+  // ③-b ?scene=flat — 3D 를 끄면 예전 평면 지도 · 점 · 핀
+  {
+    const mode = "?scene=flat";
+    await open("/about?scene=flat");
+    const f = await js(`({ cls: document.documentElement.classList.contains("ps-3d"), city: !!document.querySelector(".ps-city"), map: getComputedStyle(document.querySelector("#narrow .ps-mapbg")).display, crowd: getComputedStyle(document.getElementById("psCrowd")).display })`);
+    check(mode, "평면 지도 그대로 (3D 없음)", !f.cls && !f.city && f.map !== "none" && f.crowd !== "none", f, "ps-3d 없음 · 지도 · 점 보임");
+  }
+
 
   // ④ 동작 줄이기 에뮬레이션
   {
@@ -490,7 +527,11 @@ async function main() {
     await scrollTo(last - 300); await sleep(300);
     const n1 = await js(`(() => { const c = document.querySelector("#narrow .ps-crowd").getBoundingClientRect(); return { num: document.getElementById("psCount").textContent, ins: [...document.querySelectorAll("#narrow .ps-post")].map((e) => Number(e.style.getPropertyValue("--in"))), crowdTop: Math.round(c.top), pos: getComputedStyle(document.querySelector("#narrow .ps-crowd")).position }; })()`);
     check(mode, "좁혀지기 끝: 약 1명 · 카드 다 · 지도는 위에 붙어 있음", /약 1명/.test(n1.num) && n1.ins.every((v) => v > 0.95) && n1.pos === "sticky" && n1.crowdTop >= 50 && n1.crowdTop <= 70, n1, "약 1명 · sticky · top ≈ 58");
-    const pinOut = await js(`(() => { const s = document.querySelector("#narrow .ps-stage").getBoundingClientRect();
+    await sleep(2500);
+    const cm = await city();
+    check(mode, "3D 도시(휴대폰): 카메라 끝까지", cm && cm.camU >= 5.9, cm, "camU ≥ 5.9");
+    // 3D 면 캔버스 이름표가 무대 밖으로 잘렸는지(pado-city3d.js probe.out) · 평면 지도면 DOM 핀
+    const pinOut = cm ? cm.out.map((t) => ({ t })) : await js(`(() => { const s = document.querySelector("#narrow .ps-stage").getBoundingClientRect();
       return [...document.querySelectorAll("#narrow .ps-pinm")].map((e) => { const r = e.getBoundingClientRect(); return { t: e.textContent.trim(), out: Math.round(Math.max(s.left - r.left, r.right - s.right, s.top - r.top, r.bottom - s.bottom)) }; }).filter((x) => x.out > 0); })()`);
     check(mode, "지도 핀이 무대 안 (잘린 핀 0)", pinOut.length === 0, pinOut, "[]");
     // 네 단계 — 그림판(.ps-vis) 숨김 · 단계마다 그림(.ps-vis-m) · 끝까지 내리면 네 단계 다 켜짐

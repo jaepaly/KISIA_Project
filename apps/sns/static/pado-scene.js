@@ -151,6 +151,7 @@
     const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
     countEl.textContent = `약 ${fmt(k)}명`;
     announce(Math.min(6, Math.floor(u + 0.3)));
+    if (window.PadoCity3D) window.PadoCity3D.set(cs, u, k);   // 3D 도시(pado-city3d.js) — 같은 진행도로 그린다
     return { z, k };
   }
   function narrowScene(p, on) {
@@ -166,6 +167,7 @@
       countEl.textContent = `약 ${fmt(K[6])}명`;
       announce(6);
       if (crowd) { crowd.setDark(false); crowd.setK(1, ZMAX); }
+      if (window.PadoCity3D) { window.PadoCity3D.setDark(false); window.PadoCity3D.set(posts.map(() => 1), 6, 1); }
       return;
     }
     // 0~6 — 카드는 앞 62% 안에 다 나온다. 뒤 38% 는 「약 1명 · 나」가 다 보이는 채로 멈춘다(읽을 시간 — 14% 였을 땐 다 나오자마자 화면이 올라갔다 · 10/14)
@@ -177,6 +179,7 @@
     if (spot) setVar(spot, "--s", 1 - smooth((p - 0.25) / 0.4));    // 1 → 0 : 스포트라이트가 「나」로 조여 온다(0.65 에서 끝)
     narrow.classList.toggle("is-dark", dark >= FLIP);
     if (crowd) { crowd.setDark(dark >= FLIP); crowd.setK(k, z); }
+    if (window.PadoCity3D) window.PadoCity3D.setDark(dark >= FLIP);
   }
 
   // ── 연출 B — 네 단계 점등 ───────────────────────────────────────────────
@@ -310,6 +313,7 @@
     // 휴대폰 지도는 작아서(약 230px) 끝 배율을 조금 낮춘다 — 가장자리 핀 라벨이 잘리지 않게
     const { z, k } = narrowApply(posts.map((el) => smooth((at - (M.top(el) - y)) / span)), 1.45);
     if (crowd) { crowd.setDark(false); crowd.setK(k, z); }
+    if (window.PadoCity3D) window.PadoCity3D.setDark(false);   // 밤 장면(pin)에서 휴대폰 폭으로 바뀌어도 도시만 어둡게 남지 않게(Codex P2)
   }
   function stepsFlow(y, view) {
     if (!steps) return;
