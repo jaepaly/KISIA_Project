@@ -78,7 +78,8 @@
   <p class="ps-cue" id="psCue" aria-hidden="true"><span>아래로 스크롤</span><i></i></p>
 
   {# ── 연출 A — 글이 쌓일수록 좁혀진다 (pado-scene.js · 숫자 · 지도는 가상 예시) ──
-     오른쪽 = 가상의 동네 지도 위 점들. 글 카드가 나올 때마다 그 글이 가리키는 곳에 핀이 꽂히고, 지도가 「나」(가운데 집) 쪽으로 다가가며 점이 꺼진다 #}
+     오른쪽 무대는 3D 도시(pado-city3d.js 가 캔버스를 붙인다 · 카메라가 「나」의 집 쪽으로 내려간다). 아래 평면 지도 · 점 · 핀은 대체 화면(스크립트 · 캔버스 없음 · ?scene=flat).
+     평면 지도 = 가상의 동네 지도 위 점들. 글 카드가 나올 때마다 그 글이 가리키는 곳에 핀이 꽂히고, 지도가 「나」(가운데 집) 쪽으로 다가가며 점이 꺼진다 #}
   <section class="ps-pin ps-narrow" id="narrow" data-ps-section style="--pin:260">
     <div class="ps-sticky">
       <div class="ps-night" aria-hidden="true"></div>
@@ -220,7 +221,7 @@
 
 {% block scripts %}
 <script src="/static/motion-core.js"></script>
-<script src="/static/pado-city3d.js"></script>{# 02 장면 3D 시안 — ?scene=3d 일 때만 켜진다 #}
+<script src="/static/pado-city3d.js"></script>{# 02 좁혀지기 3D 도시 — pado-scene.js 보다 먼저(진행도를 받는다) · ?scene=flat 이면 평면 지도 #}
 <script src="/static/pado-scene.js"></script>
 <script src="/static/pado-hero.js"></script>
 {% endblock %}

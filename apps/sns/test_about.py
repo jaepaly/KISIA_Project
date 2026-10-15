@@ -196,6 +196,14 @@ def test_scene_pictures(client):
     assert 'class="ps-mapbg"' in narrow and narrow.count('class="ps-pinm') == 5
     assert '<span class="ps-pinm r" data-card="2"' in narrow       # 오른쪽 끝 핀(차고지)은 라벨을 왼쪽으로 — 좁은 화면에서 안 잘리게
     assert "실제 장소나 실제 사람이 아닙니다" in narrow             # 지도도 가상이라고 적는다
+    # 3D 도시(pado-city3d.js) — 진행도를 받으려면 pado-scene.js 보다 먼저 · 평면 지도는 대체 화면으로 남는다(?scene=flat · 캔버스 없음)
+    assert html.index("/static/pado-city3d.js") < html.index("/static/pado-scene.js")
+    city = (Path(__file__).resolve().parent / "static" / "pado-city3d.js").read_text(encoding="utf-8")
+    assert '"scene") === "flat"' in city and 'classList.add("ps-3d")' in city
+    assert city.index("if (!ctx) return;") < city.index('classList.add("ps-3d")')   # 캔버스를 못 쓰면 평면 지도를 숨기지 않는다
+    assert "requestAnimationFrame" in city and "CAM_K" in city                       # 카메라는 따로 천천히 따라간다(휠 한 칸마다 섰다 가지 않게)
+    css = (Path(__file__).resolve().parent / "static" / "pado-scene.css").read_text(encoding="utf-8")
+    assert "html.ps-3d .ps-mapbg" in css
     steps = html[html.index('id="steps"'):html.index('id="end"')]
     assert [f'data-vis="{i}"' in steps for i in range(4)] == [True] * 4
     end = html[html.index('id="end"'):]

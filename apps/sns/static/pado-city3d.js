@@ -1,22 +1,22 @@
-/* 「파도풀이란?」 02 좁혀지기 — 3D 도시 시안 (?scene=3d 일 때만 · 기본 화면은 그대로 평면 지도).
+/* 「파도풀이란?」 02 좁혀지기 — 3D 도시 (기본 · ?scene=flat 이면 예전 평면 지도).
    평면 지도(.ps-mapbg) · 점 캔버스(#psCrowd) · DOM 핀(.ps-pins) · 스포트라이트 대신, 같은 무대(.ps-stage)에 캔버스 하나로 가상 동네를 위에서 내려다본다.
+   평면 지도는 지우지 않고 대체 화면으로 둔다 — 스크립트가 안 돌거나 캔버스를 못 쓰면 html.ps-3d 가 안 붙어 평면 지도가 그대로 보인다.
    외부 라이브러리 없음 — 원근 투영 · 상자 건물 · 먼 것부터 그리기(painter) 만 직접 한다. 따로 도는 루프 없이 pado-scene.js 가 진행도를 줄 때만 그린다.
    글이 쌓일수록(u 0 → 6) 카메라가 높고 넓은 시점에서 「나」의 집 쪽으로 내려가며 천천히 돈다 · 그 글이 가리키는 곳에 핀이 선다 ·
    조건에 맞는 사람(거리의 점)이 「나」에서 먼 것부터 꺼진다. 지도 · 사람 · 숫자는 모두 가상 예시다. */
 (function () {
   "use strict";
-  if (new URLSearchParams(location.search).get("scene") !== "3d") return;
+  if (new URLSearchParams(location.search).get("scene") === "flat") return;
   const root = document.documentElement;
-  root.classList.add("ps-3d");
-
   const stage = document.querySelector("#narrow .ps-stage");
   if (!stage) return;
   const cv = document.createElement("canvas");
+  const ctx = cv.getContext && cv.getContext("2d");
+  if (!ctx) return;   // 캔버스를 못 쓰면 평면 지도 그대로
   cv.className = "ps-city";
   cv.setAttribute("aria-hidden", "true");
   stage.appendChild(cv);
-  const ctx = cv.getContext("2d");
-  if (!ctx) return;
+  root.classList.add("ps-3d");
 
   // ── 세계 — 지도 좌표(0~100, about.html 의 평면 지도와 같은 자리) → 세계 x · z (−1~1). y 는 위 ──
   const W = (p) => (p - 50) / 50;
@@ -84,6 +84,7 @@
   // ── 상태 · 색 ──
   let w = 0, h = 0, dpr = 1, visible = true, dirty = false;
   let U = 0, K = 5000000, CS = [0, 0, 0, 0, 0, 0], dark = false;
+  const stats = { n: 0, out: [] };   // 검사용(probe) — 그린 횟수 · 무대 밖으로 잘린 이름표
   // 카메라는 진행도(U)를 바로 쓰지 않고 따로 천천히 따라간다(camU) — 휠 한 칸마다 카메라가 크게 움직였다 서는 「뚝뚝」을 없앤다.
   // motion-core 보간(K 9 · 약 0.35초에 수렴)은 평면 지도엔 충분하지만, 3D 는 한 칸에 시점이 크게 바뀌어 섰다 가는 게 보인다
   let camU = 0, camLast = 0, camRaf = 0;
@@ -177,6 +178,7 @@
     if (!visible) { dirty = true; return; }
     dirty = false;
     if (!w || !h) return;
+    stats.n++; stats.out = [];
     camera();
     ctx.clearRect(0, 0, w, h);
 
@@ -241,6 +243,7 @@
       const tw = ctx.measureText(pin.name).width + 14, th = fs + 8;
       let lx = b[0] + 7, ly = b[1] - th / 2;
       if (lx + tw > w - 4) lx = b[0] - 7 - tw;
+      if (v > 0.9 && (lx < 0 || ly < 0 || lx + tw > w || ly + th > h)) stats.out.push(pin.name);
       ctx.fillStyle = C.labelBg; ctx.strokeStyle = C.labelLine; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.roundRect ? ctx.roundRect(lx, ly, tw, th, th / 2) : ctx.rect(lx, ly, tw, th); ctx.fill(); ctx.stroke();
       ctx.fillStyle = C.label; ctx.fillText(pin.name, lx + 7, b[1] + 0.5);
@@ -294,10 +297,11 @@
       const key = cs.map((c) => c.toFixed(3)).join() + "|" + u.toFixed(3) + "|" + Math.round(k);
       if (key === last) return;
       last = key; CS = cs; U = u; K = k;
-      if (root.classList.contains("ps-static") || !camLast && !camRaf && camU === 0 && u > 5.9) camU = u;   // 정지 · 처음부터 끝 모습이면 바로
+      if (root.classList.contains("no-motion") || !camLast && !camRaf && camU === 0 && u > 5.9) camU = u;   // 정지 · 처음부터 끝 모습이면 바로
       draw();
       if (!camRaf && Math.abs(U - camU) > 0.001) { camLast = 0; camRaf = requestAnimationFrame(glide); }
     },
     setDark(v) { if (v === dark) return; dark = v; palette(); draw(); },
+    probe() { return { U: +U.toFixed(3), camU: +camU.toFixed(3), pins: PINS.map((p) => +(CS[p.i] || 0).toFixed(2)), out: stats.out.slice(), draws: stats.n, w, h, dark }; },
   };
 })();

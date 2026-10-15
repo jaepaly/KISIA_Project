@@ -151,7 +151,7 @@
     const k = Math.exp(Math.log(K[i0]) + (Math.log(K[i0 + 1]) - Math.log(K[i0])) * f);
     countEl.textContent = `약 ${fmt(k)}명`;
     announce(Math.min(6, Math.floor(u + 0.3)));
-    if (window.PadoCity3D) window.PadoCity3D.set(cs, u, k);   // 3D 도시 시안(?scene=3d) — 같은 진행도로 그린다
+    if (window.PadoCity3D) window.PadoCity3D.set(cs, u, k);   // 3D 도시(pado-city3d.js) — 같은 진행도로 그린다
     return { z, k };
   }
   function narrowScene(p, on) {
