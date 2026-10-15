@@ -345,3 +345,7 @@ html.ps-flow .ps-step .dot{background:var(--ps-paper);border-color:var(--ps-mute
 html.ps-flow .ps-step.reached .dot{background:var(--ps-accent);border-color:var(--ps-accent)}
 html.ps-flow .ps-vis-m{transition:--t .8s var(--ps-ease) .1s}
 
+
+/* 02 장면 3D 도시 시안(?scene=3d · pado-city3d.js) — 평면 지도 · 점 · DOM 핀 · 스포트라이트를 숨기고 캔버스 하나로 그린다 */
+html.ps-3d .ps-mapbg,html.ps-3d #psCrowd,html.ps-3d .ps-pins,html.ps-3d .ps-spot{display:none}
+html.ps-3d .ps-city{position:absolute;inset:0;width:100%;height:100%;display:block}
