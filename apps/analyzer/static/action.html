@@ -94,6 +94,23 @@ function kWithout(data, postId) {
   const row = (kp.per_post || []).find(r => r.post_id === postId);
   return row ? row.k_without : null;
 }
+// 조치별 「바꾸면 k」 — k_by_action (server.py · 계약 밖 화면 전용). 비공개(k_by_post)와 같은 k 계산이다
+function kAfterAction(data, type) {
+  const ka = data.k_by_action; if (!ka || ka.k === null || ka.k === undefined) return null;
+  const v = (ka.by_action || {})[type];
+  return v === undefined ? null : v;
+}
+function kAfterSpan(data, postId, spanId) {
+  const ka = data.k_by_action; if (!ka || ka.k === null || ka.k === undefined) return null;
+  const row = (ka.by_span || []).find(r => r.post_id === postId && r.span_id === spanId);
+  return row && row.k_after !== undefined ? row.k_after : null;
+}
+// 「같은 조건의 사람 약 N명 → 약 M명」 — 비공개 카드와 같은 문구. 값은 숫자라 esc 가 필요 없지만 fmtN 을 거쳐 문자열로만 넣는다
+function kEffect(k, kw, same) {
+  if (kw === null || kw === undefined || k === null || k === undefined) return "";
+  if (fmtN(kw) === fmtN(k)) return `같은 조건의 사람 수는 그대로 — ${esc(same)}`;
+  return `같은 조건의 사람 약 ${esc(fmtN(k))}명 → <b>약 ${esc(fmtN(kw))}명</b>`;
+}
 function postLink(data, postId) {
   const p = postsOf(data)[postId];
   const label = `「${esc(postLabel(p) || postId)}」`;
@@ -116,7 +133,7 @@ function findPostByText(data, text) {
 // ── 0. 전 → 후 한 줄 — 사람 수로 말하고 노출 위험도는 보조 ─────────
 // 「추천대로 하면」의 사람 수는 응답에 비공개 효과만 있다(k_by_post). 비공개 추천 글이 있으면 그 글들을 내린 뒤의 수를
 // per_post(한 편) · greedy(앞에서부터 같은 글 묶음)에서 찾고, 못 찾으면(목 · 비공개 추천 없음) 노출 위험도로만 말한다.
-// 바꿔 쓰기 · 위치 태그 지우기의 사람 수 효과는 응답에 없다
+// 바꿔 쓰기 · 위치 태그 지우기의 사람 수는 k_by_action 에 있다 (각 조치 카드에 표시)
 function kAfterUnpublish(data, ids) {
   const kp = data.k_by_post;
   if (!kp || kp.k === null || !ids.length) return null;
@@ -126,7 +143,8 @@ function kAfterUnpublish(data, ids) {
   }
   const g = (kp.greedy || []).slice(0, ids.length);
   const want = new Set(ids);
-  return g.length === ids.length && g.every(x => want.has(x.remove)) ? g[g.length - 1].k_after : null;
+  if (g.length === ids.length && g.every(x => want.has(x.remove))) return g[g.length - 1].k_after;
+  return kAfterAction(data, "unpublish");   // k 순서와 노출 위험도 순서가 다를 때 — 추천한 글 묶음을 그대로 뺀 k
 }
 function renderBeforeAfter(data) {
   const rec = data.stage2.output.recommendation;
@@ -271,10 +289,14 @@ function renderActions(data) {
             all.length > tagged.length ? `<p class="muted">비공개로 바꾸라고 한 글 ${all.length - tagged.length}편은 뺐습니다.</p>` : ""}`
         : all.length ? `<p class="muted">위치 태그가 붙은 글은 모두 위에서 비공개로 바꾸라고 한 글입니다.</p>`
         : `<p class="muted">위치 태그가 붙은 글이 없습니다.</p>`;
+      const km = kEffect(k, kAfterAction(data, "activity_meta"), "본문의 다른 단서로 이미 좁혀집니다");
+      if (tagged.length && km) what += `<div class="eff">위치 태그를 모두 지우면 ${km}</div>`;
       why = `위치 태그도 사는 곳을 짐작할 단서가 됩니다. 본문을 고쳐도 위치 태그가 남아 있으면 같은 정보를 드러낼 수 있습니다.${a.projected_delta === 0 ? " 지금은 본문에 같은 동네가 이미 드러나 있어 노출 위험도 변화가 0으로 나옵니다. 본문을 고친 뒤에는 이 태그가 마지막 단서로 남습니다." : ""}`;
     } else if (a.action_type === "rewrite") {
       const n = a.targets.length;
       what = `<p>글 ${n}편에 직접 쓴 정보 — ${a.targets.slice(0, 4).map(t => postLink(data, t.ref)).join(", ")}${n > 4 ? ` 외 ${n - 4}편` : ""}. <a href="#rewrites">바꿔 쓸 표현 보기 ↓</a></p>`;
+      const kr = kEffect(k, kAfterAction(data, "rewrite"), "다른 글의 단서로 이미 좁혀집니다");
+      if (kr) what += `<div class="eff">직접 쓴 정보를 모두 고치면 ${kr}</div>`;
       why = `숫자 나이나 동네 이름처럼 직접 쓴 정보를 넓은 말로 바꾸면 그 문장이 글쓴이를 좁히는 폭이 줄어듭니다. 효과는 단서를 모두 고쳤을 때 기준이고, 「단서가 남음」 표시가 있는 표현은 단서가 약해지지만 남습니다.`;
     } else {
       what = `<p>${a.targets.map(t => t.kind === "post" ? postLink(data, t.ref) : esc(t.ref)).join(", ")}</p>`;
@@ -349,7 +371,10 @@ function renderRewrites(data) {
     const options = list.map(r => `
       <div class="rewrite">…${esc(before)}<mark>${esc(r.suggestion)}</mark>${esc(after)}…
         <span class="note">${r.residual_risk === "none" ? "이 표현의 단서가 사라집니다" : "단서가 남음 — 단서가 약해지지만 남습니다"}</span></div>`).join("");
-    cards.push(`<div class="card"><p class="rw-head">${postLink(data, postId)} 에서 <del>${esc(span.text)}</del> <span class="muted">(${TYPE_LABEL[span.type] || span.type})</span> 대신</p>${options}
+    // 사람 수는 그 스팬을 「완전히 지웠을 때」(k_by_action.by_span) — 「단서가 남음」 후보의 실제 효과보다 크다(상한). 그렇다고 적는다 (Codex 10/14)
+    const ks = kEffect(data.specificity.output.k, kAfterSpan(data, postId, spanId), "다른 단서로 이미 좁혀집니다");
+    cards.push(`<div class="card"><p class="rw-head">${postLink(data, postId)} 에서 <del>${esc(span.text)}</del> <span class="muted">(${esc(TYPE_LABEL[span.type] || span.type)})</span> 대신</p>${
+      ks ? `<div class="eff">이 표현의 단서를 완전히 지우면 ${ks}${list.some((r) => r.residual_risk !== "none") ? `<span class="muted"> · 최대로 잡은 값입니다 — 아래 「단서가 남음」 표현으로 바꾸면 효과는 이보다 작습니다</span>` : ""}</div>` : ""}${options}
       ${isUpload(data) ? "" : `<p class="go"><a class="btn" href="${SNS}/posts/${encodeURIComponent(postId)}#fix">Veilo에서 이 글 고쳐 쓰기 →</a></p>`}</div>`);
   }
   if (!cards.length) return "";
