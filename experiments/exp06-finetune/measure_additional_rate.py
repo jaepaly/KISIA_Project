@@ -73,6 +73,8 @@ def run_baselines(posts: dict) -> tuple[dict, dict]:
     analyzer = run_presidio.build_analyzer()
     if analyzer is None:
         raise DataError('한국어 Presidio Analyzer를 생성하지 못했습니다.')
+    if set(analyzer.supported_languages) != {'ko'}:
+        raise DataError('Presidio 초기화가 대체 엔진으로 폴백했습니다. 확정 한국어 엔진만 사용합니다.')
     predicted = {}
     counts = Counter()
     for index, (pid, post) in enumerate(sorted(posts.items()), 1):
@@ -99,6 +101,40 @@ def run_baselines(posts: dict) -> tuple[dict, dict]:
             'source_sha256': {str(Path('experiments/exp01-baseline') / name): train.file_sha256(BASELINE / name)
                               for name in ('run_regex.py', 'run_presidio.py', 'run_koreanpii.py')}}
     return predicted, meta
+
+
+def score_additional_rate(gold, predictions, tool_predictions, expected_tp):
+    """v1/v2·규칙 켬/끔 모두 받는 공통 경로. 저장 v1 검증 경로와 별개다."""
+    if set(predictions) != set(gold):
+        raise DataError('모델 예측의 글 목록이 골드와 다릅니다.')
+    channels = {(pid, tid) for pid, row in gold.items() for tid in row['texts']}
+    if set(tool_predictions) != channels:
+        raise DataError('기존 도구의 채널 목록이 다릅니다. 빈 탐지도 []로 기록해야 합니다.')
+    for (pid, tid), spans in tool_predictions.items():
+        size = len(gold[pid]['texts'][tid])
+        for span in spans:
+            if (type(span.get('start')) is not int or type(span.get('end')) is not int
+                    or not 0 <= span['start'] < span['end'] <= size
+                    or not isinstance(span.get('type'), str) or not span['type']):
+                raise DataError(f'기존 도구의 잘못된 스팬: {pid}/{tid}')
+    matched = model_matched_gold(gold, predictions)
+    if len(matched) != expected_tp:
+        raise DataError('추가 탐지율의 모델 매칭 수가 공식 partial TP와 다릅니다.')
+    missed = baseline_missed_gold(gold, tool_predictions)
+    recovered = missed & matched
+    def summary(ids):
+        denominator, numerator = len(missed & ids), len(recovered & ids)
+        return {'recovered': numerator, 'baseline_missed': denominator,
+                'additional_rate': numerator / denominator if denominator else None}
+    all_ids = {s['span_id'] for row in gold.values() for s in row['spans']}
+    return {
+        'overall': summary(all_ids),
+        'by_level': {level: summary({s['span_id'] for row in gold.values()
+                                   for s in row['spans'] if s['level'] == level})
+                     for level in evaluate_test.LEVELS},
+        'scoring': {'baseline': 'any of 3 tools; type ignored; IoU >= 0.5; no 1:1 restriction',
+                    'model': 'type equal; IoU >= 0.5; official greedy 1:1 matching'},
+    }
 
 
 def main() -> None:
