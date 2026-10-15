@@ -530,8 +530,8 @@ def test_server_reports_k_by_action(monkeypatch):
     def fake_detect(record: dict) -> dict:
         return {"spans": SPANS.get(record["post_id"], [])}
 
-    def fake_stage2(user_ref, ps, risk_current=0.0, risk_target=40.0):
-        doc = mock.stage2(user_ref, ps, risk_current, risk_target)
+    def fake_stage2(user_ref, ps, risk_current=0.0, risk_target=40.0, **kw):   # 서버가 spans_by_post · detect_inputs 도 넘긴다(#368)
+        doc = mock.stage2(user_ref, ps, risk_current, risk_target, **kw)
         doc["output"]["recommendation"]["actions"] = [
             {"action_type": "activity_meta", "targets": [{"kind": "meta_field", "ref": "geo_tag"}]}]
         return doc
