@@ -18,6 +18,48 @@
 | 하드웨어 | 로컬 CPU / GPU |
 | 환경 | Python 3.10+, presidio-analyzer, transformers, spacy |
 
+### 실행 코드에 고정된 도구 설정 (2026-10-15 문서 보완)
+
+아래는 [run_presidio.py](run_presidio.py) · [run_koreanpii.py](run_koreanpii.py) ·
+[run_regex.py](run_regex.py)의 실제 설정이다. 이번 보완은 **설정 기록만 추가**하며,
+기존 결과를 다시 측정하거나 바꾸지 않는다. 「최선 설정」 항목의 재현 조건을 밝히는 것이며,
+여러 모델·임계값을 탐색해 전역 최적임을 입증했다는 뜻은 아니다.
+
+| 도구 | 실행 설정 | 임계값·출력 점수 |
+|---|---|---|
+| Microsoft Presidio | NLP 엔진 `spacy`, 모델 `ko_core_news_sm`, `supported_languages=["ko"]`, 호출 `analyze(text=text, language="ko")`. `entities` 제한 없이 해당 언어의 등록 인식기를 사용 | `score_threshold`를 넘기지 않음. 현재 로컬 Presidio 2.2.364의 `AnalyzerEngine.default_score_threshold` 기본값은 **0**. 추가 모바일 패턴의 `score=0.8`은 인식 점수이지 필터 임계값이 아님 |
+| 한국어 NER (`koreanpii` 결과 파일명) | `spacy.load("ko_core_news_sm")`의 `doc.ents` 전부 사용. `ent.label_`와 문자 오프셋을 그대로 반환. 별도의 Hugging Face NER 모델은 사용하지 않음 | **점수 임계값 필터 없음**. 모든 출력에 `score=0.85`를 고정 기입하며, 모델의 확률·신뢰도를 측정한 값이 아님 |
+| 정규식 | 아래 `PATTERNS` 8종을 `re.finditer(pattern, text)`로 적용. 별도 정규식 플래그 지정 없음 | **점수 임계값 필터 없음**. 모든 매칭에 `score=1.0`을 고정 기입 |
+
+**Presidio 인식기 구성**
+
+- 라이브러리 기본 레지스트리에서 한국어 지원 인식기를 불러오고, spaCy NLP 인식기(`SpacyRecognizer`, 한국어)를 사용한다. 코드가 영어 인식기 전체를 한국어로 바꾸거나 모든 국가별 인식기를 켜지는 않는다.
+- 코드에서 명시적으로 추가한 것은 `PatternRecognizer` 1개다: `supported_entity="PHONE_NUMBER"`, `supported_language="ko"`, 패턴 이름 `kr_mobile`, 정규식 `01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}`, 점수 **0.8**.
+- 현재 로컬 Presidio **2.2.364**에서 `RecognizerRegistryProvider`를 한국어로 구성해 확인한 기본 인식기는 `CryptoRecognizer` · `DateRecognizer` · `EmailRecognizer` · `IbanRecognizer` · `IpRecognizer` · `MedicalLicenseRecognizer` · `MacAddressRecognizer` · `PhoneRecognizer` · `UrlRecognizer` 9개다. 정상 한국어 엔진은 여기에 **`SpacyRecognizer` + 위 모바일 `PatternRecognizer`**를 더한다. 한국어 국가별 인식기 `KrBrnRecognizer` · `KrRrnRecognizer` · `KrDriverLicenseRecognizer` · `KrFrnRecognizer`는 기본 설정에서 비활성이다. 라이브러리 버전·기본 설정이 바뀌면 목록도 달라질 수 있으므로, 이 목록을 과거 W2~W4 설치 버전의 실측 목록으로 소급하지 않는다.
+
+**정규식 8종 — 실행 코드의 `PATTERNS`와 동일**
+
+| 키 | 대상 | 패턴 |
+|---|---|---|
+| `RRN` | 주민등록번호 | `\b\d{6}[-\s]?[1-8]\d{6}\b` |
+| `PHONE_MOB` | 휴대전화 | `\b01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}\b` |
+| `PHONE_TEL` | 지역번호 전화 | `\b0(?:2\|3[1-3]\|4[1-4]\|5[1-5]\|6[1-4])[-\s.]?\d{3,4}[-\s.]?\d{4}\b` |
+| `EMAIL` | 이메일 | `[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}` |
+| `CARD` | 카드번호 형식 | `\b(?:\d{4}[-\s]?){3}\d{4}\b` |
+| `BIZNO` | 사업자등록번호 | `\b\d{3}-\d{2}-\d{5}\b` |
+| `IP` | IPv4 형식 | `\b(?:\d{1,3}\.){3}\d{1,3}\b` |
+| `ACCOUNT` | 계좌번호 형식 | `\b\d{2,6}-\d{2,6}-\d{2,6}\b` |
+
+`ACCOUNT`는 날짜도 매칭할 수 있다(실행 코드에도 명시된 한계). 위 패턴은 형식 탐지이며,
+번호의 실재 여부나 유효성을 추가 검증하지 않는다. 정규식의 `|`는 선택 연산자다.
+
+**의존성·폴백을 구분해서 재현하기**
+
+- [requirements.txt](requirements.txt)는 `presidio-analyzer>=2.2.0`, `spacy>=3.8.0`, `ko_core_news_sm` **3.8.0** 배포 파일을 지정한다. 하한 지정은 과거 설치 버전의 고정 기록이 아니다. 새 측정에서는 실제 설치 버전과 실행 코드 지문을 결과에 함께 남긴다.
+- 기존 `run_presidio.py`는 한국어 엔진 초기화 실패 시 `AnalyzerEngine(supported_languages=["ko", "en"])`를 시도하고, 엔진이 없거나 분석 호출이 실패하면 정규식 4종(`EMAIL_ADDRESS` · `PHONE_NUMBER` · `IP_ADDRESS` · `CREDIT_CARD`, 고정 출력 점수 **0.85**)으로 폴백한다. 이 결과를 정상 한국어 엔진 결과와 혼동하지 않는다.
+- 기존 `run_koreanpii.py`는 모델 로드 실패 시 빈 탐지를 반환한다. 따라서 실행 성공 메시지만으로 정상 모델 로드를 보장하지 않는다.
+- 현재 [추가 탐지율 측정 경로](../exp06-finetune/measure_additional_rate.py)의 `run_baselines()`와 이를 부르는 [1단 벤치마크 러너](../bench/README.md)는 NER 미로드·Presidio 대체 엔진을 거부하고, 분석 실패를 빈 탐지로 처리하지 않는다. **10/29 최종 측정은 이 경로로 실행**하며 기존 exp01 결과 파일을 덮어쓰지 않는다.
+
 ## 스팬 매칭 및 W3 게이트 규칙 (정본: label-schema §2 · b-baselines §7.2 · README §3)
 
 ```
