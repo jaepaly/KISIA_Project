@@ -463,6 +463,12 @@ def about():
     return render_template("about.html", static=request.args.get("view") == "static")
 
 
+@app.get("/privacy")
+def privacy():
+    """개인정보 처리방침 — 홈 왼쪽 카드에서 연다. 문구를 바꾸면 docs/privacy-policy.md 도 같이 고친다."""
+    return render_template("privacy.html")
+
+
 @app.get("/new")
 def new():
     """작성 화면. ⚠️ 작성시각을 직접 입력받는다 — howto §4."""
