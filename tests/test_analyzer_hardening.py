@@ -122,6 +122,43 @@ def test_scan_queue_reports_people_ahead_by_ticket(admission, monkeypatch):
     assert c.get("/api/scan-queue", params={"ticket": "<script>aa"}).status_code == 422
 
 
+def test_scan_queue_counts_ticketless_waiters_and_keeps_duplicate_ticket():
+    """앞사람 수에는 대기표 없는 요청도 들어간다 · 같은 대기표로 선 두 번째 요청이 빠져도 첫 요청의 표는 남는다 (Codex P2 · P3)."""
+    import asyncio
+
+    class Req:
+        def __init__(self, ticket=None):
+            self.headers = {"x-scan-ticket": ticket} if ticket else {}
+
+        async def is_disconnected(self):
+            return False
+
+    async def scenario():
+        adm = server._Admission(1, 5, 5.0)
+        assert adm.sem.acquire(blocking=False)
+        adm._take()                                              # 점검 1개가 돌고 있다
+        plain = asyncio.create_task(adm.acquire(Req()))          # 대기표 없는 요청
+        await asyncio.sleep(0.05)
+        mine = asyncio.create_task(adm.acquire(Req("cccccccc3333")))
+        await asyncio.sleep(0.05)
+        dup = asyncio.create_task(adm.acquire(Req("cccccccc3333")))   # 같은 표로 한 번 더
+        await asyncio.sleep(0.05)
+        assert adm.ahead("cccccccc3333") == 2                    # 점검 중 1 + 대기표 없는 1
+        dup.cancel()
+        await asyncio.gather(dup, return_exceptions=True)
+        assert adm.ahead("cccccccc3333") == 2                    # 중복 요청이 빠져도 내 표는 그대로
+        adm.release()                                            # 앞 점검 끝 → 대기표 없는 요청이 들어간다
+        await asyncio.wait_for(plain, 2)
+        assert adm.ahead("cccccccc3333") == 1                    # 이제 그 요청이 점검 중
+        adm.release()
+        await asyncio.wait_for(mine, 2)
+        assert adm.ahead("cccccccc3333") is None and adm.running == 1 and not adm._waiters and not adm._tickets
+        adm.release()
+        assert adm.running == 0 and adm.waiting == 0
+
+    asyncio.run(scenario())
+
+
 def test_failed_pipeline_releases_slot(admission, monkeypatch):
     def boom(user_ref, posts):
         raise RuntimeError("엔진 실패")

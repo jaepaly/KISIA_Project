@@ -318,6 +318,7 @@ button.is-busy .spin{width:14px; height:14px; border-radius:50%; border:2px soli
 @media (prefers-reduced-motion:reduce){button.is-busy .spin{animation:none}}
 .pbar i{display:block; height:100%; width:40%; border-radius:99px; background:var(--ink); animation:pbar 1.3s ease-in-out infinite}
 @keyframes pbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+.pbar.wait i{animation:none; width:100%; transform:scaleX(0)}   /* 앞사람을 기다리는 동안 — 예상 시간이 없는 띠도 멈춘다(Codex P3) */
 .ptext{display:flex; align-items:baseline; gap:6px; margin-top:8px; font-size:14px}
 .ptext .pt{margin-left:auto; font-variant-numeric:tabular-nums; color:var(--ink3); font-size:13px}
 .progress .muted{margin:4px 0 0}

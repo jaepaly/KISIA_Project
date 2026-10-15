@@ -254,7 +254,8 @@ class _Admission:
         # 자리는 폴링으로 잡아서 엄밀한 선착순은 아니다(먼저 선 사람이 거의 늘 먼저 잡는다) — 화면에는 어림으로만 쓴다
         self.running = 0
         self._order = 0
-        self._tickets: dict[str, int] = {}
+        self._waiters: set[int] = set()          # 줄에 선 모든 요청의 순번 — 대기표가 없는 요청도 센다(Codex P2)
+        self._tickets: dict[str, int] = {}       # 대기표 → 그 요청의 순번. 같은 표가 이미 줄에 있으면 뒤 요청은 등록하지 않는다(Codex P3)
 
     def _take(self) -> None:
         with self._lock:
@@ -271,7 +272,7 @@ class _Admission:
             mine = self._tickets.get(ticket)
             if mine is None:
                 return None
-            return self.running + sum(1 for o in self._tickets.values() if o < mine)
+            return self.running + sum(1 for o in self._waiters if o < mine)
 
     async def acquire(self, request: Request | None = None) -> None:
         if self.sem.acquire(blocking=False):
@@ -284,8 +285,10 @@ class _Admission:
                 raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
             self.waiting += 1
             self._order += 1
-            if ticket:
-                self._tickets[ticket] = self._order
+            order = self._order
+            self._waiters.add(order)
+            if ticket and ticket not in self._tickets:
+                self._tickets[ticket] = order
         try:
             deadline = time.monotonic() + self.wait_s
             while not self.sem.acquire(blocking=False):
@@ -298,7 +301,9 @@ class _Admission:
         finally:
             with self._lock:
                 self.waiting -= 1
-                self._tickets.pop(ticket, None)
+                self._waiters.discard(order)
+                if ticket and self._tickets.get(ticket) == order:   # 내가 등록한 표만 지운다
+                    del self._tickets[ticket]
 
     async def _in_thread(self, work):
         return await asyncio.get_running_loop().run_in_executor(self.pool, work)

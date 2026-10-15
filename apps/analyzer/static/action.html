@@ -265,7 +265,7 @@ function renderActions(data) {
   const noEffect = (a) => {
     if (a.action_type === "unpublish" || (a.projected_delta || 0) !== 0) return false;
     const kw = kAfterAction(data, a.action_type);
-    return kw !== null && k !== null && k !== undefined && fmtN(kw) === fmtN(k);
+    return kw !== null && k !== null && k !== undefined && Math.abs(Number(kw) - Number(k)) < 1e-9;   // 원래 값으로 — 반올림 표시값이 같아도 실제로 바뀌면 내리지 않는다(Codex P3)
   };
   const card = (a) => {
     const A0 = ACTION[a.action_type] || { no: "", nm: "기타 방법", how: "" };
