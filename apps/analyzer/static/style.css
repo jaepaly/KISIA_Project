@@ -2,25 +2,32 @@
    가상 SNS 와 같은 결로 보여야 하나의 서비스로 읽힌다. 구조·동작은 건드리지 않았다. */
 @import url("fonts/pretendard.css");
 
-/* Veilo 의 토큰을 그대로 받는다 (veilo.css 가 먼저 붙는다 — head.js). veilo.css 를 못 읽으면 괄호 안 값으로 */
+/* Veilo 의 토큰을 그대로 받는다 (veilo.css 가 먼저 붙는다 — head.js).
+   --ink · --line · --leaf · --sea · --amber 는 veilo.css(10/14 W-TOKEN)의 토큰과 이름이 같다 — 여기서 다시 정의하면
+   --ink:var(--ut-ink) ↔ --ut-ink:var(--ink) 순환이 되어 둘 다 무효가 된다. 그래서 같은 이름은 정의하지 않고,
+   veilo.css 를 못 읽었을 때의 값만 html 선택자(:root 보다 약하다)에 둔다 */
+html{
+  --ink:#1F1C19; --line:rgba(31,28,25,.12);
+  --leaf:#4E6A4C; --leaf-soft:#E7ECE2; --amber:#8A5F00; --amber-soft:#F4EAD3; --sea:#2E4A47; --sea-soft:#E7E8E2;
+}
 :root{
-  --ground:var(--ut-bg,#F8F3ED); --panel:var(--ut-panel,#FFFDFA); --panel2:var(--ut-panel2,#F3ECE3); --line:var(--ut-line,#E6DCD0);
-  --ink:var(--ut-ink,#3E3A36); --ink2:var(--ut-ink2,#6B625B); --ink3:var(--ut-ink3,#A89B91);
-  --earth:var(--ut-earth,#D8896F); --earth-soft:var(--ut-earth-soft,#F6E6DD); --earth-ink:var(--ut-earth-ink,#B8664B);
-  --leaf:var(--ut-leaf,#6F8F6E); --leaf-soft:var(--ut-leaf-soft,#E6EEE3);
-  --red:var(--ut-red,#B9553F); --red-soft:var(--ut-red-soft,#F7E4DE);
-  --amber:#996A00; --amber-soft:#F6ECD4;
-  --sea:var(--ut-sea,#2F6F6A); --sea-soft:var(--ut-sea-soft,#E1EEEC);
-  --shadow:var(--ut-shadow,0 1px 2px rgba(62,58,54,.04));
-  --shadow-hi:var(--ut-shadow-hi,0 2px 4px rgba(62,58,54,.05), 0 12px 28px -18px rgba(62,58,54,.22));
-  --radius:var(--ut-radius,16px);
-  --font:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --ground:var(--ut-bg,#F6F0E6); --panel:var(--ut-panel,#FCF9F3); --panel2:var(--ut-panel2,#EDE5D8);
+  --ink2:var(--ut-ink2,#675E55); --ink3:var(--ut-ink3,#6E645A);
+  --earth:var(--ut-earth,#1F1C19); --earth-soft:var(--ut-earth-soft,#EDE5D8); --earth-ink:var(--ut-earth-ink,#1F1C19);
+  --red:var(--ut-red,#A9472A); --red-soft:var(--ut-red-soft,#F2E4DB);
+  --shadow:var(--ut-shadow,none);
+  --shadow-hi:var(--ut-shadow-hi,0 18px 40px -28px rgba(31,28,25,.35));
+  --radius:var(--ut-radius,12px);
+  --font:var(--font-sans,Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif);
+  --mono:var(--font-mono,ui-monospace,"SF Mono",Consolas,monospace);
+  --line-hi:var(--line-strong,rgba(31,28,25,.24));
+  --risk:var(--accent,#A9472A); --risk-soft:var(--accent-soft,#F2E4DB);
   --shell:860px;
 }
 
 *{box-sizing:border-box}
 body{
-  margin:0; background:var(--ground); color:var(--ink);
+  margin:0; background:var(--ground); color:var(--body,var(--ink));
   font-family:var(--font); font-size:15px; line-height:1.65;
   -webkit-font-smoothing:antialiased;
 }
@@ -35,43 +42,43 @@ body{
 .pado-meta .engine{font-size:12px; color:var(--ink3)}
 .engine:empty{display:none}
 .back-sns{
-  font-size:13px; font-weight:600; color:var(--earth-ink); text-decoration:none;
-  border:1px solid var(--line); border-radius:999px; padding:5px 12px; white-space:nowrap;
+  font-size:13px; font-weight:600; color:var(--ink); text-decoration:none;
+  border:1px solid var(--line-hi); border-radius:999px; padding:5px 12px; white-space:nowrap;
   transition:border-color .15s, background .15s;
 }
-.back-sns:hover{border-color:var(--earth); background:var(--earth-soft); text-decoration:none}
+.back-sns:hover{border-color:var(--ink); background:var(--panel); text-decoration:none}
 
 .steps{display:flex; gap:6px}
 .steps a{
   display:flex; align-items:center; gap:7px; height:36px;
-  padding:0 12px; border:1px solid var(--line); border-radius:12px;
-  background:var(--panel); color:var(--ink2); text-decoration:none;
+  padding:0 14px; border:1px solid var(--line); border-radius:999px;
+  background:transparent; color:var(--ink2); text-decoration:none;
   font-size:13.5px; white-space:nowrap; transition:border-color .15s, background .15s;
 }
-.steps a:hover{border-color:var(--earth); text-decoration:none}
+.steps a:hover{border-color:var(--line-hi); text-decoration:none}
 .steps a .n{
   flex:none; width:20px; height:20px; border-radius:50%;
-  background:var(--panel2); color:var(--ink3);
-  font-size:11.5px; font-weight:700;
+  background:transparent; color:var(--ink3); border:1px solid var(--line);
+  font-family:var(--mono); font-size:10.5px; font-weight:600;
   display:grid; place-items:center;
 }
-.steps a[aria-current]{background:var(--earth-soft); border-color:var(--earth); color:var(--earth-ink); font-weight:700}
-.steps a[aria-current] .n{background:var(--earth); color:#fff}
+.steps a[aria-current]{background:var(--panel); border-color:var(--ink); color:var(--ink); font-weight:700}
+.steps a[aria-current] .n{background:var(--ink); border-color:var(--ink); color:#fff}
 
 /* ── 본문 ───────────────────────────────── */
 main{max-width:var(--shell); margin:0 auto; padding:22px 20px 56px}
-h1{font-size:21px; font-weight:700; letter-spacing:-.015em; margin:4px 0 2px}
-.lede{color:var(--ink2); margin:0 0 20px; font-size:14px}
-h2{font-size:16px; font-weight:700; margin:0 0 4px}
-h3{font-size:14px; font-weight:700; color:var(--ink2); margin:28px 0 10px;
-   text-transform:none; letter-spacing:0}
+h1{font-size:var(--fs-h1,26px); font-weight:700; letter-spacing:var(--track-head,-.035em); line-height:1.25; margin:6px 0 6px; color:var(--ink); word-break:keep-all}
+.lede{color:var(--ink2); margin:0 0 22px; font-size:14.5px; word-break:keep-all}
+h2{font-size:17px; font-weight:700; letter-spacing:-.025em; margin:0 0 4px; color:var(--ink); word-break:keep-all}
+h3{font-size:14px; font-weight:700; color:var(--ink); margin:28px 0 10px;
+   text-transform:none; letter-spacing:-.01em; word-break:keep-all}
 h3 small{font-weight:400; color:var(--ink3); font-size:12px}
 p{margin:.5rem 0}
 a{color:var(--earth-ink)}
 
 .card{
   background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-  padding:18px 20px; margin:12px 0; box-shadow:var(--shadow);
+  padding:18px 20px; margin:12px 0;
 }
 .card .hint{color:var(--ink3); font-size:13px; margin:2px 0 14px}
 .card > :last-child{margin-bottom:0}
@@ -80,46 +87,46 @@ a{color:var(--earth-ink)}
 .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 input[type=text]{
   flex:1; min-width:200px; padding:10px 13px;
-  border:1px solid var(--line); border-radius:12px; background:var(--panel);
+  border:1px solid var(--line-hi); border-radius:10px; background:var(--panel);
   font-family:var(--font); font-size:14px; color:var(--ink); min-height:40px; margin:0;
 }
-input[type=text]:focus{outline:none; border-color:var(--earth); box-shadow:0 0 0 3px var(--earth-soft)}
+input[type=text]:focus{outline:none; border-color:var(--ink); box-shadow:var(--ring,0 0 0 3px rgba(31,28,25,.12))}
 input[type=file]{font-family:var(--font); font-size:13px; color:var(--ink2); max-width:100%}
 button{
-  height:40px; padding:0 16px; border:1px solid var(--earth); border-radius:12px;
+  height:40px; padding:0 18px; border:1px solid var(--earth); border-radius:999px;
   background:var(--earth); color:#fff; cursor:pointer;
   font-family:var(--font); font-size:14px; font-weight:700;
   transition:filter .15s;
 }
-button:hover{filter:brightness(.95)}
+button:hover{background:var(--ink-2,#38322C); border-color:var(--ink-2,#38322C)}
 code{
   background:var(--panel2); border-radius:5px; padding:1px 5px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9em;
+  font-family:var(--mono); font-size:.9em;
 }
 
 /* ── 배지 ───────────────────────────────── */
 .badge{
-  display:inline-block; padding:3px 10px; border-radius:999px;
+  display:inline-block; padding:2px 10px; border-radius:999px;
   font-size:12px; font-weight:600; vertical-align:middle;
-  background:var(--panel2); color:var(--ink2);
+  background:var(--panel2); color:var(--ink2); border:1px solid var(--line);
 }
 .badge.abstain{background:var(--panel2); color:var(--ink3)}
-.badge.found{background:var(--red-soft); color:var(--red)}
-.badge.unknown{background:var(--amber-soft); color:var(--amber)}
+.badge.found{background:var(--risk-soft); color:var(--risk); border-color:var(--accent-line,rgba(169,71,42,.38))}
+.badge.unknown{background:var(--amber-soft); color:var(--amber); border-color:transparent}
 
 /* ── 위험도 ─────────────────────────────── */
 .score{display:flex; align-items:baseline; gap:10px; margin:0}
-.score b{font-size:30px; font-weight:700; letter-spacing:-.02em; line-height:1.1}
+.score b{font-size:clamp(30px,1.4vw + 22px,40px); font-weight:700; letter-spacing:-.04em; line-height:1.05; color:var(--ink); font-variant-numeric:tabular-nums}
 .score .unit{color:var(--ink3); font-size:13px}
 .arrow{color:var(--ink3); font-size:20px; padding:0 2px}
 .down{color:var(--leaf)}
-.post-k{font-size:13px; color:var(--earth-ink); margin:10px 0 0}
+.post-k{font-size:13px; color:var(--ink2); margin:10px 0 0}
 
 /* ── 글 하이라이트 ──────────────────────── */
 .post-body{white-space:pre-wrap; margin:0; font-size:14.5px; line-height:1.85}
 .post-body + .post-body{margin-top:8px}
 .channel{
-  display:inline-block; font-size:11px; color:var(--ink3);
+  display:inline-block; font-size:11px; letter-spacing:.02em; color:var(--ink3);
   border:1px solid var(--line); border-radius:99px; padding:0 7px; margin-right:6px; vertical-align:1px;
 }
 .span-hit{
@@ -153,22 +160,22 @@ code{
 
 /* ── 링크형 버튼 · 보조 버튼 ───────────────── */
 .btn{
-  display:inline-flex; align-items:center; height:40px; padding:0 16px; border-radius:12px; text-decoration:none;
+  display:inline-flex; align-items:center; height:40px; padding:0 18px; border-radius:999px; text-decoration:none;
   background:var(--earth); color:#fff; font-size:14px; font-weight:700; white-space:nowrap;
   transition:filter .15s, transform .15s;
 }
-.btn:hover{filter:brightness(.95); transform:translateY(-1px); color:#fff; text-decoration:none}
-a.btn.ghost{background:var(--panel); color:var(--ink2); border:1px solid var(--line)}
-a.btn.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:none}
-button.ghost{background:var(--panel); color:var(--ink2); border-color:var(--line); font-size:13px; height:36px; padding:0 14px}
-button.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:none}
+.btn:hover{background:var(--ink-2,#38322C); transform:translateY(-1px); color:#fff; text-decoration:none}
+a.btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line-hi)}
+a.btn.ghost:hover{border-color:var(--ink); color:var(--ink); background:var(--panel); filter:none}
+button.ghost{background:transparent; color:var(--ink); border-color:var(--line-hi); font-size:13px; height:36px; padding:0 14px}
+button.ghost:hover{border-color:var(--ink); color:var(--ink); background:var(--panel); filter:none}
 .row.between{justify-content:space-between}
 .row.between h2{margin:0}
 .row.sec{margin-top:28px}
 .row.sec h3{margin:0}
 
 /* ── 계정·연락처 경고 — 위험 점수와 별개로 먼저 보여 준다 (#326) ── */
-.card.warn{border-left:4px solid var(--red); background:var(--red-soft)}
+.card.warn{border-color:var(--accent-line,rgba(169,71,42,.38)); border-left:3px solid var(--risk); background:var(--risk-soft)}
 .card.warn h3{margin:0 0 6px; color:var(--red)}
 .card.warn code{word-break:break-all; background:rgba(255,255,255,.6)}
 .card.warn ul,.card.tip ul{margin:6px 0 0; padding-left:20px}
@@ -178,13 +185,13 @@ button.ghost:hover{border-color:var(--earth); color:var(--earth-ink); filter:non
 
 /* ── 진단: 접히는 글 카드 ──────────────────── */
 .card.post{padding:0; overflow:hidden}
-.card.post.quiet{background:var(--panel2); box-shadow:none}
+.card.post.quiet{background:transparent; box-shadow:none}
 .post-head{
   width:100%; display:flex; align-items:center; gap:10px; text-align:left;
   padding:14px 18px; background:transparent; border:0; border-radius:0;
   color:var(--ink); font:inherit; font-size:14.5px; cursor:pointer;
 }
-.post-head:hover{background:var(--earth-soft); filter:none}
+.post-head:hover{background:var(--panel2); filter:none}
 .post-head .post-title{flex:1; min-width:0; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .post-head .post-types{color:var(--ink3); font-size:12px; white-space:nowrap}
 .post-head .chev{color:var(--ink3); font-size:18px; line-height:1; transition:transform .2s}
@@ -202,7 +209,7 @@ details.more > summary{
 details.more > summary::-webkit-details-marker{display:none}
 details.more > summary::before{content:"⌄"; color:var(--ink3); font-size:16px; line-height:1; transition:transform .2s}
 details.more[open] > summary::before{transform:rotate(180deg)}
-details.more > summary:hover{color:var(--earth-ink)}
+details.more > summary:hover{color:var(--ink)}
 details.more > summary small{font-weight:400; color:var(--ink3); font-size:12px}
 details.more.sec{margin-top:16px}
 details.more.sec > summary{font-size:14px; font-weight:700}
@@ -221,7 +228,7 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
 .axes li{display:grid; grid-template-columns:52px 1fr 34px; align-items:center; gap:10px; font-size:13px}
 .axes .al{color:var(--ink2)}
 .axes .ab{height:8px; background:var(--panel2); border-radius:99px; overflow:hidden}
-.axes .ab i{display:block; height:100%; background:linear-gradient(90deg,var(--earth),var(--red)); border-radius:99px; transition:width .6s cubic-bezier(.22,.61,.36,1)}
+.axes .ab i{display:block; height:100%; background:var(--risk); border-radius:99px; transition:width .6s cubic-bezier(.22,.61,.36,1)}
 .axes .av{text-align:right; color:var(--ink3); font-variant-numeric:tabular-nums}
 
 .funnel{list-style:none; margin:6px 0 0; padding:0}
@@ -232,11 +239,11 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
 .funnel .fl{min-width:0}
 .funnel .fd{display:block; font-size:14px; font-weight:600}
 .funnel .fs{display:block; font-size:12px; color:var(--ink2); margin-top:2px}
-.funnel .fs .src a{color:var(--earth-ink)}
-.funnel .fk{flex:none; font-weight:700; font-variant-numeric:tabular-nums; color:var(--earth-ink)}
-.funnel li:last-child .fk{color:var(--red)}
+.funnel .fs .src a{color:var(--ink)}
+.funnel .fk{flex:none; font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink)}
+.funnel li:last-child .fk{color:var(--risk)}
 
-.act{border-left:4px solid var(--earth)}
+.act{border-left:3px solid var(--ink)}
 .act-head{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
 .act-head .nm{font-size:16px; font-weight:700}
 .act-head .delta{margin-left:auto; font-size:13px; color:var(--ink2); white-space:nowrap}
@@ -259,8 +266,8 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
 .clues mark{background:#F9E0B8; border-radius:4px; padding:1px 5px; font-size:12.5px}
 .eff{margin-top:4px; font-size:12.5px; color:var(--ink3)}
 .eff b{color:var(--leaf)}
-.geochip{font-size:11.5px; color:var(--earth-ink); background:var(--earth-soft); border-radius:99px; padding:1px 8px; margin-left:4px}
-.boundary{background:var(--earth-soft); border-color:var(--earth); font-size:14px}
+.geochip{font-size:11.5px; color:var(--ink2); background:var(--panel2); border:1px solid var(--line); border-radius:99px; padding:1px 8px; margin-left:4px}
+.boundary{background:var(--panel2); border-color:var(--line-hi); font-size:14px}
 .order{margin:0; padding-left:22px}
 .order li{padding:5px 0; font-size:14px}
 .order a{font-weight:600}
@@ -275,27 +282,41 @@ h4 small{font-weight:400; color:var(--ink3); font-size:12px}
   .axes li{grid-template-columns:44px 1fr 30px}
 }
 
-/* ── 스캔: 계정 찾기 ───────────────────────── */
+/* ── 스캔: 계정 고르기 — 목록이 처음부터 펼쳐져 있다(드롭다운 아님). 검색창은 거르기 ───────────────────────── */
 .finder{position:relative}
-.finder-list{position:absolute; left:0; right:0; z-index:5; list-style:none; margin:4px 0 0; padding:6px;
-  background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow-hi); max-height:300px; overflow:auto}
-.finder-list li{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:14px}
-.finder-list li:hover{background:var(--earth-soft)}
-.finder-list li.none{cursor:default; color:var(--ink3); font-size:13px}
+.finder-h{margin:16px 0 8px; font-size:13px; font-weight:600; color:var(--ink3)}
+.finder-h[hidden],.finder-list[hidden]{display:none}
+.finder-list{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; max-height:420px; overflow:auto}
+.finder-list li.none{grid-column:1/-1; color:var(--ink3); font-size:13px; padding:8px 2px}
+.finder-list .acct{display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+  background:var(--panel); color:inherit; font:inherit; font-size:14px; text-align:left; cursor:pointer}
+.finder-list .acct:hover,.finder-list .acct:focus-visible{border-color:var(--line-hi); background:var(--panel2)}
+.finder-list .who{display:flex; flex-direction:column; min-width:0}
+.finder-list .who .muted{font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .finder-list .nm{font-weight:600}
+.finder-more[hidden]{display:none}
+.finder-more{margin-top:10px; background:transparent; border:1px solid var(--line-hi); color:var(--ink); font-size:13px}
+.picked .link{margin-left:auto; flex:none; background:none; border:0; padding:4px 6px; color:var(--ink2); font-size:13px; text-decoration:underline; cursor:pointer}
 .finder .av,.picked .av{width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none}
-.picked{display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border:1px solid var(--earth); border-radius:10px; background:var(--earth-soft); font-size:14px}
+.picked{display:flex; align-items:center; gap:10px; margin-top:10px; padding:10px 12px; border:1px solid var(--line-hi); border-radius:10px; background:var(--panel2); font-size:14px}
 .picked[hidden]{display:none}   /* 계정을 고르기 전 빈 분홍 막대 — display:flex 가 hidden 을 이기던 것 (UX N4) */
 .picked .av{width:34px; height:34px}
 button:disabled{background:var(--panel2); border-color:var(--line); color:var(--ink3); cursor:not-allowed}
 
 /* ── 진행 표시 ─────────────────────────────── */
 body.busy{cursor:progress}
-.progress{position:fixed; left:0; right:0; bottom:0; z-index:30; background:rgba(255,253,250,.96); backdrop-filter:blur(10px);
-  border-top:1px solid var(--line); box-shadow:0 -8px 24px -18px rgba(62,58,54,.3)}
+.progress{position:fixed; left:0; right:0; bottom:0; z-index:30; background:var(--glass,rgba(246,240,230,.92)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line)}
 .progress-in{max-width:var(--shell); margin:0 auto; padding:12px 20px 14px}
-.pbar{height:6px; border-radius:99px; background:var(--panel2); overflow:hidden}
-.pbar i{display:block; height:100%; width:40%; border-radius:99px; background:linear-gradient(90deg,var(--earth-soft),var(--earth),var(--earth-soft)); animation:pbar 1.3s ease-in-out infinite}
+.pbar{height:3px; border-radius:99px; background:var(--line); overflow:hidden}
+/* 예상 시간이 있으면 차오르는 막대(--p 0~0.9 · common.js) */
+.pbar.det i{width:100%; animation:none; transform-origin:0 50%; transform:scaleX(var(--p,0)); transition:transform .25s linear}
+/* 점검 중인 버튼 — 비활성 회색 대신 진한 색 그대로 + 회전 표시 */
+button.is-busy,button.is-busy:disabled{opacity:1; filter:none; background:var(--ink); border-color:var(--ink); color:var(--paper,#F7F2EA); cursor:progress; display:inline-flex; align-items:center; gap:8px}
+button.is-busy .spin{width:14px; height:14px; border-radius:50%; border:2px solid color-mix(in srgb,currentColor 35%,transparent); border-top-color:currentColor; animation:busy-spin .7s linear infinite}
+@keyframes busy-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){button.is-busy .spin{animation:none}}
+.pbar i{display:block; height:100%; width:40%; border-radius:99px; background:var(--ink); animation:pbar 1.3s ease-in-out infinite}
 @keyframes pbar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
 .ptext{display:flex; align-items:baseline; gap:6px; margin-top:8px; font-size:14px}
 .ptext .pt{margin-left:auto; font-variant-numeric:tabular-nums; color:var(--ink3); font-size:13px}
@@ -312,8 +333,8 @@ h2 small.muted{font-size:12px; font-weight:400; margin-left:4px}
 /* ── 하단 고정 CTA ────────────────────────── */
 .cta-bar{
   position:fixed; left:0; right:0; bottom:0; z-index:20;
-  background:rgba(255,253,250,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
-  border-top:1px solid var(--line); box-shadow:0 -8px 24px -18px rgba(62,58,54,.3);
+  background:var(--glass,rgba(246,240,230,.92)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);
 }
 .cta-in{max-width:var(--shell); margin:0 auto; padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px}
 body:has(.cta-bar:not([hidden])) main{padding-bottom:96px}
@@ -335,8 +356,10 @@ footer{
 }
 
 /* ── 위험 줄이기: 맨 위 「전 → 후」 한 줄 — 사람 수가 주, 노출 위험도는 보조 ── */
-.before-after{border-color:var(--earth); background:var(--earth-soft)}
-.before-after .ba{margin:0; font-size:17px; line-height:1.5}
-.before-after .ba b{font-size:19px}
+.before-after{border-color:var(--line-hi); background:var(--panel)}
+.before-after .ba{margin:0; font-size:17px; line-height:1.5; color:var(--ink); word-break:keep-all; letter-spacing:-.015em}
+.before-after .ba b{font-size:19px; letter-spacing:-.03em}
 .before-after .hint{margin:6px 0 0}
 .engine:empty{display:none}
+/* 점검 중 — 계정 고르기 · 검색 · 다른 계정을 잠근다(요청이 겹치지 않게) */
+#scanCard.is-scanning .finder input,#scanCard.is-scanning .finder-list,#scanCard.is-scanning .finder-more,#scanCard.is-scanning #repick{pointer-events:none;opacity:.55}

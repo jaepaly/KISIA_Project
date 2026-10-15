@@ -125,6 +125,24 @@ def _set_session_cookie(resp):
     return resp
 
 
+# ── 첫 접속 = 1분 소개(/about) ── 「봤음」 쿠키가 없는 방문자가 홈(/)으로 오면 소개로 보낸다.
+# 소개 화면을 열면(또는 ?skip_about=1 — 시연 · 테스트용) 쿠키를 심는다. 그 뒤로는 로고 · 「둘러보기」로 홈에 바로 간다.
+# 홈 말고 다른 경로(/posts/… · /new · /u/… · /api/*)는 보내지 않는다 — 공유받은 글 주소로 바로 온 사람을 막지 않게.
+ABOUT_COOKIE = "pado_about_seen"
+
+
+def _about_seen() -> bool:
+    return request.cookies.get(ABOUT_COOKIE) == "1" or request.args.get("skip_about") == "1"
+
+
+@app.after_request
+def _set_about_cookie(resp):
+    if (request.path == "/about" or request.args.get("skip_about") == "1") and request.cookies.get(ABOUT_COOKIE) != "1":
+        resp.set_cookie(ABOUT_COOKIE, "1", max_age=365 * 24 * 3600, path="/", samesite="Lax",
+                        httponly=True, secure=request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
+    return resp
+
+
 def db() -> sqlite3.Connection:
     if "db" not in g:
         sid = getattr(g, "sid", None)
@@ -147,7 +165,9 @@ def _todo(screen: str, where: str) -> str:
 # ── 화면 4개 ─────────────────────────────────────────────────────────
 @app.get("/")
 def index():
-    """글 목록. 최신순 · 작성자 필터 · private 는 회색."""
+    """글 목록. 최신순 · 작성자 필터 · private 는 회색. 처음 온 사람(소개 쿠키 없음)은 /about 으로."""
+    if not _about_seen() and not request.args.get("partial"):
+        return redirect("/about", code=302)
     author_id = request.args.get("author")
     page = max(1, request.args.get("page", 1, type=int))
     q = ("SELECT p.*, a.nickname, a.user_ref FROM posts p"
@@ -187,9 +207,15 @@ def index():
             "SELECT geo_tag, COUNT(*) AS n FROM posts"
             " WHERE visibility = 'public' AND geo_tag IS NOT NULL AND geo_tag != ''"
             " GROUP BY geo_tag ORDER BY n DESC LIMIT 6").fetchall()
+        # 왼쪽 레일 숫자 — 공개 글 수 · 위치 태그를 단 공개 글 비율(가상 데이터 그대로)
+        st = db().execute(
+            "SELECT COUNT(*) AS n, SUM(CASE WHEN geo_tag IS NOT NULL AND geo_tag != '' THEN 1 ELSE 0 END) AS g"
+            " FROM posts WHERE visibility = 'public'").fetchone()
+        stats = {"authors": len(authors), "posts": st["n"] or 0,
+                 "geo_pct": round(100 * (st["g"] or 0) / st["n"]) if st["n"] else 0}
         return render_template("list.html", posts=posts, authors=authors,
                                 selected_author=author_id, next_url=next_url,
-                                recent_authors=recent_authors, top_tags=top_tags)
+                                recent_authors=recent_authors, top_tags=top_tags, stats=stats)
     except sqlite3.OperationalError:
         return _todo("글 목록", "§4")
 
@@ -218,6 +244,12 @@ def post(post_id: str):
         return render_template("post.html", p=p, photos=photos, rw=rw)
     except sqlite3.OperationalError:
         return _todo("글 본문", "§4")
+
+
+@app.get("/about")
+def about():
+    """「파도풀이란?」 1분 소개 — 스크롤 연출(pado-scene.js). ?view=static 이면 움직임 없이 다 펼친 화면."""
+    return render_template("about.html", static=request.args.get("view") == "static")
 
 
 @app.get("/new")
@@ -450,7 +482,9 @@ def _inject_me() -> dict:
         n = len(_changes(me["author_id"])) if me else 0
     except sqlite3.Error:
         me, n = None, 0
-    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE}
+    # 소개(/about)를 본 사람 — 상단바 「파도풀이란?」을 작은 글씨 링크로 낮춘다(처음 온 사람만 버튼으로)
+    about_seen = request.cookies.get(ABOUT_COOKIE) == "1"
+    return {"me": me, "me_changes": n, "clue_per_page": CLUE_PER_PAGE, "about_seen": about_seen}
 
 
 @app.post("/me")
@@ -673,14 +707,23 @@ def authors_search():
     export 다음의 두 번째 창구다 (sns-minimal-spec §6). 분석기에 넘기는 값이라 export 와 같은 규칙으로
     플랫폼 내부 값(author_id)은 내보내지 않는다 — user_ref · nickname · n_posts 만 (#337 리뷰 (나))."""
     q = (request.args.get("q") or "").strip()
+    # 처음 온 사람은 계정 이름을 모른다 — 빈 검색어는 「둘러보기」(공개 글 많은 순). limit 으로 더 보기 (기본 12 · 최대 200)
+    try:
+        limit = max(1, min(200, int(request.args.get("limit") or 12)))
+    except ValueError:
+        limit = 12
     sql = ("SELECT a.author_id, a.nickname, a.user_ref, a.bio, COUNT(p.post_id) AS n"
            " FROM authors a LEFT JOIN posts p ON p.author_id = a.author_id AND p.visibility = 'public'")
     args: list = []
     if q:
         sql += " WHERE a.nickname LIKE ? OR a.user_ref LIKE ?"
         args += [f"%{q}%", f"{q}%"]
-    sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname LIMIT 12"
-    args.append(f"{q}%")
+    if q:
+        sql += " GROUP BY a.author_id ORDER BY (a.nickname LIKE ?) DESC, a.nickname, a.user_ref LIMIT ?"
+        args += [f"{q}%", limit]
+    else:
+        sql += " GROUP BY a.author_id ORDER BY n DESC, a.nickname, a.user_ref LIMIT ?"   # 동률은 닉네임 · user_ref 순 — 늘 같은 순서
+        args.append(limit)
     rows = db().execute(sql, args).fetchall()
     return jsonify([{"user_ref": r["user_ref"], "nickname": r["nickname"], "n_posts": r["n"]} for r in rows])
 

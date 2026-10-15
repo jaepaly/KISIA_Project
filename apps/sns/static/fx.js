@@ -3,11 +3,15 @@
 (function () {
   "use strict";
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // 지금 움직임을 쓰는지 — 동작 줄이기 · 소개 화면의 정지 상태(html.no-motion · motion-core.js)는 누를 때마다 다시 본다
+  const still = () => RM || document.documentElement.classList.contains("no-motion");
 
   // ── 클릭 물결 — 버튼·카드·탭 어디든 누른 자리에서 퍼진다 ──
   const RIPPLE = "button,.ut-btn,.ut-nav a,.ut-tabs a,.ut-card[data-href],.rail-card a,a.fx-btn";
+  const clearRipples = () => document.querySelectorAll(".fx-ripple").forEach((n) => n.remove());
+  document.addEventListener("padomotion", (e) => { if (e.detail && e.detail.still) clearRipples(); });   // 정지로 바뀌면 남은 물결을 걷는다
   document.addEventListener("pointerdown", (e) => {
-    if (RM || e.button !== 0) return;
+    if (still() || e.button !== 0) return;
     const el = e.target.closest(RIPPLE);
     if (!el || el.disabled) return;
     const r = el.getBoundingClientRect();
@@ -17,7 +21,10 @@
     s.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
     if (getComputedStyle(el).position === "static") el.style.position = "relative";
     el.appendChild(s);
-    s.addEventListener("animationend", () => s.remove());
+    // animationend 가 안 오는 경우(애니메이션이 꺼짐 · 탭 숨김)에도 남지 않게 — 애니메이션 .55s 뒤 여유를 두고 지운다
+    const drop = () => { clearTimeout(t); s.remove(); };
+    const t = setTimeout(drop, 900);
+    s.addEventListener("animationend", drop, { once: true });
   }, { passive: true });
 
   // ── data-href 카드 — 안쪽 링크·버튼·폼을 누르면 그쪽이 우선 ──
