@@ -33,6 +33,9 @@ import train
 
 TEST_SHA256 = latency.TEST_SHA256
 LEVELS = evaluation.LEVELS
+# 가중치 밖에서 예측을 바꾸는 파일(토크나이저·라벨 매핑)도 지문에 넣는다.
+CHECKPOINT_FILES = {'config.json', 'tokenizer.json', 'tokenizer_config.json', 'special_tokens_map.json',
+                    'vocab.txt', 'sentencepiece.bpe.model', 'trainer_state.json'}
 
 
 def test_ids(corpus):
@@ -41,11 +44,30 @@ def test_ids(corpus):
     ids = data.get('post_ids')
     if (not isinstance(ids, list) or len(ids) != 255 or any(not isinstance(p, str) for p in ids)
             or len(set(ids)) != len(ids)):
-        raise DataError('公式 test ID 목록은 중복 없는 255개여야 합니다.')
+        raise DataError('공식 test ID 목록은 중복 없는 255개여야 합니다.')
     return set(ids)
 
 
+def checkpoint_data_sha256(checkpoint_dir):
+    """train.py가 trainer_state.json eval.run_config에 남긴 학습 BIO 지문. 없으면 None."""
+    path = checkpoint_dir / 'trainer_state.json'
+    if not path.exists():
+        return None
+    state = json.loads(path.read_text(encoding='utf-8'))
+    return ((state.get('eval') or {}).get('run_config') or {}).get('data_sha256')
+
+
+def training_provenance(args):
+    """누수 검사할 --bio-data가 체크포인트가 실제 학습한 BIO인지 대조한다(train smoke에서도 미리 확인)."""
+    trained = checkpoint_data_sha256(args.checkpoint_dir)
+    checked = train.file_sha256(args.bio_data) if args.bio_data.exists() else None
+    if trained is not None and trained != checked:
+        raise DataError('--bio-data가 체크포인트 학습 데이터와 다릅니다(run_config.data_sha256 불일치).')
+    return {'checkpoint': trained, 'checked_bio': checked, 'verified': trained is not None}
+
+
 def load_dataset(args):
+    provenance = training_provenance(args)
     if args.split == 'test':
         if not args.final_test_confirm or args.limit is not None:
             raise DataError('test는 --final-test-confirm이 필요하며 --limit은 사용할 수 없습니다.')
@@ -59,8 +81,10 @@ def load_dataset(args):
         posts, gold, audit = evaluation.prepare(args.corpus_dir, args.bio_data)
         if len(posts) != 239:
             raise DataError('IAA 제외 후 공식 평가 글 수는 239여야 합니다.')
-        # 원 체크포인트 입력 해시 없는 v1용 한계 문장은 v2에 그대로 적용하지 않는다.
-        audit['limitations'] = [x for x in audit['limitations'] if not x.startswith('Current BIO checked')]
+        audit['training_data_sha256'] = provenance
+        # 지문이 없는 체크포인트(v1)는 한계 문장을 남긴다.
+        if provenance['verified']:
+            audit['limitations'] = [x for x in audit['limitations'] if not x.startswith('Current BIO checked')]
         return posts, gold, audit
     forbidden = test_ids(args.corpus_dir)
     train_path = args.corpus_dir / 'splits/train.jsonl'
@@ -85,6 +109,7 @@ def load_dataset(args):
     return posts, gold, {'scope': 'train reviewed subset; not independent performance evaluation',
                          'test_body_opened': False, 'evaluated_posts': len(ids),
                          'post_ids': ids, 'selection_policy': 'sorted reviewed train post_id; first N for smoke',
+                         'training_data_sha256': provenance,
                          'input_sha256': {str(p): train.file_sha256(p) for p in files}}
 
 
@@ -283,7 +308,8 @@ def main(argv=None):
               'scope': 'official_test' if args.split == 'test' else 'development_smoke_not_final',
               'data_version': 'corpus-v0 p2.3; gold hashes identify current level convention',
               'checkpoint': str(args.checkpoint_dir), 'model_version': detector.version,
-              'checkpoint_sha256': {p.name: train.file_sha256(p) for p in sorted(args.checkpoint_dir.glob('*.safetensors'))},
+              'checkpoint_sha256': {p.name: train.file_sha256(p) for p in sorted(args.checkpoint_dir.glob('*'))
+                                    if p.is_file() and (p.suffix == '.safetensors' or p.name in CHECKPOINT_FILES)},
               'rules_enabled': args.rules == 'on', 'threshold': args.threshold,
               'device': 'cpu', 'threads': torch.get_num_threads(), 'cpu_name': platform.processor(),
               'python': platform.python_version(), 'torch': torch.__version__, 'transformers': transformers.__version__,

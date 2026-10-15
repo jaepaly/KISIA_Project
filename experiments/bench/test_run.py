@@ -149,6 +149,27 @@ class SafetyTests(unittest.TestCase):
             self.assertFalse(audit['test_body_opened'])
             self.assertFalse((root / 'splits/test.jsonl').exists())
 
+    def test_checkpoint_training_hash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ckpt = Path(tmp)
+            self.assertIsNone(bench.checkpoint_data_sha256(ckpt))   # v1: 지문 없음
+            (ckpt / 'trainer_state.json').write_text(json.dumps(
+                {'eval': {'run_config': {'data_sha256': 'ab' * 32}}}), encoding='utf-8')
+            self.assertEqual(bench.checkpoint_data_sha256(ckpt), 'ab' * 32)
+
+    def test_test_rejects_bio_other_than_trained(self):
+        args = types.SimpleNamespace(split='test', final_test_confirm=True, limit=None,
+                                     corpus_dir=Path('c'), bio_data=Path('bio.jsonl'), checkpoint_dir=Path('k'))
+        audit = {'limitations': ['Current BIO checked for leakage; x']}
+        with patch.object(Path, 'exists', return_value=True), patch.object(bench.train, 'file_sha256', side_effect=lambda p: 'other' if p == Path('bio.jsonl') else bench.TEST_SHA256),                 patch.object(bench, 'test_ids', return_value={'x'}),                 patch.object(bench.evaluation, 'records', return_value=[]),                 patch.object(bench.evaluation, 'index_posts', return_value={'x': {}}),                 patch.object(bench.evaluation, 'prepare', return_value=({str(i): {} for i in range(239)}, {}, audit)):
+            with patch.object(bench, 'checkpoint_data_sha256', return_value='trained'):
+                with self.assertRaises(bench.DataError):
+                    bench.load_dataset(args)
+            with patch.object(bench, 'checkpoint_data_sha256', return_value=None):
+                _, _, out = bench.load_dataset(args)
+                self.assertFalse(out['training_data_sha256']['verified'])
+                self.assertTrue(any(x.startswith('Current BIO checked') for x in out['limitations']))
+
     def test_latency_uses_same_sample_and_measure_helper(self):
         posts = {str(i): {'post_id': str(i), 'texts': {'body': 'a' * (i + 1)}} for i in range(5)}
         calls = []
