@@ -49,5 +49,23 @@ python experiments/exp20-contribution-approx/score.py \
 python -m pytest -q experiments/exp20-contribution-approx/test_score.py
 ```
 
-실제 근사기 출력 평가는 D 산출물이 나오는 W9에 실행한다. 현재 테스트는 0·동률·상수,
-잘못된 타입, rank/delta 불일치와 부호 오류를 포함한 가짜 출력으로 평가 계약을 고정한다.
+## 실제 산출물 평가 (2026-10-13~14)
+
+D는 학습 근사기 대신 현재 위험도 함수의 축별 최댓값 구조를 이용한 닫힌 식을 제출했다
+([exp25](../exp25-contribution-closed-form/README.md) · #352). 학습하는 값이 없으므로
+인물 단위 교차검증은 적용하지 않는다.
+
+| 기준 | 결과 |
+|---|---|
+| #352 제출 스냅샷 | baseline 0인 13명을 제외한 66명 · 331편의 delta와 rank가 LOO 정답과 모두 일치 |
+| 순위 지표 | 정의 가능한 인물의 `abs(delta)` Spearman ρ = **1.0** |
+| 보조 지표 | 값과 순서가 모두 같으므로 부호 정확도 1.0 · signed delta MAE 0 |
+| 최신 main 재생성 | **미확정** — `382718a`에서 `E20_b28` 1편 불일치로 생성기가 종료 코드 1 |
+
+최신 main의 불일치는 #351의 C3 반올림 변경 뒤 확인됐다. 커밋된 LOO 정답과 #352 예측은
+`E20_b28 = -4.29`로 같지만, 현 `build_conditions`로 닫힌 식을 다시 계산하면
+`-7.86`이다. 따라서 **#352 제출 스냅샷에 대한 평가는 ρ=1이지만, 현행 엔진 기준 최종
+근사기 평가는 확정하지 않는다.** contribution 골드를 현행 조건 변환 기준으로 재생성할지,
+해당 FAM 스팬의 의도된 resolution을 고정한 뒤 다시 생성·채점해야 한다.
+
+평가 계약 테스트는 0·동률·상수, 잘못된 타입, rank/delta 불일치와 부호 오류를 포함한다.
