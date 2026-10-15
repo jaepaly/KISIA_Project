@@ -442,13 +442,17 @@ async function rescan(prev) {
   progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`, null, est);
   try {
     const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST" });
-    if (!r.ok) throw new Error(String(r.status));
+    if (!r.ok) {
+      // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 등)를 버튼에 그대로 — 상태 코드는 내지 않는다
+      const detail = (await r.json().catch(() => ({}))).detail;
+      const err = new Error(String(r.status)); err.detail = typeof detail === "string" ? detail : ""; throw err;
+    }
     const data = await r.json();
     data.nickname = prev.nickname; data.source = "veilo";
     saveScan(data);
     render();
   } catch (e) {
-    if (b) { b.disabled = false; b.textContent = "다시 점검하지 못했습니다. 다시 누르기"; }
+    if (b) { b.disabled = false; b.textContent = e && e.detail ? `${e.detail} (다시 누르기)` : "다시 점검하지 못했습니다. 다시 누르기"; }
   } finally { progressStop(); }
 }
 

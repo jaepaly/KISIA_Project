@@ -167,7 +167,8 @@
     const busy = (msg) => {
       if ($(".ut-busy")) return;
       const o = document.createElement("div"); o.className = "ut-busy";
-      o.innerHTML = '<div class="box"><div class="spin"></div><b>' + (msg || "파도풀로 점검 중…") + '</b><span>공개 글의 개인정보 단서를 찾고 있습니다.</span></div>';
+      o.innerHTML = '<div class="box"><div class="spin"></div><b></b><span>공개 글의 개인정보 단서를 찾고 있습니다.</span></div>';
+      o.querySelector("b").textContent = msg || "파도풀로 점검 중…";   // data-busy 문구는 글자로만 — HTML 로 해석하지 않는다
       document.body.appendChild(o);
     };
     const unbusy = () => { const o = $(".ut-busy"); o && o.remove(); };

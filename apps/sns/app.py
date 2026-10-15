@@ -22,11 +22,28 @@ import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
 
-from flask import Flask, abort, g, jsonify, redirect, render_template, request
+from flask import Flask, Response, abort, g, jsonify, redirect, render_template, request
 
-from db import connect, init
+from db import connect, connect_readonly, init
 
 app = Flask(__name__)
+# 글쓰기 한도 — 파도풀 점검(/scan)의 입력 상한(apps/analyzer/adapters/file_adapter.py)과 같은 값. 계정 글이 이 안에 있으면
+# 「내 계정 점검」이 413 으로 막히지 않고, 아주 긴 글로 점검 자리를 오래 붙잡지 못한다. 시드 계정은 모두 안에 있다
+# (가장 긴 E15 30편 · 약 97,000자). 경계 규칙상 분석기 모듈을 import 하지 않고 값을 맞춰 둔다
+MAX_TITLE_CHARS, MAX_BODY_CHARS, MAX_CAPTIONS, MAX_CAPTION_CHARS = 300, 20_000, 10, 1_000
+MAX_GEO_CHARS, MAX_NICK_CHARS, MAX_BIO_CHARS = 200, 50, 500
+MAX_POSTS_PER_AUTHOR, MAX_CHARS_PER_AUTHOR = 200, 150_000
+app.config["MAX_CONTENT_LENGTH"] = 256 * 1024   # 폼 전체 — 본문 20,000자(한글 약 60KB)에 넉넉히
+
+
+def _reject(code: int, msg: str):
+    """고정 한국어 안내로 거절한다 (글쓰기 화면이 그대로 보인다)."""
+    abort(Response(msg, code, {"Content-Type": "text/plain; charset=utf-8"}))
+
+
+def _too_long(value: str | None, limit: int, what: str) -> None:
+    if value and len(value) > limit:
+        _reject(413, f"{what}이(가) 너무 깁니다 ({limit:,}자 이하로 줄여 주세요).")
 KST = timezone(timedelta(hours=9))
 PAGE_SIZE = 20
 
@@ -60,8 +77,17 @@ import uuid as _uuid
 from pathlib import Path as _Path
 
 SESSION_COOKIE = "veilo_sid"
-_SID_RE = _re.compile(r"^[0-9a-f]{16,32}$")
-SESSION_IDLE_SECONDS = 48 * 3600
+_SID_RE = _re.compile(r"[0-9a-f]{16,32}")
+# 쿠키 수명과 사본 보관 기간을 맞춘다 — 사본은 「마지막으로 연 때」부터 센다(열 때마다 수정 시각을 갱신).
+# 예전엔 쿠키 7일 · 사본 이틀이라, 글만 읽던 방문자의 사본이 사흘째 지워지고 바꿔 둔 것이 사라졌다 (A5a)
+SESSION_MAX_AGE = 7 * 24 * 3600
+SESSION_IDLE_SECONDS = SESSION_MAX_AGE
+# 오래된 사본 청소는 N분에 한 번만 — 새 방문자마다 폴더 전체를 훑지 않게 (A5b)
+SESSION_SWEEP_SECONDS = int(os.environ.get("SNS_SWEEP_MINUTES", "10")) * 60
+# 사본 수 상한 — 사본 하나가 시드 크기(약 5MB)라 상한이 곧 디스크 상한이다 (1,000개 ≈ 5GB) (A5c)
+SESSION_MAX = int(os.environ.get("SNS_SESSION_MAX", "400"))   # 사본 하나 = 시드 크기(운영 약 5MB) — 400개 ≈ 2GB (10/14 서버 실측: 329개 · 1.6GB)
+# 쿠키 Secure — 운영은 nginx 뒤 HTTPS 라 Flask 가 http 로 본다(request.is_secure=False). COOKIE_SECURE=1 이면 늘 Secure (A7)
+COOKIE_SECURE = os.environ.get("COOKIE_SECURE", "") == "1"
 
 
 def _seed_path() -> _Path:
@@ -83,28 +109,199 @@ def _sid() -> str | None:
 
     주소의 ?sid= 는 받지 않는다 — 주소를 공유하면 받은 사람이 그 방문자의 사본을 보고 고칠 수 있다 (#337 E 리뷰)."""
     s = request.cookies.get(SESSION_COOKIE) or request.headers.get("X-Veilo-Session")
-    return s if s and _SID_RE.match(s) else None
+    return s if s and _SID_RE.fullmatch(s) else None
+
+
+import threading as _threading
+from contextlib import contextmanager as _contextmanager
+
+_sweep_state = {"at": 0.0}   # 이 프로세스가 마지막으로 청소한 시각 — 청소 주기만 정한다. 사본 수는 늘 디스크에서 센다
+SESSION_RECENT_SECONDS = 60   # 상한 청소가 지우지 않는 「방금 연」 사본 — 쓰는 중인 사본을 지우지 않게
+_thread_lock = _threading.Lock()
+
+
+@_contextmanager
+def _sessions_locked(d: _Path):
+    """세션 폴더 잠금 — 프로세스 사이에도 하나만 (잠금 파일 · Linux fcntl.flock · Windows msvcrt.locking).
+    사본 열기(수정 시각 갱신) · 만들기 · 청소 지우기를 모두 이 안에서 한다 — 서버를 여러 프로세스로 띄워도
+    상한을 넘지 않고, 청소가 방금 연 사본을 지우지 않고, 같은 쿠키의 동시 생성이 사본을 덮지 않는다 (Codex 검토)."""
+    with _thread_lock:   # 같은 프로세스 안의 스레드끼리 먼저
+        f = open(d / ".lock", "a+b")
+        try:
+            if os.name == "nt":
+                import msvcrt
+                f.seek(0)
+                while True:
+                    try:
+                        msvcrt.locking(f.fileno(), msvcrt.LK_LOCK, 1)   # 10초 기다리다 실패하면 다시
+                        break
+                    except OSError:
+                        continue
+            else:
+                import fcntl
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                if os.name == "nt":
+                    import msvcrt
+                    f.seek(0)
+                    msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+        finally:
+            f.close()
+
+
+def _existing_copy(sid: str) -> _Path | None:
+    """이 방문자의 사본이 있으면 그 경로(마지막 사용 시각 갱신) · 없으면 None — 만들지 않는다 (읽기 요청용)."""
+    d = _session_dir()
+    p = d / f"{sid}.db"
+    if not p.exists():   # 잠금 없이 먼저 — 사본 없는 방문자(대부분 봇)의 읽기는 폴더를 잠그지도 않는다
+        return None
+    with _sessions_locked(d):
+        if not p.exists():
+            return None
+        try:
+            _os_utime(p)   # 마지막으로 연 때 — 읽기만 하는 방문자의 사본도 쿠키가 살아 있는 동안 지우지 않는다 (A5a)
+        except OSError:
+            pass
+        return p
 
 
 def _session_db_path(sid: str) -> _Path:
+    """(쓰기 요청) 이 방문자의 사본 — 없으면 시드를 복사해 만든다."""
     d = _session_dir()
     d.mkdir(parents=True, exist_ok=True)
     p = d / f"{sid}.db"
-    if not p.exists():
-        _shutil.copyfile(_seed_path(), p)
-        _sweep_sessions(d)
+    with _sessions_locked(d):
+        if p.exists():
+            try:
+                _os_utime(p)
+            except OSError:
+                pass
+            return p
+        if not _has_room(d):
+            # 상한에 닿았고 방금 쓴 사본뿐이라 지울 것도 없다 — 짧은 시간에 새 방문자가 몰린 경우다. 공용 DB 로 보내면
+            # 그 사람의 수정이 남에게 보이므로 새 사본 없이 잠시 뒤 다시 오게 한다 (상한을 넘겨 디스크를 채우지 않는다)
+            abort(503, "지금 체험하는 사람이 많습니다. 잠시 뒤 다시 와 주세요.")
+        # 임시 이름으로 복사 · 방문자 표까지 만든 뒤 붙인다. 잠금 안이라 그 사이 같은 이름이 생기지 않는다
+        tmp = d / f"{sid}.{_uuid.uuid4().hex[:8]}.tmp"
+        try:
+            _shutil.copyfile(_seed_path(), tmp)
+            from db import ensure_visitor_tables
+            c = sqlite3.connect(tmp)
+            try:
+                ensure_visitor_tables(c)
+                c.commit()
+            finally:
+                c.close()
+            _install(tmp, p)
+        finally:
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
     return p
 
 
-def _sweep_sessions(d: _Path) -> None:
-    """이틀 안 쓴 사본은 지운다 — 새 세션이 생길 때만 돈다."""
-    cutoff = _time.time() - SESSION_IDLE_SECONDS
+def _install(tmp: _Path, p: _Path) -> None:
+    """없을 때만 붙인다 — os.link 는 이미 있으면 실패한다. 하드 링크를 못 쓰는 파일 시스템은 잠금 안의 exists → replace."""
+    try:
+        os.link(tmp, p)
+    except FileExistsError:
+        pass
+    except OSError:
+        if not p.exists():
+            os.replace(tmp, p)
+
+
+def _os_utime(p: _Path) -> None:
+    os.utime(p, None)
+
+
+def _count(d: _Path) -> int:
+    return sum(1 for _ in d.glob("*.db"))
+
+
+def _has_room(d: _Path) -> bool:
+    """(잠금 안) 새 사본 자리가 있는지 — 사본 수는 디스크에서 센다(프로세스마다 따로 세면 여러 프로세스가 상한을 넘긴다).
+    청소 주기가 됐거나 상한에 닿았으면 먼저 청소한다."""
+    now = _time.time()
+    n = _count(d)
+    if n >= SESSION_MAX or now - _sweep_state["at"] >= SESSION_SWEEP_SECONDS:
+        _sweep_state["at"] = now
+        n = _sweep_sessions(d)
+    return n < SESSION_MAX
+
+
+def _unlink_if_older(f: _Path, cutoff: float) -> bool:
+    """지우기 직전에 다시 본다 (잠금 안이라 그 사이 열리지 않는다)."""
+    try:
+        if f.stat().st_mtime >= cutoff:
+            return False
+        f.unlink()
+        return True
+    except OSError:   # 이미 없다 · 다른 요청이 열고 있다(Windows) — 다음 청소에
+        return False
+
+
+def _sweep_sessions(d: _Path) -> int:
+    """(잠금 안) 오래 안 연 사본(SESSION_IDLE_SECONDS)을 지우고, 그래도 상한(SESSION_MAX)에 닿아 있으면 가장 오래 안 연
+    것부터 상한의 90% 까지 지운다 — 디스크가 차지 않게. 방금(SESSION_RECENT_SECONDS) 연 사본은 지우지 않는다.
+    지워진 방문자는 다음 방문에 시드 상태의 새 사본을 받는다 (가상 데이터라 체험한 수정만 사라진다).
+    죽은 프로세스가 남긴 임시 파일(*.tmp · 1시간 넘은 것)도 지운다. 남은 사본 수를 돌려준다."""
+    now = _time.time()
+    for t in d.glob("*.tmp"):
+        _unlink_if_older(t, now - 3600)
+    cutoff = now - SESSION_IDLE_SECONDS
+    alive: list[tuple[float, _Path]] = []
     for f in d.glob("*.db"):
         try:
-            if f.stat().st_mtime < cutoff:
-                f.unlink()
+            m = f.stat().st_mtime
         except OSError:
-            pass
+            continue
+        if not (m < cutoff and _unlink_if_older(f, cutoff)):
+            alive.append((m, f))
+    removed = 0
+    if len(alive) >= SESSION_MAX:
+        alive.sort()
+        recent = now - SESSION_RECENT_SECONDS
+        for m, f in alive[:len(alive) - int(SESSION_MAX * 0.9)]:
+            if m < recent and _unlink_if_older(f, recent):
+                removed += 1
+    return len(alive) - removed
+
+
+# ── 같은 출처 확인 (A6) — 상태를 바꾸는 POST(글쓰기 · 비공개 · 위치 · 프로필 · 내 계정 · 되돌리기 · 초기화 · 단서 저장)를
+#    다른 사이트가 방문자의 쿠키로 보내지 못하게 한다. 브라우저는 다른 사이트에서 보내는 POST 에 Origin 을 반드시 싣는다 —
+#    Origin(없으면 Referer)이 있는데 이 사이트가 아니면 403. 둘 다 없으면(curl · 테스트 · 내부 호출) 쿠키 공격이 아니라 통과.
+#    nginx 가 Host 를 바꿔 넘기는 배치면 ALLOWED_ORIGINS=https://veilo.site 로 공개 주소를 알려 준다
+from urllib.parse import urlsplit as _urlsplit
+
+_ALLOWED_HOSTS = {_urlsplit(u.strip()).netloc.lower() for u in os.environ.get("ALLOWED_ORIGINS", "").split(",")
+                  if u.strip().startswith(("http://", "https://"))}
+
+
+def same_origin(req) -> bool:
+    # 요즘 브라우저는 Sec-Fetch-Site 를 싣는다(페이지 스크립트가 못 바꾼다) — same-origin 이면 Host 헤더와 상관없이 같은 출처.
+    # nginx 가 Host 를 내부 주소로 바꿔 넘겨도 운영 화면이 막히지 않게 (Codex 검토)
+    if req.headers.get("Sec-Fetch-Site") == "same-origin":
+        return True
+    src = req.headers.get("Origin") or req.headers.get("Referer")
+    if not src:
+        return True
+    if not src.startswith(("http://", "https://")):   # 「null」(샌드박스 iframe · 파일) 등
+        return False
+    own = {h.lower() for h in (req.headers.get("Host"), req.headers.get("X-Forwarded-Host")) if h}
+    return _urlsplit(src).netloc.lower() in own | _ALLOWED_HOSTS
+
+
+@app.before_request
+def _check_origin() -> None:
+    if request.method in ("POST", "PUT", "PATCH", "DELETE") and not same_origin(request):
+        abort(403)
 
 
 @app.before_request
@@ -112,17 +309,18 @@ def _ensure_session() -> None:
     if not isolation_on():
         return
     sid = _sid()
-    if sid is None and not request.path.startswith("/api/"):   # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB
+    # 분석기 호출(/api/export)은 헤더가 없으면 공용 DB · HEAD(링크 미리보기 · 상태 확인)는 사본을 만들지 않는다 (A5d)
+    if sid is None and not request.path.startswith("/api/") and request.method not in ("HEAD", "OPTIONS"):
         sid = _uuid.uuid4().hex[:24]
         g.new_sid = sid
-    g.sid = sid
+    g.sid = sid if request.method not in ("HEAD", "OPTIONS") else None
 
 
 @app.after_request
 def _set_session_cookie(resp):
     if getattr(g, "new_sid", None):
-        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=7 * 24 * 3600, path="/", samesite="Lax",
-                        httponly=True, secure=request.is_secure)
+        resp.set_cookie(SESSION_COOKIE, g.new_sid, max_age=SESSION_MAX_AGE, path="/", samesite="Lax",
+                        httponly=True, secure=COOKIE_SECURE or request.is_secure)
     return resp
 
 
@@ -140,14 +338,26 @@ def _about_seen() -> bool:
 def _set_about_cookie(resp):
     if (request.path == "/about" or request.args.get("skip_about") == "1") and request.cookies.get(ABOUT_COOKIE) != "1":
         resp.set_cookie(ABOUT_COOKIE, "1", max_age=365 * 24 * 3600, path="/", samesite="Lax",
-                        httponly=True, secure=request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
+                        httponly=True, secure=COOKIE_SECURE or request.is_secure)   # 서버만 읽는다 — 스크립트가 볼 일이 없다
     return resp
 
 
+WRITE_METHODS = ("POST", "PUT", "PATCH", "DELETE")
+
+
 def db() -> sqlite3.Connection:
+    """이 요청의 DB. 세션 격리가 켜져 있으면 — 사본이 있으면 사본, 없으면 시드를 읽기 전용으로 (copy-on-write).
+    사본은 첫 「쓰기」 요청(POST 등)에서만 만든다 — 쿠키 없이 GET 만 하는 봇 · 링크 미리보기가 요청마다 5MB 사본을
+    만들어 이틀 만에 340개(1.7GB)가 쌓였다 (10/14 운영 실측). 상태를 바꾸는 라우트는 모두 POST 다 (GET 은 쓰지 않는다)."""
     if "db" not in g:
         sid = getattr(g, "sid", None)
-        g.db = connect(_session_db_path(sid)) if (sid and isolation_on()) else connect()
+        if not (sid and isolation_on()):
+            g.db = connect()
+        elif request.method in WRITE_METHODS:
+            g.db = connect(_session_db_path(sid))
+        else:
+            p = _existing_copy(sid)
+            g.db = connect(p) if p else connect_readonly(_seed_path())
     return g.db
 
 
@@ -264,6 +474,16 @@ def new():
         return _todo("글 작성", "§4")
 
 
+def _author_totals(author_id: str) -> tuple[int, int]:
+    """계정의 글 수 · 글자 수(제목 + 본문 + 사진 설명) — 공개 · 비공개 모두."""
+    n, chars = db().execute(
+        "SELECT COUNT(*), COALESCE(SUM(LENGTH(COALESCE(title,'')) + LENGTH(COALESCE(body,''))), 0) FROM posts WHERE author_id = ?",
+        (author_id,)).fetchone()
+    chars += db().execute("SELECT COALESCE(SUM(LENGTH(COALESCE(caption,''))), 0) FROM photos WHERE post_id IN"
+                          " (SELECT post_id FROM posts WHERE author_id = ?)", (author_id,)).fetchone()[0]
+    return n, chars
+
+
 @app.post("/posts")
 def create_post():
     """조치 시연의 재료가 되는 글을 여기서 만든다. source는 항상 'manual'이다 —
@@ -287,6 +507,24 @@ def create_post():
     if visibility not in ("public", "private"):
         abort(400)
 
+    captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
+    _too_long(f.get("title"), MAX_TITLE_CHARS, "제목")
+    _too_long(f["body"], MAX_BODY_CHARS, "본문")
+    _too_long(f.get("geo_tag"), MAX_GEO_CHARS, "위치 태그")
+    if len(captions) > MAX_CAPTIONS:
+        _reject(413, f"사진 설명은 글 하나에 {MAX_CAPTIONS}개까지 쓸 수 있습니다.")
+    for c in captions:
+        _too_long(c, MAX_CAPTION_CHARS, "사진 설명")
+    # 계정 하나의 글 수 · 글자 수 — 파도풀 계정 점검의 상한과 같게 (넘으면 점검이 413 으로 막힌다).
+    # 세는 것부터 저장까지 한 쓰기 트랜잭션 — 같은 세션의 동시 게시가 같은 잔여량을 읽고 둘 다 저장하지 않게 (Codex 2차)
+    db().execute("BEGIN IMMEDIATE")
+    n, chars = _author_totals(author_id)
+    new_chars = len(f.get("title") or "") + len(f["body"]) + sum(map(len, captions))
+    if n >= MAX_POSTS_PER_AUTHOR:
+        _reject(413, f"이 계정은 글을 {MAX_POSTS_PER_AUTHOR}편까지 쓸 수 있습니다. 다른 글을 지우거나 계정을 처음 상태로 되돌려 주세요.")
+    if chars + new_chars > MAX_CHARS_PER_AUTHOR:
+        _reject(413, f"이 계정의 글이 너무 많습니다 (모두 합쳐 {MAX_CHARS_PER_AUTHOR:,}자까지). 글을 줄이거나 계정을 처음 상태로 되돌려 주세요.")
+
     post_id = f"{author_id}_m{os.urandom(4).hex()}"
     db().execute(
         "INSERT INTO posts(post_id, author_id, title, body, created_at,"
@@ -294,7 +532,6 @@ def create_post():
         (post_id, author_id, f.get("title") or None, f["body"], created_at,
          f.get("geo_tag") or None, visibility))
 
-    captions = [c.strip() for c in f.get("captions", "").splitlines() if c.strip()]
     for idx, caption in enumerate(captions):
         db().execute(
             "INSERT INTO photos(post_id, idx, caption) VALUES (?,?,?)",
@@ -353,6 +590,8 @@ def edit_profile(user_ref: str):
     f = request.form
     nickname = f.get("nickname", "").strip() or a["nickname"]
     bio = f.get("bio", "").strip() or None
+    _too_long(nickname, MAX_NICK_CHARS, "닉네임")
+    _too_long(bio, MAX_BIO_CHARS, "소개")
     db().execute(
         "UPDATE authors SET nickname = ?, bio = ? WHERE user_ref = ?",
         (nickname, bio, user_ref))
@@ -368,6 +607,7 @@ def edit_post_meta(post_id: str):
     if row is None:
         abort(404)
     geo_tag = request.form.get("geo_tag", "").strip() or None
+    _too_long(geo_tag, MAX_GEO_CHARS, "위치 태그")
     db().execute(
         "UPDATE posts SET geo_tag = ? WHERE post_id = ?", (geo_tag, post_id))
     if geo_tag != row["geo_tag"]:
@@ -394,6 +634,12 @@ def _me() -> dict | None:
         "SELECT a.author_id, a.user_ref, a.nickname FROM me JOIN authors a ON a.author_id = me.author_id"
         " WHERE me.id = 1").fetchone()
     return dict(r) if r else None
+
+
+def _change_count(author_id: str) -> int:
+    """상단바 「바꾼 것 N」 — _changes 와 같은 조건(되돌리지 않은 조치)의 개수만. 글 본문을 읽지 않는다 (A7)."""
+    return db().execute("SELECT COUNT(*) FROM action_log WHERE undone_at IS NULL AND author_id = ?",
+                        (author_id,)).fetchone()[0]
 
 
 def _changes(author_id: str | None = None) -> list[dict]:
@@ -480,7 +726,7 @@ def _inject_me() -> dict:
     """상단바 「내 계정」 — 고른 사람과 그 사람이 바꾼 것 수. 표·DB 가 아직 없으면 빈 값 (고르지 않아도 다 돈다)."""
     try:
         me = _me()
-        n = len(_changes(me["author_id"])) if me else 0
+        n = _change_count(me["author_id"]) if me else 0
     except sqlite3.Error:
         me, n = None, 0
     # 소개(/about)를 본 사람 — 상단바 「파도풀이란?」을 작은 글씨 링크로 낮춘다(처음 온 사람만 버튼으로)
@@ -566,6 +812,10 @@ def _attach_clues(posts: list[dict]) -> None:
 @app.post("/api/clues/<post_id>")
 def save_clues(post_id: str):
     """브라우저가 센 단서 수를 저장한다 — 내 계정 글만. 해시는 서버가 지금 본문으로 계산한다."""
+    sid = getattr(g, "sid", None)
+    if sid and isolation_on() and not (_session_dir() / f"{sid}.db").exists():
+        # 사본이 없으면 「내 계정」도 없다 — 이 요청 때문에 사본을 만들지 않는다 (copy-on-write)
+        return jsonify({"error": "not my post"}), 403
     me = _me()
     row = db().execute("SELECT author_id, body FROM posts WHERE post_id = ?", (post_id,)).fetchone()
     if me is None or row is None or row["author_id"] != me["author_id"]:
@@ -587,7 +837,7 @@ def api_me():
     export 와 같은 규칙으로 플랫폼 내부 값(author_id)은 내보내지 않는다."""
     try:
         me = _me()
-        n = len(_changes(me["author_id"])) if me else 0
+        n = _change_count(me["author_id"]) if me else 0
     except sqlite3.Error:
         me = None
     if me is None:
@@ -655,8 +905,17 @@ _TRUTH_KEYS = ("age", "sex", "location", "occupation", "family", "commute", "inc
 
 
 def _persona_brief(author_id: str) -> dict | None:
-    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다."""
-    p = PERSONAS_DIR / f"{author_id}.json"
+    """테스터용 정답지 — 글을 안 읽어도 「이 사람은 이런 사람」을 알게. 설계 메모·단서 계획은 내보내지 않는다.
+    인물 파일은 실행 중에 바뀌지 않는다 — 글쓰기 화면이 작성자를 바꿀 때마다 JSON 을 다시 읽지 않게 기억해 둔다 (A7)."""
+    return _persona_brief_at(str(PERSONAS_DIR), author_id)
+
+
+from functools import lru_cache as _lru_cache
+
+
+@_lru_cache(maxsize=256)
+def _persona_brief_at(personas_dir: str, author_id: str) -> dict | None:
+    p = _Path(personas_dir) / f"{author_id}.json"
     if not p.exists():
         return None
     try:
@@ -819,6 +1078,26 @@ def export(user_ref: str):
     })
 
 
+@app.errorhandler(403)
+def forbidden(_):
+    """같은 출처 확인(A6)에 걸린 요청 — 고정 문구만."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "forbidden"}), 403
+    return "다른 사이트에서 보낸 요청은 받지 않습니다.", 403, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.errorhandler(413)
+def too_large(_):
+    """폼 전체가 MAX_CONTENT_LENGTH 를 넘었다 — 고정 문구."""
+    return "보낸 글이 너무 큽니다. 본문을 줄여 주세요.", 413, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.errorhandler(503)
+def unavailable(e):
+    """세션 사본 상한(A5c) · 시드 사본 없음 — 고정 문구만."""
+    return str(e.description), 503, {"Content-Type": "text/plain; charset=utf-8", "Retry-After": "60"}
+
+
 @app.errorhandler(404)
 def not_found(_):
     """영어 기본 화면 대신 Veilo 꾸밈의 한국어 안내 (분석기 API 404 는 JSON 그대로 — export 는 직접 jsonify 한다)."""
@@ -830,4 +1109,5 @@ def not_found(_):
 if __name__ == "__main__":
     with connect() as c:
         init(c)
-    app.run(port=int(os.getenv("SNS_PORT", "3000")), debug=True)
+    # 디버거는 FLASK_DEBUG=1 일 때만 — 켜 두면 오류 화면에서 서버 코드를 실행할 수 있다 (A7)
+    app.run(port=int(os.getenv("SNS_PORT", "3000")), debug=os.getenv("FLASK_DEBUG") == "1")
