@@ -73,6 +73,7 @@
 | ☐ | 2단 구성 (GPU 시연 PC 만) | 2단을 모델로 돌릴 때만 — `experiments/exp08-stage2-sft/results/adapter_v2/` 에 `adapter_config.json` · `adapter_model.safetensors` 가 있고 SHA-256 이 registry(10/15 재학습본 `c045d353…` · `e534cc2f…`)와 같은지. 없거나 GPU 가 없으면 규칙으로 폴백하고 응답 `model_version` 에 이유가 적힌다(E 노트북 10/15: 어댑터는 있음 · `rules-v1 (fallback: 추론 라이브러리 없음)`). 라이브 데모는 `STAGE2_MODE=rules` 권장(GPU 모델이면 계정당 약 51초) |
 | ☐ | 외부 요청 0 | 허브 접속은 실제 모드에서 기본으로 꺼짐([#320](../../../pull/320)) — DevTools Network `Preserve log` 켜 두기 |
 | ☐ | 메인 계정 처음 상태 | 인스턴스: Veilo 프로필 「⟲ 이 계정 처음 상태로」 · 로컬: `seed_sns.py --reset` |
+| ☐ | 인스턴스 배포 조건 (#368) | veilo.site 로 시연할 때 — 분석기 · Veilo 둘 다 `ALLOWED_ORIGINS=https://veilo.site` · Veilo `COOKIE_SECURE=1` · **분석기 워커 1개**(동시 점검 제한이 프로세스 단위). 점검은 동시에 1개 + 대기 3명까지라, **시연 중엔 다른 사람이 같은 서버로 점검하지 않게** 한다(넘치면 429 「지금 다른 점검이 진행 중입니다」) |
 | ☐ | 서버 예열 | 메인 계정 스캔 1회 (첫 스캔은 모델 로드로 느리다) |
 | ☐ | 폴백 파일 | export JSON · 영상 파일 위치 확인 |
 | ☐ | 화면 | 브라우저 확대 125% · 알림 끄기 · 다른 탭 닫기 |
