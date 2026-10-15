@@ -1,11 +1,12 @@
-"""Pretendard 서브셋 · 분석기 글꼴 공유 점검.
+"""Pretendard 공식 동적 서브셋 · 분석기 글꼴 공유 점검.
 
     PYTHONIOENCODING=utf-8 python -m pytest -q apps/sns/test_fonts.py
 
-- pretendard.css 의 면마다 unicode-range 가 있고, 굵기(400·600·700)마다 core + ext 가 있다
-- css 가 가리키는 woff2 가 다 있고, 정적 폴더에 css 가 안 가리키는 woff2(옛 전체 글꼴)가 없다
-- 정적 폴더의 글꼴 파일은 하나도 400KB 를 넘지 않는다
-- core 에 KS X 1001 한글 2,350자가 전부 있고, ext 범위에는 KS 음절이 하나도 걸리지 않는다
+- 직접 자른 서브셋은 OFL 예약 이름(RFN) 'Pretendard' 를 쓸 수 없다 — 저작자 공식 동적 서브셋(1.3.9)만 둔다 (#366)
+- pretendard.css 의 면마다 unicode-range 가 있고, 굵기(400·600·700)마다 공식 조각 92개가 다 있다
+- css 가 가리키는 woff2 가 다 있고, css 가 안 가리키는 글꼴 파일(옛 전체 글꼴 · 직접 자른 서브셋)이 없다
+- 라이선스 전문(OFL.txt)과 RFN 문구가 같이 있다
+- 굵기마다 KS X 1001 한글 2,350자와 화면 기호가 어느 조각엔가 들어 있다
 - 분석기는 글꼴 사본이 없고 style.css 에 글꼴 @import 가 없다 — head.js 가 Veilo 것을 붙인다
 - /static/fonts/ 응답에 교차 출처 허용 헤더가 붙는다 (로컬 분리 실행용)
 """
@@ -26,7 +27,12 @@ ANALYZER_STATIC = HERE.parent / "analyzer" / "static"
 sys.path.insert(0, str(HERE))
 
 FACE_RE = re.compile(r"@font-face\s*\{(.*?)\}", re.S)
-MAX_FONT_BYTES = 400 * 1024
+FILE_RE = re.compile(r"^woff2-dynamic-subset/Pretendard-(Regular|SemiBold|Bold)\.subset\.(\d+)\.woff2$")
+WEIGHT = {"400": "Regular", "600": "SemiBold", "700": "Bold"}
+PIECES = 92                       # 공식 배포본 dynamic-subset 조각 수 (1.3.9)
+MAX_FONT_BYTES = 100 * 1024       # 공식 조각은 하나에 수십 KB — 전체 글꼴(약 770KB)이 섞이면 걸린다
+# ⚠ · ✓ 는 공식 서브셋에 없어 시스템 글꼴로 그려진다(원본 글꼴엔 있었음) — 아이콘성 기호라 그대로 둔다
+SCREEN_SYMBOLS = "·—→「」①≈"
 
 
 def _ks_hangul() -> set[int]:
@@ -39,7 +45,9 @@ def _faces() -> list[dict]:
         d = {}
         for m in re.finditer(r"([\w-]+)\s*:\s*([^;]+);", body):
             d[m.group(1)] = m.group(2).strip()
-        d["file"] = re.search(r"url\('([^']+)'\)", d["src"]).group(1)
+        urls = re.findall(r"url\(([^)]+)\)", d["src"])
+        assert len(urls) == 1, f"woff2 하나만 가리킨다: {d['src']}"
+        d["file"] = urls[0].strip("'\"").removeprefix("./")
         out.append(d)
     return out
 
@@ -53,69 +61,62 @@ def _parse_range(s: str) -> list[tuple[int, int]]:
     return out
 
 
-def test_every_face_has_unicode_range_and_core_ext_per_weight():
+def test_faces_are_official_dynamic_subset_pieces():
     faces = _faces()
-    assert faces, "pretendard.css 에 @font-face 가 없다"
-    by_weight: dict[str, list[str]] = {}
+    by_weight: dict[str, set[int]] = {}
     for f in faces:
         assert f.get("unicode-range"), f"{f['file']}: unicode-range 없음 — 화면마다 통째로 받는다"
         assert f.get("font-display") == "swap"
         assert f.get("font-family") == "'Pretendard'"
-        by_weight.setdefault(f["font-weight"], []).append(f["file"].split(".")[1])
-    assert set(by_weight) == {"400", "600", "700"}
-    for w, parts in by_weight.items():
-        assert "core" in parts and any(p.startswith("ext") for p in parts), (w, parts)
-        assert parts[-1] == "core", f"{w}: core 는 굵기마다 마지막에 선언해야 KS 밖 음절이 ext 로 넘어간다"
+        m = FILE_RE.match(f["file"])
+        assert m, f"공식 동적 서브셋 조각이 아니다: {f['file']}"
+        assert WEIGHT[f["font-weight"]] == m.group(1), f
+        by_weight.setdefault(f["font-weight"], set()).add(int(m.group(2)))
+    assert set(by_weight) == set(WEIGHT)
+    for w, pieces in by_weight.items():
+        assert pieces == set(range(PIECES)), (w, sorted(set(range(PIECES)) - pieces))
 
 
 def test_referenced_fonts_exist_and_no_stray_or_large_fonts():
     referenced = {f["file"] for f in _faces()}
     for name in referenced:
         assert (FONTS / name).is_file(), f"css 가 가리키는 {name} 이 없다"
-    on_disk = {p.name for p in FONTS.iterdir() if p.suffix in (".woff2", ".woff", ".ttf", ".otf")}
-    assert on_disk == referenced, f"css 가 안 가리키는 글꼴이 서빙된다: {sorted(on_disk - referenced)}"
-    for p in (HERE / "static").rglob("*"):
-        if p.suffix in (".woff2", ".woff", ".ttf", ".otf"):
-            assert p.stat().st_size <= MAX_FONT_BYTES, f"{p.name} {p.stat().st_size} bytes — 서브셋이 아니다"
+    font_ext = (".woff2", ".woff", ".ttf", ".otf")
+    on_disk = {p.relative_to(FONTS).as_posix() for p in FONTS.rglob("*") if p.suffix in font_ext}
+    assert on_disk == referenced, f"css 가 안 가리키는 글꼴이 있다: {sorted(on_disk - referenced)[:5]}"
+    for p in HERE.rglob("*"):
+        if p.suffix in font_ext:
+            assert p.stat().st_size <= MAX_FONT_BYTES, f"{p.name} {p.stat().st_size} bytes — 공식 조각이 아니다"
 
 
-def test_core_has_all_ks_x_1001_and_ext_ranges_skip_ks():
+def test_license_and_reserved_font_name_kept():
+    ofl = (FONTS / "OFL.txt").read_text(encoding="utf-8")
+    assert "Reserved Font Name Pretendard" in ofl and "SIL OPEN FONT LICENSE" in ofl.upper()
+    css_head = CSS.read_text(encoding="utf-8")[:1500]
+    assert "Reserved Font Name Pretendard" in css_head and "OFL.txt" in css_head
+
+
+def test_every_weight_covers_ks_x_1001_and_screen_symbols():
+    need = _ks_hangul() | {ord(c) for c in SCREEN_SYMBOLS}
+    assert len(_ks_hangul()) == 2350
+    for w in WEIGHT:
+        rs = [r for f in _faces() if f["font-weight"] == w for r in _parse_range(f["unicode-range"])]
+        missing = [cp for cp in need if not any(a <= cp <= b for a, b in rs)]
+        assert not missing, f"{w}: 범위 밖 {len(missing)}자 (예: {chr(missing[0])})"
+
+
+def test_declared_ranges_have_glyphs():
+    """조각이 선언한 KS 음절 · 화면 기호는 그 조각 파일에 실제로 있다 — 없으면 대체 글꼴로 나온다."""
     ttLib = pytest.importorskip("fontTools.ttLib")
     pytest.importorskip("brotli")
-    ks = _ks_hangul()
-    assert len(ks) == 2350
+    need = _ks_hangul() | {ord(c) for c in SCREEN_SYMBOLS}
     for f in _faces():
-        rs = _parse_range(f["unicode-range"])
-        covered = lambda cp: any(a <= cp <= b for a, b in rs)  # noqa: E731
-        part = f["file"].split(".")[1]
-        if part == "core":
-            cmap = set(ttLib.TTFont(str(FONTS / f["file"])).getBestCmap())
-            missing = ks - cmap
-            assert not missing, f"{f['file']}: KS 음절 {len(missing)}자 빠짐 (예: {chr(min(missing))})"
-            assert all(covered(cp) for cp in ks)
-            assert covered(ord("·")) and covered(ord("—")) and covered(ord("「")) and covered(ord("→"))
-        else:
-            hit = [cp for cp in ks if covered(cp)]
-            assert not hit, f"{f['file']}: ext 범위에 KS 음절 {chr(hit[0])} — 한국어 화면마다 ext 를 받는다"
-
-
-def test_ext_ranges_match_ext_cmaps():
-    """ext 범위가 그 파일에 실제 있는 글자와 정확히 같다 — 넓으면 쓸데없이 받고, 좁으면 그 글자가 대체 글꼴로 나온다."""
-    ttLib = pytest.importorskip("fontTools.ttLib")
-    pytest.importorskip("brotli")
-    for f in _faces():
-        if f["file"].split(".")[1] == "core":
+        declared = {cp for a, b in _parse_range(f["unicode-range"]) for cp in range(a, b + 1)} & need
+        if not declared:
             continue
-        declared = {cp for a, b in _parse_range(f["unicode-range"]) for cp in range(a, b + 1)}
         cmap = set(ttLib.TTFont(str(FONTS / f["file"])).getBestCmap())
-        assert declared == cmap, f"{f['file']}: 범위 {len(declared)} vs 글리프 {len(cmap)}"
-
-
-def test_rare_hangul_is_covered_by_some_ext():
-    rare = "똠쀍햏뷁"
-    faces = [f for f in _faces() if f["font-weight"] == "400" and f["file"].split(".")[1] != "core"]
-    for ch in rare:
-        assert any(any(a <= ord(ch) <= b for a, b in _parse_range(f["unicode-range"])) for f in faces), ch
+        lost = declared - cmap
+        assert not lost, f"{f['file']}: 선언했지만 글리프 없음 {len(lost)}자 (예: {chr(min(lost))})"
 
 
 def test_analyzer_has_no_font_copy_and_uses_veilo_fonts():
@@ -135,32 +136,13 @@ def test_fonts_route_allows_cross_origin(tmp_path, monkeypatch):
     r = c.get("/static/fonts/pretendard.css")
     assert r.status_code == 200 and r.headers.get("Access-Control-Allow-Origin") == "*"
     r.close()
-    name = next(f["file"] for f in _faces() if f["file"].endswith(".core.woff2"))
+    name = _faces()[0]["file"]
     r = c.get(f"/static/fonts/{name}")
     assert r.status_code == 200 and r.headers.get("Access-Control-Allow-Origin") == "*"
     r.close()
     r = c.get("/static/veilo.css")
     assert "Access-Control-Allow-Origin" not in r.headers       # 글꼴만 연다
     r.close()
-
-
-
-def test_subsets_partition_source_cmap():
-    """굵기마다 core + ext 를 합치면 원본(fonts-src) 글자 집합과 같고, 파트끼리 겹치지 않는다 — 잘라내다 잃은 글자가 없다."""
-    ttLib = pytest.importorskip("fontTools.ttLib")
-    pytest.importorskip("brotli")
-    src_dir = HERE / "fonts-src"
-    by_weight: dict[str, list[str]] = {}
-    for f in _faces():
-        by_weight.setdefault(f["file"].split(".")[0], []).append(f["file"])
-    for stem, files in by_weight.items():
-        src = set(ttLib.TTFont(str(src_dir / f"{stem}.woff2")).getBestCmap())
-        seen: set[int] = set()
-        for name in files:
-            cm = set(ttLib.TTFont(str(FONTS / name)).getBestCmap())
-            assert not (seen & cm), f"{name}: 다른 파트와 겹친다"
-            seen |= cm
-        assert seen == src, f"{stem}: 원본 대비 빠진 글자 {len(src - seen)}"
 
 
 def test_cors_header_not_leaking_outside_fonts():

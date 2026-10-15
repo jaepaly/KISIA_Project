@@ -32,5 +32,3 @@
 # 다이어그램은 텍스트지만 리뷰에서 접는다
 *.svg       text eol=lf linguist-generated=true
 
-# 글꼴 원본 — 서브셋을 다시 만들 때만 쓴다(scripts/subset_fonts.py). 서빙하지 않고 배포 묶음(git archive)에서도 뺀다
-apps/sns/fonts-src export-ignore
