@@ -280,9 +280,11 @@ class _Admission:
             return self.running + sum(1 for o in self._waiters if o < mine)
 
     async def acquire(self, request: Request | None = None) -> None:
-        if self.sem.acquire(blocking=False):
-            self._take()
-            return
+        # 바로 잡기는 줄이 비어 있을 때만 — 자리가 빈 순간 새로 온 요청이 줄을 건너뛰지 않게 (Codex · #374 FIFO)
+        with self._lock:
+            if not self._waiters and self.sem.acquire(blocking=False):
+                self.running += 1
+                return
         ticket = request.headers.get("x-scan-ticket", "") if request is not None else ""
         ticket = ticket if _TICKET.fullmatch(ticket) else ""
         with self._lock:

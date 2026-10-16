@@ -190,11 +190,17 @@ def test_queue_is_first_in_first_out():
         adm.release()                  # 자리가 빈다 — 맨 앞은 아직 연결 확인 중
         await asyncio.sleep(0.6)       # 뒷사람은 그사이 몇 번 깨어난다
         assert not second.done()       # 새치기하지 않는다
+        late = asyncio.create_task(adm.acquire(Quick()))   # 그 순간 새로 온 요청도 줄을 건너뛰지 않는다 (Codex)
+        await asyncio.sleep(0.3)
+        assert not late.done() and adm.running == 0
         hold.set()
         await asyncio.wait_for(first, 2)
         assert not second.done()
         adm.release()
         await asyncio.wait_for(second, 2)
+        assert not late.done()
+        adm.release()
+        await asyncio.wait_for(late, 2)
         adm.release()
         assert adm.running == 0 and not adm._waiters
 
