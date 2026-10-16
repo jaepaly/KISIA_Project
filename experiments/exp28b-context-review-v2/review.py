@@ -138,7 +138,8 @@ def run_a0(a) -> None:
     from kopl.c1_span.attributes import resolve
 
     det = infer.SpanDetector(a.checkpoint, device="cuda", min_span_score=0.7)
-    for name, rows in (("d1", load_d1()), ("d2", load_d2()), ("d3", load_d3())):
+    for name in a.sets.split(","):
+        rows = {"d1": load_d1, "d2": load_d2, "d3": load_d3}[name]()
         with open(HERE / "results" / f"a0_{name}.jsonl", "w", encoding="utf-8", newline="\n") as f:
             for r in rows:
                 t = time.perf_counter()
@@ -243,6 +244,7 @@ def main() -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     p0 = sub.add_parser("a0")
     p0.add_argument("--checkpoint", required=True)
+    p0.add_argument("--sets", default="d1,d2,d3")
     p1 = sub.add_parser("llm")
     p1.add_argument("--mode", choices=["A", "B"], required=True)
     p1.add_argument("--model", required=True)
