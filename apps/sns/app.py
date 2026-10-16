@@ -477,10 +477,14 @@ def privacy():
 @app.get("/new")
 def new():
     """작성 화면. ⚠️ 작성시각을 직접 입력받는다 — howto §4."""
-    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+    # 내가 만든 새 계정을 맨 위에 — 가상 인물 115명 사이에서 찾지 않게
+    authors = sorted(db().execute("SELECT * FROM authors ORDER BY nickname").fetchall(),
+                     key=lambda a: not is_new_account(a["author_id"]))
     now_kst = datetime.now(KST).strftime("%Y-%m-%dT%H:%M")
     try:
-        return render_template("new.html", authors=authors, now=now_kst)
+        return render_template("new.html", authors=authors, now=now_kst, is_new_account=is_new_account,
+                               can_new_account=isolation_on(),
+                               new_account_max=NEW_ACCOUNT_MAX, new_account_name_max=NEW_ACCOUNT_NAME_MAX)
     except sqlite3.OperationalError:
         return _todo("글 작성", "§4")
 
@@ -763,6 +767,57 @@ def set_me():
     return redirect(_with_done(_back("/"), "me" if aid else "me_off"))
 
 
+# ── 새 빈 계정 — 가상 인물이 아니라 「내 글」로 시험해 보려는 사람용. 그 방문자의 체험용 사본에만 생기고
+#    (세션 사본 · 7일 · 처리방침 「직접 쓴 글」과 같은 범위) 만들자마자 「내 계정」이 된다.
+#    author_id 는 M + 16진수 8자리 — 시드 인물(A~E · S)과 겹치지 않고, 인물 설정 파일이 없어 정답지 패널이 비어 있다
+NEW_ACCOUNT_PREFIX = "M"
+NEW_ACCOUNT_MAX = 5           # 한 방문자가 만들 수 있는 새 계정 수 — 사본이 계정으로 불어나지 않게
+NEW_ACCOUNT_NAME_MAX = 20
+
+
+def is_new_account(author_id: str | None) -> bool:
+    return bool(author_id) and _re.fullmatch(rf"{NEW_ACCOUNT_PREFIX}[0-9a-f]{{8}}", author_id) is not None
+
+
+@app.post("/me/new")
+def new_account():
+    """새 빈 계정 만들기 — 닉네임은 고르지 않으면 「새 계정 xxxx」. 만든 계정을 내 계정으로 정한다."""
+    name = " ".join((request.form.get("nickname") or "").split())
+    _too_long(name, NEW_ACCOUNT_NAME_MAX, "계정 이름")
+    # 체험용 사본이 없으면(시드 사본 없이 띄운 로컬 등) 공용 DB 에 남는다 — 「이 브라우저에만」 약속을 지킬 수 없어 만들지 않는다 (Codex P1)
+    if not isolation_on() or not getattr(g, "sid", None):
+        _reject(409, "체험용 사본이 꺼진 환경이라 새 계정을 만들 수 없습니다. 가상 인물을 골라 써 주세요.")
+    c = db()
+    # 세는 것부터 넣기 · 내 계정 지정까지 한 쓰기 트랜잭션 — 동시 요청이 같은 개수를 읽고 상한을 넘지 않게 (Codex P2 · create_post 와 같은 방식)
+    c.execute("BEGIN IMMEDIATE")
+    try:
+        n = c.execute("SELECT COUNT(*) FROM authors WHERE author_id GLOB ?",
+                      (NEW_ACCOUNT_PREFIX + "[0-9a-f]" * 8,)).fetchone()[0]
+        if n >= NEW_ACCOUNT_MAX:
+            c.rollback()
+            _reject(429, f"새 계정은 {NEW_ACCOUNT_MAX}개까지 만들 수 있습니다. 만든 계정을 골라 이어서 써 주세요.")
+        for _ in range(5):        # 겹칠 일은 거의 없지만, 겹치면 다시 뽑는다
+            aid = NEW_ACCOUNT_PREFIX + _uuid.uuid4().hex[:8]
+            ref = "u_" + _uuid.uuid4().hex[:12]
+            if c.execute("SELECT 1 FROM authors WHERE author_id = ? OR user_ref = ?", (aid, ref)).fetchone() is None:
+                break
+        else:
+            raise RuntimeError("새 계정 식별자를 만들지 못했다")
+        c.execute("INSERT INTO authors(author_id, user_ref, nickname, bio, joined_at) VALUES (?, ?, ?, NULL, ?)",
+                  (aid, ref, name or f"새 계정 {aid[1:5]}", _now()))
+        c.execute("INSERT INTO me(id, author_id, chosen_at) VALUES (1, ?, ?)"
+                  " ON CONFLICT(id) DO UPDATE SET author_id = excluded.author_id, chosen_at = excluded.chosen_at",
+                  (aid, _now()))
+        c.commit()
+    except Exception:
+        if c.in_transaction:
+            c.rollback()
+        raise
+    if request.headers.get("X-Requested-With") == "fetch":
+        return jsonify({"me": _me()})
+    return redirect("/new")
+
+
 @app.post("/changes/<int:log_id>/undo")
 def undo_change(log_id: int):
     e = db().execute("SELECT * FROM action_log WHERE id = ? AND undone_at IS NULL", (log_id,)).fetchone()
@@ -961,6 +1016,17 @@ def reset_author(user_ref: str):
     if not seed.exists():
         abort(503, "시드 사본(sns.seed.db)이 없어 되돌릴 수 없습니다")
     aid, c = a["author_id"], db()
+    if is_new_account(aid):
+        # 방문자가 만든 빈 계정 — 시드에 없으니 「처음 상태」는 글이 하나도 없는 상태다. 계정 · 이름은 그대로 둔다 (Codex P2)
+        try:
+            c.execute("DELETE FROM photos WHERE post_id IN (SELECT post_id FROM posts WHERE author_id = ?)", (aid,))
+            c.execute("DELETE FROM posts WHERE author_id = ?", (aid,))
+            c.execute("UPDATE action_log SET undone_at = ? WHERE author_id = ? AND undone_at IS NULL", (_now(), aid))
+            c.commit()
+        except Exception:
+            c.rollback()
+            raise
+        return redirect(f"/u/{user_ref}")
     c.execute("ATTACH DATABASE ? AS seed", (str(seed),))
     try:
         # authors 행은 지우지 않고 덮어쓴다 — posts 가 FK 로 물고 있어 DELETE 가 막힌다
@@ -1029,6 +1095,7 @@ def author_summary(author_id: str):
         "author_id": a["author_id"], "user_ref": a["user_ref"], "nickname": a["nickname"],
         "hue": _hue(a["author_id"]),   # 피드 아바타와 같은 색
         "persona": _persona_brief(a["author_id"]),
+        "is_new": is_new_account(a["author_id"]),   # 방문자가 만든 빈 계정 — 정답지 대신 「내 글로 시험하기」 안내
         "bio": a["bio"], "joined_at": (a["joined_at"] or "")[:10],
         "n_posts": len(posts), "last": posts[0]["created_at"][:10] if posts else None,
         "top_tags": [{"geo_tag": t, "n": n} for t, n in top],
