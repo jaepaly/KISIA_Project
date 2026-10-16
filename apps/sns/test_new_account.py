@@ -72,3 +72,57 @@ def test_new_account_rejects_other_origin(app_iso):  # noqa: F811
     a = app.test_client()
     a.get("/?skip_about=1")
     assert a.post("/me/new", headers={**FETCH, "Origin": "http://evil.example"}).status_code == 403
+
+
+def test_reset_new_account_empties_posts(app_iso):  # noqa: F811
+    """새 계정의 「계정 초기화」 — 시드에 없으니 글 · 조치 이력만 비우고 계정은 둔다 (Codex P2 · 전엔 500)."""
+    app, _ = app_iso
+    a = app.test_client()
+    a.get("/?skip_about=1")
+    me = _new(a, "초기화 시험").get_json()["me"]
+    a.post("/posts", data={"author_id": me["author_id"], "body": "지울 글", "created_at": "2026-10-16T09:00",
+                           "visibility": "public"})
+    assert a.get(f"/api/author/{me['author_id']}/summary").get_json()["n_posts"] == 1
+    r = a.post(f"/u/{me['user_ref']}/reset")
+    assert r.status_code in (302, 303)
+    s = a.get(f"/api/author/{me['author_id']}/summary").get_json()
+    assert s["n_posts"] == 0 and s["nickname"] == "초기화 시험"
+
+
+def test_new_account_refused_without_isolation(tmp_path, monkeypatch):
+    """체험용 사본이 꺼진 환경(시드 사본 없음)에서는 공용 DB 에 남으니 만들지 않고, 화면에도 안 보인다 (Codex P1)."""
+    from test_sessions import _seed
+    live = tmp_path / "sns.db"
+    _seed(live)
+    monkeypatch.setenv("SNS_DB_PATH", str(live))
+    monkeypatch.delenv("SNS_SEED_DB", raising=False)
+    import app as appmod
+    appmod.app.config["TESTING"] = True
+    a = appmod.app.test_client()
+    assert 'id="newAcct"' not in a.get("/new").get_data(as_text=True)
+    assert _new(a).status_code == 409
+    c = sqlite3.connect(live)
+    assert c.execute("SELECT COUNT(*) FROM authors WHERE author_id LIKE 'M%'").fetchone()[0] == 0
+    c.close()
+
+
+def test_concurrent_creates_do_not_pass_limit(app_iso):  # noqa: F811
+    """동시에 눌러도 상한(5개)을 넘지 않는다 — 세기 · 넣기가 한 쓰기 트랜잭션 (Codex P2)."""
+    import threading
+    app, _ = app_iso
+    a = app.test_client()
+    a.get("/?skip_about=1")
+    for _ in range(3):
+        assert _new(a).status_code == 200
+    sid = a.get_cookie("veilo_sid").value
+    codes = []
+
+    def hit():
+        c = app.test_client()
+        c.set_cookie("veilo_sid", sid)
+        codes.append(_new(c).status_code)
+    ts = [threading.Thread(target=hit) for _ in range(6)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    html = a.get("/new").get_data(as_text=True)
+    assert html.count("· 내가 만든 계정</option>") == 5 and codes.count(200) == 2, codes

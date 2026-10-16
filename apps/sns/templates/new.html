@@ -132,6 +132,7 @@
               <button type="button" class="ghost" id="meBtn" {% if me %}hidden{% endif %}>🙋 이 사람으로 체험하기</button>
             </div>
             {# 새 빈 계정 — 가상 인물 말고 내 이야기를 써서 시험해 보려는 사람용. 이 브라우저의 체험용 사본에만 생긴다 (app.py /me/new) #}
+            {% if can_new_account %}
             <details class="new-acct" id="newAcct">
               <summary>✨ 내 글로 시험하기 — 글이 하나도 없는 새 계정 만들기</summary>
               <div class="new-acct-row">
@@ -140,6 +141,7 @@
               </div>
               <p class="new-acct-note" id="newNote">이 브라우저의 체험용 사본에만 생기고, 7일 동안 열지 않으면 지워집니다. 최대 {{ new_account_max }}개까지 만들 수 있습니다.</p>
             </details>
+            {% endif %}
             {# 글 화면 「이 글을 옮겨 고쳐 쓰기」로 왔으면 원래 글 — 이력에 「고쳐 쓰기」로 남아 되돌릴 수 있다 #}
             <input type="hidden" name="from_post" id="fromPost" value="">
           </div>
