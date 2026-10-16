@@ -41,7 +41,7 @@ def main() -> int:
                     raw = client.complete(review.SYSTEM, user)
                     break
                 except llm.LLMError as e:
-                    if "429" not in str(e) or not wait:
+                    if not any(c in str(e) for c in ("429", "502", "503", "504")) or not wait:
                         raise
                     print(f"  한도 — {wait}초 뒤 다시", flush=True)
                     time.sleep(wait)
