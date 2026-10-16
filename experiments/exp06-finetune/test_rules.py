@@ -84,6 +84,24 @@ class RuleTests(unittest.TestCase):
         found = {text[start:end] for start, end, kind in age_spans(text) if kind == 'AGE'}
         self.assertEqual(found, {'서른', '마흔'})
 
+    def test_generic_place_words_are_dropped_in_merge(self):
+        """실제 글 시험(10/16) — 1단이 「노을맛집」 「디자인 여행」 「지면병원행」을 시설로 내면 병합에서 뺀다.
+        골드(test 제외 2,281편)의 시설 스팬 359개에 이 꼴은 0개. 「국민은행 · 비행장 · 성수동 맛집」은 그대로 둔다."""
+        from rules import is_generic_place_word
+        cases = {'노을맛집': True, '디자인 여행': True, '지면병원행': True, '이기면감옥행': True,
+                 '노을맛집에서': True, '노을맛집이네': True, '노을맛집이에요': True, '디자인 여행에서': True,  # Codex — 조사가 붙어도
+                 '국민은행': False, '은행': False, '비행장': False, '성수동 맛집': False, '모던하우스도': False,
+                 '맛집': False, '여행': False, '진행': False}
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(is_generic_place_word(text), expected)
+        body = '노을맛집 이네. 국민은행 들렀다'
+        model = [{'text_id': 'body', 'start': 0, 'end': 4, 'text': '노을맛집', 'type': 'LOC_FACILITY', 'score': 0.9},
+                 {'text_id': 'body', 'start': 9, 'end': 13, 'text': '국민은행', 'type': 'LOC_FACILITY', 'score': 0.9}]
+        out, stats = merge_with_model('p1', {'body': body}, model, ExplicitRules(FakeRegions()))
+        self.assertEqual([s['text'] for s in out if s['type'] == 'LOC_FACILITY'], ['국민은행'])
+        self.assertEqual(stats['model_generic_place_dropped'], 1)
+
     def test_model_age_quantity_is_dropped_in_merge(self):
         """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
         from rules import is_quantity_age

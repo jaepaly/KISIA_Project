@@ -270,9 +270,57 @@ def _person_end(after: str, m: "re.Match[str]") -> int:
     return body.end() if body else m.end()
 
 
+# 성별 단서로 잡힌 홑 부모 호칭(「아빠가」 「엄마는」) — 아빠 · 엄마 블로거는 자기를 「아빠의 시간」처럼 부른다(골드 A23).
+# 자녀 입장의 글(「엄마아빠가 혼자는 안 된대」 「엄마랑 나랑」 · 자녀 표지 없음)이면 글쓴이의 부모라 그 사람의 성별이다 (실제 글 시험 10/16).
+# 같은 문단에 자녀 · 가족 표지가 있고 자녀 입장 표지가 없을 때만 본인 — 다른 문단의 「부모님」으로 뒤집히지 않게(Codex).
+# 문장 앞에 1인칭이 있으면(「나는 아빠가 됐다」) 자기소개라 본인. 복수 · 겸칭(「엄마들」 「엄마이자」)은 이 규칙 밖
+_PARENT_TERM = re.compile(r"(?:엄마|아빠|어머니|아버지|엄빠)(?:가|는|의|도|를|한테|랑|이랑|하고|께서|은|이)?")
+_KID_JOSA = r"(?:들)?(?:이|가|은|는|을|를|도|의|만|과|와|랑|이랑|하고|한테|에게|래|아|네)?(?![가-힣])"   # 「아이들이」도 (Codex)
+# 「아이참」(감탄사) · 「딸기」는 거른다 · 「하원」은 「미국 하원」과 갈려 뺀다 (Codex)
+_PARENT_OF_CHILD = re.compile(r"(?<![가-힣])(?:(?:아이|아들|딸|애들)" + _KID_JOSA
+                              + r"|우리\s*애|첫째|둘째|어린이집|유치원|육아|기저귀|이유식|가족|식구)")
+_CHILD_VIEW = re.compile(r"엄마\s*아빠|아빠\s*엄마|엄빠|부모님|엄마랑\s*나|아빠랑\s*나|엄마와\s*나|우리\s*엄마|우리\s*아빠|효도")
+# 명백한 여행 표현이 붙은 지명 — 골드(test 제외 2,281편)에서 이 꼴은 1개이고 self 가 아니다(「대전 놀러 갔다가」 · 10/16).
+# 「들러 · 갔다 · 다녀왔다 · 내려가면」 같은 이동 말은 넣지 않는다 — 동네 볼일 · 본가 · 이사(「농협에 들러」 「본가인 창원에 내려가면」
+# 「제주 내려와 살면서」)라 골드에서 본인 거주 단서다(27/28).
+# 같은 줄에서 지명을 꾸미는 꼴만 — 「[제주] 여행」 「[부산] 놀러」 「[일본에] 디자인 여행이나」. 「[서울에서] 살며 여행」(사이에 술어) ·
+# 「[부산에서] 여행사를 운영」(에서 = 활동 장소 · 여행사) · 「[서울]⏎휴가 끝나고」(다음 줄) · 「[한국관광공사]」는 아니다 (Codex)
+_TRAVEL_WORD = (r"(?:여행|놀러|관광|나들이|당일치기|투어|출장|휴가(?!철)(?![ \t]*(?:끝|복귀|내고|중에도)))"   # 「제주 휴가」 ○ · 「휴가 끝나고 · 휴가철」 ✗ (Codex)
+                r"(?!사|객|공사|업|지도)")
+_SELF_INTRO_AFTER = re.compile(r"\s*(?:됐|되었|된\s*지|돼|되고|되면|되어|였|이었|이다|예요|이에요|입니다|로서|라서|인데|이고"
+                               r"|(?:다|야|이야|고|자|이자)(?=$|[^가-힣]|요(?![가-힣])))")
+# 「나는 아빠였다」 「나는 엄마이고 직장인이다」 「나는 엄마로서는」 (Codex). 짧은 어미(다 · 야 · 고 · 자 …)는 낱말이 끝나야 한다 —
+# 「아빠가 자랑스럽다」 「엄마가 다쳤다」 「엄마 이야기」는 자기소개가 아니다 (B · #378)
+_TRAVEL_IN = re.compile(_TRAVEL_WORD + r"(?:지|길)?(?:에서|에|으로|로|을|를|이|가)?$")   # 스팬이 여행 말로 끝날 때만
+_TRAVEL_AFTER = re.compile(r"[ \t]*(?:에|로|으로)?[ \t]*(?:[가-힣]{1,4}(?<![며고서면는다던])[ \t]+)?" + _TRAVEL_WORD)
+
+
+def _paragraph(text: str, start: int, end: int) -> str:
+    """스팬이 속한 문단(빈 줄로 나뉜 덩어리) — 부모 호칭 판정은 다른 문단 문맥을 쓰지 않는다 (Codex)."""
+    a = text.rfind("\n\n", 0, start)
+    b = text.find("\n\n", end)
+    return text[a + 2 if a >= 0 else 0: b if b >= 0 else len(text)]
+
+
 def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
     if channel_text is None or start is None or end is None:
         return "self"
+    if stype == "SEX" and _PARENT_TERM.fullmatch(text.strip()):
+        para = _paragraph(channel_text, start, end)
+        before_s, after_s = _sentence_window(channel_text, start, end)
+        # 자기소개 — 1인칭이 앞에 있고 뒤가 「됐다 · 이다 · 예요 · 로서」(「나는 아빠가 됐다」). 「나는 아빠가 싫다」는 글쓴이의 아버지 (Codex)
+        intro = _FIRST_PERSON.search(before_s) and _SELF_INTRO_AFTER.match(after_s)
+        if not intro \
+                and (_CHILD_VIEW.search(para) or not _PARENT_OF_CHILD.search(para)):
+            return "other"   # 글쓴이의 부모 — 「아빠가 진짜 싫다고 해서 엄마랑 나랑 옴」. 「나는 아빠가 됐다」(1인칭)는 그대로
+    who = _subject_in_sentence(stype, text, channel_text, start, end)
+    if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY") \
+            and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(channel_text[end:])):
+        return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
+    return who
+
+
+def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, end: int) -> str:
     before, after = _sentence_window(channel_text, start, end)
     core = _core(text)
     if re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before):

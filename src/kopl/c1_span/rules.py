@@ -89,6 +89,21 @@ _HOMONYM_IDIOM = {
 }
 
 
+# 시설(LOC_FACILITY)로 잡혔지만 장소 이름이 아닌 말 — 평가(「노을맛집」) · 여행 종류(「디자인 여행」) · 행선 밈(「지면병원행」).
+# 골드(test 제외 2,281편)의 시설 스팬 359개에 이 꼴은 0개다(10/16). 「국민은행」 「비행장」은 시설이라 「은행 · 비행」은 뺀다
+_GENERIC_PLACE = re.compile(r"(?P<head>.+?)(?P<suf>맛집|여행|(?<!은)(?<!비)(?<!평)(?<![운진통시유])행)"
+                            r"(?:이네|이에요|이다|에서|으로|이|가|은|는|을|를|도|에|로)?")
+
+
+def is_generic_place_word(text: str) -> bool:
+    t = text.strip()
+    m = _GENERIC_PLACE.fullmatch(t)   # 끝까지 맞아야 — 「노을맛집에서」 「노을맛집이네」도 (Codex)
+    if not m or len(m.group("head").strip()) < 2:
+        return False
+    # 「맛집」은 붙여 쓴 평가말(「노을맛집」)만 — 「성수동 맛집」은 앞의 지명이 단서다
+    return not (m.group("suf") == "맛집" and m.group("head") != m.group("head").rstrip())
+
+
 _AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:" + "|".join(_AGE_ENDINGS) + r")$")
 
 
@@ -242,6 +257,7 @@ def merge_with_model(
     by_channel: dict[str, dict[tuple[int, int, str], dict]] = {tid: {} for tid in texts}
     model_keys: set[tuple[str, int, int, str]] = set()
     quantity_dropped = 0
+    generic_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -253,6 +269,9 @@ def merge_with_model(
             raise ValueError(f"모델 후보가 중복됐습니다: {post_id}/{tid}")
         if kind == "AGE" and is_quantity_age(texts[tid], start, end):
             quantity_dropped += 1  # 「서른 해 동안」 — 나이가 아니라 기간
+            continue
+        if kind == "LOC_FACILITY" and is_generic_place_word(candidate["text"]):
+            generic_dropped += 1   # 「노을맛집」 「디자인 여행」 「지면병원행」 — 장소 이름이 아니라 평가 · 행선 표현
             continue
         model_keys.add(key)
         span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
@@ -287,5 +306,6 @@ def merge_with_model(
         "selected_both": len(selected_keys & model_keys & rule_keys),
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
         "model_age_quantity_dropped": quantity_dropped,
+        "model_generic_place_dropped": generic_dropped,
     }
     return output, stats

@@ -281,3 +281,99 @@ def test_household_ne_adverb_and_me_word(sentence, span, expected):
 def test_household_ne_me_in_next_clause_is_not_modifier():
     """「[딸네로] 가셨는데 나를 보고」 — 다음 절의 「나를」은 술어가 꾸미는 말이 아니다 (Codex 10/6)."""
     assert _r("옆집 아주머니가 딸네로 가셨는데 나를 보고 손을 흔드셨다", "딸네로", "FAM")["subject"] == "other"
+
+
+# ── 실제 글 시험(10/16)에서 찾은 오탐 — 글쓴이의 부모 · 여행지 ─────────────────────
+@pytest.mark.parametrize("sentence,span,expected", [
+    # 자녀 입장 — 성별 단서로 잡힌 「아빠가」는 글쓴이의 아버지(남의 성별)
+    ("엄마아빠가 혼자는 안 된다고 했다. 아빠가 진짜 싫다고 해서 엄마랑 나랑 옴", "아빠가", "other"),
+    ("아빠가 그 정도는 괜찮대", "아빠가", "other"),               # 자녀 표지도 없다 → 글쓴이 부모
+    ("아이참 아빠가 또 그러네", "아빠가", "other"),               # 「아이참」은 감탄사 — 자녀 표지가 아니다
+    # 부모 블로거 — 자기를 「아빠」로 부른다 (골드 A23 관례)
+    ("아이가 아빠는 여기 앉아 있으라고 자리를 정해 줬다", "아빠는", "self"),
+    ("가족 다 자는 밤 혼자 맥주 한 캔 마시는 아빠의 유일한 시간", "아빠의", "self"),
+    ("엄마들 단톡방에서 하원 시간 얘기가 나왔다", "엄마들", "self"),  # 복수 — 이 규칙 밖
+])
+def test_parent_term_sex_subject(sentence, span, expected):
+    assert _r(sentence, span, "SEX")["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    ("일본에 디자인 여행이나 가 볼까", "일본에", "LOC_ADMIN", "unknown"),   # 여행지 — 사는 곳이 아니다
+    ("이번 주말엔 부산 놀러 가요", "부산", "LOC_ADMIN", "unknown"),
+    ("제주 여행 숙소 예약 끝", "제주", "LOC_ADMIN", "unknown"),
+    ("농협에 들러 비료를 샀다", "농협에", "LOC_FACILITY", "self"),          # 동네 볼일 — 그대로 본인 (골드 관례)
+    ("본가인 창원에 내려가면 꼭 먹는 국밥", "창원에", "LOC_ADMIN", "self"),  # 본가 — 그대로 본인
+    ("친구가 대전 놀러 갔다가 사진을 보냈다", "대전", "LOC_ADMIN", "other"),  # 남의 것은 남의 것
+])
+def test_travel_place_is_not_home(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # Codex 반례 — 같은 문단 · 1인칭 자기소개 · 아들/딸 대칭
+    ("가족 다 자는 밤 혼자 맥주 마시는 아빠의 유일한 시간\n\n내일은 부모님께 전화해야겠다.", "아빠의", "SEX", "self"),
+    ("아빠가 반대했다.\n\n미국 하원 소식을 봤다.", "아빠가", "SEX", "other"),
+    ("나는 아빠가 됐다", "아빠가", "SEX", "self"),
+    ("아빠는 딸만 키운다", "아빠는", "SEX", "self"),
+    ("아빠는 아들만 키운다", "아빠는", "SEX", "self"),
+    # Codex 반례 — 여행 말이 지명을 꾸미지 않으면 그대로
+    ("나는 서울에서 살며 여행을 즐긴다", "서울에서", "LOC_ADMIN", "self"),
+    ("부산에서 여행사를 운영한다", "부산에서", "LOC_ADMIN", "self"),
+    ("한국관광공사에서 매일 일한다", "한국관광공사", "LOC_FACILITY", "self"),
+    ("서울\n\n휴가 끝나고 출근했다", "서울", "LOC_ADMIN", "self"),
+])
+def test_codex_counterexamples(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+def test_travel_place_is_not_promoted_by_home_marker():
+    """여행지(unknown) 위치는 같은 글의 「집 근처」(REL_HOME) 때문에 확실한 거주 단서로 오르지 않는다 (Codex)."""
+    from kopl.c2_specificity.clues import build_conditions
+    body = "집 근처에서 밥을 먹었다. 강남구 여행을 예약했다"
+    spans = []
+    for text, stype in (("집 근처에서", "REL_HOME"), ("강남구", "LOC_ADMIN")):
+        i = body.index(text)
+        spans.append({"span_id": f"p_s{len(spans) + 1:02d}", "text_id": "body", "start": i, "end": i + len(text),
+                      "text": text, "type": stype, **resolve({"body": body}, {"text_id": "body", "start": i,
+                                                                             "end": i + len(text), "text": text, "type": stype})})
+    assert spans[1]["subject"] == "unknown"
+    loc = [c for c in build_conditions(spans, "p") if c["axis"] == "location"]
+    assert loc and all(c["confidence"] < 1.0 for c in loc)
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # Codex 재검토 — 1인칭이 있어도 자기소개가 아니면 글쓴이의 아버지 · 「아이들이」 · 「제주 휴가」
+    ("나는 아빠가 싫다", "아빠가", "SEX", "other"),
+    ("아이들이 자는 밤 아빠의 시간", "아빠의", "SEX", "self"),
+    ("제주 휴가를 다녀왔다", "제주", "LOC_ADMIN", "unknown"),
+    ("서울 휴가 끝나고 출근했다", "서울", "LOC_ADMIN", "self"),
+])
+def test_codex_recheck(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    ("나는 아빠였다", "아빠", "SEX", "self"),                    # Codex 3차 — 과거 · 이어 말하기 자기소개
+    ("나는 엄마이고 직장인이다", "엄마", "SEX", "self"),
+    ("서울 휴가철에도 출근한다", "서울", "LOC_ADMIN", "self"),     # 휴가철은 여행이 아니다
+])
+def test_codex_third(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # B 리뷰 — 짧은 자기소개 어미(다 · 자)가 「다쳤다」 「자랑스럽다」의 앞부분에 걸리면 안 된다
+    ("나는 아빠가 자랑스럽다", "아빠가", "SEX", "other"),
+    ("나는 엄마가 다쳤다는 소식을 들었다", "엄마가", "SEX", "other"),
+    ("나는 엄마가 고마워서 울었다", "엄마가", "SEX", "other"),
+    ("나는 아빠다.", "아빠", "SEX", "self"),
+    ("나는 엄마인데요 요즘 바빠요", "엄마", "SEX", "self"),
+    ("나는 아빠가 됐다", "아빠가", "SEX", "self"),
+    ("나는 엄마로서는 아직 부족하다", "엄마", "SEX", "self"),   # Codex — 로서 뒤 조사
+    ("나는 엄마인데도 육아가 어렵다", "엄마", "SEX", "self"),
+    ("나는 엄마가 고요한 목소리로 부르는 노래를 좋아한다", "엄마가", "SEX", "other"),   # Codex — 고 + 요한
+    ("나는 아빠고요 딸이 둘이에요", "아빠", "SEX", "self"),
+])
+def test_b_review_intro_suffix(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
