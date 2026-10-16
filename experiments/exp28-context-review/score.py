@@ -113,7 +113,7 @@ def main() -> int:
     _, a0_d2 = load(RES / "a0_d2.jsonl")
     out = {"posts": len(posts), "by_group": {g: sum(p["group"] == g for p in posts) for g in "ABC"},
            "configs": {"A0": {**score_d1(posts, a0_d1), "D2_recall": recall_d2(gold, a0_d2)}}}
-    for f in sorted(RES.glob("[AB]_*_d1.jsonl")):
+    for f in sorted(RES.glob("[AB]_*_d1.jsonl")) + sorted(RES.glob("[AB]X_d1.jsonl")):
         name = f.stem[:-3]
         meta, pred = load(f)
         m = {**score_d1(posts, pred), "prompt_hash": meta.get("prompt_hash")}
