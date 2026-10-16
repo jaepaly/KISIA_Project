@@ -87,6 +87,134 @@ def test_waiting_scan_starts_when_slot_frees_and_rate_excludes_wait(admission, m
     assert len(learned) == 1 and 0.15 <= learned[0] < 0.8, learned
 
 
+def test_scan_queue_reports_people_ahead_by_ticket(admission, monkeypatch):
+    """대기 순서 — 기다리는 점검의 대기표로 묻으면 앞사람 수(점검 중 1명), 차례가 와서 시작하면 줄에서 빠진다(E 리뷰 #368)."""
+    admission.wait_s = 5.0
+    gate = threading.Event()
+
+    def slow(user_ref, posts):
+        gate.wait(5)
+        return {"ok": True}
+    monkeypatch.setattr(server, "_pipeline", slow)
+    c = TestClient(server.app)
+    first = threading.Thread(target=lambda: c.post("/upload", files=_txt(), headers={"X-Scan-Ticket": "aaaaaaaa1111"}))
+    first.start()
+    for _ in range(50):
+        if admission.running == 1:
+            break
+        time.sleep(0.05)
+    assert admission.running == 1
+    # 바로 자리를 잡은 점검은 줄에 없다
+    assert c.get("/api/scan-queue", params={"ticket": "aaaaaaaa1111"}).json() == {"waiting": False, "ahead": 0}
+    second = threading.Thread(target=lambda: c.post("/upload", files=_txt(), headers={"X-Scan-Ticket": "bbbbbbbb2222"}))
+    second.start()
+    for _ in range(50):
+        if admission.waiting == 1:
+            break
+        time.sleep(0.05)
+    assert c.get("/api/scan-queue", params={"ticket": "bbbbbbbb2222"}).json() == {"waiting": True, "ahead": 1}
+    gate.set()
+    first.join(5); second.join(5)
+    assert c.get("/api/scan-queue", params={"ticket": "bbbbbbbb2222"}).json() == {"waiting": False, "ahead": 0}
+    assert admission.running == 0 and admission.waiting == 0 and not admission._tickets
+    # 대기표 모양이 아니면 받지 않는다(서버 줄에도 안 들어간다)
+    assert c.get("/api/scan-queue", params={"ticket": "x"}).status_code == 422
+    assert c.get("/api/scan-queue", params={"ticket": "<script>aa"}).status_code == 422
+
+
+def test_scan_queue_counts_ticketless_waiters_and_keeps_duplicate_ticket():
+    """앞사람 수에는 대기표 없는 요청도 들어간다 · 같은 대기표로 선 두 번째 요청이 빠져도 첫 요청의 표는 남는다 (Codex P2 · P3)."""
+    import asyncio
+
+    class Req:
+        def __init__(self, ticket=None):
+            self.headers = {"x-scan-ticket": ticket} if ticket else {}
+
+        async def is_disconnected(self):
+            return False
+
+    async def scenario():
+        adm = server._Admission(1, 5, 5.0)
+        assert adm.sem.acquire(blocking=False)
+        adm._take()                                              # 점검 1개가 돌고 있다
+        plain = asyncio.create_task(adm.acquire(Req()))          # 대기표 없는 요청
+        await asyncio.sleep(0.05)
+        mine = asyncio.create_task(adm.acquire(Req("cccccccc3333")))
+        await asyncio.sleep(0.05)
+        dup = asyncio.create_task(adm.acquire(Req("cccccccc3333")))   # 같은 표로 한 번 더
+        await asyncio.sleep(0.05)
+        assert adm.ahead("cccccccc3333") == 2                    # 점검 중 1 + 대기표 없는 1
+        dup.cancel()
+        await asyncio.gather(dup, return_exceptions=True)
+        assert adm.ahead("cccccccc3333") == 2                    # 중복 요청이 빠져도 내 표는 그대로
+        adm.release()                                            # 앞 점검 끝 → 대기표 없는 요청이 들어간다
+        await asyncio.wait_for(plain, 2)
+        assert adm.ahead("cccccccc3333") == 1                    # 이제 그 요청이 점검 중
+        adm.release()
+        await asyncio.wait_for(mine, 2)
+        assert adm.ahead("cccccccc3333") is None and adm.running == 1 and not adm._waiters and not adm._tickets
+        adm.release()
+        assert adm.running == 0 and adm.waiting == 0
+
+    asyncio.run(scenario())
+
+
+def test_queue_is_first_in_first_out():
+    """자리가 비면 줄 맨 앞이 들어간다 — 먼저 깨어난 뒷사람이 새치기하지 않는다 (E 리뷰 #374 · 두 번 재현).
+    맨 앞 요청이 연결 확인(is_disconnected)에 잠깐 붙잡힌 사이 자리가 비어도, 뒷사람은 자리를 잡지 못한다."""
+    import asyncio
+
+    async def scenario():
+        hold = asyncio.Event()
+
+        class Slow:                    # 맨 앞 — 연결 확인이 늦게 끝난다
+            headers = {}
+
+            async def is_disconnected(self):
+                await hold.wait()
+                return False
+
+        class Quick:
+            headers = {}
+
+            async def is_disconnected(self):
+                return False
+
+        adm = server._Admission(1, 5, 5.0)
+        assert adm.sem.acquire(blocking=False)
+        adm._take()
+        first = asyncio.create_task(adm.acquire(Slow()))
+        await asyncio.sleep(0.05)
+        second = asyncio.create_task(adm.acquire(Quick()))
+        await asyncio.sleep(0.05)
+        adm.release()                  # 자리가 빈다 — 맨 앞은 아직 연결 확인 중
+        await asyncio.sleep(0.6)       # 뒷사람은 그사이 몇 번 깨어난다
+        assert not second.done()       # 새치기하지 않는다
+        late = asyncio.create_task(adm.acquire(Quick()))   # 그 순간 새로 온 요청도 줄을 건너뛰지 않는다 (Codex)
+        await asyncio.sleep(0.3)
+        assert not late.done() and adm.running == 0
+        hold.set()
+        await asyncio.wait_for(first, 2)
+        assert not second.done()
+        adm.release()
+        await asyncio.wait_for(second, 2)
+        assert not late.done()
+        adm.release()
+        await asyncio.wait_for(late, 2)
+        adm.release()
+        assert adm.running == 0 and not adm._waiters
+
+    asyncio.run(scenario())
+
+
+def test_static_scripts_carry_version():
+    """common.js · style.css 를 바꾸면 예전 파일이 브라우저에 남아 점검이 안 됐다 — 세 화면이 버전 표시를 붙여 부른다 (E 리뷰 #374)."""
+    static = ROOT / "apps" / "analyzer" / "static"
+    for name in ("scan.html", "diagnosis.html", "action.html"):
+        html = (static / name).read_text(encoding="utf-8")
+        assert 'src="common.js?v=' in html and 'href="style.css?v=' in html, name
+
+
 def test_failed_pipeline_releases_slot(admission, monkeypatch):
     def boom(user_ref, posts):
         raise RuntimeError("엔진 실패")

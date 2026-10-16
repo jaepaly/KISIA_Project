@@ -56,6 +56,34 @@ function fmtOneOf(k) {
 // 예상을 넘기면 막대는 멈춘 채 「예상보다 오래 걸리고 있습니다」. est 가 없으면 예전처럼 오가는 막대
 let _pt = null;
 function fmtSec(s) { s = Math.max(1, Math.round(s)); return s < 60 ? `${s}초` : `${Math.floor(s / 60)}분 ${s % 60 ? (s % 60) + "초" : ""}`.trim(); }
+// 점검 대기표 — 점검 POST 에 X-Scan-Ticket 으로 싣고, 기다리는 동안 /api/scan-queue 로 1초마다 차례를 묻는다(서버는 점검을 하나씩만 돌린다).
+// 쓰는 법: const t = scanTicket(); fetch(url, { method: "POST", headers: { "X-Scan-Ticket": t } }) 와 함께 watchQueue(t)
+let _qt = null, _qa = null, _qgen = 0, _queue = { ahead: 0, wasWaiting: false };
+function scanTicket() {
+  const a = new Uint8Array(12);
+  (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => { a[i] = Math.random() * 256; });
+  return Array.from(a, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+// 앞 물음이 끝난 뒤 다음을 예약한다(응답 순서가 뒤집히지 않게) · 점검마다 세대 번호 — 끝난 점검의 늦은 응답은 버린다(Codex P2)
+function watchQueue(ticket) {
+  stopQueue();
+  const gen = ++_qgen;
+  const ask = async () => {
+    _qa = new AbortController();
+    try {
+      const r = await fetch(`../api/scan-queue?ticket=${encodeURIComponent(ticket)}`, { signal: _qa.signal });
+      if (r.ok) { const q = await r.json(); if (gen === _qgen) _queue.ahead = q.waiting ? Math.max(1, q.ahead) : 0; }
+    } catch { /* 못 물으면 띠만 그대로 · 취소도 여기로 */ }
+    if (gen === _qgen) _qt = setTimeout(ask, 1000);
+  };
+  _qt = setTimeout(ask, 400);   // 바로 자리를 잡은 점검은 줄에 없다 — 첫 물음은 조금 뒤에
+}
+function stopQueue() {
+  _qgen++;
+  clearTimeout(_qt); _qt = null;
+  if (_qa) { _qa.abort(); _qa = null; }
+  _queue = { ahead: 0, wasWaiting: false };
+}
 function progressStart(title, note, est) {
   let box = document.getElementById("progress");
   if (!box) {
@@ -69,17 +97,26 @@ function progressStart(title, note, est) {
   const el = (id) => document.getElementById(id);
   const bar = box.querySelector(".pbar");
   const hasEst = typeof est === "number" && est > 0;
-  bar.classList.toggle("det", hasEst); bar.style.setProperty("--p", "0");
+  bar.classList.toggle("det", hasEst); bar.classList.remove("wait"); bar.style.setProperty("--p", "0");
   el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = hasEst ? `0초 / 약 ${fmtSec(est)}` : "0초";
   if (note) el("pNote").textContent = note;
   else if (hasEst) el("pNote").textContent = `글 길이로 어림한 예상 시간은 약 ${fmtSec(est)}입니다. 창을 닫지 말고 기다려 주세요.`;
   box.hidden = false; document.body.classList.add("busy");
-  const t0 = performance.now();
+  let t0 = performance.now();
   // 단계 — 예상 시간이 있으면 그 비율로(0 · 10 · 35 · 60 · 85%), 없으면 예전 초 기준
   const at = hasEst ? [0, 0.1, 0.35, 0.6, 0.85].map((f) => f * est) : [0, 2, 6, 10, 18];
   const names = ["글 읽는 중", "개인정보 단서 찾는 중", "같은 조건의 사람 수 계산 중", "위험 줄일 방법 확인 중", "거의 다 됐습니다"];
   clearInterval(_pt);
   _pt = setInterval(() => {
+    // 앞사람이 있으면 띠를 멈추고 차례를 보인다 — 띠가 예상 시간에 다 찬 뒤 오래 멈춰 있지 않게(E 리뷰 #368). 차례가 오면 0초부터 다시
+    if (_queue.ahead > 0) {
+      _queue.wasWaiting = true;
+      bar.classList.add("wait"); bar.style.setProperty("--p", "0");
+      el("pTime").textContent = "기다리는 중";
+      el("pStage").textContent = ` · 앞에 ${_queue.ahead}명 — 차례가 되면 바로 시작합니다`;
+      return;
+    }
+    if (_queue.wasWaiting) { _queue.wasWaiting = false; t0 = performance.now(); bar.classList.remove("wait"); }
     const s = (performance.now() - t0) / 1000;
     if (hasEst) {
       el("pTime").textContent = s <= est ? `${Math.round(s)}초 / 약 ${fmtSec(est)}` : `${Math.round(s)}초 · 예상보다 오래 걸리고 있습니다`;
@@ -91,6 +128,7 @@ function progressStart(title, note, est) {
 }
 function progressStop() {
   clearInterval(_pt);
+  stopQueue();
   const box = document.getElementById("progress");
   if (box) box.hidden = true;
   document.body.classList.remove("busy");

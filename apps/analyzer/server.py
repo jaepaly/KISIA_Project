@@ -12,6 +12,7 @@ import asyncio
 import json
 import logging
 import os
+import re
 import threading
 import time
 from collections import Counter
@@ -171,6 +172,14 @@ def scan_estimate(chars: int = Query(ge=0, le=5_000_000)):
     return _estimate(chars)
 
 
+@app.get("/api/scan-queue")
+def scan_queue(ticket: str = Query(min_length=8, max_length=40, pattern=r"^[A-Za-z0-9_-]+$")):
+    """대기 순서 — 점검을 보낸 화면이 자기 대기표로 1초마다 묻는다. 줄에 서 있으면 앞사람 수(점검 중 포함), 아니면 waiting false.
+    대기표 말고는 아무것도 돌려주지 않는다(다른 사람의 계정 · 글 · 수를 알 수 없다)."""
+    n = _admission.ahead(ticket)
+    return {"waiting": n is not None, "ahead": n or 0}
+
+
 def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
     _check_posts(posts)
     t0 = time.perf_counter()
@@ -223,6 +232,7 @@ SCAN_CONCURRENCY = max(1, int(os.getenv("SCAN_CONCURRENCY", "1")))
 SCAN_QUEUE_MAX = max(0, int(os.getenv("SCAN_QUEUE_MAX", "3")))
 SCAN_QUEUE_WAIT = max(0.0, float(os.getenv("SCAN_QUEUE_WAIT", "90")))
 _POLL_S = 0.2
+_TICKET = re.compile(r"[A-Za-z0-9_-]{8,40}")   # 화면이 만든 대기표 — 다른 값은 받지 않는다
 
 
 class _Admission:
@@ -240,25 +250,67 @@ class _Admission:
         self.queue_max, self.wait_s = queue_max, wait_s
         self._lock = threading.Lock()
         self.waiting = 0
+        # 대기 순서 표시 — 화면이 보낸 대기표(X-Scan-Ticket) → 줄에 선 차례. 점검 중인 수(running)와 합쳐 「앞에 N명」을 만든다.
+        # 자리는 폴링으로 잡아서 엄밀한 선착순은 아니다(먼저 선 사람이 거의 늘 먼저 잡는다) — 화면에는 어림으로만 쓴다
+        self.running = 0
+        self._order = 0
+        self._waiters: set[int] = set()          # 줄에 선 모든 요청의 순번 — 대기표가 없는 요청도 센다(Codex P2)
+        self._tickets: dict[str, int] = {}       # 대기표 → 그 요청의 순번. 같은 표가 이미 줄에 있으면 뒤 요청은 등록하지 않는다(Codex P3)
+
+    def _take(self) -> None:
+        with self._lock:
+            self.running += 1
+
+    def release(self) -> None:
+        with self._lock:
+            self.running = max(0, self.running - 1)
+        self.sem.release()
+
+    def _head(self, order: int) -> bool:
+        """줄 맨 앞인가 — 자리가 비면 맨 앞만 잡는다. 아니면 먼저 깨어난 뒷사람이 새치기한다(E 리뷰 #374 · 두 번 재현)."""
+        with self._lock:
+            return order == min(self._waiters)
+
+    def ahead(self, ticket: str) -> int | None:
+        """대기표의 앞사람 수(점검 중 + 먼저 선 사람). 줄에 없으면(점검 중 · 끝남 · 모르는 표) None."""
+        with self._lock:
+            mine = self._tickets.get(ticket)
+            if mine is None:
+                return None
+            return self.running + sum(1 for o in self._waiters if o < mine)
 
     async def acquire(self, request: Request | None = None) -> None:
-        if self.sem.acquire(blocking=False):
-            return
+        # 바로 잡기는 줄이 비어 있을 때만 — 자리가 빈 순간 새로 온 요청이 줄을 건너뛰지 않게 (Codex · #374 FIFO)
+        with self._lock:
+            if not self._waiters and self.sem.acquire(blocking=False):
+                self.running += 1
+                return
+        ticket = request.headers.get("x-scan-ticket", "") if request is not None else ""
+        ticket = ticket if _TICKET.fullmatch(ticket) else ""
         with self._lock:
             if self.waiting >= self.queue_max:
                 raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
             self.waiting += 1
+            self._order += 1
+            order = self._order
+            self._waiters.add(order)
+            if ticket and ticket not in self._tickets:
+                self._tickets[ticket] = order
         try:
             deadline = time.monotonic() + self.wait_s
-            while not self.sem.acquire(blocking=False):
+            while not (self._head(order) and self.sem.acquire(blocking=False)):
                 if time.monotonic() >= deadline:
                     raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
                 if request is not None and await request.is_disconnected():
                     raise HTTPException(status_code=499, detail="요청이 취소되었습니다")
                 await asyncio.sleep(_POLL_S)
+            self._take()
         finally:
             with self._lock:
                 self.waiting -= 1
+                self._waiters.discard(order)
+                if ticket and self._tickets.get(ticket) == order:   # 내가 등록한 표만 지운다
+                    del self._tickets[ticket]
 
     async def _in_thread(self, work):
         return await asyncio.get_running_loop().run_in_executor(self.pool, work)
@@ -279,7 +331,7 @@ class _Admission:
             try:
                 return fn(*args)
             finally:
-                self.sem.release()
+                self.release()
 
         try:
             # 자리를 잡는 사이 떠났으면 돌리지 않는다 — 이 확인도 반환 보호 안에서 (여기서 취소돼도 자리를 돌려준다 · Codex 2차)
@@ -290,7 +342,7 @@ class _Admission:
             with state_lock:
                 if state["v"] == "pending":
                     state["v"] = "cancelled"
-                    self.sem.release()
+                    self.release()
             raise
 
 
