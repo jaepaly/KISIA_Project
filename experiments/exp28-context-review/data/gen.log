@@ -1,0 +1,88 @@
+P28_01 A ok
+P28_02 A ok
+P28_03 A ok
+P28_04 A ok
+P28_05 A ok
+P28_06 A ok
+P28_07 A ok
+P28_08 A ok
+P28_09 A ok
+P28_10 A ok
+P28_11 A ok
+P28_12 A ok
+P28_13 A ok
+P28_14 A ok
+P28_15 A ok
+P28_16 A ok
+P28_17 A ok
+P28_18 A ok
+P28_19 A ok
+P28_20 A ok
+P28_21 A ok
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+P28_22 A ok
+P28_23 A ok
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+P28_24 A ok
+    ⚠ 응답이 끊겼다 (finishReason=MAX_TOKENS)
+    ⚠ 응답이 끊겼다 (finishReason=MAX_TOKENS)
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P28_25 A ok
+P28_26 A ok
+P28_27 A ok
+P28_28 A ok
+P28_29 A ok
+P28_30 A ok
+P28_31 A ok
+P28_32 A ok
+P28_33 A ok
+P28_34 A ok
+P28_35 A ok
+P28_36 A ok
+P28_37 A ok
+P28_38 A ok
+P28_39 A ok
+P28_40 A ok
+P28_41 B ok
+P28_42 B ok
+P28_43 B ok
+P28_44 B ok
+P28_45 B ok
+P28_46 B ok
+P28_47 B ok
+P28_48 B ok
+P28_49 B ok
+P28_50 B ok
+P28_51 B ok
+P28_52 B ok
+P28_53 B ok
+P28_54 B ok
+P28_55 B ok
+P28_56 B ok
+P28_57 B ok
+P28_58 B ok
+P28_59 B ok
+P28_60 B ok
+P28_61 B ok
+P28_62 B ok
+P28_63 B ok
+P28_64 B ok
+P28_65 C ok
+P28_66 C ok
+P28_67 C ok
+P28_68 C ok
+P28_69 C ok
+P28_70 C ok
+P28_71 C ok
+P28_72 C ok
+P28_73 C ok
+P28_74 C ok
+P28_75 C ok
+P28_76 C ok
+P28_77 C ok
+P28_78 C ok
+P28_79 C ok
+P28_80 C ok
+{"kept": 80, "dropped": 0, "calls": 58}
