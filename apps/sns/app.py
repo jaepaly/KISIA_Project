@@ -477,10 +477,13 @@ def privacy():
 @app.get("/new")
 def new():
     """작성 화면. ⚠️ 작성시각을 직접 입력받는다 — howto §4."""
-    authors = db().execute("SELECT * FROM authors ORDER BY nickname").fetchall()
+    # 내가 만든 새 계정을 맨 위에 — 가상 인물 115명 사이에서 찾지 않게
+    authors = sorted(db().execute("SELECT * FROM authors ORDER BY nickname").fetchall(),
+                     key=lambda a: not is_new_account(a["author_id"]))
     now_kst = datetime.now(KST).strftime("%Y-%m-%dT%H:%M")
     try:
-        return render_template("new.html", authors=authors, now=now_kst)
+        return render_template("new.html", authors=authors, now=now_kst, is_new_account=is_new_account,
+                               new_account_max=NEW_ACCOUNT_MAX, new_account_name_max=NEW_ACCOUNT_NAME_MAX)
     except sqlite3.OperationalError:
         return _todo("글 작성", "§4")
 
@@ -763,6 +766,48 @@ def set_me():
     return redirect(_with_done(_back("/"), "me" if aid else "me_off"))
 
 
+# ── 새 빈 계정 — 가상 인물이 아니라 「내 글」로 시험해 보려는 사람용. 그 방문자의 체험용 사본에만 생기고
+#    (세션 사본 · 7일 · 처리방침 「직접 쓴 글」과 같은 범위) 만들자마자 「내 계정」이 된다.
+#    author_id 는 M + 16진수 8자리 — 시드 인물(A~E · S)과 겹치지 않고, 인물 설정 파일이 없어 정답지 패널이 비어 있다
+NEW_ACCOUNT_PREFIX = "M"
+NEW_ACCOUNT_MAX = 5           # 한 방문자가 만들 수 있는 새 계정 수 — 사본이 계정으로 불어나지 않게
+NEW_ACCOUNT_NAME_MAX = 20
+
+
+def is_new_account(author_id: str | None) -> bool:
+    return bool(author_id) and _re.fullmatch(rf"{NEW_ACCOUNT_PREFIX}[0-9a-f]{{8}}", author_id) is not None
+
+
+@app.post("/me/new")
+def new_account():
+    """새 빈 계정 만들기 — 닉네임은 고르지 않으면 「새 계정 xxxx」. 만든 계정을 내 계정으로 정한다."""
+    name = " ".join((request.form.get("nickname") or "").split())
+    _too_long(name, NEW_ACCOUNT_NAME_MAX, "계정 이름")
+    c = db()
+    n = c.execute("SELECT COUNT(*) FROM authors WHERE author_id GLOB ?",
+                  (NEW_ACCOUNT_PREFIX + "[0-9a-f]" * 8,)).fetchone()[0]
+    if n >= NEW_ACCOUNT_MAX:
+        _reject(429, f"새 계정은 {NEW_ACCOUNT_MAX}개까지 만들 수 있습니다. 만든 계정을 골라 이어서 써 주세요.")
+    for _ in range(5):        # 겹칠 일은 거의 없지만, 겹치면 다시 뽑는다
+        aid = NEW_ACCOUNT_PREFIX + _uuid.uuid4().hex[:8]
+        ref = "u_" + _uuid.uuid4().hex[:12]
+        try:
+            c.execute("INSERT INTO authors(author_id, user_ref, nickname, bio, joined_at) VALUES (?, ?, ?, NULL, ?)",
+                      (aid, ref, name or f"새 계정 {aid[1:5]}", _now()))
+            break
+        except sqlite3.IntegrityError:
+            continue
+    else:
+        abort(500)
+    c.execute("INSERT INTO me(id, author_id, chosen_at) VALUES (1, ?, ?)"
+              " ON CONFLICT(id) DO UPDATE SET author_id = excluded.author_id, chosen_at = excluded.chosen_at",
+              (aid, _now()))
+    c.commit()
+    if request.headers.get("X-Requested-With") == "fetch":
+        return jsonify({"me": _me()})
+    return redirect("/new")
+
+
 @app.post("/changes/<int:log_id>/undo")
 def undo_change(log_id: int):
     e = db().execute("SELECT * FROM action_log WHERE id = ? AND undone_at IS NULL", (log_id,)).fetchone()
@@ -1029,6 +1074,7 @@ def author_summary(author_id: str):
         "author_id": a["author_id"], "user_ref": a["user_ref"], "nickname": a["nickname"],
         "hue": _hue(a["author_id"]),   # 피드 아바타와 같은 색
         "persona": _persona_brief(a["author_id"]),
+        "is_new": is_new_account(a["author_id"]),   # 방문자가 만든 빈 계정 — 정답지 대신 「내 글로 시험하기」 안내
         "bio": a["bio"], "joined_at": (a["joined_at"] or "")[:10],
         "n_posts": len(posts), "last": posts[0]["created_at"][:10] if posts else None,
         "top_tags": [{"geo_tag": t, "n": n} for t, n in top],

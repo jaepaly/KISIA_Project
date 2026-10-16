@@ -118,12 +118,12 @@
       <div class="ut-card rv">
         <form method="post" action="/posts">
           <div style="margin-bottom:14px;">
-            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자 <span style="font-weight:400;">— 가상 인물을 골라 글을 써 보세요.</span></label>
+            <label style="font-size:12px;font-weight:700;color:var(--ut-ink3);display:block;margin-bottom:4px;">작성자 <span style="font-weight:400;">— 가상 인물을 고르거나, 새 계정을 만들어 내 글로 시험해 보세요.</span></label>
             <select name="author_id" id="authorSel" required
                     style="width:100%;height:44px;border:1px solid var(--ut-line);border-radius:10px;
                            background:var(--ut-panel2);font:inherit;font-size:14px;color:var(--ut-ink);padding:0 12px;">
               {% for a in authors %}
-              <option value="{{ a.author_id }}" {% if me and me.author_id == a.author_id %}selected{% endif %}>{{ a.nickname }}{% if me and me.author_id == a.author_id %} (내 계정){% endif %}</option>
+              <option value="{{ a.author_id }}" {% if me and me.author_id == a.author_id %}selected{% endif %}>{% if is_new_account(a.author_id) %}✨ {% endif %}{{ a.nickname }}{% if me and me.author_id == a.author_id %} (내 계정){% endif %}{% if is_new_account(a.author_id) %} · 내가 만든 계정{% endif %}</option>
               {% endfor %}
             </select>
             {# 내 계정 — 정해 두면 다음부터 글쓰기와 내 글 점검이 이 사람으로 시작하고, 상단바 아바타에서 바꾼 것을 되돌린다. 안 골라도 된다 #}
@@ -131,6 +131,15 @@
               <span id="meNote">{% if me %}내 계정은 <b>{{ me.nickname }}</b>입니다.{% else %}이 사람을 내 계정으로 정해 두면 글쓰기와 내 글 점검이 이 사람으로 시작합니다.{% endif %}</span>
               <button type="button" class="ghost" id="meBtn" {% if me %}hidden{% endif %}>🙋 이 사람으로 체험하기</button>
             </div>
+            {# 새 빈 계정 — 가상 인물 말고 내 이야기를 써서 시험해 보려는 사람용. 이 브라우저의 체험용 사본에만 생긴다 (app.py /me/new) #}
+            <details class="new-acct" id="newAcct">
+              <summary>✨ 내 글로 시험하기 — 글이 하나도 없는 새 계정 만들기</summary>
+              <div class="new-acct-row">
+                <input type="text" id="newName" maxlength="{{ new_account_name_max }}" placeholder="계정 이름 (비우면 「새 계정 ○○○○」)" aria-label="새 계정 이름">
+                <button type="button" class="ghost" id="newBtn">만들기</button>
+              </div>
+              <p class="new-acct-note" id="newNote">이 브라우저의 체험용 사본에만 생기고, 7일 동안 열지 않으면 지워집니다. 최대 {{ new_account_max }}개까지 만들 수 있습니다.</p>
+            </details>
             {# 글 화면 「이 글을 옮겨 고쳐 쓰기」로 왔으면 원래 글 — 이력에 「고쳐 쓰기」로 남아 되돌릴 수 있다 #}
             <input type="hidden" name="from_post" id="fromPost" value="">
           </div>
@@ -272,6 +281,27 @@
     } catch (e) { note.textContent = "저장하지 못했습니다. 잠시 뒤 다시 눌러 주세요."; }
     btn.disabled = false; sync();
   });
+  // 새 빈 계정 — 만들면 목록 맨 위에 넣고 고른 뒤, 오른쪽 패널을 그 계정으로 다시 그린다(change 이벤트)
+  const nb = document.getElementById("newBtn"), nn = document.getElementById("newName"), nNote = document.getElementById("newNote");
+  nb && nb.addEventListener("click", async () => {
+    const fd = new FormData(); fd.append("nickname", (nn.value || "").trim());
+    nb.disabled = true;
+    try {
+      const r = await fetch("/me/new", { method: "POST", body: fd, headers: { "X-Requested-With": "fetch" } });
+      if (!r.ok) { nNote.textContent = (await r.text()) || "만들지 못했습니다. 잠시 뒤 다시 눌러 주세요."; return; }
+      const j = await r.json();
+      [...sel.options].forEach((o) => { o.textContent = o.textContent.replace(" (내 계정)", ""); });
+      const opt = new Option(`✨ ${j.me.nickname} (내 계정) · 내가 만든 계정`, j.me.author_id, true, true);
+      sel.insertBefore(opt, sel.firstChild);
+      mine = j.me.author_id;
+      note.textContent = "";
+      note.append("새 계정 ", Object.assign(document.createElement("b"), { textContent: j.me.nickname }), "을(를) 만들고 내 계정으로 정했습니다. 이제 내 이야기를 써 보세요.");
+      nn.value = ""; document.getElementById("newAcct").open = false;
+      sel.dispatchEvent(new Event("change"));
+      document.getElementById("body").focus();
+    } catch (e) { nNote.textContent = "만들지 못했습니다. 잠시 뒤 다시 눌러 주세요."; }
+    finally { nb.disabled = false; }
+  });
   sync();
 })();
 
@@ -305,7 +335,7 @@ const AP = (function () {
     const p = me.persona;
     const h = me.hue;
     let html = `
-      <div class="rail-h">선택한 가상 인물</div>
+      <div class="rail-h">${me.is_new ? "내가 만든 계정" : "선택한 가상 인물"}</div>
       <div class="who">
         <a class="ut-av sm" href="/u/${esc(me.user_ref)}" style="background:hsl(${h},45%,86%);color:hsl(${h},35%,32%);">${esc(me.nickname.slice(0, 1))}</a>
         <div><a class="nm" href="/u/${esc(me.user_ref)}">${esc(me.nickname)}</a><div class="handle">@${esc(me.user_ref)}${me.bio ? " · " + esc(me.bio) : ""}</div></div>
@@ -322,10 +352,12 @@ const AP = (function () {
       if (p.topics && p.topics.length) more += `<div class="sub">평소 소재</div><div class="chips">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>`;
       if (p.hours) more += `<p class="muted" style="margin:10px 0 0;">주로 쓰는 시간 ${esc(p.hours)}</p>`;
       if (more) html += `<details><summary>말투와 평소 글쓰기 습관</summary>${more}</details>`;
+    } else if (me.is_new) {
+      html += `<p class="muted" style="margin:10px 0 0;">가상 인물이 아니라 직접 만든 빈 계정이라 정답지가 없습니다. 내 이야기를 써 보고, 어떤 표현이 단서로 잡히는지 확인해 보세요. 글을 여러 편 올리면 엮었을 때 얼마나 좁혀지는지도 볼 수 있습니다.</p>`;
     } else {
       html += `<p class="muted" style="margin:10px 0 0;">자세한 인물 소개가 없습니다. 기존 글을 참고해 보세요.</p>`;
     }
-    html += `<details><summary>최근 글 ${me.n_posts}편 중 ${me.recent.length}편</summary><ul class="recent">${me.recent.map((r) => `<li><a href="/posts/${esc(r.post_id)}" target="veilo">${esc(r.title || "(제목 없음)")}</a><span class="sn">${esc(r.snippet)}</span></li>`).join("")}</ul></details>`;
+    if (me.n_posts) html += `<details><summary>최근 글 ${me.n_posts}편 중 ${me.recent.length}편</summary><ul class="recent">${me.recent.map((r) => `<li><a href="/posts/${esc(r.post_id)}" target="veilo">${esc(r.title || "(제목 없음)")}</a><span class="sn">${esc(r.snippet)}</span></li>`).join("")}</ul></details>`;
     who.innerHTML = html;
   }
 
@@ -409,6 +441,12 @@ const AP = (function () {
     me = m;
     renderWho();
     combineBtn.disabled = false; combineBtn.textContent = `기존 공개 글 ${me.n_posts}편과 함께 점검`;
+    if (!me.n_posts) {   // 새 계정 등 공개 글이 없으면 점검할 것이 없다 — 빈 점검 요청을 보내지 않는다
+      kState.className = "cnt"; kState.textContent = "공개 글 0편";
+      kOut.innerHTML = `<p class="muted" style="margin:0;">아직 공개 글이 없습니다. 글을 올리면 여기서 지금까지의 글을 함께 점검합니다.</p>`;
+      combineBtn.hidden = true;
+      return;
+    }
     autoScan(g);
   }
 
@@ -422,7 +460,7 @@ const AP = (function () {
       liveOut.innerHTML = `<p class="muted" style="margin:0;">본문을 쓰면 개인정보 단서와 같은 조건의 사람 수가 나옵니다.</p>`;
       return;
     }
-    combineBtn.hidden = false;
+    combineBtn.hidden = !(me && me.n_posts);   // 공개 글이 없으면 「함께 점검」은 위 결과와 같다
     const prev = live.dataset.k ? Number(live.dataset.k) : null;
     const k = res.k;
     live.dataset.k = k === null || k === undefined ? "" : String(k);
