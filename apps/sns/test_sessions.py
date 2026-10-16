@@ -63,6 +63,21 @@ def test_first_visit_sets_cookie_and_edits_do_not_leak(app_iso):
     assert live.execute("SELECT visibility FROM posts WHERE post_id='S01_b01'").fetchone()[0] == "public"
 
 
+def test_cookie_renews_on_each_page_visit(app_iso):
+    """쿠키 기간이 화면을 열 때마다 다시 7일 — 사본(마지막으로 연 때부터 7일)과 같이 늘어난다 (#375 · 처리방침 「7일 동안 열지 않으면」).
+    같은 값을 다시 준다(새 사본 아님). 분석기 헤더 호출 · /api · /static · POST 에는 쿠키를 다시 주지 않는다."""
+    import app as appmod
+    app, _ = app_iso
+    a = app.test_client()
+    first = " ".join(a.get("/?skip_about=1").headers.getlist("Set-Cookie"))   # 소개 쿠키도 같이 온다
+    sid = first.split("veilo_sid=")[1].split(";")[0]
+    again = " ".join(a.get("/u/u_0123456789ab").headers.getlist("Set-Cookie"))
+    assert f"veilo_sid={sid}" in again and f"Max-Age={appmod.SESSION_MAX_AGE}" in again
+    for r in (a.get("/api/me"), a.get("/static/veilo.css"), _toggle(a),
+              app.test_client().get("/api/export/u_0123456789ab", headers={"X-Veilo-Session": sid})):
+        assert "veilo_sid" not in " ".join(r.headers.getlist("Set-Cookie"))
+
+
 def test_export_follows_session_header(app_iso):
     app, _ = app_iso
     a = app.test_client()

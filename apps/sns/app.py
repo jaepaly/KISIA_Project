@@ -313,6 +313,11 @@ def _ensure_session() -> None:
     if sid is None and not request.path.startswith("/api/") and request.method not in ("HEAD", "OPTIONS"):
         sid = _uuid.uuid4().hex[:24]
         g.new_sid = sid
+    elif (sid and request.cookies.get(SESSION_COOKIE) == sid and request.method == "GET"
+          and not request.path.startswith(("/api/", "/static/"))):
+        # 화면을 열 때마다 쿠키 기간을 다시 7일로 — 사본(마지막으로 연 때부터 7일)과 같이 늘어나게.
+        # 예전엔 첫 방문에만 주어서, 매일 와도 첫 방문 7일 뒤 쿠키가 끊겨 바꾼 것이 안 보였다 (처리방침 「7일 동안 열지 않으면」과 어긋남 · #375)
+        g.new_sid = sid
     g.sid = sid if request.method not in ("HEAD", "OPTIONS") else None
 
 
@@ -461,6 +466,12 @@ def post(post_id: str):
 def about():
     """「파도풀이란?」 1분 소개 — 스크롤 연출(pado-scene.js). ?view=static 이면 움직임 없이 다 펼친 화면."""
     return render_template("about.html", static=request.args.get("view") == "static")
+
+
+@app.get("/privacy")
+def privacy():
+    """개인정보 처리방침 — 홈 왼쪽 카드에서 연다. 문구를 바꾸면 docs/privacy-policy.md 도 같이 고친다."""
+    return render_template("privacy.html")
 
 
 @app.get("/new")
