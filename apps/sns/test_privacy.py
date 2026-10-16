@@ -42,6 +42,7 @@ def test_privacy_matches_code(client):
     assert appmod.SESSION_IDLE_SECONDS == appmod.SESSION_MAX_AGE   # 쿠키 기간 = 사본 보관 기간 (둘 다 「7일」로 적는다)
     assert f"마지막으로 연 때부터 {days}일" in html
     assert f"{appmod.SESSION_MAX}개" in html
+    assert "직접 만든 새 계정" in html   # 새 빈 계정(#377 · /me/new) — 처리하는 항목 · 보관 범위에 적는다
     for cookie in (appmod.SESSION_COOKIE, appmod.ABOUT_COOKIE, "padopool_motion"):
         assert f"<code>{cookie}</code>" in html
 

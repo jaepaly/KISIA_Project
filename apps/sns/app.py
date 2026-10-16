@@ -470,7 +470,7 @@ def about():
 
 @app.get("/privacy")
 def privacy():
-    """개인정보 처리방침 — 홈 왼쪽 카드에서 연다. 문구를 바꾸면 docs/privacy-policy.md 도 같이 고친다."""
+    """개인정보 처리방침 — 홈 왼쪽 카드에서 연다. 처리방침의 정본은 이 템플릿(privacy.html) 하나다 — docs/privacy-policy.md 는 v1.2 기록 · 안내만."""
     return render_template("privacy.html")
 
 
