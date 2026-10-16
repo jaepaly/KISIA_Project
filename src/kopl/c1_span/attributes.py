@@ -270,9 +270,33 @@ def _person_end(after: str, m: "re.Match[str]") -> int:
     return body.end() if body else m.end()
 
 
+# 성별 단서로 잡힌 홑 부모 호칭(「아빠가」 「엄마는」) — 아빠 · 엄마 블로거는 자기를 「아빠의 시간」처럼 부른다(골드 A23).
+# 자녀 입장의 글(「엄마아빠가 혼자는 안 된대」 「엄마랑 나랑」 · 자녀 표지 없음)이면 글쓴이의 부모라 그 사람의 성별이다 (실제 글 시험 10/16).
+# 같은 글에 자녀 · 가족 표지가 있고 자녀 입장 표지가 없을 때만 본인. 복수 · 겸칭(「엄마들」 「엄마이자」)은 이 규칙 밖
+_PARENT_TERM = re.compile(r"(?:엄마|아빠|어머니|아버지|엄빠)(?:가|는|의|도|를|한테|랑|이랑|하고|께서|은|이)?")
+_PARENT_OF_CHILD = re.compile(r"(?<![가-힣])(?:아이(?:가|는|를|랑|와|들|의|도|한테|에게|\s|$)|애들|우리\s*애|아들|딸(?:이|아|은|을|도|의|래|과|이랑|\s)"
+                              r"|첫째|둘째|하원|등원|어린이집|유치원|육아|기저귀|이유식|가족|식구)")  # 「아이참」 같은 감탄사는 거른다
+_CHILD_VIEW = re.compile(r"엄마\s*아빠|아빠\s*엄마|엄빠|부모님|엄마랑\s*나|아빠랑\s*나|엄마와\s*나|우리\s*엄마|우리\s*아빠|효도")
+# 명백한 여행 표현이 붙은 지명 — 골드(test 제외 2,281편)에서 이 꼴은 1개이고 self 가 아니다(「대전 놀러 갔다가」 · 10/16).
+# 「들러 · 갔다 · 다녀왔다 · 내려가면」 같은 이동 말은 넣지 않는다 — 동네 볼일 · 본가 · 이사(「농협에 들러」 「본가인 창원에 내려가면」
+# 「제주 내려와 살면서」)라 골드에서 본인 거주 단서다(27/28)
+_TRAVEL_IN = re.compile(r"여행|놀러|관광|휴가|출장|나들이|투어")
+_TRAVEL_AFTER = re.compile(r"\s*(?:에|에서|로|으로)?\s*(?:[가-힣]{1,6}\s*)?(?:여행|놀러|관광|휴가|출장|나들이|당일치기|투어)")
+
+
 def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
     if channel_text is None or start is None or end is None:
         return "self"
+    if stype == "SEX" and _PARENT_TERM.fullmatch(text.strip()) \
+            and (_CHILD_VIEW.search(channel_text) or not _PARENT_OF_CHILD.search(channel_text)):
+        return "other"   # 글쓴이의 부모 — 「아빠가 진짜 싫다고 해서 엄마랑 나랑 옴」
+    who = _subject_in_sentence(stype, text, channel_text, start, end)
+    if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY")             and (_TRAVEL_IN.search(text) or _TRAVEL_AFTER.match(channel_text[end:])):
+        return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
+    return who
+
+
+def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, end: int) -> str:
     before, after = _sentence_window(channel_text, start, end)
     core = _core(text)
     if re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before):

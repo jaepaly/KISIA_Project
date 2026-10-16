@@ -281,3 +281,30 @@ def test_household_ne_adverb_and_me_word(sentence, span, expected):
 def test_household_ne_me_in_next_clause_is_not_modifier():
     """「[딸네로] 가셨는데 나를 보고」 — 다음 절의 「나를」은 술어가 꾸미는 말이 아니다 (Codex 10/6)."""
     assert _r("옆집 아주머니가 딸네로 가셨는데 나를 보고 손을 흔드셨다", "딸네로", "FAM")["subject"] == "other"
+
+
+# ── 실제 글 시험(10/16)에서 찾은 오탐 — 글쓴이의 부모 · 여행지 ─────────────────────
+@pytest.mark.parametrize("sentence,span,expected", [
+    # 자녀 입장 — 성별 단서로 잡힌 「아빠가」는 글쓴이의 아버지(남의 성별)
+    ("엄마아빠가 혼자는 안 된다고 했다. 아빠가 진짜 싫다고 해서 엄마랑 나랑 옴", "아빠가", "other"),
+    ("아빠가 그 정도는 괜찮대", "아빠가", "other"),               # 자녀 표지도 없다 → 글쓴이 부모
+    ("아이참 아빠가 또 그러네", "아빠가", "other"),               # 「아이참」은 감탄사 — 자녀 표지가 아니다
+    # 부모 블로거 — 자기를 「아빠」로 부른다 (골드 A23 관례)
+    ("아이가 아빠는 여기 앉아 있으라고 자리를 정해 줬다", "아빠는", "self"),
+    ("가족 다 자는 밤 혼자 맥주 한 캔 마시는 아빠의 유일한 시간", "아빠의", "self"),
+    ("엄마들 단톡방에서 하원 시간 얘기가 나왔다", "엄마들", "self"),  # 복수 — 이 규칙 밖
+])
+def test_parent_term_sex_subject(sentence, span, expected):
+    assert _r(sentence, span, "SEX")["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    ("일본에 디자인 여행이나 가 볼까", "일본에", "LOC_ADMIN", "unknown"),   # 여행지 — 사는 곳이 아니다
+    ("이번 주말엔 부산 놀러 가요", "부산", "LOC_ADMIN", "unknown"),
+    ("제주 여행 숙소 예약 끝", "제주", "LOC_ADMIN", "unknown"),
+    ("농협에 들러 비료를 샀다", "농협에", "LOC_FACILITY", "self"),          # 동네 볼일 — 그대로 본인 (골드 관례)
+    ("본가인 창원에 내려가면 꼭 먹는 국밥", "창원에", "LOC_ADMIN", "self"),  # 본가 — 그대로 본인
+    ("친구가 대전 놀러 갔다가 사진을 보냈다", "대전", "LOC_ADMIN", "other"),  # 남의 것은 남의 것
+])
+def test_travel_place_is_not_home(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
