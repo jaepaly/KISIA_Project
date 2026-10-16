@@ -360,3 +360,20 @@ def test_codex_recheck(sentence, span, stype, expected):
 ])
 def test_codex_third(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # B 리뷰 — 짧은 자기소개 어미(다 · 자)가 「다쳤다」 「자랑스럽다」의 앞부분에 걸리면 안 된다
+    ("나는 아빠가 자랑스럽다", "아빠가", "SEX", "other"),
+    ("나는 엄마가 다쳤다는 소식을 들었다", "엄마가", "SEX", "other"),
+    ("나는 엄마가 고마워서 울었다", "엄마가", "SEX", "other"),
+    ("나는 아빠다.", "아빠", "SEX", "self"),
+    ("나는 엄마인데요 요즘 바빠요", "엄마", "SEX", "self"),
+    ("나는 아빠가 됐다", "아빠가", "SEX", "self"),
+    ("나는 엄마로서는 아직 부족하다", "엄마", "SEX", "self"),   # Codex — 로서 뒤 조사
+    ("나는 엄마인데도 육아가 어렵다", "엄마", "SEX", "self"),
+    ("나는 엄마가 고요한 목소리로 부르는 노래를 좋아한다", "엄마가", "SEX", "other"),   # Codex — 고 + 요한
+    ("나는 아빠고요 딸이 둘이에요", "아빠", "SEX", "self"),
+])
+def test_b_review_intro_suffix(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
