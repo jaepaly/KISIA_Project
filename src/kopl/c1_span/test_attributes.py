@@ -351,3 +351,12 @@ def test_travel_place_is_not_promoted_by_home_marker():
 ])
 def test_codex_recheck(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    ("나는 아빠였다", "아빠", "SEX", "self"),                    # Codex 3차 — 과거 · 이어 말하기 자기소개
+    ("나는 엄마이고 직장인이다", "엄마", "SEX", "self"),
+    ("서울 휴가철에도 출근한다", "서울", "LOC_ADMIN", "self"),     # 휴가철은 여행이 아니다
+])
+def test_codex_third(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
