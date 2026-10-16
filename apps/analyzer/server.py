@@ -266,6 +266,11 @@ class _Admission:
             self.running = max(0, self.running - 1)
         self.sem.release()
 
+    def _head(self, order: int) -> bool:
+        """줄 맨 앞인가 — 자리가 비면 맨 앞만 잡는다. 아니면 먼저 깨어난 뒷사람이 새치기한다(E 리뷰 #374 · 두 번 재현)."""
+        with self._lock:
+            return order == min(self._waiters)
+
     def ahead(self, ticket: str) -> int | None:
         """대기표의 앞사람 수(점검 중 + 먼저 선 사람). 줄에 없으면(점검 중 · 끝남 · 모르는 표) None."""
         with self._lock:
@@ -291,7 +296,7 @@ class _Admission:
                 self._tickets[ticket] = order
         try:
             deadline = time.monotonic() + self.wait_s
-            while not self.sem.acquire(blocking=False):
+            while not (self._head(order) and self.sem.acquire(blocking=False)):
                 if time.monotonic() >= deadline:
                     raise HTTPException(status_code=429, detail=BUSY_DETAIL, headers={"Retry-After": "30"})
                 if request is not None and await request.is_disconnected():

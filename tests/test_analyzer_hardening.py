@@ -159,6 +159,56 @@ def test_scan_queue_counts_ticketless_waiters_and_keeps_duplicate_ticket():
     asyncio.run(scenario())
 
 
+def test_queue_is_first_in_first_out():
+    """자리가 비면 줄 맨 앞이 들어간다 — 먼저 깨어난 뒷사람이 새치기하지 않는다 (E 리뷰 #374 · 두 번 재현).
+    맨 앞 요청이 연결 확인(is_disconnected)에 잠깐 붙잡힌 사이 자리가 비어도, 뒷사람은 자리를 잡지 못한다."""
+    import asyncio
+
+    async def scenario():
+        hold = asyncio.Event()
+
+        class Slow:                    # 맨 앞 — 연결 확인이 늦게 끝난다
+            headers = {}
+
+            async def is_disconnected(self):
+                await hold.wait()
+                return False
+
+        class Quick:
+            headers = {}
+
+            async def is_disconnected(self):
+                return False
+
+        adm = server._Admission(1, 5, 5.0)
+        assert adm.sem.acquire(blocking=False)
+        adm._take()
+        first = asyncio.create_task(adm.acquire(Slow()))
+        await asyncio.sleep(0.05)
+        second = asyncio.create_task(adm.acquire(Quick()))
+        await asyncio.sleep(0.05)
+        adm.release()                  # 자리가 빈다 — 맨 앞은 아직 연결 확인 중
+        await asyncio.sleep(0.6)       # 뒷사람은 그사이 몇 번 깨어난다
+        assert not second.done()       # 새치기하지 않는다
+        hold.set()
+        await asyncio.wait_for(first, 2)
+        assert not second.done()
+        adm.release()
+        await asyncio.wait_for(second, 2)
+        adm.release()
+        assert adm.running == 0 and not adm._waiters
+
+    asyncio.run(scenario())
+
+
+def test_static_scripts_carry_version():
+    """common.js · style.css 를 바꾸면 예전 파일이 브라우저에 남아 점검이 안 됐다 — 세 화면이 버전 표시를 붙여 부른다 (E 리뷰 #374)."""
+    static = ROOT / "apps" / "analyzer" / "static"
+    for name in ("scan.html", "diagnosis.html", "action.html"):
+        html = (static / name).read_text(encoding="utf-8")
+        assert 'src="common.js?v=' in html and 'href="style.css?v=' in html, name
+
+
 def test_failed_pipeline_releases_slot(admission, monkeypatch):
     def boom(user_ref, posts):
         raise RuntimeError("엔진 실패")
