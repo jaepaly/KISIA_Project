@@ -287,6 +287,7 @@ def build_conditions(
     if not post_id:
         return []
     conditions: list[dict[str, Any]] = []
+    unknown_loc: set[int] = set()   # 관계 불명(unknown — 여행지 등) 스팬의 위치 조건 — 거주 표지로 올리지 않는다 (Codex)
     usable_rel_work = False
     rel_home_self = False
 
@@ -302,6 +303,8 @@ def build_conditions(
         if condition is None:
             continue
         conditions.append(condition)
+        if subject == "unknown":
+            unknown_loc.add(id(condition))
 
         text = str(span["text"])
         if span_type == "SEX" and _SPOUSE_TERM_RE.search(text):
@@ -316,7 +319,7 @@ def build_conditions(
 
     if rel_home_self:
         for condition in conditions:
-            if condition["axis"] == "location":
+            if condition["axis"] == "location" and id(condition) not in unknown_loc:
                 condition["confidence"] = 1.0
 
     if usable_rel_work:

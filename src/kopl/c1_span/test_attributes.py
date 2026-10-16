@@ -308,3 +308,35 @@ def test_parent_term_sex_subject(sentence, span, expected):
 ])
 def test_travel_place_is_not_home(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # Codex 반례 — 같은 문단 · 1인칭 자기소개 · 아들/딸 대칭
+    ("가족 다 자는 밤 혼자 맥주 마시는 아빠의 유일한 시간\n\n내일은 부모님께 전화해야겠다.", "아빠의", "SEX", "self"),
+    ("아빠가 반대했다.\n\n미국 하원 소식을 봤다.", "아빠가", "SEX", "other"),
+    ("나는 아빠가 됐다", "아빠가", "SEX", "self"),
+    ("아빠는 딸만 키운다", "아빠는", "SEX", "self"),
+    ("아빠는 아들만 키운다", "아빠는", "SEX", "self"),
+    # Codex 반례 — 여행 말이 지명을 꾸미지 않으면 그대로
+    ("나는 서울에서 살며 여행을 즐긴다", "서울에서", "LOC_ADMIN", "self"),
+    ("부산에서 여행사를 운영한다", "부산에서", "LOC_ADMIN", "self"),
+    ("한국관광공사에서 매일 일한다", "한국관광공사", "LOC_FACILITY", "self"),
+    ("서울\n\n휴가 끝나고 출근했다", "서울", "LOC_ADMIN", "self"),
+])
+def test_codex_counterexamples(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
+
+
+def test_travel_place_is_not_promoted_by_home_marker():
+    """여행지(unknown) 위치는 같은 글의 「집 근처」(REL_HOME) 때문에 확실한 거주 단서로 오르지 않는다 (Codex)."""
+    from kopl.c2_specificity.clues import build_conditions
+    body = "집 근처에서 밥을 먹었다. 강남구 여행을 예약했다"
+    spans = []
+    for text, stype in (("집 근처에서", "REL_HOME"), ("강남구", "LOC_ADMIN")):
+        i = body.index(text)
+        spans.append({"span_id": f"p_s{len(spans) + 1:02d}", "text_id": "body", "start": i, "end": i + len(text),
+                      "text": text, "type": stype, **resolve({"body": body}, {"text_id": "body", "start": i,
+                                                                             "end": i + len(text), "text": text, "type": stype})})
+    assert spans[1]["subject"] == "unknown"
+    loc = [c for c in build_conditions(spans, "p") if c["axis"] == "location"]
+    assert loc and all(c["confidence"] < 1.0 for c in loc)

@@ -91,17 +91,17 @@ _HOMONYM_IDIOM = {
 
 # 시설(LOC_FACILITY)로 잡혔지만 장소 이름이 아닌 말 — 평가(「노을맛집」) · 여행 종류(「디자인 여행」) · 행선 밈(「지면병원행」).
 # 골드(test 제외 2,281편)의 시설 스팬 359개에 이 꼴은 0개다(10/16). 「국민은행」 「비행장」은 시설이라 「은행 · 비행」은 뺀다
-_GENERIC_PLACE = re.compile(r"(?:맛집|여행|(?<!은)(?<!비)(?<!평)(?<![운진통시유])행)"
-                            r"(?:이|가|은|는|을|를|도|에|에서|으로|로|이네|이에요|이다)?")
+_GENERIC_PLACE = re.compile(r"(?P<head>.+?)(?P<suf>맛집|여행|(?<!은)(?<!비)(?<!평)(?<![운진통시유])행)"
+                            r"(?:이네|이에요|이다|에서|으로|이|가|은|는|을|를|도|에|로)?")
 
 
 def is_generic_place_word(text: str) -> bool:
     t = text.strip()
-    m = _GENERIC_PLACE.search(t)
-    if not m or m.end() != len(t) or len(t[:m.start()].strip()) < 2:
+    m = _GENERIC_PLACE.fullmatch(t)   # 끝까지 맞아야 — 「노을맛집에서」 「노을맛집이네」도 (Codex)
+    if not m or len(m.group("head").strip()) < 2:
         return False
     # 「맛집」은 붙여 쓴 평가말(「노을맛집」)만 — 「성수동 맛집」은 앞의 지명이 단서다
-    return not (t[m.start():].startswith("맛집") and t[:m.start()] != t[:m.start()].rstrip())
+    return not (m.group("suf") == "맛집" and m.group("head") != m.group("head").rstrip())
 
 
 _AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:" + "|".join(_AGE_ENDINGS) + r")$")

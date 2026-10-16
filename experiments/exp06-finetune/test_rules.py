@@ -89,6 +89,7 @@ class RuleTests(unittest.TestCase):
         골드(test 제외 2,281편)의 시설 스팬 359개에 이 꼴은 0개. 「국민은행 · 비행장 · 성수동 맛집」은 그대로 둔다."""
         from rules import is_generic_place_word
         cases = {'노을맛집': True, '디자인 여행': True, '지면병원행': True, '이기면감옥행': True,
+                 '노을맛집에서': True, '노을맛집이네': True, '노을맛집이에요': True, '디자인 여행에서': True,  # Codex — 조사가 붙어도
                  '국민은행': False, '은행': False, '비행장': False, '성수동 맛집': False, '모던하우스도': False,
                  '맛집': False, '여행': False, '진행': False}
         for text, expected in cases.items():
