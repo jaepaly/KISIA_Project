@@ -340,3 +340,14 @@ def test_travel_place_is_not_promoted_by_home_marker():
     assert spans[1]["subject"] == "unknown"
     loc = [c for c in build_conditions(spans, "p") if c["axis"] == "location"]
     assert loc and all(c["confidence"] < 1.0 for c in loc)
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # Codex 재검토 — 1인칭이 있어도 자기소개가 아니면 글쓴이의 아버지 · 「아이들이」 · 「제주 휴가」
+    ("나는 아빠가 싫다", "아빠가", "SEX", "other"),
+    ("아이들이 자는 밤 아빠의 시간", "아빠의", "SEX", "self"),
+    ("제주 휴가를 다녀왔다", "제주", "LOC_ADMIN", "unknown"),
+    ("서울 휴가 끝나고 출근했다", "서울", "LOC_ADMIN", "self"),
+])
+def test_codex_recheck(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
