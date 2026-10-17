@@ -140,6 +140,8 @@ code{
 .span-hit[data-type="JOB"]{background:#D6ECD9}
 .span-hit[data-type="COMMUTE"]{background:#E1EEEC}
 .span-hit[data-type="INCOME"]{background:#FDE8C9}
+/* 내 정보인지 불분명(subject unknown · 여행지 등) — 엔진이 절반으로 센다. 색은 옅게, 점선 테두리 */
+.span-hit.span-maybe{background-color:transparent !important; outline:1px dashed rgba(62,58,54,.45); outline-offset:-1px; box-shadow:none}
 /* 다른 사람(가족·지인)의 정보 — 내 후보 수 계산에서 빠진다 */
 .span-other{
   border-radius:4px; padding:1px 3px; background:var(--sea-soft); color:var(--sea);
