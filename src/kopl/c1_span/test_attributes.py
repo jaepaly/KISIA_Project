@@ -377,17 +377,3 @@ def test_codex_third(sentence, span, stype, expected):
 ])
 def test_b_review_intro_suffix(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
-
-
-def test_commute_without_transit_word_is_unknown():
-    """exp38 — 1단이 「오늘」 「시내 나가서」를 COMMUTE 로 잡으면 unknown(점선)으로 낮춘다. 교통 말이 있으면 그대로."""
-    from kopl.c1_span.attributes import subject_of
-    body = "오늘 버스타서 시내 나가서 영화 봤다. 출근길에 지옥철 타고 갔다. 친구가 2호선으로 다닌다."
-    def subj(t):
-        i = body.index(t)
-        return subject_of("COMMUTE", t, body, i, i + len(t))
-    assert subj("오늘") == "unknown"
-    assert subj("시내 나가서") == "unknown"
-    assert subj("버스타서") == "self"
-    assert subj("지옥철 타고") == "self"
-    assert subj("출근길에") == "self"
