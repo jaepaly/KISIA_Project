@@ -1,0 +1,196 @@
+{"id": "C001", "src": "exp17-planted-eval", "post_id": "P17_004", "type": "COMMUTE", "text": "퇴근길", "start": 64, "end": 67, "ctx": "뜻한 저녁을 먹으니 한숨 돌리게 되네요. 내가 벌써 마흔하나인데 여전히 ⟦퇴근길⟧ 집으로 향하는 발걸음은 어릴 때 방과 후 집으로 가던"}
+{"id": "C002", "src": "exp17-planted-eval", "post_id": "P17_005", "type": "COMMUTE", "text": "가서", "start": 8, "end": 10, "ctx": "오늘 남부시장 ⟦가서⟧ 새로 산 컵이 너무 마음에 든다. 퇴근길에 832번 "}
+{"id": "C003", "src": "exp17-planted-eval", "post_id": "P17_005", "type": "COMMUTE", "text": "퇴근길에", "start": 30, "end": 34, "ctx": "오늘 남부시장 가서 새로 산 컵이 너무 마음에 든다. ⟦퇴근길에⟧ 832번 버스 타고 오면서 깨질까 봐 조심조심 들고 "}
+{"id": "C004", "src": "exp17-planted-eval", "post_id": "P17_005", "type": "COMMUTE", "text": "번 버스 타고 오면서", "start": 38, "end": 49, "ctx": "오늘 남부시장 가서 새로 산 컵이 너무 마음에 든다. 퇴근길에 832⟦번 버스 타고 오면서⟧ 깨질까 봐 조심조심 들고 왔다. 집에 오자마자 물 고"}
+{"id": "C005", "src": "exp17-planted-eval", "post_id": "P17_006", "type": "COMMUTE", "text": "지하철을 타고", "start": 60, "end": 67, "ctx": "참 떠 있어서 정말 깜짝 놀랐어요. 인천 연수구 집에서 허겁지겁 나와서 ⟦지하철을 타고⟧ 정신없이 달려갔네요. 다행히 약속 장소인 선릉역 2번"}
+{"id": "C006", "src": "exp17-planted-eval", "post_id": "P17_013", "type": "COMMUTE", "text": "2호선으로", "start": 4, "end": 9, "ctx": "오늘도 ⟦2호선으로⟧ 출근하고 지쳐서 돌아왔다. 씻고 나와서 대충 챙겨 먹"}
+{"id": "C007", "src": "exp17-planted-eval", "post_id": "P17_013", "type": "COMMUTE", "text": "출근하고", "start": 10, "end": 14, "ctx": "오늘도 2호선으로 ⟦출근하고⟧ 지쳐서 돌아왔다. 씻고 나와서 대충 챙겨 먹는 저녁이"}
+{"id": "C008", "src": "exp17-planted-eval", "post_id": "P17_016", "type": "COMMUTE", "text": "퇴근하자마자", "start": 69, "end": 75, "ctx": "더 자주 하게 되는 것 같아요. 오늘도 기다리던 택배가 드디어 도착해서 ⟦퇴근하자마자⟧ 설레는 마음으로 뜯어보았답니다. 생각했던 것보다 실물"}
+{"id": "C009", "src": "exp17-planted-eval", "post_id": "P17_020", "type": "COMMUTE", "text": "출근 시간", "start": 29, "end": 34, "ctx": "오늘 진짜 아찔하게 늦잠 자버렸다. 눈떴을 때 이미 ⟦출근 시간⟧ 한참 지나서 심장 떨어지는 줄 알았네. 알고 보니 오"}
+{"id": "C010", "src": "exp17-planted-eval", "post_id": "P17_023", "type": "COMMUTE", "text": "2호선으로", "start": 42, "end": 47, "ctx": " 아침에 눈 떴을 때 진짜 아찔했다. 정신없이 뛰어 나와서 겨우 탄 게 ⟦2호선으로⟧ 출근하는 길인데 지각 확정이다. 올해 서른둘 먹고 이"}
+{"id": "C011", "src": "exp17-planted-eval", "post_id": "P17_023", "type": "COMMUTE", "text": "출근하는 길인데", "start": 48, "end": 56, "ctx": " 떴을 때 진짜 아찔했다. 정신없이 뛰어 나와서 겨우 탄 게 2호선으로 ⟦출근하는 길인데⟧ 지각 확정이다. 올해 서른둘 먹고 이렇게 늦잠 자는 "}
+{"id": "C012", "src": "exp17-planted-eval", "post_id": "P17_037", "type": "COMMUTE", "text": "택시 타고", "start": 79, "end": 84, "ctx": "맨날 미용사로 일하면서 지각 한 번 한 적 없었는데 이게 무슨 일이야. ⟦택시 타고⟧ 숨도 안 쉬고 뛰어와서 겨우 출근 도장 찍었다. 아침"}
+{"id": "C013", "src": "exp17-planted-eval", "post_id": "P17_037", "type": "COMMUTE", "text": "출근 도장 찍", "start": 101, "end": 108, "ctx": "적 없었는데 이게 무슨 일이야. 택시 타고 숨도 안 쉬고 뛰어와서 겨우 ⟦출근 도장 찍⟧었다. 아침부터 기가 다 빨려서 집에 가고 싶다."}
+{"id": "C014", "src": "exp17-planted-eval", "post_id": "P17_039", "type": "COMMUTE", "text": "출근 준비를", "start": 54, "end": 60, "ctx": " 두 시간이 훌쩍 지나 있어서 깜짝 놀랐습니다. 나이 48에 늦잠이라니 ⟦출근 준비를⟧ 허겁지겁 하느라 아주 진땀을 뺐네요. 앞으로는 알람을"}
+{"id": "C015", "src": "exp17-planted-eval", "post_id": "P17_050", "type": "COMMUTE", "text": "2호선으로", "start": 69, "end": 74, "ctx": "떠보니 이미 늦은 시각이었다. 부랴부랴 짐을 챙겨 집을 나서서 정신없이 ⟦2호선으로⟧ 출근을 서둘렀다. 겨우 회사 근처에 도착해 선릉역 2"}
+{"id": "C016", "src": "exp17-planted-eval", "post_id": "P17_050", "type": "COMMUTE", "text": "출근을", "start": 75, "end": 78, "ctx": " 늦은 시각이었다. 부랴부랴 짐을 챙겨 집을 나서서 정신없이 2호선으로 ⟦출근을⟧ 서둘렀다. 겨우 회사 근처에 도착해 선릉역 2번 출구"}
+{"id": "C017", "src": "exp17-planted-eval", "post_id": "P17_051", "type": "COMMUTE", "text": "출근 시간을", "start": 17, "end": 23, "ctx": "오늘 아침에 눈을 떠보니 이미 ⟦출근 시간을⟧ 훌쩍 넘겨서 정말 아찔했어요. 제가 봉천동으로 이사 "}
+{"id": "C018", "src": "exp17-planted-eval", "post_id": "P17_051", "type": "COMMUTE", "text": "택시를", "start": 128, "end": 131, "ctx": "아오면서 이렇게까지 알람을 못 들은 적은 손에 꼽을 정도예요. 부랴부랴 ⟦택시를⟧ 타고 겨우 회사에 도착해서 하루를 정신없이 시작했답니"}
+{"id": "C019", "src": "exp17-planted-eval", "post_id": "P17_058", "type": "COMMUTE", "text": "832번 버스 안에서", "start": 119, "end": 130, "ctx": "이번 택배까지 아주 마음에 쏙 든다. 마침 무거운 짐을 들고 오는 길에 ⟦832번 버스 안에서⟧ 온 몸이 조금 피곤하기도 했지만 이렇게 좋은 물건들을"}
+{"id": "C020", "src": "exp17-planted-eval", "post_id": "P17_064", "type": "COMMUTE", "text": "2번 버스를 타고", "start": 92, "end": 101, "ctx": "조카와 함께 오면 정신이 없었을 텐데 혼자 오니 고요하고 참 좋다. 83⟦2번 버스를 타고⟧ 창밖을 구경하며 다녔던 젊은 날이 문득 떠오른다. 돌"}
+{"id": "C021", "src": "exp17-planted-eval", "post_id": "P17_066", "type": "COMMUTE", "text": "퇴근 후에", "start": 67, "end": 72, "ctx": "업 특성상 손목이 너무 아파서 결국 새로운 마우스를 하나 장만했습니다. ⟦퇴근 후에⟧ 광교호수공원 산책을 다녀왔는데 새 기기를 써서 그런지"}
+{"id": "C022", "src": "exp17-planted-eval", "post_id": "P17_066", "type": "COMMUTE", "text": "출근해서", "start": 164, "end": 168, "ctx": "다는 생각이 드네요. 디자인도 깔끔하고 그립감도 마음에 쏙 들어서 내일 ⟦출근해서⟧ 일할 시간이 은근히 기다려집니다."}
+{"id": "C023", "src": "exp17-planted-eval", "post_id": "P17_072", "type": "COMMUTE", "text": "출근 시간을", "start": 21, "end": 27, "ctx": "오늘 아침엔 어쩐 일인지 눈을 떠보니 ⟦출근 시간을⟧ 훌쩍 넘겨버렸더라고요. 벌써 인생 절반을 살아온 쉰다"}
+{"id": "C024", "src": "exp17-planted-eval", "post_id": "P17_075", "type": "COMMUTE", "text": "퇴근 후에", "start": 4, "end": 9, "ctx": "오늘도 ⟦퇴근 후에⟧ 부지런히 헬스장에 다녀왔습니다. 미용사로 일하면서 종"}
+{"id": "C025", "src": "exp17-planted-eval", "post_id": "P17_078", "type": "COMMUTE", "text": "퇴근하고", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근하고⟧ 집에 오니 정말 기진맥진하네요. 피곤하지만 그래도 늦"}
+{"id": "C026", "src": "exp17-planted-eval", "post_id": "P17_079", "type": "COMMUTE", "text": "출근해서", "start": 45, "end": 49, "ctx": "구 동네 한 바퀴 도는 중인데 날씨가 참 좋다. 친구는 약사라 주말에도 ⟦출근해서⟧ 나 혼자 유유자적 걷는 중이다. 모처럼 복잡한 생각 "}
+{"id": "C027", "src": "exp17b-heldout-eval", "post_id": "P17B_007", "type": "COMMUTE", "text": "출근하면", "start": 32, "end": 36, "ctx": "신림동에서 눈을 떠보니 알람을 쉰 번도 넘게 무시했더라. ⟦출근하면⟧ 봉급 350만 원 받는 게 민망할 정도로 지각이다. "}
+{"id": "C028", "src": "exp17b-heldout-eval", "post_id": "P17B_008", "type": "COMMUTE", "text": "광역버스로", "start": 49, "end": 54, "ctx": "나가는 길에 익선동 한옥거리를 지나치게 되었다. 집으로 돌아오는 길에는 ⟦광역버스로⟧ 한 번에 갈 수 있어서 다행이다. 냉장고를 채울 생각"}
+{"id": "C029", "src": "exp17b-heldout-eval", "post_id": "P17B_014", "type": "COMMUTE", "text": "번 버스 내려서", "start": 21, "end": 29, "ctx": "93년생 벌써 체력 안 좋네. 6411⟦번 버스 내려서⟧ 집까지 딱 스물두 걸음인데 그새 숨이 찬다. 내일부터"}
+{"id": "C030", "src": "exp17b-heldout-eval", "post_id": "P17B_015", "type": "COMMUTE", "text": "퇴근길에", "start": 0, "end": 4, "ctx": "⟦퇴근길에⟧ 광역버스로 집으로 오는 동안 몸이 너무 찌뿌둥해서 오"}
+{"id": "C031", "src": "exp17b-heldout-eval", "post_id": "P17B_015", "type": "COMMUTE", "text": "광역버스로", "start": 5, "end": 10, "ctx": "퇴근길에 ⟦광역버스로⟧ 집으로 오는 동안 몸이 너무 찌뿌둥해서 오늘은 작정하"}
+{"id": "C032", "src": "exp17b-heldout-eval", "post_id": "P17B_015", "type": "COMMUTE", "text": "오는", "start": 15, "end": 17, "ctx": "퇴근길에 광역버스로 집으로 ⟦오는⟧ 동안 몸이 너무 찌뿌둥해서 오늘은 작정하고 홈트를 좀"}
+{"id": "C033", "src": "exp17b-heldout-eval", "post_id": "P17B_020", "type": "COMMUTE", "text": "출근 시간 직전", "start": 41, "end": 49, "ctx": "제 밤늦게까지 폰 보다가 결국 아침에 눈을 떠버렸다. 33살인데 아직도 ⟦출근 시간 직전⟧에 일어나는 버릇을 못 고쳤다. 정신없이 뛰어 나가야겠"}
+{"id": "C034", "src": "exp17b-heldout-eval", "post_id": "P17B_023", "type": "COMMUTE", "text": "자차로 40분 거리에 있는", "start": 31, "end": 45, "ctx": "쉬는 날이라 집 전체를 쓸고 닦았더니 하루가 다 갔다. ⟦자차로 40분 거리에 있는⟧ 본가까지 다녀오느라 체력을 다 썼네. 동생 직업이 소"}
+{"id": "C035", "src": "exp17b-heldout-eval", "post_id": "P17B_028", "type": "COMMUTE", "text": "출근할 때", "start": 72, "end": 77, "ctx": "이 봉급 350만 원인데 이사 비용으로 다 나갈 판이다. 다음 주부터는 ⟦출근할 때⟧ 광역버스로 다녀야 하는데 체력이 버텨줄지 모르겠네. "}
+{"id": "C036", "src": "exp17b-heldout-eval", "post_id": "P17B_028", "type": "COMMUTE", "text": "광역버스로 다녀야", "start": 78, "end": 87, "ctx": "50만 원인데 이사 비용으로 다 나갈 판이다. 다음 주부터는 출근할 때 ⟦광역버스로 다녀야⟧ 하는데 체력이 버텨줄지 모르겠네. 진짜 지친다."}
+{"id": "C037", "src": "exp17b-heldout-eval", "post_id": "P17B_034", "type": "COMMUTE", "text": "9호선으로", "start": 25, "end": 30, "ctx": "잠실 토박이인데 요즘 운동하러 갈 때 무조건 ⟦9호선으로⟧ 이동한다. 지하철 내려서 목적지까지 딱 스물두 걸음만"}
+{"id": "C038", "src": "exp17b-heldout-eval", "post_id": "P17B_034", "type": "COMMUTE", "text": "지하철 내려서", "start": 37, "end": 44, "ctx": "잠실 토박이인데 요즘 운동하러 갈 때 무조건 9호선으로 이동한다. ⟦지하철 내려서⟧ 목적지까지 딱 스물두 걸음만 걸으면 도착이라 너무 편"}
+{"id": "C039", "src": "exp17b-heldout-eval", "post_id": "P17B_034", "type": "COMMUTE", "text": "목적지까지", "start": 45, "end": 50, "ctx": "이인데 요즘 운동하러 갈 때 무조건 9호선으로 이동한다. 지하철 내려서 ⟦목적지까지⟧ 딱 스물두 걸음만 걸으면 도착이라 너무 편하다. 오늘"}
+{"id": "C040", "src": "exp17b-heldout-eval", "post_id": "P17B_045", "type": "COMMUTE", "text": "야근", "start": 4, "end": 6, "ctx": "오늘도 ⟦야근⟧하고 지친 몸으로 6411번 버스에 탔다. 창밖을 보니"}
+{"id": "C041", "src": "exp17b-heldout-eval", "post_id": "P17B_045", "type": "COMMUTE", "text": "번 버스에", "start": 20, "end": 25, "ctx": "오늘도 야근하고 지친 몸으로 6411⟦번 버스에⟧ 탔다. 창밖을 보니 잠실 토박이로 평생 살면서 본 야"}
+{"id": "C042", "src": "exp17b-heldout-eval", "post_id": "P17B_046", "type": "COMMUTE", "text": "출근길이", "start": 18, "end": 22, "ctx": "비 오는 아침이라 그런지 구로동 ⟦출근길이⟧ 유독 더 복잡했다. 회사 도착하자마자 커피 한 잔 마"}
+{"id": "C043", "src": "exp17b-heldout-eval", "post_id": "P17B_049", "type": "COMMUTE", "text": "퇴근하고", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근하고⟧ 집에 와서 환자 차트 정리 끝내자마자 바로 동네 한 "}
+{"id": "C044", "src": "exp17b-heldout-eval", "post_id": "P17B_055", "type": "COMMUTE", "text": "출근해서", "start": 4, "end": 8, "ctx": "명절에 ⟦출근해서⟧ 종일 환자 차트 정리를 했더니 벌써 쉰 번은 한숨을 "}
+{"id": "C045", "src": "exp17b-heldout-eval", "post_id": "P17B_055", "type": "COMMUTE", "text": "퇴근하고", "start": 46, "end": 50, "ctx": "해서 종일 환자 차트 정리를 했더니 벌써 쉰 번은 한숨을 쉰 것 같다. ⟦퇴근하고⟧ 사당역 4번 출구로 나오니까 사람이 너무 많아서 정신"}
+{"id": "C046", "src": "exp17b-heldout-eval", "post_id": "P17B_055", "type": "COMMUTE", "text": "번 출구로", "start": 56, "end": 61, "ctx": "트 정리를 했더니 벌써 쉰 번은 한숨을 쉰 것 같다. 퇴근하고 사당역 4⟦번 출구로⟧ 나오니까 사람이 너무 많아서 정신이 하나도 없네. 집"}
+{"id": "C047", "src": "exp17b-heldout-eval", "post_id": "P17B_059", "type": "COMMUTE", "text": "고", "start": 39, "end": 40, "ctx": "40대 초반이라 그런지 요즘은 조용한 곳이 더 좋아. 치과위생사로 일하⟦고⟧ 퇴근길에 들르는 이 카페가 요즘 내 아지트야. 커피 "}
+{"id": "C048", "src": "exp17b-heldout-eval", "post_id": "P17B_059", "type": "COMMUTE", "text": "퇴근길에", "start": 41, "end": 45, "ctx": "0대 초반이라 그런지 요즘은 조용한 곳이 더 좋아. 치과위생사로 일하고 ⟦퇴근길에⟧ 들르는 이 카페가 요즘 내 아지트야. 커피 한 잔 마"}
+{"id": "C049", "src": "exp17b-heldout-eval", "post_id": "P17B_068", "type": "COMMUTE", "text": "출근하", "start": 11, "end": 14, "ctx": "아침부터 비 오는데 ⟦출근하⟧려니까 진짜 현타온다. 어제 이마트 연수점에서 산 우산"}
+{"id": "C050", "src": "exp17b-heldout-eval", "post_id": "P17B_070", "type": "COMMUTE", "text": "출근하는 길이", "start": 24, "end": 31, "ctx": "비가 내리는 아침이라 그런지 신림동 집에서 ⟦출근하는 길이⟧ 평소보다 훨씬 더 험난했던 것 같습니다. 오늘 월급 "}
+{"id": "C051", "src": "exp17b-heldout-eval", "post_id": "P17B_076", "type": "COMMUTE", "text": "9호선으로 이동하는", "start": 47, "end": 57, "ctx": "직업이 소방관이라 일상적인 대화부터 나누다가 점심을 먹으러 이동했어요. ⟦9호선으로 이동하는⟧ 동안 미루어 둔 독서를 시작했는데 딱 마흔 페이지 정"}
+{"id": "C052", "src": "exp17b-heldout-eval", "post_id": "P17B_077", "type": "COMMUTE", "text": "광역버스로 한 번에 갈 수", "start": 31, "end": 45, "ctx": "기분 전환 겸 오랜만에 머리를 하러 다녀왔어요. 집에서 ⟦광역버스로 한 번에 갈 수⟧ 있어서 생각보다 편하게 다녀왔네요. 커트랑 드라이까지"}
+{"id": "C053", "src": "exp17b-heldout-eval", "post_id": "P17B_078", "type": "COMMUTE", "text": "택시 타고", "start": 38, "end": 43, "ctx": "어제 너무 피곤했는지 눈떠보니까 약속 시간 한참 지났더라. 부랴부랴 ⟦택시 타고⟧ 롯데월드타워 도착했는데 친구가 아직 안 와서 진짜 다"}
+{"id": "C054", "src": "exp17c-final-eval", "post_id": "P17C_001", "type": "COMMUTE", "text": "번 버스 타고", "start": 16, "end": 23, "ctx": "오늘 아침 일찍 서둘러 472⟦번 버스 타고⟧ 오랜만에 옛 친구를 만나러 다녀왔습니다. 나이 63에"}
+{"id": "C055", "src": "exp17c-final-eval", "post_id": "P17C_002", "type": "COMMUTE", "text": "번 버스 타고", "start": 23, "end": 30, "ctx": "오늘 날씨가 참 좋아서 장도 볼 겸 472⟦번 버스 타고⟧ 시장에 다녀왔습니다. 싱싱한 야채랑 찬거리를 이것저것"}
+{"id": "C056", "src": "exp17c-final-eval", "post_id": "P17C_003", "type": "COMMUTE", "text": "버스가", "start": 5, "end": 8, "ctx": "오늘따라 ⟦버스가⟧ 너무 안 와서 길가에서 서른 분 넘게 서서 기다렸더니"}
+{"id": "C057", "src": "exp17c-final-eval", "post_id": "P17C_003", "type": "COMMUTE", "text": "는", "start": 69, "end": 70, "ctx": " 서서 기다렸더니 벌써 지친다. 그래도 매일 전라남도 바닷가 따라 이어지⟦는⟧ 출근길 풍경 보면서 가니까 마음이 좀 트이는 느낌이다"}
+{"id": "C058", "src": "exp17c-final-eval", "post_id": "P17C_003", "type": "COMMUTE", "text": "출근길", "start": 71, "end": 74, "ctx": "서 기다렸더니 벌써 지친다. 그래도 매일 전라남도 바닷가 따라 이어지는 ⟦출근길⟧ 풍경 보면서 가니까 마음이 좀 트이는 느낌이다. 피곤"}
+{"id": "C059", "src": "exp17c-final-eval", "post_id": "P17C_004", "type": "COMMUTE", "text": "퇴근하고", "start": 8, "end": 12, "ctx": "오늘도 무사히 ⟦퇴근하고⟧ 집에 돌아와 짧은 여유를 즐기고 있습니다. 정년퇴직을"}
+{"id": "C060", "src": "exp17c-final-eval", "post_id": "P17C_006", "type": "COMMUTE", "text": "출근길 지하철은", "start": 4, "end": 12, "ctx": "오늘도 ⟦출근길 지하철은⟧ 여전히 사람이 너무 많아서 숨이 막힌다. 신랑이 아침"}
+{"id": "C061", "src": "exp17c-final-eval", "post_id": "P17C_009", "type": "COMMUTE", "text": "퇴근길에", "start": 9, "end": 13, "ctx": "목동 사는 나는 ⟦퇴근길에⟧ 쓰려고 가벼운 접이식 우산을 새로 샀다. 옆자리 직장"}
+{"id": "C062", "src": "exp17c-final-eval", "post_id": "P17C_010", "type": "COMMUTE", "text": "퇴근길에", "start": 54, "end": 58, "ctx": " 되고 보니 오랜 벗을 만나는 시간이 참으로 귀하고 소중합니다. 오늘은 ⟦퇴근길에⟧ 회사 셔틀로 편하게 이동하여 반가운 얼굴을 마주하니 "}
+{"id": "C063", "src": "exp17c-final-eval", "post_id": "P17C_010", "type": "COMMUTE", "text": "셔틀로", "start": 62, "end": 65, "ctx": "랜 벗을 만나는 시간이 참으로 귀하고 소중합니다. 오늘은 퇴근길에 회사 ⟦셔틀로⟧ 편하게 이동하여 반가운 얼굴을 마주하니 피로가 눈 녹"}
+{"id": "C064", "src": "exp17c-final-eval", "post_id": "P17C_012", "type": "COMMUTE", "text": "7호선으로 갈아타", "start": 32, "end": 41, "ctx": "주말 오후에 할 일 없어서 침대 뒹굴거리다가 약속 생겨서 ⟦7호선으로 갈아타⟧러 가는 중이다. 지하철 기다리면서 그동안 밀린 릴스만"}
+{"id": "C065", "src": "exp17c-final-eval", "post_id": "P17C_012", "type": "COMMUTE", "text": "지하철", "start": 51, "end": 54, "ctx": "없어서 침대 뒹굴거리다가 약속 생겨서 7호선으로 갈아타러 가는 중이다. ⟦지하철⟧ 기다리면서 그동안 밀린 릴스만 스물세 개 넘게 본 것"}
+{"id": "C066", "src": "exp17c-final-eval", "post_id": "P17C_018", "type": "COMMUTE", "text": "출근", "start": 98, "end": 100, "ctx": " 살아서 집 오는데 한참 걸렸는데 직장 동료는 군포에 살고 있어서 내일 ⟦출근⟧ 어쩌냐고 서로 연락하면서 실시간으로 우는 중이다. 그"}
+{"id": "C067", "src": "exp17c-final-eval", "post_id": "P17C_023", "type": "COMMUTE", "text": "퇴근하고", "start": 4, "end": 8, "ctx": "오늘도 ⟦퇴근하고⟧ 녹초가 된 상태로 김해 장유동 집에 도착하니 밤 열한"}
+{"id": "C068", "src": "exp17c-final-eval", "post_id": "P17C_026", "type": "COMMUTE", "text": "퇴근길에", "start": 0, "end": 4, "ctx": "⟦퇴근길에⟧ 회사 셔틀로 장보러 갈 마트 근처까지 편하게 왔다. "}
+{"id": "C069", "src": "exp17c-final-eval", "post_id": "P17C_026", "type": "COMMUTE", "text": "셔틀로", "start": 8, "end": 11, "ctx": "퇴근길에 회사 ⟦셔틀로⟧ 장보러 갈 마트 근처까지 편하게 왔다. 01년생 자취"}
+{"id": "C070", "src": "exp17c-final-eval", "post_id": "P17C_045", "type": "COMMUTE", "text": "오후", "start": 84, "end": 86, "ctx": " 해주는 밥이 세상에서 제일 맛있는 것 같다. 배불러서 늘어지고 싶은데 ⟦오후⟧ 출근 생각하면 눈물 난다."}
+{"id": "C071", "src": "exp17c-final-eval", "post_id": "P17C_045", "type": "COMMUTE", "text": "출근", "start": 87, "end": 89, "ctx": "는 밥이 세상에서 제일 맛있는 것 같다. 배불러서 늘어지고 싶은데 오후 ⟦출근⟧ 생각하면 눈물 난다."}
+{"id": "C072", "src": "exp17c-final-eval", "post_id": "P17C_049", "type": "COMMUTE", "text": "퇴근길에", "start": 37, "end": 41, "ctx": "오늘 오랜만에 애들 엄마가 부탁한 장을 보러 마트에 다녀왔습니다. ⟦퇴근길에⟧ 공항철도로 이동하는 편이라 역 근처에 있는 큰 매장을"}
+{"id": "C073", "src": "exp17c-final-eval", "post_id": "P17C_049", "type": "COMMUTE", "text": "철도로 이동하는 편이라", "start": 44, "end": 56, "ctx": "랜만에 애들 엄마가 부탁한 장을 보러 마트에 다녀왔습니다. 퇴근길에 공항⟦철도로 이동하는 편이라⟧ 역 근처에 있는 큰 매장을 이용하니 정말 편하더라고요"}
+{"id": "C074", "src": "exp17c-final-eval", "post_id": "P17C_051", "type": "COMMUTE", "text": "7호선으로", "start": 5, "end": 10, "ctx": "오랜만에 ⟦7호선으로⟧ 이동해서 동네 큰 마트에 다녀왔어요. 필요한 채소랑 "}
+{"id": "C075", "src": "exp17c-final-eval", "post_id": "P17C_055", "type": "COMMUTE", "text": "살고", "start": 83, "end": 85, "ctx": "센터 야간 분류 일을 하느라 온몸이 뻐근해 죽겠다. 직장 동료는 군포에 ⟦살고⟧ 나는 집이 멀어서 출근길이 너무 험하다. 오늘 하루도"}
+{"id": "C076", "src": "exp17c-final-eval", "post_id": "P17C_055", "type": "COMMUTE", "text": "멀어서", "start": 92, "end": 95, "ctx": "일을 하느라 온몸이 뻐근해 죽겠다. 직장 동료는 군포에 살고 나는 집이 ⟦멀어서⟧ 출근길이 너무 험하다. 오늘 하루도 어떻게 버틸지 벌"}
+{"id": "C077", "src": "exp17c-final-eval", "post_id": "P17C_055", "type": "COMMUTE", "text": "출근길이", "start": 96, "end": 100, "ctx": "느라 온몸이 뻐근해 죽겠다. 직장 동료는 군포에 살고 나는 집이 멀어서 ⟦출근길이⟧ 너무 험하다. 오늘 하루도 어떻게 버틸지 벌써부터 막"}
+{"id": "C078", "src": "exp17c-final-eval", "post_id": "P17C_057", "type": "COMMUTE", "text": "비행기 시간 한 시간", "start": 31, "end": 42, "ctx": "진짜 대환장파티다 알람 끄고 다시 자버려서 눈 떠보니까 ⟦비행기 시간 한 시간⟧ 전이더라. 공항철도로 뛰어가는 와중에 눈물 날 뻔함."}
+{"id": "C079", "src": "exp17c-final-eval", "post_id": "P17C_059", "type": "COMMUTE", "text": "출근길 만원 지하철에서의", "start": 55, "end": 68, "ctx": "발걸음이 오늘따라 유난히 무겁게 느껴집니다. 50대 중반의 나이가 되니 ⟦출근길 만원 지하철에서의⟧ 체력 소모가 고스란히 체감되는 것 같습니다. 그래도 "}
+{"id": "C080", "src": "exp17c-final-eval", "post_id": "P17C_066", "type": "COMMUTE", "text": "지하철 탈 때", "start": 33, "end": 40, "ctx": "오늘로 여기서 일한 지 스물세 개 남짓 지났다. 매일 아침 ⟦지하철 탈 때⟧마다 현타 오는 게 벌써 쉰여덟이야. 오늘도 꾸역꾸역 "}
+{"id": "C081", "src": "exp17c-final-eval", "post_id": "P17C_066", "type": "COMMUTE", "text": "버스 타고", "start": 70, "end": 75, "ctx": "아침 지하철 탈 때마다 현타 오는 게 벌써 쉰여덟이야. 오늘도 꾸역꾸역 ⟦버스 타고⟧ 회사 가는 중."}
+{"id": "C082", "src": "exp17c-final-eval", "post_id": "P17C_067", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 가볍게 동네 한 바퀴 걸으니까 머리가 좀 맑아지는 기"}
+{"id": "C083", "src": "exp17c-final-eval", "post_id": "P17C_068", "type": "COMMUTE", "text": "2번 버스 타고", "start": 44, "end": 52, "ctx": "월 정든 짐을 정리하느라 진땀을 뺐더니 온몸이 쑤신다. 힘들 때마다 47⟦2번 버스 타고⟧ 바람 쐬러 가던 기억이 새록새록 떠오른다. 이제 새 "}
+{"id": "C084", "src": "exp17c-final-eval", "post_id": "P17C_069", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 집 오니까 진짜 녹초되네. 연봉 3,300만 받으면서"}
+{"id": "C085", "src": "exp17c-final-eval", "post_id": "P17C_072", "type": "COMMUTE", "text": "출근하는데", "start": 0, "end": 5, "ctx": "⟦출근하는데⟧ 날씨 진짜 대박이네. 회사 셔틀로 가는 길에 창밖 보"}
+{"id": "C086", "src": "exp17c-final-eval", "post_id": "P17C_072", "type": "COMMUTE", "text": "로 가는 길에", "start": 23, "end": 30, "ctx": "출근하는데 날씨 진짜 대박이네. 회사 셔틀⟦로 가는 길에⟧ 창밖 보니까 숨이 탁 막힐 정도로 맑다. 예순여섯인 "}
+{"id": "C087", "src": "exp17c-final-eval", "post_id": "P17C_079", "type": "COMMUTE", "text": "출근길에", "start": 6, "end": 10, "ctx": "오늘 아침 ⟦출근길에⟧ 지하철을 탔는데 사람이 너무 많아서 서른 분 동안 꼼"}
+{"id": "C088", "src": "exp17c-final-eval", "post_id": "P17C_079", "type": "COMMUTE", "text": "지하철을", "start": 11, "end": 15, "ctx": "오늘 아침 출근길에 ⟦지하철을⟧ 탔는데 사람이 너무 많아서 서른 분 동안 꼼짝도 못 "}
+{"id": "C089", "src": "exp17d-job-eval", "post_id": "P17D_001", "type": "COMMUTE", "text": "퇴근길에", "start": 43, "end": 47, "ctx": " 무사히 하루 일과를 마치고 집으로 돌아오니 마음이 한결 편안해집니다. ⟦퇴근길에⟧ 들른 식당에서 김 서방이 실장님한테 안부 인사를 전해"}
+{"id": "C090", "src": "exp17d-job-eval", "post_id": "P17D_005", "type": "COMMUTE", "text": "출근하자마자", "start": 13, "end": 19, "ctx": "오늘 날씨 진짜 미쳐서 ⟦출근하자마자⟧ 기절할 뻔했잖아. 다들 날씨 너무 추운데 옷 따뜻하게"}
+{"id": "C091", "src": "exp17d-job-eval", "post_id": "P17D_007", "type": "COMMUTE", "text": "퇴근하고", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근하고⟧ 마트 들러서 이것저것 장보고 왔다. 지나가다가 선배 "}
+{"id": "C092", "src": "exp17d-job-eval", "post_id": "P17D_008", "type": "COMMUTE", "text": "퇴근길에", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근길에⟧ 마트에 들러서 일주일 동안 먹을 장을 가득 보고 왔어"}
+{"id": "C093", "src": "exp17d-job-eval", "post_id": "P17D_008", "type": "COMMUTE", "text": "버스", "start": 40, "end": 42, "ctx": "오늘 퇴근길에 마트에 들러서 일주일 동안 먹을 장을 가득 보고 왔어요. ⟦버스⟧ 기사로 일하다 보면 끼니를 제때 챙겨 먹기 힘든데, "}
+{"id": "C094", "src": "exp17d-job-eval", "post_id": "P17D_010", "type": "COMMUTE", "text": "이동하기", "start": 41, "end": 45, "ctx": "침부터 집 안 구석구석 쓸고 닦았더니 기분이 한결 쾌적하다. 서해선으로 ⟦이동하기⟧ 전에 얼른 택배 받으러 내려갔다 와야겠다. 주말 청소"}
+{"id": "C095", "src": "exp17d-job-eval", "post_id": "P17D_011", "type": "COMMUTE", "text": "퇴근길에", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근길에⟧ 버스 탔는데 기사님이 친절하게 인사해주셔서 피곤함이 "}
+{"id": "C096", "src": "exp17d-job-eval", "post_id": "P17D_011", "type": "COMMUTE", "text": "버스 탔는데", "start": 8, "end": 14, "ctx": "오늘 퇴근길에 ⟦버스 탔는데⟧ 기사님이 친절하게 인사해주셔서 피곤함이 싹 가시는 느"}
+{"id": "C097", "src": "exp17d-job-eval", "post_id": "P17D_012", "type": "COMMUTE", "text": "퇴근하고", "start": 77, "end": 81, "ctx": "뙤약볕에 보험설계사로 일하려니까 진짜 온몸에 진이 다 빠지는 느낌이다. ⟦퇴근하고⟧ 처형이랑 같이 시원한 냉면이나 한 그릇 때리고 집에 "}
+{"id": "C098", "src": "exp17d-job-eval", "post_id": "P17D_017", "type": "COMMUTE", "text": "출근하자마자", "start": 40, "end": 46, "ctx": "오늘 아침에는 비가 내리면서 춘천 후평동 거리가 촉촉하게 젖었더라고요. ⟦출근하자마자⟧ 청과 도매업 일로 정신없이 움직였더니 하루가 금방 지"}
+{"id": "C099", "src": "exp17d-job-eval", "post_id": "P17D_020", "type": "COMMUTE", "text": "퇴근길에", "start": 34, "end": 38, "ctx": "월요일 아침부터 현장 나와서 일하는데 진짜 피곤하다. 오늘은 ⟦퇴근길에⟧ 처형이랑 같이 마트 들러서 저녁에 먹을 고기나 좀 사"}
+{"id": "C100", "src": "exp17d-job-eval", "post_id": "P17D_024", "type": "COMMUTE", "text": "출근하", "start": 21, "end": 24, "ctx": "오늘 날씨가 진짜 미쳤는데 이 날씨에 ⟦출근하⟧는 내 인생도 미쳤다. 수의사라서 동물들이랑 놀 줄 알"}
+{"id": "C101", "src": "exp17d-job-eval", "post_id": "P17D_028", "type": "COMMUTE", "text": "퇴근 후에", "start": 31, "end": 36, "ctx": "나이 34에 드디어 용기 내서 운전 연수를 시작했어요. ⟦퇴근 후에⟧ 도로 위로 나갔는데 심장이 쿵쾅거려서 죽는 줄 알았네"}
+{"id": "C102", "src": "exp17d-job-eval", "post_id": "P17D_028", "type": "COMMUTE", "text": "도로", "start": 37, "end": 39, "ctx": "나이 34에 드디어 용기 내서 운전 연수를 시작했어요. 퇴근 후에 ⟦도로⟧ 위로 나갔는데 심장이 쿵쾅거려서 죽는 줄 알았네요. "}
+{"id": "C103", "src": "exp17d-job-eval", "post_id": "P17D_034", "type": "COMMUTE", "text": "택시", "start": 45, "end": 47, "ctx": "만에 처형이랑 시간을 맞추어 친구를 만나러 다녀왔어요. 이동할 때 탔던 ⟦택시⟧ 기사님이 친절하게 길 안내를 해주셔서 더 기분 좋게 "}
+{"id": "C104", "src": "exp17d-job-eval", "post_id": "P17D_036", "type": "COMMUTE", "text": "출근 시간 한참", "start": 17, "end": 25, "ctx": "오늘 아침에 눈 떴을 때 이미 ⟦출근 시간 한참⟧ 지나있어서 진짜 기절하는 줄 알았어. 다행히 우리 집"}
+{"id": "C105", "src": "exp17d-job-eval", "post_id": "P17D_047", "type": "COMMUTE", "text": "퇴근하고", "start": 36, "end": 40, "ctx": "오늘 야간 경비 근무 서는데 내가 기다리던 택배가 딱 도착했다. ⟦퇴근하고⟧ 집에 와서 뜯어보려고 요리 유튜브 보면서 참는 중이다"}
+{"id": "C106", "src": "exp17d-job-eval", "post_id": "P17D_053", "type": "COMMUTE", "text": "퇴근", "start": 60, "end": 62, "ctx": " 마감 정산 시간을 가졌다. 하루 매출을 꼼꼼하게 확인하고 나니 비로소 ⟦퇴근⟧ 실감이 난다. 내일은 또 어떤 손님들이 올지 기대하며"}
+{"id": "C107", "src": "exp17d-job-eval", "post_id": "P17D_063", "type": "COMMUTE", "text": "퇴근 후에", "start": 146, "end": 151, "ctx": " 동안 쌓였던 스트레스가 조금이나마 해소되는 기분이 들더라고요. 오늘도 ⟦퇴근 후에⟧ 가볍게 걸으면서 머리를 좀 비우고 와야겠어요."}
+{"id": "C108", "src": "exp17d-job-eval", "post_id": "P17D_065", "type": "COMMUTE", "text": "퇴근하면", "start": 59, "end": 63, "ctx": "늘 저녁 메뉴는 뭘로 할지 급 고민되네. 수의사라서 매일 동물만 보다가 ⟦퇴근하면⟧ 나도 그냥 밥순이일 뿐이야. 배고픈데 귀찮으니까 그냥"}
+{"id": "C109", "src": "exp17e-job-dev", "post_id": "P17E_001", "type": "COMMUTE", "text": "GTX로 이동하", "start": 51, "end": 59, "ctx": " 주말에 예약해 둔 베이킹 클래스 늦을 뻔했다. 준비 초스피드로 끝내고 ⟦GTX로 이동하⟧니까 다행히 제시간에 딱 맞춰서 도착했네. 시작부터 땀"}
+{"id": "C110", "src": "exp17e-job-dev", "post_id": "P17E_002", "type": "COMMUTE", "text": "퇴근길에", "start": 0, "end": 4, "ctx": "⟦퇴근길에⟧ 며칠 전부터 바지 기장을 줄여야 했던 옷들을 수선집에"}
+{"id": "C111", "src": "exp17e-job-dev", "post_id": "P17E_004", "type": "COMMUTE", "text": "퇴근 뒤에", "start": 4, "end": 9, "ctx": "오늘도 ⟦퇴근 뒤에⟧ 조용히 쉬면서 하루를 정리하고 있습니다. 아까 만난 "}
+{"id": "C112", "src": "exp17e-job-dev", "post_id": "P17E_008", "type": "COMMUTE", "text": "출근이", "start": 82, "end": 85, "ctx": "다. 진짜 오랜만에 알람 안 맞추고 자니까 살 것 같네. 내일부터 다시 ⟦출근이⟧라니 믿을 수가 없다."}
+{"id": "C113", "src": "exp17e-job-dev", "post_id": "P17E_010", "type": "COMMUTE", "text": "GTX로", "start": 24, "end": 28, "ctx": "이번 명절에는 멀리 있는 친척 집에 가려고 ⟦GTX로⟧ 이동했는데 생각보다 너무 편하고 빨라서 놀랐어요. 연"}
+{"id": "C114", "src": "exp17e-job-dev", "post_id": "P17E_014", "type": "COMMUTE", "text": "퇴근길에는", "start": 67, "end": 72, "ctx": "백십을 받는다. 몸은 조금 고단해도 이 동네가 참 정겹고 편하다. 오늘 ⟦퇴근길에는⟧ 따뜻한 두부나 한 모 사서 들어가야겠다."}
+{"id": "C115", "src": "exp17e-job-dev", "post_id": "P17E_018", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 집에 오자마자 바깥사람이 먼저 연락 와서 저녁에 가볍"}
+{"id": "C116", "src": "exp17e-job-dev", "post_id": "P17E_024", "type": "COMMUTE", "text": "GTX로 이동하는 길에", "start": 49, "end": 61, "ctx": "학원 차량 기사로 하루를 시작하며 부지런히 움직였다. 마침 볼일이 있어 ⟦GTX로 이동하는 길에⟧ 든든하게 점심을 챙겨 먹었다. 모처럼 맛있는 음식을 "}
+{"id": "C117", "src": "exp17e-job-dev", "post_id": "P17E_025", "type": "COMMUTE", "text": "출근길", "start": 31, "end": 34, "ctx": "요즘 계속 비가 내려서 꿉꿉한 아침이 이어지고 있네요. ⟦출근길⟧ 발걸음이 무거웠지만 가게 사장이라 지각할 수도 없고 "}
+{"id": "C118", "src": "exp17e-job-dev", "post_id": "P17E_025", "type": "COMMUTE", "text": "이", "start": 38, "end": 39, "ctx": "요즘 계속 비가 내려서 꿉꿉한 아침이 이어지고 있네요. 출근길 발걸음⟦이⟧ 무거웠지만 가게 사장이라 지각할 수도 없고 부지런히 "}
+{"id": "C119", "src": "exp17e-job-dev", "post_id": "P17E_027", "type": "COMMUTE", "text": "출근 시간이", "start": 13, "end": 19, "ctx": "아침에 눈을 뜨니 이미 ⟦출근 시간이⟧었다. 물리치료사라 오늘 첫 타임 환자 생각에 아찔하다"}
+{"id": "C120", "src": "exp17e-job-dev", "post_id": "P17E_030", "type": "COMMUTE", "text": "지하철", "start": 9, "end": 12, "ctx": "월요일 아침부터 ⟦지하철⟧ 고장 나서 진짜 진땀 뺐다. 출근길에 선배 사서가 새"}
+{"id": "C121", "src": "exp17e-job-dev", "post_id": "P17E_030", "type": "COMMUTE", "text": "출근길에", "start": 29, "end": 33, "ctx": "월요일 아침부터 지하철 고장 나서 진짜 진땀 뺐다. ⟦출근길에⟧ 선배 사서가 새로 들어온 책 정리하는 걸 도와달라고 "}
+{"id": "C122", "src": "exp17e-job-dev", "post_id": "P17E_030", "type": "COMMUTE", "text": "서둘러", "start": 70, "end": 73, "ctx": "근길에 선배 사서가 새로 들어온 책 정리하는 걸 도와달라고 연락 왔다. ⟦서둘러⟧ GTX로 갈아타고 출근하는데 오늘따라 시간이 왜 이렇"}
+{"id": "C123", "src": "exp17e-job-dev", "post_id": "P17E_030", "type": "COMMUTE", "text": "GTX로 갈아타고", "start": 74, "end": 83, "ctx": "선배 사서가 새로 들어온 책 정리하는 걸 도와달라고 연락 왔다. 서둘러 ⟦GTX로 갈아타고⟧ 출근하는데 오늘따라 시간이 왜 이렇게 안 가냐."}
+{"id": "C124", "src": "exp17e-job-dev", "post_id": "P17E_030", "type": "COMMUTE", "text": "출근하는데", "start": 84, "end": 89, "ctx": "들어온 책 정리하는 걸 도와달라고 연락 왔다. 서둘러 GTX로 갈아타고 ⟦출근하는데⟧ 오늘따라 시간이 왜 이렇게 안 가냐."}
+{"id": "C125", "src": "exp17e-job-dev", "post_id": "P17E_038", "type": "COMMUTE", "text": "출근", "start": 29, "end": 31, "ctx": "원주 단계동 집에서 눈 붙인 지 얼마나 됐다고 벌써 ⟦출근⟧ 시간이네. 공장 2교대 하려니까 진짜 사람 할 짓이 "}
+{"id": "C126", "src": "exp17e-job-dev", "post_id": "P17E_041", "type": "COMMUTE", "text": "출근길", "start": 8, "end": 11, "ctx": "요즘 아침마다 ⟦출근길⟧ 날씨가 부쩍 쌀쌀해진 게 느껴져서 옷장 앞에서 고민이"}
+{"id": "C127", "src": "exp17e-job-dev", "post_id": "P17E_041", "type": "COMMUTE", "text": "출근할 때는", "start": 93, "end": 99, "ctx": " 2년 차라 그런지 이제는 요령이 생겨서 겉옷을 꼭 챙기게 되더라고요. ⟦출근할 때는⟧ GTX로 갈아타면서 찬바람을 맞으면 정신이 번쩍 드는"}
+{"id": "C128", "src": "exp17e-job-dev", "post_id": "P17E_041", "type": "COMMUTE", "text": "GTX로 갈아타면서", "start": 100, "end": 110, "ctx": "그런지 이제는 요령이 생겨서 겉옷을 꼭 챙기게 되더라고요. 출근할 때는 ⟦GTX로 갈아타면서⟧ 찬바람을 맞으면 정신이 번쩍 드는 요즘입니다. 퇴근길"}
+{"id": "C129", "src": "exp17e-job-dev", "post_id": "P17E_041", "type": "COMMUTE", "text": "퇴근길에는", "start": 137, "end": 142, "ctx": "때는 GTX로 갈아타면서 찬바람을 맞으면 정신이 번쩍 드는 요즘입니다. ⟦퇴근길에는⟧ 찬 공기가 더 강해진다고 하니 이웃님들 모두 감기 조"}
+{"id": "C130", "src": "exp17e-job-dev", "post_id": "P17E_053", "type": "COMMUTE", "text": "출근", "start": 70, "end": 72, "ctx": "분 최고로 퇴근했다. 집 오자마자 씻고 늘어지니까 세상 행복하다. 내일 ⟦출근⟧ 생각은 잠시 접어두고 편하게 쉬어야지."}
+{"id": "C131", "src": "exp17e-job-dev", "post_id": "P17E_058", "type": "COMMUTE", "text": "퇴근하고", "start": 3, "end": 7, "ctx": "오늘 ⟦퇴근하고⟧ 집에 오니까 진짜 기력 하나도 없어서 배달이나 시킬까"}
+{"id": "C132", "src": "exp17e-job-dev", "post_id": "P17E_060", "type": "COMMUTE", "text": "지하철부터", "start": 44, "end": 49, "ctx": "1에 요즘 애들 따라다니면서 영혼까지 다 털렸다. 오늘 개학이라 그런지 ⟦지하철부터⟧ 사람 개많아서 진심 기빨림. 퇴근하자마자 침대에 누웠"}
+{"id": "C133", "src": "exp17e-job-dev", "post_id": "P17E_060", "type": "COMMUTE", "text": "퇴근하자마자", "start": 66, "end": 72, "ctx": " 털렸다. 오늘 개학이라 그런지 지하철부터 사람 개많아서 진심 기빨림. ⟦퇴근하자마자⟧ 침대에 누웠는데 일어나기가 싫네."}
+{"id": "C134", "src": "exp19-variant-aug", "post_id": "AUG1_0003", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 저녁 뭐 먹을지 남매끼리 한참 고민함. 결국 있는 거"}
+{"id": "C135", "src": "exp19-variant-aug", "post_id": "AUG1_0019", "type": "COMMUTE", "text": "번 버스", "start": 8, "end": 12, "ctx": "장보고 7016⟦번 버스⟧ 탔다. 생각보다 짐이 많아서 팔이 묵직하네. 다음엔 "}
+{"id": "C136", "src": "exp19-variant-aug", "post_id": "AUG1_0023", "type": "COMMUTE", "text": "출근 시간이", "start": 57, "end": 63, "ctx": "하고 있어서 아침마다 조금 서둘러 출근합니다. 오늘은 서른다섯인 언니와 ⟦출근 시간이⟧ 겹쳐 잠깐 같이 걸었네요. 짧게 이야기를 나누며 가니"}
+{"id": "C137", "src": "exp19-variant-aug", "post_id": "AUG1_0023", "type": "COMMUTE", "text": "출근길이", "start": 99, "end": 103, "ctx": " 시간이 겹쳐 잠깐 같이 걸었네요. 짧게 이야기를 나누며 가니 평소보다 ⟦출근길이⟧ 금방 지나간 것 같습니다."}
+{"id": "C138", "src": "exp19-variant-aug", "post_id": "AUG1_0037", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 괴정동 돌아오니까 저녁 챙길 기운도 없더라. 대충 먹"}
+{"id": "C139", "src": "exp19-variant-aug", "post_id": "AUG1_0038", "type": "COMMUTE", "text": "일한 뒤", "start": 21, "end": 25, "ctx": "울산 남구에서 시급 만 이천 원 받고 ⟦일한 뒤⟧ 퇴근하니 어느새 저녁이 되었네요. 따뜻한 밥 한 그릇"}
+{"id": "C140", "src": "exp19-variant-aug", "post_id": "AUG1_0039", "type": "COMMUTE", "text": "152번 버스", "start": 53, "end": 60, "ctx": "이어진 시리즈 정주행 후기 보다가 시간 가는 줄 몰랐음. 내가 타야 할 ⟦152번 버스⟧ 놓칠 뻔해서 마지막에 급하게 뛰어나옴. 진짜 카페만 "}
+{"id": "C141", "src": "exp19-variant-aug", "post_id": "AUG1_0044", "type": "COMMUTE", "text": "퇴근", "start": 33, "end": 35, "ctx": "다산동에서 공인중개사로 일하다 보니 하루 종일 앉아 있어서 ⟦퇴근⟧하고 운동 빡세게 했다. 남편은 회계사라 요즘 바빠서 "}
+{"id": "C142", "src": "exp19-variant-aug", "post_id": "AUG1_0046", "type": "COMMUTE", "text": "퇴근하고는", "start": 88, "end": 93, "ctx": "사라 비 오는 날이면 바닥이 미끄럽지 않은지 더 꼼꼼히 살피게 됩니다. ⟦퇴근하고는⟧ 남편이랑 따뜻한 차를 마시며 빗소리를 들었어요."}
+{"id": "C143", "src": "exp19-variant-aug", "post_id": "AUG1_0047", "type": "COMMUTE", "text": "152번 버스 타고", "start": 79, "end": 89, "ctx": " 닦고 바닥까지 밀고 나니 하루가 금방 갔네. 다 끝내고 바람도 쐴 겸 ⟦152번 버스 타고⟧ 잠깐 나갔다 왔어."}
+{"id": "C144", "src": "exp19-variant-aug", "post_id": "AUG1_0053", "type": "COMMUTE", "text": "출근하는 길인데", "start": 6, "end": 14, "ctx": "중계동에서 ⟦출근하는 길인데⟧ 오늘따라 유난히 사람이 많네. 올해 마흔여섯인 나도 "}
+{"id": "C145", "src": "exp19-variant-aug", "post_id": "AUG1_0057", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 제가 사는 광주 광산구로 돌아오니 어느새 저녁이네요."}
+{"id": "C146", "src": "exp19-variant-aug", "post_id": "AUG1_0080", "type": "COMMUTE", "text": "퇴근하고", "start": 19, "end": 23, "ctx": "안산 상록구 사는 보험 설계사인데 ⟦퇴근하고⟧ 장 보러 갔다가 필요한 것보다 더 많이 담아버림. 분"}
+{"id": "C147", "src": "exp19-variant-aug", "post_id": "AUG1_0100", "type": "COMMUTE", "text": "출근하는데", "start": 18, "end": 23, "ctx": "모란시장에서 출발해서 합정동으로 ⟦출근하는데⟧ 오늘따라 길이 왜 이렇게 긴지 모르겠다. 아직 도착도"}
+{"id": "C148", "src": "exp19-variant-aug", "post_id": "AUG1_0102", "type": "COMMUTE", "text": "가 타는", "start": 51, "end": 55, "ctx": "흐려서 알바비로 55만 원 받은 뒤 곧장 집에 가기로 했습니다. 마침 제⟦가 타는⟧ 152번 버스가 금방 와서 다행이었어요. 창밖을 보니"}
+{"id": "C149", "src": "exp19-variant-aug", "post_id": "AUG1_0102", "type": "COMMUTE", "text": "152번 버스가", "start": 56, "end": 64, "ctx": "바비로 55만 원 받은 뒤 곧장 집에 가기로 했습니다. 마침 제가 타는 ⟦152번 버스가⟧ 금방 와서 다행이었어요. 창밖을 보니 바람까지 꽤 세"}
+{"id": "C150", "src": "exp19-variant-aug", "post_id": "AUG1_0103", "type": "COMMUTE", "text": "아침", "start": 0, "end": 2, "ctx": "⟦아침⟧ 출근길에 버스를 기다리며 이런저런 생각을 해봅니다. "}
+{"id": "C151", "src": "exp19-variant-aug", "post_id": "AUG1_0103", "type": "COMMUTE", "text": "출근길에", "start": 3, "end": 7, "ctx": "아침 ⟦출근길에⟧ 버스를 기다리며 이런저런 생각을 해봅니다. 월급 이백"}
+{"id": "C152", "src": "exp19-variant-aug", "post_id": "AUG1_0103", "type": "COMMUTE", "text": "버스를", "start": 8, "end": 11, "ctx": "아침 출근길에 ⟦버스를⟧ 기다리며 이런저런 생각을 해봅니다. 월급 이백팔십만 "}
+{"id": "C153", "src": "exp19-variant-aug", "post_id": "AUG1_0103", "type": "COMMUTE", "text": "출근길", "start": 89, "end": 92, "ctx": "런히 살아가는 것도 참 감사한 일이지요. 언니가 청라로 이사 간 뒤로는 ⟦출근길⟧ 풍경이 어떠냐며 종종 안부를 물어옵니다. 오늘도 무사"}
+{"id": "C154", "src": "exp19-variant-aug", "post_id": "AUG1_0108", "type": "COMMUTE", "text": "4호선으로", "start": 5, "end": 10, "ctx": "장 보러 ⟦4호선으로⟧ 가는 중. 필요한 것만 사고 얼른 와야지. 오늘은 진"}
+{"id": "C155", "src": "exp19-variant-aug", "post_id": "AUG1_0110", "type": "COMMUTE", "text": "출근하는 길인데", "start": 9, "end": 17, "ctx": "서울 노원구에서 ⟦출근하는 길인데⟧ 오늘따라 버스가 한참 안 오네. 심심해서 창밖 사진을"}
+{"id": "C156", "src": "exp19-variant-aug", "post_id": "AUG1_0114", "type": "COMMUTE", "text": "퇴근하고", "start": 11, "end": 15, "ctx": "서울 강서구 사는데 ⟦퇴근하고⟧ 집에 오니 벌써 저녁이네. 간단히 챙겨 먹고 소파에 "}
+{"id": "C157", "src": "exp19-variant-aug", "post_id": "AUG1_0122", "type": "COMMUTE", "text": "출근하는", "start": 8, "end": 12, "ctx": "울산 남구에서 ⟦출근하는⟧ 아침, 오늘따라 길이 유난히 막히네. 남편은 회계사라"}
+{"id": "C158", "src": "exp19-variant-aug", "post_id": "AUG1_0136", "type": "COMMUTE", "text": "4호선으로 이동해", "start": 40, "end": 49, "ctx": "비 오는 날엔 우리 남매 둘 다 괜히 밖에 나가기 싫어짐. 그래도 나는 ⟦4호선으로 이동해⟧야 해서 우산 챙겨 나왔는데, 신발 다 젖었다. 집에 "}
+{"id": "C159", "src": "exp19-variant-aug", "post_id": "AUG1_0137", "type": "COMMUTE", "text": "번 버스 타고", "start": 4, "end": 11, "ctx": "7016⟦번 버스 타고⟧ 와서 카페에 잠깐 들렀다. 창가 자리에 앉아 조용히 "}
+{"id": "C160", "src": "exp19-variant-aug", "post_id": "AUG1_0142", "type": "COMMUTE", "text": "152번 버스를 타고", "start": 11, "end": 22, "ctx": "장을 보러 갈 때는 ⟦152번 버스를 타고⟧ 다녀왔습니다. 필요한 것만 사려고 했는데 둘러보다 보"}
+{"id": "C161", "src": "exp19-variant-aug", "post_id": "AUG1_0145", "type": "COMMUTE", "text": "수인분당선으로", "start": 0, "end": 7, "ctx": "⟦수인분당선으로⟧ 미용실 다녀왔다. 머리 조금 다듬었을 뿐인데 기분이 "}
+{"id": "C162", "src": "exp19-variant-aug", "post_id": "AUG1_0150", "type": "COMMUTE", "text": "출근할", "start": 17, "end": 20, "ctx": "주간 2교대 근무를 하다 보니 ⟦출근할⟧ 때마다 날씨부터 확인하게 됩니다. 스무 해 넘게 계절"}
+{"id": "C163", "src": "exp19-variant-aug", "post_id": "AUG1_0153", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 사직동 집에 오니 와이프가 저녁을 차려뒀다. 밥 먹다"}
+{"id": "C164", "src": "exp19-variant-aug", "post_id": "AUG1_0159", "type": "COMMUTE", "text": "퇴근 뒤로", "start": 21, "end": 26, "ctx": "물리치료사로 일하다 보니 장보기는 늘 ⟦퇴근 뒤로⟧ 밀린다. 오늘은 수원 권선구에서 필요한 것만 얼른 샀"}
+{"id": "C165", "src": "exp19-variant-aug", "post_id": "AUG1_0163", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 대구 서문시장에서 따뜻한 저녁을 먹었네요. 이제 성남"}
+{"id": "C166", "src": "exp19-variant-aug", "post_id": "AUG1_0177", "type": "COMMUTE", "text": "출근길", "start": 12, "end": 15, "ctx": "올해 51살이 되어도 ⟦출근길⟧ 아침은 늘 분주하네요. 월급 이백팔십만 원을 받는 제"}
+{"id": "C167", "src": "exp19-variant-aug", "post_id": "AUG1_0191", "type": "COMMUTE", "text": "퇴근하고", "start": 26, "end": 30, "ctx": "저는 상도동에 살고 올해 51살입니다. 오늘은 ⟦퇴근하고⟧ 집에 와서 간단하게 저녁을 차려 먹었습니다. 친구가 "}
+{"id": "C168", "src": "exp19-variant-aug", "post_id": "AUG1_0201", "type": "COMMUTE", "text": "4호선으로", "start": 4, "end": 9, "ctx": "오늘은 ⟦4호선으로⟧ 돌아오는 길에 택배 도착 알림을 확인했습니다. 집에 "}
+{"id": "C169", "src": "exp19-variant-aug", "post_id": "AUG1_0207", "type": "COMMUTE", "text": "퇴근 뒤", "start": 42, "end": 46, "ctx": " 일산동구에서 하루 일을 마치고 돌아오니 저녁 바람이 제법 선선합니다. ⟦퇴근 뒤⟧ 따뜻한 밥 한 끼 먹고 조용히 쉬는 시간이 참 좋습니"}
+{"id": "C170", "src": "exp19-variant-aug", "post_id": "AUG1_0210", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 송도센트럴파크 쪽 좀 걷다가 저녁 먹었다. 하루 종일"}
+{"id": "C171", "src": "exp19-variant-aug", "post_id": "AUG1_0211", "type": "COMMUTE", "text": "버스가", "start": 20, "end": 23, "ctx": "어린이집 교사로 출근하는데 아침부터 ⟦버스가⟧ 꽉 차서 진 다 빠짐. 옆자리 분이 통화하면서 일곱 "}
+{"id": "C172", "src": "exp19-variant-aug", "post_id": "AUG1_0212", "type": "COMMUTE", "text": "퇴근하고", "start": 8, "end": 12, "ctx": "광주 북구에서 ⟦퇴근하고⟧ 집에 와서 간단히 저녁 먹었어. 친구가 노원구에 살아"}
+{"id": "C173", "src": "exp19-variant-aug", "post_id": "AUG1_0219", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 일산호수공원을 한 바퀴 걷고 집에 들어왔다. 와이프가"}
+{"id": "C174", "src": "exp19-variant-aug", "post_id": "AUG1_0220", "type": "COMMUTE", "text": "퇴근하고", "start": 7, "end": 11, "ctx": "나이 56에 ⟦퇴근하고⟧ 나면 저녁 챙기는 것도 가끔 귀찮다. 이번 달 알바비"}
+{"id": "C175", "src": "exp19-variant-aug", "post_id": "AUG1_0221", "type": "COMMUTE", "text": "수인분당선으로 오갈", "start": 26, "end": 36, "ctx": "오늘은 미뤄 두었던 집 청소를 했습니다. 저는 ⟦수인분당선으로 오갈⟧ 때마다 쌓인 먼지가 괜히 떠올라, 돌아오자마자 구석구"}
+{"id": "C176", "src": "exp19-variant-aug", "post_id": "AUG1_0225", "type": "COMMUTE", "text": "나오는", "start": 6, "end": 9, "ctx": "중계동에서 ⟦나오는⟧ 출근길, 오늘따라 유난히 조용하네. 이대로 무사히 도"}
+{"id": "C177", "src": "exp19-variant-aug", "post_id": "AUG1_0225", "type": "COMMUTE", "text": "출근길,", "start": 10, "end": 14, "ctx": "중계동에서 나오는 ⟦출근길,⟧ 오늘따라 유난히 조용하네. 이대로 무사히 도착하면 좋"}
+{"id": "C178", "src": "exp19-variant-aug", "post_id": "AUG1_0227", "type": "COMMUTE", "text": "출근 시간이", "start": 16, "end": 22, "ctx": "주간 2교대 근무 하다 보니 ⟦출근 시간이⟧ 매번 다르게 느껴져. 오늘은 유난히 길이 조용해서 생"}
+{"id": "C179", "src": "exp19-variant-aug", "post_id": "AUG1_0237", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 집에 돌아오니 따뜻한 저녁 한 끼가 참 반갑더군요. "}
+{"id": "C180", "src": "exp19-variant-aug", "post_id": "AUG1_0240", "type": "COMMUTE", "text": "출근길은", "start": 11, "end": 15, "ctx": "연봉 오천만인 나도 ⟦출근길은⟧ 늘 피곤하네. 오늘도 사람 많다. 빨리 도착했으면."}
+{"id": "C181", "src": "exp19-variant-aug", "post_id": "AUG1_0245", "type": "COMMUTE", "text": "퇴근하니", "start": 14, "end": 18, "ctx": "오늘도 바리스타로 일하고 ⟦퇴근하니⟧ 어느새 저녁이네. 집에 바로 가기 아쉬워서 광안리 해"}
+{"id": "C182", "src": "exp19-variant-aug", "post_id": "AUG1_0252", "type": "COMMUTE", "text": "4호선으로", "start": 4, "end": 9, "ctx": "오늘은 ⟦4호선으로⟧ 이동해서 장 보러 갔는데 생각보다 살 게 많아서 장바"}
+{"id": "C183", "src": "exp19-variant-aug", "post_id": "AUG1_0273", "type": "COMMUTE", "text": "퇴근하고", "start": 0, "end": 4, "ctx": "⟦퇴근하고⟧ 동성로 와서 저녁 먹는 중인데 오늘따라 사람 진짜 많"}
+{"id": "C184", "src": "exp19-variant-aug", "post_id": "AUG1_0273", "type": "COMMUTE", "text": "와서", "start": 9, "end": 11, "ctx": "퇴근하고 동성로 ⟦와서⟧ 저녁 먹는 중인데 오늘따라 사람 진짜 많다. 언니가 "}
+{"id": "C185", "src": "exp19-variant-aug", "post_id": "AUG1_0273", "type": "COMMUTE", "text": "퇴근 뒤에", "start": 83, "end": 88, "ctx": "로 이사 간 뒤로는 같이 밥 먹을 일이 줄어서 혼밥이 익숙해짐. 그래도 ⟦퇴근 뒤에⟧ 먹는 저녁이 제일 맛있다."}
+{"id": "C186", "src": "exp19-variant-aug", "post_id": "AUG1_0280", "type": "COMMUTE", "text": "퇴근하고", "start": 8, "end": 12, "ctx": "포항 남구에서 ⟦퇴근하고⟧ 돌아오는 길에 간단히 저녁을 먹었습니다. 이번 달에는"}
+{"id": "C187", "src": "exp19-variant-aug", "post_id": "AUG1_0280", "type": "COMMUTE", "text": "는 길에", "start": 16, "end": 20, "ctx": "포항 남구에서 퇴근하고 돌아오⟦는 길에⟧ 간단히 저녁을 먹었습니다. 이번 달에는 제가 알바비로"}
+{"id": "C188", "src": "exp19-variant-aug", "post_id": "AUG1_0281", "type": "COMMUTE", "text": "퇴근하고", "start": 51, "end": 55, "ctx": "중개사로 일하는데 오늘은 매물 사진을 쉰 개나 정리해서 유난히 지쳤다. ⟦퇴근하고⟧ 저녁 먹으니 이제야 좀 살 것 같네."}
+{"id": "C189", "src": "exp19-variant-aug", "post_id": "AUG1_0291", "type": "COMMUTE", "text": "152번 버스를 타", "start": 86, "end": 96, "ctx": "건마다 사연이 있어 쉽게 버리기가 어렵습니다. 오늘은 정리한 짐을 들고 ⟦152번 버스를 타⟧러 나가야겠어요."}
+{"id": "C190", "src": "exp19-variant-aug", "post_id": "AUG1_0296", "type": "COMMUTE", "text": "나와", "start": 6, "end": 8, "ctx": "괴정동에서 ⟦나와⟧ 수인분당선으로 갈아타고 장 보러 갔다. 서른다섯인 언"}
+{"id": "C191", "src": "exp19-variant-aug", "post_id": "AUG1_0296", "type": "COMMUTE", "text": "수인분당선으로 갈아타", "start": 9, "end": 20, "ctx": "괴정동에서 나와 ⟦수인분당선으로 갈아타⟧고 장 보러 갔다. 서른다섯인 언니가 부탁한 것도 같이"}
+{"id": "C192", "src": "exp27-adversarial", "post_id": "P27_09_plain", "type": "COMMUTE", "text": "퇴근하고", "start": 4, "end": 8, "ctx": "오늘도 ⟦퇴근하고⟧ 가볍게 걸으러 나왔다.\n집 근처라 매일같이 오는 석촌"}
+{"id": "C193", "src": "exp27-adversarial", "post_id": "P27_09_hidden", "type": "COMMUTE", "text": "퇴근하고", "start": 4, "end": 8, "ctx": "오늘도 ⟦퇴근하고⟧ 가볍게 걸으러 나왔다.\n집 근처라 매일같이 오는 석."}
+{"id": "C194", "src": "exp27-adversarial", "post_id": "P27_16_plain", "type": "COMMUTE", "text": "출근해서", "start": 3, "end": 7, "ctx": "오늘 ⟦출근해서⟧ 아이들 돌보는데 보육교사 일 하면서 가장 엉뚱한 질문"}
+{"id": "C195", "src": "exp27-adversarial", "post_id": "P27_16_hidden", "type": "COMMUTE", "text": "오늘", "start": 0, "end": 2, "ctx": "⟦오늘⟧ 출근해서 아이들 돌보는데 꼬맹이들 낮잠 재우는 일 하"}
+{"id": "C196", "src": "exp27-adversarial", "post_id": "P27_16_hidden", "type": "COMMUTE", "text": "출근해서", "start": 3, "end": 7, "ctx": "오늘 ⟦출근해서⟧ 아이들 돌보는데 꼬맹이들 낮잠 재우는 일 하면서 가장"}
