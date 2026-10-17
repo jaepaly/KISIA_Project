@@ -1,0 +1,23 @@
+{
+  "H39": {
+    "pool": 103,
+    "fragment": 17,
+    "recall": 0.4117647058823529,
+    "wrong": 0,
+    "wrong_ids": []
+  },
+  "gold": {
+    "changed": [],
+    "commute_self_to_unknown": 0
+  },
+  "dev_corpus": {
+    "changed": 35,
+    "gold_matched": []
+  },
+  "pass": {
+    "recall": false,
+    "wrong": true,
+    "gold": true,
+    "dev": true
+  }
+}
