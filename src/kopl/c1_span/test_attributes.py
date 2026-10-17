@@ -455,6 +455,11 @@ def test_q1_parent_term_follows_family_context():
     ("서른 살 때문에 고민이 많다.", "서른 살", "self"),       # 「때문」은 「때」가 아니다
     ("열 살 아들이 학교 간다.", "열 살", "other"),            # 남의 나이는 그대로(main other)
     ("아들이 다섯 살 때 이사했다.", "다섯 살", "other"),       # main 이 other 면 Q2 는 건드리지 않는다
+    # Codex 검토(판정 뒤) — 지금 나이를 깨닫는 말 · 지금 일어나는 첫 경험
+    ("올해로 서른 살이었네. 생일 케이크를 보고 실감했다", "서른 살", "self"),
+    ("생일 케이크에 꽂힌 초를 보니 내가 서른 살이었네", "서른 살", "self"),
+    ("서른 살에 처음 맞는 생일이라 조금 특별하다", "서른 살", "self"),
+    ("내가 열 살이었을 적에 동네엔 구멍가게가 하나 있었다", "열 살", "unknown"),
 ])
 def test_q2_past_age_is_unknown(sentence, span, expected):
     assert _r(sentence, span, "AGE")["subject"] == expected
