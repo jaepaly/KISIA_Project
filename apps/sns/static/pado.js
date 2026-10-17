@@ -19,7 +19,7 @@
   // subject unknown — 엔진은 지우지 않고 신뢰도를 절반으로 센다(clues.py). 화면도 지우지 않고 점선 · 옅은 색으로 구분한다 (exp32 사후 분석)
   const maybe = (s) => s.subject === "unknown";
   const MAYBE_HINT = (s) => String(s.type).startsWith("LOC") ? " · 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어요" : " · 내 정보가 아닐 수 있어요";
-  const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 ${n}곳은 내 정보가 아닐 수 있어 약하게 셉니다.` : ""; };
+  const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 ${n}곳은 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다.` : ""; };
   const markStyle = (s, alpha) => maybe(s)
     ? `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "59" : "73"};outline:1px dashed rgba(62,58,54,.4);outline-offset:-1px;`
     : `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "B3" : ""};`;
@@ -195,6 +195,7 @@
       pick.innerHTML = `
         <div class="pado-pick-h"><span class="t">${esc(label)}</span> <del>${esc(s.text)}</del> <span class="muted">대신</span>
           <button type="button" class="x" aria-label="닫기" data-close>×</button></div>
+        ${maybe(s) ? `<p class="pado-tip" style="margin-top:0;">${esc(MAYBE_HINT(s).replace(/^ · /, ""))}. 내 정보가 아니면 그대로 두셔도 됩니다.</p>` : ""}
         ${body}
         <div class="pado-pick-f">
           <button type="button" class="ghost" data-self>직접 고치기</button>
@@ -286,7 +287,7 @@
           if (s.start < last) continue;
           marked += esc(cp(body, last, s.start))
             + `<mark style="${markStyle(s, false)}border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}${maybe(s) ? MAYBE_HINT(s) : ""}">`
-            + esc(cp(body, s.start, s.end)) + "</mark>";
+            + esc(cp(body, s.start, s.end)) + (maybe(s) ? `<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">(내 정보인지 불분명)</span>` : "") + "</mark>";
           last = s.end;
         }
         marked += esc(cp(body, last));
