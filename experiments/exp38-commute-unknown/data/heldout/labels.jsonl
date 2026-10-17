@@ -1,0 +1,196 @@
+{"id":"C001","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C002","label":"fragment","why":"일반적인 이동 동사일 뿐임"}
+{"id":"C003","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C004","label":"clue","why":"버스 이용을 나타냄"}
+{"id":"C005","label":"clue","why":"지하철 이용을 나타냄"}
+{"id":"C006","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C007","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C008","label":"clue","why":"퇴근 시점을 나타냄"}
+{"id":"C009","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C010","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C011","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C012","label":"clue","why":"택시 이용을 나타냄"}
+{"id":"C013","label":"clue","why":"출근이라는 핵심 말이 있음"}
+{"id":"C014","label":"clue","why":"출근 준비를 나타냄"}
+{"id":"C015","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C016","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C017","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C018","label":"clue","why":"교통수단인 택시가 명시됨"}
+{"id":"C019","label":"clue","why":"버스 노선과 탑승을 나타냄"}
+{"id":"C020","label":"clue","why":"노선 앞부분이 잘려도 버스 이용이 명확함"}
+{"id":"C021","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C022","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C023","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C024","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C025","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C026","label":"clue","why":"타인의 출근도 통근 단서임"}
+{"id":"C027","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C028","label":"clue","why":"광역버스 이용을 나타냄"}
+{"id":"C029","label":"clue","why":"버스 하차를 나타냄"}
+{"id":"C030","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C031","label":"clue","why":"광역버스 이용을 나타냄"}
+{"id":"C032","label":"fragment","why":"일반적인 이동 동사 조각임"}
+{"id":"C033","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C034","label":"clue","why":"자차 이용과 소요 시간이 명시됨"}
+{"id":"C035","label":"clue","why":"출근 시점을 나타냄"}
+{"id":"C036","label":"clue","why":"광역버스 이용을 나타냄"}
+{"id":"C037","label":"clue","why":"일회성 이동도 지하철 노선 단서임"}
+{"id":"C038","label":"clue","why":"지하철 하차를 나타냄"}
+{"id":"C039","label":"fragment","why":"목적지만 가리키며 통근이나 수단은 없음"}
+{"id":"C040","label":"fragment","why":"야간 근무이며 통근 자체는 아님"}
+{"id":"C041","label":"clue","why":"교통수단인 버스가 남아 있음"}
+{"id":"C042","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C043","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C044","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C045","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C046","label":"fragment","why":"출구 표현만으로 교통수단이나 통근이 드러나지 않음"}
+{"id":"C047","label":"fragment","why":"연결 어미만 있음"}
+{"id":"C048","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C049","label":"clue","why":"끝이 잘려도 출근이라는 핵심 말이 있음"}
+{"id":"C050","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C051","label":"clue","why":"지하철 노선을 이용한 이동임"}
+{"id":"C052","label":"clue","why":"광역버스 이용을 나타냄"}
+{"id":"C053","label":"clue","why":"약속 이동이어도 택시 이용 단서임"}
+{"id":"C054","label":"clue","why":"버스 이용을 나타냄"}
+{"id":"C055","label":"clue","why":"장보기 이동이어도 버스 이용 단서임"}
+{"id":"C056","label":"clue","why":"교통수단인 버스가 명시됨"}
+{"id":"C057","label":"fragment","why":"관형형 어미만 있음"}
+{"id":"C058","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C059","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C060","label":"clue","why":"출근 경로와 지하철이 명시됨"}
+{"id":"C061","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C062","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C063","label":"clue","why":"셔틀 교통수단을 나타냄"}
+{"id":"C064","label":"clue","why":"지하철 노선과 환승을 나타냄"}
+{"id":"C065","label":"clue","why":"교통수단인 지하철이 명시됨"}
+{"id":"C066","label":"clue","why":"출근이라는 통근 관계어임"}
+{"id":"C067","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C068","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C069","label":"clue","why":"셔틀 교통수단을 나타냄"}
+{"id":"C070","label":"fragment","why":"일반적인 시간대 표현만 있음"}
+{"id":"C071","label":"clue","why":"출근이라는 통근 관계어임"}
+{"id":"C072","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C073","label":"clue","why":"앞부분이 잘려도 철도 이동이 명확함"}
+{"id":"C074","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C075","label":"fragment","why":"거주 동사이며 통근 단서는 없음"}
+{"id":"C076","label":"fragment","why":"거리의 성질을 꾸미는 말만 있음"}
+{"id":"C077","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C078","label":"clue","why":"비행기라는 교통수단과 시간이 있음"}
+{"id":"C079","label":"clue","why":"출근 경로와 지하철이 명시됨"}
+{"id":"C080","label":"clue","why":"지하철 탑승을 나타냄"}
+{"id":"C081","label":"clue","why":"버스 이용을 나타냄"}
+{"id":"C082","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C083","label":"clue","why":"노선 앞부분이 잘려도 버스 이용이 명확함"}
+{"id":"C084","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C085","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C086","label":"fragment","why":"수단 명칭 없이 조사와 일반 이동 표현만 있음"}
+{"id":"C087","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C088","label":"clue","why":"교통수단인 지하철이 명시됨"}
+{"id":"C089","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C090","label":"clue","why":"출근 시점을 나타냄"}
+{"id":"C091","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C092","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C093","label":"clue","why":"직업 문맥이어도 버스는 교통수단임"}
+{"id":"C094","label":"fragment","why":"일반적인 이동 행위만 있음"}
+{"id":"C095","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C096","label":"clue","why":"버스 탑승을 나타냄"}
+{"id":"C097","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C098","label":"clue","why":"출근 시점을 나타냄"}
+{"id":"C099","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C100","label":"clue","why":"끝이 잘려도 출근이라는 핵심 말이 있음"}
+{"id":"C101","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C102","label":"fragment","why":"도로만으로 교통수단이나 통근 패턴은 알 수 없음"}
+{"id":"C103","label":"clue","why":"교통수단인 택시가 명시됨"}
+{"id":"C104","label":"clue","why":"출근 시각이라는 핵심 말이 있음"}
+{"id":"C105","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C106","label":"clue","why":"퇴근이라는 통근 관계어임"}
+{"id":"C107","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C108","label":"clue","why":"퇴근 시점을 나타냄"}
+{"id":"C109","label":"clue","why":"GTX 이용이 명시됨"}
+{"id":"C110","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C111","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C112","label":"clue","why":"출근이라는 핵심 말이 있음"}
+{"id":"C113","label":"clue","why":"친척 방문이어도 GTX 이용 단서임"}
+{"id":"C114","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C115","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C116","label":"clue","why":"GTX 이용을 나타냄"}
+{"id":"C117","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C118","label":"fragment","why":"주격 조사만 있음"}
+{"id":"C119","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C120","label":"clue","why":"교통수단인 지하철이 명시됨"}
+{"id":"C121","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C122","label":"fragment","why":"행동을 꾸미는 부사일 뿐임"}
+{"id":"C123","label":"clue","why":"GTX 환승을 나타냄"}
+{"id":"C124","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C125","label":"clue","why":"출근이라는 통근 관계어임"}
+{"id":"C126","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C127","label":"clue","why":"출근 시점을 나타냄"}
+{"id":"C128","label":"clue","why":"GTX 환승을 나타냄"}
+{"id":"C129","label":"clue","why":"퇴근 경로를 뜻함"}
+{"id":"C130","label":"clue","why":"출근이라는 통근 관계어임"}
+{"id":"C131","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C132","label":"clue","why":"조사가 붙어도 지하철이 명확함"}
+{"id":"C133","label":"clue","why":"퇴근 시점을 나타냄"}
+{"id":"C134","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C135","label":"clue","why":"번호가 잘려도 버스라는 수단이 있음"}
+{"id":"C136","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C137","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C138","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C139","label":"fragment","why":"근무 이후라는 말이며 통근 핵심 말은 없음"}
+{"id":"C140","label":"clue","why":"버스 노선이 명시됨"}
+{"id":"C141","label":"clue","why":"퇴근이라는 통근 관계어임"}
+{"id":"C142","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C143","label":"clue","why":"버스 노선과 이용을 나타냄"}
+{"id":"C144","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C145","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C146","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C147","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C148","label":"fragment","why":"조사와 일반적인 탑승 동사만 있음"}
+{"id":"C149","label":"clue","why":"버스 노선이 명시됨"}
+{"id":"C150","label":"fragment","why":"일반적인 시간대 표현만 있음"}
+{"id":"C151","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C152","label":"clue","why":"교통수단인 버스가 명시됨"}
+{"id":"C153","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C154","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C155","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C156","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C157","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C158","label":"clue","why":"지하철 노선을 이용한 이동임"}
+{"id":"C159","label":"clue","why":"버스 이용을 나타냄"}
+{"id":"C160","label":"clue","why":"버스 노선과 이용을 나타냄"}
+{"id":"C161","label":"clue","why":"철도 노선이 명시됨"}
+{"id":"C162","label":"clue","why":"출근이라는 핵심 말이 있음"}
+{"id":"C163","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C164","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C165","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C166","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C167","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C168","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C169","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C170","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C171","label":"clue","why":"교통수단인 버스가 명시됨"}
+{"id":"C172","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C173","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C174","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C175","label":"clue","why":"철도 노선을 이용한 왕복 이동임"}
+{"id":"C176","label":"fragment","why":"일반적인 이동 동사만 있음"}
+{"id":"C177","label":"clue","why":"문장부호가 붙어도 출근길이 명확함"}
+{"id":"C178","label":"clue","why":"출근 시각을 나타냄"}
+{"id":"C179","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C180","label":"clue","why":"출근 경로를 나타냄"}
+{"id":"C181","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C182","label":"clue","why":"지하철 노선이 명시됨"}
+{"id":"C183","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C184","label":"fragment","why":"일반적인 이동 동사일 뿐임"}
+{"id":"C185","label":"clue","why":"퇴근 이후라는 관계어임"}
+{"id":"C186","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C187","label":"fragment","why":"어미와 일반적인 길 표현 조각임"}
+{"id":"C188","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C189","label":"clue","why":"끝이 잘려도 버스 노선과 탑승이 명확함"}
+{"id":"C190","label":"fragment","why":"일반적인 이동 동사일 뿐임"}
+{"id":"C191","label":"clue","why":"철도 노선과 환승을 나타냄"}
+{"id":"C192","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C193","label":"clue","why":"퇴근 행위를 나타냄"}
+{"id":"C194","label":"clue","why":"출근 행위를 나타냄"}
+{"id":"C195","label":"fragment","why":"일반적인 날짜 표현일 뿐임"}
+{"id":"C196","label":"clue","why":"출근 행위를 나타냄"}
