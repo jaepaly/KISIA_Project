@@ -126,8 +126,9 @@ function highlight(text, spans) {
     if (s.start < last) continue;  // 겹치는 스팬은 앞의 것만
     out += esc(cpSlice(text, last, s.start));
     const other = s.subject === "other";
-    const tip = `${TYPE_LABEL[s.type] || "기타 단서"}: ${LEVEL_KO[s.level] || "단서"}${other ? ". 다른 사람의 정보로, 내 사람 수 계산에서는 제외됩니다." : ""}`;
-    out += `<span class="${other ? "span-other" : "span-hit"}" data-type="${esc(s.type)}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}</span>`;
+    const maybe = s.subject === "unknown";   // 엔진은 신뢰도 절반으로 센다(clues.py) — 지우지 않고 점선으로 구분
+    const tip = `${TYPE_LABEL[s.type] || "기타 단서"}: ${LEVEL_KO[s.level] || "단서"}${other ? ". 다른 사람의 정보로, 내 사람 수 계산에서는 제외됩니다." : ""}${maybe ? (String(s.type).startsWith("LOC") ? ". 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어, 같은 조건의 사람 수 계산에 낮게 반영합니다." : s.type === "AGE" ? ". 지난 시절의 나이처럼 지금 나이가 아닐 수 있어, 같은 조건의 사람 수 계산에 낮게 반영합니다." : ". 내 정보인지 불분명해, 같은 조건의 사람 수 계산에 낮게 반영합니다.") : ""}`;
+    out += `<span class="${other ? "span-other" : maybe ? "span-hit span-maybe" : "span-hit"}" data-type="${esc(s.type)}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}${maybe ? `<span class="sr-only">(내 정보인지 불분명)</span>` : ""}</span>`;
     last = s.end;
   }
   return out + esc(cpSlice(text, last));
@@ -146,7 +147,8 @@ function renderPosts(data) {
       const label = tid === "title" ? "제목" : tid === "body" ? "" : "사진 설명";
       return `<p class="post-body">${label ? `<span class="channel">${label}</span>` : ""}${highlight(text, spans.filter(s => s.text_id === tid))}</p>`;
     }).join("");
-    const otherNote = others ? `<p class="note">초록 표시 ${others}개는 가족이나 지인의 정보로 보여 내 사람 수 계산에서 제외했습니다. 다른 사람의 개인정보도 드러날 수 있습니다.</p>` : "";
+    const maybeN = spans.filter(s => s.subject === "unknown").length;
+    const otherNote = (maybeN ? `<p class="note">점선 표시 ${maybeN}개는 여행지나 지난 나이처럼 지금 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다(노출 위험도 점수는 별도 기준).</p>` : "") + (others ? `<p class="note">초록 표시 ${others}개는 가족이나 지인의 정보로 보여 내 사람 수 계산에서 제외했습니다. 다른 사람의 개인정보도 드러날 수 있습니다.</p>` : "");
     const types = [...new Set(spans.filter(s => s.subject !== "other").map(s => TYPE_LABEL[s.type] || "기타 단서"))];
     const count = mine
       ? `<span class="badge found">단서 ${mine}</span>`

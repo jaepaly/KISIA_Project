@@ -16,6 +16,14 @@
   const muted = (t) => `<p style="color:var(--ut-ink3);margin:0;">${t}</p>`;
   // 스팬 오프셋은 코드포인트 단위 — 이모지 뒤에서 UTF-16 slice 가 어긋난다
   const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
+  // subject unknown — 엔진은 지우지 않고 신뢰도를 절반으로 센다(clues.py). 화면도 지우지 않고 점선 · 옅은 색으로 구분한다 (exp32 사후 분석)
+  const maybe = (s) => s.subject === "unknown";
+  const MAYBE_HINT = (s) => String(s.type).startsWith("LOC") ? " · 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어요"
+    : s.type === "AGE" ? " · 지난 시절의 나이처럼 지금 나이가 아닐 수 있어요" : " · 내 정보가 아닐 수 있어요";   // AGE unknown = 과거 나이 (exp36)
+  const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 ${n}곳은 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다.` : ""; };
+  const markStyle = (s, alpha) => maybe(s)
+    ? `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "59" : "73"};outline:1px dashed rgba(62,58,54,.4);outline-offset:-1px;`
+    : `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "B3" : ""};`;
 
   // 스팬 범위 보정 — 엔진이 준 start/end 로 자른 글자가 스팬 text 와 다르면(바꿔 쓰기 뒤 「주간조」가 「조」로 칠해지던 일)
   // 같은 text 가 나오는 자리 중 원래 start 에 가장 가까운 곳으로 옮긴다. 못 찾으면 원래 범위를 그대로 둔다.
@@ -42,9 +50,8 @@
     let out = "", last = 0;
     for (const s of [...spans].sort((a, b) => a.start - b.start)) {
       if (s.start < last) continue;
-      const bg = (COLOR[s.type] || "#F9E0B8") + (alpha ? "B3" : "");
       out += esc(cp(text, last, s.start))
-        + `<mark data-t="${esc(s.type)}" data-id="${esc(s.span_id || "")}" style="background:${bg};" title="${esc(LABEL[s.type] || s.type)}${hint}">`
+        + `<mark data-t="${esc(s.type)}" data-id="${esc(s.span_id || "")}"${maybe(s) ? ' data-maybe="1"' : ""} style="${markStyle(s, alpha)}" title="${esc(LABEL[s.type] || s.type)}${maybe(s) ? MAYBE_HINT(s) : ""}${hint}">`
         + esc(cp(text, s.start, s.end)) + "</mark>";
       last = s.end;
     }
@@ -156,7 +163,7 @@
           setChip(`개인정보 단서 <b>${spans.length}</b>곳${k ? ` · 같은 조건의 사람 약 <b>${Math.round(k).toLocaleString("ko-KR")}</b>명` : ""}<span class="types">${types.map(esc).join(" · ")}</span>`, "hit");
           if (warn) {
             warn.hidden = false;
-            warn.innerHTML = `색칠한 ${spans.length}곳은 개인정보 단서가 될 수 있습니다. <b>누르면</b> ${nCand ? `바꿔 쓸 표현이 나옵니다(${nCand}곳).` : "직접 고치는 방법을 볼 수 있습니다."} 같은 조건의 사람 수가 적을수록 글쓴이를 좁히기 쉽습니다.`;
+            warn.innerHTML = `색칠한 ${spans.length}곳은 개인정보 단서가 될 수 있습니다. <b>누르면</b> ${nCand ? `바꿔 쓸 표현이 나옵니다(${nCand}곳).` : "직접 고치는 방법을 볼 수 있습니다."} 같은 조건의 사람 수가 적을수록 글쓴이를 좁히기 쉽습니다.${maybeNote(spans)}`;
           }
         }
       } catch (e) {
@@ -189,6 +196,7 @@
       pick.innerHTML = `
         <div class="pado-pick-h"><span class="t">${esc(label)}</span> <del>${esc(s.text)}</del> <span class="muted">대신</span>
           <button type="button" class="x" aria-label="닫기" data-close>×</button></div>
+        ${maybe(s) ? `<p class="pado-tip" style="margin-top:0;">${esc(MAYBE_HINT(s).replace(/^ · /, ""))}. 내 정보가 아니면 그대로 두셔도 됩니다.</p>` : ""}
         ${body}
         <div class="pado-pick-f">
           <button type="button" class="ghost" data-self>직접 고치기</button>
@@ -279,8 +287,8 @@
         for (const s of [...spans].sort((a, b) => a.start - b.start)) {
           if (s.start < last) continue;
           marked += esc(cp(body, last, s.start))
-            + `<mark style="background:${COLOR[s.type] || "#F9E0B8"};border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}">`
-            + esc(cp(body, s.start, s.end)) + "</mark>";
+            + `<mark style="${markStyle(s, false)}border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}${maybe(s) ? MAYBE_HINT(s) : ""}">`
+            + esc(cp(body, s.start, s.end)) + (maybe(s) ? `<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">(내 정보인지 불분명)</span>` : "") + "</mark>";
           last = s.end;
         }
         marked += esc(cp(body, last));
@@ -293,6 +301,7 @@
           + types.map((t) => `<span style="font-size:11px;font-weight:600;color:var(--ut-ink2);background:var(--ut-panel);border:1px solid var(--ut-line);border-radius:99px;padding:2px 9px;">${esc(t)}</span>`).join("")
           + `</div>`
           + `<div style="white-space:pre-wrap;background:var(--ut-bg);border-radius:10px;padding:12px 14px;line-height:1.85;font-size:13px;">${marked}</div>`
+          + (spans.some(maybe) ? `<p style="margin:6px 0 0;font-size:12px;color:var(--ut-ink3);">${maybeNote(spans).trim()}</p>` : "")
           + `<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px;">`
           + (userRef ? `<a class="fx-link" href="${BASE}/static/scan.html?u=${encodeURIComponent(userRef)}" style="color:var(--ut-earth-ink);">계정 전체 점검 →</a>` : "")
           + `<a class="fx-link" href="${BASE}/static/scan.html" style="color:var(--ut-earth-ink);">다른 계정 점검 →</a>`
