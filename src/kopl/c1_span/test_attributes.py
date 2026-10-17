@@ -377,3 +377,93 @@ def test_codex_third(sentence, span, stype, expected):
 ])
 def test_b_review_intro_suffix(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+# exp36 Q1 — 괄호 속 남의 나이(other) · 괄호 앞이 나·자기소개·없음이면 self
+@pytest.mark.parametrize("sentence,span,occ,expected", [
+    ("아이찡(14살) ♥ 나(27살)", "14살", 0, "other"),
+    ("아이찡(14살) ♥ 나(27살)", "27살", 0, "self"),
+    ("우리 집 고양이 나비(3살)가 또 소파를 긁었다.", "3살", 0, "other"),
+    ("조카 민준이(7살)랑 놀이터에 갔다.", "7살", 0, "other"),
+    ("오늘은 최애 하루(23)의 생일이다.", "23", 0, "other"),
+    ("남편(38)이 저녁을 했다.", "38", 0, "other"),
+    ("남편 나이(38)는 비밀.", "38", 0, "other"),
+    ("지수님(31)이 먼저 연락을 줬다.", "31", 0, "other"),
+    ("하루(17세)는 오늘도 지각했다.", "17세", 0, "other"),
+    ("친구 둘(28살, 29살)이랑 여행 계획을 짰다.", "29살", 0, "other"),    # 괄호 앞 「친구 둘」
+    ("저(27살)는 평범한 회사원입니다.", "27살", 0, "self"),
+    ("본인(32세) 퇴사 고민 중", "32세", 0, "self"),
+    ("작성자(29) 오늘 첫 출근", "29", 0, "self"),
+    ("제 나이(31)에 이직이 될까요", "31", 0, "self"),
+    ("(27세 직장인) 퇴근하고 쓰는 일기", "27세", 0, "self"),
+    ("안녕하세요 꿀벌(27)입니다.", "27", 0, "self"),
+    ("저는 꿀벌(27)이라는 닉으로 활동해요.", "27", 0, "self"),
+    ("꿀벌(27/여) 서울 사는 직장인", "27", 0, "self"),
+    ("자기소개: 꿀벌(27) 직장인", "27", 0, "self"),
+    ("직장인(27) 월요병 극복기", "27", 0, "self"),
+    ("결혼(31살) 후 처음 맞는 명절", "31살", 0, "self"),
+    ("나 꿀벌(27) 오늘도 출근함", "27", 0, "self"),
+])
+def test_q1_paren_age_of_other(sentence, span, occ, expected):
+    assert _r(sentence, span, "AGE", occ)["subject"] == expected
+
+
+def test_q1_parent_term_follows_family_context():
+    # 아이 표지가 있는 문단의 「엄마(35)」는 글쓴이 자신 — 성별 부모 호칭 규칙과 같은 판단
+    assert _r("엄마(35)랑 첫째(7)랑 둘째(4) 셋이 캠핑", "35", "AGE")["subject"] == "self"
+    assert _r("우리 엄마(62)가 김장을 하셨다", "62", "AGE")["subject"] == "other"
+
+
+# exp36 Q2 — 과거 나이(unknown) · 지금 나이 표지가 그 스팬에 붙으면 self
+@pytest.mark.parametrize("sentence,span,expected", [
+    ("오늘 기어코 15살의 하루로 돌아갔다.", "15살", "unknown"),
+    ("열다섯 살의 나로 돌아간 기분이었다.", "열다섯 살", "unknown"),
+    ("스무 살 때 시작한 일을 마흔인 지금도 한다.", "스무 살", "unknown"),
+    ("스무 살 때 시작한 일을 마흔인 지금도 한다.", "마흔인", "self"),
+    ("군대 제대하고 일 시작한 게 스물셋이었는데 어느덧 마흔여덟이네.", "스물셋", "unknown"),
+    ("군대 제대하고 일 시작한 게 스물셋이었는데 어느덧 마흔여덟이네.", "마흔여덟", "self"),
+    ("열일곱 무렵엔 매일 밤 라디오를 들었다.", "열일곱", "unknown"),
+    ("스물다섯 시절의 사진을 찾았다.", "스물다섯", "unknown"),
+    ("서른 살이던 해 겨울에 이사했다.", "서른 살", "unknown"),
+    ("27살에 처음 혼자 여행을 갔다.", "27살", "unknown"),
+    ("열 살 적에 살던 동네에 가 봤다.", "열 살", "unknown"),
+    ("열여덟 되던 해 첫 알바를 했다.", "열여덟", "unknown"),
+    ("서른 살이 됐다.", "서른 살", "self"),
+    ("서른이 되었다.", "서른이", "self"),
+    ("마흔인 지금도 떡볶이가 좋다.", "마흔인", "self"),
+    ("생일 맞은 오늘 드디어 서른하나.", "서른하나", "self"),
+    ("올해 서른넷인데 아직도 철이 없다.", "서른넷인데", "self"),
+    ("벌써 서른이었다니 믿기지 않는다.", "서른", "self"),
+    ("서른 살이었으면 좋겠다.", "서른 살", "self"),          # 바람 — 과거가 아니다
+    ("서른 살 때문에 고민이 많다.", "서른 살", "self"),       # 「때문」은 「때」가 아니다
+    ("열 살 아들이 학교 간다.", "열 살", "other"),            # 남의 나이는 그대로(main other)
+    ("아들이 다섯 살 때 이사했다.", "다섯 살", "other"),       # main 이 other 면 Q2 는 건드리지 않는다
+])
+def test_q2_past_age_is_unknown(sentence, span, expected):
+    assert _r(sentence, span, "AGE")["subject"] == expected
+
+
+def test_q_rules_switch_off_matches_main(monkeypatch):
+    from kopl.c1_span import attributes as at
+    monkeypatch.setattr(at, "_RULE_Q1", False)
+    monkeypatch.setattr(at, "_RULE_Q2", False)
+    assert _r("아이찡(14살) ♥ 나(27살)", "14살", "AGE")["subject"] == "self"
+    assert _r("스무 살 때 시작했다.", "스무 살", "AGE")["subject"] == "self"
+
+
+def test_q_rules_worst_case_time():
+    """긴 공백 · 괄호 반복 · 긴 한글 줄에서 subject_of 한 번 ≤ 0.05초 (exp36 §2-6)."""
+    import time
+    from kopl.c1_span.attributes import subject_of
+    sp30k, worst = " " * 30000, 0.0
+    cases = [("(" * 5000 + "14살" + ")" * 5000, "14살"), (sp30k + "아이찡 " * 3000 + "(14살)" + sp30k, "14살"),
+             ("가" * 20000 + "(14살)" + "나" * 20000, "14살"), ("스무 살" + sp30k + "의 " * 3000 + "때", "스무 살"),
+             ("친구가 " + sp30k + "서울" + sp30k + "에" + sp30k + "사는", "서울"), ("(나(" * 3000 + "27살" + "))" * 3000, "27살"),
+             ("\t" * 20000 + "서른" + "\t" * 20000 + "이었던", "서른")]
+    for text, span in cases:
+        i = text.index(span)
+        for stype in ("AGE", "LOC_ADMIN", "LOC_FACILITY", "JOB", "FAM", "SEX"):
+            t0 = time.perf_counter()
+            subject_of(stype, span, text, i, i + len(span))
+            worst = max(worst, time.perf_counter() - t0)
+    assert worst <= 0.05, worst
