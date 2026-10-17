@@ -18,7 +18,8 @@
   const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
   // subject unknown — 엔진은 지우지 않고 신뢰도를 절반으로 센다(clues.py). 화면도 지우지 않고 점선 · 옅은 색으로 구분한다 (exp32 사후 분석)
   const maybe = (s) => s.subject === "unknown";
-  const MAYBE_HINT = (s) => String(s.type).startsWith("LOC") ? " · 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어요" : " · 내 정보가 아닐 수 있어요";
+  const MAYBE_HINT = (s) => String(s.type).startsWith("LOC") ? " · 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어요"
+    : s.type === "AGE" ? " · 지난 시절의 나이처럼 지금 나이가 아닐 수 있어요" : " · 내 정보가 아닐 수 있어요";   // AGE unknown = 과거 나이 (exp36)
   const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 ${n}곳은 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다.` : ""; };
   const markStyle = (s, alpha) => maybe(s)
     ? `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "59" : "73"};outline:1px dashed rgba(62,58,54,.4);outline-offset:-1px;`
