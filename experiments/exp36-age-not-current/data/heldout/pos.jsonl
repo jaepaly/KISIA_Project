@@ -1,0 +1,60 @@
+{"id": "H-Q1-01", "excluded": "D 검토: 구현자 지시문에 예로 준 문장과 같다 — 처음 보는 문장이 아니다", "pattern": "Q1", "kind": "pos", "sentence": "아이찡(14살) ♥ 나(27살) 오늘도 덕질 완료", "span": "14살", "type": "AGE", "subject": "other", "why": "괄호 앞 아이돌 애칭의 나이"}
+{"id": "H-Q1-02", "pattern": "Q1", "kind": "pos", "sentence": "우리 집 막내 콩이(3살)가 오늘 처음으로 앉아를 했어요 🐶", "span": "3살", "type": "AGE", "subject": "other", "why": "반려견 나이"}
+{"id": "H-Q1-03", "pattern": "Q1", "kind": "pos", "sentence": "조카 서윤이(만 5세)랑 키즈카페 다녀왔는데 체력이 바닥났다…", "span": "만 5세", "type": "AGE", "subject": "other", "why": "조카 나이"}
+{"id": "H-Q1-04", "pattern": "Q1", "kind": "pos", "sentence": "주인공 하루(열일곱 살)의 첫사랑 이야기가 생각보다 훨씬 아렸다.", "span": "열일곱 살", "type": "AGE", "subject": "other", "why": "작품 속 인물 나이"}
+{"id": "H-Q1-05", "pattern": "Q1", "kind": "pos", "sentence": "동네 친구 민재(31)랑 퇴근하고 곱창 먹음ㅋㅋ", "span": "31", "type": "AGE", "subject": "other", "why": "친구 나이"}
+{"id": "H-Q1-06", "pattern": "Q1", "kind": "pos", "sentence": "고양이 보리(12세)는 요즘 햇볕 드는 창가만 찾아다닌다.", "span": "12세", "type": "AGE", "subject": "other", "why": "고양이 나이"}
+{"id": "H-Q1-07", "pattern": "Q1", "kind": "pos", "sentence": "손주 녀석(일곱 살)이 할미 생일이라고 카드를 써 왔네요 허허", "span": "일곱 살", "type": "AGE", "subject": "other", "why": "손주 나이"}
+{"id": "H-Q1-08", "pattern": "Q1", "kind": "pos", "sentence": "최애 하준이(22살) 생일 카페 투어 다녀왔다!! 나(30살)도 아직 현역임", "span": "22살", "type": "AGE", "subject": "other", "why": "연예인 나이, 글쓴이 나이는 따로"}
+{"id": "H-Q1-09", "pattern": "Q1", "kind": "pos", "sentence": "첫째(9살)는 수영, 둘째는 피아노 학원에 보냈습니다.", "span": "9살", "type": "AGE", "subject": "other", "why": "자녀 나이"}
+{"id": "H-Q1-10", "pattern": "Q1", "kind": "pos", "sentence": "웹툰 속 서진(19세)이 결국 집을 나가는 장면에서 울었어요.", "span": "19세", "type": "AGE", "subject": "other", "why": "웹툰 인물 나이"}
+{"id": "H-Q1-11", "pattern": "Q1", "kind": "pos", "sentence": "앵무새 초롱이(만 8세)가 요즘 \"안녕\"을 따라 한다 ㅋㅋ", "span": "만 8세", "type": "AGE", "subject": "other", "why": "앵무새 나이"}
+{"id": "H-Q1-12", "pattern": "Q1", "kind": "pos", "sentence": "회사 후배 지훈 씨(26)가 오늘 처음으로 발표를 맡았다.", "span": "26", "type": "AGE", "subject": "other", "why": "후배 나이"}
+{"id": "H-Q1-13", "pattern": "Q1", "kind": "pos", "sentence": "우리 강아지 두부(열네 살)… 요즘 산책 길이 부쩍 짧아졌어", "span": "열네 살", "type": "AGE", "subject": "other", "why": "반려견 나이"}
+{"id": "H-Q1-14", "pattern": "Q1", "kind": "pos", "sentence": "사촌 동생 예린이(15살)가 시험 끝났다고 놀러 왔다", "span": "15살", "type": "AGE", "subject": "other", "why": "사촌 동생 나이"}
+{"id": "H-Q1-15", "pattern": "Q1", "kind": "pos", "sentence": "드라마 속 할머니(여든 살)의 대사 한 줄이 계속 맴도네요.", "span": "여든 살", "type": "AGE", "subject": "other", "why": "드라마 인물 나이"}
+{"id": "H-Q1-16", "pattern": "Q1", "kind": "pos", "sentence": "이웃집 쌍둥이(4세)가 인사를 해 줘서 하루가 환해졌어요 ☺️", "span": "4세", "type": "AGE", "subject": "other", "why": "이웃 아이 나이"}
+{"id": "H-Q1-17", "pattern": "Q1", "kind": "pos", "sentence": "아들(6살) 딸(3세) 데리고 바닷가 다녀왔어요, 모래 범벅이지만 행복", "span": "6살", "type": "AGE", "subject": "other", "why": "아들 나이"}
+{"id": "H-Q1-18", "pattern": "Q1", "kind": "pos", "sentence": "애니 캐릭터 레이(14세) 피규어 드디어 도착🥹 나 서른둘인데 이래도 되나", "span": "14세", "type": "AGE", "subject": "other", "why": "캐릭터 나이, 글쓴이 나이는 따로"}
+{"id": "H-Q1-19", "pattern": "Q1", "kind": "pos", "sentence": "남편 친구 아들(열 살)이 우리 집에서 하룻밤 자고 갔습니다.", "span": "열 살", "type": "AGE", "subject": "other", "why": "남의 아이 나이"}
+{"id": "H-Q1-20", "pattern": "Q1", "kind": "pos", "sentence": "햄스터 쿠키(2살)는 오늘도 쳇바퀴만 돌린다...", "span": "2살", "type": "AGE", "subject": "other", "why": "햄스터 나이"}
+{"id": "H-Q1-21", "pattern": "Q1", "kind": "pos", "sentence": "소설 속 화자(마흔한 살)가 회사를 그만두는 대목이 유난히 와닿았다.", "span": "마흔한 살", "type": "AGE", "subject": "other", "why": "소설 화자 나이"}
+{"id": "H-Q1-22", "pattern": "Q1", "kind": "pos", "sentence": "친구 딸 하은이(만 3세)가 나보고 이모래 ㅠㅠ 귀여워", "span": "만 3세", "type": "AGE", "subject": "other", "why": "친구 딸 나이"}
+{"id": "H-Q1-23", "pattern": "Q1", "kind": "pos", "sentence": "아이돌 막내 지우(17)가 무대에서 우는 거 보고 같이 울었음 ㅠ", "span": "17", "type": "AGE", "subject": "other", "why": "아이돌 나이"}
+{"id": "H-Q1-24", "pattern": "Q1", "kind": "pos", "sentence": "큰손녀(스무 살)가 첫 월급으로 내복을 사 왔어요. 고맙기도 하지", "span": "스무 살", "type": "AGE", "subject": "other", "why": "손녀 나이"}
+{"id": "H-Q1-25", "pattern": "Q1", "kind": "pos", "sentence": "거북이 느림보(25세)는 나보다 이 집에 먼저 살았다고 한다 🐢", "span": "25세", "type": "AGE", "subject": "other", "why": "거북이 나이"}
+{"id": "H-Q1-26", "pattern": "Q1", "kind": "pos", "sentence": "게임 속 기사 아론(23살)이랑 나(29살)랑 동갑 느낌으로 키우는 중", "span": "23살", "type": "AGE", "subject": "other", "why": "게임 캐릭터 나이, 글쓴이 나이는 따로"}
+{"id": "H-Q1-27", "pattern": "Q1", "kind": "pos", "sentence": "이번 여행엔 조카(12세), 언니, 나 셋이서 갔다. 조카가 제일 신났음", "span": "12세", "type": "AGE", "subject": "other", "why": "조카 나이"}
+{"id": "H-Q1-28", "pattern": "Q1", "kind": "pos", "sentence": "옆자리 동료 수빈 씨(서른다섯)가 커피를 사 줘서 오후가 버틸 만했다", "span": "서른다섯", "type": "AGE", "subject": "other", "why": "동료 나이"}
+{"id": "H-Q1-29", "pattern": "Q1", "kind": "pos", "sentence": "우리 둘째 냥이 망고(7살), 오늘 미용 다녀왔는데 너무 귀여워요", "span": "7살", "type": "AGE", "subject": "other", "why": "고양이 나이"}
+{"id": "H-Q1-30", "pattern": "Q1", "kind": "pos", "sentence": "그림책 주인공 곰돌이(다섯 살)처럼 우리 애도 혼자 신발을 신기 시작했다.", "span": "다섯 살", "type": "AGE", "subject": "other", "why": "그림책 캐릭터 나이"}
+{"id": "H-Q2-01", "excluded": "D 검토: 구현자 지시문에 예로 준 문장과 같다 — 처음 보는 문장이 아니다", "pattern": "Q2", "kind": "pos", "sentence": "오늘 기어코 15살의 나로 돌아갔다", "span": "15살", "type": "AGE", "subject": "unknown", "why": "과거의 나로 돌아감"}
+{"id": "H-Q2-02", "pattern": "Q2", "kind": "pos", "sentence": "열아홉 살 때 처음 혼자 여행을 갔다.", "span": "열아홉 살", "type": "AGE", "subject": "unknown", "why": "~때 회상"}
+{"id": "H-Q2-03", "pattern": "Q2", "kind": "pos", "sentence": "스물셋이던 해 겨울, 나는 처음으로 자취방을 구했다.", "span": "스물셋이던", "type": "AGE", "subject": "unknown", "why": "~이던 해"}
+{"id": "H-Q2-04", "pattern": "Q2", "kind": "pos", "sentence": "스무 살 무렵엔 밤새 놀아도 다음 날 멀쩡했지…", "span": "스무 살", "type": "AGE", "subject": "unknown", "why": "~무렵 회상"}
+{"id": "H-Q2-05", "pattern": "Q2", "kind": "pos", "sentence": "25살에 처음 운전대를 잡았는데 그때 손이 덜덜 떨렸어요 ㅋㅋ", "span": "25살에", "type": "AGE", "subject": "unknown", "why": "~에 처음"}
+{"id": "H-Q2-06", "pattern": "Q2", "kind": "pos", "sentence": "내가 열 살이었을 적에 우리 동네엔 구멍가게가 하나 있었지요.", "span": "열 살이었을", "type": "AGE", "subject": "unknown", "why": "~였을 적"}
+{"id": "H-Q2-07", "pattern": "Q2", "kind": "pos", "sentence": "서른 살 생일에 혼자 케이크 먹던 기억이 문득 났다", "span": "서른 살", "type": "AGE", "subject": "unknown", "why": "과거 생일 회상"}
+{"id": "H-Q2-08", "pattern": "Q2", "kind": "pos", "sentence": "17살 여름방학… 그때 들었던 노래가 라디오에서 나와서 멈칫", "span": "17살", "type": "AGE", "subject": "unknown", "why": "그때 회상"}
+{"id": "H-Q2-09", "pattern": "Q2", "kind": "pos", "sentence": "스물일곱의 나에게 편지를 쓴다면 조금만 덜 조급해도 된다고 말하고 싶다.", "span": "스물일곱의", "type": "AGE", "subject": "unknown", "why": "과거의 나"}
+{"id": "H-Q2-10", "pattern": "Q2", "kind": "pos", "sentence": "22세 때 첫 직장에 들어가 매일 야근하던 시절이 떠오르네요.", "span": "22세", "type": "AGE", "subject": "unknown", "why": "~때 시절"}
+{"id": "H-Q2-11", "pattern": "Q2", "kind": "pos", "sentence": "열여섯 살 시절 일기장을 이사하다 발견함 ㅋㅋㅋ 흑역사 대방출", "span": "열여섯 살", "type": "AGE", "subject": "unknown", "why": "~시절"}
+{"id": "H-Q2-12", "pattern": "Q2", "kind": "pos", "sentence": "그때 나는 고작 스물하나였고 세상이 다 내 것 같았다", "span": "스물하나였고", "type": "AGE", "subject": "unknown", "why": "그때 회상"}
+{"id": "H-Q2-13", "pattern": "Q2", "kind": "pos", "sentence": "예순 무렵에 처음 배운 서예가 이제는 제일 큰 낙이 되었어요.", "span": "예순", "type": "AGE", "subject": "unknown", "why": "~무렵 처음"}
+{"id": "H-Q2-14", "pattern": "Q2", "kind": "pos", "sentence": "마흔이 되던 해에 처음으로 마라톤 하프 코스를 완주했다.", "span": "마흔이", "type": "AGE", "subject": "unknown", "why": "~되던 해"}
+{"id": "H-Q2-15", "pattern": "Q2", "kind": "pos", "sentence": "일곱 살의 나는 비 오는 날만 되면 장화를 신고 웅덩이를 찾아다녔다", "span": "일곱 살의", "type": "AGE", "subject": "unknown", "why": "과거의 나"}
+{"id": "H-Q2-16", "pattern": "Q2", "kind": "pos", "sentence": "만 19세에 처음 통장을 만들던 날, 괜히 떨려서 서명을 두 번 했다.", "span": "만 19세에", "type": "AGE", "subject": "unknown", "why": "~에 처음"}
+{"id": "H-Q2-17", "pattern": "Q2", "kind": "pos", "sentence": "28살 때 다녀온 제주도 사진을 오랜만에 꺼내 봤어요 🌊", "span": "28살", "type": "AGE", "subject": "unknown", "why": "~때 회상"}
+{"id": "H-Q2-18", "pattern": "Q2", "kind": "pos", "sentence": "열두 살 무렵 처음 키운 강아지 이름이 아직도 기억나", "span": "열두 살", "type": "AGE", "subject": "unknown", "why": "~무렵"}
+{"id": "H-Q2-19", "pattern": "Q2", "kind": "pos", "sentence": "서른다섯이던 봄, 나는 회사를 그만두고 작은 빵집을 차렸다.", "span": "서른다섯이던", "type": "AGE", "subject": "unknown", "why": "~이던 봄"}
+{"id": "H-Q2-20", "pattern": "Q2", "kind": "pos", "sentence": "20살의 나로 돌아간다면 일단 영어 공부부터 할 듯ㅋㅋ", "span": "20살의", "type": "AGE", "subject": "unknown", "why": "과거의 나로 돌아감"}
+{"id": "H-Q2-21", "pattern": "Q2", "kind": "pos", "sentence": "쉰셋에 처음 바다낚시를 따라가 봤는데 그날 이후로 푹 빠졌지요", "span": "쉰셋에", "type": "AGE", "subject": "unknown", "why": "~에 처음"}
+{"id": "H-Q2-22", "pattern": "Q2", "kind": "pos", "sentence": "14살 때 처음 산 카세트테이프, 아직 서랍 어딘가에 있을 거야", "span": "14살", "type": "AGE", "subject": "unknown", "why": "~때 처음"}
+{"id": "H-Q2-23", "pattern": "Q2", "kind": "pos", "sentence": "스물넷 겨울에 혼자 떠났던 기차 여행이 자꾸 생각나는 밤…", "span": "스물넷", "type": "AGE", "subject": "unknown", "why": "과거 계절 회상"}
+{"id": "H-Q2-24", "pattern": "Q2", "kind": "pos", "sentence": "그 시절, 그러니까 내가 열여덟이었을 때 우리는 매일 같이 붙어 다녔다", "span": "열여덟이었을", "type": "AGE", "subject": "unknown", "why": "그 시절 ~때"}
+{"id": "H-Q2-25", "pattern": "Q2", "kind": "pos", "sentence": "33살에 처음 수영을 배웠는데 물이 무서워서 한 달은 발만 담갔어요.", "span": "33살에", "type": "AGE", "subject": "unknown", "why": "~에 처음"}
+{"id": "H-Q2-26", "pattern": "Q2", "kind": "pos", "sentence": "아홉 살 꼬마였던 나는 아빠 자전거 뒤에 타는 게 세상에서 제일 좋았다", "span": "아홉 살", "type": "AGE", "subject": "unknown", "why": "~였던 나"}
+{"id": "H-Q2-27", "pattern": "Q2", "kind": "pos", "sentence": "26세 무렵 처음 월세 계약서에 도장 찍던 날이 생생하네요.", "span": "26세", "type": "AGE", "subject": "unknown", "why": "~무렵 처음"}
+{"id": "H-Q2-28", "pattern": "Q2", "kind": "pos", "sentence": "오늘 옛날 사진 정리하다가 열다섯 살의 내 얼굴 보고 빵 터짐 😂", "span": "열다섯 살의", "type": "AGE", "subject": "unknown", "why": "옛날 사진 속 나"}
+{"id": "H-Q2-29", "pattern": "Q2", "kind": "pos", "sentence": "마흔다섯에 처음 혼자 해외에 나가 봤는데, 말이 안 통해도 어떻게든 되더라고요.", "span": "마흔다섯에", "type": "AGE", "subject": "unknown", "why": "~에 처음"}
+{"id": "H-Q2-30", "pattern": "Q2", "kind": "pos", "sentence": "스물아홉 끝자락에 시작한 기타가 내 인생 취미가 될 줄 그땐 몰랐다.", "span": "스물아홉", "type": "AGE", "subject": "unknown", "why": "그땐 회상"}
