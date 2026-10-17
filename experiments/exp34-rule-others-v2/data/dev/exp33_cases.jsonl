@@ -1,0 +1,64 @@
+{"id": "P1-01", "pattern": "P1", "kind": "pos", "sentence": "옆집 할머니 올해 여든둘이신데 아직 정정하시다", "span": "여든둘", "type": "AGE", "subject": "other", "why": "옆집 할머니의 나이"}
+{"id": "P1-02", "pattern": "P1", "kind": "pos", "sentence": "윗집 사람은 매일 광역버스 통근이라 새벽 다섯 시면 나간다", "span": "광역버스 통근", "type": "COMMUTE", "subject": "other", "why": "윗집 사람의 통근"}
+{"id": "P1-03", "pattern": "P1", "kind": "pos", "sentence": "아랫집 아저씨 택시 기사라 밤늦게 들어오심", "span": "택시 기사", "type": "JOB", "subject": "other", "why": "아랫집 아저씨 직업"}
+{"id": "P1-04", "pattern": "P1", "kind": "pos", "sentence": "앞집 꼬마 이제 일곱 살이라 말을 제법 잘한다", "span": "일곱 살", "type": "AGE", "subject": "other", "why": "앞집 아이 나이"}
+{"id": "P1-05", "pattern": "P1", "kind": "pos", "sentence": "건너편 부부 맞벌이로 월 천만 원 번다더라", "span": "월 천만 원", "type": "INCOME", "subject": "other", "why": "건너편 부부 소득"}
+{"id": "P1-06", "pattern": "P1", "kind": "pos", "sentence": "같은 층 총각 소방관이라 교대 근무 때문에 얼굴 보기 힘들다", "span": "소방관", "type": "JOB", "subject": "other", "why": "같은 층 이웃 직업"}
+{"id": "P1-07", "pattern": "P1", "kind": "pos", "sentence": "경비실 아저씨 일흔 넘으셨는데 아직도 새벽에 순찰 도세요", "span": "일흔", "type": "AGE", "subject": "other", "why": "경비원 나이"}
+{"id": "P1-08", "pattern": "P1", "kind": "pos", "sentence": "이웃 새댁 대구에서 이사 왔다고 떡 들고 인사 왔어요", "span": "대구", "type": "LOC_ADMIN", "subject": "other", "why": "이웃의 전 거주지"}
+{"id": "P1-09", "pattern": "P1", "kind": "pos", "sentence": "옆집 아주머니 딸만 셋이라 늘 북적북적하다", "span": "딸만 셋", "type": "FAM", "subject": "other", "why": "옆집 가족 구성"}
+{"id": "P1-10", "pattern": "P1", "kind": "pos", "sentence": "윗집 할아버지 연금으로 한 달 백오십 받으신다고 자랑하심", "span": "한 달 백오십", "type": "INCOME", "subject": "other", "why": "윗집 노인 소득"}
+{"id": "P1-11", "pattern": "P1", "kind": "pos", "sentence": "아랫집 언니 지하철 2호선 타고 강남으로 출근한대", "span": "지하철 2호선", "type": "COMMUTE", "subject": "other", "why": "아랫집 이웃 통근"}
+{"id": "P1-12", "pattern": "P1", "kind": "pos", "sentence": "앞집 총각 서른다섯인데 아직 장가를 안 갔다네", "span": "서른다섯", "type": "AGE", "subject": "other", "why": "앞집 총각 나이"}
+{"id": "P1-13", "pattern": "P1", "kind": "pos", "sentence": "같은 동 부부 쌍둥이 키우느라 늘 정신없어 보였다", "span": "쌍둥이", "type": "FAM", "subject": "other", "why": "같은 동 부부 자녀"}
+{"id": "P1-14", "pattern": "P1", "kind": "pos", "sentence": "건너편 집 아저씨 동네 약국 약사님이시라 자주 뵌다", "span": "약사", "type": "JOB", "subject": "other", "why": "건너편 이웃 직업"}
+{"id": "P1-15", "pattern": "P1", "kind": "pos", "sentence": "옆 동 할머니 손주가 다섯이라 명절마다 바쁘시대요", "span": "손주가 다섯", "type": "FAM", "subject": "other", "why": "옆 동 할머니 가족"}
+{"id": "P1-16", "pattern": "P1", "kind": "pos", "sentence": "이웃 아저씨 전주 토박이라 말씨가 구수하다", "span": "전주", "type": "LOC_ADMIN", "subject": "other", "why": "이웃의 출신지"}
+{"id": "P1-17", "pattern": "P1", "kind": "neg", "sentence": "옆집 할머니가 몇 살이냐 묻길래 마흔이라 했다", "span": "마흔", "type": "AGE", "subject": "self", "why": "글쓴이가 자기 나이를 답함"}
+{"id": "P1-18", "pattern": "P1", "kind": "neg", "sentence": "윗집 아저씨한테 나도 매일 광역버스로 출근한다고 말했다", "span": "광역버스로 출근", "type": "COMMUTE", "subject": "self", "why": "'나도'로 본인 통근"}
+{"id": "P1-19", "pattern": "P1", "kind": "neg", "sentence": "옆집 꼬마가 우리 딸이랑 동갑이라 매일 같이 논다", "span": "우리 딸", "type": "FAM", "subject": "self", "why": "글쓴이 자녀"}
+{"id": "P1-20", "pattern": "P1", "kind": "neg", "sentence": "앞집 아저씨 흰머리 보면서 생각했다, 나도 벌써 쉰셋이구나", "span": "쉰셋", "type": "AGE", "subject": "self", "why": "'나도' 본인 나이"}
+{"id": "P1-21", "pattern": "P1", "kind": "neg", "sentence": "경비실 아저씨가 간호사 선생님 오늘도 야간이냐고 물으셨다", "span": "간호사", "type": "JOB", "subject": "self", "why": "글쓴이를 부른 호칭이 직업"}
+{"id": "P1-22", "pattern": "P1", "kind": "neg", "sentence": "이웃 새댁한테 저는 수원 토박이라고 소개했어요", "span": "수원", "type": "LOC_ADMIN", "subject": "self", "why": "'저는' 본인 출신지"}
+{"id": "P1-23", "pattern": "P1", "kind": "neg", "sentence": "같은 층 총각이 짐 옮겨줘서 우리 남편이 고맙다더라", "span": "우리 남편", "type": "FAM", "subject": "self", "why": "글쓴이 배우자"}
+{"id": "P1-24", "pattern": "P1", "kind": "neg", "sentence": "건너편 할머니께 제 월급이 이백오십이라 빠듯하다고 했죠", "span": "이백오십", "type": "INCOME", "subject": "self", "why": "'제 월급' 본인 소득"}
+{"id": "P1-25", "pattern": "P1", "kind": "neg", "sentence": "옆집 사람들 다 출근하고 나면 나는 재택근무 시작", "span": "재택근무", "type": "COMMUTE", "subject": "self", "why": "'나는' 본인 근무 형태"}
+{"id": "P1-26", "pattern": "P1", "kind": "neg", "sentence": "윗집 할머니께 반찬 갖다드렸다, 나도 이제 예순이라 이웃 챙길 나이", "span": "예순", "type": "AGE", "subject": "self", "why": "'나도' 본인 나이"}
+{"id": "P2-01", "pattern": "P2", "kind": "pos", "sentence": "아부지 트럭 얻어 타고 읍내 장 보러 갔다", "span": "아부지", "type": "SEX", "subject": "other", "why": "부모 호칭은 글쓴이 성별 무관"}
+{"id": "P2-02", "pattern": "P2", "kind": "pos", "sentence": "어무이가 김치 한 통 또 보내주셨다 고맙구로", "span": "어무이", "type": "SEX", "subject": "other", "why": "부모 호칭(사투리)"}
+{"id": "P2-03", "pattern": "P2", "kind": "pos", "sentence": "엄니 생신이라 시골 내려가는 길에 휴게소 들름", "span": "엄니", "type": "SEX", "subject": "other", "why": "부모 호칭(사투리)"}
+{"id": "P2-04", "pattern": "P2", "kind": "pos", "sentence": "어매 손맛은 아무리 해도 따라갈 수가 없어예", "span": "어매", "type": "SEX", "subject": "other", "why": "부모 호칭(사투리)"}
+{"id": "P2-05", "pattern": "P2", "kind": "pos", "sentence": "아배 경운기 고치는 거 하루 종일 거들었다", "span": "아배", "type": "SEX", "subject": "other", "why": "부모 호칭(사투리)"}
+{"id": "P2-06", "pattern": "P2", "kind": "pos", "sentence": "주말에 아빠랑 저수지 낚시 갔다 왔음 ㅋㅋ", "span": "아빠", "type": "SEX", "subject": "other", "why": "부모 호칭(표준)"}
+{"id": "P2-07", "excluded": "D 검토: 「어머님」은 시어머니일 수 있다 — 글쓴이 성별 단서일 수 있어 정답이 모호", "pattern": "P2", "kind": "pos", "sentence": "어머님 모시고 내장산 단풍 구경 다녀왔습니다", "span": "어머님", "type": "SEX", "subject": "other", "why": "존칭 부모 호칭, 시모인지 불분명"}
+{"id": "P2-08", "pattern": "P2", "kind": "pos", "sentence": "아버지께서 텃밭 상추를 한 바구니 따 주셨다", "span": "아버지", "type": "SEX", "subject": "other", "why": "부모 호칭+조사"}
+{"id": "P2-09", "pattern": "P2", "kind": "pos", "sentence": "엄마한테 전화 왔는데 또 밥 먹었냐고 물어봄", "span": "엄마", "type": "SEX", "subject": "other", "why": "부모 호칭+조사"}
+{"id": "P2-10", "pattern": "P2", "kind": "pos", "sentence": "아부지가 막걸리 한 사발 하자 카시네 오늘은", "span": "아부지", "type": "SEX", "subject": "other", "why": "사투리 호칭+조사"}
+{"id": "P2-11", "pattern": "P2", "kind": "pos", "sentence": "울 어무이는 요즘 노래교실 다니시는 재미에 사신다", "span": "어무이", "type": "SEX", "subject": "other", "why": "사투리 호칭+조사"}
+{"id": "P2-12", "pattern": "P2", "kind": "pos", "sentence": "오매, 엄니도 참 별걸 다 챙기신당께", "span": "엄니", "type": "SEX", "subject": "other", "why": "사투리 호칭+조사"}
+{"id": "P2-13", "pattern": "P2", "kind": "neg", "sentence": "시어머니가 이번 주말에 김장하러 오라고 하셨다", "span": "시어머니", "type": "SEX", "subject": "self", "why": "시가 호칭은 글쓴이가 여성"}
+{"id": "P2-14", "pattern": "P2", "kind": "neg", "sentence": "장모님 생신상 차리느라 처가에 다녀왔다", "span": "장모님", "type": "SEX", "subject": "self", "why": "처가 호칭은 글쓴이가 남성"}
+{"id": "P2-15", "pattern": "P2", "kind": "neg", "sentence": "시아버지 칠순 잔치 준비로 정신없던 한 주", "span": "시아버지", "type": "SEX", "subject": "self", "why": "시가 호칭은 여성"}
+{"id": "P2-16", "pattern": "P2", "kind": "neg", "sentence": "장인어른이랑 바둑 한 판 두고 왔습니다", "span": "장인어른", "type": "SEX", "subject": "self", "why": "처가 호칭은 남성"}
+{"id": "P2-17", "pattern": "P2", "kind": "neg", "sentence": "우리 마누라가 아부지 트럭 몰고 장에 나갔다", "span": "마누라", "type": "SEX", "subject": "self", "why": "배우자 호칭으로 남성"}
+{"id": "P2-18", "pattern": "P2", "kind": "neg", "sentence": "아들만 둘 키우는 엄마라 매일이 전쟁이다", "span": "엄마", "type": "SEX", "subject": "self", "why": "글쓴이 자신이 엄마"}
+{"id": "P2-19", "pattern": "P2", "kind": "neg", "sentence": "친정 엄니 보러 가는 길에 감을 한 자루 땄다", "span": "친정", "type": "SEX", "subject": "self", "why": "친정은 여성 글쓴이"}
+{"id": "P2-20", "pattern": "P2", "kind": "neg", "sentence": "애 둘 아빠가 되고 나서야 아부지 마음을 알겠다", "span": "아빠", "type": "SEX", "subject": "self", "why": "글쓴이 자신이 아빠"}
+{"id": "P3-01", "pattern": "P3", "kind": "pos", "sentence": "나이 묻지 마라, 마음만은 아직 열여덟이야", "span": "열여덟", "type": "AGE", "subject": "other", "why": "'마음만은' 관용구"}
+{"id": "P3-02", "pattern": "P3", "kind": "pos", "sentence": "몸은 삐걱대도 마음은 스무 살 청춘이다", "span": "스무 살", "type": "AGE", "subject": "other", "why": "'몸은~마음은' 관용구"}
+{"id": "P3-03", "excluded": "D 검토: 「영원한 스물아홉으로 살기로」는 실제 나이일 수도 있다", "pattern": "P3", "kind": "pos", "sentence": "나는 영원한 스물아홉으로 살기로 했다", "span": "스물아홉", "type": "AGE", "subject": "other", "why": "'영원한 ~' 관용구"}
+{"id": "P3-04", "pattern": "P3", "kind": "pos", "sentence": "정신연령 일곱 살이라 장난감만 보면 신난다", "span": "일곱 살", "type": "AGE", "subject": "other", "why": "'정신연령' 관용구"}
+{"id": "P3-05", "pattern": "P3", "kind": "pos", "sentence": "우리 모임 언니들은 다들 마음만은 이팔청춘이지요", "span": "이팔청춘", "type": "AGE", "subject": "other", "why": "'마음만은' 관용구"}
+{"id": "P3-06", "pattern": "P3", "kind": "pos", "sentence": "할매 소리 들어도 맘은 꽃다운 열일곱이여", "span": "열일곱", "type": "AGE", "subject": "other", "why": "'맘은' 관용구"}
+{"id": "P3-07", "pattern": "P3", "kind": "pos", "sentence": "나이는 숫자일 뿐, 난 평생 스물하나로 살 거임", "span": "스물하나", "type": "AGE", "subject": "other", "why": "'평생 ~로 산다' 관용구"}
+{"id": "P3-08", "pattern": "P3", "kind": "pos", "sentence": "입맛은 열 살 꼬마 그대로라 돈가스만 찾음", "span": "열 살", "type": "AGE", "subject": "other", "why": "'입맛은' 비유"}
+{"id": "P3-09", "pattern": "P3", "kind": "pos", "sentence": "하는 짓은 영락없는 다섯 살이라고 남편이 놀린다", "span": "다섯 살", "type": "AGE", "subject": "other", "why": "'하는 짓은' 비유"}
+{"id": "P3-10", "pattern": "P3", "kind": "pos", "sentence": "거울 보면 아저씬데 속은 아직 스물다섯 청년", "span": "스물다섯", "type": "AGE", "subject": "other", "why": "'속은' 관용구"}
+{"id": "P3-11", "pattern": "P3", "kind": "neg", "sentence": "마음만은 스무 살인데 실제론 마흔다섯", "span": "마흔다섯", "type": "AGE", "subject": "self", "why": "'실제론' 뒤 실제 나이"}
+{"id": "P3-12", "pattern": "P3", "kind": "neg", "sentence": "몸은 쉰둘인데 마음은 아직 청춘이다", "span": "쉰둘", "type": "AGE", "subject": "self", "why": "'몸은' 쪽이 실제 나이"}
+{"id": "P3-13", "pattern": "P3", "kind": "neg", "sentence": "농담 아니고 진짜로 올해 스물아홉 됐음 ㅠ", "span": "스물아홉", "type": "AGE", "subject": "self", "why": "'진짜로 올해' 실제 나이"}
+{"id": "P3-14", "pattern": "P3", "kind": "neg", "sentence": "정신연령은 모르겠고 주민등록상 나이는 서른일곱입니다", "span": "서른일곱", "type": "AGE", "subject": "self", "why": "'주민등록상' 실제 나이"}
+{"id": "P3-15", "pattern": "P3", "kind": "neg", "sentence": "마음은 열여덟이고 싶지만 내일모레 예순이라오", "span": "예순", "type": "AGE", "subject": "self", "why": "관용구 뒤 실제 나이"}
+{"id": "P3-16", "pattern": "P3", "kind": "neg", "sentence": "올해로 일흔셋, 마음만은 여전히 청춘이올시다", "span": "일흔셋", "type": "AGE", "subject": "self", "why": "'올해로' 실제 나이"}
+{"id": "P3-17", "pattern": "P3", "kind": "neg", "sentence": "이팔청춘은 옛말이고 나 벌써 마흔 넘었다", "span": "마흔", "type": "AGE", "subject": "self", "why": "관용구 부정 후 실제 나이"}
+{"id": "P3-18", "pattern": "P3", "kind": "neg", "sentence": "동안 소리 듣지만 실제 나이는 서른넷이에요", "span": "서른넷", "type": "AGE", "subject": "self", "why": "'실제 나이는'"}

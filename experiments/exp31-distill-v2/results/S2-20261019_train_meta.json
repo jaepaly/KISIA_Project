@@ -1,0 +1,9 @@
+{
+ "base": "monologg/koelectra-base-v3-discriminator",
+ "data": "base,aug2",
+ "seed": 20261019,
+ "train": 2197,
+ "dev": 251,
+ "best_dev_macro_f1": 0.7856,
+ "prompt_hash": "9822388808d1"
+}

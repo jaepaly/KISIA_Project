@@ -1,0 +1,275 @@
+{"post_id": "A01_b09", "spans": [], "sec": 0.523}
+{"post_id": "A01_b11", "spans": [], "sec": 0.039}
+{"post_id": "A06_b03", "spans": [{"start": 4, "end": 9, "text": "독서실에서", "type": "JOB", "subject": "self"}, {"start": 94, "end": 99, "text": "시험 범위", "type": "AGE", "subject": "self"}], "sec": 0.009}
+{"post_id": "A06_b11", "spans": [{"start": 153, "end": 165, "text": "걸어서 딱\n십 분쯤이라", "type": "COMMUTE", "subject": "self"}], "sec": 0.008}
+{"post_id": "A10_b16", "spans": [{"start": 185, "end": 188, "text": "문구점", "type": "JOB", "subject": "self"}, {"start": 240, "end": 261, "text": "봉투에 모아 둔\n천 원짜리들이\n조금 줄", "type": "INCOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "A11_b28", "spans": [{"start": 1090, "end": 1096, "text": "혼자 도시락", "type": "FAM", "subject": "self"}], "sec": 0.031}
+{"post_id": "A12_b17", "spans": [{"start": 458, "end": 467, "text": "샵 예약과 문의는", "type": "JOB", "subject": "self"}, {"start": 537, "end": 551, "text": "아기 어린이집 등원 시간을", "type": "FAM", "subject": "self"}, {"start": 578, "end": 585, "text": "첫돌이 다가오", "type": "FAM", "subject": "self"}], "sec": 0.017}
+{"post_id": "A12_b21", "spans": [{"start": 544, "end": 546, "text": "달도", "type": "INCOME", "subject": "self"}, {"start": 547, "end": 556, "text": "피부과 정기권 끊", "type": "INCOME", "subject": "self"}], "sec": 0.016}
+{"post_id": "A13_b04", "spans": [{"start": 5, "end": 7, "text": "호주", "type": "LOC_ADMIN", "subject": "self"}], "sec": 0.01}
+{"post_id": "A13_b06", "spans": [{"start": 357, "end": 363, "text": "한인마트에서", "type": "LOC_FACILITY", "subject": "self"}, {"start": 375, "end": 383, "text": "통장 잔액 보고", "type": "INCOME", "subject": "self"}], "sec": 0.01}
+{"post_id": "A13_b18", "spans": [{"start": 400, "end": 405, "text": "한인마트랑", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.014}
+{"post_id": "A13_b21", "spans": [{"start": 0, "end": 2, "text": "근처", "type": "REL_HOME", "subject": "self"}], "sec": 0.009}
+{"post_id": "A13_b25", "spans": [{"start": 423, "end": 426, "text": "룸메가", "type": "FAM", "subject": "self"}, {"start": 473, "end": 476, "text": "룸메가", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "A13_b29", "spans": [{"start": 342, "end": 344, "text": "근처", "type": "REL_HOME", "subject": "self"}, {"start": 345, "end": 351, "text": "한인마트에서", "type": "LOC_FACILITY", "subject": "self"}, {"start": 366, "end": 374, "text": "통장 잔액 보고", "type": "INCOME", "subject": "self"}], "sec": 0.013}
+{"post_id": "A15_b03", "spans": [{"start": 216, "end": 218, "text": "동네", "type": "REL_HOME", "subject": "self"}, {"start": 219, "end": 222, "text": "형들과", "type": "SEX", "subject": "self"}], "sec": 0.013}
+{"post_id": "A15_b13", "spans": [{"start": 354, "end": 367, "text": "공장 라인 교대 근무 뒤", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "A15_b17", "spans": [{"start": 608, "end": 610, "text": "동네", "type": "REL_HOME", "subject": "self"}, {"start": 611, "end": 614, "text": "형들과", "type": "SEX", "subject": "self"}, {"start": 627, "end": 631, "text": "식당에서", "type": "JOB", "subject": "self"}], "sec": 0.019}
+{"post_id": "A15_b19", "spans": [{"start": 470, "end": 472, "text": "동네", "type": "REL_HOME", "subject": "self"}, {"start": 473, "end": 476, "text": "형들과", "type": "SEX", "subject": "self"}], "sec": 0.014}
+{"post_id": "A15_b20", "spans": [{"start": 458, "end": 465, "text": "교대 근무 뒤", "type": "JOB", "subject": "self"}], "sec": 0.014}
+{"post_id": "A18_b01", "spans": [{"start": 693, "end": 696, "text": "팀장님", "type": "JOB", "subject": "self"}], "sec": 0.025}
+{"post_id": "A18_b07", "spans": [{"start": 834, "end": 839, "text": "이직 준비", "type": "JOB", "subject": "self"}, {"start": 883, "end": 893, "text": "군대 동기 형님들은", "type": "SEX", "subject": "self"}], "sec": 0.021}
+{"post_id": "A18_b08", "spans": [], "sec": 0.027}
+{"post_id": "A18_b13", "spans": [{"start": 57, "end": 63, "text": "출근 시간의", "type": "COMMUTE", "subject": "self"}, {"start": 1081, "end": 1084, "text": "출근길", "type": "COMMUTE", "subject": "self"}], "sec": 0.027}
+{"post_id": "A18_b15", "spans": [{"start": 546, "end": 556, "text": "군대 동기 형님들이", "type": "SEX", "subject": "self"}], "sec": 0.021}
+{"post_id": "A18_b17", "spans": [{"start": 880, "end": 890, "text": "군대 동기 형님들은", "type": "SEX", "subject": "self"}], "sec": 0.021}
+{"post_id": "A18_b18", "spans": [{"start": 3, "end": 5, "text": "회사", "type": "REL_WORK", "subject": "self"}, {"start": 159, "end": 163, "text": "회사에서", "type": "REL_WORK", "subject": "self"}, {"start": 311, "end": 314, "text": "탕비실", "type": "REL_WORK", "subject": "self"}, {"start": 500, "end": 510, "text": "군대 동기 형님들은", "type": "SEX", "subject": "self"}, {"start": 568, "end": 571, "text": "매장에", "type": "REL_WORK", "subject": "self"}, {"start": 772, "end": 774, "text": "회사", "type": "REL_WORK", "subject": "self"}, {"start": 883, "end": 886, "text": "회사로", "type": "REL_WORK", "subject": "self"}, {"start": 1126, "end": 1134, "text": "탕비실 관리인이", "type": "JOB", "subject": "self"}], "sec": 0.028}
+{"post_id": "A18_b21", "spans": [{"start": 505, "end": 517, "text": "통근 셔틀 — 아침마다", "type": "COMMUTE", "subject": "self"}], "sec": 0.021}
+{"post_id": "A18_b22", "spans": [{"start": 418, "end": 422, "text": "팀장님이", "type": "JOB", "subject": "self"}], "sec": 0.027}
+{"post_id": "A18_b23", "spans": [{"start": 286, "end": 290, "text": "아침마다", "type": "COMMUTE", "subject": "self"}, {"start": 291, "end": 299, "text": "통근 셔틀을 잡", "type": "COMMUTE", "subject": "self"}], "sec": 0.021}
+{"post_id": "A18_b27", "spans": [], "sec": 0.019}
+{"post_id": "A19_b01", "spans": [{"start": 16, "end": 23, "text": "옆자리 동료가", "type": "REL_WORK", "subject": "self"}, {"start": 675, "end": 684, "text": "아이 둘  \n저녁", "type": "FAM", "subject": "self"}, {"start": 694, "end": 697, "text": "남편은", "type": "SEX", "subject": "self"}], "sec": 0.02}
+{"post_id": "A19_b09", "spans": [{"start": 616, "end": 620, "text": "사장님과", "type": "JOB", "subject": "self"}], "sec": 0.019}
+{"post_id": "A19_b12", "spans": [{"start": 748, "end": 761, "text": "블로그 원고료 들어온 날", "type": "JOB", "subject": "self"}, {"start": 1279, "end": 1282, "text": "탕비실", "type": "REL_WORK", "subject": "self"}], "sec": 0.025}
+{"post_id": "A19_b19", "spans": [{"start": 62, "end": 69, "text": "옆자리 동료가", "type": "REL_WORK", "subject": "self"}, {"start": 825, "end": 839, "text": "블로그 원고료 들어오는 날", "type": "JOB", "subject": "self"}], "sec": 0.021}
+{"post_id": "A19_b29", "spans": [{"start": 1121, "end": 1125, "text": "탕비실에", "type": "REL_WORK", "subject": "self"}, {"start": 1183, "end": 1189, "text": "회사 탕비실", "type": "REL_WORK", "subject": "self"}], "sec": 0.022}
+{"post_id": "A19_b30", "spans": [{"start": 1123, "end": 1130, "text": "카페 사장님과", "type": "JOB", "subject": "self"}], "sec": 0.027}
+{"post_id": "A21_b01", "spans": [{"start": 1031, "end": 1037, "text": "장비 쇼핑몰", "type": "INCOME", "subject": "self"}, {"start": 1047, "end": 1051, "text": "아내한테", "type": "SEX", "subject": "self"}], "sec": 0.027}
+{"post_id": "A21_b02", "spans": [{"start": 1058, "end": 1065, "text": "출장 다녀오면", "type": "JOB", "subject": "self"}, {"start": 1066, "end": 1075, "text": "장비 정비부터 하", "type": "JOB", "subject": "self"}], "sec": 0.026}
+{"post_id": "A21_b05", "spans": [{"start": 574, "end": 578, "text": "아내한테", "type": "SEX", "subject": "self"}, {"start": 668, "end": 671, "text": "유튜버", "type": "JOB", "subject": "self"}], "sec": 0.028}
+{"post_id": "A21_b15", "spans": [{"start": 1143, "end": 1153, "text": "장비 쇼핑몰 화면이", "type": "INCOME", "subject": "self"}, {"start": 1168, "end": 1172, "text": "아내한테", "type": "SEX", "subject": "self"}], "sec": 0.033}
+{"post_id": "A21_b22", "spans": [{"start": 1044, "end": 1050, "text": "낚시 동호회", "type": "JOB", "subject": "other"}, {"start": 1051, "end": 1057, "text": "형님들 단체", "type": "SEX", "subject": "self"}], "sec": 0.029}
+{"post_id": "A21_b25", "spans": [{"start": 306, "end": 312, "text": "낚시 동호회", "type": "JOB", "subject": "other"}, {"start": 313, "end": 317, "text": "형님들이", "type": "SEX", "subject": "self"}], "sec": 0.027}
+{"post_id": "A21_b27", "spans": [{"start": 917, "end": 926, "text": "막둥이 밤잠이 짧", "type": "FAM", "subject": "self"}], "sec": 0.035}
+{"post_id": "A21_b28", "spans": [{"start": 1240, "end": 1244, "text": "막둥이가", "type": "FAM", "subject": "self"}], "sec": 0.033}
+{"post_id": "A25_b06", "spans": [{"start": 423, "end": 428, "text": "손주 녀석", "type": "FAM", "subject": "self"}], "sec": 0.016}
+{"post_id": "A26_b03", "spans": [{"start": 197, "end": 201, "text": "야자 때", "type": "AGE", "subject": "self"}], "sec": 0.007}
+{"post_id": "A26_b06", "spans": [{"start": 212, "end": 217, "text": "학원버스는", "type": "COMMUTE", "subject": "self"}, {"start": 220, "end": 223, "text": "놓치면", "type": "COMMUTE", "subject": "self"}, {"start": 360, "end": 362, "text": "버스", "type": "COMMUTE", "subject": "self"}], "sec": 0.008}
+{"post_id": "A26_b10", "spans": [{"start": 0, "end": 6, "text": "야자 시간에", "type": "AGE", "subject": "self"}, {"start": 204, "end": 214, "text": "학원버스  \n놓치면", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "A26_b12", "spans": [{"start": 231, "end": 239, "text": "학원버스 놓치면", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "A26_b13", "spans": [{"start": 0, "end": 4, "text": "모의고사", "type": "AGE", "subject": "self"}, {"start": 318, "end": 321, "text": "독서실", "type": "AGE", "subject": "self"}, {"start": 332, "end": 339, "text": "야자 시간 다", "type": "AGE", "subject": "self"}], "sec": 0.008}
+{"post_id": "A26_b19", "spans": [{"start": 243, "end": 246, "text": "독서실", "type": "AGE", "subject": "self"}, {"start": 267, "end": 272, "text": "야자 중에", "type": "AGE", "subject": "self"}], "sec": 0.008}
+{"post_id": "A26_b29", "spans": [{"start": 263, "end": 271, "text": "학원버스 놓치면", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "B01_b04", "spans": [{"start": 182, "end": 184, "text": "원룸", "type": "REL_HOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "B01_b10", "spans": [{"start": 274, "end": 276, "text": "원룸", "type": "REL_HOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "B02_b01", "spans": [{"start": 382, "end": 387, "text": "공장 굴뚝", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.008}
+{"post_id": "B02_b10", "spans": [{"start": 0, "end": 6, "text": "야간 근무를", "type": "JOB", "subject": "self"}, {"start": 271, "end": 275, "text": "취준이다", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B02_b18", "spans": [{"start": 31, "end": 37, "text": "교대 일정이", "type": "JOB", "subject": "self"}, {"start": 274, "end": 279, "text": "공장 굴뚝", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.008}
+{"post_id": "B03_b15", "spans": [{"start": 0, "end": 6, "text": "광고 세트는", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B03_b20", "spans": [{"start": 172, "end": 200, "text": "늦게 남은 시간까지 월급 안에 접어 넣는 곳은 이제", "type": "INCOME", "subject": "self"}, {"start": 203, "end": 205, "text": "보고", "type": "INCOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "B04_b05", "spans": [], "sec": 0.008}
+{"post_id": "B04_b11", "spans": [{"start": 228, "end": 235, "text": "단골 건축주는", "type": "JOB", "subject": "other"}], "sec": 0.008}
+{"post_id": "B04_b15", "spans": [{"start": 234, "end": 236, "text": "단골", "type": "JOB", "subject": "self"}, {"start": 237, "end": 241, "text": "건축주가", "type": "JOB", "subject": "other"}], "sec": 0.013}
+{"post_id": "B04_b21", "spans": [{"start": 289, "end": 292, "text": "작업실", "type": "REL_WORK", "subject": "self"}, {"start": 473, "end": 477, "text": "건축주가", "type": "JOB", "subject": "other"}], "sec": 0.013}
+{"post_id": "B04_b22", "spans": [{"start": 251, "end": 255, "text": "미팅마다", "type": "JOB", "subject": "self"}, {"start": 264, "end": 268, "text": "건축주가", "type": "JOB", "subject": "other"}], "sec": 0.013}
+{"post_id": "B06_b02", "spans": [{"start": 210, "end": 218, "text": "옆 반 선생님과", "type": "JOB", "subject": "other"}, {"start": 219, "end": 223, "text": "퇴근길에", "type": "COMMUTE", "subject": "self"}, {"start": 232, "end": 239, "text": "학급 이야기를", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B06_b06", "spans": [{"start": 0, "end": 4, "text": "학기 초", "type": "JOB", "subject": "self"}, {"start": 5, "end": 15, "text": "학부모 상담 주간이", "type": "JOB", "subject": "self"}, {"start": 71, "end": 74, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B06_b07", "spans": [{"start": 0, "end": 2, "text": "동네", "type": "REL_HOME", "subject": "self"}, {"start": 207, "end": 213, "text": "친정 엄마가", "type": "SEX", "subject": "self"}, {"start": 214, "end": 220, "text": "하원을 맡아", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B06_b13", "spans": [{"start": 0, "end": 3, "text": "아이가", "type": "FAM", "subject": "self"}, {"start": 362, "end": 365, "text": "아이가", "type": "FAM", "subject": "self"}, {"start": 443, "end": 446, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "B06_b21", "spans": [{"start": 187, "end": 190, "text": "세 살", "type": "AGE", "subject": "self"}, {"start": 191, "end": 194, "text": "아이는", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B06_b22", "spans": [{"start": 8, "end": 11, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B06_b28", "spans": [{"start": 155, "end": 161, "text": "대출 횟수만", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B07_b14", "spans": [{"start": 230, "end": 233, "text": "현장은", "type": "REL_WORK", "subject": "self"}], "sec": 0.013}
+{"post_id": "B07_b16", "spans": [{"start": 216, "end": 225, "text": "조기축구 회원들과", "type": "JOB", "subject": "self"}, {"start": 244, "end": 247, "text": "형님은", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "B07_b18", "spans": [{"start": 268, "end": 277, "text": "조기축구 회원들과", "type": "JOB", "subject": "self"}, {"start": 301, "end": 304, "text": "형님은", "type": "SEX", "subject": "self"}], "sec": 0.009}
+{"post_id": "B07_b23", "spans": [{"start": 30, "end": 36, "text": "절삭유 교체", "type": "JOB", "subject": "self"}, {"start": 161, "end": 169, "text": "엔드밀 세 자루", "type": "JOB", "subject": "self"}, {"start": 375, "end": 378, "text": "절삭유", "type": "JOB", "subject": "self"}], "sec": 0.009}
+{"post_id": "B07_b28", "spans": [{"start": 399, "end": 408, "text": "조기축구 회원들과", "type": "JOB", "subject": "self"}, {"start": 427, "end": 430, "text": "형님은", "type": "SEX", "subject": "self"}, {"start": 451, "end": 454, "text": "형님이", "type": "SEX", "subject": "self"}], "sec": 0.009}
+{"post_id": "B07_b29", "spans": [{"start": 239, "end": 248, "text": "조기축구 회원들과", "type": "JOB", "subject": "self"}, {"start": 279, "end": 282, "text": "형님은", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "B08_b14", "spans": [{"start": 261, "end": 263, "text": "원룸", "type": "REL_HOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "B08_b20", "spans": [{"start": 208, "end": 211, "text": "1교시", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B08_b22", "spans": [{"start": 160, "end": 162, "text": "주방", "type": "JOB", "subject": "self"}, {"start": 171, "end": 180, "text": "사장님이 마감 때", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B08_b23", "spans": [{"start": 222, "end": 224, "text": "원룸", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "B09_b14", "spans": [{"start": 0, "end": 5, "text": "수강생분이", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B09_b15", "spans": [], "sec": 0.007}
+{"post_id": "B09_b23", "spans": [{"start": 0, "end": 5, "text": "수강생분이", "type": "JOB", "subject": "self"}, {"start": 180, "end": 187, "text": "쪽 염색 원단", "type": "JOB", "subject": "self"}, {"start": 286, "end": 289, "text": "수강생", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B09_b24", "spans": [{"start": 123, "end": 126, "text": "남편은", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "B10_b07", "spans": [{"start": 72, "end": 76, "text": "아이들은", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "B10_b19", "spans": [{"start": 310, "end": 313, "text": "큰애는", "type": "FAM", "subject": "self"}, {"start": 330, "end": 334, "text": "작은애는", "type": "FAM", "subject": "self"}, {"start": 335, "end": 336, "text": "형", "type": "SEX", "subject": "other"}], "sec": 0.008}
+{"post_id": "B10_b26", "spans": [{"start": 17, "end": 21, "text": "아이들과", "type": "FAM", "subject": "self"}, {"start": 343, "end": 346, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B12_b30", "spans": [{"start": 130, "end": 139, "text": "1톤 화물차 한쪽", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B13_b07", "spans": [{"start": 217, "end": 221, "text": "아홉 살", "type": "AGE", "subject": "other"}, {"start": 222, "end": 225, "text": "아들은", "type": "FAM", "subject": "self"}, {"start": 332, "end": 336, "text": "남편이랑", "type": "SEX", "subject": "self"}, {"start": 456, "end": 463, "text": "출근 준비 전", "type": "COMMUTE", "subject": "self"}], "sec": 0.013}
+{"post_id": "B13_b15", "spans": [{"start": 326, "end": 332, "text": "자리 동료가", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "B13_b21", "spans": [{"start": 118, "end": 121, "text": "아들은", "type": "FAM", "subject": "self"}, {"start": 368, "end": 371, "text": "남편이", "type": "SEX", "subject": "self"}, {"start": 377, "end": 379, "text": "아들", "type": "FAM", "subject": "self"}], "sec": 0.009}
+{"post_id": "B13_b30", "spans": [{"start": 136, "end": 139, "text": "아이는", "type": "FAM", "subject": "self"}, {"start": 252, "end": 256, "text": "아홉 살", "type": "AGE", "subject": "self"}], "sec": 0.008}
+{"post_id": "B14_b20", "spans": [{"start": 194, "end": 201, "text": "군대 간 형이", "type": "SEX", "subject": "self"}, {"start": 210, "end": 213, "text": "여동생", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "B14_b21", "spans": [{"start": 171, "end": 178, "text": "군대 간 형은", "type": "SEX", "subject": "self"}, {"start": 189, "end": 192, "text": "여동생", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "B14_b28", "spans": [{"start": 139, "end": 142, "text": "독서실", "type": "JOB", "subject": "self"}, {"start": 261, "end": 265, "text": "군대 간", "type": "SEX", "subject": "self"}, {"start": 266, "end": 267, "text": "형", "type": "SEX", "subject": "self"}, {"start": 278, "end": 281, "text": "여동생", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "B15_b15", "spans": [{"start": 185, "end": 201, "text": "갓 뽑은 조선배추 겉잎도 다듬", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "B15_b24", "spans": [{"start": 223, "end": 225, "text": "옆집", "type": "REL_HOME", "subject": "self"}, {"start": 261, "end": 263, "text": "회관", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.008}
+{"post_id": "B16_b15", "spans": [{"start": 10, "end": 14, "text": "배포 끝", "type": "JOB", "subject": "self"}, {"start": 18, "end": 24, "text": "CI/CD는", "type": "JOB", "subject": "self"}, {"start": 114, "end": 119, "text": "회사 슬랙", "type": "REL_WORK", "subject": "self"}], "sec": 0.008}
+{"post_id": "B16_b19", "spans": [{"start": 236, "end": 238, "text": "형들", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "B16_b24", "spans": [{"start": 10, "end": 13, "text": "배포는", "type": "JOB", "subject": "self"}, {"start": 21, "end": 27, "text": "CI 통과.", "type": "JOB", "subject": "self"}, {"start": 28, "end": 30, "text": "배포", "type": "JOB", "subject": "self"}, {"start": 98, "end": 103, "text": "롤백 버튼", "type": "JOB", "subject": "self"}, {"start": 141, "end": 144, "text": "배포가", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B16_b25", "spans": [{"start": 61, "end": 66, "text": "코드 보다", "type": "JOB", "subject": "self"}, {"start": 148, "end": 153, "text": "스프린트는", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "B16_b27", "spans": [{"start": 196, "end": 198, "text": "형들", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "D01_b11", "spans": [{"start": 126, "end": 140, "text": "라인 세워놓고 원인 찾느라", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D02_b01", "spans": [{"start": 171, "end": 174, "text": "언니를", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "D02_b08", "spans": [{"start": 178, "end": 181, "text": "언니가", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "D02_b09", "spans": [{"start": 185, "end": 188, "text": "편의점", "type": "JOB", "subject": "other"}, {"start": 189, "end": 192, "text": "언니가", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "D02_b14", "spans": [{"start": 106, "end": 109, "text": "퇴근길", "type": "COMMUTE", "subject": "self"}, {"start": 110, "end": 116, "text": "편의점 알바", "type": "JOB", "subject": "other"}, {"start": 117, "end": 120, "text": "언니가", "type": "SEX", "subject": "self"}, {"start": 166, "end": 171, "text": "이 동네를", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D03_b09", "spans": [{"start": 62, "end": 69, "text": "작업실 건너편", "type": "REL_WORK", "subject": "self"}], "sec": 0.008}
+{"post_id": "D03_b13", "spans": [{"start": 219, "end": 225, "text": "엄마들 단톡", "type": "SEX", "subject": "self"}, {"start": 229, "end": 234, "text": "하원 시간", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "D03_b17", "spans": [{"start": 254, "end": 264, "text": "걸어서 십오 분이라", "type": "COMMUTE", "subject": "self"}], "sec": 0.008}
+{"post_id": "D03_b20", "spans": [], "sec": 0.008}
+{"post_id": "D04_b03", "spans": [{"start": 105, "end": 112, "text": "복사기 앞에서", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D04_b07", "spans": [{"start": 13, "end": 17, "text": "집사람이", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "D05_b03", "spans": [{"start": 111, "end": 119, "text": "면사무소 앞에서", "type": "LOC_FACILITY", "subject": "self"}, {"start": 126, "end": 140, "text": "버스가 한 시간에 한 대라", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D05_b08", "spans": [{"start": 108, "end": 111, "text": "경로당", "type": "AGE", "subject": "self"}, {"start": 171, "end": 176, "text": "딸네 있는", "type": "FAM", "subject": "other"}, {"start": 177, "end": 180, "text": "여수로", "type": "LOC_ADMIN", "subject": "other"}, {"start": 201, "end": 203, "text": "옆집", "type": "REL_HOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "D05_b14", "spans": [{"start": 92, "end": 98, "text": "예순여덟인디", "type": "AGE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D05_b15", "spans": [{"start": 106, "end": 122, "text": "나오는 날에 맞춰 장 볼 것을", "type": "INCOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D05_b17", "spans": [{"start": 146, "end": 148, "text": "광주", "type": "LOC_ADMIN", "subject": "self"}], "sec": 0.007}
+{"post_id": "D07_b05", "spans": [{"start": 153, "end": 163, "text": "예전에 쓰던 공구도", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D09_b08", "spans": [{"start": 81, "end": 84, "text": "이웃집", "type": "REL_HOME", "subject": "self"}, {"start": 91, "end": 97, "text": "우리마당으로", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D09_b11", "spans": [{"start": 160, "end": 164, "text": "경운기가", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D09_b17", "spans": [{"start": 140, "end": 144, "text": "경운기는", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D09_b24", "spans": [{"start": 136, "end": 139, "text": "집에오", "type": "REL_HOME", "subject": "self"}, {"start": 141, "end": 144, "text": "이웃집", "type": "REL_HOME", "subject": "self"}, {"start": 151, "end": 156, "text": "우리마당에", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D10_b12", "spans": [{"start": 276, "end": 278, "text": "가게", "type": "REL_WORK", "subject": "self"}], "sec": 0.012}
+{"post_id": "D11_b02", "spans": [{"start": 118, "end": 123, "text": "마을버스를", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D11_b21", "spans": [{"start": 125, "end": 130, "text": "마을버스를", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D11_b22", "spans": [], "sec": 0.007}
+{"post_id": "D11_b29", "spans": [{"start": 0, "end": 5, "text": "울 너머서", "type": "REL_HOME", "subject": "self"}, {"start": 134, "end": 139, "text": "마을버스를", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D11_b30", "spans": [{"start": 0, "end": 4, "text": "마을버스", "type": "COMMUTE", "subject": "self"}, {"start": 72, "end": 75, "text": "버스는", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D12_b01", "spans": [{"start": 0, "end": 2, "text": "야간", "type": "JOB", "subject": "self"}, {"start": 91, "end": 100, "text": "야간 들어가기 전", "type": "JOB", "subject": "self"}, {"start": 102, "end": 108, "text": "설비 점검표", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D12_b09", "spans": [{"start": 149, "end": 155, "text": "형이랑 둘이", "type": "SEX", "subject": "self"}, {"start": 232, "end": 238, "text": "옆 동 주차", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D12_b27", "spans": [{"start": 0, "end": 5, "text": "야간 마치", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D12_b28", "spans": [{"start": 78, "end": 83, "text": "같이 일하", "type": "JOB", "subject": "self"}, {"start": 85, "end": 88, "text": "반장이", "type": "JOB", "subject": "self"}, {"start": 89, "end": 95, "text": "남구 쪽으로", "type": "LOC_ADMIN", "subject": "other"}, {"start": 96, "end": 101, "text": "이사 간다", "type": "COMMUTE", "subject": "self"}, {"start": 102, "end": 103, "text": "데", "type": "COMMUTE", "subject": "self"}, {"start": 104, "end": 110, "text": "카풀 자리도", "type": "COMMUTE", "subject": "self"}, {"start": 121, "end": 125, "text": "휠 하나", "type": "COMMUTE", "subject": "self"}], "sec": 0.008}
+{"post_id": "D12_b30", "spans": [{"start": 126, "end": 129, "text": "옆 동", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D13_b08", "spans": [{"start": 0, "end": 2, "text": "동네", "type": "REL_HOME", "subject": "self"}, {"start": 37, "end": 40, "text": "폐선길", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.007}
+{"post_id": "D14_b05", "spans": [{"start": 113, "end": 117, "text": "버스에서", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D14_b08", "spans": [{"start": 166, "end": 176, "text": "평일엔 집에 없으니", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D14_b15", "spans": [{"start": 190, "end": 192, "text": "차가", "type": "COMMUTE", "subject": "self"}, {"start": 212, "end": 242, "text": "적금 하나를 들여다보면 열쇠 정도는 손에 쥘 수 있는데", "type": "INCOME", "subject": "self"}, {"start": 244, "end": 254, "text": "버스비를 세어 보면", "type": "COMMUTE", "subject": "self"}], "sec": 0.008}
+{"post_id": "D16_b01", "spans": [{"start": 160, "end": 169, "text": "비닐하우스 한쪽이", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D16_b04", "spans": [{"start": 8, "end": 17, "text": "접목 붙인 자리를", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D16_b14", "spans": [{"start": 142, "end": 151, "text": "비닐하우스 한쪽이", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D16_b15", "spans": [{"start": 232, "end": 241, "text": "비닐하우스 한쪽이", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D16_b30", "spans": [{"start": 131, "end": 139, "text": "비닐하우스 한쪽", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D17_b05", "spans": [{"start": 0, "end": 4, "text": "경로당에", "type": "LOC_FACILITY", "subject": "self"}, {"start": 53, "end": 58, "text": "경로당에서", "type": "LOC_FACILITY", "subject": "self"}, {"start": 62, "end": 65, "text": "정류장", "type": "COMMUTE", "subject": "self"}, {"start": 73, "end": 78, "text": "일흔셋에도", "type": "AGE", "subject": "self"}, {"start": 91, "end": 98, "text": "버스 시간표는", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D17_b12", "spans": [{"start": 0, "end": 6, "text": "버스 시간을", "type": "COMMUTE", "subject": "self"}, {"start": 16, "end": 19, "text": "첫차는", "type": "COMMUTE", "subject": "self"}, {"start": 23, "end": 24, "text": "시", "type": "COMMUTE", "subject": "self"}, {"start": 26, "end": 29, "text": "십 분", "type": "COMMUTE", "subject": "self"}, {"start": 31, "end": 36, "text": "낮차는 두", "type": "COMMUTE", "subject": "self"}, {"start": 40, "end": 42, "text": "옆집", "type": "REL_HOME", "subject": "self"}, {"start": 72, "end": 75, "text": "첫차로", "type": "COMMUTE", "subject": "self"}, {"start": 111, "end": 117, "text": "영감이 혼자", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "D17_b15", "spans": [{"start": 73, "end": 82, "text": "버스표도 한 달치", "type": "COMMUTE", "subject": "self"}, {"start": 88, "end": 90, "text": "옆집", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D17_b16", "spans": [{"start": 48, "end": 49, "text": "의", "type": "COMMUTE", "subject": "self"}, {"start": 50, "end": 57, "text": "버스 시간표가", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D17_b20", "spans": [{"start": 10, "end": 13, "text": "경로당", "type": "AGE", "subject": "self"}, {"start": 59, "end": 60, "text": "의", "type": "COMMUTE", "subject": "self"}, {"start": 61, "end": 68, "text": "버스 시간표가", "type": "COMMUTE", "subject": "self"}, {"start": 89, "end": 92, "text": "막내는", "type": "FAM", "subject": "self"}, {"start": 93, "end": 98, "text": "전주 시내", "type": "LOC_ADMIN", "subject": "other"}, {"start": 99, "end": 106, "text": "가게 문을 닫", "type": "JOB", "subject": "other"}], "sec": 0.008}
+{"post_id": "D17_b21", "spans": [{"start": 50, "end": 51, "text": "의", "type": "COMMUTE", "subject": "self"}, {"start": 52, "end": 61, "text": "버스 시간표 옆에", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "D18_b08", "spans": [{"start": 210, "end": 213, "text": "언니,", "type": "SEX", "subject": "self"}, {"start": 241, "end": 244, "text": "언니를", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "D19_b05", "spans": [{"start": 187, "end": 188, "text": "옆", "type": "JOB", "subject": "self"}, {"start": 189, "end": 197, "text": "좌판 아주머니와", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D19_b27", "spans": [{"start": 87, "end": 88, "text": "옆", "type": "JOB", "subject": "self"}, {"start": 89, "end": 97, "text": "좌판 아주머니랑", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D19_b28", "spans": [{"start": 199, "end": 208, "text": "옆자리 아주머니랑", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "D20_b22", "spans": [{"start": 82, "end": 87, "text": "회사 회식", "type": "REL_WORK", "subject": "self"}, {"start": 213, "end": 215, "text": "형은", "type": "SEX", "subject": "self"}, {"start": 221, "end": 228, "text": "사하구 쪽으로", "type": "LOC_ADMIN", "subject": "other"}, {"start": 229, "end": 232, "text": "공장을", "type": "JOB", "subject": "other"}], "sec": 0.008}
+{"post_id": "D21_b24", "spans": [{"start": 113, "end": 115, "text": "형이", "type": "SEX", "subject": "self"}, {"start": 116, "end": 122, "text": "판교 쪽으로", "type": "LOC_ADMIN", "subject": "other"}], "sec": 0.007}
+{"post_id": "D22_b05", "spans": [{"start": 9, "end": 11, "text": "손지", "type": "FAM", "subject": "self"}, {"start": 133, "end": 136, "text": "손지는", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "D22_b06", "spans": [{"start": 116, "end": 119, "text": "감귤밭", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D22_b15", "spans": [{"start": 0, "end": 5, "text": "경운기 짐", "type": "JOB", "subject": "self"}, {"start": 117, "end": 119, "text": "옆집", "type": "REL_HOME", "subject": "self"}, {"start": 192, "end": 195, "text": "경운기", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D23_b27", "spans": [{"start": 113, "end": 119, "text": "공예 재료인", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "D24_b06", "spans": [], "sec": 0.007}
+{"post_id": "D24_b18", "spans": [{"start": 120, "end": 142, "text": "여름 두 달치 숫자로 나머지 달력을 넘긴", "type": "INCOME", "subject": "self"}, {"start": 146, "end": 151, "text": "겨울 칸에", "type": "INCOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "D24_b26", "spans": [{"start": 121, "end": 124, "text": "형님은", "type": "SEX", "subject": "self"}, {"start": 125, "end": 131, "text": "춘천 시내에", "type": "LOC_ADMIN", "subject": "other"}, {"start": 132, "end": 139, "text": "카페 문을 열", "type": "JOB", "subject": "other"}, {"start": 143, "end": 146, "text": "개업날", "type": "JOB", "subject": "other"}], "sec": 0.008}
+{"post_id": "D24_b30", "spans": [{"start": 214, "end": 226, "text": "손님 나간 뒤 뒷정리할", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E02_b09", "spans": [{"start": 0, "end": 4, "text": "퇴근하고", "type": "COMMUTE", "subject": "self"}, {"start": 5, "end": 7, "text": "현지", "type": "REL_HOME", "subject": "self"}, {"start": 16, "end": 18, "text": "호주", "type": "LOC_ADMIN", "subject": "self"}, {"start": 149, "end": 153, "text": "사장님이", "type": "JOB", "subject": "self"}, {"start": 154, "end": 158, "text": "라떼 선", "type": "JOB", "subject": "self"}, {"start": 209, "end": 214, "text": "플랫 와서", "type": "REL_HOME", "subject": "self"}], "sec": 0.008}
+{"post_id": "E02_b15", "spans": [{"start": 118, "end": 120, "text": "카페", "type": "JOB", "subject": "self"}, {"start": 128, "end": 130, "text": "님이", "type": "JOB", "subject": "self"}, {"start": 135, "end": 140, "text": "라떼아트에", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E02_b20", "spans": [{"start": 151, "end": 155, "text": "사장님은", "type": "JOB", "subject": "self"}, {"start": 156, "end": 160, "text": "라떼아트", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E03_b10", "spans": [{"start": 0, "end": 6, "text": "지하철역에서", "type": "COMMUTE", "subject": "self"}, {"start": 7, "end": 12, "text": "집까지 가", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "E04_b07", "spans": [{"start": 42, "end": 60, "text": "배포하다가 새벽까지 버그 잡았다고", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E05_b06", "spans": [{"start": 68, "end": 77, "text": "산불 났던 자리를", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E06_b13", "spans": [{"start": 313, "end": 319, "text": "매장 앞에서", "type": "REL_WORK", "subject": "self"}, {"start": 356, "end": 362, "text": "시장 골목을", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.012}
+{"post_id": "E06_b18", "spans": [{"start": 5, "end": 10, "text": "대문 앞을", "type": "REL_HOME", "subject": "self"}, {"start": 308, "end": 310, "text": "낡은", "type": "COMMUTE", "subject": "self"}, {"start": 311, "end": 316, "text": "승합차 옆", "type": "COMMUTE", "subject": "self"}, {"start": 448, "end": 454, "text": "대문 가까이", "type": "REL_HOME", "subject": "self"}], "sec": 0.013}
+{"post_id": "E06_b19", "spans": [{"start": 299, "end": 316, "text": "사진을 찾으러 온 오래된 단골이", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "E06_b27", "spans": [{"start": 249, "end": 263, "text": "단골 손님이 사진을 찾으러", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "E07_b01", "spans": [{"start": 173, "end": 181, "text": "경로당 화투판은", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E07_b06", "spans": [], "sec": 0.008}
+{"post_id": "E07_b11", "spans": [{"start": 177, "end": 180, "text": "버스를", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "E07_b13", "spans": [{"start": 6, "end": 8, "text": "옆집", "type": "REL_HOME", "subject": "self"}, {"start": 98, "end": 100, "text": "영감", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "E07_b19", "spans": [{"start": 72, "end": 77, "text": "영감 손에", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E07_b23", "spans": [{"start": 0, "end": 3, "text": "경로당", "type": "AGE", "subject": "self"}], "sec": 0.007}
+{"post_id": "E07_b25", "spans": [], "sec": 0.007}
+{"post_id": "E07_b28", "spans": [{"start": 94, "end": 100, "text": "영감 눈에도", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b01", "spans": [{"start": 0, "end": 3, "text": "이웃집", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b04", "spans": [{"start": 90, "end": 93, "text": "이웃집", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b06", "spans": [{"start": 0, "end": 3, "text": "손주가", "type": "FAM", "subject": "self"}, {"start": 81, "end": 84, "text": "이웃집", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b11", "spans": [{"start": 0, "end": 3, "text": "이웃집", "type": "REL_HOME", "subject": "self"}, {"start": 138, "end": 162, "text": "식당까지 걸어서 십 분이라 운동 삼아 다닌다", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b16", "spans": [{"start": 0, "end": 3, "text": "손주가", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b19", "spans": [{"start": 124, "end": 129, "text": "식당 주방", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E08_b24", "spans": [{"start": 17, "end": 20, "text": "손주가", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E09_b06", "spans": [{"start": 608, "end": 610, "text": "옆집", "type": "REL_HOME", "subject": "self"}], "sec": 0.013}
+{"post_id": "E09_b23", "spans": [{"start": 41, "end": 45, "text": "며느리가", "type": "FAM", "subject": "self"}, {"start": 333, "end": 337, "text": "며느리가", "type": "FAM", "subject": "self"}, {"start": 675, "end": 680, "text": "며느리한테", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "E09_b25", "spans": [{"start": 438, "end": 445, "text": "마늘밭 잡초는", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "E09_b29", "spans": [{"start": 67, "end": 70, "text": "아이가", "type": "FAM", "subject": "self"}, {"start": 580, "end": 587, "text": "마늘밭 잡초는", "type": "JOB", "subject": "self"}], "sec": 0.019}
+{"post_id": "E10_b01", "spans": [{"start": 378, "end": 383, "text": "야간조 끝", "type": "JOB", "subject": "self"}], "sec": 0.014}
+{"post_id": "E10_b04", "spans": [{"start": 725, "end": 730, "text": "야간조 끝", "type": "JOB", "subject": "self"}], "sec": 0.02}
+{"post_id": "E10_b06", "spans": [{"start": 0, "end": 3, "text": "첫째가", "type": "FAM", "subject": "self"}, {"start": 344, "end": 347, "text": "첫째가", "type": "FAM", "subject": "self"}, {"start": 574, "end": 579, "text": "야간조 끝", "type": "JOB", "subject": "self"}, {"start": 665, "end": 668, "text": "첫째는", "type": "FAM", "subject": "self"}, {"start": 777, "end": 780, "text": "첫째가", "type": "FAM", "subject": "self"}], "sec": 0.02}
+{"post_id": "E10_b16", "spans": [{"start": 0, "end": 3, "text": "첫째가", "type": "FAM", "subject": "self"}, {"start": 157, "end": 160, "text": "첫째는", "type": "FAM", "subject": "self"}, {"start": 449, "end": 452, "text": "첫째도", "type": "FAM", "subject": "self"}, {"start": 507, "end": 510, "text": "첫째는", "type": "FAM", "subject": "self"}, {"start": 732, "end": 735, "text": "첫째가", "type": "FAM", "subject": "self"}], "sec": 0.015}
+{"post_id": "E10_b18", "spans": [{"start": 16, "end": 19, "text": "둘째가", "type": "FAM", "subject": "self"}, {"start": 357, "end": 360, "text": "둘째는", "type": "FAM", "subject": "self"}, {"start": 578, "end": 588, "text": "낡은 차 뒷좌석에는", "type": "COMMUTE", "subject": "self"}, {"start": 589, "end": 592, "text": "카시트", "type": "FAM", "subject": "self"}, {"start": 685, "end": 688, "text": "둘째가", "type": "FAM", "subject": "self"}, {"start": 813, "end": 816, "text": "둘째가", "type": "FAM", "subject": "self"}, {"start": 817, "end": 822, "text": "열아홉에서", "type": "AGE", "subject": "other"}], "sec": 0.021}
+{"post_id": "E10_b21", "spans": [{"start": 0, "end": 2, "text": "셋째", "type": "FAM", "subject": "self"}, {"start": 3, "end": 7, "text": "이유식에", "type": "FAM", "subject": "self"}], "sec": 0.014}
+{"post_id": "E10_b22", "spans": [{"start": 573, "end": 578, "text": "야간조 끝", "type": "JOB", "subject": "self"}], "sec": 0.014}
+{"post_id": "E10_b23", "spans": [{"start": 250, "end": 258, "text": "낡은 차 뒷좌석", "type": "COMMUTE", "subject": "self"}, {"start": 261, "end": 265, "text": "카시트와", "type": "FAM", "subject": "self"}], "sec": 0.019}
+{"post_id": "E10_b26", "spans": [{"start": 0, "end": 3, "text": "둘째가", "type": "FAM", "subject": "self"}, {"start": 410, "end": 413, "text": "둘째는", "type": "FAM", "subject": "self"}, {"start": 548, "end": 551, "text": "둘째가", "type": "FAM", "subject": "self"}, {"start": 758, "end": 761, "text": "둘째는", "type": "FAM", "subject": "self"}], "sec": 0.015}
+{"post_id": "E10_b28", "spans": [{"start": 545, "end": 548, "text": "뒷좌석", "type": "FAM", "subject": "self"}, {"start": 549, "end": 552, "text": "카시트", "type": "FAM", "subject": "self"}], "sec": 0.014}
+{"post_id": "E10_b29", "spans": [{"start": 503, "end": 507, "text": "이유식을", "type": "FAM", "subject": "self"}, {"start": 838, "end": 846, "text": "낡은 차 뒷좌석", "type": "COMMUTE", "subject": "self"}, {"start": 847, "end": 852, "text": "카시트 옆", "type": "FAM", "subject": "self"}], "sec": 0.019}
+{"post_id": "E10_b30", "spans": [{"start": 609, "end": 613, "text": "저녁에는", "type": "FAM", "subject": "self"}, {"start": 629, "end": 645, "text": "한 숟갈만 더 먹이는 실랑이가", "type": "FAM", "subject": "self"}], "sec": 0.015}
+{"post_id": "E12_b04", "spans": [{"start": 0, "end": 2, "text": "아이", "type": "FAM", "subject": "self"}], "sec": 0.009}
+{"post_id": "E12_b06", "spans": [{"start": 443, "end": 445, "text": "이웃", "type": "REL_HOME", "subject": "self"}, {"start": 446, "end": 455, "text": "엄마들 모임에서도", "type": "FAM", "subject": "self"}], "sec": 0.015}
+{"post_id": "E12_b10", "spans": [{"start": 439, "end": 441, "text": "이웃", "type": "REL_HOME", "subject": "self"}, {"start": 442, "end": 450, "text": "엄마들 모임에서", "type": "FAM", "subject": "self"}], "sec": 0.014}
+{"post_id": "E12_b13", "spans": [{"start": 418, "end": 420, "text": "이웃", "type": "REL_HOME", "subject": "self"}, {"start": 421, "end": 430, "text": "엄마들 모임에서도", "type": "FAM", "subject": "self"}], "sec": 0.014}
+{"post_id": "E12_b16", "spans": [{"start": 264, "end": 268, "text": "학원 앞", "type": "LOC_FACILITY", "subject": "self"}, {"start": 286, "end": 293, "text": "픽업 시간까지", "type": "FAM", "subject": "self"}], "sec": 0.009}
+{"post_id": "E12_b21", "spans": [{"start": 246, "end": 249, "text": "아이들", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E12_b22", "spans": [{"start": 286, "end": 288, "text": "이웃", "type": "REL_HOME", "subject": "self"}, {"start": 289, "end": 298, "text": "엄마들 모임에서도", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E12_b24", "spans": [{"start": 312, "end": 315, "text": "아이들", "type": "FAM", "subject": "self"}], "sec": 0.009}
+{"post_id": "E12_b25", "spans": [{"start": 292, "end": 295, "text": "아이들", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E12_b28", "spans": [{"start": 329, "end": 341, "text": "이웃 엄마들 모임 단체", "type": "FAM", "subject": "self"}, {"start": 375, "end": 378, "text": "카드값", "type": "INCOME", "subject": "self"}], "sec": 0.009}
+{"post_id": "E12_b30", "spans": [{"start": 7, "end": 9, "text": "아이", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E13_b19", "spans": [{"start": 0, "end": 4, "text": "가게 앞", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "E13_b21", "spans": [{"start": 211, "end": 217, "text": "간판 나사가", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b07", "spans": [{"start": 23, "end": 26, "text": "남편이", "type": "SEX", "subject": "self"}, {"start": 143, "end": 149, "text": "우체국 가는", "type": "LOC_FACILITY", "subject": "self"}, {"start": 150, "end": 153, "text": "유모차", "type": "FAM", "subject": "self"}, {"start": 214, "end": 217, "text": "남편은", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b12", "spans": [{"start": 0, "end": 8, "text": "어린이집 가방을", "type": "FAM", "subject": "self"}, {"start": 219, "end": 222, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b16", "spans": [{"start": 213, "end": 216, "text": "유모차", "type": "FAM", "subject": "self"}, {"start": 228, "end": 231, "text": "유모차", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b21", "spans": [{"start": 183, "end": 186, "text": "유모차", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b22", "spans": [{"start": 57, "end": 60, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E14_b24", "spans": [{"start": 183, "end": 186, "text": "유모차", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b27", "spans": [{"start": 7, "end": 13, "text": "유모차 아래", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b29", "spans": [{"start": 0, "end": 6, "text": "어린이집에서", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E14_b30", "spans": [{"start": 0, "end": 3, "text": "아이가", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E15_b13", "spans": [{"start": 890, "end": 894, "text": "오빠에게", "type": "SEX", "subject": "self"}], "sec": 0.039}
+{"post_id": "E15_b22", "spans": [{"start": 1146, "end": 1154, "text": "오빠한테 전화를", "type": "SEX", "subject": "self"}, {"start": 1184, "end": 1187, "text": "오빠는", "type": "SEX", "subject": "self"}], "sec": 0.056}
+{"post_id": "E15_b28", "spans": [{"start": 664, "end": 668, "text": "오빠에게", "type": "SEX", "subject": "self"}], "sec": 0.052}
+{"post_id": "E16_b10", "spans": [{"start": 310, "end": 313, "text": "자취방", "type": "FAM", "subject": "self"}], "sec": 0.01}
+{"post_id": "E16_b21", "spans": [{"start": 223, "end": 229, "text": "새 동료들은", "type": "REL_WORK", "subject": "self"}], "sec": 0.01}
+{"post_id": "E16_b28", "spans": [{"start": 3, "end": 6, "text": "출근길", "type": "COMMUTE", "subject": "self"}, {"start": 438, "end": 440, "text": "옆집", "type": "REL_HOME", "subject": "self"}], "sec": 0.01}
+{"post_id": "E17_b01", "spans": [{"start": 190, "end": 192, "text": "둘이", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E17_b16", "spans": [{"start": 223, "end": 225, "text": "둘이", "type": "FAM", "subject": "self"}], "sec": 0.008}
+{"post_id": "E17_b25", "spans": [{"start": 10, "end": 13, "text": "아내가", "type": "SEX", "subject": "self"}, {"start": 102, "end": 105, "text": "아내가", "type": "SEX", "subject": "self"}, {"start": 208, "end": 211, "text": "아내는", "type": "SEX", "subject": "self"}], "sec": 0.008}
+{"post_id": "E17_b26", "spans": [{"start": 0, "end": 8, "text": "거래처 사장님이", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "E17_b28", "spans": [{"start": 199, "end": 211, "text": "거래처 사장님들 순회할", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "E18_b01", "spans": [{"start": 172, "end": 180, "text": "회사 단톡방에서", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "E18_b06", "spans": [{"start": 194, "end": 201, "text": "회사 단톡방에", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "E18_b13", "spans": [{"start": 157, "end": 165, "text": "회사 단톡방에서", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "E18_b19", "spans": [{"start": 0, "end": 8, "text": "회사 사람들이랑", "type": "REL_WORK", "subject": "self"}, {"start": 219, "end": 227, "text": "회사 단톡방에는", "type": "REL_WORK", "subject": "self"}], "sec": 0.007}
+{"post_id": "E19_b01", "spans": [{"start": 381, "end": 388, "text": "계산대 아래도", "type": "JOB", "subject": "self"}, {"start": 452, "end": 456, "text": "매장 안", "type": "REL_WORK", "subject": "self"}, {"start": 485, "end": 488, "text": "진열대", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "E19_b06", "spans": [{"start": 29, "end": 32, "text": "손주가", "type": "FAM", "subject": "self"}, {"start": 325, "end": 331, "text": "단골 손님도", "type": "JOB", "subject": "self"}, {"start": 336, "end": 337, "text": "을", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "E19_b16", "spans": [{"start": 233, "end": 238, "text": "본점 근처", "type": "REL_WORK", "subject": "self"}, {"start": 239, "end": 243, "text": "국밥집에", "type": "JOB", "subject": "self"}], "sec": 0.008}
+{"post_id": "E19_b17", "spans": [{"start": 128, "end": 131, "text": "열일곱", "type": "AGE", "subject": "self"}, {"start": 156, "end": 160, "text": "스물셋에", "type": "AGE", "subject": "self"}], "sec": 0.008}
+{"post_id": "E19_b23", "spans": [{"start": 14, "end": 20, "text": "동네 은행에", "type": "REL_HOME", "subject": "self"}, {"start": 352, "end": 358, "text": "단골 손님과", "type": "JOB", "subject": "self"}, {"start": 393, "end": 398, "text": "애들이 커", "type": "FAM", "subject": "self"}, {"start": 408, "end": 413, "text": "둘째가 내", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "E19_b27", "spans": [{"start": 292, "end": 307, "text": "가족사진을 찍는 단골 손님을", "type": "JOB", "subject": "self"}, {"start": 322, "end": 327, "text": "애들이 커", "type": "FAM", "subject": "self"}], "sec": 0.013}
+{"post_id": "E19_b28", "spans": [{"start": 446, "end": 453, "text": "계산대 아래에", "type": "JOB", "subject": "self"}], "sec": 0.013}
+{"post_id": "E19_b29", "spans": [{"start": 301, "end": 303, "text": "매장", "type": "REL_WORK", "subject": "self"}], "sec": 0.013}
+{"post_id": "E20_b28", "spans": [{"start": 0, "end": 3, "text": "엄마가", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b06", "spans": [{"start": 0, "end": 4, "text": "경로당에", "type": "AGE", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b16", "spans": [{"start": 213, "end": 216, "text": "할멈과", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b21", "spans": [{"start": 31, "end": 33, "text": "손주", "type": "FAM", "subject": "self"}, {"start": 205, "end": 208, "text": "경로당", "type": "AGE", "subject": "self"}, {"start": 258, "end": 261, "text": "손주는", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b24", "spans": [{"start": 231, "end": 234, "text": "할멈과", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b25", "spans": [{"start": 209, "end": 213, "text": "할멈하고", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b26", "spans": [{"start": 19, "end": 22, "text": "할멈은", "type": "SEX", "subject": "self"}, {"start": 91, "end": 94, "text": "할멈은", "type": "SEX", "subject": "self"}, {"start": 171, "end": 174, "text": "할멈이", "type": "SEX", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b27", "spans": [{"start": 99, "end": 102, "text": "경로당", "type": "AGE", "subject": "self"}], "sec": 0.007}
+{"post_id": "E21_b29", "spans": [{"start": 26, "end": 28, "text": "손주", "type": "FAM", "subject": "self"}, {"start": 219, "end": 222, "text": "손주는", "type": "FAM", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b02", "spans": [{"start": 0, "end": 5, "text": "마감이 늦", "type": "JOB", "subject": "self"}, {"start": 42, "end": 45, "text": "퇴근길", "type": "COMMUTE", "subject": "self"}, {"start": 46, "end": 50, "text": "성수 쪽", "type": "LOC_ADMIN", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b03", "spans": [{"start": 88, "end": 92, "text": "서울숲은", "type": "LOC_FACILITY", "subject": "self"}, {"start": 93, "end": 98, "text": "집 앞이라", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b08", "spans": [{"start": 3, "end": 6, "text": "마감은", "type": "JOB", "subject": "self"}, {"start": 52, "end": 56, "text": "뚝섬 쪽", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b09", "spans": [{"start": 101, "end": 113, "text": "원두 수량 칸에\n단위를", "type": "JOB", "subject": "self"}, {"start": 121, "end": 126, "text": "20킬로가", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b12", "spans": [{"start": 59, "end": 62, "text": "남편이", "type": "SEX", "subject": "self"}, {"start": 71, "end": 76, "text": "뚝섬 쪽을", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b14", "spans": [{"start": 0, "end": 4, "text": "성수 쪽", "type": "LOC_ADMIN", "subject": "self"}, {"start": 113, "end": 119, "text": "마감 정리가", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01_b19", "spans": [{"start": 28, "end": 30, "text": "망원", "type": "LOC_ADMIN", "subject": "other"}], "sec": 0.007}
+{"post_id": "S01_b20", "spans": [{"start": 0, "end": 2, "text": "마감", "type": "JOB", "subject": "self"}, {"start": 24, "end": 28, "text": "뚝섬 쪽", "type": "LOC_FACILITY", "subject": "self"}, {"start": 31, "end": 33, "text": "동네", "type": "REL_HOME", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b02", "spans": [{"start": 0, "end": 4, "text": "퇴근하고", "type": "COMMUTE", "subject": "self"}, {"start": 5, "end": 9, "text": "음성 쪽", "type": "LOC_ADMIN", "subject": "self"}, {"start": 121, "end": 125, "text": "교대 끝", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b03", "spans": [{"start": 88, "end": 103, "text": "셔틀 첫차가 여섯 시 반이라", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b06", "spans": [{"start": 25, "end": 35, "text": "피킹 동선까지 바뀌", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b08", "spans": [{"start": 0, "end": 4, "text": "교대 끝", "type": "JOB", "subject": "self"}, {"start": 7, "end": 13, "text": "병원 앞에서", "type": "REL_WORK", "subject": "self"}, {"start": 79, "end": 83, "text": "진천 쪽", "type": "LOC_ADMIN", "subject": "self"}, {"start": 182, "end": 184, "text": "차에", "type": "COMMUTE", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b09", "spans": [{"start": 77, "end": 81, "text": "퇴근하고", "type": "COMMUTE", "subject": "self"}, {"start": 95, "end": 99, "text": "집 근처", "type": "REL_HOME", "subject": "self"}, {"start": 100, "end": 104, "text": "하천길을", "type": "LOC_FACILITY", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b12", "spans": [{"start": 136, "end": 143, "text": "서른여덟 되니", "type": "AGE", "subject": "self"}, {"start": 144, "end": 148, "text": "야간조가", "type": "JOB", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b14", "spans": [{"start": 0, "end": 4, "text": "진천 쪽", "type": "LOC_ADMIN", "subject": "self"}], "sec": 0.007}
+{"post_id": "S01b_b18", "spans": [{"start": 119, "end": 125, "text": "아는 언니가", "type": "SEX", "subject": "self"}, {"start": 126, "end": 128, "text": "청주", "type": "LOC_ADMIN", "subject": "other"}], "sec": 0.007}
