@@ -104,23 +104,6 @@ def is_generic_place_word(text: str) -> bool:
     return not (m.group("suf") == "맛집" and m.group("head") != m.group("head").rstrip())
 
 
-# 모델이 단서 하나를 조각으로 잘라 잡은 것 — 「[의] 버스 시간표」 「[낡은] 트럭」 「[오늘] 버스타서」 (exp37).
-# F1 조사 · 어미만 남은 스팬(모든 유형) · F2 교통 · 통근 말이 하나도 없는 COMMUTE. 골드 COMMUTE 174개 중 F2 에 걸리는 것 0개
-_DROP_F1 = True
-_DROP_F2 = True
-_PARTICLE_ONLY = frozenset("의 에 에서 에서도 에는 에게 서 서는 로 으로 고 다 데 대 시 가 이 은 는 을 를 도 만 와 과 랑 하고 까지 부터 요 죠 첫".split())
-_TRANSIT_WORD = re.compile(r"버스|차|지하철|전철|철도|열차|기차|KTX|SRT|호선|[가-힣]선(?![가-힣])|역|정류장|정거장|환승|셔틀|택시|자전거|오토바이|"
-                           r"트럭|포터|승합|카풀|운전|몰고|시동|주차|워셔액|경유|기름값|주유|걸어서|도보|걷|출근|퇴근|통근|통학|등교|하교|등굣|"
-                           r"재택|야근|야간|노선|막차|첫차|편도|분이|시간표|놓치|\d+\s*번|[일이삼사오육칠팔구십백]+\s*분")
-
-
-def is_fragment_span(kind: str, text: str) -> bool:
-    t = text.strip()
-    if _DROP_F1 and t in _PARTICLE_ONLY:
-        return True
-    return _DROP_F2 and kind == "COMMUTE" and not _TRANSIT_WORD.search(t)
-
-
 _AGE_CLOSED = re.compile(r"살|년생|\d\s*세|\s세|(?:" + "|".join(_AGE_ENDINGS) + r")$")
 
 
@@ -275,7 +258,6 @@ def merge_with_model(
     model_keys: set[tuple[str, int, int, str]] = set()
     quantity_dropped = 0
     generic_dropped = 0
-    fragment_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -290,9 +272,6 @@ def merge_with_model(
             continue
         if kind == "LOC_FACILITY" and is_generic_place_word(candidate["text"]):
             generic_dropped += 1   # 「노을맛집」 「디자인 여행」 「지면병원행」 — 장소 이름이 아니라 평가 · 행선 표현
-            continue
-        if is_fragment_span(kind, candidate["text"]):
-            fragment_dropped += 1  # 「의」 「낡은」 — 단서를 잘라 잡은 조각 (exp37)
             continue
         model_keys.add(key)
         span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
@@ -328,6 +307,5 @@ def merge_with_model(
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
         "model_age_quantity_dropped": quantity_dropped,
         "model_generic_place_dropped": generic_dropped,
-        "model_fragment_dropped": fragment_dropped,
     }
     return output, stats

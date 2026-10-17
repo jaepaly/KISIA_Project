@@ -102,27 +102,6 @@ class RuleTests(unittest.TestCase):
         self.assertEqual([s['text'] for s in out if s['type'] == 'LOC_FACILITY'], ['국민은행'])
         self.assertEqual(stats['model_generic_place_dropped'], 1)
 
-    def test_fragment_spans_are_dropped_in_merge(self):
-        """실제 글 시험(10/17) — 1단이 「오늘」 「갔다가」 「시내 나가서」를 COMMUTE 로, 「에서」를 JOB 으로 내면 병합에서 뺀다 (exp37).
-        「버스타서」처럼 교통 말이 있으면 통근이 아니어도 남긴다 — 골드 관례. 골드 COMMUTE 174개 중 F2 에 걸리는 것 0개."""
-        from rules import is_fragment_span
-        cases = {('COMMUTE', '오늘'): True, ('COMMUTE', '갔다가'): True, ('COMMUTE', '시내 나가서'): True,
-                 ('COMMUTE', '낡은'): True, ('COMMUTE', '의'): True, ('JOB', '에서'): True, ('FAM', ' 의 '): True,
-                 ('COMMUTE', '버스타서'): False, ('COMMUTE', '택시 탔'): False, ('COMMUTE', '퇴근길에'): False,
-                 ('COMMUTE', '2호선'): False, ('COMMUTE', '11번 버스를'): False, ('COMMUTE', '걸어서 오 분'): False,
-                 ('COMMUTE', '읍내까지 이십 분이'): False, ('COMMUTE', '한 대 놓치면 두 시간'): False, ('COMMUTE', '야간'): False,
-                 ('COMMUTE', '재택'): False, ('SEX', '형'): False, ('LOC_ADMIN', '부산'): False, ('JOB', '의사'): False}
-        for (kind, text), expected in cases.items():
-            with self.subTest(kind=kind, text=text):
-                self.assertEqual(is_fragment_span(kind, text), expected)
-        body = '오늘 버스타서 시내 나가서 영화 봤다'
-        model = [{'text_id': 'body', 'start': 0, 'end': 2, 'text': '오늘', 'type': 'COMMUTE', 'score': 0.9},
-                 {'text_id': 'body', 'start': 3, 'end': 7, 'text': '버스타서', 'type': 'COMMUTE', 'score': 0.9},
-                 {'text_id': 'body', 'start': 8, 'end': 14, 'text': '시내 나가서', 'type': 'COMMUTE', 'score': 0.9}]
-        out, stats = merge_with_model('p1', {'body': body}, model, ExplicitRules(FakeRegions()))
-        self.assertEqual([s['text'] for s in out if s['type'] == 'COMMUTE'], ['버스타서'])
-        self.assertEqual(stats['model_fragment_dropped'], 2)
-
     def test_model_age_quantity_is_dropped_in_merge(self):
         """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
         from rules import is_quantity_age
