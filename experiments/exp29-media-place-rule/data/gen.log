@@ -1,0 +1,210 @@
+P29_A01 A ok
+P29_A02 A ok
+P29_A03 A ok
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P29_A04 A ok
+P29_A05 A ok
+P29_A06 A ok
+P29_A07 A ok
+P29_A08 A ok
+P29_A09 A ok
+P29_A10 A ok
+P29_A11 A ok
+P29_A12 A ok
+P29_A13 A ok
+P29_A14 A ok
+P29_A15 A ok
+P29_A16 A ok
+P29_A17 A ok
+P29_A18 A ok
+P29_A19 A ok
+P29_A20 A ok
+P29_A21 A ok
+P29_A22 A ok
+P29_A23 A ok
+P29_A24 A ok
+P29_A25 A ok
+P29_A26 A ok
+P29_A27 A ok
+P29_A28 A ok
+P29_A29 A ok
+P29_A30 A ok
+P29_A31 A ok
+P29_A32 A ok
+P29_A33 A ok
+P29_A34 A ok
+P29_A35 A ok
+P29_A36 A ok
+P29_A37 A ok
+P29_A38 A ok
+P29_A39 A ok
+P29_A40 A ok
+P29_T01 T ok
+P29_T02 T ok
+P29_T03 T ok
+P29_T04 T ok
+P29_T05 T ok
+P29_T06 T ok
+P29_T07 T ok
+P29_T08 T ok
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 114, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 89, in main
+    body = call(prompt(r))
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 66, in call
+    return client.complete(SYSTEM, user).strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\src\kopl\c5_corpus\llm.py", line 173, in complete
+    raise LLMError(f"{self.version} 호출 실패: {last}")
+kopl.c5_corpus.llm.LLMError: gemini:gemini-flash-lite-latest 호출 실패: HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P29_T09 T ok
+P29_T10 T ok
+P29_T11 T ok
+P29_T12 T ok
+P29_T13 T ok
+P29_T14 T ok
+P29_T15 T ok
+P29_T16 T ok
+P29_T17 T ok
+P29_T18 T ok
+P29_T19 T ok
+P29_T20 T ok
+P29_T21 T ok
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 114, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 89, in main
+    body = call(prompt(r))
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 66, in call
+    return client.complete(SYSTEM, user).strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\src\kopl\c5_corpus\llm.py", line 173, in complete
+    raise LLMError(f"{self.version} 호출 실패: {last}")
+kopl.c5_corpus.llm.LLMError: gemini:gemini-flash-lite-latest 호출 실패: HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+== 실패 — 120초 뒤 다시 (1)
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P29_T22 T ok
+P29_T23 T ok
+P29_T24 T ok
+P29_T25 T ok
+P29_T26 T ok
+P29_T27 T ok
+P29_T28 T ok
+P29_T29 T ok
+P29_T30 T ok
+P29_T31 T ok
+P29_T32 T ok
+P29_V01 V ok
+P29_V02 V ok
+P29_V03 V ok
+P29_V04 V ok
+P29_V05 V ok
+P29_V06 V ok
+P29_V07 V ok
+P29_V08 V ok
+P29_V09 V ok
+P29_V10 V ok
+P29_V11 V ok
+P29_V12 V ok
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 114, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 89, in main
+    body = call(prompt(r))
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 66, in call
+    return client.complete(SYSTEM, user).strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\src\kopl\c5_corpus\llm.py", line 173, in complete
+    raise LLMError(f"{self.version} 호출 실패: {last}")
+kopl.c5_corpus.llm.LLMError: gemini:gemini-flash-lite-latest 호출 실패: HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+== 실패 — 120초 뒤 다시 (2)
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P29_V13 V ok
+P29_V14 V ok
+P29_V15 V ok
+P29_V16 V ok
+P29_C01 C ok
+P29_C02 C ok
+P29_C03 C ok
+P29_C04 C ok
+P29_C05 C ok
+P29_C06 C ok
+Traceback (most recent call last):
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 114, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 89, in main
+    body = call(prompt(r))
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\experiments\exp29-media-place-rule\generate.py", line 66, in call
+    return client.complete(SYSTEM, user).strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\dor12\wt\exp29\src\kopl\c5_corpus\llm.py", line 173, in complete
+    raise LLMError(f"{self.version} 호출 실패: {last}")
+kopl.c5_corpus.llm.LLMError: gemini:gemini-flash-lite-latest 호출 실패: HTTP 503: {
+  "error": {
+    "code": 503,
+    "message": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.",
+    "status": "UNAVAILABLE"
+  }
+}
+
+== 실패 — 120초 뒤 다시 (3)
+  gemini-3.6-flash 한도·과부하 → gemini-3.7-flash
+  gemini-3.7-flash 한도·과부하 → gemini-3.8-flash
+  gemini-3.8-flash 한도·과부하 → gemini-flash-latest
+  gemini-flash-latest 한도·과부하 → gemini-flash-lite-latest
+    (thinkingBudget 미지원 모델 — 해당 옵션 없이 재시도)
+P29_C07 C ok
+P29_C08 C ok
+P29_C09 C ok
+P29_C10 C ok
+P29_C11 C ok
+P29_C12 C ok
+{"kept": 6, "dropped": 0, "calls": 6}
+== 끝 (4번째)

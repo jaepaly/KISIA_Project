@@ -1,0 +1,46 @@
+{
+  "F1": {
+    "pool": 583,
+    "fragment": 45,
+    "dropped": 14,
+    "recall": 0.3111111111111111,
+    "wrong": 0,
+    "wrong_ids": [],
+    "pass": false,
+    "switch": "_DROP_F1"
+  },
+  "F2": {
+    "pool": 348,
+    "fragment": 70,
+    "dropped": 79,
+    "recall": 0.9285714285714286,
+    "wrong": 13,
+    "wrong_ids": [
+      "H0077",
+      "H0103",
+      "H0248",
+      "H0269",
+      "H0319",
+      "H0364",
+      "H0392",
+      "H0404",
+      "H0418",
+      "H0569",
+      "H0683",
+      "H0699",
+      "H0752"
+    ],
+    "pass": false,
+    "switch": "_DROP_F2"
+  },
+  "gold": {
+    "spans": 2016,
+    "gold_text_dropped": [],
+    "dev_matched_dropped": [],
+    "pass": true
+  },
+  "shipping": {
+    "_DROP_F1": true,
+    "_DROP_F2": true
+  }
+}

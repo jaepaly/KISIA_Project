@@ -1,0 +1,8 @@
+{
+ "base": "monologg/koelectra-base-v3-discriminator",
+ "sets": "pool,aug",
+ "train": 1685,
+ "dev": 161,
+ "best_dev_macro_f1": 0.6511,
+ "prompt_hash": "9822388808d1"
+}

@@ -1,0 +1,82 @@
+{
+  "d1c_posts": 100,
+  "configs": {
+    "S1": {
+      "Tm": "1/24",
+      "Tm_n": 1,
+      "Ta": "5/64",
+      "Ta_n": 5,
+      "V": "10/30",
+      "V_n": 10,
+      "R": "22/40",
+      "R_n": 22,
+      "L_median": 0.014,
+      "G_drop": "4/499",
+      "G_drop_rate": 0.008,
+      "G_flip": "50/469",
+      "G_flip_rate": 0.1066,
+      "D4_recall": "495/590 (0.839)",
+      "checks": {
+        "Ta": true,
+        "V": false,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "candidate": false
+    },
+    "T3": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "7/64",
+      "Ta_n": 7,
+      "V": "1/30",
+      "V_n": 1,
+      "R": "22/40",
+      "R_n": 22,
+      "G_drop": "0/499",
+      "G_drop_rate": 0.0,
+      "G_flip": "23/473",
+      "G_flip_rate": 0.0486,
+      "D4_recall": "499/590 (0.846)",
+      "checks": {
+        "Ta": true,
+        "V": true,
+        "R": true,
+        "G_drop": true,
+        "G_flip": true,
+        "L": null
+      },
+      "candidate": null
+    },
+    "a0": {
+      "Tm": "19/24",
+      "Tm_n": 19,
+      "Ta": "28/64",
+      "Ta_n": 28,
+      "V": "0/30",
+      "V_n": 0,
+      "R": "22/40",
+      "R_n": 22,
+      "L_median": 0.007
+    },
+    "r1": {
+      "Tm": "14/24",
+      "Tm_n": 14,
+      "Ta": "23/64",
+      "Ta_n": 23,
+      "V": "0/30",
+      "V_n": 0,
+      "R": "22/40",
+      "R_n": 22,
+      "L_median": 0.007,
+      "checks": {
+        "Tm": false,
+        "V": true,
+        "R": true
+      },
+      "candidate": false
+    }
+  }
+}

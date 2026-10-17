@@ -1,0 +1,96 @@
+diff --git a/src/kopl/c1_span/attributes.py b/src/kopl/c1_span/attributes.py
+index 878a5f5..aae876c 100644
+--- a/src/kopl/c1_span/attributes.py
++++ b/src/kopl/c1_span/attributes.py
+@@ -294,6 +294,26 @@ _SELF_INTRO_AFTER = re.compile(r"\s*(?:됐|되었|된\s*지|돼|되고|되면|
+ _TRAVEL_IN = re.compile(_TRAVEL_WORD + r"(?:지|길)?(?:에서|에|으로|로|을|를|이|가)?$")   # 스팬이 여행 말로 끝날 때만
+ _TRAVEL_AFTER = re.compile(r"[ \t]*(?:에|로|으로)?[ \t]*(?:[가-힣]{1,4}(?<![며고서면는다던])[ \t]+)?" + _TRAVEL_WORD)
+ 
++# 매체 속 장소 — 「다큐에 나온 [지리산]」 「영화 속 [인천항]」 「유튜버가 간 [영월]」 「[군산이] 배경인 드라마」 (exp29).
++# 매체 말이 스팬 바로 앞 · 뒤에서 그 장소를 꾸밀 때만 — 「영화 보러 간 [강릉]」(다녀온 곳)은 그대로 본인.
++# 같은 문장이 글쓴이 생활권이라고 말하면 그대로 본인 — 「뉴스에 나온 [성수동에] 살고 있어요」 「우리 동네는 드라마에 나온 [연남동]」 (Codex)
++_MEDIA_WORD = (r"(?:드라마|영화|예능|다큐(?:멘터리)?|뉴스|유튜브|브이로그|방송|웹툰|만화|애니(?:메이션)?|소설|뮤직비디오|뮤비|광고|TV|티비)"
++               r"(?!틱|관|국|사|인|계)")   # 드라마틱 · 영화관 · 방송국 · 광고사 · 방송인 · 방송계는 매체가 아니다
++_MEDIA_TITLE = (r"(?:[ \t]*(?:「[^」\n]{1,20}」|『[^』\n]{1,20}』|《[^》\n]{1,20}》|<[^>\n]{1,20}>|'[^'\n]{1,20}'|\"[^\"\n]{1,20}\""
++                r"|‘[^’\n]{1,20}’|“[^”\n]{1,20}”)|[ \t]+[가-힣A-Za-z0-9]{1,10})?")   # 「드라마 『도깨비』에 나온」 「드라마 도깨비에 나온」
++_MEDIA_LINK = (r"(?:(?:에|에서|으로|로)[ \t]*(?:나온|나왔던|나오던|나오는|본|봤던|보던|소개된|소개됐던|소개되었던|등장한|등장했던|등장하는)"
++               r"|[ \t]*속(?:의|에[ \t]*(?:나온|나오는|등장한))?|[ \t]*배경(?:인|이[ \t]*된|이었던)|[ \t]*촬영지(?:인|였던)?)")
++_MEDIA_BEFORE = re.compile(
++    r"(?:" + _MEDIA_WORD + _MEDIA_TITLE + _MEDIA_LINK
++    + r"|(?:유튜버|브이로거|스트리머)(?:가|들이)[ \t]*(?:간|갔던|다녀간|다녀온|소개한|소개했던))"
++    r"[ \t]*(?:(?:그|저)[ \t]+)?(?:[가-힣A-Za-z]{1,10}(?:이랑|랑|하고|과|와|,)[ \t]*)?$")   # 「드라마 속 그 [강남역]」 「성수동이랑 [연남동]」
++_MEDIA_AFTER = re.compile(
++    r"(?:이|가|을|를)?[ \t]*(?:배경인|배경으로[ \t]*(?:한|나오는|나온)|나오는|나온|등장하는|(?:에서)?[ \t]*(?:찍은|촬영한))"
++    r"[ \t]*(?:[가-힣]{1,6}[ \t]+)?" + _MEDIA_WORD)
++_MEDIA_MINE_BEFORE = re.compile(r"(?:내|제|나의|저의|우리)[ \t]*(?:동네|집|고향|단골|회사|직장|사무실|가게)")
++_MEDIA_MINE_AFTER = re.compile(r"(?<![가-힣])(?:내가|제가|우리|나는|저는)(?![가-힣])|살고|사는|산다|살아|삽니다|이사|출근|퇴근|일하|일한|일해|근무"
++                               r"|다니|다녀왔|다녀 왔|갔다[ \t]*왔|들렀|장[ \t]*보|자주|매일|단골")
++
+ 
+ def _paragraph(text: str, start: int, end: int) -> str:
+     """스팬이 속한 문단(빈 줄로 나뉜 덩어리) — 부모 호칭 판정은 다른 문단 문맥을 쓰지 않는다 (Codex)."""
+@@ -317,6 +337,12 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
+     if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY") \
+             and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(channel_text[end:])):
+         return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
++    if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY"):
++        before, after = _sentence_window(channel_text, start, end)
++        mine = re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before) \
++            or _MEDIA_MINE_BEFORE.search(before) or _MEDIA_MINE_AFTER.search(after)
++        if not mine and (_MEDIA_BEFORE.search(before) or _MEDIA_AFTER.match(after)):
++            return "unknown"  # 매체 속 장소 — 문장이 글쓴이와의 관계를 말하지 않는다. 「내 고향 [군산이] 배경인 드라마」는 그대로 본인
+     return who
+ 
+ 
+diff --git a/src/kopl/c1_span/test_attributes.py b/src/kopl/c1_span/test_attributes.py
+index 81daf80..abe7024 100644
+--- a/src/kopl/c1_span/test_attributes.py
++++ b/src/kopl/c1_span/test_attributes.py
+@@ -377,3 +377,47 @@ def test_codex_third(sentence, span, stype, expected):
+ ])
+ def test_b_review_intro_suffix(sentence, span, stype, expected):
+     assert _r(sentence, span, stype)["subject"] == expected
++
++
++# ── 매체 속 장소 (exp29) — 매체 말이 스팬 바로 앞 · 뒤에서 그 장소를 꾸밀 때만 unknown ─────────────
++@pytest.mark.parametrize("sentence,span,stype,expected", [
++    ("어제 다큐에 나온 지리산 풍경이 멋지더라", "지리산", "LOC_FACILITY", "unknown"),
++    ("뉴스에 나온 울릉도 보니까 가고 싶다", "울릉도", "LOC_ADMIN", "unknown"),
++    ("드라마 촬영지인 문경 영상 봤음", "문경", "LOC_ADMIN", "unknown"),
++    ("유튜버가 간 영월 맛집 찜", "영월", "LOC_ADMIN", "unknown"),
++    ("웹툰 배경인 연남동 분위기 좋더라", "연남동", "LOC_ADMIN", "unknown"),
++    ("영화 속 인천항 장면이 좋았다", "인천항", "LOC_FACILITY", "unknown"),
++    ("군산이 배경인 드라마 다시 봄", "군산이", "LOC_ADMIN", "unknown"),
++    ("드라마 『도깨비』에 나온 강릉 바다", "강릉", "LOC_ADMIN", "unknown"),
++    # 그대로 본인 — 다녀온 곳 · 1인칭 소유 · 매체 말이 장소를 꾸미지 않음
++    ("영화 보러 간 강릉에서 비를 맞았다", "강릉에서", "LOC_ADMIN", "self"),
++    ("우리 동네 성수동이 예능에 나왔다", "성수동이", "LOC_ADMIN", "self"),
++    ("내 고향 군산이 배경인 드라마", "군산이", "LOC_ADMIN", "self"),
++    ("성수동 살면서 드라마를 자주 본다", "성수동", "LOC_ADMIN", "self"),
++    ("뉴스 보고 출근했다. 성수동에 산다", "성수동에", "LOC_ADMIN", "self"),
++    ("드라마 보면서 강남역까지 출퇴근", "강남역까지", "LOC_FACILITY", "self"),
++    # Codex 반례 — 같은 문장이 생활권 · 다녀온 곳이라고 말하면 그대로 본인
++    ("뉴스에 나온 성수동에 살고 있어요", "성수동에", "LOC_ADMIN", "self"),
++    ("드라마에 나온 강남역에서 매일 출근해요", "강남역에서", "LOC_FACILITY", "self"),
++    ("유튜버가 간 망원시장에 오늘 장 보러 다녀왔다", "망원시장에", "LOC_FACILITY", "self"),
++    ("영화 속 인천항에서 일한 지 벌써 10년", "인천항에서", "LOC_FACILITY", "self"),
++    ("드라마 촬영지인 문경에 이사 와서 살고 있다", "문경에", "LOC_ADMIN", "self"),
++    ("뉴스에 나온 성수동이 내가 사는 동네다", "성수동이", "LOC_ADMIN", "self"),
++    ("우리 동네는 드라마에 나온 연남동이에요", "연남동이에요", "LOC_ADMIN", "self"),
++    ("내 단골 카페가 드라마에 나온 봉봉카페다", "봉봉카페다", "LOC_FACILITY", "self"),
++    ("성수동이 배경인 드라마틱한 하루", "성수동이", "LOC_ADMIN", "self"),
++    ("군산이 배경으로 나오는\n드라마 봄", "군산이", "LOC_ADMIN", "self"),   # 문장 밖은 보지 않는다
++    # Codex 반례 — 놓치던 꼴
++    ("뉴스에서 본 성수동 사고 영상 무섭다", "성수동", "LOC_ADMIN", "unknown"),
++    ("유튜브에서 봤던 망원시장 영상 또 봄", "망원시장", "LOC_FACILITY", "unknown"),
++    ("유튜버가 다녀온 영월 영상 보니 가고 싶다", "영월", "LOC_ADMIN", "unknown"),
++    ("예능에 소개됐던 망원시장 영상 봤다", "망원시장", "LOC_FACILITY", "unknown"),
++    ("다큐 속에 등장한 지리산 풍경이 멋지더라", "지리산", "LOC_FACILITY", "unknown"),
++    ("드라마 속 그 강남역 장면 좋더라", "강남역", "LOC_FACILITY", "unknown"),
++    ("드라마 도깨비에 나온 강릉 장면 다시 봄", "강릉", "LOC_ADMIN", "unknown"),
++    ("군산을 배경으로 한 드라마 정주행 중", "군산을", "LOC_ADMIN", "unknown"),
++    ("성수동에서 찍은 광고만 보고 가고 싶어졌다", "성수동에서", "LOC_ADMIN", "unknown"),
++    ("뉴스에 나온 성수동이랑 연남동 영상 봤다", "연남동", "LOC_ADMIN", "unknown"),
++])
++def test_media_place_is_not_home(sentence, span, stype, expected):
++    assert _r(sentence, span, stype)["subject"] == expected

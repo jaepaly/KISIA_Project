@@ -1,0 +1,13 @@
+{"id": "C01", "pattern": "P1", "kind": "neg", "sentence": "나는 옆집 부부가 추천해 준 회사에서 개발자로 일한다.", "span": "개발자로", "type": "JOB", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C02", "pattern": "P1", "kind": "neg", "sentence": "나는 옆집 총각이 소개해 준 집에서 서른 생일을 맞았다.", "span": "서른", "type": "AGE", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C03", "pattern": "P1", "kind": "pos", "sentence": "윗집 형은 지하철로 출퇴근한 지 십 년이 넘었다.", "span": "지하철로", "type": "COMMUTE", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C04", "pattern": "P1", "kind": "pos", "sentence": "옆집 언니는 버스로 왕복 두 시간씩 출퇴근한다.", "span": "버스로", "type": "COMMUTE", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C05", "pattern": "P1", "kind": "pos", "sentence": "친구가 물어보니 자기 나이는 마흔이라고 했다.", "span": "마흔이라고", "type": "AGE", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C06", "pattern": "P1", "kind": "pos", "sentence": "친구가 간호사 선생님 오늘도 야간이냐고 옆 사람에게 물었다.", "span": "간호사", "type": "JOB", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C07", "pattern": "P3", "kind": "neg", "sentence": "설레는 마음은 서른 살이 된 오늘도 여전하다.", "span": "서른 살이", "type": "AGE", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C08", "pattern": "P3", "kind": "neg", "sentence": "나는 이제 이팔청춘, 딱 열여섯이다.", "span": "이팔청춘", "type": "AGE", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C09", "pattern": "P2", "kind": "neg", "sentence": "아이 재우고 엄니는 이제야 밥을 먹는다.", "span": "엄니는", "type": "SEX", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C10", "pattern": "P2", "kind": "neg", "sentence": "아이 등원시키고 아부지는 오늘도 출근한다.", "span": "아부지는", "type": "SEX", "subject": "self", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C11", "pattern": "P1", "kind": "pos", "sentence": "친구가 땅에 묻은 보물은 부산에 있다.", "span": "부산에", "type": "LOC_ADMIN", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C12", "pattern": "P1", "kind": "pos", "sentence": "친구가 약사 선생님 두 분을 소개하라고 부탁했다.", "span": "약사", "type": "JOB", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}
+{"id": "C13", "pattern": "P1", "kind": "pos", "sentence": "민수가 애 둘 아빠가 되고 나서야 부모님 마음을 알았다고 했다.", "span": "아빠가", "type": "SEX", "subject": "other", "why": "exp33 Codex 검토 반례(실행 확인)"}

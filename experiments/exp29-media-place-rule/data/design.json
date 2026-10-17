@@ -1,0 +1,1116 @@
+{
+ "A": [
+  {
+   "text": "쉰하나",
+   "type": "AGE",
+   "how": "글쓴이 자신의 나이로"
+  },
+  {
+   "text": "삼십대 막바지",
+   "type": "AGE",
+   "how": "글쓴이 자신의 나이대로"
+  },
+  {
+   "text": "91년생",
+   "type": "AGE",
+   "how": "글쓴이 자신의 출생 연도로"
+  },
+  {
+   "text": "올해 환갑",
+   "type": "AGE",
+   "how": "글쓴이 자신의 나이로 (올해 예순이 됐다는 뜻)"
+  },
+  {
+   "text": "우리 신랑",
+   "type": "SEX",
+   "how": "글쓴이의 남편을 부르는 말로 (글쓴이가 여성임이 드러남)"
+  },
+  {
+   "text": "안사람",
+   "type": "SEX",
+   "how": "글쓴이의 아내를 부르는 말로 (글쓴이가 남성임이 드러남)"
+  },
+  {
+   "text": "친오빠",
+   "type": "SEX",
+   "how": "글쓴이의 친오빠로 (여동생인 글쓴이가 부르는 호칭)"
+  },
+  {
+   "text": "처갓집",
+   "type": "SEX",
+   "how": "글쓴이 아내의 본가로 (글쓴이가 남편임이 드러남)"
+  },
+  {
+   "text": "하남",
+   "type": "LOC_ADMIN",
+   "how": "글쓴이가 사는 도시로"
+  },
+  {
+   "text": "신정동",
+   "type": "LOC_ADMIN",
+   "how": "글쓴이가 사는 동네로"
+  },
+  {
+   "text": "엊그제 들렀던 청주",
+   "type": "LOC_ADMIN",
+   "how": "글쓴이가 볼일로 직접 들렀던 도시로 (여행·놀러 같은 말 없이)"
+  },
+  {
+   "text": "아침 일찍 가 본 서산",
+   "type": "LOC_ADMIN",
+   "how": "글쓴이가 직접 가 본 도시로 (여행·놀러 같은 말 없이)"
+  },
+  {
+   "text": "아차산",
+   "type": "LOC_FACILITY",
+   "how": "글쓴이가 집 근처에서 자주 오르는 산으로"
+  },
+  {
+   "text": "가좌역",
+   "type": "LOC_FACILITY",
+   "how": "글쓴이가 매일 타는 역으로"
+  },
+  {
+   "text": "어제 처음 가 본 국립중앙박물관",
+   "type": "LOC_FACILITY",
+   "how": "글쓴이가 직접 가 본 곳으로 (여행·놀러 같은 말 없이)"
+  },
+  {
+   "text": "점심 먹고 들른 서울식물원",
+   "type": "LOC_FACILITY",
+   "how": "글쓴이가 직접 들른 곳으로 (여행·놀러 같은 말 없이)"
+  },
+  {
+   "text": "집 바로 뒤",
+   "type": "REL_HOME",
+   "how": "글쓴이 집 바로 뒤에 있는 것을 말하며"
+  },
+  {
+   "text": "우리 단지 상가",
+   "type": "REL_HOME",
+   "how": "글쓴이가 사는 아파트 단지 상가로"
+  },
+  {
+   "text": "집에서 오 분 거리",
+   "type": "REL_HOME",
+   "how": "글쓴이 집에서 가까운 곳을 말하며"
+  },
+  {
+   "text": "사는 동네 골목",
+   "type": "REL_HOME",
+   "how": "글쓴이가 사는 동네 골목으로"
+  },
+  {
+   "text": "회사 옥상",
+   "type": "REL_WORK",
+   "how": "글쓴이가 다니는 회사 옥상으로"
+  },
+  {
+   "text": "사무실 맞은편",
+   "type": "REL_WORK",
+   "how": "글쓴이 사무실 맞은편에 있는 것을 말하며"
+  },
+  {
+   "text": "현장 사무소",
+   "type": "REL_WORK",
+   "how": "글쓴이가 일하는 현장 사무소로"
+  },
+  {
+   "text": "가게 마감하고",
+   "type": "REL_WORK",
+   "how": "글쓴이가 일하는 가게를 마감한 뒤로"
+  },
+  {
+   "text": "도배사",
+   "type": "JOB",
+   "how": "글쓴이 자신의 직업으로"
+  },
+  {
+   "text": "시내버스 기사",
+   "type": "JOB",
+   "how": "글쓴이 자신의 직업으로"
+  },
+  {
+   "text": "정육점 사장",
+   "type": "JOB",
+   "how": "글쓴이 자신의 직업으로"
+  },
+  {
+   "text": "인테리어 목수",
+   "type": "JOB",
+   "how": "글쓴이 자신의 직업으로"
+  },
+  {
+   "text": "초등 2학년 딸",
+   "type": "FAM",
+   "how": "글쓴이의 딸로 (가족 구성)"
+  },
+  {
+   "text": "결혼 15년차",
+   "type": "FAM",
+   "how": "글쓴이 자신의 생애 단계로"
+  },
+  {
+   "text": "삼남매 맏이",
+   "type": "FAM",
+   "how": "글쓴이 자신의 가족 안 위치로"
+  },
+  {
+   "text": "손녀 백일",
+   "type": "FAM",
+   "how": "글쓴이 손녀의 백일로 (글쓴이가 조부모)"
+  },
+  {
+   "text": "경강선",
+   "type": "COMMUTE",
+   "how": "글쓴이 자신의 출퇴근 노선으로"
+  },
+  {
+   "text": "광역버스로 출퇴근",
+   "type": "COMMUTE",
+   "how": "글쓴이 자신의 출퇴근 방법으로"
+  },
+  {
+   "text": "9호선 급행",
+   "type": "COMMUTE",
+   "how": "글쓴이 자신의 출퇴근 노선으로"
+  },
+  {
+   "text": "새벽 첫차 타고 출근",
+   "type": "COMMUTE",
+   "how": "글쓴이 자신의 출근 습관으로"
+  },
+  {
+   "text": "월세 65만원",
+   "type": "INCOME",
+   "how": "글쓴이 자신의 집 월세로"
+  },
+  {
+   "text": "관리비만 28만원",
+   "type": "INCOME",
+   "how": "글쓴이 자신의 집 관리비로"
+  },
+  {
+   "text": "대출이자 빠져나가고",
+   "type": "INCOME",
+   "how": "글쓴이 통장에서 대출이자가 나간다는 뜻으로"
+  },
+  {
+   "text": "골프 회원권",
+   "type": "INCOME",
+   "how": "글쓴이가 가진 골프 회원권으로"
+  }
+ ],
+ "T": [
+  {
+   "text": "넷플릭스 시리즈에 나온 부석사",
+   "kind": "media",
+   "form": "매체 앞+나온/본",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 넷플릭스 시리즈에서 본 곳으로"
+  },
+  {
+   "text": "다큐에서 본 우포늪",
+   "kind": "media",
+   "form": "매체 앞+나온/본",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 다큐멘터리에서 본 곳으로"
+  },
+  {
+   "text": "예능에서 본 청산도",
+   "kind": "media",
+   "form": "매체 앞+나온/본",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 예능에서 본 섬으로"
+  },
+  {
+   "text": "하동 녹차밭 나오는 광고",
+   "kind": "media",
+   "form": "매체 뒤",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 광고 화면으로 본 곳으로"
+  },
+  {
+   "text": "순천만 습지가 배경인 영화",
+   "kind": "media",
+   "form": "매체 뒤",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 영화로 본 곳으로"
+  },
+  {
+   "text": "대관령 목장 장면이 있는 뮤직비디오",
+   "kind": "media",
+   "form": "매체 뒤",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 뮤직비디오로 본 곳으로"
+  },
+  {
+   "text": "「봄날의 정원」 속 보성 차밭",
+   "kind": "media",
+   "form": "작품 제목",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 가상의 드라마 「봄날의 정원」에서 본 곳으로"
+  },
+  {
+   "text": "「파도 너머」 마지막 화의 외도",
+   "kind": "media",
+   "form": "작품 제목",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 가상의 드라마 「파도 너머」에서 본 섬으로"
+  },
+  {
+   "text": "웹소설 「달의 항구」의 묵호항",
+   "kind": "media",
+   "form": "작품 제목",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 가상의 웹소설 「달의 항구」에서 읽은 곳으로"
+  },
+  {
+   "text": "주인공이 걷던 감천문화마을",
+   "kind": "media",
+   "form": "출연자·인물",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 드라마 주인공이 걷는 장면으로 본 곳으로"
+  },
+  {
+   "text": "출연자들이 묵은 관매도",
+   "kind": "media",
+   "form": "출연자·인물",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 예능 출연자들이 묵는 장면으로 본 섬으로"
+  },
+  {
+   "text": "유튜버가 소개한 선유도",
+   "kind": "media",
+   "form": "출연자·인물",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 유튜버 영상으로 본 곳으로"
+  },
+  {
+   "text": "알고리즘이 띄워준 소매물도",
+   "kind": "media",
+   "form": "알고리즘·쇼츠·릴스",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 추천 영상으로 본 섬으로"
+  },
+  {
+   "text": "쇼츠로 스친 비자림",
+   "kind": "media",
+   "form": "알고리즘·쇼츠·릴스",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 쇼츠 영상으로 잠깐 본 숲으로"
+  },
+  {
+   "text": "릴스에 자꾸 뜨는 해동용궁사",
+   "kind": "media",
+   "form": "알고리즘·쇼츠·릴스",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 릴스 영상으로 자꾸 보는 절로"
+  },
+  {
+   "text": "라이브로 구경한 진해 군항제",
+   "kind": "media",
+   "form": "라이브·생중계",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 라이브 방송으로 구경한 축제로"
+  },
+  {
+   "text": "생중계 화면 속 한라산 백록담",
+   "kind": "media",
+   "form": "라이브·생중계",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 생중계 화면으로 본 곳으로"
+  },
+  {
+   "text": "기사 사진으로 본 마라도",
+   "kind": "media",
+   "form": "기사·뉴스",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 인터넷 기사 사진으로 본 섬으로"
+  },
+  {
+   "text": "뉴스 화면에 잡힌 청계천",
+   "kind": "media",
+   "form": "기사·뉴스",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 뉴스 화면으로 본 곳으로 (글쓴이 생활권 아님)"
+  },
+  {
+   "text": "책으로만 읽은 강화도",
+   "kind": "media",
+   "form": "소설·책·웹툰",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 책에서 읽기만 한 곳으로"
+  },
+  {
+   "text": "웹툰 컷으로 본 북촌 골목",
+   "kind": "media",
+   "form": "소설·책·웹툰",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 웹툰 그림으로 본 곳으로"
+  },
+  {
+   "text": "화면으로만 본 우도",
+   "kind": "media",
+   "form": "매체 이름 없음",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 화면으로만 본 섬으로"
+  },
+  {
+   "text": "영상으로 대리만족한 융프라우",
+   "kind": "media",
+   "form": "매체 이름 없음",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 영상으로 대신 구경한 곳으로"
+  },
+  {
+   "text": "TV 틀어놓고 구경한 장가계",
+   "kind": "media",
+   "form": "매체 이름 없음",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 가 보지 않고 TV로 구경한 곳으로"
+  },
+  {
+   "text": "교토 여행 갔을 때",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 여행(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "울산 출장 중에",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 출장(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "포천 당일치기",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 당일치기(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "세부 휴가",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 휴가(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "공주 역사 투어",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 투어(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "삼척 놀러 갔다가",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 놀러 간 것(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "치앙마이 여행",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 여행(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "당일치기로 간 영덕",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 당일치기(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "휴가 때 간 평창",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 휴가(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "고창 청보리밭 관광",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 관광(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "싱가포르 출장",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 출장(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "놀러 간 홍천 계곡",
+   "kind": "travel",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이가 놀러 간 것(으)로 잠깐 다녀온 곳으로 (사는 곳·일하는 곳 아님)"
+  },
+  {
+   "text": "사촌 형이 사는 김해",
+   "kind": "other",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이 사촌 형이 사는 곳으로"
+  },
+  {
+   "text": "동기 남편이 택시 기사",
+   "kind": "other",
+   "wrong": [
+    "JOB"
+   ],
+   "how": "글쓴이 회사 동기의 남편 직업으로"
+  },
+  {
+   "text": "옆집 할머니가 여든다섯",
+   "kind": "other",
+   "wrong": [
+    "AGE"
+   ],
+   "how": "글쓴이 옆집 할머니의 나이로"
+  },
+  {
+   "text": "친구 동생이 세무사",
+   "kind": "other",
+   "wrong": [
+    "JOB"
+   ],
+   "how": "글쓴이 친구 동생의 직업으로"
+  },
+  {
+   "text": "직장 후배 고향인 진주",
+   "kind": "other",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이 직장 후배의 고향으로"
+  },
+  {
+   "text": "고모가 사는 원주",
+   "kind": "other",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이 고모가 사는 곳으로"
+  },
+  {
+   "text": "삼촌이 어부",
+   "kind": "other",
+   "wrong": [
+    "JOB"
+   ],
+   "how": "글쓴이 삼촌의 직업으로"
+  },
+  {
+   "text": "친구가 아들만 셋",
+   "kind": "other",
+   "wrong": [
+    "FAM"
+   ],
+   "how": "글쓴이 친구의 가족 구성으로"
+  },
+  {
+   "text": "동생네 부부가 맞벌이",
+   "kind": "other",
+   "wrong": [
+    "FAM"
+   ],
+   "how": "글쓴이 동생 부부의 가족 형태로"
+  },
+  {
+   "text": "친구 아들이 중학생",
+   "kind": "other",
+   "wrong": [
+    "AGE"
+   ],
+   "how": "글쓴이 친구 아들의 나이로"
+  },
+  {
+   "text": "거래처 사장님이 예순",
+   "kind": "other",
+   "wrong": [
+    "AGE"
+   ],
+   "how": "글쓴이 거래처 사장님의 나이로"
+  },
+  {
+   "text": "사촌동생이 바리스타",
+   "kind": "other",
+   "wrong": [
+    "JOB"
+   ],
+   "how": "글쓴이 사촌동생의 직업으로"
+  },
+  {
+   "text": "이웃 아주머니 딸이 사는 세종",
+   "kind": "other",
+   "wrong": [
+    "LOC_ADMIN",
+    "LOC_FACILITY"
+   ],
+   "how": "글쓴이 이웃 아주머니의 딸이 사는 곳으로"
+  },
+  {
+   "text": "친구네가 늦둥이 출산",
+   "kind": "other",
+   "wrong": [
+    "FAM"
+   ],
+   "how": "글쓴이 친구 집에 늦둥이가 태어난 이야기로"
+  },
+  {
+   "text": "선배네 부모님이 귤 농사",
+   "kind": "other",
+   "wrong": [
+    "JOB"
+   ],
+   "how": "글쓴이 선배 부모님의 일로"
+  },
+  {
+   "text": "동생 남자친구가 서른다섯",
+   "kind": "other",
+   "wrong": [
+    "AGE"
+   ],
+   "how": "글쓴이 동생의 남자친구 나이로"
+  },
+  {
+   "text": "어머니께서 담그신",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 어머니가 담근 것으로"
+  },
+  {
+   "text": "아버지 칠순 잔치",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 아버지의 칠순 잔치로"
+  },
+  {
+   "text": "울 엄마표 반찬",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 어머니가 만든 반찬으로"
+  },
+  {
+   "text": "아빠 단골 이발소",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 아버지가 다니는 이발소로"
+  },
+  {
+   "text": "어머니 손맛",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 어머니의 음식 솜씨로"
+  },
+  {
+   "text": "아버지가 고쳐주신",
+   "kind": "parent",
+   "wrong": [
+    "SEX"
+   ],
+   "how": "글쓴이 아버지가 고쳐준 것으로"
+  },
+  {
+   "text": "편의점 VIP",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "편의점에 너무 자주 간다는 농담으로"
+  },
+  {
+   "text": "마음만은 스무 살",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "나이와 상관없이 젊게 산다는 농담으로"
+  },
+  {
+   "text": "방구석 여행 전문가",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "집에서 여행 영상만 본다는 농담으로"
+  },
+  {
+   "text": "강남 건물주 꿈나무",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "부자가 되고 싶다는 농담으로"
+  },
+  {
+   "text": "야근 장인",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "야근을 자주 한다는 자조 농담으로"
+  },
+  {
+   "text": "숨쉬기 운동 전문가",
+   "kind": "meme",
+   "wrong": [
+    "AGE",
+    "SEX",
+    "LOC_ADMIN",
+    "LOC_FACILITY",
+    "REL_HOME",
+    "REL_WORK",
+    "JOB",
+    "FAM",
+    "COMMUTE",
+    "INCOME"
+   ],
+   "how": "운동을 전혀 안 한다는 농담으로"
+  }
+ ],
+ "V": [
+  {
+   "text": "우리 동네 망원시장이 예능에 나옴",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이가 늘 장 보는 동네 시장으로 — 예능에 나온 것"
+  },
+  {
+   "text": "출근길 합정역이 드라마에 나왔다",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 매일 출근하며 지나는 역으로 — 드라마에 나온 것"
+  },
+  {
+   "text": "매일 건너는 마포대교가 뉴스에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 매일 건너는 다리로 — 뉴스에 나온 것"
+  },
+  {
+   "text": "내가 사는 의정부가 웹툰에",
+   "kind": "media",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 도시로 — 웹툰에 나온 것"
+  },
+  {
+   "text": "우리 회사 앞 광화문광장이 생중계에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이 회사 앞 광장으로 — 생중계에 나온 것"
+  },
+  {
+   "text": "장 보러 다니는 모란시장이 유튜브에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 늘 장 보는 시장으로 — 유튜브에 나온 것"
+  },
+  {
+   "text": "퇴근하고 걷는 경안천이 다큐에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 퇴근 후 늘 걷는 하천으로 — 다큐에 나온 것"
+  },
+  {
+   "text": "제가 사는 군포가 기사에 났어요",
+   "kind": "media",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 도시로 — 기사에 난 것"
+  },
+  {
+   "text": "아침마다 뛰는 보라매공원이 광고에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 아침마다 뛰는 공원으로 — 광고에 나온 것"
+  },
+  {
+   "text": "삼십 년째 사는 영등포가 드라마에",
+   "kind": "media",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 삼십 년째 사는 곳으로 — 드라마에 나온 것"
+  },
+  {
+   "text": "단골인 노량진수산시장이 넷플릭스에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 단골로 다니는 시장으로 — 넷플릭스에 나온 것"
+  },
+  {
+   "text": "우리 아파트 옆 중랑천이 쇼츠에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이 아파트 옆 하천으로 — 쇼츠에 나온 것"
+  },
+  {
+   "text": "점심마다 가는 을지로 골목이 영화에",
+   "kind": "media",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 직장 점심때마다 가는 동네로 — 영화에 나온 것"
+  },
+  {
+   "text": "이사 와서 사는 구래동이 예능에",
+   "kind": "media",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 이사 와서 사는 동네로 — 예능에 나온 것"
+  },
+  {
+   "text": "내 출근길 양재천이 라이브에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이가 출근길에 지나는 하천으로 — 라이브 방송에 나온 것"
+  },
+  {
+   "text": "제 직장 있는 구로디지털단지가 뉴스에",
+   "kind": "media",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이 직장이 있는 곳으로 — 뉴스에 나온 것"
+  },
+  {
+   "text": "평택 사는데 놀러 온 친구가",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 사는 도시로 — 친구가 놀러 온 것"
+  },
+  {
+   "text": "해운대 주민인데 관광객이 많아서",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 사는 동네로 — 관광객이 많다는 것"
+  },
+  {
+   "text": "울 동네 경리단길에 여행 온 사람들",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이 동네 거리로 — 여행객이 오는 것"
+  },
+  {
+   "text": "매일 출근하는 서촌이 관광지라",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 매일 출근하는 동네로 — 관광지라는 것"
+  },
+  {
+   "text": "우리 집 앞 송정해수욕장에 휴가 온 사람들",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이 집 앞 해수욕장으로 — 휴가객이 오는 것"
+  },
+  {
+   "text": "놀러 온 사촌한테 내가 사는 목동 구경시킴",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 동네로 — 놀러 온 사촌에게 보여준 것"
+  },
+  {
+   "text": "출장 온 동료한테 회사 근처 문래동 소개",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이 회사가 있는 동네로 — 출장 온 동료에게 소개한 것"
+  },
+  {
+   "text": "친구가 당일치기로 오겠다는 내 동네 춘천",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 도시로 — 친구가 당일치기로 오겠다는 것"
+  },
+  {
+   "text": "투어 버스가 서는 퇴근길 경복궁역",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 퇴근할 때 타는 역으로 — 투어 버스가 서는 것"
+  },
+  {
+   "text": "관광객 북적이는 출근길 명동",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이가 매일 출근하는 곳으로 — 관광객이 많은 것"
+  },
+  {
+   "text": "휴가 내고 동네 수락산만 올랐다",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이 동네 뒷산으로 — 휴가 날 집 근처에만 있었던 것"
+  },
+  {
+   "text": "여행 끝나고 돌아온 내 집 안산",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 도시로 — 여행에서 돌아온 것"
+  },
+  {
+   "text": "놀러 오라고 하고 싶은 우리 동네 상무지구",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": true,
+   "how": "글쓴이가 사는 동네로 — 친구를 초대하고 싶다는 것"
+  },
+  {
+   "text": "주말마다 산책하는 경포호에 관광버스가",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": false,
+   "how": "글쓴이가 주말마다 산책하는 호수로 — 관광버스가 오는 것"
+  },
+  {
+   "text": "출장자들 오는 내 일터 대덕연구단지",
+   "kind": "travel",
+   "type": "LOC_FACILITY",
+   "first_person": true,
+   "how": "글쓴이가 일하는 곳으로 — 출장자들이 오는 것"
+  },
+  {
+   "text": "관광 온 사람들로 붐비는 집 앞 삼청동",
+   "kind": "travel",
+   "type": "LOC_ADMIN",
+   "first_person": false,
+   "how": "글쓴이 집 앞 동네로 — 관광객이 붐비는 것"
+  }
+ ],
+ "C_topics": [
+  "오늘 해 먹은 저녁",
+  "비 오는 날 창밖 구경",
+  "새로 산 운동화 후기",
+  "주말 대청소",
+  "요즘 듣는 노래",
+  "라면 끓이는 나만의 방법",
+  "가을옷 정리",
+  "홈트 30일째",
+  "화분 분갈이",
+  "커피 원두 바꿔 본 날",
+  "보드게임 한 판",
+  "밤에 본 별"
+ ],
+ "topics": [
+  "주말 아침 산책",
+  "요즘 빠진 반찬",
+  "날씨 급변한 날",
+  "장바구니 기록",
+  "집들이 준비",
+  "새 취미 시작",
+  "퇴근 후 저녁",
+  "야식 고민",
+  "옷장 정리",
+  "미용실 다녀온 날",
+  "카페 신메뉴",
+  "운동 다시 시작",
+  "장마 끝",
+  "김장 준비",
+  "냉장고 털기",
+  "택배 언박싱",
+  "독서 기록",
+  "명절 음식",
+  "휴대폰 바꾼 날",
+  "겨울 이불 꺼낸 날",
+  "자전거 타기",
+  "제철 과일",
+  "빨래 망한 날",
+  "늦가을 단풍",
+  "동네 맛집 탐방",
+  "다이어리 꾸미기",
+  "주말 늦잠",
+  "손뜨개",
+  "캠핑 장비 구경",
+  "연말 계획"
+ ],
+ "voices": [
+  "20대 — 줄임말과 ㅋㅋ 많은 짧은 반말",
+  "30대 — ㅠㅠ 섞인 담담한 반말 일기",
+  "40대 — 존댓말 블로그 후기체(~했어요)",
+  "50대 — ~~ 와 ^^ 섞은 존댓말",
+  "60대 — 문장 길고 띄어쓰기 느슨한 존댓말(~합니다)",
+  "20~30대 — 이모지 섞인 들뜬 짧은 줄 반말"
+ ]
+}

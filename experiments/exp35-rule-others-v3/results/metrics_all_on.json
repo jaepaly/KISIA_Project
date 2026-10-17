@@ -1,0 +1,102 @@
+{
+ "patterns": {
+  "P1": {
+   "pos_n": 30,
+   "pos_A": 12,
+   "pos_R": 17,
+   "rev_n": 45,
+   "rev_A": 34,
+   "rev_R": 34,
+   "rev_new_wrong": [],
+   "pos_R_wrong": [
+    "H2-P1-08:self",
+    "H2-P1-10:self",
+    "H2-P1-12:self",
+    "H2-P1-14:self",
+    "H2-P1-15:self",
+    "H2-P1-16:self",
+    "H2-P1-17:self",
+    "H2-P1-19:self",
+    "H2-P1-21:self",
+    "H2-P1-23:self",
+    "H2-P1-24:self",
+    "H2-P1-25:self",
+    "H2-P1-30:self"
+   ],
+   "pos_rate": 0.567,
+   "pass": false
+  },
+  "P2": {
+   "pos_n": 30,
+   "pos_A": 11,
+   "pos_R": 29,
+   "rev_n": 45,
+   "rev_A": 31,
+   "rev_R": 31,
+   "rev_new_wrong": [
+    "N2-P2-004:other",
+    "N2-P2-014:other",
+    "N2-P2-032:other",
+    "N2-P2-035:other"
+   ],
+   "pos_R_wrong": [
+    "H2-P2-25:self"
+   ],
+   "pos_rate": 0.967,
+   "pass": false
+  },
+  "P3": {
+   "pos_n": 30,
+   "pos_A": 1,
+   "pos_R": 23,
+   "rev_n": 45,
+   "rev_A": 43,
+   "rev_R": 44,
+   "rev_new_wrong": [
+    "N2-P3-025:other"
+   ],
+   "pos_R_wrong": [
+    "H2-P3-07:self",
+    "H2-P3-09:self",
+    "H2-P3-12:self",
+    "H2-P3-21:self",
+    "H2-P3-25:self",
+    "H2-P3-26:self",
+    "H2-P3-27:self"
+   ],
+   "pos_rate": 0.767,
+   "pass": true
+  }
+ },
+ "gold": {
+  "reviewed": {
+   "n": 468,
+   "A_agree": 455,
+   "R_agree": 455,
+   "lost": 0,
+   "fixed": 0
+  },
+  "all": {
+   "n": 2194,
+   "A_agree": 2110,
+   "R_agree": 2111,
+   "lost": 0,
+   "fixed": 1
+  }
+ },
+ "time_worst_sec": {
+  "A": 0.0017,
+  "R": 0.0039
+ },
+ "checks": {
+  "patterns_pass": {
+   "P1": false,
+   "P2": false,
+   "P3": true
+  },
+  "rev_new_wrong_total_le_3": false,
+  "rev_R_ge_A": true,
+  "gold": true,
+  "time_le_0.05": true
+ }
+}

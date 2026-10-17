@@ -1,0 +1,275 @@
+{"post_id": "A01_b09", "decisions": [], "sec": 0.523}
+{"post_id": "A01_b11", "decisions": [], "sec": 0.039}
+{"post_id": "A06_b03", "decisions": ["self", "drop"], "sec": 0.131}
+{"post_id": "A06_b11", "decisions": ["self"], "sec": 0.019}
+{"post_id": "A10_b16", "decisions": ["other", "self"], "sec": 0.015}
+{"post_id": "A11_b28", "decisions": ["self"], "sec": 0.037}
+{"post_id": "A12_b17", "decisions": ["self", "self", "self"], "sec": 0.074}
+{"post_id": "A12_b21", "decisions": ["self", "self"], "sec": 0.023}
+{"post_id": "A13_b04", "decisions": ["unknown"], "sec": 0.016}
+{"post_id": "A13_b06", "decisions": ["self", "self"], "sec": 0.017}
+{"post_id": "A13_b18", "decisions": ["self"], "sec": 0.02}
+{"post_id": "A13_b21", "decisions": ["self"], "sec": 0.015}
+{"post_id": "A13_b25", "decisions": ["self", "drop"], "sec": 0.02}
+{"post_id": "A13_b29", "decisions": ["self", "unknown", "self"], "sec": 0.02}
+{"post_id": "A15_b03", "decisions": ["self", "self"], "sec": 0.02}
+{"post_id": "A15_b13", "decisions": ["other"], "sec": 0.019}
+{"post_id": "A15_b17", "decisions": ["self", "self", "self"], "sec": 0.026}
+{"post_id": "A15_b19", "decisions": ["self", "other"], "sec": 0.021}
+{"post_id": "A15_b20", "decisions": ["self"], "sec": 0.02}
+{"post_id": "A18_b01", "decisions": ["other"], "sec": 0.031}
+{"post_id": "A18_b07", "decisions": ["self", "other"], "sec": 0.028}
+{"post_id": "A18_b08", "decisions": [], "sec": 0.027}
+{"post_id": "A18_b13", "decisions": ["self", "self"], "sec": 0.034}
+{"post_id": "A18_b15", "decisions": ["other"], "sec": 0.027}
+{"post_id": "A18_b17", "decisions": ["other"], "sec": 0.027}
+{"post_id": "A18_b18", "decisions": ["self", "self", "self", "other", "self", "self", "self", "other"], "sec": 0.042}
+{"post_id": "A18_b21", "decisions": ["self"], "sec": 0.027}
+{"post_id": "A18_b22", "decisions": ["other"], "sec": 0.033}
+{"post_id": "A18_b23", "decisions": ["self", "self"], "sec": 0.027}
+{"post_id": "A18_b27", "decisions": [], "sec": 0.019}
+{"post_id": "A19_b01", "decisions": ["self", "self", "self"], "sec": 0.027}
+{"post_id": "A19_b09", "decisions": ["self"], "sec": 0.025}
+{"post_id": "A19_b12", "decisions": ["self", "self"], "sec": 0.032}
+{"post_id": "A19_b19", "decisions": ["self", "self"], "sec": 0.028}
+{"post_id": "A19_b29", "decisions": ["self", "self"], "sec": 0.029}
+{"post_id": "A19_b30", "decisions": ["self"], "sec": 0.033}
+{"post_id": "A21_b01", "decisions": ["self", "self"], "sec": 0.034}
+{"post_id": "A21_b02", "decisions": ["self", "self"], "sec": 0.032}
+{"post_id": "A21_b05", "decisions": ["self", "self"], "sec": 0.035}
+{"post_id": "A21_b15", "decisions": ["self", "self"], "sec": 0.039}
+{"post_id": "A21_b22", "decisions": ["other", "other"], "sec": 0.036}
+{"post_id": "A21_b25", "decisions": ["other", "other"], "sec": 0.034}
+{"post_id": "A21_b27", "decisions": ["self"], "sec": 0.041}
+{"post_id": "A21_b28", "decisions": ["self"], "sec": 0.039}
+{"post_id": "A25_b06", "decisions": ["other"], "sec": 0.022}
+{"post_id": "A26_b03", "decisions": ["drop"], "sec": 0.013}
+{"post_id": "A26_b06", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "A26_b10", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "A26_b12", "decisions": ["self"], "sec": 0.013}
+{"post_id": "A26_b13", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "A26_b19", "decisions": ["self", "drop"], "sec": 0.015}
+{"post_id": "A26_b29", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B01_b04", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B01_b10", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B02_b01", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B02_b10", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "B02_b18", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "B03_b15", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B03_b20", "decisions": ["self", "drop"], "sec": 0.014}
+{"post_id": "B04_b05", "decisions": [], "sec": 0.008}
+{"post_id": "B04_b11", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B04_b15", "decisions": ["other", "other"], "sec": 0.019}
+{"post_id": "B04_b21", "decisions": ["self", "self"], "sec": 0.02}
+{"post_id": "B04_b22", "decisions": ["self", "other"], "sec": 0.019}
+{"post_id": "B06_b02", "decisions": ["other", "other", "self"], "sec": 0.015}
+{"post_id": "B06_b06", "decisions": ["self", "self", "other"], "sec": 0.015}
+{"post_id": "B06_b07", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "B06_b13", "decisions": ["self", "drop", "drop"], "sec": 0.02}
+{"post_id": "B06_b21", "decisions": ["other", "other"], "sec": 0.014}
+{"post_id": "B06_b22", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B06_b28", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B07_b14", "decisions": ["self"], "sec": 0.019}
+{"post_id": "B07_b16", "decisions": ["self", "other"], "sec": 0.015}
+{"post_id": "B07_b18", "decisions": ["self", "other"], "sec": 0.016}
+{"post_id": "B07_b23", "decisions": ["drop", "self", "self"], "sec": 0.016}
+{"post_id": "B07_b28", "decisions": ["self", "other", "other"], "sec": 0.016}
+{"post_id": "B07_b29", "decisions": ["self", "other"], "sec": 0.014}
+{"post_id": "B08_b14", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B08_b20", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B08_b22", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "B08_b23", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B09_b14", "decisions": ["other"], "sec": 0.013}
+{"post_id": "B09_b15", "decisions": [], "sec": 0.007}
+{"post_id": "B09_b23", "decisions": ["self", "self", "other"], "sec": 0.015}
+{"post_id": "B09_b24", "decisions": ["self"], "sec": 0.014}
+{"post_id": "B10_b07", "decisions": ["self"], "sec": 0.019}
+{"post_id": "B10_b19", "decisions": ["other", "other", "other"], "sec": 0.014}
+{"post_id": "B10_b26", "decisions": ["self", "other"], "sec": 0.015}
+{"post_id": "B12_b30", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B13_b07", "decisions": ["self", "other", "self", "self"], "sec": 0.02}
+{"post_id": "B13_b15", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B13_b21", "decisions": ["self", "self", "self"], "sec": 0.016}
+{"post_id": "B13_b30", "decisions": ["self", "other"], "sec": 0.015}
+{"post_id": "B14_b20", "decisions": ["other", "other"], "sec": 0.014}
+{"post_id": "B14_b21", "decisions": ["other", "self"], "sec": 0.014}
+{"post_id": "B14_b28", "decisions": ["self", "other", "other", "other"], "sec": 0.015}
+{"post_id": "B15_b15", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B15_b24", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "B16_b15", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "B16_b19", "decisions": ["self"], "sec": 0.013}
+{"post_id": "B16_b24", "decisions": ["self", "self", "drop", "drop", "drop"], "sec": 0.015}
+{"post_id": "B16_b25", "decisions": ["drop", "self"], "sec": 0.015}
+{"post_id": "B16_b27", "decisions": ["other"], "sec": 0.013}
+{"post_id": "D01_b11", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D02_b01", "decisions": ["other"], "sec": 0.013}
+{"post_id": "D02_b08", "decisions": ["other"], "sec": 0.013}
+{"post_id": "D02_b09", "decisions": ["other", "other"], "sec": 0.014}
+{"post_id": "D02_b14", "decisions": ["self", "other", "other", "self"], "sec": 0.014}
+{"post_id": "D03_b09", "decisions": ["self"], "sec": 0.014}
+{"post_id": "D03_b13", "decisions": ["other", "self"], "sec": 0.014}
+{"post_id": "D03_b17", "decisions": ["self"], "sec": 0.014}
+{"post_id": "D03_b20", "decisions": [], "sec": 0.008}
+{"post_id": "D04_b03", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D04_b07", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D05_b03", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D05_b08", "decisions": ["self", "other", "other", "self"], "sec": 0.016}
+{"post_id": "D05_b14", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D05_b15", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D05_b17", "decisions": ["unknown"], "sec": 0.013}
+{"post_id": "D07_b05", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D09_b08", "decisions": ["other", "self"], "sec": 0.013}
+{"post_id": "D09_b11", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D09_b17", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D09_b24", "decisions": ["self", "other", "other"], "sec": 0.013}
+{"post_id": "D10_b12", "decisions": ["self"], "sec": 0.018}
+{"post_id": "D11_b02", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D11_b21", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D11_b22", "decisions": [], "sec": 0.007}
+{"post_id": "D11_b29", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D11_b30", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D12_b01", "decisions": ["self", "self", "self"], "sec": 0.014}
+{"post_id": "D12_b09", "decisions": ["other", "self"], "sec": 0.014}
+{"post_id": "D12_b27", "decisions": ["drop"], "sec": 0.013}
+{"post_id": "D12_b28", "decisions": ["other", "other", "other", "other", "other", "self", "self"], "sec": 0.016}
+{"post_id": "D12_b30", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D13_b08", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D14_b05", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D14_b08", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D14_b15", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "D16_b01", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D16_b04", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D16_b14", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D16_b15", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D16_b30", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D17_b05", "decisions": ["self", "self", "self", "self", "self"], "sec": 0.014}
+{"post_id": "D17_b12", "decisions": ["self", "self", "self", "self", "self", "self", "self", "self"], "sec": 0.018}
+{"post_id": "D17_b15", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D17_b16", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "D17_b20", "decisions": ["self", "self", "self", "other", "other", "other"], "sec": 0.017}
+{"post_id": "D17_b21", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "D18_b08", "decisions": ["other", "other"], "sec": 0.014}
+{"post_id": "D19_b05", "decisions": ["other", "other"], "sec": 0.013}
+{"post_id": "D19_b27", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "D19_b28", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D20_b22", "decisions": ["self", "other", "other", "other"], "sec": 0.015}
+{"post_id": "D21_b24", "decisions": ["other", "other"], "sec": 0.014}
+{"post_id": "D22_b05", "decisions": ["self", "drop"], "sec": 0.014}
+{"post_id": "D22_b06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D22_b15", "decisions": ["self", "other", "self"], "sec": 0.014}
+{"post_id": "D23_b27", "decisions": ["self"], "sec": 0.013}
+{"post_id": "D24_b06", "decisions": [], "sec": 0.007}
+{"post_id": "D24_b18", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "D24_b26", "decisions": ["other", "other", "other", "other"], "sec": 0.015}
+{"post_id": "D24_b30", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E02_b09", "decisions": ["self", "self", "unknown", "other", "drop", "self"], "sec": 0.016}
+{"post_id": "E02_b15", "decisions": ["self", "other", "drop"], "sec": 0.013}
+{"post_id": "E02_b20", "decisions": ["other", "other"], "sec": 0.013}
+{"post_id": "E03_b10", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "E04_b07", "decisions": ["drop"], "sec": 0.013}
+{"post_id": "E05_b06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E06_b13", "decisions": ["self", "self"], "sec": 0.019}
+{"post_id": "E06_b18", "decisions": ["self", "self", "self", "self"], "sec": 0.02}
+{"post_id": "E06_b19", "decisions": ["other"], "sec": 0.014}
+{"post_id": "E06_b27", "decisions": ["other"], "sec": 0.019}
+{"post_id": "E07_b01", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E07_b06", "decisions": [], "sec": 0.008}
+{"post_id": "E07_b11", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E07_b13", "decisions": ["self", "drop"], "sec": 0.015}
+{"post_id": "E07_b19", "decisions": ["drop"], "sec": 0.013}
+{"post_id": "E07_b23", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E07_b25", "decisions": [], "sec": 0.007}
+{"post_id": "E07_b28", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E08_b01", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E08_b04", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E08_b06", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "E08_b11", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "E08_b16", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E08_b19", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E08_b24", "decisions": ["other"], "sec": 0.013}
+{"post_id": "E09_b06", "decisions": ["self"], "sec": 0.019}
+{"post_id": "E09_b23", "decisions": ["other", "self", "self"], "sec": 0.02}
+{"post_id": "E09_b25", "decisions": ["self"], "sec": 0.019}
+{"post_id": "E09_b29", "decisions": ["drop", "self"], "sec": 0.026}
+{"post_id": "E10_b01", "decisions": ["self"], "sec": 0.02}
+{"post_id": "E10_b04", "decisions": ["self"], "sec": 0.026}
+{"post_id": "E10_b06", "decisions": ["self", "other", "drop", "self", "other"], "sec": 0.029}
+{"post_id": "E10_b16", "decisions": ["self", "drop", "self", "other", "drop"], "sec": 0.027}
+{"post_id": "E10_b18", "decisions": ["self", "self", "self", "self", "self", "other", "self"], "sec": 0.033}
+{"post_id": "E10_b21", "decisions": ["self", "self"], "sec": 0.02}
+{"post_id": "E10_b22", "decisions": ["self"], "sec": 0.02}
+{"post_id": "E10_b23", "decisions": ["self", "self"], "sec": 0.026}
+{"post_id": "E10_b26", "decisions": ["self", "self", "other", "self"], "sec": 0.026}
+{"post_id": "E10_b28", "decisions": ["self", "self"], "sec": 0.021}
+{"post_id": "E10_b29", "decisions": ["self", "self", "self"], "sec": 0.027}
+{"post_id": "E10_b30", "decisions": ["self", "self"], "sec": 0.021}
+{"post_id": "E12_b04", "decisions": ["drop"], "sec": 0.015}
+{"post_id": "E12_b06", "decisions": ["other", "other"], "sec": 0.022}
+{"post_id": "E12_b10", "decisions": ["other", "other"], "sec": 0.021}
+{"post_id": "E12_b13", "decisions": ["other", "other"], "sec": 0.021}
+{"post_id": "E12_b16", "decisions": ["self", "self"], "sec": 0.016}
+{"post_id": "E12_b21", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E12_b22", "decisions": ["self", "other"], "sec": 0.015}
+{"post_id": "E12_b24", "decisions": ["self"], "sec": 0.015}
+{"post_id": "E12_b25", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E12_b28", "decisions": ["other", "self"], "sec": 0.016}
+{"post_id": "E12_b30", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E13_b19", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E13_b21", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E14_b07", "decisions": ["self", "self", "self", "self"], "sec": 0.016}
+{"post_id": "E14_b12", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "E14_b16", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "E14_b21", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E14_b22", "decisions": ["drop"], "sec": 0.014}
+{"post_id": "E14_b24", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E14_b27", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E14_b29", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E14_b30", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E15_b13", "decisions": ["other"], "sec": 0.045}
+{"post_id": "E15_b22", "decisions": ["self", "other"], "sec": 0.063}
+{"post_id": "E15_b28", "decisions": ["other"], "sec": 0.058}
+{"post_id": "E16_b10", "decisions": ["self"], "sec": 0.016}
+{"post_id": "E16_b21", "decisions": ["self"], "sec": 0.016}
+{"post_id": "E16_b28", "decisions": ["self", "self"], "sec": 0.017}
+{"post_id": "E17_b01", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E17_b16", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E17_b25", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "E17_b26", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E17_b28", "decisions": ["self"], "sec": 0.014}
+{"post_id": "E18_b01", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E18_b06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E18_b13", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E18_b19", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "E19_b01", "decisions": ["self", "self", "self"], "sec": 0.02}
+{"post_id": "E19_b06", "decisions": ["other", "other", "drop"], "sec": 0.021}
+{"post_id": "E19_b16", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "E19_b17", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "E19_b23", "decisions": ["self", "other", "self", "self"], "sec": 0.021}
+{"post_id": "E19_b27", "decisions": ["self", "self"], "sec": 0.02}
+{"post_id": "E19_b28", "decisions": ["self"], "sec": 0.019}
+{"post_id": "E19_b29", "decisions": ["self"], "sec": 0.019}
+{"post_id": "E20_b28", "decisions": ["other"], "sec": 0.013}
+{"post_id": "E21_b06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E21_b16", "decisions": ["other"], "sec": 0.013}
+{"post_id": "E21_b21", "decisions": ["drop", "other", "other"], "sec": 0.014}
+{"post_id": "E21_b24", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E21_b25", "decisions": ["other"], "sec": 0.013}
+{"post_id": "E21_b26", "decisions": ["self", "other", "other"], "sec": 0.014}
+{"post_id": "E21_b27", "decisions": ["self"], "sec": 0.013}
+{"post_id": "E21_b29", "decisions": ["self", "other"], "sec": 0.013}
+{"post_id": "S01_b02", "decisions": ["self", "self", "self"], "sec": 0.014}
+{"post_id": "S01_b03", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "S01_b08", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "S01_b09", "decisions": ["self", "drop"], "sec": 0.014}
+{"post_id": "S01_b12", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "S01_b14", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "S01_b19", "decisions": ["other"], "sec": 0.013}
+{"post_id": "S01_b20", "decisions": ["self", "self", "self"], "sec": 0.014}
+{"post_id": "S01b_b02", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "S01b_b03", "decisions": ["self"], "sec": 0.013}
+{"post_id": "S01b_b06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "S01b_b08", "decisions": ["self", "self", "self", "self"], "sec": 0.018}
+{"post_id": "S01b_b09", "decisions": ["self", "self", "self"], "sec": 0.018}
+{"post_id": "S01b_b12", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "S01b_b14", "decisions": ["unknown"], "sec": 0.013}
+{"post_id": "S01b_b18", "decisions": ["other", "other"], "sec": 0.015}
