@@ -135,6 +135,8 @@ def main() -> int:
             checks["G"] = (m.get("G_drop_rate") is not None and m["G_drop_rate"] <= 0.03 and m["G_flip_rate"] <= 0.03)
         m["checks"] = checks
         m["candidate"] = all(checks.values())
+        if name.endswith("X"):  # Claude 참고 구성 — 판정에 쓰지 않는다 (B 리뷰 #380)
+            m["candidate"], m["reference_only"] = None, True
     (RES / "metrics.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"글 {out['posts']} {out['by_group']}")
     print(f"{'구성':8} {'T':>7} {'R':>7} {'X':>7} {'X self':>7} {'P':>6} {'L중앙':>6} {'L p90':>6} {'G버림':>9} {'G뒤집':>9} {'D2재현':>18}  후보")

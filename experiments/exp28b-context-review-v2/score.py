@@ -148,6 +148,8 @@ def main() -> int:
                        "P": m["P"] <= a0["P"] * 1.5, "L": m["L_median"] <= 15,
                        "G": g.get("G_drop_rate") is not None and g["G_drop_rate"] <= 0.03 and g["G_flip_rate"] <= 0.03}
         m["candidate"] = all(m["checks"].values())
+        if name.endswith("X"):  # Claude 참고 구성 — 판정에 쓰지 않는다 (B 리뷰 #380)
+            m["candidate"], m["reference_only"] = None, True
     (RES / "metrics.json").write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"글 {out['posts']} {out['by_group']}")
     print(f"{'구성':8} {'T':>7} {'R':>7} {'X':>7} {'P':>6} {'L중앙':>6} {'D3버림':>9} {'D3뒤집':>9} {'D3재현':>18} {'D2버림':>9}  후보")
