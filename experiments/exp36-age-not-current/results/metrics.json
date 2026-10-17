@@ -1,0 +1,106 @@
+{
+ "patterns": {
+  "Q1": {
+   "pos_n": 29,
+   "pos_A": 0,
+   "pos_R": 0,
+   "rev_n": 45,
+   "rev_A": 40,
+   "rev_R": 40,
+   "rev_new_wrong": [],
+   "pos_R_wrong": [
+    "H-Q1-02:self",
+    "H-Q1-03:self",
+    "H-Q1-04:self",
+    "H-Q1-05:self",
+    "H-Q1-06:self",
+    "H-Q1-07:self",
+    "H-Q1-08:self",
+    "H-Q1-09:self",
+    "H-Q1-10:self",
+    "H-Q1-11:self",
+    "H-Q1-12:self",
+    "H-Q1-13:self",
+    "H-Q1-14:self",
+    "H-Q1-15:self",
+    "H-Q1-16:self",
+    "H-Q1-17:self",
+    "H-Q1-18:self",
+    "H-Q1-19:self",
+    "H-Q1-20:self",
+    "H-Q1-21:self",
+    "H-Q1-22:self",
+    "H-Q1-23:self",
+    "H-Q1-24:self",
+    "H-Q1-25:self",
+    "H-Q1-26:self",
+    "H-Q1-27:self",
+    "H-Q1-28:self",
+    "H-Q1-29:self",
+    "H-Q1-30:self"
+   ],
+   "pos_rate": 0.0,
+   "pass": false
+  },
+  "Q2": {
+   "pos_n": 29,
+   "pos_A": 0,
+   "pos_R": 22,
+   "rev_n": 45,
+   "rev_A": 40,
+   "rev_R": 40,
+   "rev_new_wrong": [],
+   "pos_R_wrong": [
+    "H-Q2-07:self",
+    "H-Q2-08:self",
+    "H-Q2-15:self",
+    "H-Q2-23:self",
+    "H-Q2-26:self",
+    "H-Q2-28:self",
+    "H-Q2-30:self"
+   ],
+   "pos_rate": 0.759,
+   "pass": true
+  }
+ },
+ "gold": {
+  "reviewed": {
+   "n": 468,
+   "A_agree": 455,
+   "R_agree": 455,
+   "lost": 0,
+   "fixed": 0,
+   "lost_items": []
+  },
+  "all": {
+   "n": 2194,
+   "A_agree": 2110,
+   "R_agree": 2109,
+   "lost": 1,
+   "fixed": 0,
+   "lost_items": [
+    "B07_b13:AGE:스물셋:self→unknown"
+   ]
+  }
+ },
+ "corpus": {
+  "posts": 1925,
+  "spans": 1986,
+  "changed": 1
+ },
+ "time_worst_sec": {
+  "A": 0.0028,
+  "R": 0.0025
+ },
+ "checks": {
+  "patterns_pass": {
+   "Q1": false,
+   "Q2": true
+  },
+  "rev_new_wrong_total_le_3": true,
+  "rev_R_ge_A": true,
+  "gold": true,
+  "corpus_wrong_le_2": "D 가 corpus_changes.jsonl 을 읽고 README 에 적는다",
+  "time_le_0.05": true
+ }
+}
