@@ -302,7 +302,23 @@ def _paragraph(text: str, start: int, end: int) -> str:
     return text[a + 2 if a >= 0 else 0: b if b >= 0 else len(text)]
 
 
+# 교통 · 통근 말이 하나도 없는 COMMUTE — 1단이 잘라 잡은 조각(「오늘」 「갔다가」 「의」 「낡은」)일 때가 많다.
+# 버리면 목록 밖 단서(「지옥철」)가 사라지므로 unknown(점선 · 절반 가중)으로 낮추기만 한다 (exp37 → exp38)
+_RULE_C1 = True
+_TRANSIT_WORD = re.compile(r"버스|차|지하철|지옥철|전철|철도|열차|기차|KTX|SRT|호선|[가-힣]선(?![가-힣])|역|정류장|정거장|환승|셔틀|택시|"
+                           r"자전거|오토바이|트럭|포터|승합|카풀|운전|몰고|시동|주차|워셔액|경유|기름값|주유|드라이브|비행기|항공|공항|배편|"
+                           r"여객선|종점|출장|걸어서|도보|걷|출근|퇴근|통근|통학|등교|하교|등굣|재택|야근|야간|노선|막차|첫차|편도|분이|"
+                           r"시간표|놓치|\d+\s*번|[일이삼사오육칠팔구십백]+\s*분")
+
+
 def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
+    who = _subject_of(stype, text, channel_text, start, end)
+    if _RULE_C1 and who == "self" and stype == "COMMUTE" and not _TRANSIT_WORD.search(text):
+        return "unknown"
+    return who
+
+
+def _subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
     if channel_text is None or start is None or end is None:
         return "self"
     if stype == "SEX" and _PARENT_TERM.fullmatch(text.strip()):
