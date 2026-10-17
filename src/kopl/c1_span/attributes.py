@@ -305,7 +305,7 @@ def _paragraph(text: str, start: int, end: int) -> str:
 
 # ── 지금 내 나이가 아닌 나이 (exp36) ────────────────────────────────────
 # 패턴별 스위치 — 끄면 main 과 똑같이 동작한다
-_RULE_Q1 = True   # 괄호 속 남의 나이 → other
+_RULE_Q1 = False  # 괄호 속 남의 나이 → other — exp36 판정 탈락(닉네임 · 자기소개 괄호 반례 16개를 남의 나이로 봄) · 꺼 둔다
 _RULE_Q2 = True   # 과거 나이 → unknown
 
 # Q1. 「X(14살)」 — 괄호 앞 X 가 글쓴이가 아니면 X 의 나이. 괄호 앞이 없거나 불분명하면 self(정밀도 우선)

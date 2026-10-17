@@ -380,6 +380,23 @@ def test_b_review_intro_suffix(sentence, span, stype, expected):
 
 
 # exp36 Q1 — 괄호 속 남의 나이(other) · 괄호 앞이 나·자기소개·없음이면 self
+# 배포 기본값은 Q1 을 끈다(exp36 판정 — 닉네임 · 필명 · 자기소개 괄호 반례 16개를 남의 나이로 봄). Q1 테스트는 규칙 코드를 지키려고 켜고 돈다
+@pytest.fixture(autouse=True)
+def _q1_on_for_q1_tests(request, monkeypatch):
+    if request.node.name.startswith("test_q1_"):
+        from kopl.c1_span import attributes
+        monkeypatch.setattr(attributes, "_RULE_Q1", True)
+
+
+def test_q_shipping_defaults():
+    import importlib.util
+    from kopl.c1_span import attributes
+    spec = importlib.util.spec_from_file_location("attributes_fresh", attributes.__file__)
+    fresh = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fresh)
+    assert (fresh._RULE_Q1, fresh._RULE_Q2) == (False, True)
+
+
 @pytest.mark.parametrize("sentence,span,occ,expected", [
     ("아이찡(14살) ♥ 나(27살)", "14살", 0, "other"),
     ("아이찡(14살) ♥ 나(27살)", "27살", 0, "self"),
