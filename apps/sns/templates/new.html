@@ -16,6 +16,7 @@
     white-space:pre-wrap;word-wrap:break-word;overflow-wrap:break-word;color:transparent}
   .pado-backdrop mark{pointer-events:auto;cursor:pointer;color:transparent;border-radius:3px;padding:1px 0;
     box-shadow:inset 0 -2px 0 rgba(62,58,54,.22);transition:filter .12s,box-shadow .12s}
+  .pado-backdrop mark[data-maybe]{box-shadow:none}   /* 불분명 단서는 기본 밑줄 대신 veilo.css 점선 밑줄 — 후보 · 마우스 · 선택 표시(아래 셋)는 그대로 보이게 !important 를 쓰지 않는다 (#381) */
   .pado-backdrop mark.has-cand{box-shadow:inset 0 -2px 0 var(--ut-earth)}
   .pado-backdrop mark:hover{filter:saturate(1.6) brightness(.93);box-shadow:inset 0 -3px 0 var(--ut-earth-ink)}
   .pado-backdrop mark.on{filter:saturate(1.8) brightness(.9);box-shadow:inset 0 -3px 0 var(--ut-earth-ink),0 0 0 2px rgba(216,137,111,.35)}

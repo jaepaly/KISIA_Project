@@ -29,7 +29,7 @@
     if (window.padoCheck) return Promise.resolve();
     return new Promise((ok, no) => {
       const s = document.createElement("script");
-      s.src = "/static/pado.js";
+      s.src = "/static/pado.js?v=381";
       s.onload = ok; s.onerror = no;
       document.head.appendChild(s);
     });
