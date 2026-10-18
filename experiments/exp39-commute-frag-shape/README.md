@@ -52,3 +52,9 @@
   git show origin/main:src/kopl/c1_span/attributes.py > /tmp/attr_main.py
   PYTHONIOENCODING=utf-8 python experiments/exp39-commute-frag-shape/score.py score /tmp/attr_main.py <PR 브랜치의 src/kopl/c1_span/attributes.py>
   ```
+
+### 판정 뒤 Codex 검토 반영 (사후 · 좁히기만)
+
+- Codex 가 실행으로 찾은 것: 어절마다는 조각이어도 모이면 통근 패턴인 스팬 — 「평일마다 새벽에 나가서 밤에 돌아오는」 「매일 아침에 나가서 저녁에 돌아오는」 「시내로 매일 다니는」이 self → unknown
+- **한 어절은 그대로 낮추고, 두 어절은 반복 말(매일 · 매번 · 평일 · 주말 · 요즘 · ~마다)이 없을 때만, 세 어절 이상은 낮추지 않게** 좁혔다. 위 반례는 회귀 테스트로 넣었다
+- 판정셋 · 개발 코퍼스에서 조각으로 잡힌 스팬은 **전부 한 어절**(H39 7 · 개발 41)이라 다시 재도 `results/metrics.json` 이 바뀌지 않는다. 「매일 타는」은 이제 self 로 남는다(반복 말 + 이동 동사)
