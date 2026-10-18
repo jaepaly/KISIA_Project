@@ -6,7 +6,7 @@
 <title>위험 줄이기 — 파도풀</title>
 <script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
 <script src="head.js"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
-<link rel="stylesheet" href="style.css?v=374">
+<link rel="stylesheet" href="style.css?v=381">
 </head>
 <body>
 <!-- Veilo 상단바 — Veilo 의 base 템플릿과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
@@ -83,7 +83,7 @@ function spanOf(data, postId, spanId) {
 function spanTexts(data, postId, ids) {
   return (ids || []).map(id => spanOf(data, postId, id)).filter(Boolean).filter(s => s.subject !== "other");
 }
-// subject unknown(내 정보인지 불분명) 은 점선으로 — 점검 결과 화면(diagnosis.html)과 같게
+// subject unknown(내 정보인지 불분명) 은 옅은 형광 + 점선 밑줄로 — 점검 결과 화면(diagnosis.html)과 같게
 function clueMark(text, maybe) {
   return maybe ? `<mark class="span-hit span-maybe">${esc(text)}<span class="sr-only">(내 정보인지 불분명)</span></mark>` : `<mark>${esc(text)}</mark>`;
 }

@@ -10,19 +10,20 @@
   };
   const LABEL = {
     AGE: "나이", SEX: "성별", JOB: "직업", FAM: "가족", COMMUTE: "통근",
-    INCOME: "소득", LOC_ADMIN: "거주지", LOC_FACILITY: "자주 가는 곳"
+    INCOME: "소득", LOC_ADMIN: "거주지", LOC_FACILITY: "자주 가는 곳",
+    REL_HOME: "집 근처", REL_WORK: "직장 근처"   // 빠져 있어 툴팁 · 칩에 「REL_HOME」 코드가 보이던 것 (분석기 common.js 와 같은 이름)
   };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const muted = (t) => `<p style="color:var(--ut-ink3);margin:0;">${t}</p>`;
   // 스팬 오프셋은 코드포인트 단위 — 이모지 뒤에서 UTF-16 slice 가 어긋난다
   const cp = (text, a, b) => Array.from(text || "").slice(a, b).join("");
-  // subject unknown — 엔진은 지우지 않고 신뢰도를 절반으로 센다(clues.py). 화면도 지우지 않고 점선 · 옅은 색으로 구분한다 (exp32 사후 분석)
+  // subject unknown — 엔진은 지우지 않고 신뢰도를 절반으로 센다(clues.py). 화면도 지우지 않고 옅은 형광 + 점선 밑줄로 구분한다 (exp32 사후 분석 · 모양은 veilo.css mark[data-maybe])
   const maybe = (s) => s.subject === "unknown";
   const MAYBE_HINT = (s) => String(s.type).startsWith("LOC") ? " · 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어요"
     : s.type === "AGE" ? " · 지난 시절의 나이처럼 지금 나이가 아닐 수 있어요" : " · 내 정보가 아닐 수 있어요";   // AGE unknown = 과거 나이 (exp36)
-  const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 ${n}곳은 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다.` : ""; };
+  const maybeNote = (spans) => { const n = spans.filter(maybe).length; return n ? ` 점선 밑줄 ${n}곳은 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다.` : ""; };
   const markStyle = (s, alpha) => maybe(s)
-    ? `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "59" : "73"};outline:1px dashed rgba(62,58,54,.4);outline-offset:-1px;`
+    ? `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "59" : "73"};`
     : `background:${COLOR[s.type] || "#F9E0B8"}${alpha ? "B3" : ""};`;
 
   // 스팬 범위 보정 — 엔진이 준 start/end 로 자른 글자가 스팬 text 와 다르면(바꿔 쓰기 뒤 「주간조」가 「조」로 칠해지던 일)
@@ -287,7 +288,7 @@
         for (const s of [...spans].sort((a, b) => a.start - b.start)) {
           if (s.start < last) continue;
           marked += esc(cp(body, last, s.start))
-            + `<mark style="${markStyle(s, false)}border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}${maybe(s) ? MAYBE_HINT(s) : ""}">`
+            + `<mark${maybe(s) ? ' data-maybe="1"' : ""} style="${markStyle(s, false)}border-radius:3px;padding:1px 2px;" title="${esc(LABEL[s.type] || s.type)}${maybe(s) ? MAYBE_HINT(s) : ""}">`
             + esc(cp(body, s.start, s.end)) + (maybe(s) ? `<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">(내 정보인지 불분명)</span>` : "") + "</mark>";
           last = s.end;
         }
