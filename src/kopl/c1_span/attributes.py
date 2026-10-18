@@ -390,9 +390,15 @@ _FRAG_W = (r"오늘|내일|어제|모레|매일|매번|평일|주말|아침|저�
 _FRAG_TOKEN = re.compile(r"(?:" + _FRAG_W + r")" + _FRAG_J)
 
 
+_FRAG_HABIT = re.compile(r"^(?:매일|매번|평일|주말|요즘)|마다")
+
+
 def _commute_fragment(text: str) -> bool:
     toks = text.strip().split()
-    return bool(toks) and all(_FRAG_TOKEN.fullmatch(t) for t in toks)
+    if not toks or len(toks) > 2 or not all(_FRAG_TOKEN.fullmatch(t) for t in toks):
+        return False
+    # 어절이 늘면 조각끼리 모여 통근 패턴이 된다(「평일마다 새벽에 나가서 밤에 돌아오는」 · Codex 검토) — 한 어절은 낮추고, 두 어절은 반복 말이 없을 때만
+    return len(toks) == 1 or not any(_FRAG_HABIT.search(t) for t in toks)
 
 
 def resolve(texts: Mapping[str, str], candidate: Mapping[str, Any]) -> dict[str, str]:
