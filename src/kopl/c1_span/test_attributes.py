@@ -292,7 +292,7 @@ def test_commute_fragment_is_unknown():
     for t in ("버스타서", "GTX로", "수인분당선으로", "매일 타는"):
         assert _r(body, t, "COMMUTE")["subject"] == "self", t
     # 조각이 모여 된 통근 패턴은 그대로 (Codex 검토) — 세 어절 이상 · 두 어절에 반복 말
-    for t in ("평일마다 새벽에 나가서 밤에 돌아오는", "매일 아침에 나가서 저녁에 돌아오는", "시내로 매일 다니는", "매일 다니는"):
+    for t in ("평일마다 새벽에 나가서 밤에 돌아오는", "매일 아침에 나가서 저녁에 돌아오는", "시내로 매일 다니는", "매일 다니는", "시내로 다니는", "시내로 다니며"):
         assert _r(t, t, "COMMUTE")["subject"] == "self", t
 
 

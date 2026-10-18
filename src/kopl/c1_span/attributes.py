@@ -390,7 +390,7 @@ _FRAG_W = (r"오늘|내일|어제|모레|매일|매번|평일|주말|아침|저�
 _FRAG_TOKEN = re.compile(r"(?:" + _FRAG_W + r")" + _FRAG_J)
 
 
-_FRAG_HABIT = re.compile(r"^(?:매일|매번|평일|주말|요즘)|마다")
+_FRAG_HABIT = re.compile(r"^(?:매일|매번|평일|주말|요즘|다니)|마다")   # 「다니-」는 그 자체가 반복 이동 (「시내로 다니는」 · Codex 재검토)
 
 
 def _commute_fragment(text: str) -> bool:
