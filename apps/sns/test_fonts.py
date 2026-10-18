@@ -153,3 +153,14 @@ def test_cors_header_not_leaking_outside_fonts():
         r = c.get(path)
         assert "Access-Control-Allow-Origin" not in r.headers, path
 
+
+
+def test_static_scripts_revalidate():
+    """pado.js · veilo.css 는 Cache-Control: no-cache — Flask 정적 파일의 기본값(werkzeug send_file · max_age 없음)이다.
+    분석기(Starlette StaticFiles)는 기본으로 안 붙어 서버에서 붙인다(#381 후속). 이 기본이 바뀌면 옛 파일이 남으니 고정해 둔다"""
+    import app as appmod
+    c = appmod.app.test_client()
+    for path in ("/static/pado.js", "/static/veilo.css"):
+        r = c.get(path)
+        assert r.status_code == 200 and "no-cache" in r.headers.get("Cache-Control", ""), path
+        r.close()

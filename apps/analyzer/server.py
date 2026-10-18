@@ -42,7 +42,23 @@ SNS_BASE = os.getenv("SNS_BASE_URL", "http://localhost:3000")   # 서버가 Veil
 SNS_PUBLIC_URL = os.getenv("SNS_PUBLIC_URL", "").rstrip("/")
 
 app = FastAPI(title="분석기 (mock)")
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+class _RevalidatedStatic(StaticFiles):
+    """화면 · 스크립트 · 스타일은 쓸 때마다 서버에 「바뀌었나」를 물어보게 한다(Cache-Control: no-cache).
+    StaticFiles 는 Last-Modified · ETag 만 붙여서 브라우저가 스스로 정한 기간 동안 묻지도 않고 옛 파일을 썼다 —
+    배포 직후에도 diagnosis.html 이 예전 모양으로 보였다(E 리뷰 #381). no-cache 는 「저장 금지」가 아니라
+    「쓰기 전에 확인」이라 안 바뀌었으면 304 로 본문 없이 끝난다. 이 헤더를 한 번 받은 뒤부터 적용된다 —
+    배포 전에 받아 둔 옛 파일은 브라우저가 그대로 쓸 수 있으니 ?v= 버전 표시는 그대로 둔다"""
+
+    async def get_response(self, path, scope):
+        resp = await super().get_response(path, scope)
+        if path.endswith((".html", ".js", ".css")):
+            resp.headers["Cache-Control"] = "no-cache"
+        return resp
+
+
+app.mount("/static", _RevalidatedStatic(directory=STATIC_DIR), name="static")
 
 # Veilo 화면(다른 포트)이 점검을 부를 수 있게 — SNS_PUBLIC_URL 이 다른 출처일 때만 그 하나를 허용한다.
 # 인스턴스는 같은 도메인이라 켜지지 않는다. 외부로 나가는 요청이 아니라 들어오는 요청의 허용이다
