@@ -61,9 +61,14 @@ def iou(a, b):
     return max(0, min(a["end"], b["end"]) - max(a["start"], b["start"])) / (max(a["end"], b["end"]) - min(a["start"], b["start"]))
 
 
-def score(main_path):
+def subj(M, stype, text, body, start, end):
+    """앱 경로(resolve)로 판정 — 규칙이 resolve 안에 있다 (PR 에서 subject_of 밖으로 옮김 · #382 충돌 회피)"""
+    return M.resolve({"body": body}, {"text_id": "body", "type": stype, "text": text, "start": start, "end": end})["subject"]
+
+
+def score(main_path, r_path=None):
     A = mod(main_path, "attr_main")
-    R = mod(ROOT / "src/kopl/c1_span/attributes.py", "attr_r")
+    R = mod(r_path or ROOT / "src/kopl/c1_span/attributes.py", "attr_r")
     bodies = h39_bodies()
     pool = jl(HELD / "pool.jsonl")
     lab = {r["id"]: r for r in jl(HELD / "labels.jsonl")}
@@ -73,8 +78,8 @@ def score(main_path):
     wrong = []
     for r in pool:
         body = bodies[(r["src"], r["post_id"])]
-        a = A.subject_of("COMMUTE", r["text"], body, r["start"], r["end"])
-        b = R.subject_of("COMMUTE", r["text"], body, r["start"], r["end"])
+        a = subj(A, "COMMUTE", r["text"], body, r["start"], r["end"])
+        b = subj(R, "COMMUTE", r["text"], body, r["start"], r["end"])
         if lab[r["id"]]["label"] == "fragment":
             frag += 1
             hit += b != "self"
@@ -87,8 +92,8 @@ def score(main_path):
             if d.get("post_id") and d["post_id"] not in TEST and "texts" in d:
                 gold[d["post_id"]] = [s for s in d.get("spans", []) if s.get("text_id", "body") == "body"]
                 gbody[d["post_id"]] = d["texts"].get("body", "")
-    gold_changed = [(pid, s["type"], s["text"], A.subject_of(s["type"], s["text"], gbody[pid], s["start"], s["end"]),
-                     R.subject_of(s["type"], s["text"], gbody[pid], s["start"], s["end"]))
+    gold_changed = [(pid, s["type"], s["text"], subj(A, s["type"], s["text"], gbody[pid], s["start"], s["end"]),
+                     subj(R, s["type"], s["text"], gbody[pid], s["start"], s["end"]))
                     for pid, ss in gold.items() for s in ss]
     gold_changed = [g for g in gold_changed if g[3] != g[4]]
     gold_commute = [g for g in gold_changed if g[1] == "COMMUTE" and g[3] == "self" and g[4] == "unknown"]
@@ -101,7 +106,7 @@ def score(main_path):
             for s in d["spans"]:
                 if s.get("text_id", "body") != "body":
                     continue
-                if A.subject_of(s["type"], s["text"], gbody[pid], s["start"], s["end"]) != R.subject_of(s["type"], s["text"], gbody[pid], s["start"], s["end"]):
+                if subj(A, s["type"], s["text"], gbody[pid], s["start"], s["end"]) != subj(R, s["type"], s["text"], gbody[pid], s["start"], s["end"]):
                     dev_changed += 1
                     if any(g["type"] == s["type"] and iou(g, s) >= 0.5 for g in gold[pid]):
                         dev_lost.append((pid, s["type"], s["text"]))
@@ -116,4 +121,4 @@ def score(main_path):
 
 
 if __name__ == "__main__":
-    build() if sys.argv[1] == "build" else score(sys.argv[2])
+    build() if sys.argv[1] == "build" else score(*sys.argv[2:4])

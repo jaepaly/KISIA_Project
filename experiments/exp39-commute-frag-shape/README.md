@@ -41,3 +41,14 @@
 - **재현율은 개발셋보다 크게 낮다** — 놓친 10개: 「월요일(에)」 2 · 「명절」 2 · 「바로」 · 「에 오자마자」 · 「오면」 · 「기」 · 「야근」 · 「차로」(간발의 차로). 개발셋에 없던 때 말 · 동사 조각이다. 목록 방식의 한계가 이번에는 재현율 쪽으로 나왔다 — 실제 글에서 조각을 절반쯤만 낮출 것으로 본다
 - 잡은 7개는 「내일 (출근)」 6 · 「새벽 (출근)」 1 — 친구 글의 「오늘」 「갔다가」 「시내 나가서」 꼴은 단위 테스트로 확인했다
 - 이 판정셋으로 목록을 고쳐 다시 재지 않는다
+
+## 5. 앱 반영 (PM · 10/18)
+
+- **앱에 넣는다** — 해가 0 이고(잘못 낮춤 0 · 골드 · 코퍼스 해 0) 친구 글에서 본 꼴은 고쳐진다. 재현율이 낮은 것은 알고 넣는다
+- 코드는 **별도 PR**(src · CODEOWNERS 리뷰)로 올린다. 이 기록 PR 의 src 변경은 0 이다
+- PR 에서는 규칙을 `subject_of` 를 감싸는 대신 **`resolve()` 안**으로 옮겼다 — 같은 함수를 고치는 #382 와 충돌하지 않게. `subject_of` 를 부르는 곳은 `resolve` 하나뿐이라 앱 동작은 같다
+- 그래서 `score.py` 도 `resolve` 경로로 판정하게 바꿨다(사후 · 판정 아님). PR 의 attributes.py 로 다시 재면 `results/metrics.json` 이 한 글자도 바뀌지 않는다:
+  ```bash
+  git show origin/main:src/kopl/c1_span/attributes.py > /tmp/attr_main.py
+  PYTHONIOENCODING=utf-8 python experiments/exp39-commute-frag-shape/score.py score /tmp/attr_main.py <PR 브랜치의 src/kopl/c1_span/attributes.py>
+  ```
