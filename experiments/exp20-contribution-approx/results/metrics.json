@@ -1,0 +1,691 @@
+{
+  "n_personas": 66,
+  "n_personas_for_spearman": 41,
+  "n_personas_gold_constant": 13,
+  "n_personas_prediction_constant_failure": 0,
+  "excluded_zero_baseline": [
+    "A04",
+    "A05",
+    "A08",
+    "A09",
+    "A14",
+    "A16",
+    "A17",
+    "A20",
+    "A22",
+    "A23",
+    "B01",
+    "D13",
+    "D15"
+  ],
+  "macro_spearman_rho_abs_delta": 1.0,
+  "n_personas_for_top3": 39,
+  "n_personas_for_top3_tie_aware": 31,
+  "macro_top3_rank_agreement": 1.0,
+  "macro_top3_tie_aware_recall": 1.0,
+  "macro_sign_accuracy": 1,
+  "macro_signed_delta_mae": 0.0,
+  "target_spearman_ge_0_8": true,
+  "people": [
+    {
+      "persona_id": "A01",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A06",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A10",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A11",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A12",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A13",
+      "n_posts": 9,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A15",
+      "n_posts": 10,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A18",
+      "n_posts": 11,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A19",
+      "n_posts": 8,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A21",
+      "n_posts": 8,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A25",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "A26",
+      "n_posts": 9,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B02",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B03",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B04",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B06",
+      "n_posts": 9,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B07",
+      "n_posts": 6,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B08",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B09",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B10",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B12",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B13",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B14",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B15",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "B16",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D01",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D02",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D03",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D04",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D05",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D07",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D09",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D10",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D11",
+      "n_posts": 6,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D12",
+      "n_posts": 6,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D14",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D16",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D17",
+      "n_posts": 6,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D18",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D19",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D20",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D21",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D22",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D23",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "D24",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E02",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E03",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E04",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E05",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E06",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E07",
+      "n_posts": 8,
+      "spearman_rho_abs_delta": 0.9999999999999999,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E08",
+      "n_posts": 7,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E09",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E10",
+      "n_posts": 12,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E12",
+      "n_posts": 11,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E13",
+      "n_posts": 2,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E14",
+      "n_posts": 9,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E15",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E16",
+      "n_posts": 3,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E17",
+      "n_posts": 5,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E18",
+      "n_posts": 4,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E19",
+      "n_posts": 8,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E20",
+      "n_posts": 1,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "insufficient_posts",
+      "top3_rank_agreement": null,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "E21",
+      "n_posts": 8,
+      "spearman_rho_abs_delta": null,
+      "spearman_status": "gold_constant",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": null,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "S01",
+      "n_posts": 16,
+      "spearman_rho_abs_delta": 1.0,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    },
+    {
+      "persona_id": "S01b",
+      "n_posts": 15,
+      "spearman_rho_abs_delta": 0.9999999999999998,
+      "spearman_status": "ok",
+      "top3_rank_agreement": 1.0,
+      "top3_tie_aware_recall": 1.0,
+      "sign_accuracy": 1,
+      "signed_delta_mae": 0.0
+    }
+  ]
+}
