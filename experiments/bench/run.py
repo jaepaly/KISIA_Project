@@ -243,7 +243,7 @@ def parse_args(argv=None):
     parser.add_argument('--checkpoint-dir', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
     parser.add_argument('--split', choices=('train', 'test'), default='train')
-    parser.add_argument('--final-test-confirm', action='store_true', help='10/29 최종 측정 때만 사용')
+    parser.add_argument('--final-test-confirm', action='store_true', help='11/2 최종 측정 때만 사용')
     parser.add_argument('--limit', type=int, help='train 검증 글 수, 기본 20; test에서는 금지')
     parser.add_argument('--corpus-dir', type=Path, default=ROOT / 'data/corpus/v0')
     parser.add_argument('--bio-data', type=Path, default=EXP06 / 'runs/bio_variant_base_20261008/train.jsonl')

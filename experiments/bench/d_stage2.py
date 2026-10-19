@@ -11,7 +11,7 @@
 - mode=rules: 앱 ``STAGE2_MODE=rules`` 와 같다 (모델 없이 규칙 판정 — 앱의 CPU 폴백 함수 findings_from_spans)
 - mode=model: 앱 기본(``auto``)과 같게 모델을 쓰고 출력이 깨지면 규칙으로 떨어진다 — 떨어진 이유를 센다.
   모델 로드 자체가 안 되면 조용히 규칙으로 돌지 않고 멈춘다 (측정이 규칙으로 바뀌어 섞이지 않게)
-- test 글(splits/test_post_ids.json)이 섞이면 멈춘다. ``--allow-test``/``--final``(10/29 최종 측정)일 때만 통과
+- test 글(splits/test_post_ids.json)이 섞이면 멈춘다. ``--allow-test``/``--final``(11/2 최종 측정)일 때만 통과
 - 이 단독 CLI 는 exp09 를 **실행하지 않는다** (``--final`` = test 허용만). exp09 회귀는 ``d_downstream --final`` 에서만
   추적 산출물 보호 경로(세 파일 · 어댑터 SHA 확인)로 돈다 — 여기는 명령(``exp09_commands``)과 산출 목록만 둔다
 - 두 실행(rules · model)의 ``stage2_preds.jsonl`` 을 ``compare_stage2`` 로 user_ref × 속성 조인해 verdict 일치율을 낸다
@@ -350,7 +350,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--adapter", type=Path, help="mode=model 어댑터 폴더 (기본: STAGE2_ADAPTER_DIR · exp08 results/adapter_v2)")
     ap.add_argument("--post-ids", type=Path, help="이 글만 (json 목록 또는 {'post_ids': [...]})")
     ap.add_argument("--limit-users", type=int)
-    ap.add_argument("--allow-test", action="store_true", help="test 글을 허용 (10/29 최종 측정)")
+    ap.add_argument("--allow-test", action="store_true", help="test 글을 허용 (11/2 최종 측정)")
     ap.add_argument("--final", action="store_true",
                     help="최종 측정 — test 허용만 (exp09 는 실행하지 않는다 · d_downstream --final 에서만 돈다)")
     a = ap.parse_args(argv)

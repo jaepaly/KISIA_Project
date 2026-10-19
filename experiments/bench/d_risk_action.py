@@ -15,7 +15,7 @@
     python experiments/bench/d_risk_action.py --preds preds_dev.jsonl --out results/bench/risk_dev
     python experiments/bench/d_risk_action.py --preds preds_dev.jsonl --out results/bench/risk_dev --ablation single_vs_account
 
-test 글이 섞이면 --allow-test 없이는 오류로 멈춘다 (10/29 최종 측정 때만).
+test 글이 섞이면 --allow-test 없이는 오류로 멈춘다 (11/2 최종 측정 때만).
 """
 from __future__ import annotations
 
@@ -85,7 +85,7 @@ def read_preds(preds_path: str | Path, *, post_ids: Iterable[str] | None = None,
     leaked = sorted(set(preds) & test_ids)
     if leaked and not allow_test:
         raise ValueError(f"⛔ test 글 {len(leaked)}편이 입력에 섞였다 (예: {leaked[:3]}) — "
-                         "10/29 최종 측정 때만 allow_test=True(--allow-test) 로 돌린다")
+                         "11/2 최종 측정 때만 allow_test=True(--allow-test) 로 돌린다")
     return preds
 
 
@@ -455,7 +455,7 @@ def run_ablation(name: str, preds_path: str | Path, out_dir: str | Path, *, post
     return result
 
 
-# ── 기존 exp10 · exp11 회귀 (10/29 최종 측정 때만) ───────────────────────
+# ── 기존 exp10 · exp11 회귀 (11/2 최종 측정 때만) ───────────────────────
 
 EXP10 = ROOT / "experiments" / "exp10-action-repro"
 EXP11 = ROOT / "experiments" / "exp11-risk-correlation"
@@ -508,7 +508,7 @@ def main() -> int:
                     help="ablation 만 돌린다 (여러 개 가능). 생략하면 위험도·조치")
     ap.add_argument("--limit-users", type=int, default=None)
     ap.add_argument("--no-geo-tag", action="store_true", help="위치태그 단계를 빼고 잰다")
-    ap.add_argument("--allow-test", action="store_true", help="10/29 최종 측정용 — test 글이 섞여도 허용")
+    ap.add_argument("--allow-test", action="store_true", help="11/2 최종 측정용 — test 글이 섞여도 허용")
     a = ap.parse_args()
 
     geo = {} if a.no_geo_tag else None
