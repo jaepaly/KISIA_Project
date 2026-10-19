@@ -51,7 +51,8 @@ def closed_form_deltas(spans_by_post: Mapping[str, Sequence[Mapping[str, Any]]])
     out = {}
     for pid in by_post:
         without = risk([s for q, s in by_post.items() if q != pid])
-        out[pid] = round(without - baseline, 2)  # 정답 파일과 같은 반올림 (main 의 loo.py)
+        # 정답 파일과 같은 반올림 — loo.py 는 #351 뒤로 「반올림한 두 값의 차」(risk_without = baseline_risk + delta 불변식)
+        out[pid] = round(round(without, 2) - round(baseline, 2), 2)
     return out
 
 
