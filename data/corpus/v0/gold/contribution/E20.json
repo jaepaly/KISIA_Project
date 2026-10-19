@@ -9,14 +9,14 @@
     "method": "loo"
   },
   "output": {
-    "baseline_risk": 4.29,
+    "baseline_risk": 7.86,
     "residual_risk": 0.0,
     "risk_after": null,
     "contributions": [
       {
         "post_id": "E20_b28",
         "risk_without": 0.0,
-        "delta": -4.29,
+        "delta": -7.86,
         "rank": 1,
         "clue_ids": [
           "E20_b28_s01"
