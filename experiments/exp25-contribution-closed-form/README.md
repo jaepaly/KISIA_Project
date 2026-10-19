@@ -55,7 +55,7 @@ python experiments/exp20-contribution-approx/score.py --gold data/corpus/v0/gold
 - 확인한 것은 **골드 스팬 경로**(정답을 만든 길 — 글마다 `build_conditions`)다. 앱 경로(`apps/analyzer/engines/c23.py` · `conditions_from_posts` + `leave_one_out`)는 따로 대조하지 않았다. 앱은 LOO 를 그대로 쓰고, LOO 가 이미 빠르므로 바꿀 이유도 없다
 - 정답 파일은 지금 main 의 `loo.py` 반올림을 따른다. [#351](../../../../pull/351) 머지 뒤 `delta` 는 「반올림한 `risk_without` − 반올림한 `baseline_risk`」라, 닫힌 식도 같은 방식으로 반올림한다(10/19 · 아래)
 
-## 6. 정답 재생성 (10/19 · README D 4번)
+## 5. 정답 재생성 (10/19 · README D 4번)
 
 C 가 [#352](../../../../pull/352) 에서 짚은 `E20_b28` 불일치(정답 −4.29 · 닫힌 식 −7.86)의 원인은 [#357](../../../../pull/357) 이다 — `E20_b28_s01`(FAM) level 이 inferential → implicit 으로 바뀌어 family 해상도가 1 → 2(점수 30 → 55)가 됐는데, 정답 파일은 그 전(9/29 · `17e1c1f`)에 만들어졌다.
 
@@ -68,7 +68,7 @@ C 가 [#352](../../../../pull/352) 에서 짚은 `E20_b28` 불일치(정답 −4
 #357 이 바꾼 스팬 56개 중 test 밖 · 정답 대상 글의 스팬은 43개이고, 글의 축 점수가 바뀐 것은 `E20_b28_s01` 하나다(SEX · COMMUTE 는 level 을 보지 않고, FAM explicit ↔ implicit 은 해상도가 같다).
 `scripts/gen_contribution_targets.py` 로 다시 만들어 정답 16개 파일 · 22줄(글 21편 delta + `E20` baseline_risk)이 바뀌었고, rank 는 그대로다. 재생성 뒤 닫힌 식 **331/331 일치** · `test_closed_form.py`(실제 LOO 대조) 통과.
 
-## 5. 결론
+## 6. 결론
 
 - D 성공 기준 「기여도 근사기」는 **「필요 없음 — 닫힌 식이 LOO 와 같고, LOO 도 충분히 빠르다」**로 닫는다. 앱은 LOO 그대로
 - 정리서에는 「학습된 근사기」가 아니라 「위험도 함수가 축별로 분해되어 기여도를 한 번에 정확히 계산할 수 있음을 확인했다」로 쓴다
