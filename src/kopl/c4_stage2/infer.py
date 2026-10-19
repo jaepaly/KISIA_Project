@@ -35,7 +35,8 @@ from .rewrite import rewrites_for
 from .rules import ATTRS, TYPE_TO_ATTR, findings_from_spans
 
 SCHEMA_VERSION = "0.1.0"
-BASE_MODEL = "Qwen/Qwen3-4B"
+# 오프라인 GPU 서버(HF_HUB_OFFLINE=1)는 허브 이름 대신 받아 둔 스냅샷 폴더를 가리킨다 — 비우면 허브 이름 (서버 전용 커밋 258f904 를 main 으로)
+BASE_MODEL = os.getenv("STAGE2_BASE_MODEL_DIR") or "Qwen/Qwen3-4B"
 MODEL_VERSION = "qwen3-4b-qlora-v2"
 RULES_VERSION = "rules-v1"
 _ROOT = Path(__file__).resolve().parents[3]

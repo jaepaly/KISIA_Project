@@ -37,6 +37,7 @@
 - 앱 구성(`src/kopl/c4_stage2/infer.py`): `SYSTEM_V2`(v1 + #296 판정 기준 한 줄) · 모델 입력 상한 16/4 · 스팬 없는 글 뺌 · 출력 상한 `output_budget(entries)`(#346) · `MODEL_VERSION = qwen3-4b-qlora-v2`
 - 판정: [exp22b](../experiments/exp22b-stage2-judge/README.md) §5 — 기준 1~5 통과 · 기준 6 미달은 규칙 대조로 DEC-011 예외
 - **이 등록만으로 각 PC 의 어댑터가 바뀌지 않는다.** 2단을 GPU 로 돌리는 PC 는 `results/adapter_v2/` 에 어댑터 파일(`adapter_config.json` · `adapter_model.safetensors`)을 두거나 `STAGE2_ADAPTER_DIR` 로 가리킨다. 없으면 앱은 지금처럼 규칙으로 폴백하고 provenance 에 이유를 적는다
+- 인터넷이 막힌 PC(`HF_HUB_OFFLINE=1` · GPU 서버)는 베이스 모델도 받아 둔 스냅샷 폴더를 `STAGE2_BASE_MODEL_DIR` 로 가리킨다(비우면 허브 이름 `Qwen/Qwen3-4B`)
 - `STAGE2_ADAPTER_DIR` 이 예전 v1 어댑터를 가리킨 채면 앱이 로드를 거부하고 규칙으로 폴백한다 (v1 가중치 + v2 프롬프트는 판정하지 않은 구성) — 환경변수를 v2 로 바꾸거나 지운다
 
 **v1 로 되돌리기** — 코드 한 커밋 되돌림 + 어댑터 경로:
