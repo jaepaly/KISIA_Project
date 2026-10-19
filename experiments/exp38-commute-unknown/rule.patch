@@ -1,0 +1,50 @@
+diff --git a/src/kopl/c1_span/attributes.py b/src/kopl/c1_span/attributes.py
+index 878a5f5..3d91855 100644
+--- a/src/kopl/c1_span/attributes.py
++++ b/src/kopl/c1_span/attributes.py
+@@ -302,7 +302,23 @@ def _paragraph(text: str, start: int, end: int) -> str:
+     return text[a + 2 if a >= 0 else 0: b if b >= 0 else len(text)]
+ 
+ 
++# 교통 · 통근 말이 하나도 없는 COMMUTE — 1단이 잘라 잡은 조각(「오늘」 「갔다가」 「의」 「낡은」)일 때가 많다.
++# 버리면 목록 밖 단서(「지옥철」)가 사라지므로 unknown(점선 · 절반 가중)으로 낮추기만 한다 (exp37 → exp38)
++_RULE_C1 = True
++_TRANSIT_WORD = re.compile(r"버스|차|지하철|지옥철|전철|철도|열차|기차|KTX|SRT|호선|[가-힣]선(?![가-힣])|역|정류장|정거장|환승|셔틀|택시|"
++                           r"자전거|오토바이|트럭|포터|승합|카풀|운전|몰고|시동|주차|워셔액|경유|기름값|주유|드라이브|비행기|항공|공항|배편|"
++                           r"여객선|종점|출장|걸어서|도보|걷|출근|퇴근|통근|통학|등교|하교|등굣|재택|야근|야간|노선|막차|첫차|편도|분이|"
++                           r"시간표|놓치|\d+\s*번|[일이삼사오육칠팔구십백]+\s*분")
++
++
+ def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
++    who = _subject_of(stype, text, channel_text, start, end)
++    if _RULE_C1 and who == "self" and stype == "COMMUTE" and not _TRANSIT_WORD.search(text):
++        return "unknown"
++    return who
++
++
++def _subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
+     if channel_text is None or start is None or end is None:
+         return "self"
+     if stype == "SEX" and _PARENT_TERM.fullmatch(text.strip()):
+diff --git a/src/kopl/c1_span/test_attributes.py b/src/kopl/c1_span/test_attributes.py
+index 81daf80..fe92e56 100644
+--- a/src/kopl/c1_span/test_attributes.py
++++ b/src/kopl/c1_span/test_attributes.py
+@@ -377,3 +377,17 @@ def test_codex_third(sentence, span, stype, expected):
+ ])
+ def test_b_review_intro_suffix(sentence, span, stype, expected):
+     assert _r(sentence, span, stype)["subject"] == expected
++
++
++def test_commute_without_transit_word_is_unknown():
++    """exp38 — 1단이 「오늘」 「시내 나가서」를 COMMUTE 로 잡으면 unknown(점선)으로 낮춘다. 교통 말이 있으면 그대로."""
++    from kopl.c1_span.attributes import subject_of
++    body = "오늘 버스타서 시내 나가서 영화 봤다. 출근길에 지옥철 타고 갔다. 친구가 2호선으로 다닌다."
++    def subj(t):
++        i = body.index(t)
++        return subject_of("COMMUTE", t, body, i, i + len(t))
++    assert subj("오늘") == "unknown"
++    assert subj("시내 나가서") == "unknown"
++    assert subj("버스타서") == "self"
++    assert subj("지옥철 타고") == "self"
++    assert subj("출근길에") == "self"

@@ -1,0 +1,276 @@
+{
+  "d1d_posts": 98,
+  "configs": {
+    "S1": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "6/64",
+      "Ta_n": 6,
+      "V": "9/28",
+      "V_n": 9,
+      "V_by_kind": {
+        "family": "0/7",
+        "media": "6/10",
+        "travel": "3/11"
+      },
+      "V_typed": "15/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.014,
+      "G_drop": "0/315",
+      "G_drop_rate": 0.0,
+      "G_flip": "33/298",
+      "G_flip_rate": 0.1107,
+      "G_flip_kinds": {
+        "SEX:self→other": 16,
+        "LOC_ADMIN:self→unknown": 5,
+        "FAM:self→other": 4,
+        "LOC_FACILITY:self→unknown": 4,
+        "REL_HOME:self→other": 2,
+        "LOC_ADMIN:other→unknown": 1,
+        "LOC_FACILITY:other→unknown": 1
+      },
+      "D5_recall": "315/374 (0.842)",
+      "checks": {
+        "Ta": true,
+        "V": false,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "pass": false
+    },
+    "S1b-20261019": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "9/64",
+      "Ta_n": 9,
+      "V": "8/28",
+      "V_n": 8,
+      "V_by_kind": {
+        "family": "1/7",
+        "media": "4/10",
+        "travel": "3/11"
+      },
+      "V_typed": "13/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.014,
+      "G_drop": "3/315",
+      "G_drop_rate": 0.0095,
+      "G_flip": "43/295",
+      "G_flip_rate": 0.1458,
+      "G_flip_kinds": {
+        "SEX:self→other": 23,
+        "FAM:self→other": 8,
+        "LOC_ADMIN:self→unknown": 5,
+        "COMMUTE:other→self": 1,
+        "COMMUTE:self→other": 1,
+        "JOB:other→self": 1,
+        "LOC_ADMIN:other→self": 1,
+        "LOC_ADMIN:self→other": 1,
+        "REL_HOME:other→self": 1,
+        "REL_HOME:self→other": 1
+      },
+      "D5_recall": "312/374 (0.834)",
+      "checks": {
+        "Ta": true,
+        "V": false,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "pass": false
+    },
+    "S1b-20261023": {
+      "Tm": "3/24",
+      "Tm_n": 3,
+      "Ta": "16/64",
+      "Ta_n": 16,
+      "V": "5/28",
+      "V_n": 5,
+      "V_by_kind": {
+        "family": "1/7",
+        "media": "3/10",
+        "travel": "1/11"
+      },
+      "V_typed": "8/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.014,
+      "G_drop": "7/315",
+      "G_drop_rate": 0.0222,
+      "G_flip": "44/291",
+      "G_flip_rate": 0.1512,
+      "G_flip_kinds": {
+        "SEX:self→other": 22,
+        "FAM:self→other": 9,
+        "LOC_ADMIN:self→unknown": 7,
+        "LOC_ADMIN:self→other": 2,
+        "COMMUTE:other→self": 1,
+        "COMMUTE:self→other": 1,
+        "JOB:other→self": 1,
+        "REL_HOME:other→self": 1
+      },
+      "D5_recall": "308/374 (0.824)",
+      "checks": {
+        "Ta": true,
+        "V": false,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "pass": false
+    },
+    "S2-20261019": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "8/64",
+      "Ta_n": 8,
+      "V": "2/28",
+      "V_n": 2,
+      "V_by_kind": {
+        "family": "1/7",
+        "media": "0/10",
+        "travel": "1/11"
+      },
+      "V_typed": "6/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.014,
+      "G_drop": "4/315",
+      "G_drop_rate": 0.0127,
+      "G_flip": "45/294",
+      "G_flip_rate": 0.1531,
+      "G_flip_kinds": {
+        "SEX:self→other": 24,
+        "FAM:self→other": 7,
+        "LOC_ADMIN:self→other": 4,
+        "LOC_ADMIN:self→unknown": 3,
+        "AGE:self→other": 1,
+        "COMMUTE:other→self": 1,
+        "JOB:other→self": 1,
+        "JOB:self→other": 1,
+        "LOC_ADMIN:other→unknown": 1,
+        "REL_HOME:other→self": 1,
+        "REL_HOME:self→other": 1
+      },
+      "D5_recall": "311/374 (0.832)",
+      "checks": {
+        "Ta": true,
+        "V": true,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "pass": false
+    },
+    "S2-20261023": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "8/64",
+      "Ta_n": 8,
+      "V": "1/28",
+      "V_n": 1,
+      "V_by_kind": {
+        "family": "1/7",
+        "media": "0/10",
+        "travel": "0/11"
+      },
+      "V_typed": "4/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.015,
+      "G_drop": "5/315",
+      "G_drop_rate": 0.0159,
+      "G_flip": "51/293",
+      "G_flip_rate": 0.1741,
+      "G_flip_kinds": {
+        "SEX:self→other": 22,
+        "FAM:self→other": 10,
+        "LOC_ADMIN:self→unknown": 7,
+        "LOC_ADMIN:self→other": 4,
+        "AGE:self→other": 1,
+        "COMMUTE:other→self": 1,
+        "COMMUTE:self→other": 1,
+        "JOB:self→other": 1,
+        "LOC_FACILITY:self→other": 1,
+        "REL_HOME:other→self": 1,
+        "REL_HOME:self→other": 1,
+        "REL_WORK:self→other": 1
+      },
+      "D5_recall": "310/374 (0.829)",
+      "checks": {
+        "Ta": true,
+        "V": true,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": true
+      },
+      "pass": false
+    },
+    "T3": {
+      "Tm": "0/24",
+      "Tm_n": 0,
+      "Ta": "2/64",
+      "Ta_n": 2,
+      "V": "1/28",
+      "V_n": 1,
+      "V_by_kind": {
+        "family": "0/7",
+        "media": "1/10",
+        "travel": "0/11"
+      },
+      "V_typed": "2/28",
+      "R": "13/40",
+      "R_n": 13,
+      "G_drop": "0/315",
+      "G_drop_rate": 0.0,
+      "G_flip": "31/298",
+      "G_flip_rate": 0.104,
+      "G_flip_kinds": {
+        "SEX:self→other": 16,
+        "FAM:self→other": 5,
+        "LOC_ADMIN:self→unknown": 4,
+        "LOC_FACILITY:self→unknown": 2,
+        "COMMUTE:other→self": 1,
+        "LOC_ADMIN:other→unknown": 1,
+        "LOC_FACILITY:other→unknown": 1,
+        "REL_HOME:self→other": 1
+      },
+      "D5_recall": "315/374 (0.842)",
+      "checks": {
+        "Ta": true,
+        "V": true,
+        "R": true,
+        "G_drop": true,
+        "G_flip": false,
+        "L": null
+      },
+      "pass": null
+    },
+    "a0": {
+      "Tm": "24/24",
+      "Tm_n": 24,
+      "Ta": "46/64",
+      "Ta_n": 46,
+      "V": "0/28",
+      "V_n": 0,
+      "V_by_kind": {
+        "family": "0/7",
+        "media": "0/10",
+        "travel": "0/11"
+      },
+      "V_typed": "0/28",
+      "R": "13/40",
+      "R_n": 13,
+      "L_median": 0.007
+    }
+  },
+  "S2_candidate": false
+}

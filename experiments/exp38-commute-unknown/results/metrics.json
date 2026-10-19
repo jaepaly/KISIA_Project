@@ -1,0 +1,32 @@
+{
+  "H38": {
+    "pool": 196,
+    "fragment": 23,
+    "recall": 0.9565217391304348,
+    "wrong": 8,
+    "wrong_ids": [
+      "C109",
+      "C113",
+      "C116",
+      "C123",
+      "C128",
+      "C161",
+      "C175",
+      "C191"
+    ]
+  },
+  "gold": {
+    "changed": [],
+    "commute_self_to_unknown": 0
+  },
+  "dev_corpus": {
+    "changed": 39,
+    "gold_matched": []
+  },
+  "pass": {
+    "recall": true,
+    "wrong": false,
+    "gold": true,
+    "dev": true
+  }
+}

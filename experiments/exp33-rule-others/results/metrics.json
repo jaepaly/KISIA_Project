@@ -1,0 +1,131 @@
+{
+ "cases": {
+  "P1-pos": {
+   "n": 16,
+   "A": 0,
+   "R": 8,
+   "R_not_self": 8,
+   "A_wrong_ids": [
+    "P1-01:self",
+    "P1-02:self",
+    "P1-03:self",
+    "P1-04:self",
+    "P1-05:self",
+    "P1-06:self",
+    "P1-07:self",
+    "P1-08:self",
+    "P1-09:self",
+    "P1-10:self",
+    "P1-11:self",
+    "P1-12:self",
+    "P1-13:self",
+    "P1-14:self",
+    "P1-15:self",
+    "P1-16:self"
+   ],
+   "R_wrong_ids": [
+    "P1-02:self",
+    "P1-05:self",
+    "P1-09:self",
+    "P1-10:self",
+    "P1-11:self",
+    "P1-13:self",
+    "P1-14:self",
+    "P1-15:self"
+   ]
+  },
+  "P1-neg": {
+   "n": 10,
+   "A": 8,
+   "R": 10,
+   "R_not_self": 0,
+   "A_wrong_ids": [
+    "P1-17:other",
+    "P1-21:other"
+   ],
+   "R_wrong_ids": []
+  },
+  "P2-pos": {
+   "n": 11,
+   "A": 3,
+   "R": 11,
+   "R_not_self": 11,
+   "A_wrong_ids": [
+    "P2-01:self",
+    "P2-02:self",
+    "P2-03:self",
+    "P2-04:self",
+    "P2-05:self",
+    "P2-10:self",
+    "P2-11:self",
+    "P2-12:self"
+   ],
+   "R_wrong_ids": []
+  },
+  "P2-neg": {
+   "n": 8,
+   "A": 7,
+   "R": 8,
+   "R_not_self": 0,
+   "A_wrong_ids": [
+    "P2-20:other"
+   ],
+   "R_wrong_ids": []
+  },
+  "P3-pos": {
+   "n": 9,
+   "A": 1,
+   "R": 7,
+   "R_not_self": 7,
+   "A_wrong_ids": [
+    "P3-01:self",
+    "P3-02:self",
+    "P3-04:self",
+    "P3-06:self",
+    "P3-07:self",
+    "P3-08:self",
+    "P3-09:self",
+    "P3-10:self"
+   ],
+   "R_wrong_ids": [
+    "P3-06:self",
+    "P3-09:self"
+   ]
+  },
+  "P3-neg": {
+   "n": 8,
+   "A": 8,
+   "R": 8,
+   "R_not_self": 0,
+   "A_wrong_ids": [],
+   "R_wrong_ids": []
+  }
+ },
+ "gold": {
+  "reviewed": {
+   "n": 468,
+   "A_agree": 455,
+   "R_agree": 455,
+   "changed": 0,
+   "lost": 0,
+   "fixed": 0
+  },
+  "all": {
+   "n": 2194,
+   "A_agree": 2110,
+   "R_agree": 2110,
+   "changed": 0,
+   "lost": 0,
+   "fixed": 0
+  }
+ },
+ "checks": {
+  "pos_each_pattern_ge_0.75": false,
+  "neg_R_ge_A": true,
+  "neg_no_new_loss": true,
+  "gold_reviewed_lost_le_1": true,
+  "gold_all_lost_le_5": true,
+  "gold_all_R_ge_A": true
+ },
+ "pass": false
+}

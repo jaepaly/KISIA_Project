@@ -1,0 +1,931 @@
+{"id": "H0001", "label": "clue", "why": "여수 지명"}
+{"id": "H0002", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0003", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0004", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0005", "label": "clue", "why": "방콕 지명"}
+{"id": "H0006", "label": "clue", "why": "출근 행위"}
+{"id": "H0007", "label": "clue", "why": "지하철 출근"}
+{"id": "H0008", "label": "clue", "why": "버스 이용"}
+{"id": "H0009", "label": "clue", "why": "지하철 환승"}
+{"id": "H0010", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0011", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0012", "label": "clue", "why": "천안 지명"}
+{"id": "H0013", "label": "clue", "why": "귀가할 집"}
+{"id": "H0014", "label": "clue", "why": "가평 지명"}
+{"id": "H0015", "label": "clue", "why": "부평 지명"}
+{"id": "H0016", "label": "clue", "why": "거제 지명"}
+{"id": "H0017", "label": "clue", "why": "분당 지명"}
+{"id": "H0018", "label": "clue", "why": "탄천 장소명"}
+{"id": "H0019", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0020", "label": "clue", "why": "출근 행위"}
+{"id": "H0021", "label": "clue", "why": "지하철 이용"}
+{"id": "H0022", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0023", "label": "clue", "why": "통영 지명"}
+{"id": "H0024", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0025", "label": "clue", "why": "출근 경로"}
+{"id": "H0026", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0027", "label": "clue", "why": "속초 지명"}
+{"id": "H0028", "label": "clue", "why": "출근 경로"}
+{"id": "H0029", "label": "fragment", "why": "힘든 기분의 비유"}
+{"id": "H0030", "label": "clue", "why": "출근 시점"}
+{"id": "H0031", "label": "clue", "why": "강사의 수업 업무"}
+{"id": "H0032", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0033", "label": "clue", "why": "제주 지명"}
+{"id": "H0034", "label": "fragment", "why": "급여일은 통근 아님"}
+{"id": "H0035", "label": "clue", "why": "남산 장소명"}
+{"id": "H0036", "label": "clue", "why": "귀가할 집"}
+{"id": "H0037", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0038", "label": "clue", "why": "버스 이용 실패"}
+{"id": "H0039", "label": "fragment", "why": "대명사뿐"}
+{"id": "H0040", "label": "fragment", "why": "조사뿐"}
+{"id": "H0041", "label": "clue", "why": "양양 지명"}
+{"id": "H0042", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0043", "label": "clue", "why": "출근 행위"}
+{"id": "H0044", "label": "clue", "why": "신분당선 이용"}
+{"id": "H0045", "label": "clue", "why": "버스 이용"}
+{"id": "H0046", "label": "fragment", "why": "조사뿐"}
+{"id": "H0047", "label": "clue", "why": "출근 행위"}
+{"id": "H0048", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0049", "label": "clue", "why": "일터 지칭"}
+{"id": "H0050", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0051", "label": "clue", "why": "지하철 이용"}
+{"id": "H0052", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0053", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0054", "label": "clue", "why": "카풀 이용"}
+{"id": "H0055", "label": "fragment", "why": "타는 동사만 있음"}
+{"id": "H0056", "label": "clue", "why": "통근버스 이용"}
+{"id": "H0057", "label": "clue", "why": "경주 지명"}
+{"id": "H0058", "label": "clue", "why": "대전 지명"}
+{"id": "H0059", "label": "clue", "why": "전주 지명"}
+{"id": "H0060", "label": "clue", "why": "담양 지명"}
+{"id": "H0061", "label": "clue", "why": "군산 지명"}
+{"id": "H0062", "label": "clue", "why": "출근 행위"}
+{"id": "H0063", "label": "clue", "why": "여수 지명"}
+{"id": "H0064", "label": "clue", "why": "출근 핵심어 포함"}
+{"id": "H0065", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0066", "label": "clue", "why": "방콕 지명"}
+{"id": "H0067", "label": "clue", "why": "거주 동네"}
+{"id": "H0068", "label": "fragment", "why": "카페 방문의 비유"}
+{"id": "H0069", "label": "clue", "why": "거주 집"}
+{"id": "H0070", "label": "clue", "why": "출근 행위"}
+{"id": "H0071", "label": "clue", "why": "가평 지명"}
+{"id": "H0072", "label": "clue", "why": "숙박 시설"}
+{"id": "H0073", "label": "clue", "why": "분당 지명"}
+{"id": "H0074", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0075", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0076", "label": "clue", "why": "지하철 이용"}
+{"id": "H0077", "label": "clue", "why": "교통 노선의 종점"}
+{"id": "H0078", "label": "clue", "why": "통영 지명"}
+{"id": "H0079", "label": "clue", "why": "속초 지명"}
+{"id": "H0080", "label": "clue", "why": "제주 지명"}
+{"id": "H0081", "label": "clue", "why": "양양 지명"}
+{"id": "H0082", "label": "clue", "why": "경주 지명"}
+{"id": "H0083", "label": "clue", "why": "단양 지명"}
+{"id": "H0084", "label": "fragment", "why": "통근 의미 없음"}
+{"id": "H0085", "label": "clue", "why": "나이 지칭"}
+{"id": "H0086", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0087", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0088", "label": "clue", "why": "출근 핵심어"}
+{"id": "H0089", "label": "clue", "why": "일터 지칭"}
+{"id": "H0090", "label": "clue", "why": "오산 지명"}
+{"id": "H0091", "label": "clue", "why": "양주 지명"}
+{"id": "H0092", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0093", "label": "clue", "why": "출근 행위"}
+{"id": "H0094", "label": "clue", "why": "영천 지명"}
+{"id": "H0095", "label": "clue", "why": "포항 지명"}
+{"id": "H0096", "label": "clue", "why": "태안 지명"}
+{"id": "H0097", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0098", "label": "fragment", "why": "타는 동사만 있음"}
+{"id": "H0099", "label": "clue", "why": "영월 지명"}
+{"id": "H0100", "label": "clue", "why": "출근 행위"}
+{"id": "H0101", "label": "clue", "why": "송도 지명"}
+{"id": "H0102", "label": "clue", "why": "남해 지명"}
+{"id": "H0103", "label": "clue", "why": "차량 이동"}
+{"id": "H0104", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0105", "label": "clue", "why": "버스 이용 실패"}
+{"id": "H0106", "label": "clue", "why": "요양보호사 업무"}
+{"id": "H0107", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0108", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0109", "label": "clue", "why": "귀가할 집"}
+{"id": "H0110", "label": "fragment", "why": "어미 조각뿐"}
+{"id": "H0111", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0112", "label": "clue", "why": "거주 동네"}
+{"id": "H0113", "label": "clue", "why": "귀가할 집"}
+{"id": "H0114", "label": "clue", "why": "강릉 지명"}
+{"id": "H0115", "label": "clue", "why": "지하철 이용"}
+{"id": "H0116", "label": "clue", "why": "홍콩 지명"}
+{"id": "H0117", "label": "fragment", "why": "타고 동사만 있음"}
+{"id": "H0118", "label": "clue", "why": "괌 지명"}
+{"id": "H0119", "label": "clue", "why": "마을버스 이용"}
+{"id": "H0120", "label": "clue", "why": "출근 행위"}
+{"id": "H0121", "label": "clue", "why": "귀가할 집"}
+{"id": "H0122", "label": "clue", "why": "완도 지명"}
+{"id": "H0123", "label": "clue", "why": "출근 행위"}
+{"id": "H0124", "label": "clue", "why": "자전거 출퇴근"}
+{"id": "H0125", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0126", "label": "clue", "why": "급행 노선 이용"}
+{"id": "H0127", "label": "clue", "why": "귀가할 집"}
+{"id": "H0128", "label": "fragment", "why": "조사뿐"}
+{"id": "H0129", "label": "clue", "why": "출근 셔틀 이용"}
+{"id": "H0130", "label": "fragment", "why": "빈도 부사뿐"}
+{"id": "H0131", "label": "clue", "why": "KTX 출퇴근"}
+{"id": "H0132", "label": "clue", "why": "거주 동네"}
+{"id": "H0133", "label": "clue", "why": "보령 지명"}
+{"id": "H0134", "label": "clue", "why": "자녀 관계"}
+{"id": "H0135", "label": "clue", "why": "출근 경로"}
+{"id": "H0136", "label": "clue", "why": "단양 지명"}
+{"id": "H0137", "label": "clue", "why": "출근 행위"}
+{"id": "H0138", "label": "fragment", "why": "여가 낚시"}
+{"id": "H0139", "label": "clue", "why": "출근 행위"}
+{"id": "H0140", "label": "clue", "why": "출근 행위"}
+{"id": "H0141", "label": "clue", "why": "문경 지명"}
+{"id": "H0142", "label": "clue", "why": "태안 지명"}
+{"id": "H0143", "label": "fragment", "why": "여가 캠핑"}
+{"id": "H0144", "label": "fragment", "why": "반려동물 주인 호칭"}
+{"id": "H0145", "label": "fragment", "why": "급여는 통근 아님"}
+{"id": "H0146", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0147", "label": "clue", "why": "영월 지명"}
+{"id": "H0148", "label": "clue", "why": "거주 동네"}
+{"id": "H0149", "label": "clue", "why": "남해 지명"}
+{"id": "H0150", "label": "clue", "why": "어머니 관계"}
+{"id": "H0151", "label": "clue", "why": "강릉 지명"}
+{"id": "H0152", "label": "clue", "why": "홍콩 지명"}
+{"id": "H0153", "label": "clue", "why": "퇴근 시각"}
+{"id": "H0154", "label": "clue", "why": "완도 지명"}
+{"id": "H0155", "label": "clue", "why": "귀가할 집"}
+{"id": "H0156", "label": "fragment", "why": "조사뿐"}
+{"id": "H0157", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0158", "label": "clue", "why": "목포 지명"}
+{"id": "H0159", "label": "clue", "why": "보령 지명"}
+{"id": "H0160", "label": "fragment", "why": "급여일은 통근 아님"}
+{"id": "H0161", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0162", "label": "clue", "why": "자녀 관계"}
+{"id": "H0163", "label": "clue", "why": "거주 동네"}
+{"id": "H0164", "label": "clue", "why": "출근 행위"}
+{"id": "H0165", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0166", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0167", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0168", "label": "clue", "why": "버스 승차 지점"}
+{"id": "H0169", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0170", "label": "clue", "why": "하남 지명"}
+{"id": "H0171", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0172", "label": "clue", "why": "청주 지명"}
+{"id": "H0173", "label": "clue", "why": "서산 지명"}
+{"id": "H0174", "label": "clue", "why": "출근 경로"}
+{"id": "H0175", "label": "clue", "why": "출근 경로"}
+{"id": "H0176", "label": "fragment", "why": "거리 표현만 있음"}
+{"id": "H0177", "label": "clue", "why": "생활 동네"}
+{"id": "H0178", "label": "fragment", "why": "조사뿐"}
+{"id": "H0179", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0180", "label": "clue", "why": "귀가할 집"}
+{"id": "H0181", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0182", "label": "clue", "why": "거주 동네"}
+{"id": "H0183", "label": "clue", "why": "출근 행위"}
+{"id": "H0184", "label": "clue", "why": "거주 동네"}
+{"id": "H0185", "label": "clue", "why": "귀가할 집"}
+{"id": "H0186", "label": "fragment", "why": "조사뿐"}
+{"id": "H0187", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0188", "label": "clue", "why": "광역버스 출퇴근"}
+{"id": "H0189", "label": "clue", "why": "지하철 급행 노선"}
+{"id": "H0190", "label": "clue", "why": "첫차 이용"}
+{"id": "H0191", "label": "clue", "why": "출근 행위"}
+{"id": "H0192", "label": "fragment", "why": "고지서의 일부 조각"}
+{"id": "H0193", "label": "clue", "why": "이웃 집 관계"}
+{"id": "H0194", "label": "clue", "why": "보성 지명"}
+{"id": "H0195", "label": "clue", "why": "차밭 장소"}
+{"id": "H0196", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0197", "label": "clue", "why": "영덕 지명"}
+{"id": "H0198", "label": "fragment", "why": "조사뿐"}
+{"id": "H0199", "label": "clue", "why": "강남 지명"}
+{"id": "H0200", "label": "clue", "why": "진주 지명"}
+{"id": "H0201", "label": "clue", "why": "세부 지명"}
+{"id": "H0202", "label": "fragment", "why": "모발 영양은 지명 아님"}
+{"id": "H0203", "label": "clue", "why": "하동 지명"}
+{"id": "H0204", "label": "clue", "why": "홍천 지명"}
+{"id": "H0205", "label": "clue", "why": "계곡 장소"}
+{"id": "H0206", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0207", "label": "clue", "why": "고창 지명"}
+{"id": "H0208", "label": "clue", "why": "출근 행위"}
+{"id": "H0209", "label": "clue", "why": "진해 지명"}
+{"id": "H0210", "label": "clue", "why": "공주 지명"}
+{"id": "H0211", "label": "clue", "why": "거주 이웃 관계"}
+{"id": "H0212", "label": "clue", "why": "포천 지명"}
+{"id": "H0213", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0214", "label": "clue", "why": "거주 동네"}
+{"id": "H0215", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0216", "label": "clue", "why": "삼척 지명"}
+{"id": "H0217", "label": "clue", "why": "원주 지명"}
+{"id": "H0218", "label": "clue", "why": "울산 지명"}
+{"id": "H0219", "label": "fragment", "why": "조사뿐"}
+{"id": "H0220", "label": "clue", "why": "거주 동네"}
+{"id": "H0221", "label": "fragment", "why": "소유 대명사뿐"}
+{"id": "H0222", "label": "fragment", "why": "요일 범주뿐"}
+{"id": "H0223", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0224", "label": "fragment", "why": "빈도 부사뿐"}
+{"id": "H0225", "label": "clue", "why": "출근 행위"}
+{"id": "H0226", "label": "fragment", "why": "요일 범주뿐"}
+{"id": "H0227", "label": "fragment", "why": "휴가는 통근 아님"}
+{"id": "H0228", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0229", "label": "clue", "why": "출근 경로"}
+{"id": "H0230", "label": "clue", "why": "명동 지명"}
+{"id": "H0231", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0232", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0233", "label": "clue", "why": "춘천 지명"}
+{"id": "H0234", "label": "clue", "why": "거주 동네"}
+{"id": "H0235", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0236", "label": "fragment", "why": "어미뿐"}
+{"id": "H0237", "label": "clue", "why": "출근 경로"}
+{"id": "H0238", "label": "clue", "why": "목동 지명"}
+{"id": "H0239", "label": "clue", "why": "거주 동네"}
+{"id": "H0240", "label": "clue", "why": "출근 경로"}
+{"id": "H0241", "label": "clue", "why": "출근 행위"}
+{"id": "H0242", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0243", "label": "clue", "why": "출근 행위"}
+{"id": "H0244", "label": "clue", "why": "여수 지명"}
+{"id": "H0245", "label": "clue", "why": "남원 지명"}
+{"id": "H0246", "label": "fragment", "why": "어미 조각뿐"}
+{"id": "H0247", "label": "clue", "why": "출근 경로"}
+{"id": "H0248", "label": "clue", "why": "지하철 이용"}
+{"id": "H0249", "label": "clue", "why": "귀가할 집"}
+{"id": "H0250", "label": "clue", "why": "속초 지명"}
+{"id": "H0251", "label": "clue", "why": "강릉 지명"}
+{"id": "H0252", "label": "clue", "why": "속초 지명"}
+{"id": "H0253", "label": "clue", "why": "김포 지명"}
+{"id": "H0254", "label": "clue", "why": "속초 지명"}
+{"id": "H0255", "label": "clue", "why": "군산 지명"}
+{"id": "H0256", "label": "clue", "why": "대구 지명"}
+{"id": "H0257", "label": "clue", "why": "강릉 지명"}
+{"id": "H0258", "label": "clue", "why": "군산 지명"}
+{"id": "H0259", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0260", "label": "clue", "why": "지하철 이용"}
+{"id": "H0261", "label": "clue", "why": "출근하는 사람"}
+{"id": "H0262", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0263", "label": "clue", "why": "강릉 지명"}
+{"id": "H0264", "label": "clue", "why": "출근 행위"}
+{"id": "H0265", "label": "clue", "why": "남해 지명"}
+{"id": "H0266", "label": "clue", "why": "파리 지명"}
+{"id": "H0267", "label": "clue", "why": "출근 경로"}
+{"id": "H0268", "label": "clue", "why": "지하철 이용"}
+{"id": "H0269", "label": "clue", "why": "업무상 이동인 출장"}
+{"id": "H0270", "label": "clue", "why": "출근 행위"}
+{"id": "H0271", "label": "clue", "why": "지하철 이용"}
+{"id": "H0272", "label": "clue", "why": "강릉 지명"}
+{"id": "H0273", "label": "clue", "why": "뉴욕 지명"}
+{"id": "H0274", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0275", "label": "clue", "why": "거주 동네"}
+{"id": "H0276", "label": "clue", "why": "속초 지명"}
+{"id": "H0277", "label": "clue", "why": "일터 지칭"}
+{"id": "H0278", "label": "clue", "why": "버스 이용"}
+{"id": "H0279", "label": "clue", "why": "출근 행위"}
+{"id": "H0280", "label": "clue", "why": "속초 지명"}
+{"id": "H0281", "label": "fragment", "why": "유명은 수식어뿐"}
+{"id": "H0282", "label": "clue", "why": "속초 지명"}
+{"id": "H0283", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0284", "label": "clue", "why": "여수 지명"}
+{"id": "H0285", "label": "clue", "why": "출근 핵심어 포함"}
+{"id": "H0286", "label": "clue", "why": "남원 지명"}
+{"id": "H0287", "label": "clue", "why": "판교 지명"}
+{"id": "H0288", "label": "clue", "why": "출근 경로"}
+{"id": "H0289", "label": "clue", "why": "지하철 환승"}
+{"id": "H0290", "label": "clue", "why": "담양 지명"}
+{"id": "H0291", "label": "clue", "why": "거주 동네"}
+{"id": "H0292", "label": "clue", "why": "강릉 지명"}
+{"id": "H0293", "label": "clue", "why": "업무 마감"}
+{"id": "H0294", "label": "clue", "why": "거주 동네"}
+{"id": "H0295", "label": "clue", "why": "강릉 지명"}
+{"id": "H0296", "label": "clue", "why": "출근 경로"}
+{"id": "H0297", "label": "clue", "why": "지하철 이용"}
+{"id": "H0298", "label": "clue", "why": "여수 지명"}
+{"id": "H0299", "label": "clue", "why": "송도 지명"}
+{"id": "H0300", "label": "clue", "why": "트럭 이용"}
+{"id": "H0301", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0302", "label": "fragment", "why": "조사뿐"}
+{"id": "H0303", "label": "fragment", "why": "야근 업무이며 통근 아님"}
+{"id": "H0304", "label": "clue", "why": "담양 지명"}
+{"id": "H0305", "label": "clue", "why": "강릉 지명"}
+{"id": "H0306", "label": "clue", "why": "자동차 이용"}
+{"id": "H0307", "label": "clue", "why": "귀가할 집"}
+{"id": "H0308", "label": "clue", "why": "안동 지명"}
+{"id": "H0309", "label": "clue", "why": "생업인 가게 운영"}
+{"id": "H0310", "label": "clue", "why": "일산 지명"}
+{"id": "H0311", "label": "clue", "why": "여주 지명"}
+{"id": "H0312", "label": "clue", "why": "속초 지명"}
+{"id": "H0313", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0314", "label": "clue", "why": "출근 행위"}
+{"id": "H0315", "label": "clue", "why": "미국 국명"}
+{"id": "H0316", "label": "clue", "why": "속초 지명"}
+{"id": "H0317", "label": "clue", "why": "판교 지명"}
+{"id": "H0318", "label": "clue", "why": "강릉 지명"}
+{"id": "H0319", "label": "clue", "why": "지하철 이용"}
+{"id": "H0320", "label": "clue", "why": "전주 지명"}
+{"id": "H0321", "label": "clue", "why": "집 앞 관계"}
+{"id": "H0322", "label": "clue", "why": "남성 배우자 호칭"}
+{"id": "H0323", "label": "clue", "why": "속초 지명"}
+{"id": "H0324", "label": "clue", "why": "지하철 이용"}
+{"id": "H0325", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0326", "label": "fragment", "why": "체력 설명은 통근 아님"}
+{"id": "H0327", "label": "clue", "why": "거주 동네"}
+{"id": "H0328", "label": "clue", "why": "문경 지명"}
+{"id": "H0329", "label": "clue", "why": "출근 경로"}
+{"id": "H0330", "label": "clue", "why": "지하철 이용"}
+{"id": "H0331", "label": "clue", "why": "남성 배우자 호칭"}
+{"id": "H0332", "label": "clue", "why": "지하철 출퇴근"}
+{"id": "H0333", "label": "fragment", "why": "쇼핑한 팝업은 직무 아님"}
+{"id": "H0334", "label": "clue", "why": "담양 지명"}
+{"id": "H0335", "label": "clue", "why": "남성 친족 호칭"}
+{"id": "H0336", "label": "clue", "why": "거주 동네"}
+{"id": "H0337", "label": "clue", "why": "강릉 지명"}
+{"id": "H0338", "label": "clue", "why": "남해 지명"}
+{"id": "H0339", "label": "clue", "why": "거주 동네"}
+{"id": "H0340", "label": "clue", "why": "송도 지명"}
+{"id": "H0341", "label": "clue", "why": "목포 지명"}
+{"id": "H0342", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0343", "label": "clue", "why": "KTX 이용"}
+{"id": "H0344", "label": "clue", "why": "영국 국명"}
+{"id": "H0345", "label": "clue", "why": "속초 지명"}
+{"id": "H0346", "label": "clue", "why": "업무 마감"}
+{"id": "H0347", "label": "clue", "why": "런던 지명"}
+{"id": "H0348", "label": "clue", "why": "속초 지명"}
+{"id": "H0349", "label": "clue", "why": "송도 지명"}
+{"id": "H0350", "label": "clue", "why": "강릉 지명"}
+{"id": "H0351", "label": "clue", "why": "전주 지명"}
+{"id": "H0352", "label": "clue", "why": "속초 지명"}
+{"id": "H0353", "label": "clue", "why": "거주 동네"}
+{"id": "H0354", "label": "clue", "why": "속초 지명"}
+{"id": "H0355", "label": "clue", "why": "출근 경로"}
+{"id": "H0356", "label": "clue", "why": "강릉 지명"}
+{"id": "H0357", "label": "clue", "why": "출근 행위"}
+{"id": "H0358", "label": "clue", "why": "지하철 이용"}
+{"id": "H0359", "label": "clue", "why": "파주 지명"}
+{"id": "H0360", "label": "clue", "why": "출근 핵심어"}
+{"id": "H0361", "label": "clue", "why": "군산 지명"}
+{"id": "H0362", "label": "clue", "why": "거주 동네"}
+{"id": "H0363", "label": "clue", "why": "출근 경로"}
+{"id": "H0364", "label": "clue", "why": "업무상 이동인 출장"}
+{"id": "H0365", "label": "clue", "why": "판교 지명"}
+{"id": "H0366", "label": "clue", "why": "출근 경로"}
+{"id": "H0367", "label": "clue", "why": "단양 지명"}
+{"id": "H0368", "label": "clue", "why": "거주 동네"}
+{"id": "H0369", "label": "clue", "why": "속초 지명"}
+{"id": "H0370", "label": "clue", "why": "속초 지명"}
+{"id": "H0371", "label": "clue", "why": "영월 지명"}
+{"id": "H0372", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0373", "label": "clue", "why": "강릉 지명"}
+{"id": "H0374", "label": "clue", "why": "귀가할 집"}
+{"id": "H0375", "label": "clue", "why": "거주 동네"}
+{"id": "H0376", "label": "clue", "why": "어머니 관계"}
+{"id": "H0377", "label": "clue", "why": "영월 지명"}
+{"id": "H0378", "label": "clue", "why": "강릉 지명"}
+{"id": "H0379", "label": "clue", "why": "강릉 지명"}
+{"id": "H0380", "label": "clue", "why": "방문한 바다 장소"}
+{"id": "H0381", "label": "clue", "why": "광주 지명"}
+{"id": "H0382", "label": "clue", "why": "거주 동네"}
+{"id": "H0383", "label": "clue", "why": "대전 지명"}
+{"id": "H0384", "label": "clue", "why": "출장 업무"}
+{"id": "H0385", "label": "clue", "why": "군산 지명"}
+{"id": "H0386", "label": "clue", "why": "강릉 지명"}
+{"id": "H0387", "label": "clue", "why": "순창 지명"}
+{"id": "H0388", "label": "clue", "why": "속초 지명"}
+{"id": "H0389", "label": "clue", "why": "생활 동네"}
+{"id": "H0390", "label": "clue", "why": "강릉 지명"}
+{"id": "H0391", "label": "clue", "why": "강릉 지명"}
+{"id": "H0392", "label": "clue", "why": "항공 교통수단"}
+{"id": "H0393", "label": "clue", "why": "속초 지명"}
+{"id": "H0394", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0395", "label": "clue", "why": "지하철 이용"}
+{"id": "H0396", "label": "clue", "why": "귀가할 집"}
+{"id": "H0397", "label": "clue", "why": "강릉 지명"}
+{"id": "H0398", "label": "clue", "why": "출근 행위"}
+{"id": "H0399", "label": "clue", "why": "뉴욕 지명"}
+{"id": "H0400", "label": "clue", "why": "강릉 지명"}
+{"id": "H0401", "label": "clue", "why": "업무 마감"}
+{"id": "H0402", "label": "clue", "why": "거주 동네"}
+{"id": "H0403", "label": "clue", "why": "양평 지명"}
+{"id": "H0404", "label": "clue", "why": "자동차 이동"}
+{"id": "H0405", "label": "clue", "why": "강릉 지명"}
+{"id": "H0406", "label": "clue", "why": "강릉 지명"}
+{"id": "H0407", "label": "clue", "why": "업무 마감"}
+{"id": "H0408", "label": "clue", "why": "거주 동네"}
+{"id": "H0409", "label": "clue", "why": "서울 지명"}
+{"id": "H0410", "label": "clue", "why": "강릉 지명"}
+{"id": "H0411", "label": "clue", "why": "강릉 지명"}
+{"id": "H0412", "label": "clue", "why": "속초 지명"}
+{"id": "H0413", "label": "clue", "why": "생활 동네"}
+{"id": "H0414", "label": "clue", "why": "지하철 출근"}
+{"id": "H0415", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0416", "label": "clue", "why": "거주 동네"}
+{"id": "H0417", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0418", "label": "clue", "why": "지하철 이용"}
+{"id": "H0419", "label": "clue", "why": "출근 행위"}
+{"id": "H0420", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0421", "label": "clue", "why": "청주 지명"}
+{"id": "H0422", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0423", "label": "clue", "why": "출근 행위"}
+{"id": "H0424", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0425", "label": "fragment", "why": "어미뿐"}
+{"id": "H0426", "label": "clue", "why": "순천 지명"}
+{"id": "H0427", "label": "clue", "why": "안동 지명"}
+{"id": "H0428", "label": "clue", "why": "대전 지명"}
+{"id": "H0429", "label": "clue", "why": "담양 지명"}
+{"id": "H0430", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0431", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0432", "label": "clue", "why": "도보 이동 시간"}
+{"id": "H0433", "label": "fragment", "why": "소유 대명사뿐"}
+{"id": "H0434", "label": "clue", "why": "공장 시설"}
+{"id": "H0435", "label": "clue", "why": "버스정류장 핵심어"}
+{"id": "H0436", "label": "clue", "why": "거주 동네"}
+{"id": "H0437", "label": "fragment", "why": "고객 관계는 직업 아님"}
+{"id": "H0438", "label": "fragment", "why": "빈도와 타는 동사뿐"}
+{"id": "H0439", "label": "clue", "why": "지하철 첫차 이용"}
+{"id": "H0440", "label": "clue", "why": "출근 경로"}
+{"id": "H0441", "label": "clue", "why": "버스 노선 이용"}
+{"id": "H0442", "label": "clue", "why": "자전거 이용"}
+{"id": "H0443", "label": "clue", "why": "출근 행위"}
+{"id": "H0444", "label": "clue", "why": "택시 교통수단"}
+{"id": "H0445", "label": "clue", "why": "거제 지명"}
+{"id": "H0446", "label": "clue", "why": "거주 동네"}
+{"id": "H0447", "label": "clue", "why": "군위 지명"}
+{"id": "H0448", "label": "clue", "why": "부안 지명"}
+{"id": "H0449", "label": "clue", "why": "이웃 집 관계"}
+{"id": "H0450", "label": "fragment", "why": "지명 한 음절 조각"}
+{"id": "H0451", "label": "clue", "why": "포구 장소 핵심어"}
+{"id": "H0452", "label": "clue", "why": "양양 지명"}
+{"id": "H0453", "label": "clue", "why": "거주 동네"}
+{"id": "H0454", "label": "clue", "why": "울진 지명"}
+{"id": "H0455", "label": "clue", "why": "출근 경로"}
+{"id": "H0456", "label": "fragment", "why": "답사 일정은 교통수단 아님"}
+{"id": "H0457", "label": "clue", "why": "공주 지명"}
+{"id": "H0458", "label": "clue", "why": "보령 지명"}
+{"id": "H0459", "label": "clue", "why": "거주 동네"}
+{"id": "H0460", "label": "clue", "why": "강진 지명"}
+{"id": "H0461", "label": "clue", "why": "영양 지명"}
+{"id": "H0462", "label": "clue", "why": "보은 지명"}
+{"id": "H0463", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0464", "label": "clue", "why": "아산 지명"}
+{"id": "H0465", "label": "clue", "why": "완도 지명"}
+{"id": "H0466", "label": "fragment", "why": "휴가 이동만 나타냄"}
+{"id": "H0467", "label": "clue", "why": "홍천 지명"}
+{"id": "H0468", "label": "fragment", "why": "빈도 부사뿐"}
+{"id": "H0469", "label": "clue", "why": "경춘선 출퇴근"}
+{"id": "H0470", "label": "clue", "why": "여수 지명"}
+{"id": "H0471", "label": "clue", "why": "출근 행위"}
+{"id": "H0472", "label": "clue", "why": "관광버스 이용"}
+{"id": "H0473", "label": "clue", "why": "부여 지명"}
+{"id": "H0474", "label": "clue", "why": "철원 지명"}
+{"id": "H0475", "label": "clue", "why": "청송 지명"}
+{"id": "H0476", "label": "clue", "why": "속초 지명"}
+{"id": "H0477", "label": "clue", "why": "진도 지명"}
+{"id": "H0478", "label": "clue", "why": "가평 지명"}
+{"id": "H0479", "label": "clue", "why": "보성 지명"}
+{"id": "H0480", "label": "clue", "why": "속담 속 서울 지명"}
+{"id": "H0481", "label": "clue", "why": "단양 지명"}
+{"id": "H0482", "label": "clue", "why": "구례 지명"}
+{"id": "H0483", "label": "fragment", "why": "시설 아닌 행정 지명"}
+{"id": "H0484", "label": "clue", "why": "속담 속 평양 지명"}
+{"id": "H0485", "label": "clue", "why": "영덕 지명"}
+{"id": "H0486", "label": "clue", "why": "오토바이 통근"}
+{"id": "H0487", "label": "clue", "why": "합천 지명"}
+{"id": "H0488", "label": "clue", "why": "춘천 지명"}
+{"id": "H0489", "label": "clue", "why": "거주 동네"}
+{"id": "H0490", "label": "clue", "why": "김천 지명"}
+{"id": "H0491", "label": "clue", "why": "통영 지명"}
+{"id": "H0492", "label": "clue", "why": "자동차 내부"}
+{"id": "H0493", "label": "clue", "why": "서천 지명"}
+{"id": "H0494", "label": "fragment", "why": "조사뿐"}
+{"id": "H0495", "label": "clue", "why": "원주 지명"}
+{"id": "H0496", "label": "fragment", "why": "어미뿐"}
+{"id": "H0497", "label": "fragment", "why": "휴가 시기뿐"}
+{"id": "H0498", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0499", "label": "fragment", "why": "조사뿐"}
+{"id": "H0500", "label": "clue", "why": "출근 경로"}
+{"id": "H0501", "label": "clue", "why": "상주 지명"}
+{"id": "H0502", "label": "clue", "why": "관광버스 교통수단"}
+{"id": "H0503", "label": "clue", "why": "출근 경로"}
+{"id": "H0504", "label": "clue", "why": "밀양 지명"}
+{"id": "H0505", "label": "clue", "why": "강릉 지명"}
+{"id": "H0506", "label": "clue", "why": "출근 경로"}
+{"id": "H0507", "label": "fragment", "why": "어미뿐"}
+{"id": "H0508", "label": "clue", "why": "포항 지명"}
+{"id": "H0509", "label": "clue", "why": "남원 지명"}
+{"id": "H0510", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0511", "label": "clue", "why": "거주 동네"}
+{"id": "H0512", "label": "fragment", "why": "조사뿐"}
+{"id": "H0513", "label": "clue", "why": "출근 경로"}
+{"id": "H0514", "label": "clue", "why": "대구 지명"}
+{"id": "H0515", "label": "clue", "why": "출퇴근 경로"}
+{"id": "H0516", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0517", "label": "clue", "why": "제천 지명"}
+{"id": "H0518", "label": "clue", "why": "전주 지명"}
+{"id": "H0519", "label": "clue", "why": "인천 지명"}
+{"id": "H0520", "label": "clue", "why": "구미 지명"}
+{"id": "H0521", "label": "clue", "why": "진주 지명"}
+{"id": "H0522", "label": "clue", "why": "고령 지명"}
+{"id": "H0523", "label": "clue", "why": "박물관 업무"}
+{"id": "H0524", "label": "clue", "why": "수원 지명"}
+{"id": "H0525", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0526", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0527", "label": "clue", "why": "생업인 가게 운영"}
+{"id": "H0528", "label": "clue", "why": "삼척 지명"}
+{"id": "H0529", "label": "clue", "why": "거주 동네"}
+{"id": "H0530", "label": "clue", "why": "옥천 지명"}
+{"id": "H0531", "label": "clue", "why": "남해 지명"}
+{"id": "H0532", "label": "clue", "why": "거주 동네"}
+{"id": "H0533", "label": "clue", "why": "군산 지명"}
+{"id": "H0534", "label": "clue", "why": "보홀 지명"}
+{"id": "H0535", "label": "clue", "why": "당진 지명"}
+{"id": "H0536", "label": "clue", "why": "여주 지명"}
+{"id": "H0537", "label": "clue", "why": "출근 경로"}
+{"id": "H0538", "label": "clue", "why": "자동차 교통수단"}
+{"id": "H0539", "label": "clue", "why": "당진 지명"}
+{"id": "H0540", "label": "clue", "why": "판교 지명"}
+{"id": "H0541", "label": "clue", "why": "출근 경로"}
+{"id": "H0542", "label": "clue", "why": "남해 지명"}
+{"id": "H0543", "label": "clue", "why": "거주 동네"}
+{"id": "H0544", "label": "clue", "why": "군산 지명"}
+{"id": "H0545", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0546", "label": "fragment", "why": "야근 업무이며 통근 아님"}
+{"id": "H0547", "label": "clue", "why": "퇴근 핵심어 포함"}
+{"id": "H0548", "label": "clue", "why": "정선 지명"}
+{"id": "H0549", "label": "fragment", "why": "조사뿐"}
+{"id": "H0550", "label": "clue", "why": "출근 경로"}
+{"id": "H0551", "label": "clue", "why": "지하철 노선"}
+{"id": "H0552", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0553", "label": "clue", "why": "귀가할 집"}
+{"id": "H0554", "label": "clue", "why": "정선 지명"}
+{"id": "H0555", "label": "clue", "why": "영월 지명"}
+{"id": "H0556", "label": "clue", "why": "출근 핵심어 포함"}
+{"id": "H0557", "label": "clue", "why": "출근 경로"}
+{"id": "H0558", "label": "clue", "why": "지하철 교통수단"}
+{"id": "H0559", "label": "clue", "why": "귀가할 집"}
+{"id": "H0560", "label": "clue", "why": "경주 지명"}
+{"id": "H0561", "label": "clue", "why": "탄천 장소명"}
+{"id": "H0562", "label": "clue", "why": "출근 경로"}
+{"id": "H0563", "label": "clue", "why": "지하철 이용"}
+{"id": "H0564", "label": "fragment", "why": "업무는 통근 아님"}
+{"id": "H0565", "label": "clue", "why": "출근 경로"}
+{"id": "H0566", "label": "clue", "why": "출근 행위"}
+{"id": "H0567", "label": "clue", "why": "지하철 이용"}
+{"id": "H0568", "label": "clue", "why": "정선 지명"}
+{"id": "H0569", "label": "clue", "why": "자동차 이동"}
+{"id": "H0570", "label": "clue", "why": "양평 지명"}
+{"id": "H0571", "label": "fragment", "why": "시설 아닌 행정 지명"}
+{"id": "H0572", "label": "fragment", "why": "급여 수령은 통근 아님"}
+{"id": "H0573", "label": "clue", "why": "출퇴근 수단 지칭"}
+{"id": "H0574", "label": "fragment", "why": "빈도와 타는 동사뿐"}
+{"id": "H0575", "label": "clue", "why": "지하철 이용"}
+{"id": "H0576", "label": "fragment", "why": "근무는 통근 아님"}
+{"id": "H0577", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0578", "label": "clue", "why": "경주 지명"}
+{"id": "H0579", "label": "clue", "why": "자동차 미이용"}
+{"id": "H0580", "label": "clue", "why": "지하철 출퇴근"}
+{"id": "H0581", "label": "clue", "why": "지하철 출퇴근"}
+{"id": "H0582", "label": "clue", "why": "출근 행위"}
+{"id": "H0583", "label": "clue", "why": "경주 지명"}
+{"id": "H0584", "label": "clue", "why": "정선 지명"}
+{"id": "H0585", "label": "clue", "why": "평창 지명"}
+{"id": "H0586", "label": "clue", "why": "지하철 노선 이용"}
+{"id": "H0587", "label": "clue", "why": "출근 행위"}
+{"id": "H0588", "label": "fragment", "why": "직장인은 통근 표현 아님"}
+{"id": "H0589", "label": "fragment", "why": "조사뿐"}
+{"id": "H0590", "label": "fragment", "why": "휴가 이동만 나타냄"}
+{"id": "H0591", "label": "clue", "why": "다낭 지명"}
+{"id": "H0592", "label": "clue", "why": "업무 마감"}
+{"id": "H0593", "label": "clue", "why": "출근 경로"}
+{"id": "H0594", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0595", "label": "clue", "why": "자동차 이용"}
+{"id": "H0596", "label": "clue", "why": "광명 지명"}
+{"id": "H0597", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0598", "label": "clue", "why": "새재 장소명 핵심"}
+{"id": "H0599", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0600", "label": "clue", "why": "일하는 가게"}
+{"id": "H0601", "label": "clue", "why": "삼척 지명"}
+{"id": "H0602", "label": "clue", "why": "정선 지명"}
+{"id": "H0603", "label": "clue", "why": "런던 지명"}
+{"id": "H0604", "label": "clue", "why": "함양 지명"}
+{"id": "H0605", "label": "clue", "why": "당진 지명"}
+{"id": "H0606", "label": "clue", "why": "남해 지명"}
+{"id": "H0607", "label": "clue", "why": "남해 지명"}
+{"id": "H0608", "label": "clue", "why": "거주 동네"}
+{"id": "H0609", "label": "clue", "why": "당진 지명"}
+{"id": "H0610", "label": "clue", "why": "영주 지명"}
+{"id": "H0611", "label": "clue", "why": "정읍 지명"}
+{"id": "H0612", "label": "clue", "why": "지하철 출퇴근"}
+{"id": "H0613", "label": "clue", "why": "당진 지명"}
+{"id": "H0614", "label": "clue", "why": "런던 지명"}
+{"id": "H0615", "label": "clue", "why": "경주 지명"}
+{"id": "H0616", "label": "clue", "why": "골목 장소"}
+{"id": "H0617", "label": "clue", "why": "거주 동네"}
+{"id": "H0618", "label": "clue", "why": "군산 지명"}
+{"id": "H0619", "label": "clue", "why": "거주 동네"}
+{"id": "H0620", "label": "clue", "why": "거주 동네"}
+{"id": "H0621", "label": "clue", "why": "영주 지명"}
+{"id": "H0622", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0623", "label": "clue", "why": "출퇴근 경로"}
+{"id": "H0624", "label": "fragment", "why": "휴가 시기뿐"}
+{"id": "H0625", "label": "clue", "why": "경주 지명"}
+{"id": "H0626", "label": "clue", "why": "정선 지명"}
+{"id": "H0627", "label": "clue", "why": "남해 지명"}
+{"id": "H0628", "label": "clue", "why": "업무 마감"}
+{"id": "H0629", "label": "fragment", "why": "어미뿐"}
+{"id": "H0630", "label": "fragment", "why": "시간과 빈도뿐"}
+{"id": "H0631", "label": "clue", "why": "버스 이용"}
+{"id": "H0632", "label": "fragment", "why": "이동 동사 조각"}
+{"id": "H0633", "label": "clue", "why": "정선 지명"}
+{"id": "H0634", "label": "clue", "why": "경주 지명"}
+{"id": "H0635", "label": "clue", "why": "충주 지명"}
+{"id": "H0636", "label": "clue", "why": "정선 지명"}
+{"id": "H0637", "label": "fragment", "why": "시설 아닌 행정 지명"}
+{"id": "H0638", "label": "fragment", "why": "조사뿐"}
+{"id": "H0639", "label": "clue", "why": "거주 동네"}
+{"id": "H0640", "label": "clue", "why": "경주 지명"}
+{"id": "H0641", "label": "clue", "why": "남해 지명"}
+{"id": "H0642", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0643", "label": "clue", "why": "옥천 지명"}
+{"id": "H0644", "label": "fragment", "why": "휴가 이동만 나타냄"}
+{"id": "H0645", "label": "clue", "why": "군산 지명"}
+{"id": "H0646", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0647", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0648", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0649", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0650", "label": "clue", "why": "지하철 이용"}
+{"id": "H0651", "label": "clue", "why": "부산 지명"}
+{"id": "H0652", "label": "clue", "why": "거주 동네"}
+{"id": "H0653", "label": "clue", "why": "정선 지명"}
+{"id": "H0654", "label": "clue", "why": "다낭 지명"}
+{"id": "H0655", "label": "clue", "why": "귀가할 집"}
+{"id": "H0656", "label": "clue", "why": "영주 지명"}
+{"id": "H0657", "label": "clue", "why": "당진 지명"}
+{"id": "H0658", "label": "clue", "why": "파리 지명"}
+{"id": "H0659", "label": "clue", "why": "거주 동네"}
+{"id": "H0660", "label": "clue", "why": "제주 지명"}
+{"id": "H0661", "label": "clue", "why": "정선 지명"}
+{"id": "H0662", "label": "clue", "why": "당진 지명"}
+{"id": "H0663", "label": "clue", "why": "파주 지명"}
+{"id": "H0664", "label": "clue", "why": "장사 업무"}
+{"id": "H0665", "label": "clue", "why": "목포 지명"}
+{"id": "H0666", "label": "clue", "why": "당진 지명"}
+{"id": "H0667", "label": "clue", "why": "런던 지명"}
+{"id": "H0668", "label": "clue", "why": "사천 지명"}
+{"id": "H0669", "label": "fragment", "why": "집 기준이 없는 근처"}
+{"id": "H0670", "label": "clue", "why": "정선 지명"}
+{"id": "H0671", "label": "clue", "why": "도보 이동 시간"}
+{"id": "H0672", "label": "clue", "why": "출근 시점"}
+{"id": "H0673", "label": "clue", "why": "정선 지명"}
+{"id": "H0674", "label": "clue", "why": "옥천 지명"}
+{"id": "H0675", "label": "clue", "why": "시장 시설"}
+{"id": "H0676", "label": "clue", "why": "경주 지명"}
+{"id": "H0677", "label": "clue", "why": "진해 지명"}
+{"id": "H0678", "label": "clue", "why": "파리 지명"}
+{"id": "H0679", "label": "clue", "why": "장터 장소"}
+{"id": "H0680", "label": "fragment", "why": "시설 아닌 행정 지명"}
+{"id": "H0681", "label": "clue", "why": "출근 행위"}
+{"id": "H0682", "label": "clue", "why": "지하철 노선"}
+{"id": "H0683", "label": "clue", "why": "지하철 이용"}
+{"id": "H0684", "label": "clue", "why": "파리 지명"}
+{"id": "H0685", "label": "clue", "why": "이웃 집 관계"}
+{"id": "H0686", "label": "clue", "why": "영주 지명"}
+{"id": "H0687", "label": "fragment", "why": "사찰명 일부이며 행정명 아님"}
+{"id": "H0688", "label": "clue", "why": "출근 경로"}
+{"id": "H0689", "label": "fragment", "why": "어미뿐"}
+{"id": "H0690", "label": "clue", "why": "생활권 읍내"}
+{"id": "H0691", "label": "clue", "why": "정선 지명"}
+{"id": "H0692", "label": "clue", "why": "정선 지명"}
+{"id": "H0693", "label": "clue", "why": "출근 경로"}
+{"id": "H0694", "label": "clue", "why": "귀가할 집"}
+{"id": "H0695", "label": "clue", "why": "출근 경로"}
+{"id": "H0696", "label": "clue", "why": "차량 정체"}
+{"id": "H0697", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0698", "label": "clue", "why": "영주 지명"}
+{"id": "H0699", "label": "clue", "why": "업무상 이동인 출장"}
+{"id": "H0700", "label": "clue", "why": "군산 지명"}
+{"id": "H0701", "label": "fragment", "why": "조사뿐"}
+{"id": "H0702", "label": "clue", "why": "남해 지명"}
+{"id": "H0703", "label": "clue", "why": "삼례 지명"}
+{"id": "H0704", "label": "clue", "why": "삼척 지명"}
+{"id": "H0705", "label": "clue", "why": "업무 마감"}
+{"id": "H0706", "label": "clue", "why": "당진 지명"}
+{"id": "H0707", "label": "clue", "why": "거주 동네"}
+{"id": "H0708", "label": "fragment", "why": "밝음을 찾았다는 비유"}
+{"id": "H0709", "label": "clue", "why": "나주 지명"}
+{"id": "H0710", "label": "clue", "why": "당진 지명"}
+{"id": "H0711", "label": "clue", "why": "파리 지명"}
+{"id": "H0712", "label": "clue", "why": "삼척 지명"}
+{"id": "H0713", "label": "clue", "why": "지하철 이용"}
+{"id": "H0714", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0715", "label": "clue", "why": "거주 동네"}
+{"id": "H0716", "label": "clue", "why": "경주 지명"}
+{"id": "H0717", "label": "clue", "why": "당진 지명"}
+{"id": "H0718", "label": "clue", "why": "자동차 미보유"}
+{"id": "H0719", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0720", "label": "clue", "why": "지하철 교통수단"}
+{"id": "H0721", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0722", "label": "clue", "why": "당진 지명"}
+{"id": "H0723", "label": "clue", "why": "파리 지명"}
+{"id": "H0724", "label": "clue", "why": "삼척 지명"}
+{"id": "H0725", "label": "clue", "why": "제주 지명"}
+{"id": "H0726", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0727", "label": "clue", "why": "출근 행위"}
+{"id": "H0728", "label": "fragment", "why": "눈 경치이며 장소명 아님"}
+{"id": "H0729", "label": "clue", "why": "영주 지명"}
+{"id": "H0730", "label": "clue", "why": "옥천 지명"}
+{"id": "H0731", "label": "clue", "why": "파주 지명"}
+{"id": "H0732", "label": "clue", "why": "옥천 지명"}
+{"id": "H0733", "label": "clue", "why": "경주 지명"}
+{"id": "H0734", "label": "clue", "why": "도쿄 지명"}
+{"id": "H0735", "label": "clue", "why": "손자녀 관계"}
+{"id": "H0736", "label": "clue", "why": "영광 지명"}
+{"id": "H0737", "label": "clue", "why": "영주 지명"}
+{"id": "H0738", "label": "clue", "why": "파리 지명"}
+{"id": "H0739", "label": "clue", "why": "거주 동네"}
+{"id": "H0740", "label": "clue", "why": "경주 지명"}
+{"id": "H0741", "label": "fragment", "why": "지명 한 음절 조각"}
+{"id": "H0742", "label": "clue", "why": "당진 지명"}
+{"id": "H0743", "label": "clue", "why": "출퇴근 경로"}
+{"id": "H0744", "label": "clue", "why": "거주 동네"}
+{"id": "H0745", "label": "clue", "why": "영월 지명"}
+{"id": "H0746", "label": "clue", "why": "의왕 지명"}
+{"id": "H0747", "label": "clue", "why": "파리 지명"}
+{"id": "H0748", "label": "clue", "why": "출근 행위"}
+{"id": "H0749", "label": "clue", "why": "도쿄 지명"}
+{"id": "H0750", "label": "clue", "why": "과거 직업 관계어"}
+{"id": "H0751", "label": "clue", "why": "정읍 지명"}
+{"id": "H0752", "label": "clue", "why": "비행기 교통수단"}
+{"id": "H0753", "label": "fragment", "why": "휴가 이동만 나타냄"}
+{"id": "H0754", "label": "clue", "why": "삼척 지명"}
+{"id": "H0755", "label": "clue", "why": "파리 지명"}
+{"id": "H0756", "label": "clue", "why": "당진 지명"}
+{"id": "H0757", "label": "clue", "why": "거주 동네"}
+{"id": "H0758", "label": "fragment", "why": "소유 대명사뿐"}
+{"id": "H0759", "label": "clue", "why": "부모 자녀 관계인 효도"}
+{"id": "H0760", "label": "fragment", "why": "시설 아닌 행정 지명"}
+{"id": "H0761", "label": "clue", "why": "사천 지명"}
+{"id": "H0762", "label": "clue", "why": "경주 지명"}
+{"id": "H0763", "label": "clue", "why": "지하철 이용"}
+{"id": "H0764", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0765", "label": "clue", "why": "다낭 지명"}
+{"id": "H0766", "label": "fragment", "why": "조사뿐"}
+{"id": "H0767", "label": "clue", "why": "경주 지명"}
+{"id": "H0768", "label": "clue", "why": "청라 지명"}
+{"id": "H0769", "label": "clue", "why": "경주 지명"}
+{"id": "H0770", "label": "clue", "why": "출근 경로"}
+{"id": "H0771", "label": "clue", "why": "분당 지명"}
+{"id": "H0772", "label": "clue", "why": "영월 지명"}
+{"id": "H0773", "label": "clue", "why": "파리 지명"}
+{"id": "H0774", "label": "clue", "why": "차량 운전 이동"}
+{"id": "H0775", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0776", "label": "fragment", "why": "머리 길이이며 지명 아님"}
+{"id": "H0777", "label": "clue", "why": "군산 지명"}
+{"id": "H0778", "label": "fragment", "why": "여가 골프"}
+{"id": "H0779", "label": "clue", "why": "당진 지명"}
+{"id": "H0780", "label": "clue", "why": "시장 시설"}
+{"id": "H0781", "label": "clue", "why": "경주 지명"}
+{"id": "H0782", "label": "clue", "why": "삼척 지명"}
+{"id": "H0783", "label": "clue", "why": "경주 지명"}
+{"id": "H0784", "label": "clue", "why": "충주 지명"}
+{"id": "H0785", "label": "clue", "why": "거주 동네"}
+{"id": "H0786", "label": "clue", "why": "출근 행위"}
+{"id": "H0787", "label": "clue", "why": "남해 지명"}
+{"id": "H0788", "label": "clue", "why": "지하철 이용"}
+{"id": "H0789", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0790", "label": "clue", "why": "양평 지명"}
+{"id": "H0791", "label": "clue", "why": "하동 지명"}
+{"id": "H0792", "label": "fragment", "why": "지명 한 음절 조각"}
+{"id": "H0793", "label": "clue", "why": "영천 지명"}
+{"id": "H0794", "label": "clue", "why": "자동차 이용"}
+{"id": "H0795", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0796", "label": "clue", "why": "정읍 지명"}
+{"id": "H0797", "label": "clue", "why": "출근 행위"}
+{"id": "H0798", "label": "clue", "why": "거주 동네"}
+{"id": "H0799", "label": "clue", "why": "목포 지명"}
+{"id": "H0800", "label": "clue", "why": "경주 지명"}
+{"id": "H0801", "label": "clue", "why": "당진 지명"}
+{"id": "H0802", "label": "clue", "why": "영주 지명"}
+{"id": "H0803", "label": "clue", "why": "경주 지명"}
+{"id": "H0804", "label": "clue", "why": "경주 지명"}
+{"id": "H0805", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0806", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0807", "label": "clue", "why": "군산 지명"}
+{"id": "H0808", "label": "clue", "why": "경주 지명"}
+{"id": "H0809", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0810", "label": "clue", "why": "삼척 지명"}
+{"id": "H0811", "label": "clue", "why": "거주 동네"}
+{"id": "H0812", "label": "clue", "why": "동탄 지명"}
+{"id": "H0813", "label": "clue", "why": "나이 지칭"}
+{"id": "H0814", "label": "clue", "why": "파리 지명"}
+{"id": "H0815", "label": "clue", "why": "정선 지명"}
+{"id": "H0816", "label": "clue", "why": "당진 지명"}
+{"id": "H0817", "label": "clue", "why": "파리 지명"}
+{"id": "H0818", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0819", "label": "clue", "why": "귀가할 집"}
+{"id": "H0820", "label": "clue", "why": "파리 지명"}
+{"id": "H0821", "label": "clue", "why": "당진 지명"}
+{"id": "H0822", "label": "clue", "why": "경주 지명"}
+{"id": "H0823", "label": "clue", "why": "정선 지명"}
+{"id": "H0824", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0825", "label": "clue", "why": "거주 집"}
+{"id": "H0826", "label": "clue", "why": "파주 지명"}
+{"id": "H0827", "label": "clue", "why": "당진 지명"}
+{"id": "H0828", "label": "clue", "why": "남성 호칭"}
+{"id": "H0829", "label": "clue", "why": "군산 지명"}
+{"id": "H0830", "label": "clue", "why": "옥천 지명"}
+{"id": "H0831", "label": "clue", "why": "시장 시설"}
+{"id": "H0832", "label": "clue", "why": "오토바이 이용"}
+{"id": "H0833", "label": "clue", "why": "출퇴근 행위"}
+{"id": "H0834", "label": "clue", "why": "당진 지명"}
+{"id": "H0835", "label": "clue", "why": "영동 지명"}
+{"id": "H0836", "label": "clue", "why": "삼척 지명"}
+{"id": "H0837", "label": "clue", "why": "칠곡 지명"}
+{"id": "H0838", "label": "clue", "why": "삼척 지명"}
+{"id": "H0839", "label": "clue", "why": "평택 지명"}
+{"id": "H0840", "label": "clue", "why": "파리 지명"}
+{"id": "H0841", "label": "clue", "why": "버스 이용"}
+{"id": "H0842", "label": "clue", "why": "출근 경로"}
+{"id": "H0843", "label": "clue", "why": "경주 지명"}
+{"id": "H0844", "label": "clue", "why": "당진 지명"}
+{"id": "H0845", "label": "clue", "why": "삼척 지명"}
+{"id": "H0846", "label": "clue", "why": "지하철 이용"}
+{"id": "H0847", "label": "clue", "why": "경주 지명"}
+{"id": "H0848", "label": "clue", "why": "출근 행위"}
+{"id": "H0849", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0850", "label": "clue", "why": "김천 지명"}
+{"id": "H0851", "label": "clue", "why": "출근 경로"}
+{"id": "H0852", "label": "clue", "why": "원주 지명"}
+{"id": "H0853", "label": "fragment", "why": "어미뿐"}
+{"id": "H0854", "label": "clue", "why": "구리 지명"}
+{"id": "H0855", "label": "clue", "why": "진안 지명"}
+{"id": "H0856", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0857", "label": "clue", "why": "거주 관계 동사"}
+{"id": "H0858", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0859", "label": "fragment", "why": "집 기준이 없는 근처"}
+{"id": "H0860", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0861", "label": "clue", "why": "거주 동네"}
+{"id": "H0862", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0863", "label": "clue", "why": "출근 행위"}
+{"id": "H0864", "label": "clue", "why": "퇴근 행위"}
+{"id": "H0865", "label": "clue", "why": "출근 행위"}
+{"id": "H0866", "label": "clue", "why": "거주 동네"}
+{"id": "H0867", "label": "clue", "why": "광역버스 환승"}
+{"id": "H0868", "label": "clue", "why": "출근 행위"}
+{"id": "H0869", "label": "fragment", "why": "조사뿐"}
+{"id": "H0870", "label": "clue", "why": "자전거 통근 시간"}
+{"id": "H0871", "label": "clue", "why": "출근 경로"}
+{"id": "H0872", "label": "clue", "why": "지하철 노선 이용"}
+{"id": "H0873", "label": "clue", "why": "출근 경로"}
+{"id": "H0874", "label": "fragment", "why": "등교는 가족 호칭 아님"}
+{"id": "H0875", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0876", "label": "clue", "why": "카풀 이용"}
+{"id": "H0877", "label": "fragment", "why": "이동 동사만 있음"}
+{"id": "H0878", "label": "fragment", "why": "시간 표현뿐"}
+{"id": "H0879", "label": "clue", "why": "출근 행위"}
+{"id": "H0880", "label": "clue", "why": "지하철 이용"}
+{"id": "H0881", "label": "clue", "why": "출근 행위"}
+{"id": "H0882", "label": "clue", "why": "거주 동네"}
+{"id": "H0883", "label": "clue", "why": "거주 동네"}
+{"id": "H0884", "label": "clue", "why": "영월 지명"}
+{"id": "H0885", "label": "clue", "why": "아버지 관계"}
+{"id": "H0886", "label": "clue", "why": "신안 지명"}
+{"id": "H0887", "label": "clue", "why": "남해 지명"}
+{"id": "H0888", "label": "clue", "why": "김포 지명"}
+{"id": "H0889", "label": "clue", "why": "이웃 집 관계"}
+{"id": "H0890", "label": "clue", "why": "제천 지명"}
+{"id": "H0891", "label": "clue", "why": "거주 이웃 관계"}
+{"id": "H0892", "label": "clue", "why": "삼척 지명"}
+{"id": "H0893", "label": "clue", "why": "KTX 출퇴근"}
+{"id": "H0894", "label": "clue", "why": "부여 지명"}
+{"id": "H0895", "label": "clue", "why": "퇴근 경로"}
+{"id": "H0896", "label": "clue", "why": "철도 교통수단"}
+{"id": "H0897", "label": "fragment", "why": "지명 한 음절 조각"}
+{"id": "H0898", "label": "clue", "why": "읍성 장소 핵심어"}
+{"id": "H0899", "label": "clue", "why": "거주 동네"}
+{"id": "H0900", "label": "clue", "why": "거제 지명"}
+{"id": "H0901", "label": "clue", "why": "이천 지명"}
+{"id": "H0902", "label": "clue", "why": "울진 지명"}
+{"id": "H0903", "label": "fragment", "why": "친구는 집 관계어 아님"}
+{"id": "H0904", "label": "clue", "why": "평택 지명"}
+{"id": "H0905", "label": "clue", "why": "관광버스 이용"}
+{"id": "H0906", "label": "clue", "why": "홍천 지명"}
+{"id": "H0907", "label": "clue", "why": "강가 장소"}
+{"id": "H0908", "label": "clue", "why": "승강 이동 수단"}
+{"id": "H0909", "label": "clue", "why": "광역급행 통근"}
+{"id": "H0910", "label": "clue", "why": "예천 지명"}
+{"id": "H0911", "label": "fragment", "why": "여행 기간만 나타냄"}
+{"id": "H0912", "label": "clue", "why": "정선 지명"}
+{"id": "H0913", "label": "clue", "why": "구례 지명"}
+{"id": "H0914", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0915", "label": "clue", "why": "공주 지명"}
+{"id": "H0916", "label": "clue", "why": "밀양 지명"}
+{"id": "H0917", "label": "clue", "why": "출근 경로"}
+{"id": "H0918", "label": "clue", "why": "가평 지명"}
+{"id": "H0919", "label": "clue", "why": "서천 지명"}
+{"id": "H0920", "label": "clue", "why": "무주 지명"}
+{"id": "H0921", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0922", "label": "clue", "why": "곡성 지명"}
+{"id": "H0923", "label": "clue", "why": "딸 관계"}
+{"id": "H0924", "label": "clue", "why": "보성 지명"}
+{"id": "H0925", "label": "clue", "why": "거주 동네"}
+{"id": "H0926", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0927", "label": "clue", "why": "자녀 지칭"}
+{"id": "H0928", "label": "clue", "why": "투어 버스 교통수단"}
+{"id": "H0929", "label": "clue", "why": "문경 지명"}
+{"id": "H0930", "label": "clue", "why": "거주 동네"}
+{"id": "H0931", "label": "clue", "why": "출근 행위"}

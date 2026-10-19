@@ -1,0 +1,103 @@
+{"id":"C001","label":"clue","why":"퇴근이라는 통근 관계어가 포함됨"}
+{"id":"C002","label":"clue","why":"교통수단인 버스가 포함됨"}
+{"id":"C003","label":"fragment","why":"요일 표현만 있고 통근 의미는 없음"}
+{"id":"C004","label":"clue","why":"출근을 뜻하는 표현임"}
+{"id":"C005","label":"clue","why":"지하철 하차를 나타냄"}
+{"id":"C006","label":"fragment","why":"명절은 시기 표현이며 이동 단서는 아님"}
+{"id":"C007","label":"clue","why":"고향으로 돌아가는 이동 경로를 뜻함"}
+{"id":"C008","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C009","label":"fragment","why":"바로는 이동을 꾸미는 부사일 뿐임"}
+{"id":"C010","label":"clue","why":"교통수단인 KTX의 예매를 나타냄"}
+{"id":"C011","label":"clue","why":"교통수단인 버스를 뜻함"}
+{"id":"C012","label":"clue","why":"KTX 탑승 의미가 포함됨"}
+{"id":"C013","label":"clue","why":"지하철 탑승을 나타냄"}
+{"id":"C014","label":"clue","why":"운행하는 교통수단인 버스를 뜻함"}
+{"id":"C015","label":"clue","why":"출근하는 이동 경로를 뜻함"}
+{"id":"C016","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C017","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C018","label":"clue","why":"조사가 붙어도 지하철이 명확함"}
+{"id":"C019","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C020","label":"clue","why":"조사가 붙어도 출근 의미가 있음"}
+{"id":"C021","label":"clue","why":"지하철을 타러 가는 이동을 나타냄"}
+{"id":"C022","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C023","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C024","label":"clue","why":"비교 표현이지만 출근 의미가 포함됨"}
+{"id":"C025","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C026","label":"clue","why":"어미가 붙어도 출근 의미가 있음"}
+{"id":"C027","label":"clue","why":"교통수단인 지하철이 포함됨"}
+{"id":"C028","label":"clue","why":"출근하는 이동 경로를 뜻함"}
+{"id":"C029","label":"clue","why":"조사가 붙어도 출근길 의미가 있음"}
+{"id":"C030","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C031","label":"clue","why":"KTX 탑승을 나타냄"}
+{"id":"C032","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C033","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C034","label":"clue","why":"어미가 붙어도 퇴근 의미가 있음"}
+{"id":"C035","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C036","label":"clue","why":"출근해야 한다는 통근 표현임"}
+{"id":"C037","label":"clue","why":"퇴근하는 이동 경로를 뜻함"}
+{"id":"C038","label":"clue","why":"교통수단인 지하철을 뜻함"}
+{"id":"C039","label":"clue","why":"교통수단을 갈아타는 환승역이 포함됨"}
+{"id":"C040","label":"clue","why":"교통수단인 비행기의 승차권을 뜻함"}
+{"id":"C041","label":"clue","why":"경계가 잘렸지만 지하철 탑승 의미가 있음"}
+{"id":"C042","label":"clue","why":"어미가 잘렸어도 출근 의미가 있음"}
+{"id":"C043","label":"clue","why":"혼잡한 지하철을 가리키는 말임"}
+{"id":"C044","label":"clue","why":"교통수단을 갈아타는 환승을 뜻함"}
+{"id":"C045","label":"clue","why":"혼잡한 지하철이라는 교통수단 표현임"}
+{"id":"C046","label":"clue","why":"KTX 내부에 있음을 나타냄"}
+{"id":"C047","label":"clue","why":"버스를 기다리는 상황을 나타냄"}
+{"id":"C048","label":"clue","why":"괄호가 섞여도 출근이라는 핵심 말이 있음"}
+{"id":"C049","label":"clue","why":"학교로 가는 등교 의미가 포함됨"}
+{"id":"C050","label":"clue","why":"출근을 뜻하는 표현임"}
+{"id":"C051","label":"clue","why":"교통수단인 버스가 포함됨"}
+{"id":"C052","label":"fragment","why":"간발의 차이라는 뜻으로 자동차가 아님"}
+{"id":"C053","label":"clue","why":"교통수단인 지하철을 뜻함"}
+{"id":"C054","label":"clue","why":"혼잡한 지하철을 가리키는 말임"}
+{"id":"C055","label":"clue","why":"자동차를 타는 이동을 나타냄"}
+{"id":"C056","label":"clue","why":"출근을 준비하는 통근 표현임"}
+{"id":"C057","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C058","label":"clue","why":"어미가 붙어도 출근 의미가 있음"}
+{"id":"C059","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C060","label":"fragment","why":"조사와 도착 표현만 있어 통근 단서가 없음"}
+{"id":"C061","label":"clue","why":"기차를 이용하는 이동을 나타냄"}
+{"id":"C062","label":"clue","why":"문맥상 비유여도 출근이라는 핵심 말이 있음"}
+{"id":"C063","label":"clue","why":"교통수단인 기차가 포함됨"}
+{"id":"C064","label":"clue","why":"교통수단인 기차가 포함됨"}
+{"id":"C065","label":"fragment","why":"명절은 시기 표현이며 이동 단서는 아님"}
+{"id":"C066","label":"clue","why":"고향으로 돌아가는 이동 경로를 뜻함"}
+{"id":"C067","label":"clue","why":"출근하는 이동 경로를 뜻함"}
+{"id":"C068","label":"clue","why":"지하철 탑승을 나타냄"}
+{"id":"C069","label":"clue","why":"어미가 붙어도 출근 의미가 있음"}
+{"id":"C070","label":"clue","why":"퇴근이라는 통근 관계어가 포함됨"}
+{"id":"C071","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C072","label":"clue","why":"교통수단인 지하철을 뜻함"}
+{"id":"C073","label":"clue","why":"괄호가 붙어도 출근 의미가 있음"}
+{"id":"C074","label":"clue","why":"괄호가 섞여도 등교 의미가 있음"}
+{"id":"C075","label":"clue","why":"혼잡한 지하철을 타는 이동을 나타냄"}
+{"id":"C076","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C077","label":"fragment","why":"명사형 어미 한 글자만 잘린 조각임"}
+{"id":"C078","label":"clue","why":"경계가 잘렸지만 자동차 탑승 의미가 있음"}
+{"id":"C079","label":"fragment","why":"요일 표현만 있고 통근 의미는 없음"}
+{"id":"C080","label":"clue","why":"출근하는 이동 경로를 뜻함"}
+{"id":"C081","label":"clue","why":"교통수단인 지하철을 뜻함"}
+{"id":"C082","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C083","label":"fragment","why":"내일은 날짜 표현일 뿐임"}
+{"id":"C084","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C085","label":"clue","why":"출근하는 이동 경로를 나타냄"}
+{"id":"C086","label":"clue","why":"퇴근하는 이동 경로를 뜻함"}
+{"id":"C087","label":"fragment","why":"야근은 연장 근무이며 통근이나 교통수단이 아님"}
+{"id":"C088","label":"clue","why":"교통수단인 버스가 포함됨"}
+{"id":"C089","label":"fragment","why":"새벽은 시간대를 나타내는 말뿐임"}
+{"id":"C090","label":"clue","why":"출근을 뜻하는 표현임"}
+{"id":"C091","label":"clue","why":"경계가 잘렸지만 버스 탑승 의미가 있음"}
+{"id":"C092","label":"clue","why":"KTX 탑승을 나타냄"}
+{"id":"C093","label":"clue","why":"퇴근을 뜻하는 표현임"}
+{"id":"C094","label":"fragment","why":"오는 동작만 있어 통근 단서가 없음"}
+{"id":"C095","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C096","label":"clue","why":"통근 관계어인 출근임"}
+{"id":"C097","label":"clue","why":"경계가 잘렸지만 지하철 탑승 의미가 있음"}
+{"id":"C098","label":"clue","why":"출근해야 한다는 통근 표현임"}
+{"id":"C099","label":"clue","why":"이동 수단인 자동차 내부를 뜻함"}
+{"id":"C100","label":"clue","why":"지하철을 타러 가는 이동을 나타냄"}
+{"id":"C101","label":"clue","why":"버스를 기다리는 상황을 나타냄"}
+{"id":"C102","label":"clue","why":"어미가 붙어도 출근 의미가 있음"}
+{"id":"C103","label":"clue","why":"교통수단인 버스가 포함됨"}

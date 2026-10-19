@@ -1,0 +1,96 @@
+{"post_id": "P32_A01", "decisions": ["self"], "sec": 0.511}
+{"post_id": "P32_A02", "decisions": ["self"], "sec": 0.015}
+{"post_id": "P32_A03", "decisions": ["self", "self"], "sec": 0.017}
+{"post_id": "P32_A04", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A05", "decisions": ["self", "self"], "sec": 0.063}
+{"post_id": "P32_A06", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A07", "decisions": ["other"], "sec": 0.013}
+{"post_id": "P32_A08", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A09", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_A10", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A11", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_A12", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A13", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_A14", "decisions": ["self", "self", "self"], "sec": 0.016}
+{"post_id": "P32_A15", "decisions": ["drop", "self", "self"], "sec": 0.014}
+{"post_id": "P32_A16", "decisions": ["self", "unknown"], "sec": 0.015}
+{"post_id": "P32_A17", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_A18", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A19", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "P32_A20", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A21", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A22", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_A23", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_A24", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_A25", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_A26", "decisions": ["self", "self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_A27", "decisions": ["self", "self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_A28", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A29", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A30", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_A31", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A32", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_A33", "decisions": ["self", "self", "self", "self", "self", "self"], "sec": 0.018}
+{"post_id": "P32_A34", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "P32_A35", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_A36", "decisions": ["self", "self", "self", "self", "self", "self"], "sec": 0.016}
+{"post_id": "P32_A37", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_A38", "decisions": ["self", "self"], "sec": 0.013}
+{"post_id": "P32_A39", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_A40", "decisions": [], "sec": 0.007}
+{"post_id": "P32_T01", "decisions": ["self", "other", "self"], "sec": 0.014}
+{"post_id": "P32_T02", "decisions": ["self", "unknown", "unknown"], "sec": 0.014}
+{"post_id": "P32_T03", "decisions": ["self", "unknown", "other"], "sec": 0.014}
+{"post_id": "P32_T04", "decisions": ["unknown", "unknown", "other", "other", "other"], "sec": 0.015}
+{"post_id": "P32_T05", "decisions": ["unknown", "unknown", "other", "other", "other", "self"], "sec": 0.016}
+{"post_id": "P32_T06", "decisions": ["self", "other", "unknown"], "sec": 0.014}
+{"post_id": "P32_T07", "decisions": ["self", "unknown", "unknown"], "sec": 0.015}
+{"post_id": "P32_T08", "decisions": ["unknown", "unknown"], "sec": 0.014}
+{"post_id": "P32_T09", "decisions": ["self", "unknown"], "sec": 0.015}
+{"post_id": "P32_T10", "decisions": ["other", "unknown", "unknown"], "sec": 0.014}
+{"post_id": "P32_T11", "decisions": ["self", "self", "other", "unknown", "self", "self", "self", "unknown", "unknown"], "sec": 0.025}
+{"post_id": "P32_T12", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_T13", "decisions": ["other", "other", "other"], "sec": 0.014}
+{"post_id": "P32_T14", "decisions": ["unknown", "unknown", "other", "other"], "sec": 0.014}
+{"post_id": "P32_T15", "decisions": ["unknown", "unknown", "self", "other", "self"], "sec": 0.016}
+{"post_id": "P32_T16", "decisions": ["other", "other", "other", "unknown"], "sec": 0.016}
+{"post_id": "P32_T17", "decisions": ["unknown", "unknown", "self", "unknown", "unknown", "self"], "sec": 0.02}
+{"post_id": "P32_T18", "decisions": ["unknown", "unknown", "self", "self"], "sec": 0.017}
+{"post_id": "P32_T19", "decisions": [], "sec": 0.007}
+{"post_id": "P32_T20", "decisions": ["self", "self", "unknown", "unknown", "unknown", "self"], "sec": 0.021}
+{"post_id": "P32_T21", "decisions": ["unknown", "unknown", "other", "unknown", "unknown"], "sec": 0.02}
+{"post_id": "P32_T22", "decisions": ["self", "self", "unknown", "unknown"], "sec": 0.015}
+{"post_id": "P32_T23", "decisions": ["other", "other", "other", "self", "self", "self", "drop"], "sec": 0.018}
+{"post_id": "P32_T24", "decisions": ["other", "other", "other"], "sec": 0.015}
+{"post_id": "P32_T25", "decisions": ["unknown", "unknown", "other"], "sec": 0.014}
+{"post_id": "P32_T26", "decisions": ["unknown", "unknown", "unknown"], "sec": 0.015}
+{"post_id": "P32_T27", "decisions": ["self", "other"], "sec": 0.014}
+{"post_id": "P32_T28", "decisions": ["other", "unknown"], "sec": 0.014}
+{"post_id": "P32_T29", "decisions": ["self", "unknown", "unknown", "unknown", "unknown"], "sec": 0.018}
+{"post_id": "P32_T30", "decisions": ["unknown", "unknown", "self"], "sec": 0.015}
+{"post_id": "P32_T31", "decisions": ["unknown", "unknown", "self", "unknown", "unknown"], "sec": 0.018}
+{"post_id": "P32_T32", "decisions": ["self", "unknown"], "sec": 0.014}
+{"post_id": "P32_V02", "decisions": ["drop", "self", "self", "self", "self", "self"], "sec": 0.018}
+{"post_id": "P32_V03", "decisions": ["self", "self", "self", "self", "self", "self"], "sec": 0.02}
+{"post_id": "P32_V05", "decisions": ["other", "other", "self", "self"], "sec": 0.017}
+{"post_id": "P32_V07", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_V08", "decisions": ["self", "self", "self"], "sec": 0.015}
+{"post_id": "P32_V09", "decisions": ["self", "self"], "sec": 0.015}
+{"post_id": "P32_V10", "decisions": ["other", "other", "self"], "sec": 0.016}
+{"post_id": "P32_V12", "decisions": ["self", "self"], "sec": 0.014}
+{"post_id": "P32_V13", "decisions": ["self", "self", "self", "self", "self"], "sec": 0.016}
+{"post_id": "P32_V14", "decisions": ["self", "unknown", "self", "self"], "sec": 0.016}
+{"post_id": "P32_V15", "decisions": ["self", "self", "self", "other"], "sec": 0.015}
+{"post_id": "P32_V16", "decisions": ["self", "self", "self"], "sec": 0.014}
+{"post_id": "P32_C01", "decisions": ["drop"], "sec": 0.013}
+{"post_id": "P32_C02", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C03", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_C04", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C05", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C06", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C07", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C08", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C09", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C10", "decisions": [], "sec": 0.007}
+{"post_id": "P32_C11", "decisions": ["self"], "sec": 0.013}
+{"post_id": "P32_C12", "decisions": [], "sec": 0.007}

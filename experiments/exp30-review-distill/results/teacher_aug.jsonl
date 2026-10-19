@@ -1,0 +1,110 @@
+{"meta": {"model": "claude-opus-4-8", "prompt_hash": "9822388808d1", "batch": 5}}
+{"post_id": "AUG30_001", "decisions": ["other", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_003", "decisions": ["self", "self", "other", "unknown"], "raw": null}
+{"post_id": "AUG30_004", "decisions": ["self", "self", "drop", "self", "self", "self", "other", "self"], "raw": null}
+{"post_id": "AUG30_005", "decisions": ["self", "unknown", "self", "other", "self"], "raw": null}
+{"post_id": "AUG30_006", "decisions": ["unknown", "other", "other"], "raw": null}
+{"post_id": "AUG30_008", "decisions": ["unknown", "other", "other"], "raw": null}
+{"post_id": "AUG30_009", "decisions": ["unknown", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_010", "decisions": ["self", "other", "drop"], "raw": null}
+{"post_id": "AUG30_011", "decisions": ["other", "unknown", "self", "other", "other", "other"], "raw": null}
+{"post_id": "AUG30_014", "decisions": ["unknown", "self"], "raw": null}
+{"post_id": "AUG30_016", "decisions": ["unknown", "self", "other"], "raw": null}
+{"post_id": "AUG30_017", "decisions": ["self", "other", "other", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_018", "decisions": ["other", "unknown"], "raw": null}
+{"post_id": "AUG30_019", "decisions": ["self", "self", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_020", "decisions": ["other", "other", "self", "unknown"], "raw": null}
+{"post_id": "AUG30_021", "decisions": ["self", "self", "self", "other", "other", "unknown"], "raw": null}
+{"post_id": "AUG30_022", "decisions": ["self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_024", "decisions": ["unknown", "unknown", "other", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_025", "decisions": ["self", "self", "other", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_027", "decisions": ["self", "self", "self", "unknown"], "raw": null}
+{"post_id": "AUG30_030", "decisions": ["unknown", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_031", "decisions": ["unknown", "unknown", "unknown", "other", "other"], "raw": null}
+{"post_id": "AUG30_032", "decisions": ["self", "self", "other", "other", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_034", "decisions": ["self", "other", "other", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_035", "decisions": ["self", "self", "self", "self", "other", "self", "other"], "raw": null}
+{"post_id": "AUG30_037", "decisions": ["unknown", "self", "other", "self", "drop", "drop"], "raw": null}
+{"post_id": "AUG30_039", "decisions": ["unknown", "self", "other", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_041", "decisions": ["self", "self", "self", "unknown", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_046", "decisions": ["unknown", "self", "self", "unknown"], "raw": null}
+{"post_id": "AUG30_047", "decisions": ["self", "self", "unknown", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_048", "decisions": ["self", "self", "drop", "drop", "self"], "raw": null}
+{"post_id": "AUG30_049", "decisions": ["self", "self", "self", "self", "self", "self", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_050", "decisions": ["self", "self", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_052", "decisions": ["self", "other", "other", "unknown", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_053", "decisions": ["self", "self", "other", "self", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_054", "decisions": ["self", "self", "self", "self", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_055", "decisions": ["self", "unknown", "unknown", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_056", "decisions": ["self", "unknown", "self", "other", "other", "other", "other"], "raw": null}
+{"post_id": "AUG30_057", "decisions": ["other", "self", "self"], "raw": null}
+{"post_id": "AUG30_058", "decisions": ["self", "self", "self", "self", "drop", "other", "other", "other", "other"], "raw": null}
+{"post_id": "AUG30_060", "decisions": ["other", "other", "unknown", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_061", "decisions": ["unknown", "other", "other", "other"], "raw": null}
+{"post_id": "AUG30_063", "decisions": ["self", "self", "self", "self", "self", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_064", "decisions": ["other", "self", "unknown", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_065", "decisions": ["self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_067", "decisions": ["unknown", "self", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_068", "decisions": ["self", "unknown", "unknown", "unknown", "self", "other", "other", "self"], "raw": null}
+{"post_id": "AUG30_069", "decisions": ["self", "self", "self", "self", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_071", "decisions": ["self", "self", "unknown", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_073", "decisions": ["self", "self", "self", "other", "drop"], "raw": null}
+{"post_id": "AUG30_074", "decisions": ["self", "self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_075", "decisions": ["self", "self", "self", "unknown", "unknown", "self", "self", "unknown"], "raw": null}
+{"post_id": "AUG30_077", "decisions": ["self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_078", "decisions": ["self", "self", "self", "self", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_079", "decisions": ["self", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_083", "decisions": ["other", "self", "unknown", "self", "self", "drop"], "raw": null}
+{"post_id": "AUG30_085", "decisions": ["self", "self", "self", "self", "other", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_086", "decisions": ["self", "self", "self"], "raw": null}
+{"post_id": "AUG30_087", "decisions": ["self", "unknown", "other", "self"], "raw": null}
+{"post_id": "AUG30_088", "decisions": ["other", "other", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_089", "decisions": ["self", "self", "other", "other", "other"], "raw": null}
+{"post_id": "AUG30_090", "decisions": ["unknown", "self", "self", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_092", "decisions": ["unknown", "other", "self"], "raw": null}
+{"post_id": "AUG30_093", "decisions": ["self", "unknown", "self", "other"], "raw": null}
+{"post_id": "AUG30_094", "decisions": ["self", "self", "self", "other", "unknown"], "raw": null}
+{"post_id": "AUG30_096", "decisions": ["unknown", "unknown", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_097", "decisions": ["self", "self", "unknown", "unknown", "self", "self"], "raw": null}
+{"post_id": "AUG30_098", "decisions": ["self", "self", "self", "drop", "other", "other"], "raw": null}
+{"post_id": "AUG30_100", "decisions": ["self", "self", "self", "other", "self"], "raw": null}
+{"post_id": "AUG30_102", "decisions": ["self", "self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_103", "decisions": ["self", "self", "unknown", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_105", "decisions": ["self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_106", "decisions": ["self", "self", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_107", "decisions": ["self", "self", "self", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_108", "decisions": ["other", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_109", "decisions": ["self", "self", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_111", "decisions": ["self", "self", "unknown", "self", "self", "drop"], "raw": null}
+{"post_id": "AUG30_112", "decisions": ["self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_113", "decisions": ["self", "other", "unknown"], "raw": null}
+{"post_id": "AUG30_115", "decisions": ["self", "other", "self", "self", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_116", "decisions": ["other", "self"], "raw": null}
+{"post_id": "AUG30_117", "decisions": ["self", "other", "other", "unknown", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_119", "decisions": ["self", "self", "other", "other", "other", "self"], "raw": null}
+{"post_id": "AUG30_120", "decisions": ["self", "self", "unknown", "unknown", "drop"], "raw": null}
+{"post_id": "AUG30_122", "decisions": ["other", "self", "other"], "raw": null}
+{"post_id": "AUG30_123", "decisions": ["self", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_124", "decisions": ["self", "self"], "raw": null}
+{"post_id": "AUG30_125", "decisions": ["self", "self", "other", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_127", "decisions": ["self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_129", "decisions": ["unknown", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_130", "decisions": ["self", "self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_131", "decisions": ["other", "unknown", "unknown", "other", "other"], "raw": null}
+{"post_id": "AUG30_133", "decisions": ["self", "self", "other", "other"], "raw": null}
+{"post_id": "AUG30_135", "decisions": ["self", "self", "self", "self", "other", "other", "self", "self"], "raw": null}
+{"post_id": "AUG30_137", "decisions": ["self", "unknown", "self", "unknown", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_138", "decisions": ["self", "self", "self", "self", "self"], "raw": null}
+{"post_id": "AUG30_140", "decisions": ["self", "self", "self", "self", "other", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_142", "decisions": ["self", "drop", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_144", "decisions": ["self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_145", "decisions": ["self", "self", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_147", "decisions": ["other", "self", "other", "self"], "raw": null}
+{"post_id": "AUG30_148", "decisions": ["self", "self", "other"], "raw": null}
+{"post_id": "AUG30_150", "decisions": ["self", "self", "self", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_151", "decisions": ["self", "self", "self", "self", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_152", "decisions": ["other", "self"], "raw": null}
+{"post_id": "AUG30_153", "decisions": ["self", "self", "self"], "raw": null}
+{"post_id": "AUG30_157", "decisions": ["self", "unknown", "self", "self", "other", "drop", "unknown", "unknown"], "raw": null}
+{"post_id": "AUG30_158", "decisions": ["self", "unknown", "unknown", "unknown", "self"], "raw": null}
+{"post_id": "AUG30_160", "decisions": ["unknown", "unknown", "unknown", "self"], "raw": null}
