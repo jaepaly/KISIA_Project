@@ -1,0 +1,90 @@
+{"id": "N-Q1-001", "pattern": "Q1", "kind": "neg", "sentence": "나(32살)는 오늘도 장바구니부터 비우고 하루를 시작한다.", "span": "32살", "type": "AGE", "subject": "self", "why": "나에 붙인 현재 나이"}
+{"id": "N-Q1-002", "pattern": "Q1", "kind": "neg", "sentence": "저(만 28세)는 요즘 퇴근길마다 다른 골목으로 돌아갑니다.", "span": "만 28세", "type": "AGE", "subject": "self", "why": "저를 설명하는 현재 나이"}
+{"id": "N-Q1-003", "pattern": "Q1", "kind": "neg", "sentence": "본인(마흔둘)은 주말 약속보다 집에서 보내는 시간이 좋다.", "span": "마흔둘", "type": "AGE", "subject": "self", "why": "본인의 현재 나이를 소개"}
+{"id": "N-Q1-004", "pattern": "Q1", "kind": "neg", "sentence": "이 글을 쓰는 사람(37세)은 오늘 처음으로 댓글을 열어 둡니다.", "span": "37세", "type": "AGE", "subject": "self", "why": "글쓴이를 설명하는 괄호"}
+{"id": "N-Q1-005", "pattern": "Q1", "kind": "neg", "sentence": "여기 주인장(서른여섯 살)은 작은 컵을 모으며 지냅니다.", "span": "서른여섯 살", "type": "AGE", "subject": "self", "why": "블로그 주인장의 자기소개"}
+{"id": "N-Q1-006", "pattern": "Q1", "kind": "neg", "sentence": "운영자인 저(41세)가 직접 고른 이번 달의 사진들입니다.", "span": "41세", "type": "AGE", "subject": "self", "why": "운영자인 저의 현재 나이"}
+{"id": "N-Q1-007", "pattern": "Q1", "kind": "neg", "sentence": "제 현재 나이(만 33세)를 적고 나니 소개란이 제법 길어졌네요.", "span": "만 33세", "type": "AGE", "subject": "self", "why": "현재 나이라고 명시"}
+{"id": "N-Q1-008", "pattern": "Q1", "kind": "neg", "sentence": "글쓴이 본인(쉰 살)이 오늘 고른 저녁 메뉴는 비빔국수입니다.", "span": "쉰 살", "type": "AGE", "subject": "self", "why": "글쓴이 본인의 나이"}
+{"id": "N-Q1-009", "pattern": "Q1", "kind": "neg", "sentence": "접니다(26살), 사진 속 맨 오른쪽에서 우산을 들고 있는 사람.", "span": "26살", "type": "AGE", "subject": "self", "why": "접니다에 덧붙인 나이"}
+{"id": "N-Q1-010", "pattern": "Q1", "kind": "neg", "sentence": "다시 소개하자면 나란 사람(39세)은 물건 이름을 붙이는 게 취미다.", "span": "39세", "type": "AGE", "subject": "self", "why": "나란 사람의 현재 소개"}
+{"id": "N-Q1-011", "pattern": "Q1", "kind": "neg", "sentence": "제 닉네임은 밤콩이고, 밤콩(34살)은 오늘도 기록을 남깁니다.", "span": "34살", "type": "AGE", "subject": "self", "why": "글쓴이 닉네임의 나이"}
+{"id": "N-Q1-012", "pattern": "Q1", "kind": "neg", "sentence": "여기서는 저를 모래라 불러요. 모래(스물아홉)는 혼자 삽니다.", "span": "스물아홉", "type": "AGE", "subject": "self", "why": "자신의 닉네임이라고 명시"}
+{"id": "N-Q1-013", "pattern": "Q1", "kind": "neg", "sentence": "내 블로그 이름도 내 별명도 조약돌, 조약돌(46세)의 오늘은 맑음.", "span": "46세", "type": "AGE", "subject": "self", "why": "내 별명에 붙인 나이"}
+{"id": "N-Q1-014", "pattern": "Q1", "kind": "neg", "sentence": "필명 달항아리는 저예요. 달항아리(만 31세)가 인사드립니다.", "span": "만 31세", "type": "AGE", "subject": "self", "why": "저의 필명에 붙인 나이"}
+{"id": "N-Q1-015", "pattern": "Q1", "kind": "neg", "sentence": "닉네임 두부가 바로 나임ㅋㅋ 두부(38살)의 휴일 기록 시작!", "span": "38살", "type": "AGE", "subject": "self", "why": "닉네임이 나임을 밝힘"}
+{"id": "N-Q1-016", "pattern": "Q1", "kind": "neg", "sentence": "소개란: 직장인(현재 43세), 이 블로그에서는 제 일상만 적습니다.", "span": "43세", "type": "AGE", "subject": "self", "why": "글쓴이 소개란의 현재 나이"}
+{"id": "N-Q1-017", "pattern": "Q1", "kind": "neg", "sentence": "(만 27세, 자취 중) 제 첫 살림 기록을 이곳에 차곡차곡 남겨요.", "span": "만 27세", "type": "AGE", "subject": "self", "why": "괄호로 제시한 자기소개"}
+{"id": "N-Q1-018", "pattern": "Q1", "kind": "neg", "sentence": "(서른여덟 살 직장인) 오늘 제 퇴근 후 일정은 빨래로 끝납니다.", "span": "서른여덟 살", "type": "AGE", "subject": "self", "why": "글쓴이의 자기소개 줄"}
+{"id": "N-Q1-019", "pattern": "Q1", "kind": "neg", "sentence": "프로필을 고쳤습니다: 저에 관하여(45세, 사진 찍는 걸 좋아함).", "span": "45세", "type": "AGE", "subject": "self", "why": "저에 관한 프로필 정보"}
+{"id": "N-Q1-020", "pattern": "Q1", "kind": "neg", "sentence": "제 소개는 간단해요(스물여섯 살, 반려식물 둘). 잘 부탁해요.", "span": "스물여섯 살", "type": "AGE", "subject": "self", "why": "제 소개에 포함된 나이"}
+{"id": "N-Q1-021", "pattern": "Q1", "kind": "neg", "sentence": "올해 나는 서른둘(생일이 아직이라 만 30세)이고 이사 준비 중이다.", "span": "만 30세", "type": "AGE", "subject": "self", "why": "글쓴이의 현재 만 나이"}
+{"id": "N-Q1-022", "pattern": "Q1", "kind": "neg", "sentence": "나는 이제 마흔(오늘 기준 만 39세), 숫자보다 당장 저녁이 고민이다.", "span": "만 39세", "type": "AGE", "subject": "self", "why": "오늘 기준 자신의 나이"}
+{"id": "N-Q1-023", "pattern": "Q1", "kind": "neg", "sentence": "나이는 쉰둘입니다(정확히는 만 51세). 요즘은 시장 구경이 낙이에요.", "span": "만 51세", "type": "AGE", "subject": "self", "why": "자기 나이를 정확히 보충"}
+{"id": "N-Q1-024", "pattern": "Q1", "kind": "neg", "sentence": "내 나이가 벌써 넷으로 시작한다니(현재 40살), 달력을 또 들여다봤다.", "span": "40살", "type": "AGE", "subject": "self", "why": "내 현재 나이를 괄호로 명시"}
+{"id": "N-Q1-025", "pattern": "Q1", "kind": "neg", "sentence": "나도 이제 삼십 대 중반(만 35세)이라니, 소개글부터 새로 써야겠다.", "span": "만 35세", "type": "AGE", "subject": "self", "why": "자신의 현재 나이를 보충"}
+{"id": "N-Q1-026", "pattern": "Q1", "kind": "neg", "sentence": "사진 설명은 '나(36세), 새로 산 모자와 함께'라고 짧게 달았습니다.", "span": "36세", "type": "AGE", "subject": "self", "why": "사진 속 자신을 설명"}
+{"id": "N-Q1-027", "pattern": "Q1", "kind": "neg", "sentence": "오늘 소개 문구는 이겁니다. “저(마흔일곱 살)는 소소하게 삽니다.”", "span": "마흔일곱 살", "type": "AGE", "subject": "self", "why": "현재 자기소개를 인용"}
+{"id": "N-Q1-028", "pattern": "Q1", "kind": "neg", "sentence": "“누구세요?”라는 댓글에 “블로그 주인인 나(29세)요”라고 방금 답했다.", "span": "29세", "type": "AGE", "subject": "self", "why": "방금 답한 자신의 나이"}
+{"id": "N-Q1-029", "pattern": "Q1", "kind": "neg", "sentence": "작성 중인 제 소개 카드에는 '작성자 본인(만 42세)'이라고 넣었어요.", "span": "만 42세", "type": "AGE", "subject": "self", "why": "제 소개 카드의 현재 나이"}
+{"id": "N-Q1-030", "pattern": "Q1", "kind": "neg", "sentence": "아이고, 이 블로그 하는 나(예순세 살)가 댓글 다는 법을 이제 알았네.", "span": "예순세 살", "type": "AGE", "subject": "self", "why": "블로그를 쓰는 나의 나이"}
+{"id": "N-Q1-031", "pattern": "Q1", "kind": "neg", "sentence": "집에서는 엄마라 불리지만, 여기 쓰는 나는 그냥 나(44살)로 지내려 한다.", "span": "44살", "type": "AGE", "subject": "self", "why": "글을 쓰는 나라고 명시"}
+{"id": "N-Q1-032", "pattern": "Q1", "kind": "neg", "sentence": "우리 집 막내가 저예요. 막내인 저(서른한 살)는 오늘도 설거지 당번입니다.", "span": "서른한 살", "type": "AGE", "subject": "self", "why": "막내인 저의 현재 나이"}
+{"id": "N-Q1-033", "pattern": "Q1", "kind": "neg", "sentence": "동생들이 부르는 큰언니가 바로 나(48세), 오늘 가족 모임 예약도 내 몫이다.", "span": "48세", "type": "AGE", "subject": "self", "why": "큰언니가 글쓴이 자신"}
+{"id": "N-Q1-034", "pattern": "Q1", "kind": "neg", "sentence": "반려견 집사인 본인(만 36세)은 오늘도 산책 가방부터 문 앞에 둔다.", "span": "만 36세", "type": "AGE", "subject": "self", "why": "동물이 아닌 집사 본인의 나이"}
+{"id": "N-Q1-035", "pattern": "Q1", "kind": "neg", "sentence": "게임 속 이름도 현실 별명도 솔방울인 나(스물여덟 살), 오늘은 접속 대신 방을 정리했다.", "span": "스물여덟 살", "type": "AGE", "subject": "self", "why": "이름들을 설명한 뒤 나의 나이"}
+{"id": "N-Q1-036", "pattern": "Q1", "kind": "neg", "sentence": "자, 오늘의 기록 담당자(저입니다, 53세)는 장 본 내역부터 적어 보겠습니다.", "span": "53세", "type": "AGE", "subject": "self", "why": "괄호에서 담당자가 저임을 밝힘"}
+{"id": "N-Q1-037", "pattern": "Q1", "kind": "neg", "sentence": "내 얘기 좀 하자면… 나(만 24세), 드디어 내 이름으로 첫 여행을 예약함!", "span": "만 24세", "type": "AGE", "subject": "self", "why": "현재 내 이야기에 붙인 나이"}
+{"id": "N-Q1-038", "pattern": "Q1", "kind": "neg", "sentence": "제 나이 말인가요(오십팔 세)? 오늘도 소개란을 비워 뒀더니 같은 질문이 오네요.", "span": "오십팔 세", "type": "AGE", "subject": "self", "why": "제 나이를 묻는 말의 답"}
+{"id": "N-Q1-039", "pattern": "Q1", "kind": "neg", "sentence": "누가 썼냐고요? 이 계정 주인인 제가(현재 33살) 직접 보고 적은 장보기 후기예요.", "span": "33살", "type": "AGE", "subject": "self", "why": "계정 주인인 제 현재 나이"}
+{"id": "N-Q1-040", "pattern": "Q1", "kind": "neg", "sentence": "오늘의 일기 주인공은 접니다(일흔한 살). 아침에 고른 꽃 한 송이부터 보여 드리지요.", "span": "일흔한 살", "type": "AGE", "subject": "self", "why": "일기 글쓴이의 현재 자기소개"}
+{"id": "N-Q2-001", "pattern": "Q2", "kind": "neg", "sentence": "어릴 때부터 모은 엽서를, 지금 나는 서른일곱 살이 되어 다시 꺼내 본다.", "span": "서른일곱 살", "type": "AGE", "subject": "self", "why": "지금 도달한 자신의 나이"}
+{"id": "N-Q2-002", "pattern": "Q2", "kind": "neg", "sentence": "예전에 쓰던 가계부를 펼쳤다. 현재 42세인 내 소비 습관도 별반 다르지 않다.", "span": "42세", "type": "AGE", "subject": "self", "why": "현재 나이라고 명시"}
+{"id": "N-Q2-003", "pattern": "Q2", "kind": "neg", "sentence": "그때 사 둔 찻잔을 오늘도 쓴다, 만 34세인 지금의 나는 꽤 오래 물건을 쓰는 편이다.", "span": "만 34세", "type": "AGE", "subject": "self", "why": "지금의 나를 수식하는 나이"}
+{"id": "N-Q2-004", "pattern": "Q2", "kind": "neg", "sentence": "한때 매일 걷던 골목, 마흔여섯인 지금도 지나갈 때마다 가게 간판부터 본다.", "span": "마흔여섯", "type": "AGE", "subject": "self", "why": "지금의 나이라고 명시"}
+{"id": "N-Q2-005", "pattern": "Q2", "kind": "neg", "sentence": "옛날 일기를 읽다가 웃었다. 지금 내 나이 31살, 아직도 같은 색 펜만 산다.", "span": "31살", "type": "AGE", "subject": "self", "why": "지금 내 나이라고 명시"}
+{"id": "N-Q2-006", "pattern": "Q2", "kind": "neg", "sentence": "생일 촛불을 방금 껐어요. 저 오늘 스물일곱 살이 됐답니다.", "span": "스물일곱 살", "type": "AGE", "subject": "self", "why": "오늘 생일로 맞은 나이"}
+{"id": "N-Q2-007", "pattern": "Q2", "kind": "neg", "sentence": "날짜가 바뀌었다, 드디어 나는 만 30세가 되었다. 오늘이 내 생일이다.", "span": "만 30세", "type": "AGE", "subject": "self", "why": "오늘 도달한 현재 만 나이"}
+{"id": "N-Q2-008", "pattern": "Q2", "kind": "neg", "sentence": "오늘 생일이라 이제 49세가 됐습니다, 저녁에는 제 몫의 케이크를 사려고요.", "span": "49세", "type": "AGE", "subject": "self", "why": "생일인 오늘의 자신의 나이"}
+{"id": "N-Q2-009", "pattern": "Q2", "kind": "neg", "sentence": "나 오늘부터 쉰여섯 살 됐네ㅎㅎ 생일 기념으로 혼자 영화 보러 가는 중.", "span": "쉰여섯 살", "type": "AGE", "subject": "self", "why": "오늘부터의 자기 나이"}
+{"id": "N-Q2-010", "pattern": "Q2", "kind": "neg", "sentence": "오늘로 예순아홉이 되었구먼, 내 생일이라고 이웃이 꽃을 놓고 갔어.", "span": "예순아홉", "type": "AGE", "subject": "self", "why": "오늘 생일에 도달한 나이"}
+{"id": "N-Q2-011", "pattern": "Q2", "kind": "neg", "sentence": "달력만 넘겼는데 나는 어느새 40세가 됐다. 올해 내 나이를 소개할 말도 바뀌었다.", "span": "40세", "type": "AGE", "subject": "self", "why": "올해 자신의 나이를 서술"}
+{"id": "N-Q2-012", "pattern": "Q2", "kind": "neg", "sentence": "새해 첫 기록입니다. 저도 올해로 서른다섯이 되었고, 오늘부터 장보기 기록을 남겨요.", "span": "서른다섯", "type": "AGE", "subject": "self", "why": "올해의 현재 나이"}
+{"id": "N-Q2-013", "pattern": "Q2", "kind": "neg", "sentence": "아, 나 지금 만 32세였지. 예약창에 내 현재 나이를 쓰다가 잠깐 멈췄다.", "span": "만 32세", "type": "AGE", "subject": "self", "why": "지금 나이를 뒤늦게 떠올림"}
+{"id": "N-Q2-014", "pattern": "Q2", "kind": "neg", "sentence": "내가 벌써 쉰셋이었네 싶어 소개란을 고쳤다. 오늘 기준 내 나이가 그렇다.", "span": "쉰셋", "type": "AGE", "subject": "self", "why": "오늘 기준 나이라고 확인"}
+{"id": "N-Q2-015", "pattern": "Q2", "kind": "neg", "sentence": "방금 생일 알림 보고 깨달음… 나 이제 28살이었구나, 오늘 주인공은 나다ㅋㅋ", "span": "28살", "type": "AGE", "subject": "self", "why": "오늘 생일의 현재 나이를 깨달음"}
+{"id": "N-Q2-016", "pattern": "Q2", "kind": "neg", "sentence": "서른 무렵엔 그만 모으자고 했는데, 나는 지금 마흔셋이고 찻잔은 또 늘었다.", "span": "마흔셋", "type": "AGE", "subject": "self", "why": "과거 계획 뒤 현재 나이를 명시"}
+{"id": "N-Q2-017", "pattern": "Q2", "kind": "neg", "sentence": "스물넷 때부터 쓰던 별명을 지금도 쓴다. 어느덧 내 나이는 38세다.", "span": "38세", "type": "AGE", "subject": "self", "why": "과거 시작점과 구분된 현재 나이"}
+{"id": "N-Q2-018", "pattern": "Q2", "kind": "neg", "sentence": "열여덟 살 때부터 지금까지 이 가게만 찾는다. 현재 나는 만 41세다.", "span": "만 41세", "type": "AGE", "subject": "self", "why": "현재 나이를 별도로 명시"}
+{"id": "N-Q2-019", "pattern": "Q2", "kind": "neg", "sentence": "스물한 살 시절 시작한 사진 정리를, 쉰여덟인 지금도 끝내지 못했네.", "span": "쉰여덟", "type": "AGE", "subject": "self", "why": "지금의 나이와 과거 시절을 구분"}
+{"id": "N-Q2-020", "pattern": "Q2", "kind": "neg", "sentence": "서른 살 무렵 산 탁자가 아직 여기 있다. 지금 47살인 나보다 이사를 잘 견딘 듯.", "span": "47살", "type": "AGE", "subject": "self", "why": "지금의 나를 수식하는 나이"}
+{"id": "N-Q2-021", "pattern": "Q2", "kind": "neg", "sentence": "어린 시절의 나로 돌아가고 싶어도, 지금 나는 서른아홉 살이고 내일 택배를 받아야 한다.", "span": "서른아홉 살", "type": "AGE", "subject": "self", "why": "돌아가고 싶은 과거와 현재를 구분"}
+{"id": "N-Q2-022", "pattern": "Q2", "kind": "neg", "sentence": "그 무렵의 나로 돌아간 기분이었다. 물론 실제 내 나이는 지금 55세다.", "span": "55세", "type": "AGE", "subject": "self", "why": "현재 실제 나이라고 명시"}
+{"id": "N-Q2-023", "pattern": "Q2", "kind": "neg", "sentence": "어제는 추억 얘기만 했는데, 오늘은 만 29세인 내 현재 생활을 적어 보려고요.", "span": "만 29세", "type": "AGE", "subject": "self", "why": "오늘의 현재 생활을 쓰는 나의 나이"}
+{"id": "N-Q2-024", "pattern": "Q2", "kind": "neg", "sentence": "“그때도 이 색 좋아했지?” 친구 말에 끄덕였다. 지금 마흔하나인 나도 여전히 그렇다.", "span": "마흔하나", "type": "AGE", "subject": "self", "why": "회상 뒤 지금의 자신을 명시"}
+{"id": "N-Q2-025", "pattern": "Q2", "kind": "neg", "sentence": "“나 지금 36살이야.” 예전 별명으로만 부르는 친구에게 방금 웃으며 말했어요.", "span": "36살", "type": "AGE", "subject": "self", "why": "글쓴이가 방금 밝힌 지금 나이"}
+{"id": "N-Q2-026", "pattern": "Q2", "kind": "neg", "sentence": "옛날 사진에는 '언젠가 혼자 여행하기'라고 써 있다. 오늘의 나는 44세, 드디어 표를 샀다.", "span": "44세", "type": "AGE", "subject": "self", "why": "오늘의 나를 설명하는 나이"}
+{"id": "N-Q2-027", "pattern": "Q2", "kind": "neg", "sentence": "예전에는 내 나이를 잘못 적곤 했는데요, 지금은 정확히 만 37세입니다.", "span": "만 37세", "type": "AGE", "subject": "self", "why": "과거와 대비한 현재 나이"}
+{"id": "N-Q2-028", "pattern": "Q2", "kind": "neg", "sentence": "작년까지만 해도 몰랐다, 내가 올해 예순둘이 되어 새 취미를 시작할 줄은.", "span": "예순둘", "type": "AGE", "subject": "self", "why": "올해 도달하여 활동 중인 나이"}
+{"id": "N-Q2-029", "pattern": "Q2", "kind": "neg", "sentence": "생일을 맞아 오늘 나는 33세가 되었는데, 오래된 소개글은 아직 그대로네요.", "span": "33세", "type": "AGE", "subject": "self", "why": "오늘 생일로 도달한 나이"}
+{"id": "N-Q2-030", "pattern": "Q2", "kind": "neg", "sentence": "내가 오늘로 만 45세가 됐는데도, 예전에 쓰던 닉네임은 바꾸기 싫다.", "span": "만 45세", "type": "AGE", "subject": "self", "why": "오늘로 도달한 현재 만 나이"}
+{"id": "N-Q2-031", "pattern": "Q2", "kind": "neg", "sentence": "마흔쯤엔 일기를 접자고 했었는데… 지금 내 나이 쉰하나, 오늘도 한 줄을 보탠다.", "span": "쉰하나", "type": "AGE", "subject": "self", "why": "과거 계획 뒤 지금 내 나이를 명시"}
+{"id": "N-Q2-032", "pattern": "Q2", "kind": "neg", "sentence": "예전 나였다면 망설였겠지만, 현재 26세인 저는 오늘 혼자 예약을 마쳤습니다.", "span": "26세", "type": "AGE", "subject": "self", "why": "현재의 저를 수식하는 나이"}
+{"id": "N-Q2-033", "pattern": "Q2", "kind": "neg", "sentence": "한때는 생일을 잊고 지냈지요. 오늘 일흔넷이 된 저는 아침부터 꽃을 골랐답니다.", "span": "일흔넷", "type": "AGE", "subject": "self", "why": "오늘 생일로 맞은 자신의 나이"}
+{"id": "N-Q2-034", "pattern": "Q2", "kind": "neg", "sentence": "달력 보다가 '내가 지금 벌써 57살이었지' 하고 혼잣말함, 올해 소개란도 수정 완료.", "span": "57살", "type": "AGE", "subject": "self", "why": "지금 나이를 확인하는 혼잣말"}
+{"id": "N-Q2-035", "pattern": "Q2", "kind": "neg", "sentence": "“벌써 서른여섯이 됐네.” 오늘 생일을 맞은 내가 거울 앞에서 내게 건넨 첫마디다.", "span": "서른여섯", "type": "AGE", "subject": "self", "why": "오늘 생일의 자신에게 한 말"}
+{"id": "N-Q2-036", "pattern": "Q2", "kind": "neg", "sentence": "어릴 적 소원을 적은 쪽지가 나왔다. 만 48세인 현재의 나는 그중 하나를 오늘 이뤘다.", "span": "만 48세", "type": "AGE", "subject": "self", "why": "현재의 나를 명시적으로 수식"}
+{"id": "N-Q2-037", "pattern": "Q2", "kind": "neg", "sentence": "그때 이후로 여기만 오네. 나 지금 35살인데, 오늘도 주인아주머니는 내 주문을 기억하심.", "span": "35살", "type": "AGE", "subject": "self", "why": "회상과 별개로 지금 나이를 밝힘"}
+{"id": "N-Q2-038", "pattern": "Q2", "kind": "neg", "sentence": "지난날을 적다 보니 시간이 훌쩍 갔다. 지금 이 글을 쓰는 나는 마흔아홉이다.", "span": "마흔아홉", "type": "AGE", "subject": "self", "why": "글을 쓰는 현재 자신의 나이"}
+{"id": "N-Q2-039", "pattern": "Q2", "kind": "neg", "sentence": "한동안 예전 소개글을 방치했네요. 방금 '현재 나이: 32세'로 제 프로필을 고쳤습니다.", "span": "32세", "type": "AGE", "subject": "self", "why": "방금 갱신한 자신의 현재 나이"}
+{"id": "N-Q2-040", "pattern": "Q2", "kind": "neg", "sentence": "작년 생일 때 찍은 사진을 보며 오늘 케이크를 잘랐다. 오늘부터 내 나이는 만 40세다.", "span": "만 40세", "type": "AGE", "subject": "self", "why": "작년 사진과 구분한 오늘의 나이"}
+{"id": "P-Q1-001", "pattern": "Q1", "kind": "pos-hard", "sentence": "내 별명은 밤콩인데, 오늘 만난 다른 밤콩(9살, 옆집 강아지)은 내 신발만 따라다녔다.", "span": "9살", "type": "AGE", "subject": "other", "why": "글쓴이와 같은 별명의 강아지 나이"}
+{"id": "P-Q1-002", "pattern": "Q1", "kind": "pos-hard", "sentence": "가게에서 다들 '나'라고 부르는 고양이(열두 살)가 오늘은 계산대 위를 차지했다.", "span": "열두 살", "type": "AGE", "subject": "other", "why": "나라는 호칭의 고양이 나이"}
+{"id": "P-Q1-003", "pattern": "Q1", "kind": "pos-hard", "sentence": "오늘 소개할 이는 '글쓴이'(설정상 300세)라는 이름의 게임 캐릭터로, 내가 만든 건 아니다.", "span": "300세", "type": "AGE", "subject": "other", "why": "글쓴이라는 이름의 캐릭터 나이"}
+{"id": "P-Q1-004", "pattern": "Q1", "kind": "pos-hard", "sentence": "동생네 막내—집에서는 꼬마 대장이라고 부름—(여섯 살)가 내 우산을 골라 줬다.", "span": "여섯 살", "type": "AGE", "subject": "other", "why": "삽입구 앞 동생네 막내의 나이"}
+{"id": "P-Q1-005", "pattern": "Q1", "kind": "pos-hard", "sentence": "사진 왼쪽은 내가 아니라 함께 온 친구(별명은 본인, 만 34세)이고, 나는 사진을 찍었다.", "span": "만 34세", "type": "AGE", "subject": "other", "why": "본인이라는 별명을 가진 친구 나이"}
+{"id": "P-Q2-001", "pattern": "Q2", "kind": "pos-hard", "sentence": "오래된 일기 속 '오늘의 나, 스물여섯 살'이라는 문장을 지금 그대로 옮겨 적는다.", "span": "스물여섯 살", "type": "AGE", "subject": "unknown", "why": "옛 일기의 오늘이므로 현재 나이 아님"}
+{"id": "P-Q2-002", "pattern": "Q2", "kind": "pos-hard", "sentence": "상자에서 찾은 녹음에는 내 목소리로 '지금 저는 31세입니다'라는 인사가 남아 있었다.", "span": "31세", "type": "AGE", "subject": "unknown", "why": "과거 녹음 당시의 자기 나이"}
+{"id": "P-Q2-003", "pattern": "Q2", "kind": "pos-hard", "sentence": "빛바랜 사진 뒷면의 '생일 맞은 오늘, 만 28세가 됐다'는 내가 당시에 쓴 메모다.", "span": "만 28세", "type": "AGE", "subject": "unknown", "why": "과거 사진에 남긴 당시 생일 나이"}
+{"id": "P-Q2-004", "pattern": "Q2", "kind": "pos-hard", "sentence": "그 여행 장면을 떠올리는 동안만큼은 내가 다시 마흔두 살, 아직 짐을 풀기 전의 나다.", "span": "마흔두 살", "type": "AGE", "subject": "unknown", "why": "회상 속 과거 자신으로 돌아간 나이"}
+{"id": "P-Q2-005", "pattern": "Q2", "kind": "pos-hard", "sentence": "“나는 지금 쉰일곱이다.” 몇 해 전 내가 쓴 글의 첫 줄이고, 오늘은 그다음 줄을 지웠다.", "span": "쉰일곱", "type": "AGE", "subject": "unknown", "why": "몇 해 전 글에서 말한 당시 나이"}
