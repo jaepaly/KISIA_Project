@@ -378,6 +378,29 @@ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, e
     return "self"
 
 
+# 1단이 COMMUTE 로 잘라 잡은 조각 — 어절이 모두 때 말 · 휴가 · 이동 동사 조각 · 조사뿐(「오늘」 「갔다가」 「매일 타는」 「의」).
+# 교통 말을 열거하지 않는다 — 목록 밖 새 교통 이름(「GTX로」)이 해를 입지 않게 (exp37 · 38 → exp39). 버리지 않고 unknown(점선)으로만
+_RULE_C2 = True
+_FRAG_J = r"(?:이|가|은|는|을|를|도|에|에는|에서|로|으로|만|이면|엔|마다|부터|까지|이라|라|인데)?"
+_FRAG_W = (r"오늘|내일|어제|모레|매일|매번|평일|주말|아침|저녁|점심|새벽|낮|밤|요즘|오후|오전|당일치기|휴가|여름휴가|휴가철|여행|나들이|답사|일정|일도|"
+           r"직장인|체력|월급날|월급|날|목적지|업무|연차|시내|"
+           r"갔다가|가서|가기|가는|갈|가|오는|오니|오는데|다니는|다니며|지나가는|돌아가는|돌아오는|타고|타는|타서|탄|나가서|나가는|들어오자마자|"
+           r"들어오는|와서|나와|나오는|살고|멀어서|서둘러|이동하기|쓰고|때|길|해서|간|가던|손에|근무|"
+           r"의|에|에서|에서도|서|서는|로|으로|고|다|데|대|시|이|은|는|을|를|도|만|와|과|랑|하고|까지|부터|요|죠|첫|낡은")
+_FRAG_TOKEN = re.compile(r"(?:" + _FRAG_W + r")" + _FRAG_J)
+
+
+_FRAG_HABIT = re.compile(r"^(?:매일|매번|평일|주말|요즘|다니)|마다")   # 「다니-」는 그 자체가 반복 이동 (「시내로 다니는」 · Codex 재검토)
+
+
+def _commute_fragment(text: str) -> bool:
+    toks = text.strip().split()
+    if not toks or len(toks) > 2 or not all(_FRAG_TOKEN.fullmatch(t) for t in toks):
+        return False
+    # 어절이 늘면 조각끼리 모여 통근 패턴이 된다(「평일마다 새벽에 나가서 밤에 돌아오는」 · Codex 검토) — 한 어절은 낮추고, 두 어절은 반복 말이 없을 때만
+    return len(toks) == 1 or not any(_FRAG_HABIT.search(t) for t in toks)
+
+
 def resolve(texts: Mapping[str, str], candidate: Mapping[str, Any]) -> dict[str, str]:
     """infer.py 의 resolver 자리 — {level, subject} 만 돌려준다."""
     stype = str(candidate.get("type", ""))
@@ -388,4 +411,7 @@ def resolve(texts: Mapping[str, str], candidate: Mapping[str, Any]) -> dict[str,
     start, end = candidate.get("start"), candidate.get("end")
     if channel_text is not None and isinstance(start, int) and isinstance(end, int) and channel_text[start:end] != text:
         channel_text = None  # 오프셋이 다른 기준이면 문맥을 쓰지 않는다
-    return {"level": level_of(stype, text), "subject": subject_of(stype, text, channel_text, start, end)}
+    who = subject_of(stype, text, channel_text, start, end)
+    if _RULE_C2 and who == "self" and stype == "COMMUTE" and _commute_fragment(text):
+        who = "unknown"
+    return {"level": level_of(stype, text), "subject": who}

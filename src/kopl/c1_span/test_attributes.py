@@ -284,6 +284,18 @@ def test_household_ne_me_in_next_clause_is_not_modifier():
 
 
 # ── 실제 글 시험(10/16)에서 찾은 오탐 — 글쓴이의 부모 · 여행지 ─────────────────────
+def test_commute_fragment_is_unknown():
+    """exp39 — 1단이 「오늘」 「갔다가」 「매일 타는」을 COMMUTE 로 잡으면 unknown. 교통 이름이 있으면(「GTX로」 「수인분당선으로」) 그대로."""
+    body = "오늘 버스타서 시내 나가서 영화 봤다. 매일 타는 GTX로 갔다가 수인분당선으로 갈아탔다."
+    for t in ("오늘", "시내 나가서", "갔다가"):
+        assert _r(body, t, "COMMUTE")["subject"] == "unknown", t
+    for t in ("버스타서", "GTX로", "수인분당선으로", "매일 타는"):
+        assert _r(body, t, "COMMUTE")["subject"] == "self", t
+    # 조각이 모여 된 통근 패턴은 그대로 (Codex 검토) — 세 어절 이상 · 두 어절에 반복 말
+    for t in ("평일마다 새벽에 나가서 밤에 돌아오는", "매일 아침에 나가서 저녁에 돌아오는", "시내로 매일 다니는", "매일 다니는", "시내로 다니는", "시내로 다니며"):
+        assert _r(t, t, "COMMUTE")["subject"] == "self", t
+
+
 @pytest.mark.parametrize("sentence,span,expected", [
     # 자녀 입장 — 성별 단서로 잡힌 「아빠가」는 글쓴이의 아버지(남의 성별)
     ("엄마아빠가 혼자는 안 된다고 했다. 아빠가 진짜 싫다고 해서 엄마랑 나랑 옴", "아빠가", "other"),
