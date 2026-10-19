@@ -8,7 +8,7 @@
   {# 파비콘 — 파도풀 심볼. 분석기 화면도 같은 파일을 쓸 수 있다(/static/padopool-symbol.svg) #}
   <link rel="icon" type="image/svg+xml" href="/static/padopool-symbol.svg">
   <link rel="stylesheet" href="/static/fonts/pretendard.css">
-  <link rel="stylesheet" href="/static/veilo.css">
+  <link rel="stylesheet" href="/static/veilo.css?v=381">
   <link rel="stylesheet" href="/static/fx.css">
   {# 파도풀 주소 — app.py PADO_BASE. pado.js · 글쓰기 화면 스크립트가 읽는다 #}
   <script>window.PADO_BASE = {{ pado_base|tojson }};</script>
@@ -145,7 +145,7 @@
   {% if me %}
   {# 위험 배지 — 내 계정 글 중 아직 안 센 글만, 화면당 최대 {{ clue_per_page }}편 (clues.js) #}
   <script>window.CLUE_PER_PAGE = {{ clue_per_page }};</script>
-  <script src="/static/clues.js" defer></script>
+  <script src="/static/clues.js?v=381" defer></script>
   {% endif %}
 </body>
 </html>

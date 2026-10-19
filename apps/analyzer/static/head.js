@@ -16,5 +16,5 @@ window.VEILO_BASE = window.SNS_PUBLIC
 document.write(
   '<link rel="icon" type="image/svg+xml" href="' + window.VEILO_BASE + '/static/padopool-symbol.svg">' +
   '<link rel="stylesheet" href="' + window.VEILO_BASE + '/static/fonts/pretendard.css">' +
-  '<link rel="stylesheet" href="' + window.VEILO_BASE + '/static/veilo.css">'
+  '<link rel="stylesheet" href="' + window.VEILO_BASE + '/static/veilo.css?v=381">'
 );
