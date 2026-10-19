@@ -618,3 +618,16 @@ def test_cancel_during_post_admission_disconnect_check_releases_slot():
         asyncio.run(adm.run(Req(), lambda: None))
     assert adm.sem.acquire(blocking=False) and not adm.sem.acquire(blocking=False)
     adm.sem.release()
+
+
+def test_static_screens_revalidate():
+    """화면 · 스크립트 · 스타일은 Cache-Control: no-cache — 배포 직후 옛 diagnosis.html 이 보이던 것 (E 리뷰 #381)"""
+    c = TestClient(server.app)
+    for path in ("/static/diagnosis.html", "/static/common.js", "/static/style.css"):
+        r = c.get(path)
+        assert r.status_code == 200 and r.headers.get("cache-control") == "no-cache", path
+        etag = r.headers.get("etag")
+        assert etag, path
+        r2 = c.get(path, headers={"If-None-Match": etag})   # 안 바뀌었으면 본문 없이 304 — 304 에도 헤더가 붙어야 다음에도 묻는다
+        assert r2.status_code == 304 and r2.content == b"" and r2.headers.get("cache-control") == "no-cache", path
+    assert c.get("/static/missing.js").status_code == 404
