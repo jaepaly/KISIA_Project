@@ -406,3 +406,19 @@ class _BoomModel:
 def test_generation_error_reason_hides_message() -> None:
     out = analyze(USER, _posts(), model=_BoomModel(), mode="auto")
     assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: OSError)"
+
+
+def test_base_model_dir_env(monkeypatch) -> None:
+    """STAGE2_BASE_MODEL_DIR 이 있으면 그 폴더 · 없거나 비면 허브 이름 (오프라인 GPU 서버 · 258f904)"""
+    import importlib
+    import kopl.c4_stage2.infer as infer
+    try:
+        monkeypatch.setenv("STAGE2_BASE_MODEL_DIR", "/srv/kisia/hf_cache/qwen3-4b")
+        assert importlib.reload(infer).BASE_MODEL == "/srv/kisia/hf_cache/qwen3-4b"
+        monkeypatch.setenv("STAGE2_BASE_MODEL_DIR", "")
+        assert importlib.reload(infer).BASE_MODEL == "Qwen/Qwen3-4B"
+        monkeypatch.delenv("STAGE2_BASE_MODEL_DIR")
+        assert importlib.reload(infer).BASE_MODEL == "Qwen/Qwen3-4B"
+    finally:
+        monkeypatch.delenv("STAGE2_BASE_MODEL_DIR", raising=False)
+        importlib.reload(infer)
