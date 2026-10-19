@@ -27,6 +27,7 @@ import math
 import os
 import subprocess
 import sys
+import time
 from collections.abc import Callable
 from pathlib import Path
 from types import ModuleType
@@ -73,7 +74,7 @@ def _check_test_leak(preds: list[dict], allow_test: bool) -> None:
         raise SystemExit(
             f"⛔ test 글 {len(leaked)}개가 입력에 섞여 있다 "
             f"(예: {leaked[:3]}). "
-            "10/29 최종 측정 때만 --final 로 돌린다."
+            "11/2 최종 측정 때만 --final 로 돌린다."
         )
 
 
@@ -116,14 +117,17 @@ def _import_sibling(name: str) -> ModuleType | None:
 
 
 def _call(name: str, label: str, fn: Callable[[ModuleType], dict[str, Any]]) -> dict[str, Any]:
-    """하위 단계 실행 → status 를 붙인 dict. ok · skipped(모듈 파일 없음) · failed(그 밖의 예외 전부)."""
+    """하위 단계 실행 → status 와 걸린 시간(seconds)을 붙인 dict. ok · skipped(모듈 파일 없음) · failed(그 밖의 예외 전부)."""
+    t0 = time.perf_counter()
     try:
         mod = _import_sibling(name)
         if mod is None:
             return {"status": "skipped", "skipped": f"모듈 없음: {name}"}
-        return {"status": "ok", **fn(mod)}
+        res = {"status": "ok", **fn(mod)}
     except Exception as e:  # noqa: BLE001 — 실패는 failed 로 남기고 CLI 가 종료 코드 1 로 알린다
-        return {"status": "failed", "error": f"{label}: {type(e).__name__}: {e}"}
+        res = {"status": "failed", "error": f"{label}: {type(e).__name__}: {e}"}
+    res["seconds"] = round(time.perf_counter() - t0, 2)
+    return res
 
 
 def _lazy_stage2(preds_path: Path, out_dir: Path, *, mode: str, allow_test: bool = False,
@@ -196,12 +200,14 @@ def _run_commands(cmds: list[list[str]], *, env: dict[str, str], outputs: list[P
     종료 코드가 모두 0 이어도 필수 산출 파일(outputs)이 없거나 읽히지 않으면 failed 다.
     """
     ran: list[dict[str, Any]] = []
+    t0 = time.perf_counter()
     for cmd in cmds:
         code = runner(cmd, cwd=ROOT, env={**os.environ, **env}).returncode
         ran.append({"cmd": cmd, "returncode": code})
         if code != 0:
             break
-    res: dict[str, Any] = {"status": "ok", "commands": ran, "outputs": _hash_outputs(outputs)}
+    res: dict[str, Any] = {"status": "ok", "commands": ran, "outputs": _hash_outputs(outputs),
+                           "seconds": round(time.perf_counter() - t0, 2)}
     if any(r["returncode"] != 0 for r in ran):
         res["status"], res["error"] = "failed", f"종료 코드 {ran[-1]['returncode']}: {' '.join(ran[-1]['cmd'])}"
     elif problems := _output_problems(outputs):
@@ -287,6 +293,7 @@ def _regressions(out_dir: Path, adapter: Path, runner: Callable[..., Any]) -> di
     rest = _call("d_risk_action", "exp10·exp11", other)
     if rest["status"] == "ok":
         rest.pop("status")
+        rest.pop("seconds", None)  # 회귀마다 _run_commands 가 따로 잰다
         out.update(rest)
     else:
         out["exp10_exp11"] = rest
@@ -357,9 +364,9 @@ def run_downstream(
         out_dir: 결과 디렉터리.
         stage2_mode: "rules" | "model".
         ablations: 돌릴 ablation 이름 목록 ("single_vs_account", "explicit_removed").
-        allow_test: True 면 test 글이 섞여도 계속 진행 (10/29 용) — 하위 단계까지 그대로 넘긴다.
+        allow_test: True 면 test 글이 섞여도 계속 진행 (11/2 용) — 하위 단계까지 그대로 넘긴다.
         c1_checkpoint: 1단 체크포인트 폴더 (SHA 기록용).
-        final: 10/29 최종 측정 — allow_test 를 켜고 기존 회귀(exp09 · exp10 · exp11)를 함께 돌린다.
+        final: 11/2 최종 측정 — allow_test 를 켜고 기존 회귀(exp09 · exp10 · exp11)를 함께 돌린다.
         adapter: 2단 어댑터 폴더. 인자 > STAGE2_ADAPTER_DIR > 앱 기본 순으로 한 번 해석해 model 모드 2단과
             exp09 회귀에 같은 경로를 넘긴다 (rules 모드의 2단 지문은 null).
         compare_stage2: 다른 실행의 --out 폴더 — 2단 verdict 일치율(ablation ④)을 낸다.
@@ -458,7 +465,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--final",
         action="store_true",
-        help="10/29 최종 측정용 — test 글 허용(하위 단계까지) + exp09 · exp10 · exp11 회귀 실행",
+        help="11/2 최종 측정용 — test 글 허용(하위 단계까지) + exp09 · exp10 · exp11 회귀 실행",
     )
     ap.add_argument(
         "--c1-checkpoint",

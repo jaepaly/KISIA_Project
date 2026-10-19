@@ -1,6 +1,6 @@
 # Ablation 비교표 — 벤치마크 러너
 
-> 이 문서는 **W9 안에 확정**한 ablation 목록이다. 10/29(목) 최종 측정 때 이 명령들을 순서대로 돌린다.
+> 이 문서는 **W9 안에 확정**한 ablation 목록이다. 11/2(월) 최종 측정 때 이 명령들을 순서대로 돌린다.
 >
 > **원칙**: 이미 쓴 판정셋은 결과 비교에만 쓰고, 조합을 고르는 데 다시 쓰지 않는다.
 
@@ -10,10 +10,10 @@
 
 | # | 무엇을 묻나 | 데이터 | 지표 (실제 산출 키) | 명령 (예시) | 담당 | 비고 |
 |---|---|---|---|---|---|---|
-| ① | **1단 모델 단독 vs 규칙 결합** — 규칙을 붙이면 F1 이 얼마나 오르는가 | test (10/29) | partial F1 · P · R (등급별) | **B 러너 인계(10/17) 뒤 확정 — 규칙 켬/끔** | B (1단 러너) | 명령 · 옵션 이름은 B 러너 인터페이스 합의 대기. 규칙 켬/끔 각각의 1단 예측 파일이 나오면 `d_downstream.py` 는 그 파일을 그대로 받아 하류를 돌린다 |
-| ② | **글 하나 vs 계정 누적** — 같은 단서도 여러 글에 걸쳐 누적되면 위험이 오르는가 | dev (개발 확인) / test (10/29) | `summary.{with_geo,spans_only}` 의 `raised_ratio`(글 하나 최댓값보다 계정 위험이 오른 사용자 비율) · `raise_among_raised`(오른 사용자의 증가폭) · `raise_all` · `single_max_mean` · `account_mean` | `python experiments/bench/d_downstream.py --preds <preds> --out <out> --ablation single_vs_account` | D | `d_risk_action.run_ablation("single_vs_account", ...)` · 분모 = 계정 위험 > 0 인 사용자 (`n_zero_excluded` 따로) |
-| ③ | **명시 단서 제거 전후 위험** — explicit 스팬을 입력에서 빼면 위험도가 얼마나 낮아지는가 | dev (개발 확인) / test (10/29) | `summary.{with_geo,spans_only}` 의 `before_mean` · `after_mean`(제거 전후 위험) · `reduction_pct`(사용자별 감소율 평균 · 중앙값) · `pooled_reduction_pct` | `python experiments/bench/d_downstream.py --preds <preds> --out <out> --ablation explicit_removed` | D | `d_risk_action.run_ablation("explicit_removed", ...)` · 탐지 F1 은 재지 않는다(스팬을 빼고 위험만 다시 계산) |
-| ④ | **2단 규칙 경로 vs 모델 경로** — QLoRA 어댑터와 규칙 폴백의 판정 일치율 · 속도 차이 | dev (개발 확인) / test (10/29) | `stage2_compare.verdict_agreement`(두 경로끼리 verdict 일치율 · 분모 = 두 실행에 모두 있는 사용자 × 속성 7 · `per_attr_agreement`) · `stage2.parse_failure_rate` · `stage2.fallback_rate` · `stage2.seconds_per_user` | 두 번 돌리고 **출력 폴더를 다르게** 준다:<br>`python experiments/bench/d_downstream.py --preds <preds> --out <out>/rules --stage2-mode rules`<br>`python experiments/bench/d_downstream.py --preds <preds> --out <out>/model --stage2-mode model --compare-stage2 <out>/rules` | D | `d_stage2.compare_stage2` — 정답 적중률이 아니라 **두 경로끼리의 일치율**이다. 같은 파일을 가리키면 **측정 전에**(아무것도 쓰기 전에) 종료 코드 1 로 멈춘다 |
+| ① | **1단 모델 단독 vs 규칙 결합** — 규칙을 붙이면 F1 이 얼마나 오르는가 | test (11/2) | partial F1 · P · R (등급별) | `run.py ... --rules on` / `--rules off` (출력 폴더를 다르게 · [README](README.md) 「11/2 측정 체크리스트」) | B (1단 러너) | 규칙 켬 쪽은 `run_all.py --final` 한 줄 안에서 돈다. 규칙 끔은 1단만 한 번 더(하류는 규칙 켬 구성으로만) |
+| ② | **글 하나 vs 계정 누적** — 같은 단서도 여러 글에 걸쳐 누적되면 위험이 오르는가 | dev (개발 확인) / test (11/2) | `summary.{with_geo,spans_only}` 의 `raised_ratio`(글 하나 최댓값보다 계정 위험이 오른 사용자 비율) · `raise_among_raised`(오른 사용자의 증가폭) · `raise_all` · `single_max_mean` · `account_mean` | `python experiments/bench/d_downstream.py --preds <preds> --out <out> --ablation single_vs_account` | D | `d_risk_action.run_ablation("single_vs_account", ...)` · 분모 = 계정 위험 > 0 인 사용자 (`n_zero_excluded` 따로) |
+| ③ | **명시 단서 제거 전후 위험** — explicit 스팬을 입력에서 빼면 위험도가 얼마나 낮아지는가 | dev (개발 확인) / test (11/2) | `summary.{with_geo,spans_only}` 의 `before_mean` · `after_mean`(제거 전후 위험) · `reduction_pct`(사용자별 감소율 평균 · 중앙값) · `pooled_reduction_pct` | `python experiments/bench/d_downstream.py --preds <preds> --out <out> --ablation explicit_removed` | D | `d_risk_action.run_ablation("explicit_removed", ...)` · 탐지 F1 은 재지 않는다(스팬을 빼고 위험만 다시 계산) |
+| ④ | **2단 규칙 경로 vs 모델 경로** — QLoRA 어댑터와 규칙 폴백의 판정 일치율 · 속도 차이 | dev (개발 확인) / test (11/2) | `stage2_compare.verdict_agreement`(두 경로끼리 verdict 일치율 · 분모 = 두 실행에 모두 있는 사용자 × 속성 7 · `per_attr_agreement`) · `stage2.parse_failure_rate` · `stage2.fallback_rate` · `stage2.seconds_per_user` | 두 번 돌리고 **출력 폴더를 다르게** 준다:<br>`python experiments/bench/d_downstream.py --preds <preds> --out <out>/rules --stage2-mode rules`<br>`python experiments/bench/d_downstream.py --preds <preds> --out <out>/model --stage2-mode model --compare-stage2 <out>/rules` | D | `d_stage2.compare_stage2` — 정답 적중률이 아니라 **두 경로끼리의 일치율**이다. 같은 파일을 가리키면 **측정 전에**(아무것도 쓰기 전에) 종료 코드 1 로 멈춘다 |
 
 ### 보조 지표 — 기존 실험 수치와 다르다
 
@@ -46,11 +46,13 @@
 | 2단 v1 vs v2 ablation | DEC-012 v2 채택 완료(10/12) · 비교는 exp22b 결과로 대신 |
 | 어댑터 없는 폴백 vs 어댑터 있는 모델 비교 | 체크포인트가 없는 PC 는 규칙 경로로 자동 폴백 · 동일 구성으로 재현하기 어렵다 |
 | CPU 가속(int8) ablation | exp24 미채택(10/13) · 스팬 일치 0.064 로 출력이 무너졌다 |
-| test 를 개발용으로 돌리는 비교 | **test 는 10/29 한 번만** — 고르는 데 다시 쓰지 않는다 |
+| test 를 개발용으로 돌리는 비교 | **test 는 11/2 한 번만** — 고르는 데 다시 쓰지 않는다 |
 
 ---
 
-## 명령 한 줄 예시 (10/29 최종 측정)
+## 명령 예시 — 하류만 따로 (11/2 최종 측정)
+
+> **11/2 에는 `run_all.py --final ... --stage2-mode both` 한 줄이 1단 → 2단(규칙 · 모델 · ④ 일치율) → 위험도 · 조치 → ② · ③ → 회귀를 다 돈다** — 명령은 [README](README.md) 「11/2 측정 체크리스트」. 아래는 하류를 따로 돌릴 때의 `d_downstream.py` 명령이다.
 
 ```bash
 export PYTHONIOENCODING=utf-8 PYTHONPATH=src
@@ -62,7 +64,7 @@ python experiments/bench/d_downstream.py \
   --stage2-mode rules \
   --ablation single_vs_account explicit_removed
 
-# 10/29 최종 측정 — test 글 포함 · --final 필수
+# 11/2 최종 측정 — test 글 포함 · --final 필수
 python experiments/bench/d_downstream.py \
   --preds <test_preds>.jsonl \
   --out results/bench/downstream_final \
@@ -79,7 +81,7 @@ python experiments/bench/d_downstream.py \
   --final
 ```
 
-> `--final` 없이 test 글이 섞이면 **오류로 멈춘다** (10/29 이전 보호). 단계마다 `status`(ok · skipped · failed · existing_verified)가 붙고, failed 가 하나라도 있으면(ablation · 회귀 안쪽 포함) 종료 코드 1 이다. skipped 는 그 단계 모듈 파일 자체가 없을 때만이다.
+> `--final` 없이 test 글이 섞이면 **오류로 멈춘다** (11/2 이전 보호). 단계마다 `status`(ok · skipped · failed · existing_verified)가 붙고, failed 가 하나라도 있으면(ablation · 회귀 안쪽 포함) 종료 코드 1 이다. skipped 는 그 단계 모듈 파일 자체가 없을 때만이다.
 >
 > 회귀 명령은 종료 코드 0 이어도 위 필수 산출 파일이 없거나 JSON · JSONL · CSV 로 읽히지 않으면 `failed` 다.
 >
