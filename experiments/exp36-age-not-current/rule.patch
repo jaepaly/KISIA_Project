@@ -1,0 +1,324 @@
+diff --git a/src/kopl/c1_span/attributes.py b/src/kopl/c1_span/attributes.py
+index 2541078..9f36422 100644
+--- a/src/kopl/c1_span/attributes.py
++++ b/src/kopl/c1_span/attributes.py
+@@ -11,7 +11,8 @@
+   「친구가 [화정에서] 공방 한다」 · 「[아홉 살] 아들은」 · 「[편의점 알바] 언니가」.
+ 
+ ``resolve(texts, candidate)`` 는 ``experiments/exp06-finetune/infer.py`` 의 ``resolver`` 자리에 그대로 들어간다.
+-정밀도 우선: 타인 귀속이 분명하지 않으면 self(계약 기본값)로 둔다. ``unknown`` 은 내지 않는다.
++정밀도 우선: 타인 귀속이 분명하지 않으면 self(계약 기본값)로 둔다. ``unknown`` 은 좁은 꼴에서만 낸다 —
++여행지(「일본에 디자인 여행」)와 과거 나이(「열다섯 살 때」 · exp36 Q2)는 본인 것이지만 지금 사는 곳 · 지금 나이가 아니다.
+ """
+ from __future__ import annotations
+ 
+@@ -302,6 +303,104 @@ def _paragraph(text: str, start: int, end: int) -> str:
+     return text[a + 2 if a >= 0 else 0: b if b >= 0 else len(text)]
+ 
+ 
++# ── 지금 내 나이가 아닌 나이 (exp36) ────────────────────────────────────
++# 패턴별 스위치 — 끄면 main 과 똑같이 동작한다
++_RULE_Q1 = False  # 괄호 속 남의 나이 → other — exp36 판정 탈락(닉네임 · 자기소개 괄호 반례 16개를 남의 나이로 봄) · 꺼 둔다
++_RULE_Q2 = True   # 과거 나이 → unknown
++
++# Q1. 「X(14살)」 — 괄호 앞 X 가 글쓴이가 아니면 X 의 나이. 괄호 앞이 없거나 불분명하면 self(정밀도 우선)
++_PAREN_OPEN = re.compile(r"\(([^()\n]{0,12})$")           # 스팬 앞 — 「(」 뒤 짧은 앞말(「(중2, 14살)」)까지
++_PAREN_CLOSE = re.compile(r"^([^()\n]{0,12})\)")          # 스팬 뒤 — 짧은 뒷말 후 「)」
++_PAREN_WORD = re.compile(r"([가-힣A-Za-z][가-힣A-Za-z0-9_]{0,14})[ \t]?$")
++_Q1_SELF = re.compile(r"나|저|본인|나님|저님|내|제|작성자|글쓴이|필자|쓴이|나자신|me|Me|ME|I|my")
++_Q1_LABEL = re.compile(r"나이|연령|만|만나이|한국나이|세는나이|올해|현재|지금|생일|기준|닉네임|이름|닉")
++# 때 · 사건 · 자기 신분 말 — 「결혼(31)」 「당시(23살)」 「직장인(27)」은 남이 아니다
++_Q1_NOT_PERSON = re.compile(r".*(?:때|당시|시절|그때|작년|재작년|년|학년|결혼|입사|졸업|전역|제대|취업|출산|임신|이사|퇴사|은퇴|창업|데뷔|"
++                            r"등단|입학|처음|시작|첫)|직장인|회사원|주부|학생|대학생|대학원생|취준생|프리랜서|백수|자영업자|워킹맘|직딩|"
++                            r"신입|사회초년생|여자|남자|여성|남성|미혼|기혼|싱글|돌싱|[가-힣]*대")
++_Q1_OTHER_EXTRA = (r"(?:아이|아기|애기|아가|꼬맹이|강아지|고양이|댕댕이|냥이|멍멍이|반려견|반려묘|햄스터|앵무새|토끼|"
++                   r"주인공|최애|애칭|아이돌|캐릭터|멤버|여친|남친|여자친구|남자친구|애인|조카딸|외손주|친손주)")
++_Q1_OTHER_WORD = re.compile(r"(?:" + _OTHERS + r"|" + _Q1_OTHER_EXTRA + r")(?:들|님)?")
++_Q1_PARENT = re.compile(r"엄마|아빠|어머니|아버지|엄빠")
++_Q1_INTRO_AFTER = re.compile(r"\s*(?:입니다|이에요|예요|이고|이구요|이고요|임|이요|라고|이라고|랍니다|이랍니다|으로\s*활동|로\s*활동)")
++_Q1_PROFILE = re.compile(r"/|(?<![가-힣])(?:여|남|F|M|f|m)(?![가-힣A-Za-z])")   # 「(27/여)」 — 자기 프로필 꼴
++_Q1_SELF_PAREN = re.compile(r"(?<![가-힣A-Za-z])(?:나|저|본인|나님)[ \t]?\(")
++
++
++def _paren_age_of_other(text: str, channel_text: str, start: int, end: int) -> bool:
++    lead = len(text) - len(text.lstrip())
++    t = text.strip()
++    s, e = start + lead, start + lead + len(t)
++    if t.startswith("("):
++        s += 1
++    if t.endswith(")"):
++        e -= 1
++    om = _PAREN_OPEN.search(channel_text[max(0, s - 14):s])
++    cm = _PAREN_CLOSE.match(channel_text[e:e + 14])
++    if not om or not cm:
++        return False
++    if _Q1_PROFILE.search(om.group(1) + " " + cm.group(1)):
++        return False   # 「꿀벌(27/여)」 — 자기 프로필
++    open_pos = max(0, s - 14) + om.start()
++    line_start = max(channel_text.rfind("\n", 0, open_pos) + 1, open_pos - 200)
++    line_left = channel_text[line_start:open_pos]
++    wm = _PAREN_WORD.search(line_left)
++    if not wm:
++        return False   # 「(27세 직장인)」 — 괄호 앞이 없다
++    word = wm.group(1)
++    prev_tokens = re.findall(r"[가-힣A-Za-z]+", line_left[:wm.start()])
++    prev = prev_tokens[-1] if prev_tokens else ""
++    prev_other = bool(prev) and bool(_Q1_OTHER_WORD.fullmatch(prev))
++    if _Q1_SELF.fullmatch(word) or _Q1_NOT_PERSON.fullmatch(word):
++        return False
++    if _Q1_LABEL.fullmatch(word):
++        return prev_other   # 「남편 나이(35)」 ○ · 「제 나이(27)」 ✗
++    if re.search(r"자기\s*소개|프로필", line_left):
++        return False
++    if _Q1_PARENT.fullmatch(word):
++        para = _paragraph(channel_text, start, end)
++        return bool(_CHILD_VIEW.search(para) or not _PARENT_OF_CHILD.search(para))   # SEX 부모 호칭 규칙과 같은 판단
++    if prev in ("나", "저", "본인"):   # 「나 꿀벌(27)」 — 1인칭과 나란히 쓴 이름은 글쓴이
++        return False
++    close = e + cm.end()
++    after_paren = channel_text[close: close + 20]
++    kin = prev_other or bool(_Q1_OTHER_WORD.fullmatch(word)) or bool(re.search(r"[가-힣](?:님|씨|군|양)$", word))
++    if kin:
++        return True
++    # 이름 · 애칭만 — 자기소개 꼴(1인칭이 앞 · 「꿀벌(27)입니다」)이면 글쓴이
++    before, _ = _sentence_window(channel_text, line_start + wm.start(), line_start + wm.start())
++    if _FIRST_PERSON.search(before) or _Q1_INTRO_AFTER.match(after_paren):
++        return False
++    return True
++
++
++# Q2. 과거 나이 — 나이 말 바로 뒤가 「때 · 적 · 무렵 · 시절 · 쯤에」 「의 나(로 돌아가)」 「이던 · 이었던 · 였」 「에 처음」
++_Q2_AGE = re.compile(r"(?:\d+|" + _NATIVE_NUM.pattern + r")(?:\s*(?:살|세))?")
++_Q2_PAST = re.compile(
++    r"^\s*(?:살|세)?\s*(?:"
++    r"(?:때(?!문)|적|무렵|시절|즈음|쯤에|쯤엔)(?:에|엔|에는|의|부터|까지|도|만|은|는|이|가|를|랑|쯤|처럼|보다)?(?![가-힣])"
++    r"|의\s*(?:나|저|내|제)(?:로|에게|한테|를|가|와|랑|였|였던|는\s*몰랐)"
++    r"|의\s*(?:[가-힣A-Za-z]{1,6}\s*){1,2}?(?:로|으로)\s*돌아(?:가|갔|간|와|왔|온|오|감)"
++    r"|(?:이었|였|이던|던)(?![가-힣]*(?:으면|다면|더라면))(?!(?:네|구나|군|구먼|다니|더라|잖아|어|지)(?![가-힣]))"   # 「서른 살이었네」는 지금 나이를 깨닫는 말 (Codex)
++    r"|(?:이|가)?\s*(?:되던|되었던|됐던)"
++    r"|에\s*처음(?!\s*[가-힣]*는\s)"   # 「서른 살에 처음 맞는 생일」 — 뒤 사건이 지금이면 과거가 아니다 (Codex)
++    r")")
++# 그 스팬 자체에 붙은 지금 나이 표지 — 「벌써 서른이었다니」 「올해 스물셋이던가」
++_Q2_NOW_BEFORE = re.compile(r"(?:지금|올해|올해로|이제|벌써|현재|어느덧|어느새|이제야|드디어)\s*(?:만\s*)?$")
++
++
++def _past_age(text: str, channel_text: str, start: int, end: int) -> bool:
++    t = text.strip()
++    ms = list(_Q2_AGE.finditer(t))
++    if not ms:
++        return False   # 숫자 · 수사 나이만 — 「초등학생 때」는 이 규칙 밖
++    tail = t[ms[-1].end():] + channel_text[end:end + 40]
++    if not _Q2_PAST.match(tail):
++        return False
++    lead = len(text) - len(text.lstrip())
++    return not _Q2_NOW_BEFORE.search(channel_text[max(0, start + lead - 12):start + lead])
++
++
+ def subject_of(stype: str, text: str, channel_text: str | None, start: int | None, end: int | None) -> str:
+     if channel_text is None or start is None or end is None:
+         return "self"
+@@ -314,14 +413,25 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
+                 and (_CHILD_VIEW.search(para) or not _PARENT_OF_CHILD.search(para)):
+             return "other"   # 글쓴이의 부모 — 「아빠가 진짜 싫다고 해서 엄마랑 나랑 옴」. 「나는 아빠가 됐다」(1인칭)는 그대로
+     who = _subject_in_sentence(stype, text, channel_text, start, end)
++    if who == "self" and stype == "AGE":
++        if _RULE_Q1 and _paren_age_of_other(text, channel_text, start, end):
++            return "other"    # 「아이찡(14살) ♥ 나(27살)」의 14살 — 괄호 앞 사람의 나이 (exp36 Q1)
++        if _RULE_Q2 and _past_age(text, channel_text, start, end):
++            return "unknown"  # 「15살의 나로 돌아갔다」 「스무 살 때」 — 내 나이지만 지금 나이가 아니다 (exp36 Q2 · PM 10/17)
+     if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY") \
+-            and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(channel_text[end:])):
++            and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(_WS_RUN.sub(" ", channel_text[end:]))):
+         return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
+     return who
+ 
+ 
++# 뒷문맥의 공백 연속은 한 칸으로 접는다 — 판정은 같고, 「^\s*(?:에\s*)?…\s*」 꼴이 긴 공백에서 O(n²) 역추적하는 것을 막는다
++# (main 에서 스팬 뒤 공백 3만 칸이면 subject_of 한 번이 약 70초 · exp36 측정)
++_WS_RUN = re.compile(r"[ \t]{2,}")   # 스페이스 · 탭만 — NBSP 등은 main 과 같게 둔다 (Codex)
++
++
+ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, end: int) -> str:
+     before, after = _sentence_window(channel_text, start, end)
++    after = _WS_RUN.sub(" ", after)
+     core = _core(text)
+     if re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before):
+         return "self"  # 1인칭 소유 — 「[우리 집에]」 「내 나이 [서른넷을]」
+@@ -378,29 +488,6 @@ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, e
+     return "self"
+ 
+ 
+-# 1단이 COMMUTE 로 잘라 잡은 조각 — 어절이 모두 때 말 · 휴가 · 이동 동사 조각 · 조사뿐(「오늘」 「갔다가」 「매일 타는」 「의」).
+-# 교통 말을 열거하지 않는다 — 목록 밖 새 교통 이름(「GTX로」)이 해를 입지 않게 (exp37 · 38 → exp39). 버리지 않고 unknown(점선)으로만
+-_RULE_C2 = True
+-_FRAG_J = r"(?:이|가|은|는|을|를|도|에|에는|에서|로|으로|만|이면|엔|마다|부터|까지|이라|라|인데)?"
+-_FRAG_W = (r"오늘|내일|어제|모레|매일|매번|평일|주말|아침|저녁|점심|새벽|낮|밤|요즘|오후|오전|당일치기|휴가|여름휴가|휴가철|여행|나들이|답사|일정|일도|"
+-           r"직장인|체력|월급날|월급|날|목적지|업무|연차|시내|"
+-           r"갔다가|가서|가기|가는|갈|가|오는|오니|오는데|다니는|다니며|지나가는|돌아가는|돌아오는|타고|타는|타서|탄|나가서|나가는|들어오자마자|"
+-           r"들어오는|와서|나와|나오는|살고|멀어서|서둘러|이동하기|쓰고|때|길|해서|간|가던|손에|근무|"
+-           r"의|에|에서|에서도|서|서는|로|으로|고|다|데|대|시|이|은|는|을|를|도|만|와|과|랑|하고|까지|부터|요|죠|첫|낡은")
+-_FRAG_TOKEN = re.compile(r"(?:" + _FRAG_W + r")" + _FRAG_J)
+-
+-
+-_FRAG_HABIT = re.compile(r"^(?:매일|매번|평일|주말|요즘|다니)|마다")   # 「다니-」는 그 자체가 반복 이동 (「시내로 다니는」 · Codex 재검토)
+-
+-
+-def _commute_fragment(text: str) -> bool:
+-    toks = text.strip().split()
+-    if not toks or len(toks) > 2 or not all(_FRAG_TOKEN.fullmatch(t) for t in toks):
+-        return False
+-    # 어절이 늘면 조각끼리 모여 통근 패턴이 된다(「평일마다 새벽에 나가서 밤에 돌아오는」 · Codex 검토) — 한 어절은 낮추고, 두 어절은 반복 말이 없을 때만
+-    return len(toks) == 1 or not any(_FRAG_HABIT.search(t) for t in toks)
+-
+-
+ def resolve(texts: Mapping[str, str], candidate: Mapping[str, Any]) -> dict[str, str]:
+     """infer.py 의 resolver 자리 — {level, subject} 만 돌려준다."""
+     stype = str(candidate.get("type", ""))
+@@ -411,7 +498,4 @@ def resolve(texts: Mapping[str, str], candidate: Mapping[str, Any]) -> dict[str,
+     start, end = candidate.get("start"), candidate.get("end")
+     if channel_text is not None and isinstance(start, int) and isinstance(end, int) and channel_text[start:end] != text:
+         channel_text = None  # 오프셋이 다른 기준이면 문맥을 쓰지 않는다
+-    who = subject_of(stype, text, channel_text, start, end)
+-    if _RULE_C2 and who == "self" and stype == "COMMUTE" and _commute_fragment(text):
+-        who = "unknown"
+-    return {"level": level_of(stype, text), "subject": who}
++    return {"level": level_of(stype, text), "subject": subject_of(stype, text, channel_text, start, end)}
+diff --git a/src/kopl/c1_span/test_attributes.py b/src/kopl/c1_span/test_attributes.py
+index 3c02ee2..e7f55c1 100644
+--- a/src/kopl/c1_span/test_attributes.py
++++ b/src/kopl/c1_span/test_attributes.py
+@@ -284,18 +284,6 @@ def test_household_ne_me_in_next_clause_is_not_modifier():
+ 
+ 
+ # ── 실제 글 시험(10/16)에서 찾은 오탐 — 글쓴이의 부모 · 여행지 ─────────────────────
+-def test_commute_fragment_is_unknown():
+-    """exp39 — 1단이 「오늘」 「갔다가」 「매일 타는」을 COMMUTE 로 잡으면 unknown. 교통 이름이 있으면(「GTX로」 「수인분당선으로」) 그대로."""
+-    body = "오늘 버스타서 시내 나가서 영화 봤다. 매일 타는 GTX로 갔다가 수인분당선으로 갈아탔다."
+-    for t in ("오늘", "시내 나가서", "갔다가"):
+-        assert _r(body, t, "COMMUTE")["subject"] == "unknown", t
+-    for t in ("버스타서", "GTX로", "수인분당선으로", "매일 타는"):
+-        assert _r(body, t, "COMMUTE")["subject"] == "self", t
+-    # 조각이 모여 된 통근 패턴은 그대로 (Codex 검토) — 세 어절 이상 · 두 어절에 반복 말
+-    for t in ("평일마다 새벽에 나가서 밤에 돌아오는", "매일 아침에 나가서 저녁에 돌아오는", "시내로 매일 다니는", "매일 다니는", "시내로 다니는", "시내로 다니며"):
+-        assert _r(t, t, "COMMUTE")["subject"] == "self", t
+-
+-
+ @pytest.mark.parametrize("sentence,span,expected", [
+     # 자녀 입장 — 성별 단서로 잡힌 「아빠가」는 글쓴이의 아버지(남의 성별)
+     ("엄마아빠가 혼자는 안 된다고 했다. 아빠가 진짜 싫다고 해서 엄마랑 나랑 옴", "아빠가", "other"),
+@@ -389,3 +377,115 @@ def test_codex_third(sentence, span, stype, expected):
+ ])
+ def test_b_review_intro_suffix(sentence, span, stype, expected):
+     assert _r(sentence, span, stype)["subject"] == expected
++
++
++# exp36 Q1 — 괄호 속 남의 나이(other) · 괄호 앞이 나·자기소개·없음이면 self
++# 배포 기본값은 Q1 을 끈다(exp36 판정 — 닉네임 · 필명 · 자기소개 괄호 반례 16개를 남의 나이로 봄). Q1 테스트는 규칙 코드를 지키려고 켜고 돈다
++@pytest.fixture(autouse=True)
++def _q1_on_for_q1_tests(request, monkeypatch):
++    if request.node.name.startswith("test_q1_"):
++        from kopl.c1_span import attributes
++        monkeypatch.setattr(attributes, "_RULE_Q1", True)
++
++
++def test_q_shipping_defaults():
++    import importlib.util
++    from kopl.c1_span import attributes
++    spec = importlib.util.spec_from_file_location("attributes_fresh", attributes.__file__)
++    fresh = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(fresh)
++    assert (fresh._RULE_Q1, fresh._RULE_Q2) == (False, True)
++
++
++@pytest.mark.parametrize("sentence,span,occ,expected", [
++    ("아이찡(14살) ♥ 나(27살)", "14살", 0, "other"),
++    ("아이찡(14살) ♥ 나(27살)", "27살", 0, "self"),
++    ("우리 집 고양이 나비(3살)가 또 소파를 긁었다.", "3살", 0, "other"),
++    ("조카 민준이(7살)랑 놀이터에 갔다.", "7살", 0, "other"),
++    ("오늘은 최애 하루(23)의 생일이다.", "23", 0, "other"),
++    ("남편(38)이 저녁을 했다.", "38", 0, "other"),
++    ("남편 나이(38)는 비밀.", "38", 0, "other"),
++    ("지수님(31)이 먼저 연락을 줬다.", "31", 0, "other"),
++    ("하루(17세)는 오늘도 지각했다.", "17세", 0, "other"),
++    ("친구 둘(28살, 29살)이랑 여행 계획을 짰다.", "29살", 0, "other"),    # 괄호 앞 「친구 둘」
++    ("저(27살)는 평범한 회사원입니다.", "27살", 0, "self"),
++    ("본인(32세) 퇴사 고민 중", "32세", 0, "self"),
++    ("작성자(29) 오늘 첫 출근", "29", 0, "self"),
++    ("제 나이(31)에 이직이 될까요", "31", 0, "self"),
++    ("(27세 직장인) 퇴근하고 쓰는 일기", "27세", 0, "self"),
++    ("안녕하세요 꿀벌(27)입니다.", "27", 0, "self"),
++    ("저는 꿀벌(27)이라는 닉으로 활동해요.", "27", 0, "self"),
++    ("꿀벌(27/여) 서울 사는 직장인", "27", 0, "self"),
++    ("자기소개: 꿀벌(27) 직장인", "27", 0, "self"),
++    ("직장인(27) 월요병 극복기", "27", 0, "self"),
++    ("결혼(31살) 후 처음 맞는 명절", "31살", 0, "self"),
++    ("나 꿀벌(27) 오늘도 출근함", "27", 0, "self"),
++])
++def test_q1_paren_age_of_other(sentence, span, occ, expected):
++    assert _r(sentence, span, "AGE", occ)["subject"] == expected
++
++
++def test_q1_parent_term_follows_family_context():
++    # 아이 표지가 있는 문단의 「엄마(35)」는 글쓴이 자신 — 성별 부모 호칭 규칙과 같은 판단
++    assert _r("엄마(35)랑 첫째(7)랑 둘째(4) 셋이 캠핑", "35", "AGE")["subject"] == "self"
++    assert _r("우리 엄마(62)가 김장을 하셨다", "62", "AGE")["subject"] == "other"
++
++
++# exp36 Q2 — 과거 나이(unknown) · 지금 나이 표지가 그 스팬에 붙으면 self
++@pytest.mark.parametrize("sentence,span,expected", [
++    ("오늘 기어코 15살의 하루로 돌아갔다.", "15살", "unknown"),
++    ("열다섯 살의 나로 돌아간 기분이었다.", "열다섯 살", "unknown"),
++    ("스무 살 때 시작한 일을 마흔인 지금도 한다.", "스무 살", "unknown"),
++    ("스무 살 때 시작한 일을 마흔인 지금도 한다.", "마흔인", "self"),
++    ("군대 제대하고 일 시작한 게 스물셋이었는데 어느덧 마흔여덟이네.", "스물셋", "unknown"),
++    ("군대 제대하고 일 시작한 게 스물셋이었는데 어느덧 마흔여덟이네.", "마흔여덟", "self"),
++    ("열일곱 무렵엔 매일 밤 라디오를 들었다.", "열일곱", "unknown"),
++    ("스물다섯 시절의 사진을 찾았다.", "스물다섯", "unknown"),
++    ("서른 살이던 해 겨울에 이사했다.", "서른 살", "unknown"),
++    ("27살에 처음 혼자 여행을 갔다.", "27살", "unknown"),
++    ("열 살 적에 살던 동네에 가 봤다.", "열 살", "unknown"),
++    ("열여덟 되던 해 첫 알바를 했다.", "열여덟", "unknown"),
++    ("서른 살이 됐다.", "서른 살", "self"),
++    ("서른이 되었다.", "서른이", "self"),
++    ("마흔인 지금도 떡볶이가 좋다.", "마흔인", "self"),
++    ("생일 맞은 오늘 드디어 서른하나.", "서른하나", "self"),
++    ("올해 서른넷인데 아직도 철이 없다.", "서른넷인데", "self"),
++    ("벌써 서른이었다니 믿기지 않는다.", "서른", "self"),
++    ("서른 살이었으면 좋겠다.", "서른 살", "self"),          # 바람 — 과거가 아니다
++    ("서른 살 때문에 고민이 많다.", "서른 살", "self"),       # 「때문」은 「때」가 아니다
++    ("열 살 아들이 학교 간다.", "열 살", "other"),            # 남의 나이는 그대로(main other)
++    ("아들이 다섯 살 때 이사했다.", "다섯 살", "other"),       # main 이 other 면 Q2 는 건드리지 않는다
++    # Codex 검토(판정 뒤) — 지금 나이를 깨닫는 말 · 지금 일어나는 첫 경험
++    ("올해로 서른 살이었네. 생일 케이크를 보고 실감했다", "서른 살", "self"),
++    ("생일 케이크에 꽂힌 초를 보니 내가 서른 살이었네", "서른 살", "self"),
++    ("서른 살에 처음 맞는 생일이라 조금 특별하다", "서른 살", "self"),
++    ("내가 열 살이었을 적에 동네엔 구멍가게가 하나 있었다", "열 살", "unknown"),
++])
++def test_q2_past_age_is_unknown(sentence, span, expected):
++    assert _r(sentence, span, "AGE")["subject"] == expected
++
++
++def test_q_rules_switch_off_matches_main(monkeypatch):
++    from kopl.c1_span import attributes as at
++    monkeypatch.setattr(at, "_RULE_Q1", False)
++    monkeypatch.setattr(at, "_RULE_Q2", False)
++    assert _r("아이찡(14살) ♥ 나(27살)", "14살", "AGE")["subject"] == "self"
++    assert _r("스무 살 때 시작했다.", "스무 살", "AGE")["subject"] == "self"
++
++
++def test_q_rules_worst_case_time():
++    """긴 공백 · 괄호 반복 · 긴 한글 줄에서 subject_of 한 번 ≤ 0.05초 (exp36 §2-6)."""
++    import time
++    from kopl.c1_span.attributes import subject_of
++    sp30k, worst = " " * 30000, 0.0
++    cases = [("(" * 5000 + "14살" + ")" * 5000, "14살"), (sp30k + "아이찡 " * 3000 + "(14살)" + sp30k, "14살"),
++             ("가" * 20000 + "(14살)" + "나" * 20000, "14살"), ("스무 살" + sp30k + "의 " * 3000 + "때", "스무 살"),
++             ("친구가 " + sp30k + "서울" + sp30k + "에" + sp30k + "사는", "서울"), ("(나(" * 3000 + "27살" + "))" * 3000, "27살"),
++             ("\t" * 20000 + "서른" + "\t" * 20000 + "이었던", "서른")]
++    for text, span in cases:
++        i = text.index(span)
++        for stype in ("AGE", "LOC_ADMIN", "LOC_FACILITY", "JOB", "FAM", "SEX"):
++            t0 = time.perf_counter()
++            subject_of(stype, span, text, i, i + len(span))
++            worst = max(worst, time.perf_counter() - t0)
++    assert worst <= 0.05, worst
