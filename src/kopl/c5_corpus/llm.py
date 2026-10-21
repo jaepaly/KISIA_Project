@@ -188,7 +188,8 @@ class LLMClient:
             except Exception as e:  # noqa: BLE001
                 last = e
                 if attempt < self.max_retries - 1:
-                    time.sleep(2**attempt)
+                    # 429 · 5xx 면 서버가 알려 준 만큼 기다린다 (_post 가 retry_after 를 싣는다)
+                    time.sleep(max(2**attempt, getattr(e, "retry_after", 0)))
         self.elapsed += time.time() - t0
         raise LLMError(f"{self.version} 호출 실패: {last}")
 
@@ -323,6 +324,9 @@ class LLMClient:
         문서: https://raon-mini.krafton.ai/ko/llms.txt (10/21 확인)
         - 추론을 끌 수 없고 추론 토큰도 max_tokens 에 든다. 한도가 작으면 답이 빈다
           (finish_reason=length · 10/21 실측: 글 30편 추론에서 8,192 로 20건 중 2건)
+          → 호출부의 max_tokens 는 다른 provider 처럼 「답 길이」로 읽고, 추론 몫
+            RAON_REASONING_TOKENS(기본 8192)를 더해 보낸다. 서버가 보낸 상한만큼
+            분당 토큰 한도를 미리 잡으므로 무작정 키우지 않는다
         - 추론 내용은 message.reasoning 에 따로 온다 — content 만 쓴다
         - 분당 요청 30 (조직 단위). 429 면 retry-after 만큼 기다린다
         - 요청 하나가 몇 분 걸릴 수 있다 (서버 상한 10분)
@@ -333,23 +337,16 @@ class LLMClient:
             raise LLMError("RAON_API_KEY 없음 (.env 확인 · 콘솔 https://raon-console.krafton.ai/api-keys)")
         body = {
             "model": self.model,
-            "max_tokens": max(self.max_tokens, 16384),
+            "max_tokens": self.max_tokens + int(os.environ.get("RAON_REASONING_TOKENS", "8192")),
             "temperature": self.temperature,
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
             ],
         }
-        for attempt in range(6):
-            try:
-                data = self._post(_raon_base() + "/chat/completions", body,
-                                  {"Authorization": f"Bearer {key}"}, timeout=600)
-                break
-            except LLMError as e:
-                wait = getattr(e, "retry_after", None)
-                if wait is None or attempt == 5:
-                    raise
-                time.sleep(wait)
+        # 한 번만 보낸다 — 재시도는 complete() 가 retry_after 를 보고 한다(중첩 방지)
+        data = self._post(_raon_base() + "/chat/completions", body,
+                          {"Authorization": f"Bearer {key}"}, timeout=600)
         u = data.get("usage", {})
         self.usage["input_tokens"] += u.get("prompt_tokens", 0)
         self.usage["output_tokens"] += u.get("completion_tokens", 0)
@@ -362,7 +359,8 @@ class LLMClient:
             self.truncated += 1
             self.last_truncated = True
             print("    ⚠ 응답이 끊겼다 (finish_reason=length — 추론 토큰 포함)")
-        return ch["message"].get("content") or ""
+        # 추론 뒤 답 앞에 빈 줄 둘이 붙어 온다(10/21 실측) — 「제목:」 파싱이 첫 줄을 보므로 걷는다
+        return (ch["message"].get("content") or "").lstrip()
 
     def _anthropic(self, system: str, user: str) -> str:
         key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
