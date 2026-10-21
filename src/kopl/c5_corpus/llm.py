@@ -7,6 +7,7 @@
   cli       로컬 CLI에 위임 (무료 Codex 등). --cli-cmd 로 명령 지정
   gemini    GEMINI_API_KEY (AI Studio)
   openai    OPENAI_API_KEY
+  raon      RAON_API_KEY (크래프톤 Raon-1 mini · OpenAI 호환 · 무료 프리뷰)
   anthropic ANTHROPIC_API_KEY  ← 교사 라벨 전용. 생성에는 쓸 수 없다
   ollama    로컬 (OLLAMA_HOST)
 
@@ -33,6 +34,7 @@ DEFAULT_MODELS = {
     "cli": "cli-delegated",
     "gemini": "gemini-2.0-flash",
     "openai": "gpt-4o-mini",
+    "raon": "raon-1-mini-preview",
     "anthropic": "claude-haiku-4-5-20251001",
     "ollama": "llama3.1:8b",
 }
@@ -120,7 +122,24 @@ def list_models(provider: str) -> list[str]:
         with urllib.request.urlopen(req, timeout=30) as r:
             data = json.loads(r.read().decode("utf-8"))
         return sorted(m["id"] for m in data.get("data", []))
+    if provider == "raon":
+        key = os.environ.get("RAON_API_KEY")
+        if not key:
+            raise LLMError("RAON_API_KEY 없음")
+        req = urllib.request.Request(
+            _raon_base() + "/models",
+            headers={"Authorization": f"Bearer {key}"},
+        )
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.loads(r.read().decode("utf-8"))
+        return sorted(m["id"] for m in data.get("data", []))
     raise LLMError(f"{provider} 는 모델 조회를 지원하지 않는다")
+
+
+def _raon_base() -> str:
+    """Base URL 에 /v1 이 빠지면 404 다 (Raon 문서 「오류」). 어느 쪽으로 적어도 되게 맞춘다."""
+    base = os.environ.get("RAON_BASE_URL", "https://raon-api.krafton.ai").rstrip("/")
+    return base if base.endswith("/v1") else base + "/v1"
 
 
 class LLMClient:
@@ -136,7 +155,9 @@ class LLMClient:
         if provider not in DEFAULT_MODELS:
             raise LLMError(f"모르는 provider: {provider}")
         self.provider = provider
-        self.model = model or DEFAULT_MODELS[provider]
+        # 명시한 model > RAON_MODEL(.env) > 기본값 — 다른 provider 는 그대로 (#393 리뷰)
+        env_model = os.environ.get("RAON_MODEL") if provider == "raon" else None
+        self.model = model or env_model or DEFAULT_MODELS[provider]
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.max_retries = max_retries
@@ -148,6 +169,7 @@ class LLMClient:
         self.truncated = 0
         self._thinking_supported = True
         self.last_truncated = False
+        self.fingerprint = ""  # raon: 응답의 system_fingerprint (프리뷰 모델 교체 추적)
 
     @property
     def version(self) -> str:
@@ -168,7 +190,8 @@ class LLMClient:
             except Exception as e:  # noqa: BLE001
                 last = e
                 if attempt < self.max_retries - 1:
-                    time.sleep(2**attempt)
+                    # 429 · 5xx 면 서버가 알려 준 만큼 기다린다 (_post 가 retry_after 를 싣는다)
+                    time.sleep(max(2**attempt, getattr(e, "retry_after", 0)))
         self.elapsed += time.time() - t0
         raise LLMError(f"{self.version} 호출 실패: {last}")
 
@@ -297,6 +320,50 @@ class LLMClient:
         self.usage["output_tokens"] += u.get("completion_tokens", 0)
         return data["choices"][0]["message"]["content"]
 
+    def _raon(self, system: str, user: str) -> str:
+        """크래프톤 Raon-1 mini (OpenAI Chat Completions 호환 · 2026-10 무료 프리뷰).
+
+        문서: https://raon-mini.krafton.ai/ko/llms.txt (10/21 확인)
+        - 추론을 끌 수 없고 추론 토큰도 max_tokens 에 든다. 한도가 작으면 답이 빈다
+          (finish_reason=length · 10/21 실측: 글 30편 추론에서 8,192 로 20건 중 2건)
+          → 호출부의 max_tokens 는 다른 provider 처럼 「답 길이」로 읽고, 추론 몫
+            RAON_REASONING_TOKENS(기본 8192)를 더해 보낸다. 서버가 보낸 상한만큼
+            분당 토큰 한도를 미리 잡으므로 무작정 키우지 않는다
+        - 추론 내용은 message.reasoning 에 따로 온다 — content 만 쓴다
+        - 분당 요청 30 (조직 단위). 429 면 retry-after 만큼 기다린다
+        - 요청 하나가 몇 분 걸릴 수 있다 (서버 상한 10분)
+        - 프리뷰라 모델이 바뀔 수 있다 → self.fingerprint(system_fingerprint)를 결과와 함께 적는다
+        """
+        key = os.environ.get("RAON_API_KEY")
+        if not key:
+            raise LLMError("RAON_API_KEY 없음 (.env 확인 · 콘솔 https://raon-console.krafton.ai/api-keys)")
+        body = {
+            "model": self.model,
+            "max_tokens": self.max_tokens + int(os.environ.get("RAON_REASONING_TOKENS", "8192")),
+            "temperature": self.temperature,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        # 한 번만 보낸다 — 재시도는 complete() 가 retry_after 를 보고 한다(중첩 방지)
+        data = self._post(_raon_base() + "/chat/completions", body,
+                          {"Authorization": f"Bearer {key}"}, timeout=600)
+        u = data.get("usage", {})
+        self.usage["input_tokens"] += u.get("prompt_tokens", 0)
+        self.usage["output_tokens"] += u.get("completion_tokens", 0)
+        self.usage["thinking_tokens"] = self.usage.get("thinking_tokens", 0) + (
+            u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0)
+        self.fingerprint = data.get("system_fingerprint", "")
+        ch = data["choices"][0]
+        if ch.get("finish_reason") == "length":
+            # 추론이 한도를 다 쓰면 content 가 비거나 끊긴다. 조용히 넘기면 빈 글이 들어간다
+            self.truncated += 1
+            self.last_truncated = True
+            print("    ⚠ 응답이 끊겼다 (finish_reason=length — 추론 토큰 포함)")
+        # 추론 뒤 답 앞에 빈 줄 둘이 붙어 온다(10/21 실측) — 「제목:」 파싱이 첫 줄을 보므로 걷는다
+        return (ch["message"].get("content") or "").lstrip()
+
     def _anthropic(self, system: str, user: str) -> str:
         key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
         if not key:
@@ -345,17 +412,26 @@ class LLMClient:
         return self._post(f"{host}/api/generate", body, {})["response"]
 
     @staticmethod
-    def _post(url: str, body: dict, headers: dict) -> dict:
+    def _post(url: str, body: dict, headers: dict, timeout: int = 120) -> dict:
         req = urllib.request.Request(
             url,
             data=json.dumps(body).encode("utf-8"),
             headers={"Content-Type": "application/json", **headers},
         )
         try:
-            with urllib.request.urlopen(req, timeout=120) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
-            raise LLMError(f"HTTP {e.code}: {e.read().decode('utf-8')[:300]}") from e
+            err = LLMError(f"HTTP {e.code}: {e.read().decode('utf-8')[:300]}")
+            # 429 · 5xx 는 기다리면 풀린다 — 서버가 retry-after 를 주면 부르는 쪽이 그만큼 기다린다
+            # 헤더가 없으면 싣지 않는다 — 기존 provider 의 1 · 2초 대기를 바꾸지 않는다
+            ra = e.headers.get("retry-after") if e.code == 429 or e.code >= 500 else None
+            if ra:
+                try:
+                    err.retry_after = float(ra)
+                except ValueError:
+                    pass
+            raise err from e
 
     # ── 한도 환산 (이슈 5항) ──────────────────────────────────────────
     def burn_report(self, posts_done: int, target_posts: int = 3000) -> str:
