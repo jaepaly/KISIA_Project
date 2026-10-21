@@ -421,12 +421,14 @@ class LLMClient:
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
             err = LLMError(f"HTTP {e.code}: {e.read().decode('utf-8')[:300]}")
-            # 429 · 5xx 는 기다리면 풀린다 — 부르는 쪽이 retry-after 를 쓸 수 있게 실어 둔다
-            if e.code in (429, 500, 502, 503):
+            # 429 · 5xx 는 기다리면 풀린다 — 서버가 retry-after 를 주면 부르는 쪽이 그만큼 기다린다
+            # 헤더가 없으면 싣지 않는다 — 기존 provider 의 1 · 2초 대기를 바꾸지 않는다
+            ra = e.headers.get("retry-after") if e.code in (429, 500, 502, 503) else None
+            if ra:
                 try:
-                    err.retry_after = float(e.headers.get("retry-after") or 5)
+                    err.retry_after = float(ra)
                 except ValueError:
-                    err.retry_after = 5.0
+                    pass
             raise err from e
 
     # ── 한도 환산 (이슈 5항) ──────────────────────────────────────────
