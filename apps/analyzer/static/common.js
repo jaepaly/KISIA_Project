@@ -10,6 +10,8 @@ function saveScan(result) {
       sessionStorage.setItem("scanPrev", JSON.stringify(scanSummary(old)));
     } else sessionStorage.removeItem("scanPrev");
   } catch { /* 저장소가 막혀도 점검 결과는 넘긴다 */ }
+  // 점검한 시각 — 다음 점검 때 「직전 점검 ○시」로 쓴다(요약을 만드는 시각이 아니라)
+  if (result && !result.scanned_at) result.scanned_at = Date.now();
   sessionStorage.setItem("scanResult", JSON.stringify(result));
 }
 
@@ -34,7 +36,7 @@ function scanSummary(d) {
   for (const e of Object.values(d.spans || {})) {
     for (const s of (e.spans || [])) if (s.subject !== "other") types[s.type] = (types[s.type] || 0) + 1;
   }
-  return { user_ref: d.user_ref, at: Date.now(), risk, k: ((d.specificity || {}).output || {}).k ?? null,
+  return { user_ref: d.user_ref, at: d.scanned_at || null, risk, k: ((d.specificity || {}).output || {}).k ?? null,
     post_ids: (d.posts || []).map(p => p.post_id), types };
 }
 

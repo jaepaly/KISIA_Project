@@ -223,6 +223,8 @@
       const text = textarea.value;
       if (text === lastText) return;
       if (text.trim().length < minChars) {
+        if (ctrl) { ctrl.abort(); ctrl = null; }   // 점검 중에 글을 줄였으면 앞 요청 · 대기표 표시 · 429 재시도를 같이 멈춘다
+        clearTimeout(retry); retry = null;
         lastText = text; cur = { spans: [], rewrites: new Map() }; paint(text, []); setChip("", ""); if (warn) warn.hidden = true; hidePick();
         if (onResult) onResult(null);
         return;
@@ -258,6 +260,7 @@
         }
       } catch (e) {
         if (e.name === "AbortError") return;
+        if (mine !== ctrl || textarea.value !== text) return;   // 늦게 온 오류 — 지금 글과 상관없다
         if (e.status === 429) {
           if (retried !== text) {   // 30초 뒤 한 번만 — 그사이 글을 고치면 input 이 새로 점검한다
             retried = text;
