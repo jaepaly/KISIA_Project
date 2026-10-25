@@ -10,7 +10,8 @@
   };
   const LABEL = {
     AGE: "나이", SEX: "성별", JOB: "직업", FAM: "가족", COMMUTE: "통근",
-    INCOME: "소득", LOC_ADMIN: "거주지", LOC_FACILITY: "자주 가는 곳",
+    // 형광 · 칩 이름은 파도풀 화면과 같게 — 「지역명」 · 「장소명」 (#385 E2). 7개 항목 이름 「거주지」(레일 축)는 따로 둔다
+    INCOME: "소득", LOC_ADMIN: "지역명", LOC_FACILITY: "장소명",
     REL_HOME: "집 근처", REL_WORK: "직장 근처"   // 빠져 있어 툴팁 · 칩에 「REL_HOME」 코드가 보이던 것 (분석기 common.js 와 같은 이름)
   };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -59,12 +60,75 @@
     return out + esc(cp(text, last));
   }
 
-  async function check(text, signal) {
+  // ── 점검 대기표 (#385 E9 · E10) — 파도풀 화면(분석 앱 common.js scanTicket · watchQueue)과 같은 방식.
+  //    점검 POST 에 X-Scan-Ticket 을 싣고, 기다리는 동안 /api/scan-queue 로 1초마다 차례를 묻는다(서버는 점검을 하나씩만 돌린다)
+  function ticket() {
+    const a = new Uint8Array(12);
+    (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => { a[i] = Math.random() * 256; });
+    return Array.from(a, (b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  // 앞 물음이 끝난 뒤 다음을 예약한다(응답 순서가 뒤집히지 않게). 돌려준 함수를 부르면 멈춘다 — 끝난 점검의 늦은 응답은 버린다
+  function watchQueue(t, onAhead) {
+    let stopped = false, timer = null, ac = null;
+    const ask = async () => {
+      ac = new AbortController();
+      try {
+        const r = await fetch(`${BASE}/api/scan-queue?ticket=${encodeURIComponent(t)}`, { signal: ac.signal });
+        if (r.ok) { const q = await r.json(); if (!stopped) onAhead(q.waiting ? Math.max(1, q.ahead) : 0); }
+      } catch { /* 못 물으면 그대로 · 취소도 여기로 */ }
+      if (!stopped) timer = setTimeout(ask, 1000);
+    };
+    timer = setTimeout(ask, 400);   // 바로 자리를 잡은 점검은 줄에 없다 — 첫 물음은 조금 뒤에
+    return () => { stopped = true; clearTimeout(timer); if (ac) ac.abort(); };
+  }
+  // 점검 요청 하나 — path 는 BASE 뒤(/upload · /scan/<계정>). onAhead 를 주면 앞사람 수를 알려 준다.
+  // 실패하면 Error(본문) + status — 429 를 따로 보인다 (#385 E12)
+  async function send(path, fd, signal, onAhead) {
+    const t = ticket();
+    const stop = onAhead ? watchQueue(t, onAhead) : null;
+    try {
+      const r = await fetch(`${BASE}${path}`, { method: "POST", body: fd || undefined, signal, headers: { "X-Scan-Ticket": t } });
+      if (!r.ok) { const e = new Error(await r.text()); e.status = r.status; throw e; }
+      return await r.json();
+    } finally { if (stop) stop(); }
+  }
+  window.padoPost = send;
+  // 서버의 한국어 사유(JSON detail) — 없으면(nginx 429 · 네트워크 오류) 빈 문자열
+  const detailOf = (e) => { try { const d = JSON.parse(e.message).detail; return typeof d === "string" ? d : ""; } catch { return ""; } };
+  // 429 — 고정 문구만 쓴다. 서버 사유(「잠시 뒤 다시 시도해 주세요」)를 붙이면 「30초 뒤 확인」과 겹친다 (#385 E12).
+  // 30초 뒤 한 번 자동으로 다시 확인한다. 429 가 아닌 오류는 서버 사유를 먼저 쓴다
+  const BUSY_MSG = "요청이 많아 잠깐 쉬고 있어요 — 30초 뒤 다시 확인할게요";
+  const RETRY_MS = 30000;
+
+  // 진행 표시 — 「내 글 점검」(분석 앱 common.js progressStart)과 같은 단계 이름 + 흐른 시간 (#385 E9).
+  // est(초)를 주면 그 비율로 단계를 넘기고 「3초 / 약 20초」. 앞에 다른 점검이 있으면 paint({ ahead }) — 차례가 오면 0초부터 다시
+  const STAGES = ["글 읽는 중", "개인정보 단서 찾는 중", "같은 조건의 사람 수 계산 중", "위험 줄일 방법 확인 중", "거의 다 됐습니다"];
+  const fmtSec = (s) => { s = Math.max(1, Math.round(s)); return s < 60 ? `${s}초` : `${Math.floor(s / 60)}분 ${s % 60 ? (s % 60) + "초" : ""}`.trim(); };
+  window.padoFmtSec = fmtSec;
+  function progress(paint, est) {
+    const has = typeof est === "number" && est > 0;
+    const at = has ? [0, 0.1, 0.35, 0.6, 0.85].map((f) => f * est) : [0, 2, 6, 10, 18];
+    let t0 = performance.now(), ahead = 0, waited = false;
+    const tick = () => {
+      if (ahead > 0) { waited = true; paint({ ahead }); return; }
+      if (waited) { waited = false; t0 = performance.now(); }
+      const s = (performance.now() - t0) / 1000;
+      let i = 0; at.forEach((t, j) => { if (s >= t) i = j; });
+      const time = !has ? `${Math.round(s)}초` : s <= est ? `${Math.round(s)}초 / 약 ${fmtSec(est)}` : `${Math.round(s)}초 · 예상보다 오래 걸리고 있어요`;
+      paint({ stage: STAGES[i], time });
+    };
+    tick();
+    const iv = setInterval(tick, 250);
+    return { setAhead: (n) => { ahead = n; tick(); }, stop: () => clearInterval(iv) };
+  }
+  window.padoProgress = progress;
+  const aheadMsg = (n) => `앞에 ${n}건 — 차례가 되면 바로 시작해요`;
+  window.padoAheadMsg = aheadMsg;
+
+  async function check(text, signal, onAhead) {
     const fd = new FormData();
     fd.append("file", new File([text.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
-    const r = await fetch(`${BASE}/upload`, { method: "POST", body: fd, signal });
-    if (!r.ok) throw new Error(await r.text());
-    const d = await r.json();
+    const d = await send("/upload", fd, signal, onAhead);
     const post = (d.posts || [])[0] || {};
     const spans = anchor(text, (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other"));
     const spec = ((d.specificity || {}).output || {});
@@ -98,12 +162,10 @@
   };
   window.padoCheck = check;
   // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
-  window.padoCheckExport = async function (exportObj, signal) {
+  window.padoCheckExport = async function (exportObj, signal, onAhead) {
     const fd = new FormData();
     fd.append("file", new File([JSON.stringify(exportObj)], "draft.json", { type: "application/json" }));
-    const r = await fetch(`${BASE}/upload`, { method: "POST", body: fd, signal });
-    if (!r.ok) throw new Error(await r.text());
-    const d = await r.json();
+    const d = await send("/upload", fd, signal, onAhead);
     const spec = ((d.specificity || {}).output || {});
     return { k: spec.k, steps: spec.steps || [], risk: spec.risk, raw: d };
   };
@@ -119,12 +181,30 @@
     INCOME: "금액이나 대출, 수당의 종류는 빼거나 「돈」, 「비용」처럼 넓게 써 보세요.",
     SEX: "「언니」, 「오빠」, 「남편」 같은 호칭은 성별 단서가 될 수 있습니다. 「가족」이나 「친구」로 바꿔도 뜻이 통하는지 보세요.",
   };
+  // 시 · 도 이름(「제주」 · 「서울특별시」 · 「경기도에서」)에는 「시나 도 이름을 써 보세요」가 맞지 않는다 (#385 E7)
+  const JOSA = "(?:에서는|에서도|에서|으로는|으로|이에요|이에|이랑|하고|까지|부터|에는|에도|은|는|이|가|을|를|에|도|의|로|랑|와|과)";
+  const SIDO = new RegExp("^(?:(?:서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주|충청북|충청남|전라북|전라남|경상북|경상남)"
+    + "(?:특별시|광역시|특별자치시|특별자치도|도|시)?|\\S+(?:특별시|광역시|특별자치시|특별자치도))" + JOSA + "?$");
+  const isSido = (t) => SIDO.test(String(t || "").replace(/\s+/g, ""));
+  const TIP_SIDO = "이미 넓은 지역 이름이에요. 다른 글과 합치면 좁혀질 수 있어요";
+  // 지명 뒤 조사 떼기 — 레일의 「」 표시용(형광 경계는 그대로 · #385 E13). 끝에서만 떼고, 지명 자체를 자르지 않게
+  // 한 글자 조사(이 · 가 · 에 · 로 …)는 남는 말이 동 · 구 · 시 · 역처럼 지명 끝 글자로 끝날 때만 뗀다(「종로」 · 「을지로」를 지키려고)
+  const JOSA_TAIL = new RegExp(JOSA + "$");
+  window.padoBarePlace = function (t) {
+    const s = String(t || ""), m = s.match(JOSA_TAIL);
+    if (!m) return s;
+    const rest = s.slice(0, -m[0].length);
+    if (Array.from(rest).length < 2) return s;
+    if (m[0].length >= 2 || /[동구시군읍면리도역]$/.test(rest) || (m[0] !== "도" && isSido(rest))) return rest;   // 「강원도」 · 「제주도」의 도는 지명
+    return s;
+  };
   const cpLen = (s) => Array.from(s || "").length;
 
   /* 실시간 — 타자가 멈추고 delay 뒤 자동 점검. 서버 보호: 디바운스 · 이전 요청 취소 · minChars 미만 생략 · 같은 글 재요청 안 함.
      padoLive({ textarea, backdrop, chip, warn?, delay=800, minChars=20 }) */
   window.padoLive = function ({ textarea, backdrop, chip, warn, pick, onResult, delay = 800, minChars = 20 }) {
     let timer = null, ctrl = null, lastText = null;
+    let retry = null, retried = null;   // 429 뒤 자동 재시도 — 같은 글은 한 번만 (#385 E12)
     let cur = { spans: [], rewrites: new Map() };   // 마지막 응답 — 형광 누르기가 쓴다
     let undo = null;                                 // { before, after } — 바꾼 직후 되돌리기
     const setChip = (html, cls) => { chip.innerHTML = html; chip.className = "pado-chip" + (cls ? " " + cls : ""); };
@@ -149,9 +229,18 @@
       }
       if (ctrl) ctrl.abort();
       ctrl = new AbortController();
+      clearTimeout(retry); retry = null;
       setChip("확인 중<span class=\"dots\"></span>", "busy");
+      // 앞에 다른 점검(기존 공개 글 점검 등)이 있으면 기다리는 이유를 보인다 (#385 E10)
+      const mine = ctrl;
+      let waiting = false;   // 바뀔 때만 다시 그린다 — 1초마다 그리면 점 애니메이션이 처음부터 다시 돈다
+      const onAhead = (n) => {
+        if (mine !== ctrl || (n > 0) === waiting) return;
+        waiting = n > 0;
+        setChip(waiting ? "확인 중 — 앞에 다른 점검이 있어요" : "확인 중<span class=\"dots\"></span>", "busy");
+      };
       try {
-        const { spans, k, rewrites, steps, risk } = await check(text, ctrl.signal);
+        const { spans, k, rewrites, steps, risk } = await check(text, ctrl.signal, onAhead);
         if (textarea.value !== text) return;   // 응답 오는 사이 또 바뀜 — 다음 턴이 처리
         lastText = text; cur = { spans, rewrites };
         paint(text, spans);   // cur 를 먼저 — paint 가 후보 유무를 본다
@@ -169,6 +258,16 @@
         }
       } catch (e) {
         if (e.name === "AbortError") return;
+        if (e.status === 429) {
+          if (retried !== text) {   // 30초 뒤 한 번만 — 그사이 글을 고치면 input 이 새로 점검한다
+            retried = text;
+            setChip(BUSY_MSG, "err");
+            retry = setTimeout(() => { retry = null; if (textarea.value === text) run(); }, RETRY_MS);
+          } else {
+            setChip("요청이 많아 잠깐 쉬고 있어요. 글을 고치면 다시 확인할게요.", "err");
+          }
+          return;
+        }
         setChip("점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.", "err");
       }
     }
@@ -192,7 +291,8 @@
             <span class="rr ${c.residual_risk === "none" ? "none" : "part"}">${c.residual_risk === "none" ? "이 표현의 단서가 사라짐" : "약해지지만 남음"}</span>
           </button>`).join("")}</div>`;
       } else {
-        body = `<p class="pado-tip">${esc(TIP[s.type] || "이 표현은 빼거나 더 넓은 말로 바꿔 보세요.")}</p>`;
+        const tip = s.type === "LOC_ADMIN" && isSido(s.text) ? TIP_SIDO : TIP[s.type];
+        body = `<p class="pado-tip">${esc(tip || "이 표현은 빼거나 더 넓은 말로 바꿔 보세요.")}</p>`;
       }
       pick.innerHTML = `
         <div class="pado-pick-h"><span class="t">${esc(label)}</span> <del>${esc(s.text)}</del> <span class="muted">대신</span>
@@ -241,7 +341,7 @@
       if (s) showPick(s); else hidePick();
     }
 
-    textarea.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, delay); paint(textarea.value, []); sync(); hidePick(); });
+    textarea.addEventListener("input", () => { clearTimeout(timer); clearTimeout(retry); retry = null; timer = setTimeout(run, delay); paint(textarea.value, []); sync(); hidePick(); });
     textarea.addEventListener("scroll", sync);
     textarea.addEventListener("click", maybePick);
     textarea.addEventListener("keyup", (e) => { if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) maybePick(); });
@@ -258,22 +358,22 @@
   };
 
   window.padoWidget = function ({ btn, out, getText, userRef }) {
-    btn.addEventListener("click", async () => {
+    let retry = null;   // 429 뒤 30초 자동 재시도 — 한 번만 (#385 E12)
+    btn.addEventListener("click", () => go(false));
+    async function go(isRetry) {
+      clearTimeout(retry); retry = null;
       const text = (getText() || "").trim();
       if (!text) { out.innerHTML = muted("본문을 먼저 써 주세요."); return; }
       btn.disabled = true;
-      out.innerHTML = '<p style="color:var(--ut-ink3);margin:0;">점검 중<span data-dots></span></p>';
-      let di = 0;
-      const dots = setInterval(() => {
-        const el = out.querySelector("[data-dots]");
-        if (el) el.textContent = [".", "..", "..."][di++ % 3];
-      }, 420);
+      // 「점검 중…」만 보이던 것 — 단계 이름 + 흐른 시간, 앞에 다른 점검이 있으면 차례 (#385 E9)
+      const prog = progress(({ ahead, stage, time }) => {
+        out.innerHTML = muted(ahead ? esc(aheadMsg(ahead)) : `${esc(stage)} · ${esc(time)}`);
+      });
       try {
         const fd = new FormData();
         fd.append("file", new File([text.replace(/\n/g, " ")], "draft.txt", { type: "text/plain" }));
-        const r = await fetch(`${BASE}/upload`, { method: "POST", body: fd });
-        if (!r.ok) throw new Error(await r.text());
-        const d = await r.json();
+        const d = await send("/upload", fd, undefined, prog.setAhead);
+        prog.stop();
         const post = (d.posts || [])[0] || {};
         const body = post.body || "";
         const spans = anchor(body, (((d.spans || {})[post.post_id] || {}).spans || []).filter((s) => s.subject !== "other"));
@@ -308,14 +408,19 @@
           + `<a class="fx-link" href="${BASE}/static/scan.html" style="color:var(--ut-earth-ink);">다른 계정 점검 →</a>`
           + `</div>`;
       } catch (e) {
-        // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 · 너무 긴 글 등)가 있으면 그대로
-        let detail = "";
-        try { detail = JSON.parse(e.message).detail; } catch { /* 네트워크 오류 등 */ }
-        out.innerHTML = muted(typeof detail === "string" && detail ? `점검하지 못했습니다. ${esc(detail)}` : "점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
+        prog.stop();
+        if (e.status === 429 && !isRetry) {   // 요청이 많음 — 30초 뒤 한 번 자동으로 다시 (그사이 버튼을 누르면 그게 먼저)
+          out.innerHTML = muted(BUSY_MSG);
+          retry = setTimeout(() => go(true), RETRY_MS);
+          return;
+        }
+        if (e.status === 429) { out.innerHTML = muted("요청이 많아 잠깐 쉬고 있어요. 조금 뒤 다시 눌러 주세요."); return; }
+        // 429 가 아닌 오류 — 서버의 한국어 사유(너무 긴 글 등)가 있으면 그대로
+        const detail = detailOf(e);
+        out.innerHTML = muted(detail ? `점검하지 못했습니다. ${esc(detail)}` : "점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
       } finally {
-        clearInterval(dots);
         btn.disabled = false;
       }
-    });
+    }
   };
 })();
