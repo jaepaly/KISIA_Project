@@ -75,7 +75,10 @@ class InferTest(unittest.TestCase):
     def test_model_seen_keeps_spans_removed_by_overlap(self):
         """Codex 검토(exp41 C3) — 겹침 해소로 빠진 모델 스팬도 「모델이 본 자리」다.
         모델이 [0,8) · [6,12) 를 내서 [6,12) 가 해소로 빠져도, 규칙 지명 [10,12) 는 버리지 않는다."""
-        import torch
+        try:
+            import torch
+        except ImportError:   # CI 에는 torch 가 없다 — 로컬(학습 · 추론 PC)에서만 돈다
+            self.skipTest("torch 없음")
         from kopl.c1_span import bio, rules
 
         class Tok:
