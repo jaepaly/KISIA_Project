@@ -206,7 +206,8 @@ if (!data) {
   const nFound = findings.filter(f => f.verdict !== "abstain").length;
   const nAbstain = findings.length - nFound;
   const nick = data.nickname || ((data.posts[0] || {}).activity_meta || {}).nickname || "";
-  el.innerHTML = `
+  const split = uploadSplitNote(data);   // .txt — 「파일의 줄 N개를 글 N편으로」 (#385 B1)
+  el.innerHTML = (split ? `<p class="hint">${esc(split)}</p>` : "") + `
     <div class="card">
       <div class="row between">
         <h2>${esc(nick || data.user_ref)}${nick ? ` <small class="muted">@${esc(data.user_ref)}</small>` : ""}</h2>
