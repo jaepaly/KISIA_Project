@@ -3,8 +3,11 @@
  "threshold": 0.7,
  "fingerprint": {
   "checkpoint": "C:\\Users\\dor12\\kisia-ckpt\\v2",
-  "weights_sha256": {
-   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be"
+  "files_sha256": {
+   "config.json": "4858ea3b6f85fde4111c14126010d74180aec34c11d28e21ed2ced2cf1daf957",
+   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+   "tokenizer.json": "d5c7a9a8996aca4fee55a3664381b012bd7dbb3e190061b2591c02502b7171b6",
+   "tokenizer_config.json": "55f686f3c1111e477bcd12bd9736d6b554fa2e3f94f1c3fbd2c16c467cdbf0eb"
   },
   "threshold": 0.7,
   "inputs_sha256": "58bbaac8cc630e9ddf414db8a933980f6ef0869138a2eee75df229d88ff98337",

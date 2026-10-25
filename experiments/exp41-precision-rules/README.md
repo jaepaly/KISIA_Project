@@ -25,7 +25,7 @@ C3 은 「모델이 그 자리에서 아무것도 안 봤나」를 봐야 해서
 - `SpanDetector.predict_channel(text, seen=[])` — 모델이 디코딩한 스팬 **전부**(창 사이 겹침 해소 전 · 점수 · 유형 무관)를 `seen` 에 덧붙인다. 인자를 안 주면 전과 같다
 - `predict_raw` 결과에 `model_seen_spans` 키(계약 밖 · `format_contract` 는 안 본다)
 - `merge_with_model(..., model_seen=None)` — **None(기본)이면 C3 은 꺼진다.** 앱 `apps/analyzer/engines/c1_rules.py` 와 판정셋 예측 `experiments/exp17-planted-eval/predict.py` 는 `raw.get("model_seen_spans")` 를 넘긴다
-- 넘기지 않는 지난 실험 스크립트(`exp06-finetune/evaluate_rules.py` · `exp11-risk-correlation/inputs/predict_293.py` · `exp28-context-review/review.py` · `exp28b-context-review-v2/review.py`)는 **C1 + C2 만** 적용된다. 재현성을 위해 고치지 않았다
+- 넘기지 않는 지난 실험 스크립트(`exp06-finetune/evaluate_rules.py` · `exp11-risk-correlation/inputs/predict_293.py` · `exp28-context-review/review.py` · `exp28b-context-review-v2/review.py`)는 **C1 + C2 만** 적용된다. 지난 실험 코드라 고치지 않았다. 다만 C1 · C2 는 병합 안에서 걸리므로 지금 다시 돌리면 예전 결과와 조금 다를 수 있다
 - 계약 출력(span.schema)은 그대로다
 
 **Codex 검토(10/25)로 고침**: 처음 구현은 겹침 해소 **뒤** 남은 스팬만 「모델이 본 것」으로 넘겼다. 모델이 [0,8) · [6,12) 를 내고 [6,12) 가 해소로 빠지면, 규칙 지명 [10,12) 가 「모델이 안 본 자리」로 잘못 버려진다. 해소 전 스팬 전부를 넘기도록 고쳤다(`test_infer.py` `test_model_seen_keeps_spans_removed_by_overlap` — 고치기 전 코드에서 실패 확인). C3 를 좁히기만 하는 버그 수정이다(더 많은 규칙 스팬을 남긴다).

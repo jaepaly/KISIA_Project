@@ -49,10 +49,10 @@ def gold_posts():
 
 
 def fingerprint(checkpoint, posts):
-    """캐시가 어떤 추론인지 — 체크포인트(경로 · 가중치 SHA-256) · 임계값 · 입력 글(post_id + texts) 해시 · raw 형식."""
+    """캐시가 어떤 추론인지 — 체크포인트(경로 · 폴더 안 파일 전부의 SHA-256: 가중치 · config · 토크나이저) · 임계값 · 입력 글(post_id + texts) 해시 · raw 형식."""
     ck = Path(checkpoint).resolve()
     weights = {}
-    for w in sorted(ck.glob("*.safetensors")):
+    for w in sorted(x for x in ck.iterdir() if x.is_file()):
         h = hashlib.sha256()
         with open(w, "rb") as f:
             for block in iter(lambda: f.read(1 << 20), b""):
@@ -60,7 +60,7 @@ def fingerprint(checkpoint, posts):
         weights[w.name] = h.hexdigest()
     inputs = hashlib.sha256(json.dumps([[pid, posts[pid]["texts"]] for pid in sorted(posts)],
                                        ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
-    return {"checkpoint": str(ck), "weights_sha256": weights, "threshold": THRESHOLD, "inputs_sha256": inputs,
+    return {"checkpoint": str(ck), "files_sha256": weights, "threshold": THRESHOLD, "inputs_sha256": inputs,
             "raw_format": "candidates+model_seen_spans(pre-overlap)"}
 
 
