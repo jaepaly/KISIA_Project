@@ -95,8 +95,9 @@
   window.padoPost = send;
   // 서버의 한국어 사유(JSON detail) — 없으면(nginx 429 · 네트워크 오류) 빈 문자열
   const detailOf = (e) => { try { const d = JSON.parse(e.message).detail; return typeof d === "string" ? d : ""; } catch { return ""; } };
-  // 429 — 서버 사유가 있으면 그걸 먼저. 30초 뒤 한 번 자동으로 다시 확인한다 (#385 E12)
-  const busyMsg = (e) => { const d = detailOf(e); return d ? `${d} 30초 뒤 다시 확인할게요.` : "요청이 많아 잠깐 쉬고 있어요 — 30초 뒤 다시 확인할게요"; };
+  // 429 — 고정 문구만 쓴다. 서버 사유(「잠시 뒤 다시 시도해 주세요」)를 붙이면 「30초 뒤 확인」과 겹친다 (#385 E12).
+  // 30초 뒤 한 번 자동으로 다시 확인한다. 429 가 아닌 오류는 서버 사유를 먼저 쓴다
+  const BUSY_MSG = "요청이 많아 잠깐 쉬고 있어요 — 30초 뒤 다시 확인할게요";
   const RETRY_MS = 30000;
 
   // 진행 표시 — 「내 글 점검」(분석 앱 common.js progressStart)과 같은 단계 이름 + 흐른 시간 (#385 E9).
@@ -260,11 +261,10 @@
         if (e.status === 429) {
           if (retried !== text) {   // 30초 뒤 한 번만 — 그사이 글을 고치면 input 이 새로 점검한다
             retried = text;
-            setChip(esc(busyMsg(e)), "err");
+            setChip(BUSY_MSG, "err");
             retry = setTimeout(() => { retry = null; if (textarea.value === text) run(); }, RETRY_MS);
           } else {
-            const d = detailOf(e);
-            setChip(esc(d || "요청이 많아 잠깐 쉬고 있어요. 글을 고치면 다시 확인할게요."), "err");
+            setChip("요청이 많아 잠깐 쉬고 있어요. 글을 고치면 다시 확인할게요.", "err");
           }
           return;
         }
@@ -410,14 +410,14 @@
       } catch (e) {
         prog.stop();
         if (e.status === 429 && !isRetry) {   // 요청이 많음 — 30초 뒤 한 번 자동으로 다시 (그사이 버튼을 누르면 그게 먼저)
-          out.innerHTML = muted(esc(busyMsg(e)));
+          out.innerHTML = muted(BUSY_MSG);
           retry = setTimeout(() => go(true), RETRY_MS);
           return;
         }
-        // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 · 너무 긴 글 등)가 있으면 그대로
+        if (e.status === 429) { out.innerHTML = muted("요청이 많아 잠깐 쉬고 있어요. 조금 뒤 다시 눌러 주세요."); return; }
+        // 429 가 아닌 오류 — 서버의 한국어 사유(너무 긴 글 등)가 있으면 그대로
         const detail = detailOf(e);
-        out.innerHTML = muted(detail ? `점검하지 못했습니다. ${esc(detail)}`
-          : e.status === 429 ? "요청이 많아 잠깐 쉬고 있어요. 조금 뒤 다시 눌러 주세요." : "점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
+        out.innerHTML = muted(detail ? `점검하지 못했습니다. ${esc(detail)}` : "점검하지 못했습니다. 잠시 뒤 다시 시도해 주세요.");
       } finally {
         btn.disabled = false;
       }
