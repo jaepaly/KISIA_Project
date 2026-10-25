@@ -451,7 +451,10 @@ def post(post_id: str):
     rw = None
     try:
         rw = db().execute(
-            "SELECT l.id, l.post_id, o.visibility, o.title FROM action_log l JOIN posts o ON o.post_id = l.post_id"
+            "SELECT l.id, l.post_id, o.visibility, o.title,"
+            # 올릴 때 「원래 글은 비공개로」를 같이 했는지 — 「원래 글도 비공개로 바꿨습니다」 알림용 (#385 C1)
+            " EXISTS(SELECT 1 FROM action_log g WHERE g.group_id = l.id AND g.kind = 'private' AND g.undone_at IS NULL) AS hid"
+            " FROM action_log l JOIN posts o ON o.post_id = l.post_id"
             " WHERE l.kind = 'rewrite' AND l.new_post_id = ? AND l.undone_at IS NULL ORDER BY l.id DESC LIMIT 1",
             (post_id,)).fetchone()
     except sqlite3.Error:
@@ -554,8 +557,15 @@ def create_post():
 
     # 글 화면 「이 글을 옮겨 고쳐 쓰기」로 온 새 글이면 — 원래 글과 묶어 이력에 남긴다 (되돌리면 새 글을 지운다)
     src = f.get("from_post") or ""
-    if src and db().execute("SELECT 1 FROM posts WHERE post_id = ? AND author_id = ?", (src, author_id)).fetchone():
-        _log("rewrite", author_id, src, new_post_id=post_id)
+    orig = db().execute("SELECT visibility FROM posts WHERE post_id = ? AND author_id = ?",
+                        (src, author_id)).fetchone() if src else None
+    if orig:
+        rid = _log("rewrite", author_id, src, new_post_id=post_id)
+        # 「올리면서 원래 글은 비공개로」(기본 켬) — 같은 트랜잭션 안에서, 원래 글이 지금 공개일 때만.
+        # 띠의 「원래 글 비공개로」(pair)와 같은 묶음으로 남겨 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다 (#385 C1)
+        if f.get("hide_original") == "1" and orig["visibility"] == "public":
+            db().execute("UPDATE posts SET visibility = 'private' WHERE post_id = ?", (src,))
+            _log("private", author_id, src, "public", "private", group_id=rid)
 
     db().commit()
     return redirect(f"/posts/{post_id}?done=posted")
@@ -638,10 +648,11 @@ def _now() -> str:
 
 
 def _log(kind: str, author_id: str, post_id: str, before: str | None = None,
-         after: str | None = None, new_post_id: str | None = None, group_id: int | None = None) -> None:
-    db().execute(
+         after: str | None = None, new_post_id: str | None = None, group_id: int | None = None) -> int:
+    """이력 한 줄을 남기고 그 id 를 돌려준다 — 고쳐 쓰기와 묶을 때 group_id 로 쓴다."""
+    return db().execute(
         "INSERT INTO action_log(at, kind, author_id, post_id, before_val, after_val, new_post_id, group_id)"
-        " VALUES (?,?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id, group_id))
+        " VALUES (?,?,?,?,?,?,?,?)", (_now(), kind, author_id, post_id, before, after, new_post_id, group_id)).lastrowid
 
 
 def _me() -> dict | None:

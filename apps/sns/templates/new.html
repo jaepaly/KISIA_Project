@@ -209,6 +209,15 @@
             </select>
           </div>
 
+          {# 옮겨 온 글이면 — 올리면서 원래 글도 비공개로 (기본 켬). 서버는 원래 글이 같은 작성자의 공개 글일 때만 바꾸고,
+             고쳐 쓰기와 한 묶음으로 남긴다 — 고쳐 쓰기를 되돌리면 원래 글도 다시 공개된다 (#385 C1 · app.py create_post) #}
+          <label class="from-hide" id="fromHide"
+                 style="display:none;align-items:flex-start;gap:8px;margin:-6px 0 18px;font-size:13.5px;font-weight:400;color:var(--ut-ink2);line-height:1.55;cursor:pointer;">
+            <input type="checkbox" name="hide_original" value="1" id="hideOriginal" checked disabled
+                   style="width:18px;height:18px;margin:2px 0 0;flex:none;accent-color:var(--ut-ink);">
+            <span><b style="color:var(--ut-ink);">올리면서 원래 글은 비공개로</b> — 원래 글이 공개로 남아 있으면 고쳐 쓴 효과가 없습니다. 나중에 「바꾼 것 되돌리기」에서 되돌릴 수 있습니다.</span>
+          </label>
+
           <div class="pado-strip" id="postConfirm" hidden style="margin:0 0 10px;">
             <span class="tx" id="postConfirmTx"></span>
             <button type="button" class="ghost" id="postFix" style="font-size:13px;padding:7px 12px;">고치러 가기</button>
@@ -259,8 +268,11 @@
   f.querySelector('[name="geo_tag"]').value = d.geo_tag || "";
   f.querySelector('[name="captions"]').value = (d.captions || []).join("\n");
   document.getElementById("fromPost").value = from;
+  // 「올리면서 원래 글은 비공개로」 체크 — 옮겨 온 글일 때만 보이고 보낸다 (#385 C1)
+  const hide = document.getElementById("fromHide"), hideBox = document.getElementById("hideOriginal");
+  hide.style.display = "flex"; hideBox.disabled = false;
   const note = document.getElementById("fromNote");
-  note.innerHTML = '<span class="tx">원래 글을 옮겨 왔습니다. 형광 표현을 고쳐 새 글로 올린 뒤, <b>원래 글은 비공개로 바꿔 주세요.</b></span>'
+  note.innerHTML = '<span class="tx">원래 글을 옮겨 왔습니다. 형광 표현을 고쳐 새 글로 올리세요. <b>올릴 때 원래 글은 같이 비공개로 바뀝니다</b>(아래 체크를 끄면 그대로 둡니다).</span>'
     + '<a class="go" href="/posts/' + encodeURIComponent(from) + '" target="_blank" rel="noopener">원래 글 보기 →</a>';
   note.hidden = false;
 })();
