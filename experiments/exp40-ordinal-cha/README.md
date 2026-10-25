@@ -21,7 +21,7 @@
 
 ## 2. 데이터 — test 는 보지 않는다
 
-- test 255편(`splits/test_post_ids.json` 의 `post_ids` · 길이 255 assert)은 읽자마자 뺀다. 예측하지 않고 본문을 열지 않는다
+- test 255편(`splits/test_post_ids.json` 의 `post_ids` · 길이 255 assert)은 파일을 읽은 뒤 ID 로 뺀다. 추론 · 규칙 검사 · 집계에 쓰지 않는다
 - 골드는 exp39 와 같이 `gold/*_spans.jsonl` 만(`gold/blind/` 는 보지 않음) — test 밖 **2,281편 · 스팬 2,194개**
 - 판정셋 exp17b · exp17c · exp17d 는 보지 않는다
 

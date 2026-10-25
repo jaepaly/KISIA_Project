@@ -118,6 +118,7 @@ class RuleTests(unittest.TestCase):
             '회사일차 빼고': False,        # 「사」 앞이 한글 — 수로 읽지 않는다
             '매일차 막혀': False, '휴일차 많네': False, '주말 주차 공간': False,
             '오늘 재택이라 차 못 태워 준다고': False,
+            '출장 3일\n차 타고 출근한다': False,   # 줄이 바뀌면 바로 앞 글자가 「일」이 아니다
         }
         for text, expected in cases.items():
             with self.subTest(text=text):
