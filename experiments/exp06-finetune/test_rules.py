@@ -102,6 +102,68 @@ class RuleTests(unittest.TestCase):
         self.assertEqual([s['text'] for s in out if s['type'] == 'LOC_FACILITY'], ['국민은행'])
         self.assertEqual(stats['model_generic_place_dropped'], 1)
 
+    def test_fragment_model_spans_are_dropped_in_merge(self):
+        """exp41 C1 — 모델이 낸 조사 · 어미 조각(「에」 「에서」 「하는」)과 글자 없는 스팬은 병합에서 뺀다.
+        한 글자라도 골드에 있는 말(샵 · 형 · 집 · 면 · 차)은 그대로 둔다 — 「면」은 「면 우체국」(읍면) 때문에 목록에서 뺐다."""
+        from rules import is_fragment_span
+        for text in ('에', '에서', '로', '의', '서', '고', '하는', '한테', '에서도', ' 에 ', '…', '🥲', '!!', 'ㅋㅋ'):
+            with self.subTest(text=text):
+                self.assertTrue(is_fragment_span(text))
+        for text in ('샵', '형', '집', '면', '차', '면 우체국', '서울', '평택 쪽', '수지 쪽은', '에버랜드', '3', 'KTX',
+                     '서구', '고성', '의정부', '하남'):
+            with self.subTest(text=text):
+                self.assertFalse(is_fragment_span(text))
+        body = '면 우체국에 들렀다가 샵에서 형이랑'
+        model = [{'text_id': 'body', 'start': 0, 'end': 1, 'text': '면', 'type': 'LOC_ADMIN', 'score': 0.9},
+                 {'text_id': 'body', 'start': 5, 'end': 6, 'text': '에', 'type': 'LOC_FACILITY', 'score': 0.9},
+                 {'text_id': 'body', 'start': 12, 'end': 13, 'text': '샵', 'type': 'LOC_FACILITY', 'score': 0.9},
+                 {'text_id': 'body', 'start': 13, 'end': 15, 'text': '에서', 'type': 'COMMUTE', 'score': 0.9},
+                 {'text_id': 'body', 'start': 16, 'end': 17, 'text': '형', 'type': 'FAM', 'score': 0.9}]
+        out, stats = merge_with_model('p1', {'body': body}, model, ExplicitRules(FakeRegions()))
+        self.assertEqual([s['text'] for s in out], ['면', '샵', '형'])
+        self.assertEqual(stats['model_fragment_dropped'], 2)
+
+    def test_admin_inside_tail_is_trimmed_in_merge(self):
+        """exp41 C2 — LOC_ADMIN 「서울 안에서도」 → 「서울」(오프셋도 같이). 「평택 쪽」 「수지 쪽은」 · 다른 유형은 그대로."""
+        from rules import trim_admin_inside
+        cases = {'서울 안에서도': '서울', '마포구 안에서': '마포구', '강남 안에선': '강남', '성남시 안쪽으로': '성남시',
+                 '서울 안에서는': '서울', '동네 안쪽': '동네',
+                 '평택 쪽': None, '수지 쪽은': None, '안에서': None, '서울 안에': None, '서울안에서': None,
+                 '경기 남부 안에서': None}   # 두 낱말 앞말은 범위 밖
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(trim_admin_inside(text), expected)
+        body = '그래도 서울 안에서도 평택 쪽은'
+        model = [{'text_id': 'body', 'start': 4, 'end': 11, 'text': '서울 안에서도', 'type': 'LOC_ADMIN', 'score': 0.93},
+                 {'text_id': 'body', 'start': 12, 'end': 17, 'text': '평택 쪽은', 'type': 'LOC_ADMIN', 'score': 0.9}]
+        out, stats = merge_with_model('p1', {'body': body}, model, ExplicitRules(FakeRegions()))
+        self.assertEqual([(s['start'], s['end'], s['text'], s['score']) for s in out],
+                         [(4, 6, '서울', 0.93), (12, 17, '평택 쪽은', 0.9)])
+        self.assertTrue(all(body[s['start']:s['end']] == s['text'] for s in out))
+        self.assertEqual(stats['model_admin_inside_trimmed'], 1)
+        out, _ = merge_with_model('p1', {'body': '서울 안에서'}, [{'text_id': 'body', 'start': 0, 'end': 6, 'text': '서울 안에서',
+                                                                'type': 'REL_HOME', 'score': 0.9}], ExplicitRules(FakeRegions()))
+        self.assertEqual(out[0]['text'], '서울 안에서')   # LOC_ADMIN 만
+
+    def test_rule_admin_without_any_model_candidate_is_dropped(self):
+        """exp41 C3 — 임계값 아래 후보(below_threshold)를 주면, 규칙만 낸 LOC_ADMIN 중 모델 후보(점수 · 유형 무관)와
+        하나도 안 겹치는 것을 뺀다. 안 주면(None · 기본) 전과 같다. 모델이 같이 본 지명은 그대로."""
+        class FixedRules:
+            def predict_channel(self, text):
+                return {(0, 2, 'LOC_ADMIN'), (7, 9, 'LOC_ADMIN'), (13, 15, 'LOC_ADMIN'), (19, 22, 'AGE')}
+
+        body = '하남 갔다가 수지 쪽은 광주 들러 스물셋'
+        model = [{'text_id': 'body', 'start': 7, 'end': 12, 'text': '수지 쪽은', 'type': 'LOC_ADMIN', 'score': 0.9}]
+        below = [{'text_id': 'body', 'start': 13, 'end': 15, 'text': '광주', 'type': 'REL_HOME', 'score': 0.3}]
+        out, stats = merge_with_model('p1', {'body': body}, model, FixedRules(), below)
+        self.assertEqual([s['text'] for s in out], ['수지 쪽은', '광주', '스물셋'])   # 「하남」만 빠진다 · AGE 는 안 건드린다
+        self.assertEqual(stats['rule_admin_unbacked_dropped'], 1)
+        out, stats = merge_with_model('p1', {'body': body}, model, FixedRules())
+        self.assertEqual([s['text'] for s in out], ['하남', '수지 쪽은', '광주', '스물셋'])
+        self.assertEqual(stats['rule_admin_unbacked_dropped'], 0)
+        out, _ = merge_with_model('p1', {'body': body}, model, FixedRules(), [])   # 임계값 아래 후보가 없는 글
+        self.assertEqual([s['text'] for s in out], ['수지 쪽은', '스물셋'])
+
     def test_model_age_quantity_is_dropped_in_merge(self):
         """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
         from rules import is_quantity_age

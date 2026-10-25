@@ -90,7 +90,9 @@ class SpanDetector:
         self.threshold, self.max_length, self.stride, self.batch_size = min_span_score, max_length, stride, batch_size
         self.version = model_version or f"{checkpoint.parent.name}/{checkpoint.name}"
 
-    def predict_channel(self, text: str) -> list[dict]:
+    def predict_channel(self, text: str, *, below: list[dict] | None = None) -> list[dict]:
+        """임계값을 넘은 후보를 돌려준다. ``below`` 목록을 주면 겹침 해소 뒤 임계값에 못 미친 후보를 거기 덧붙인다
+        (병합 규칙 exp41 C3 용 · 추론을 더 하지 않는다)."""
         if not text:
             return []
         encoded = self.tok(text, truncation=True, max_length=self.max_length, stride=self.stride,
@@ -119,22 +121,29 @@ class SpanDetector:
                                   and start < span[1] and end > span[0]]
                         scores[("channel", span)].append(bio.mean_span_score(values))
         selected = bio.filter_span_predictions({"channel": predictions}, scores, self.threshold)["channel"]
+        if below is not None:
+            below.extend({"start": start, "end": end, "text": text[start:end], "type": type_,
+                          "score": bio.mean_span_score(scores[("channel", (start, end, type_))])}
+                         for start, end, type_ in sorted(bio.resolve_overlapping_spans(predictions) - selected))
         return [{"start": start, "end": end, "text": text[start:end], "type": type_,
                  "score": bio.mean_span_score(scores[("channel", (start, end, type_))])}
                 for start, end, type_ in sorted(selected)]
 
     def predict_raw(self, record: dict) -> dict:
         kind, identifier, texts = input_channels(record)
-        candidates = []
+        candidates, below_threshold = [], []
         for text_id, text in texts.items():
-            for span in self.predict_channel(text):
+            below: list[dict] = []
+            for span in self.predict_channel(text, below=below):
                 span = {**span, "text_id": text_id}
                 index = len(candidates) + 1
                 span["span_id"] = f"{identifier}_bio_s{index:02d}" if kind == "profile" else f"{identifier}_s{index:02d}"
                 candidates.append(span)
+            below_threshold.extend({**span, "text_id": text_id} for span in below)
         return {"output_kind": "raw_bio_candidates_not_contract", "model_version": self.version,
                 "record_type": kind, "post_id" if kind == "post" else "persona_id": identifier,
                 "texts": texts, "candidates": candidates,
+                "below_threshold_candidates": below_threshold,   # 계약 밖 · 병합 규칙(rules.merge_with_model)만 쓴다
                 "min_span_score": self.threshold,
                 "merge_policy": "longest_first_no_overlap_v1",
                 "score_policy": "mean_token_probability_then_mean_windows_v1"}

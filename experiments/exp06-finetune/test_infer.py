@@ -58,6 +58,20 @@ class InferTest(unittest.TestCase):
         self.assertNotIn("level", raw["candidates"][0])
         self.assertNotIn("subject", raw["candidates"][0])
 
+    def test_raw_carries_below_threshold_candidates(self):
+        """exp41 C3 — 임계값 아래 후보는 계약 후보와 따로 담긴다(채널 표시 · span_id 없음). 계약 출력에는 안 들어간다."""
+        def fake(detector, text, *, below=None):
+            if below is not None:
+                below.append({"start": 0, "end": 1, "text": "가", "type": "JOB", "score": 0.3})
+            return [{"start": 1, "end": 2, "text": "나", "type": "FAM", "score": 0.8}]
+        with patch.object(infer.SpanDetector, "predict_channel", fake):
+            raw = self.detector().predict_raw({"post_id": "p", "body": "가나"})
+        self.assertEqual([c["text"] for c in raw["candidates"]], ["나"])
+        self.assertEqual(raw["below_threshold_candidates"],
+                         [{"start": 0, "end": 1, "text": "가", "type": "JOB", "score": 0.3, "text_id": "body"}])
+        result = infer.format_contract(raw, lambda texts, candidate: {"level": "implicit", "subject": "self"})
+        self.assertEqual([s["text"] for s in result["spans"]], ["나"])
+
     def test_post_contract(self):
         result = infer.format_contract(self.raw(), lambda texts, candidate: {"level": "implicit", "subject": "other"})
         self.assertEqual(result["spans"][0]["subject"], "other")

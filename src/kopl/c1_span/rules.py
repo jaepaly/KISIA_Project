@@ -241,16 +241,43 @@ def is_quantity_age(text: str, start: int, end: int) -> bool:
     return bool(_NUMERAL_WITH_UNIT.fullmatch(span))  # 「스무 해」 「스무 해에」 — 그 밖(「서른 살이고」)은 나이
 
 
+# 모델이 낸 조사 · 어미 조각 — 「에」 「에서」 「로」 「하는」 「한테」 (exp41 C1 · test 밖 골드에 이런 스팬 0).
+# 「면」은 넣지 않는다 — 골드 LOC_ADMIN 「면 우체국」(읍면의 면). 한글 · 숫자 · 영문이 하나도 없는 스팬(「…」 「🥲」)도 버린다
+_FRAGMENT_WORDS = frozenset("에 에서 에서도 에서는 에는 에도 로 으로 으로는 로는 고 서 라 한 에게 한테 의 도 를 을 이 가 은 는 "
+                            "와 과 랑 이랑 하고 하는 하던 한테서 께 께서 부터 까지 만 이나 나 요 다 지 게 며 니 쯤".split())
+_WORD_CHAR = re.compile(r"[가-힣0-9A-Za-z]")
+
+
+def is_fragment_span(span_text: str) -> bool:
+    """모델 스팬이 조사 · 어미 조각이거나 글자가 없는 것인가 (exp41 C1)."""
+    return span_text.strip() in _FRAGMENT_WORDS or not _WORD_CHAR.search(span_text)
+
+
+# LOC_ADMIN 「서울 안에서도」 「마포구 안쪽」 → 「서울」 「마포구」 (exp41 C2) — 「안에서」는 지명이 아니라 범위 표현
+_ADMIN_INSIDE_TAIL = re.compile(r"(\S+)\s+(?:안에서도|안에서는|안에서|안에선|안쪽|안쪽에서|안쪽으로)")
+
+
+def trim_admin_inside(span_text: str) -> str | None:
+    """「X 안에서(도)」 꼴이면 앞 낱말 「X」, 아니면 None."""
+    m = _ADMIN_INSIDE_TAIL.fullmatch(span_text)
+    return m.group(1) if m else None
+
+
 def merge_with_model(
     post_id: str,
     texts: dict[str, str],
     model_candidates: list[dict],
     detector: ExplicitRules,
+    below_threshold: list[dict] | None = None,
 ) -> tuple[list[dict], dict[str, int]]:
     """모델·규칙 후보를 같은 최장 우선 무겹침 정책으로 채널별 병합한다.
 
     후보의 출처는 계약 스팬에 넣지 않고 별도 통계로만 반환한다. 규칙 후보에는
     모델 확률이 없으므로 score를 만들어 붙이지 않는다. 원본 모델 후보도 바꾸지 않는다.
+
+    below_threshold 는 임계값에 못 미친 모델 후보(``predict_raw`` 의 ``below_threshold_candidates``)다.
+    주면 규칙만 낸 LOC_ADMIN 중 모델 후보(점수 무관)와 하나도 안 겹치는 것을 버린다(exp41 C3).
+    안 주면(None) 이 거름은 꺼진다 — 전과 같다.
     """
     if not isinstance(post_id, str) or not post_id:
         raise ValueError("post_id가 필요합니다.")
@@ -258,6 +285,8 @@ def merge_with_model(
     model_keys: set[tuple[str, int, int, str]] = set()
     quantity_dropped = 0
     generic_dropped = 0
+    fragment_dropped = 0
+    admin_trimmed = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -273,17 +302,37 @@ def merge_with_model(
         if kind == "LOC_FACILITY" and is_generic_place_word(candidate["text"]):
             generic_dropped += 1   # 「노을맛집」 「디자인 여행」 「지면병원행」 — 장소 이름이 아니라 평가 · 행선 표현
             continue
+        if is_fragment_span(candidate["text"]):
+            fragment_dropped += 1  # 「에」 「에서」 「하는」 — 조사 · 어미 조각 (exp41 C1)
+            continue
+        text_out = candidate["text"]
+        head = trim_admin_inside(text_out) if kind == "LOC_ADMIN" else None
+        if head is not None:
+            admin_trimmed += 1     # 「서울 안에서도」 → 「서울」 (exp41 C2)
+            end, text_out = start + len(head), head
+            key = (tid, start, end, kind)
         model_keys.add(key)
-        span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
+        span = {"start": start, "end": end, "text": text_out, "type": kind}
         if "score" in candidate:
             span["score"] = candidate["score"]
         by_channel[tid][(start, end, kind)] = span
 
+    # exp41 C3 — 모델 후보가 덮은 구간(임계값 위 · 아래 · 위에서 버린 것까지 · 유형 무관)
+    covered: dict[str, list[tuple[int, int]]] | None = None
+    if below_threshold is not None:
+        covered = {tid: [] for tid in texts}
+        for candidate in [*model_candidates, *below_threshold]:
+            covered.setdefault(candidate["text_id"], []).append((candidate["start"], candidate["end"]))
+    unbacked_admin_dropped = 0
     rule_keys: set[tuple[str, int, int, str]] = set()
     for tid, text in texts.items():
         for start, end, kind in detector.predict_channel(text):
             if not 0 <= start < end <= len(text):
                 raise ValueError(f"규칙 후보의 문자 경계가 잘못됐습니다: {post_id}/{tid}")
+            if (covered is not None and kind == "LOC_ADMIN"
+                    and not any(s < end and start < e for s, e in covered[tid])):
+                unbacked_admin_dropped += 1   # 모델이 아무것도 안 본 자리의 지명 사전 일치 (exp41 C3)
+                continue
             rule_keys.add((tid, start, end, kind))
             by_channel[tid].setdefault((start, end, kind),
                                        {"start": start, "end": end, "text": text[start:end], "type": kind})
@@ -307,5 +356,8 @@ def merge_with_model(
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
         "model_age_quantity_dropped": quantity_dropped,
         "model_generic_place_dropped": generic_dropped,
+        "model_fragment_dropped": fragment_dropped,
+        "model_admin_inside_trimmed": admin_trimmed,
+        "rule_admin_unbacked_dropped": unbacked_admin_dropped,
     }
     return output, stats
