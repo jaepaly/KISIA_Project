@@ -90,7 +90,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=374"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=385"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -111,15 +111,22 @@ function setBusy(on) {
   document.getElementById("scanCard").classList.toggle("is-scanning", on);
   for (const el of [$("userQ"), $("uploadBtn"), $("uploadFile"), $("finderMore"), $("repick"), ...document.querySelectorAll("#finderList button")]) if (el) el.disabled = on;
 }
+// 계정 점검 버튼 — 검색칸 옆(#scanBtn)과 고른 계정 칸의 「이 계정 점검」(#pickedScan · #385 C2). 잠금 · 「점검 중」 · 실패 뒤 복구를 같이 한다
+const scanBtns = () => [$("scanBtn"), $("pickedScan")].filter(Boolean);
+function scanBtnsBusy(on) {
+  for (const b of scanBtns()) {
+    b.dataset.label = b.dataset.label || b.textContent;
+    if (on) { b.disabled = true; b.classList.add("is-busy"); b.innerHTML = `<span class="spin" aria-hidden="true"></span>점검 중…`; }
+    else { b.classList.remove("is-busy"); b.textContent = b.dataset.label; b.disabled = !picked; }
+  }
+}
 async function runScan(user_ref, label) {
   if (scanning) return;
   setBusy(true);
   const msg = $("scanMsg");
   msg.className = "muted"; msg.textContent = "";
   // 누른 버튼이 바로 「점검 중」으로 — 회색 비활성으로만 바뀌면 멈춘 것처럼 보였다(아래 진행 띠는 화면 끝이라 눈에 덜 띈다)
-  const btn = $("scanBtn");
-  btn.disabled = true; btn.classList.add("is-busy"); btn.dataset.label = btn.dataset.label || btn.textContent;
-  btn.innerHTML = `<span class="spin" aria-hidden="true"></span>점검 중…`;
+  scanBtnsBusy(true);
   progressStart(`${label || user_ref} 점검 중`, null, picked && picked.user_ref === user_ref ? picked.est : undefined);
   try {
     const ticket = scanTicket(); watchQueue(ticket);   // 앞에 다른 점검이 있으면 진행 띠에 차례를 보인다
@@ -138,8 +145,7 @@ async function runScan(user_ref, label) {
   } finally {
     setBusy(false);
     progressStop();
-    const btn = $("scanBtn");
-    btn.classList.remove("is-busy"); btn.textContent = btn.dataset.label || "공개 글 점검"; btn.disabled = !picked;
+    scanBtnsBusy(false);
   }
 }
 
@@ -165,8 +171,10 @@ function pick(a) {
   $("picked").hidden = false;
   $("picked").innerHTML = `<span class="av" style="background:hsl(${a.hue},45%,86%);color:hsl(${a.hue},35%,32%);">${esc(a.nickname.slice(0, 1))}</span>
     <div><b>${esc(a.nickname)}</b> <span class="muted">@${esc(a.user_ref)} · 공개 글 ${esc(String(a.n_posts))}편</span>${a.bio ? `<div class="muted">${esc(a.bio)}</div>` : ""}</div>
-    <button type="button" class="link" id="repick">다른 계정</button>`;
+    <button type="button" class="link" id="repick">다른 계정</button>
+    <button type="button" id="pickedScan" style="flex:none">이 계정 점검</button>`;
   $("repick").onclick = () => { if (scanning) return; unpick(); $("userQ").focus(); };
+  $("pickedScan").onclick = () => $("scanBtn").click();   // 목록을 본 뒤 위로 올라가지 않고 바로 시작 (#385 C2)
   $("scanBtn").disabled = scanning;
   loadEstimate(a);
 }
@@ -234,7 +242,7 @@ $("uploadBtn").onclick = async () => {
   if (scanning) return;
   msg.className = "muted"; msg.textContent = "";
   setBusy(true);   // 두 번 누르기 · 계정 점검과 겹치기 방지 — 진행 표시는 아래 띠라 버튼이 가려지지 않는다
-  $("scanBtn").disabled = true;
+  for (const b of scanBtns()) b.disabled = true;
   // 파일 크기로 글자 수를 어림한다(한글 UTF-8 ≈ 3바이트 · 공백 · 숫자는 1바이트 — 2.8로 나눈다) → 서버가 실측 속도로 곱한다
   let est;
   try { const r = await fetch(`../api/scan-estimate?chars=${Math.round(f.size / 2.8)}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
@@ -248,12 +256,13 @@ $("uploadBtn").onclick = async () => {
     const data = await r.json();
     data.nickname = f.name;
     data.source = "upload";   // 업로드 글은 Veilo 에 없다 — 위험 줄이기 화면이 Veilo 링크 · 다시 점검을 감춘다 (B3)
+    data.upload_kind = /\.json$/i.test(f.name) ? "json" : "txt";   // 서버(file_adapter)와 같은 기준 — .json 이 아니면 줄마다 글 한 편 (#385 B1)
     saveScan(data);
-    msg.textContent = `글 ${data.posts.length}편을 점검했습니다. 결과로 이동합니다.`;
+    msg.textContent = `${data.upload_kind === "txt" ? `파일의 줄 ${data.posts.length}개를 글 ${data.posts.length}편으로 나눠` : `글 ${data.posts.length}편을`} 점검했습니다. 결과로 이동합니다.`;
     location.href = "diagnosis.html";
   } catch (e) {
     msg.textContent = "연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요."; msg.className = "error";
-  } finally { progressStop(); setBusy(false); $("scanBtn").disabled = !picked; }
+  } finally { progressStop(); setBusy(false); for (const b of scanBtns()) b.disabled = !picked; }
 };
 
 // Veilo 프로필의 「내 글 점검」으로 넘어오면 — 계정을 골라 둔 채 보여 주고, 시작은 사용자가 누른다
@@ -281,7 +290,7 @@ const RUN_NOW = new URLSearchParams(location.search).get("run") === "1";
 const cached = loadScan();
 if (cached && !RUN_NOW) {
   $("postList").innerHTML =
-    `<div class="card"><h2>최근 점검 결과</h2><p class="hint"><b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편 — 마지막으로 점검했을 때 기준입니다. 그 뒤에 Veilo에서 바꾼 것은 다시 점검해야 반영됩니다.</p><a href="diagnosis.html">그때 결과 보기 →</a></div>`;
+    `<div class="card"><h2>최근 점검 결과</h2><p class="hint"><b>${esc(cached.nickname || cached.user_ref)}</b> · 글 ${cached.posts.length}편 — 마지막으로 점검했을 때 기준입니다. 그 뒤에 Veilo에서 바꾼 것은 다시 점검해야 반영됩니다.</p>${uploadSplitNote(cached) ? `<p class="hint">${esc(uploadSplitNote(cached))}</p>` : ""}<a href="diagnosis.html">그때 결과 보기 →</a></div>`;
 }
 </script>
 </body>
