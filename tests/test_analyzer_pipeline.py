@@ -200,11 +200,11 @@ def test_c1_rules_merge_catches_explicit_age_and_place(monkeypatch):
     assert ("마흔여덟이고", "AGE") in got and ("영통구에", "LOC_ADMIN") in got
     assert out["model_version"] == "v1+rules"
 
-    class EmptyWithBelow(Empty):  # 임계값 아래 후보를 같이 주면 exp41 C3 — 모델이 아무것도 안 본 자리의 규칙 지명은 빠진다
+    class EmptyWithSeen(Empty):  # 모델이 본 스팬(겹침 해소 전)을 같이 주면 exp41 C3 — 모델이 아무것도 안 본 자리의 규칙 지명은 빠진다
         def predict_raw(self, record):
-            return {**super().predict_raw(record), "below_threshold_candidates": [
+            return {**super().predict_raw(record), "model_seen_spans": [
                 {"start": 10, "end": 12, "text": "수원", "type": "REL_HOME", "score": 0.2, "text_id": "body"}]}
-    got = {(s["text"], s["type"]) for s in c1_rules.detect(EmptyWithBelow(), {"post_id": "p1", "body": text}, resolve)["spans"]}
+    got = {(s["text"], s["type"]) for s in c1_rules.detect(EmptyWithSeen(), {"post_id": "p1", "body": text}, resolve)["spans"]}
     assert ("마흔여덟이고", "AGE") in got and ("영통구에", "LOC_ADMIN") not in got
 
     monkeypatch.setattr(c1_rules, "_ENABLED", False)

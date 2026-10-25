@@ -146,22 +146,22 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(out[0]['text'], '서울 안에서')   # LOC_ADMIN 만
 
     def test_rule_admin_without_any_model_candidate_is_dropped(self):
-        """exp41 C3 — 임계값 아래 후보(below_threshold)를 주면, 규칙만 낸 LOC_ADMIN 중 모델 후보(점수 · 유형 무관)와
-        하나도 안 겹치는 것을 뺀다. 안 주면(None · 기본) 전과 같다. 모델이 같이 본 지명은 그대로."""
+        """exp41 C3 — 모델이 본 스팬(model_seen · 겹침 해소 전 · 점수 · 유형 무관)을 주면, 규칙만 낸 LOC_ADMIN 중
+        모델 후보 · 본 스팬 어느 것과도 한 글자도 안 겹치는 것을 뺀다. 안 주면(None · 기본) 전과 같다."""
         class FixedRules:
             def predict_channel(self, text):
                 return {(0, 2, 'LOC_ADMIN'), (7, 9, 'LOC_ADMIN'), (13, 15, 'LOC_ADMIN'), (19, 22, 'AGE')}
 
         body = '하남 갔다가 수지 쪽은 광주 들러 스물셋'
         model = [{'text_id': 'body', 'start': 7, 'end': 12, 'text': '수지 쪽은', 'type': 'LOC_ADMIN', 'score': 0.9}]
-        below = [{'text_id': 'body', 'start': 13, 'end': 15, 'text': '광주', 'type': 'REL_HOME', 'score': 0.3}]
-        out, stats = merge_with_model('p1', {'body': body}, model, FixedRules(), below)
+        seen = [{'text_id': 'body', 'start': 13, 'end': 15, 'text': '광주', 'type': 'REL_HOME', 'score': 0.3}]
+        out, stats = merge_with_model('p1', {'body': body}, model, FixedRules(), seen)
         self.assertEqual([s['text'] for s in out], ['수지 쪽은', '광주', '스물셋'])   # 「하남」만 빠진다 · AGE 는 안 건드린다
         self.assertEqual(stats['rule_admin_unbacked_dropped'], 1)
         out, stats = merge_with_model('p1', {'body': body}, model, FixedRules())
         self.assertEqual([s['text'] for s in out], ['하남', '수지 쪽은', '광주', '스물셋'])
         self.assertEqual(stats['rule_admin_unbacked_dropped'], 0)
-        out, _ = merge_with_model('p1', {'body': body}, model, FixedRules(), [])   # 임계값 아래 후보가 없는 글
+        out, _ = merge_with_model('p1', {'body': body}, model, FixedRules(), [])   # 모델이 본 스팬이 없는 글
         self.assertEqual([s['text'] for s in out], ['수지 쪽은', '스물셋'])
 
     def test_model_age_quantity_is_dropped_in_merge(self):

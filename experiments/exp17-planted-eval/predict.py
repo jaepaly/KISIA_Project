@@ -55,7 +55,7 @@ def main() -> int:
                 cands = raw["candidates"]
                 if explicit is not None:
                     cands, _ = rules.merge_with_model(post["post_id"], raw["texts"], cands, explicit,
-                                                      raw.get("below_threshold_candidates"))  # 앱 경로와 같게 (exp41 C3)
+                                                      raw.get("model_seen_spans"))  # 앱 경로와 같게 (exp41 C3)
                 texts = raw["texts"]
             else:
                 cands = [{"text_id": "body", "start": s, "end": e, "text": texts["body"][s:e], "type": k,
