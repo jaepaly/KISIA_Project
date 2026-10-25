@@ -221,6 +221,50 @@
     }
   }
 
+  // ── 모바일 상단바 · 맨 위로 (#385 B4 · B5) ──────────────────────────────────
+  // 좁은 화면에서 아래로 내리면 상단바를 접고, 조금이라도 올리면 다시 편다. 하단 메뉴(.ut-tabs)는 그대로.
+  // 넓은 화면 · 소개 화면(ps-page · 자체 헤더와 sticky 장면이 상단바 높이에 맞춰 있다)은 건드리지 않는다.
+  // 화면 높이 1.5배 아래로 내려가면 「맨 위로」 버튼 — 모바일은 하단 메뉴 위쪽에 뜬다(veilo.css .ut-totop)
+  function initMobileChrome() {
+    const top = $(".ut-top"), mq = matchMedia("(max-width:767px)");
+    const intro = document.documentElement.classList.contains("ps-page");
+    let lastY = scrollY;
+    const keepTop = () => !mq.matches || intro || scrollY < top.offsetHeight * 2 ||
+      top.contains(document.activeElement) || !!$(".ut-menu-pop:not([hidden])", top);
+    const onTop = () => {
+      const y = scrollY, dy = y - lastY;
+      if (keepTop()) top.classList.remove("hide-up");
+      else if (dy > 4) top.classList.add("hide-up");
+      else if (dy < -4) top.classList.remove("hide-up");
+      if (Math.abs(dy) > 4 || keepTop()) lastY = y;
+    };
+    if (top) {
+      addEventListener("scroll", onTop, { passive: true });
+      top.addEventListener("focusin", () => top.classList.remove("hide-up"));   // 키보드로 상단바에 들어오면 편다
+      (mq.addEventListener ? mq.addEventListener("change", onTop) : mq.addListener(onTop));
+    }
+    if (intro) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "ut-totop";
+    btn.hidden = true;
+    btn.setAttribute("aria-label", "맨 위로 가기");
+    btn.innerHTML = '<span aria-hidden="true">↑</span> 맨 위로';
+    document.body.appendChild(btn);
+    const onBtn = () => { btn.hidden = scrollY < innerHeight * 1.5; };
+    addEventListener("scroll", onBtn, { passive: true });
+    addEventListener("resize", onBtn, { passive: true });
+    onBtn();
+    btn.addEventListener("click", () => {
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+      if (top) top.classList.remove("hide-up");
+      // 포커스도 맨 위로 — 키보드 · 화면 낭독기 사용자가 버튼 자리에 남지 않게
+      const logo = top && $(".ut-logo", top);
+      if (logo) logo.focus({ preventScroll: true });
+    });
+  }
+
   // ── 점검 화면의 네 걸음(탭) — 한 번에 한 카드만. 해시로 어디든 바로 갈 수 있다 ──────────
   const TAB_NAMES = { sum: "요약", funnel: "어떻게 좁혀지나", evidence: "근거 문장", actions: "위험 줄이기" };
   function tabList() { return $$(".pado-tabs a[data-tab]").map((a) => a.dataset.tab); }
@@ -344,6 +388,7 @@
     initEvidence();
     initRewriteChips();
     initActRail();
+    initMobileChrome();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(initMore);   // 웹폰트가 늦게 오면 줄 높이가 바뀐다
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
