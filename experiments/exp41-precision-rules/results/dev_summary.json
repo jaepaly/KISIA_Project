@@ -1,0 +1,448 @@
+{
+ "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+ "threshold": 0.7,
+ "posts": 2281,
+ "gold_spans": 2194,
+ "model_candidates": 3071,
+ "below_threshold_candidates": 753,
+ "configs": {
+  "main": {
+   "tp": 1852,
+   "fp": 1249,
+   "fn": 342,
+   "precision": 0.5972,
+   "recall": 0.8441,
+   "f1": 0.6995,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 179,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 75,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3071,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 0,
+    "rule_admin_unbacked_dropped": 0
+   }
+  },
+  "C1": {
+   "tp": 1852,
+   "fp": 1199,
+   "fn": 342,
+   "precision": 0.607,
+   "recall": 0.8441,
+   "f1": 0.7062,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 164,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 75,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 50,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3021,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 0,
+    "rule_admin_unbacked_dropped": 0
+   }
+  },
+  "C2": {
+   "tp": 1864,
+   "fp": 1237,
+   "fn": 330,
+   "precision": 0.6011,
+   "recall": 0.8496,
+   "f1": 0.7041,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 179,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fp": 63,
+     "fn": 32
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 14,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3071,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 14,
+    "rule_admin_unbacked_dropped": 0
+   }
+  },
+  "C3": {
+   "tp": 1852,
+   "fp": 1229,
+   "fn": 342,
+   "precision": 0.6011,
+   "recall": 0.8441,
+   "f1": 0.7022,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 179,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 55,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 20,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3071,
+    "rule_proposed": 323,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 0,
+    "rule_admin_unbacked_dropped": 20
+   }
+  },
+  "C1+C2": {
+   "tp": 1864,
+   "fp": 1187,
+   "fn": 330,
+   "precision": 0.6109,
+   "recall": 0.8496,
+   "f1": 0.7108,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 164,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fp": 63,
+     "fn": 32
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 64,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3021,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 14,
+    "rule_admin_unbacked_dropped": 0
+   }
+  },
+  "C1+C2+C3": {
+   "tp": 1864,
+   "fp": 1167,
+   "fn": 330,
+   "precision": 0.615,
+   "recall": 0.8496,
+   "f1": 0.7135,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 164,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fn": 32,
+     "fp": 43
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 84,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3021,
+    "rule_proposed": 323,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 14,
+    "rule_admin_unbacked_dropped": 20
+   }
+  }
+ }
+}

@@ -1,0 +1,93 @@
+# exp41-precision-rules: 1단 정밀도 규칙 세 개 — 조각 버림 · 「X 안에서」 다듬기 · 모델이 안 본 규칙 지명 버림
+
+**왜**: 1단 v2(임계값 0.7 · 명시 규칙 병합)의 test 밖 골드 오탐 1,249개를 유형별로 나눠 보니, 고치기 쉬운 묶음이 셋 있었다(PM 분석 10/25 · main + #396 기준 1,248 → 1,166).
+
+1. 모델이 조사 · 어미 조각만 스팬으로 낸 것 — 「집⟦에⟧ 갔다」 「수첩⟦의⟧ 버스 시간표」 「⟦하는⟧ 학회」
+2. LOC_ADMIN 이 범위 말까지 먹은 것 — 「⟦서울 안에서도⟧」 (골드는 「서울」)
+3. 명시 규칙(지명 사전)이 지명과 글자가 같은 일반 낱말을 잡은 것 — 「냄새가 ⟦강하면⟧」 「⟦장수를⟧ 세다가」 「천 원 ⟦이천⟧ 원」 「아침부터 ⟦부산⟧ 떨었음」. 이런 자리에서는 모델이 점수와 상관없이 아무 후보도 내지 않는다
+
+임계값(0.7 · `apps/analyzer/engines/real.py` `_MIN_SPAN_SCORE`)은 바꾸지 않았다.
+
+## 1. 규칙 (`src/kopl/c1_span/rules.py` `merge_with_model`)
+
+| | 규칙 | 대상 | 통계 키 | 버림 · 바꿈 | 그대로 |
+|---|---|---|---|---|---|
+| C1 | 스팬 글자(앞뒤 공백 뺌)가 닫힌 조사 · 어미 목록에 있거나, 한글 · 숫자 · 영문이 하나도 없으면 버림 (`is_fragment_span`) | 모델 후보 · 모든 유형 | `model_fragment_dropped` | 에 · 에서 · 로 · 의 · 서 · 고 · 하는 · 한테 · 에서도 · 「[」 · 「…」 | 면(「면 우체국」 골드 때문에 목록에서 뺐다) · 샵 · 형 · 집 · 차 · 서구 · 고성 |
+| C2 | `(\S+)\s+(안에서도|안에서는|안에서|안에선|안쪽|안쪽에서|안쪽으로)` 전체 일치면 앞 낱말로 줄임 (`trim_admin_inside` · 끝 오프셋 · 글자 같이) | 모델 후보 · LOC_ADMIN | `model_admin_inside_trimmed` | 서울 안에서도 → 서울 · 분당 안쪽 → 분당 | 평택 쪽 · 수지 쪽은 · 서울 안에 · 경기 남부 안에서(앞말 두 낱말) · 다른 유형 |
+| C3 | 규칙 LOC_ADMIN 후보가 모델 후보(임계값 위 · 아래 · 유형 무관)와 한 글자도 안 겹치면 버림 | 규칙 후보 · LOC_ADMIN | `rule_admin_unbacked_dropped` | 강하면 · 장수를 · 이천 (원) · 부산 (떨다) · 진해 (보였다) · 울진 (않았고) · 음성은 | 모델이 같은 자리에 무엇이든 낸 지명 · AGE · INCOME 규칙 후보 |
+
+C1 목록: `에 에서 에서도 에서는 에는 에도 로 으로 으로는 로는 고 서 라 한 에게 한테 의 도 를 을 이 가 은 는 와 과 랑 이랑 하고 하는 하던 한테서 께 께서 부터 까지 만 이나 나 요 다 지 게 며 니 쯤` (분석 스크립트 `eval_rules.py` 의 목록 그대로 · 「면」 없음).
+
+### C3 가 임계값 아래 후보를 받는 길
+
+C3 은 「모델이 그 자리에서 아무것도 안 봤나」를 봐야 해서 임계값(0.7) 아래 후보가 필요하다. 추론을 더 하지 않고 이미 계산한 것을 넘긴다.
+
+- `SpanDetector.predict_channel(text, below=[])` — 겹침 해소 뒤 임계값에 못 미친 후보를 `below` 에 덧붙인다. 인자를 안 주면 전과 같다
+- `predict_raw` 결과에 `below_threshold_candidates` 키(계약 밖 · `format_contract` 는 안 본다)
+- `merge_with_model(..., below_threshold=None)` — **None(기본)이면 C3 은 꺼진다.** 앱 `apps/analyzer/engines/c1_rules.py` 와 판정셋 예측 `experiments/exp17-planted-eval/predict.py` 는 `raw.get("below_threshold_candidates")` 를 넘긴다
+- 계약 출력(span.schema)은 그대로다
+
+새 `predict_raw` 의 `candidates + below_threshold_candidates` 가 예전 임계값 0 추론(분석에 쓴 raw)과 2,281편 모두 같다는 것을 확인했다(차이 0 · 점수 0.7 경계 위반 0).
+
+## 2. 데이터 — test 는 보지 않는다
+
+- test 255편(`splits/test_post_ids.json` 의 `post_ids` · 길이 255 assert)은 읽자마자 뺀다. 추론하지 않는다
+- 골드는 `gold/*_spans.jsonl` 만(`gold/blind/` 는 하위 폴더라 안 잡힌다) — test 밖 **2,281편 · 스팬 2,194개**
+- 체크포인트 v2 (`model.safetensors` SHA-256 `d7dc7b06…`) · 임계값 0.7 · 모델 후보 3,071 · 임계값 아래 후보 753
+- 채점: partial match(같은 유형 · IoU ≥ 0.5 · 일대일 · 채널별) — label-schema §2
+
+## 3. 결과 ① test 밖 골드 (10/25 · `results/dev_summary.json` · `results/dev_changes.json`)
+
+같은 모델 후보로 규칙만 바꿔 병합했다. 「main」은 세 규칙을 끈 것(= 지금 main).
+
+| 구성 | TP | FP | FN | P | R | F1 | 바뀐 스팬 | 잃은 골드 | 새로 맞은 골드 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| main | 1,852 | 1,249 | 342 | 0.5972 | 0.8441 | 0.6995 | — | — | — |
+| C1 | 1,852 | 1,199 | 342 | 0.6070 | 0.8441 | 0.7062 | 50 | 0 | 0 |
+| C2 | 1,864 | 1,237 | 330 | 0.6011 | 0.8496 | 0.7041 | 14 | 0 | 12 |
+| C3 | 1,852 | 1,229 | 342 | 0.6011 | 0.8441 | 0.7022 | 20 | 0 | 0 |
+| **C1+C2+C3** | **1,864** | **1,167** | **330** | **0.6150** | **0.8496** | **0.7135** | 84 | **0** | 12 |
+
+- FP 1,249 → 1,167 (−82) · **잃은 골드 0**. C2 는 「서울 안에서도」를 「서울」로 줄여 골드 12개가 새로 맞는다(IoU 0.5 미만이던 것)
+- 바뀐 84개 전부의 문맥은 `results/dev_changes.json`(`removed` · `added`). C2 로 줄인 14개 중 2개(「제주시 안쪽」 「울주군 안쪽」)는 줄이기 전에도 TP 였고 줄인 뒤에도 TP 다
+- C3 이 버린 20개는 모두 규칙 후보이고 골드와 맞은 것이 없다: 강하면 ×2 · 장수를 ×2 · 장수가 · 장수까지 · 이천 ×3 · 진해 ×2 · 음성은 · 음성 · 울진 · 부산 · 예산도 · 변동 · 대이동 · 영양가 · 양동이
+- 분석(main + #396)의 1,248 → 1,166 과 1 차이 — #396(「N일차」)이 이 브랜치에 없어서다
+
+## 4. 결과 ② 판정셋 — 규칙을 고정한 뒤 **한 번** (10/25)
+
+README 규칙(「개발용으로 고르고 판정셋 한 번」) · exp17b/exp17c 프로토콜대로, 위 측정으로 규칙을 고정한 뒤 main(`b2b12d2` 임시 작업 트리)과 이 브랜치를 같은 날 한 번씩 돌렸다. 데이터 해시 확인(17b `1a5ef9a6…` · 17c `b7d12a24…`). 판정 결과를 보고 규칙을 고치지 않았다.
+
+| | exp17b main | exp17b exp41 | exp17c main | exp17c exp41 |
+|---|---:|---:|---:|---:|
+| 본인 단서 재현율 (`recall_self`) | 0.699 | **0.699** | 0.752 | **0.752** |
+| 전체 재현율 | 0.716 | 0.716 | 0.776 | 0.776 |
+| 타인 함정 self 유출 (`judged_self`) | 0 | **0** | 0 | **0** |
+| 숫자 함정 오탐 | 7/22 | 7/22 | 1/16 | 1/16 |
+| 예측 스팬 | 221 | 216 | 209 | 208 |
+| 심지 않은 스팬 / 글 | 1.36 | 1.30 | 1.18 | 1.16 |
+
+DEC-011 값(0.699 · 0.752 · 유출 0)이 main 에서 그대로 재현되고, 규칙을 켜도 그대로다. 빠진 6개는 모두 C1 조각이다 — exp17b 「을」(JOB) · 「는」(SEX) ×2 · 「가」(SEX) · 「고」(COMMUTE) · exp17c 「는」(COMMUTE). C2 · C3 은 두 판정셋에서 바꾼 것이 없다.
+
+예측 · 채점 결과: `results/judge/` (`exp17b_main.jsonl` · `exp17b_exp41.jsonl` · `exp17b_score.json` · 17c 같은 꼴).
+
+## 5. 한계 · 위험
+
+- C3 은 「모델이 아무것도 못 본 자리의 진짜 지명」도 버린다. test 밖 골드에서는 0 건이었지만, 모델이 놓친 지명을 규칙이 메우는 것이 규칙 병합의 원래 목적이다(README 「test 명시 재현율 0.1339 → 0.3750」은 v1 기준). v2 는 지명을 거의 다 보므로 dev 에서 잃은 것이 없었다. test 명시 F1 은 11/2 최종 측정에서 확인한다
+- C1 목록의 한 글자 「도 · 이 · 가 · 서」는 각각 행정 「도」 · 성 「이」 등과 글자가 같다. 골드에 이런 한 글자 스팬은 없었다
+- 사람 글이 아니다(코퍼스 · 판정셋 모두 합성)
+
+## 6. 되돌리기
+
+- C1: `merge_with_model` 의 `if is_fragment_span(...)` 세 줄
+- C2: `head = trim_admin_inside(...)` 부터 `key = ...` 까지 다섯 줄 (`text_out` 은 `candidate["text"]` 로)
+- C3: 앱에서만 끄려면 `apps/analyzer/engines/c1_rules.py` 의 `raw.get("below_threshold_candidates")` 인자를 지운다(None → C3 꺼짐). 코드째 빼려면 `covered` 블록과 `if (covered is not None ...)` 네 줄
+
+## 7. 재현
+
+```bash
+export PYTHONIOENCODING=utf-8 PYTHONPATH=src
+python experiments/exp41-precision-rules/measure.py --checkpoint <1단 v2 폴더> --cache <저장소 밖 경로>/raw_dev.jsonl   # CPU 약 25분
+# 판정셋 (Windows 는 PYTHONPATH 를 ; 로)
+PYTHONPATH="src:experiments/exp06-finetune" python experiments/exp17-planted-eval/predict.py --data experiments/exp17c-final-eval/data/posts.jsonl --checkpoint <1단 v2 폴더> --rules --out preds.jsonl
+python experiments/exp17-planted-eval/score.py --data experiments/exp17c-final-eval/data/posts.jsonl preds.jsonl
+```

@@ -1,0 +1,935 @@
+{
+ "removed": [
+  {
+   "post_id": "A01_b05",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울 안에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 쪽으로 걸었다. ⟦서울 안에서도⟧ 큰길에서 몇 걸음"
+  },
+  {
+   "post_id": "A01_b13",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강하면",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
+  },
+  {
+   "post_id": "A02_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "장수를",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
+  },
+  {
+   "post_id": "A03_b03",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구 안에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "단보도를 건넜다. ⟦유성구 안에서도⟧ 평소 다니는 길 "
+  },
+  {
+   "post_id": "A03_b11",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "하는",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎오늘은 세종에서 ⟦하는⟧ 학회에 다녀왔다."
+  },
+  {
+   "post_id": "A03_b13",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구 안에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "쪽으로 내려갔다. ⟦유성구 안에서⟧ 이런 길을 마주칠"
+  },
+  {
+   "post_id": "A03_b13",
+   "text_id": "body",
+   "type": "FAM",
+   "text": "에게",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "다. 떼어 내 아이⟦에게⟧ 보여 주니 자기 "
+  },
+  {
+   "post_id": "A04_b02",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "장수가",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
+  },
+  {
+   "post_id": "A04_b08",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "로",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎암튼 주말 자전거⟦로⟧ 저수지 한 바퀴를"
+  },
+  {
+   "post_id": "A04_b14",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "예산도",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+  },
+  {
+   "post_id": "A06_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울 안에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": ".⏎진짜 잠깐ㅋ⏎⏎⟦서울 안에서⟧⏎버스 두 정거장,"
+  },
+  {
+   "post_id": "A06_b20",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "고⏎서울 쪽⏎도서관⟦에⟧⏎반납하러⏎갔다네요"
+  },
+  {
+   "post_id": "A07_b11",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "나 들고⏎동네 마트⟦에⟧ 갔다.⏎입구 과일"
+  },
+  {
+   "post_id": "A08_b08",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎나오는 길⏎정류장⟦에⟧⏎버스가⏎딱 와서⏎"
+  },
+  {
+   "post_id": "A09_b10",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "십 분 졸았다.⏎집⟦에⟧ 와서 보니 빨래를"
+  },
+  {
+   "post_id": "A10_b09",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "버스에 타⟦서⟧⏎빈자리에⏎쏙 앉았"
+  },
+  {
+   "post_id": "A10_b13",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "버스 창가  ⏎자리⟦에서⟧ 음악  ⏎듣다 적"
+  },
+  {
+   "post_id": "A10_b15",
+   "text_id": "body",
+   "type": "FAM",
+   "text": "한",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎반팔 셔츠는⏎둘째⟦한⟧테 갔다.⏎⏎둘째가"
+  },
+  {
+   "post_id": "A11_b01",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "진해",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "히 들었다. 색이 ⟦진해⟧ 보였다. 심장이 "
+  },
+  {
+   "post_id": "A11_b12",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "장수까지",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
+  },
+  {
+   "post_id": "A11_b20",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "이천",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
+  },
+  {
+   "post_id": "A11_b23",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "음성은",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
+  },
+  {
+   "post_id": "A12_b11",
+   "text_id": "body",
+   "type": "FAM",
+   "text": "라",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "등원 시간을 맞추느⟦라⟧ 아기 물건부터 챙"
+  },
+  {
+   "post_id": "A12_b15",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "고",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "니다.⏎⏎샵 마감하⟦고⟧ 퇴근하는 길에 탄"
+  },
+  {
+   "post_id": "A14_b01",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "진해",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "자마자 색이 엄청 ⟦진해⟧ 보여서 살짝 당황"
+  },
+  {
+   "post_id": "A14_b11",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "울진",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 법 아시는듯.⏎⏎⟦울진⟧ 않았고.⏎눈만 찌"
+  },
+  {
+   "post_id": "A17_b08",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "이천",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
+  },
+  {
+   "post_id": "A18_b05",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "다",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "지 올렸다. 아침마⟦다⟧ 통근 셔틀 잡겠다"
+  },
+  {
+   "post_id": "A19_b10",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강하면",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+  },
+  {
+   "post_id": "A20_b12",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "부산",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "하겠다고 아침부터 ⟦부산⟧ 떨었음 🥲⏎⏎팔기"
+  },
+  {
+   "post_id": "A21_b13",
+   "text_id": "body",
+   "type": "REL_WORK",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎⏎회사 앞 세차장⟦에서⟧ 대충 물만 뿌리고"
+  },
+  {
+   "post_id": "A22_b02",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "남구 안쪽",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "방에 다녀왔다.⏎⏎⟦남구 안쪽⟧ 골목이라 차를 세"
+  },
+  {
+   "post_id": "A22_b12",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "의",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "옆에서 고양이 직원⟦의⟧ 복지 문제를 읽으"
+  },
+  {
+   "post_id": "A23_b18",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "인천 안에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "빈 칸이 많았다. ⟦인천 안에서도⟧ 규모가 큰 편은 "
+  },
+  {
+   "post_id": "A24_b19",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구 안에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 차로 이동했고, ⟦강남구 안에서⟧ 주차까지 편한 곳"
+  },
+  {
+   "post_id": "A24_b28",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구 안에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "에 다녀왔어요.⏎⏎⟦강남구 안에서⟧ 이동하기 편한 곳"
+  },
+  {
+   "post_id": "B01_b07",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "분당 안쪽",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "고 도서관 감.⏎⏎⟦분당 안쪽⟧이라 버스로 금방 "
+  },
+  {
+   "post_id": "B02_b13",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "은",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "공정 제어 루틴⟦은⟧ 경보 이력과 주요"
+  },
+  {
+   "post_id": "B02_b20",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "변동",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+  },
+  {
+   "post_id": "B03_b18",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "이천",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+  },
+  {
+   "post_id": "B05_b11",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "까지",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "골목을 돌아 정류장⟦까지⟧ 걸었다.⏎의자 아"
+  },
+  {
+   "post_id": "B06_b11",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "도서관⟦에⟧ 빌린 책을 반납하"
+  },
+  {
+   "post_id": "B07_b23",
+   "text_id": "title",
+   "type": "JOB",
+   "text": "[",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⟦[⟧가공일지] 공구 수"
+  },
+  {
+   "post_id": "B08_b09",
+   "text_id": "title",
+   "type": "LOC_ADMIN",
+   "text": "대이동",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": "꾸로그] 좁은 방 ⟦대이동⟧"
+  },
+  {
+   "post_id": "B11_b05",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "는",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎⏎강서구 쪽 카페⟦는⟧ 평일에도 묘하게 "
+  },
+  {
+   "post_id": "B17_b03",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "웠어요. 🌿⏎⏎공원⟦에서⟧ 하천 산책로로 내"
+  },
+  {
+   "post_id": "B17_b09",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "는",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "조제실 라디오⟦는⟧ 클래식 채널에 맞"
+  },
+  {
+   "post_id": "B20_b11",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "제주시 안쪽",
+   "source": "model",
+   "was_tp": true,
+   "ctx": "피를 다 마신 뒤 ⟦제주시 안쪽⟧ 수목원으로 이동했"
+  },
+  {
+   "post_id": "B20_b25",
+   "text_id": "body",
+   "type": "FAM",
+   "text": "가",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "접고 돌아오니 치즈⟦가⟧ 작업실 창가를 먼"
+  },
+  {
+   "post_id": "B21_b10",
+   "text_id": "body",
+   "type": "FAM",
+   "text": "이",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "앞서 달렸다.⏎⏎셋⟦이⟧ 접은 종이꽃은 가"
+  },
+  {
+   "post_id": "D01_b20",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "로",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 남부 외곽 산책로⟦로⟧ 갔다. 입구 계단"
+  },
+  {
+   "post_id": "D06_b03",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "를",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "요일에도 같은 버스⟦를⟧ 탈지는 아직 모르"
+  },
+  {
+   "post_id": "D08_b17",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " ⏎⏎들고 바로 집⟦에⟧ 갈랬는데 발이 안"
+  },
+  {
+   "post_id": "D08_b22",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "영양가",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+  },
+  {
+   "post_id": "D09_b05",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "로",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "니 하나 들고 읍내⟦로⟧ 나갔소.⏎바람이 "
+  },
+  {
+   "post_id": "D09_b05",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "웠네.⏎5일장 초입⟦에서⟧ 마른멸치와 대파 "
+  },
+  {
+   "post_id": "D10_b03",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "양동이",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
+  },
+  {
+   "post_id": "D11_b15",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "보니 마을버스는 벌⟦서⟧ 지나갔다.⏎⏎아이"
+  },
+  {
+   "post_id": "D12_b15",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "울주군 안쪽",
+   "source": "model",
+   "was_tp": true,
+   "ctx": "다섯 시 십분.⏎⏎⟦울주군 안쪽⟧ 주유소는 세 시 "
+  },
+  {
+   "post_id": "D14_b02",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "  ⏎그래서인지 집⟦에서도⟧ 앉기만 하면 눈부"
+  },
+  {
+   "post_id": "D16_b26",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "옥천 안에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 이름만 적어둠.⏎⟦옥천 안에서도⟧ 면에서 군청 근처"
+  },
+  {
+   "post_id": "D17_b08",
+   "text_id": "body",
+   "type": "LOC_FACILITY",
+   "text": "가",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "이 차.⏎임실 장 ⟦가⟧는 버스를 기다리는"
+  },
+  {
+   "post_id": "D17_b16",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "의",
+   "source": "model",
+   "was_tp": false,
+   "ctx": ".⏎아 그리고 수첩⟦의⟧ 버스 시간표가 또"
+  },
+  {
+   "post_id": "D17_b20",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "의",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "차례는 졌지.⏎수첩⟦의⟧ 버스 시간표가 또"
+  },
+  {
+   "post_id": "D17_b21",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "의",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎그건 그렇고 수첩⟦의⟧ 버스 시간표 옆에"
+  },
+  {
+   "post_id": "D24_b24",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강원 안쪽으로",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 잠깐 들렀다.⏎⏎⟦강원 안쪽으로⟧ 들어온 차들이 입"
+  },
+  {
+   "post_id": "E03_b02",
+   "text_id": "body",
+   "type": "REL_WORK",
+   "text": "가",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "사 아래 단골 카페⟦가⟧ 이번 주부터 컵 "
+  },
+  {
+   "post_id": "E03_b12",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "들렀어요.  ⏎출구⟦에서⟧ 두 블록쯤 걸으면"
+  },
+  {
+   "post_id": "E04_b06",
+   "text_id": "body",
+   "type": "REL_WORK",
+   "text": "한테",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "아침에 카풀 동료⟦한테⟧ 메시지가 옴.⏎⏎"
+  },
+  {
+   "post_id": "E04_b10",
+   "text_id": "body",
+   "type": "SEX",
+   "text": "서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "⏎⏎형이 청주 살아⟦서⟧ 예전에 그쪽 구경"
+  },
+  {
+   "post_id": "E10_b02",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "걷지는 않았는데 집⟦에⟧ 돌아와 신발을 벗"
+  },
+  {
+   "post_id": "E10_b09",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "을",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "단히 묶어 주고 집⟦을⟧ 나섰다.⏎⏎바람은"
+  },
+  {
+   "post_id": "E10_b09",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "고 지나쳤다.⏎⏎집⟦에⟧ 가자고 하니 딱 "
+  },
+  {
+   "post_id": "E10_b09",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": " 아파트 단지 마트⟦에⟧ 들러 우유와 두부"
+  },
+  {
+   "post_id": "E12_b08",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "동네 카페⟦에⟧ 신메뉴가 나왔길래"
+  },
+  {
+   "post_id": "E13_b05",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "하는",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "혼자 ⟦하는⟧ 백반집이라 반찬 "
+  },
+  {
+   "post_id": "E14_b03",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "에",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "뜻했어요. 바로 집⟦에⟧ 가기 아쉬워 작전"
+  },
+  {
+   "post_id": "E14_b15",
+   "text_id": "body",
+   "type": "REL_HOME",
+   "text": "으로",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "어 있었어요.⏎⏎집⟦으로⟧ 바로 들어가려다가"
+  },
+  {
+   "post_id": "E18_b03",
+   "text_id": "body",
+   "type": "COMMUTE",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "왔더니 버스가 눈앞⟦에서⟧ 출발해버림. 정류"
+  },
+  {
+   "post_id": "E18_b21",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "음성",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+  },
+  {
+   "post_id": "E19_b06",
+   "text_id": "body",
+   "type": "JOB",
+   "text": "을",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "골 손님도 가족사진⟦을⟧ 찍으러 올 때마다"
+  },
+  {
+   "post_id": "E19_b09",
+   "text_id": "body",
+   "type": "REL_WORK",
+   "text": "에서",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "점에 갔다. 인쇄소⟦에서⟧ 받아 둔 견본을 "
+  },
+  {
+   "post_id": "E19_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "충주 안에서도",
+   "source": "model",
+   "was_tp": false,
+   "ctx": "밥집에 들어갔다. ⟦충주 안에서도⟧ 이 시간에는 자리"
+  },
+  {
+   "post_id": "E19_b18",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "장수를",
+   "source": "rule",
+   "was_tp": false,
+   "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+  }
+ ],
+ "added": [
+  {
+   "post_id": "A01_b05",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울",
+   "ctx": " 쪽으로 걸었다. ⟦서울⟧ 안에서도 큰길에서"
+  },
+  {
+   "post_id": "A03_b03",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구",
+   "ctx": "단보도를 건넜다. ⟦유성구⟧ 안에서도 평소 다"
+  },
+  {
+   "post_id": "A03_b13",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구",
+   "ctx": "쪽으로 내려갔다. ⟦유성구⟧ 안에서 이런 길을"
+  },
+  {
+   "post_id": "A06_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울",
+   "ctx": ".⏎진짜 잠깐ㅋ⏎⏎⟦서울⟧ 안에서⏎버스 두 "
+  },
+  {
+   "post_id": "A22_b02",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "남구",
+   "ctx": "방에 다녀왔다.⏎⏎⟦남구⟧ 안쪽 골목이라 차"
+  },
+  {
+   "post_id": "A23_b18",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "인천",
+   "ctx": "빈 칸이 많았다. ⟦인천⟧ 안에서도 규모가 "
+  },
+  {
+   "post_id": "A24_b19",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구",
+   "ctx": " 차로 이동했고, ⟦강남구⟧ 안에서 주차까지 "
+  },
+  {
+   "post_id": "A24_b28",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구",
+   "ctx": "에 다녀왔어요.⏎⏎⟦강남구⟧ 안에서 이동하기 "
+  },
+  {
+   "post_id": "B01_b07",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "분당",
+   "ctx": "고 도서관 감.⏎⏎⟦분당⟧ 안쪽이라 버스로 "
+  },
+  {
+   "post_id": "B20_b11",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "제주시",
+   "ctx": "피를 다 마신 뒤 ⟦제주시⟧ 안쪽 수목원으로 "
+  },
+  {
+   "post_id": "D12_b15",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "울주군",
+   "ctx": "다섯 시 십분.⏎⏎⟦울주군⟧ 안쪽 주유소는 세"
+  },
+  {
+   "post_id": "D16_b26",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "옥천",
+   "ctx": " 이름만 적어둠.⏎⟦옥천⟧ 안에서도 면에서 "
+  },
+  {
+   "post_id": "D24_b24",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강원",
+   "ctx": " 잠깐 들렀다.⏎⏎⟦강원⟧ 안쪽으로 들어온 "
+  },
+  {
+   "post_id": "E19_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "충주",
+   "ctx": "밥집에 들어갔다. ⟦충주⟧ 안에서도 이 시간"
+  }
+ ],
+ "gold_lost": [],
+ "gold_gained": [
+  {
+   "post_id": "A01_b05",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울"
+  },
+  {
+   "post_id": "A03_b03",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구"
+  },
+  {
+   "post_id": "A03_b13",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "유성구"
+  },
+  {
+   "post_id": "A06_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "서울"
+  },
+  {
+   "post_id": "A22_b02",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "남구"
+  },
+  {
+   "post_id": "A23_b18",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "인천"
+  },
+  {
+   "post_id": "A24_b19",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구"
+  },
+  {
+   "post_id": "A24_b28",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강남구"
+  },
+  {
+   "post_id": "B01_b07",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "분당"
+  },
+  {
+   "post_id": "D16_b26",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "옥천"
+  },
+  {
+   "post_id": "D24_b24",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "강원"
+  },
+  {
+   "post_id": "E19_b09",
+   "text_id": "body",
+   "type": "LOC_ADMIN",
+   "text": "충주"
+  }
+ ]
+}
