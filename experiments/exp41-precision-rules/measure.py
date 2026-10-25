@@ -3,7 +3,7 @@
     PYTHONIOENCODING=utf-8 PYTHONPATH=src python experiments/exp41-precision-rules/measure.py \\
         --checkpoint <1단 v2 폴더> [--cache <raw 저장 경로 · 저장소 밖>]
 
-1단 v2 를 test 밖 골드 글 전부에 돌려(임계값 0.7 · 앱과 같다) 병합 전 모델 후보와 임계값 아래 후보를 얻고,
+1단 v2 를 test 밖 골드 글 전부에 돌려(임계값 0.7 · 앱과 같다) 병합 전 모델 후보와 모델이 본 스팬 전부(겹침 해소 전)를 얻고,
 규칙을 끈 병합(= main) · 규칙 하나씩 · 셋 다 켠 병합을 같은 후보로 채점한다.
 채점은 partial match — 같은 유형 · IoU ≥ 0.5 · 일대일(IoU 큰 쌍부터) · 채널별 (label-schema §2).
 
@@ -12,6 +12,7 @@ test 255편(splits/test_post_ids.json["post_ids"])은 읽자마자 뺀다 — �
 """
 import argparse
 import glob
+import hashlib
 import json
 from collections import Counter
 from contextlib import contextmanager
@@ -47,20 +48,44 @@ def gold_posts():
     return out
 
 
+def fingerprint(checkpoint, posts):
+    """캐시가 어떤 추론인지 — 체크포인트(경로 · 가중치 SHA-256) · 임계값 · 입력 글(post_id + texts) 해시 · raw 형식."""
+    ck = Path(checkpoint).resolve()
+    weights = {}
+    for w in sorted(ck.glob("*.safetensors")):
+        h = hashlib.sha256()
+        with open(w, "rb") as f:
+            for block in iter(lambda: f.read(1 << 20), b""):
+                h.update(block)
+        weights[w.name] = h.hexdigest()
+    inputs = hashlib.sha256(json.dumps([[pid, posts[pid]["texts"]] for pid in sorted(posts)],
+                                       ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+    return {"checkpoint": str(ck), "weights_sha256": weights, "threshold": THRESHOLD, "inputs_sha256": inputs,
+            "raw_format": "candidates+model_seen_spans(pre-overlap)"}
+
+
 def infer_raw(checkpoint, posts, cache):
-    """post_id → predict_raw 결과(candidates · below_threshold_candidates). cache 가 있으면 이어 쓴다."""
+    """post_id → predict_raw 결과(candidates · model_seen_spans). cache 가 있으면 이어 쓴다.
+
+    캐시 첫 줄에 fingerprint 를 적고, 다시 쓸 때 다르면(체크포인트 · 임계값 · 입력 · 형식) 멈춘다 — Codex 검토."""
+    fp = fingerprint(checkpoint, posts)
     raw = {}
     if cache and Path(cache).exists():
-        raw = {d["post_id"]: d for d in jl(cache)}
+        rows = jl(cache)
+        if not rows or rows[0].get("fingerprint") != fp:
+            raise SystemExit(f"캐시 {cache} 의 fingerprint 가 이번 실행과 다르다 — 다른 경로를 주거나 지우고 다시 돌린다")
+        raw = {d["post_id"]: d for d in rows[1:]}
     todo = [pid for pid in posts if pid not in raw]
     if todo:
         from kopl.c1_span.infer import SpanDetector
         det = SpanDetector(checkpoint, min_span_score=THRESHOLD)
+        new_file = bool(cache) and not Path(cache).exists()
         f = open(cache, "a", encoding="utf-8") if cache else None
+        if new_file:
+            f.write(json.dumps({"fingerprint": fp}, ensure_ascii=False) + "\n")
         for n, pid in enumerate(todo, 1):
             r = det.predict_raw({"post_id": pid, "texts": posts[pid]["texts"]})
-            raw[pid] = {"post_id": pid, "candidates": r["candidates"],
-                        "below_threshold_candidates": r["below_threshold_candidates"]}
+            raw[pid] = {"post_id": pid, "candidates": r["candidates"], "model_seen_spans": r["model_seen_spans"]}
             if f:
                 f.write(json.dumps(raw[pid], ensure_ascii=False) + "\n")
             if n % 200 == 0:
@@ -69,7 +94,7 @@ def infer_raw(checkpoint, posts, cache):
                     f.flush()
         if f:
             f.close()
-    return raw
+    return raw, fp
 
 
 @contextmanager
@@ -104,7 +129,7 @@ def merged_all(posts, raw, c1, c2, c3):
         for pid, d in posts.items():
             r = raw[pid]
             out[pid], st = rules.merge_with_model(pid, d["texts"], r["candidates"], det,
-                                                  r["below_threshold_candidates"] if c3 else None)
+                                                  r["model_seen_spans"] if c3 else None)
             stats.update(st)
     return out, stats
 
@@ -167,13 +192,13 @@ def main():
     ap.add_argument("--cache", help="raw 후보 jsonl (저장소 밖 · 있으면 다시 추론하지 않는다)")
     a = ap.parse_args()
     posts = gold_posts()
-    raw = infer_raw(a.checkpoint, posts, a.cache)
+    raw, fp = infer_raw(a.checkpoint, posts, a.cache)
     base, _ = merged_all(posts, raw, *CONFIGS["main"])
     base_score, tp_base, gold_base = score(posts, base)
-    summary = {"checkpoint": a.checkpoint, "threshold": THRESHOLD, "posts": len(posts),
+    summary = {"checkpoint": a.checkpoint, "threshold": THRESHOLD, "fingerprint": fp, "posts": len(posts),
                "gold_spans": sum(len(d["spans"]) for d in posts.values()),
                "model_candidates": sum(len(r["candidates"]) for r in raw.values()),
-               "below_threshold_candidates": sum(len(r["below_threshold_candidates"]) for r in raw.values()),
+               "model_seen_spans": sum(len(r["model_seen_spans"]) for r in raw.values()),
                "configs": {}}
     changes = {}
     for name, cfg in CONFIGS.items():

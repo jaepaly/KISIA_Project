@@ -1,10 +1,19 @@
 {
  "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
  "threshold": 0.7,
+ "fingerprint": {
+  "checkpoint": "C:\\Users\\dor12\\kisia-ckpt\\v2",
+  "weights_sha256": {
+   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be"
+  },
+  "threshold": 0.7,
+  "inputs_sha256": "58bbaac8cc630e9ddf414db8a933980f6ef0869138a2eee75df229d88ff98337",
+  "raw_format": "candidates+model_seen_spans(pre-overlap)"
+ },
  "posts": 2281,
  "gold_spans": 2194,
  "model_candidates": 3071,
- "below_threshold_candidates": 753,
+ "model_seen_spans": 3869,
  "configs": {
   "main": {
    "tp": 1852,
