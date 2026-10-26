@@ -12,8 +12,8 @@ def checkpoint_label(path) -> str:
 
 
 if os.getenv("ENGINE_MODE", "mock") == "real":
-    from .real import c1_checkpoint, conditions, contribution, detect_spans, per_post_k, projected_k, specificity, stage2
+    from .real import c1_checkpoint, conditions, contribution, decisive_clues, detect_spans, per_post_k, projected_k, specificity, stage2
 else:
-    from .mock import c1_checkpoint, conditions, contribution, detect_spans, per_post_k, projected_k, specificity, stage2
+    from .mock import c1_checkpoint, conditions, contribution, decisive_clues, detect_spans, per_post_k, projected_k, specificity, stage2
 
-__all__ = ["c1_checkpoint", "checkpoint_label", "detect_spans", "conditions", "specificity", "contribution", "per_post_k", "projected_k", "stage2"]
+__all__ = ["c1_checkpoint", "checkpoint_label", "detect_spans", "conditions", "specificity", "contribution", "per_post_k", "projected_k", "decisive_clues", "stage2"]

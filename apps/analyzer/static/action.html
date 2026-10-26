@@ -6,7 +6,7 @@
 <title>위험 줄이기 — 파도풀</title>
 <script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
 <script src="head.js?v=381"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
-<link rel="stylesheet" href="style.css?v=381">
+<link rel="stylesheet" href="style.css?v=382">
 </head>
 <body>
 <!-- Veilo 상단바 — Veilo 의 base 템플릿과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
@@ -52,7 +52,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=400"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=401"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -157,6 +157,7 @@ function kAfterUnpublish(data, ids) {
   return kAfterAction(data, "unpublish");   // k 순서와 노출 위험도 순서가 다를 때 — 추천한 글 묶음을 그대로 뺀 k
 }
 function renderBeforeAfter(data) {
+  if (hideNumbers(data)) return `<div class="card before-after">${overseasNumbersNote()}</div>`;
   const rec = data.stage2.output.recommendation;
   const pr = rec.projected;
   const k = data.specificity.output.k;
@@ -173,10 +174,12 @@ function renderBeforeAfter(data) {
     line = risk ? `추천대로 하면 ${risk}` : "";
   }
   if (!line) return "";
-  line += refTag(data);   // 해외 거주로 보이면 「국내 인구 기준 · 참고용」
   const sub = m !== null && m !== undefined && Math.round(m) !== Math.round(k) && risk ? `<p class="hint">추천 방법을 모두 적용하면 ${risk} (예상)</p>` : "";
+  // 점검 결과 화면에서 「내 얘기 아님」으로 단서를 뺐으면 — 사람 수는 다시 센 값, 추천과 노출 위험도 예상값은 처음 점검 그대로
+  const nEx = clueExclusions(data).length;
+  const ex = nEx ? `<p class="hint">사람 수는 점검 결과에서 「내 얘기 아님」으로 뺀 단서 ${nEx}개를 빼고 다시 센 값입니다. 추천 방법과 노출 위험도 예상값은 처음 점검 그대로입니다.</p>` : "";
   return `<div class="card before-after"><p class="ba">${line}</p>${sub}
-    <p class="hint">같은 조건의 사람이 많을수록 글쓴이를 좁히기 어렵습니다. 예상값이며 실제로 바꾼 뒤 다시 점검해 확인하세요.</p></div>`;
+    <p class="hint">같은 조건의 사람이 많을수록 글쓴이를 좁히기 어렵습니다. 예상값이며 실제로 바꾼 뒤 다시 점검해 확인하세요.</p>${ex}</div>`;
 }
 
 // ── 직전 점검 → 이번 점검 — 같은 Veilo 계정을 다시 점검했을 때만 (#385 C3) ─────
@@ -189,12 +192,13 @@ function renderPrevNow(data) {
   const target = targetOf(data);
   const known = (v) => v !== null && v !== undefined;
   const rows = [];
-  if (known(prev.risk) && known(now.risk)) {
+  const nums = !hideNumbers(data);   // 해외 거주로 보이면 국내 인구 기준 숫자를 내지 않는다
+  if (nums && known(prev.risk) && known(now.risk)) {
     const tgt = known(target) ? (Number(now.risk) <= Number(target)
       ? ` — 이번 점검은 권장 노출 위험도 ${fmtT(target)} 이하입니다` : ` — 아직 권장 노출 위험도 ${fmtT(target)}보다 높습니다`) : "";
     rows.push(`노출 위험도 <b>${fmtR(prev.risk)}</b> <span class="arrow">→</span> <b${now.risk < prev.risk ? ' class="down"' : ""}>${fmtR(now.risk)}</b>${tgt}`);
   }
-  if (known(prev.k) && known(now.k)) {
+  if (nums && known(prev.k) && known(now.k)) {
     rows.push(Math.round(prev.k) === Math.round(now.k)
       ? `같은 조건의 사람 수는 그대로 — ${fmtOneOf(now.k)}`
       : `같은 조건의 사람 <b>${fmtOneOf(prev.k)}</b> <span class="arrow">→</span> <b${now.k > prev.k ? ' class="down"' : ""}>${fmtOneOf(now.k)}</b>`);
@@ -224,7 +228,8 @@ function renderScore(data) {
   const target = targetOf(data);
   const hasT = target !== null && target !== undefined;
   const axes = spec.risk_by_axis || {};
-  const bars = Object.entries(axes).filter(([a]) => AXIS[a]).sort((x, y) => y[1] - x[1]).map(([a, v]) => `
+  const nums = !hideNumbers(data);
+  const bars = !nums ? "" : Object.entries(axes).filter(([a]) => AXIS[a]).sort((x, y) => y[1] - x[1]).map(([a, v]) => `
     <li><span class="al">${AXIS[a]}</span><span class="ab"><i style="width:${Math.max(2, v)}%"></i></span><span class="av">${Math.round(v)}</span></li>`).join("");
   return `
     <div class="card">
@@ -234,13 +239,13 @@ function renderScore(data) {
           ? `<a class="btn ghost" href="scan.html">파일을 고쳐 다시 올리기</a>`
           : `<button id="rescanBtn" class="ghost">Veilo에서 바꾼 뒤 다시 점검</button>`}
       </div>
-      <p class="score"><b>${fmtR(pr.current_risk)}</b><span class="arrow">→</span>
+      ${nums ? `<p class="score"><b>${fmtR(pr.current_risk)}</b><span class="arrow">→</span>
         <b class="down">${fmtR(pr.projected_risk)}</b>
-        <span class="unit">추천 방법을 모두 적용한 예상 노출 위험도${refTag(data)}</span></p>
+        <span class="unit">추천 방법을 모두 적용한 예상 노출 위험도</span></p>
       <!-- 사람 수는 바로 위 카드(renderBeforeAfter)에 있어 여기서 다시 쓰지 않는다 · 「목표」 → 무엇을 위한 값인지 「권장 노출 위험도 40 이하」 (#385 E4-2) -->
       <p class="hint" style="margin-top:6px">감소 <b>${pr.reduction_pct === null || pr.reduction_pct === undefined ? "—" : fmtR(pr.reduction_pct) + "%"}</b>
-        ${hasT ? `· 권장 노출 위험도 ${fmtT(target)} 이하 ${pr.target_met ? "— 추천 방법을 모두 적용하면 권장 이하" : "— 모두 적용해도 권장보다 높음"}` : ""}</p>
-      <details class="more">
+        ${hasT ? `· 권장 노출 위험도 ${fmtT(target)} 이하 ${pr.target_met ? "— 추천 방법을 모두 적용하면 권장 이하" : "— 모두 적용해도 권장보다 높음"}` : ""}</p>` : ""}
+      ${nums ? `<details class="more">
         <summary>노출 위험도는 무슨 뜻인가</summary>
         <!-- E 가 써 준 문안 (#385 E4-1) — 핵심을 먼저, 말투는 부드럽게. 40 은 박지 않고 설정값(target)에서 -->
         <p class="explain"><b>노출 위험도는 내 글에 개인정보가 얼마나 구체적으로 드러났는지를 0부터 100까지로 나타낸 점수예요.${hasT ? ` ${fmtT(target)}보다 낮게 유지하는 걸 권해요.` : ""}</b></p>
@@ -252,12 +257,13 @@ function renderScore(data) {
           <li>파도풀은 내 실제 나이나 주소를 알아내는 게 아니라, 글만 보고 <b>얼마나 좁혀질 수 있는지</b>를 알려 드려요.</li>
         </ul>
         ${bars ? `<h4>개인정보 항목별 노출 위험도 <small>— 100 = 해당 항목만으로 거의 특정</small></h4><ul class="axes">${bars}</ul>` : ""}
-      </details>
+      </details>` : ""}
     </div>`;
 }
 
 // ── 2. 어떻게 좁혀지나 — 깔때기 ────────────────────
 function renderFunnel(data) {
+  if (hideNumbers(data)) return "";
   const steps = (data.specificity.output.steps || []);
   if (steps.length < 2) return "";
   const nation = steps[0].n_after;
@@ -292,7 +298,8 @@ function renderActions(data) {
   const rec = data.stage2.output.recommendation;
   const posts = postsOf(data);
   const cur = rec.projected.current_risk;
-  const k = data.specificity.output.k;
+  const nums = !hideNumbers(data);   // 해외 거주로 보이면 노출 위험도 · 사람 수 숫자를 내지 않는다 — 방법과 대상 글은 그대로
+  const k = nums ? data.specificity.output.k : null;   // null 이면 아래 사람 수 문구(kEffect 등)가 모두 빠진다
   if (!rec.actions.length) {
     // 목표(기본 40)보다 이미 낮으면 조치가 비는 게 정상이다 — 빈 화면 대신 이유를 보여 준다 (#319 리뷰 1번)
     // 계정·연락처가 남아 있으면 「필요 없음」이라고 하지 않는다 — 위의 「먼저 지울 것」이 남은 조치다 (#326)
@@ -301,7 +308,9 @@ function renderActions(data) {
     let msg;
     // 안전을 단정하지 않는다 — 「필요 없음」이 아니라 「추천할 방법이 없음」 + 한 번 점검의 한계 한 줄
     const limit = `<p class="hint">이번 점검은 지금 공개된 글만 봤습니다. 새 글을 쓰거나 다른 곳의 글과 함께 보면 결과가 달라질 수 있습니다.</p>`;
-    if (rec.projected.target_met && target !== null && target !== undefined) {
+    if (!nums) {
+      msg = `추천할 방법이 없습니다.${strong ? " 위의 「먼저 지울 것」은 지우는 것을 권합니다." : ""}`;
+    } else if (rec.projected.target_met && target !== null && target !== undefined) {
       msg = strong
         ? `노출 위험도 ${fmtR(cur)}는 권장 노출 위험도 ${fmtT(target)}보다 낮습니다. 그래도 <b>위의 「먼저 지울 것」은 지우는 것을 권합니다.</b> 노출 위험도와 상관없이 계정이나 연락처로 바로 이어집니다.`
         : `현재 노출 위험도 ${fmtR(cur)}가 권장 노출 위험도 ${fmtT(target)}보다 낮아 <b>추가로 추천할 방법이 없습니다.</b> 더 줄이고 싶으면 아래 「어떤 글부터」를 참고하세요.`;
@@ -332,10 +341,10 @@ function renderActions(data) {
         const clues = spanTexts(data, t.ref, c ? c.clue_ids : mySpans(data, t.ref).map(s => s.span_id));
         return `<li>${postLink(data, t.ref)}
           ${clues.length ? `<div class="clues">드러나는 단서: ${clues.map(x => clueMark(x.text, x.subject === "unknown")).join(" ")}</div>` : ""}
-          <div class="eff">이 글을 비공개로 바꾸면 노출 위험도 ${fmtR(cur)} → <b>${c ? fmtR(c.risk_without) : "—"}</b>${
+          ${nums ? `<div class="eff">이 글을 비공개로 바꾸면 노출 위험도 ${fmtR(data.contribution.output.baseline_risk)} → <b>${c ? fmtR(c.risk_without) : "—"}</b>${
             kw === null || k === null ? ""
             : fmtN(kw) === fmtN(k) ? ` · 같은 조건의 사람 수는 그대로 — 같은 단서가 다른 글에도 있습니다`   // E 리뷰: 「15,069 → 15,069」 는 헷갈린다
-            : ` · 같은 조건의 사람 약 ${fmtN(k)}명 → <b>약 ${fmtN(kw)}명</b>`}</div></li>`;
+            : ` · 같은 조건의 사람 약 ${fmtN(k)}명 → <b>약 ${fmtN(kw)}명</b>`}</div>` : ""}</li>`;
       }).join("")}</ul>`;
       // 사람 수와 노출 위험도는 따로 계산한다 — 인과로 묶지 않는다 (M1)
       why = isUpload(data)
@@ -353,7 +362,7 @@ function renderActions(data) {
         : `<p class="muted">위치 태그가 붙은 글이 없습니다.</p>`;
       const km = kEffect(k, kAfterAction(data, "activity_meta"), "본문의 다른 단서로 이미 좁혀집니다");
       if (tagged.length && km) what += `<div class="eff">위치 태그를 모두 지우면 ${km}</div>`;
-      why = `위치 태그도 사는 곳을 짐작할 단서가 됩니다. 본문을 고쳐도 위치 태그가 남아 있으면 같은 정보를 드러낼 수 있습니다.${a.projected_delta === 0 ? " 지금은 본문에 같은 동네가 이미 드러나 있어 노출 위험도 변화가 0으로 나옵니다. 본문을 고친 뒤에는 이 태그가 마지막 단서로 남습니다." : ""}`;
+      why = `위치 태그도 사는 곳을 짐작할 단서가 됩니다. 본문을 고쳐도 위치 태그가 남아 있으면 같은 정보를 드러낼 수 있습니다.${a.projected_delta === 0 && nums ? " 지금은 본문에 같은 동네가 이미 드러나 있어 노출 위험도 변화가 0으로 나옵니다. 본문을 고친 뒤에는 이 태그가 마지막 단서로 남습니다." : ""}`;
     } else if (a.action_type === "rewrite") {
       const n = a.targets.length;
       what = `<p>글 ${n}편에 직접 쓴 정보 — ${a.targets.slice(0, 4).map(t => postLink(data, t.ref)).join(", ")}${n > 4 ? ` 외 ${n - 4}편` : ""}. <a href="#rewrites">바꿔 쓸 표현 보기 ↓</a></p>`;
@@ -370,12 +379,12 @@ function renderActions(data) {
         <span class="nm">${A.no} ${esc(A.nm)}</span>
         <span class="pill b-${bc}">부담 ${esc(bl)}</span>
         <span class="pill sure">${esc(SURE[a.certainty] || a.certainty || "")}</span>
-        <span class="delta">노출 위험도 ${fmtR(cur)} → <b>${fmtR(after)}</b> <small>(${a.projected_delta > 0 ? "+" : ""}${fmtR(a.projected_delta)})</small></span>
+        ${nums ? `<span class="delta">노출 위험도 ${fmtR(cur)} → <b>${fmtR(after)}</b> <small>(${a.projected_delta > 0 ? "+" : ""}${fmtR(a.projected_delta)})</small></span>` : ""}
       </div>
       <div class="what">${what}</div>
       <details class="more">
         <summary>어떻게 하고, 왜 노출 위험도가 내려가나</summary>
-        ${a.rationale ? `<p class="rationale">${esc(uiText(a.rationale))}</p>` : ""}
+        ${a.rationale && nums ? `<p class="rationale">${esc(uiText(a.rationale))}</p>` : ""}   <!-- 추천 근거 문장에 노출 위험도 숫자가 들어 있다(「72.3 → 40.1」) — 해외면 뺀다 -->
         <h4>어떻게</h4><p>${esc(A.how)}</p>
         <h4>왜 노출 위험도가 내려가나</h4><p>${why}</p>
       </details>
@@ -391,8 +400,8 @@ function renderActions(data) {
   return `
     <h3>추천 방법 <small>— 부담이 낮은 것부터. 모두 할 필요는 없습니다</small></h3>
     ${cards}
-    <p class="note">모두 적용한 예상 노출 위험도 <b>${fmtR(cur)} → ${fmtR(rec.projected.projected_risk)}</b>, ${rec.projected.target_met ? "권장 노출 위험도 이하" : "권장 노출 위험도보다 높음"}.
-      예상값은 그 방법을 적용한 상태로 다시 센 값이라 단순 합과 다를 수 있습니다. ${isUpload(data) ? "실제 변경은 글을 올린 서비스에서 직접 하고, 효과는 파일을 고쳐 다시 올려 확인합니다." : "실제 변경은 Veilo의 해당 글에서 직접 합니다."}</p>`;
+    <p class="note">${nums ? `모두 적용한 예상 노출 위험도 <b>${fmtR(cur)} → ${fmtR(rec.projected.projected_risk)}</b>, ${rec.projected.target_met ? "권장 노출 위험도 이하" : "권장 노출 위험도보다 높음"}.
+      예상값은 그 방법을 적용한 상태로 다시 센 값이라 단순 합과 다를 수 있습니다. ` : ""}${isUpload(data) ? "실제 변경은 글을 올린 서비스에서 직접 하고, 효과는 파일을 고쳐 다시 올려 확인합니다." : "실제 변경은 Veilo의 해당 글에서 직접 합니다."}</p>`;
 }
 
 // ── 4. 어떤 글부터 ──────────────────────────────────
@@ -401,9 +410,10 @@ function renderOrder(data) {
   const kg = (data.k_by_post && data.k_by_post.greedy) || [];
   if (!gp.length) return "";
   const cur = data.contribution.output.baseline_risk;
+  const nums = !hideNumbers(data);
   const k = data.specificity.output.k;
   let prev = cur;
-  const rows = gp.map((g, i) => {
+  const rows = !nums ? gp.map(g => `<li>${postLink(data, g.remove)}</li>`).join("") : gp.map((g, i) => {
     const kk = kg[i] && kg[i].remove === g.remove ? kg[i].k_after : null;
     const row = `<li>${postLink(data, g.remove)}
       <span class="eff">노출 위험도 ${fmtR(prev)} → <b>${fmtR(g.risk_after)}</b>${kk !== null ? ` · 같은 조건의 사람 약 ${fmtN(kk)}명` : ""}</span></li>`;
@@ -412,7 +422,7 @@ function renderOrder(data) {
   return `
     <details class="card more sec">
       <summary>어떤 글부터 비공개로 바꿀까 <small>— 한 편씩 바꿀 때 노출 위험도가 가장 빨리 내려가는 순서</small></summary>
-      <p class="hint">위 「🔒 비공개로 바꾸기」와 같은 계산입니다. 앞의 글을 비공개로 바꾼 뒤 다시 계산한 예상 효과입니다.${k !== null ? ` 지금 같은 조건의 사람 약 ${fmtN(k)}명.` : ""}</p>
+      <p class="hint">위 「🔒 비공개로 바꾸기」와 같은 계산입니다. ${nums ? `앞의 글을 비공개로 바꾼 뒤 다시 계산한 예상 효과입니다.${k !== null ? ` 지금 같은 조건의 사람 약 ${fmtN(k)}명.` : ""}` : "앞의 글을 비공개로 바꾼 뒤 다음 글을 고른 순서입니다."}</p>
       <ol class="order">${rows}</ol>
     </details>`;
 }
@@ -441,7 +451,7 @@ function renderRewrites(data) {
       <div class="rewrite">…${esc(before)}<mark>${esc(r.suggestion)}</mark>${esc(after)}…
         <span class="note">${r.residual_risk === "none" ? "이 표현의 단서가 사라집니다" : "단서가 남음 — 단서가 약해지지만 남습니다"}</span></div>`).join("");
     // 사람 수는 그 스팬을 「완전히 지웠을 때」(k_by_action.by_span) — 「단서가 남음」 후보의 실제 효과보다 크다(상한). 그렇다고 적는다 (Codex 10/14)
-    const ks = kEffect(data.specificity.output.k, kAfterSpan(data, postId, spanId), "다른 단서로 이미 좁혀집니다");
+    const ks = hideNumbers(data) ? "" : kEffect(data.specificity.output.k, kAfterSpan(data, postId, spanId), "다른 단서로 이미 좁혀집니다");
     cards.push(`<div class="card"><p class="rw-head">${postLink(data, postId)} 에서 <del>${esc(span.text)}</del> <span class="muted">(${esc(TYPE_LABEL[span.type] || span.type)})</span> 대신</p>${
       ks ? `<div class="eff">이 표현의 단서를 완전히 지우면 ${ks}${list.some((r) => r.residual_risk !== "none") ? `<span class="muted"> · 최대로 잡은 값입니다 — 아래 「단서가 남음」 표현으로 바꾸면 효과는 이보다 작습니다</span>` : ""}</div>` : ""}${options}
       ${isUpload(data) ? "" : `<p class="go"><a class="btn" href="${SNS}/posts/${encodeURIComponent(postId)}#fix">Veilo에서 이 글 고쳐 쓰기 →</a></p>`}</div>`);

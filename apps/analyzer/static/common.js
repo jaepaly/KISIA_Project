@@ -20,6 +20,22 @@ function loadScan() {
   return raw ? JSON.parse(raw) : null;
 }
 
+// 같은 점검 결과를 고쳐 쓴다 — 「내 얘기 아님」으로 다시 센 값. 새 점검이 아니라 직전 점검 요약(scanPrev)은 건드리지 않는다
+function updateScan(result) {
+  sessionStorage.setItem("scanResult", JSON.stringify(result));
+}
+
+// 「내 얘기 아님」으로 뺀 단서 — diagnosis.html 이 /api/recompute 로 다시 센 뒤 결과에 함께 둔다(화면 전용).
+// [{axis, value, sources: [{post_id, span_id | geo_tag}]}]. 빈 목록이면 처음 점검 그대로
+function clueExclusions(data) {
+  return (data && Array.isArray(data.clue_exclusions)) ? data.clue_exclusions : [];
+}
+function excludedSpanKeys(data) {
+  const out = new Set();
+  for (const c of clueExclusions(data)) for (const s of c.sources || []) if (s.span_id) out.add(`${s.post_id}|${s.span_id}`);
+  return out;
+}
+
 // 직전 점검 요약 — 지금 결과와 같은 Veilo 계정일 때만 돌려준다(없으면 null)
 function loadPrevScan(data) {
   try {
@@ -305,16 +321,22 @@ function renderTimeline(data) {
 }
 
 // 해외 거주 — 서버 residence. 본인 거주 표현(「미국에서 지내다 보니」 「미국생활」)이 여러 글에 있으면 사는 곳은 국내 인구 기준으로
-// 추정하지 않고(위치 단서를 사람 수 · 노출 위험도 · 거주지 판정에서 뺀다) 나머지 단서만 센다. residence 가 없는 옛 결과 · 목은 국내로 본다
+// 추정하지 않는다(위치 단서를 사람 수 · 노출 위험도 · 거주지 판정에서 뺀다). residence 가 없는 옛 결과 · 목은 국내로 본다
 function isOverseas(data) {
   return !!(data && data.residence && data.residence.overseas);
 }
 
-// 사람 수 · 노출 위험도 옆 표기 — 국내 인구로 센 값이라 해외 거주자에게는 참고용
-function refTag(data) {
-  return isOverseas(data)
-    ? ` <span class="badge unknown" title="해외에 사시는 것으로 보여 국내 인구 기준 값은 참고로만 보세요">국내 인구 기준 · 참고용</span>`
-    : "";
+// 해외 거주로 보이면 같은 조건의 사람 수 · 노출 위험도 숫자를 화면에 내지 않는다 — 국내 주민등록 인구(약 5,100만 명)로 센 숫자라
+// 현지에서 실제로 좁혀지는 정도보다 훨씬 커 보인다(해외 한인 거주지 + 성별 + 자녀가 현지에선 몇 사람인데 숫자는 수백만).
+// 응답의 계약 칸(specificity · contribution · stage2)은 그대로 두고 화면에서만 감춘다
+function hideNumbers(data) {
+  return isOverseas(data);
+}
+
+// 숫자 자리에 놓는 안내 — 점검 결과 첫 카드 · 위험 줄이기 첫 카드
+function overseasNumbersNote() {
+  return `<p><span class="badge unknown">숫자로 보여 드리지 않음</span> 해외에 사시는 것으로 보여, 같은 조건의 사람 수와 노출 위험도를 숫자로 보여 드리지 않습니다.</p>
+    <p class="note">이 숫자는 국내 주민등록 인구로 셉니다. 해외에서는 같은 지역에 사는 한국인이 훨씬 적어서, 같은 단서로도 몇 사람으로 좁혀질 수 있습니다. 국내 기준 숫자를 보여 드리면 실제보다 안전해 보일 수 있습니다. 아래 항목별 판정과 근거로 직접 확인해 주세요.</p>`;
 }
 
 function renderOverseasNote(data) {
@@ -326,7 +348,7 @@ function renderOverseasNote(data) {
     .map(e => `<mark>${esc(e.value)}</mark> — 「${esc(postLabel(posts[e.post_id]) || e.post_id)}」`);
   const n = (r.n_posts || {}).residence || 0;
   return `<div class="card tip"><b>해외에 사시는 것으로 보여 사는 곳은 국내 인구 기준으로 추정하지 않았습니다. 나머지 단서는 그대로 점검했습니다.</b>
-    <p>같은 조건의 사람 수와 노출 위험도는 국내 인구로 센 값이라 참고용으로만 보세요. 글에 적은 지명은 그대로 표시하지만 사람 수 계산에서는 뺐습니다.</p>
+    <p>글에 적은 지명은 그대로 표시하지만 사는 곳 판정에서는 뺐습니다. 해외에 살지 않는데 이렇게 나왔다면 아래 근거가 된 표현을 확인해 주세요.</p>
     ${ev.length ? `<p class="muted">이렇게 판단한 근거${n > ev.length ? ` (글 ${n}편 중 일부)` : ""}</p><ul>${ev.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}</div>`;
 }
 

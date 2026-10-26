@@ -5,15 +5,18 @@
 - 기여도: ``kopl.c3_contribution.leave_one_out`` — risk_fn 은 C2 ``risk_total`` (exp10 · 추천 엔진과 같은 위험도)
 - 글별 k: ``k_by_post`` — 「이 글을 내리면 후보가 몇 명이 되나」
 - 조치별 k: ``projected_k`` — 위치 태그를 떼거나 표현을 바꾸면 몇 명이 되나 (projection.py · 같은 k 엔진)
+- 결정 단서: ``decisive_clues`` — k 계산 추적(steps)에 실제로 쓰인 단서와 그 근거 스팬 (작성자 확인 「내 얘기 아님」용)
 
 목 엔진(mock.py)과 같은 함수 모양이다. 원문은 받은 그대로 계산에만 쓰고 저장하지 않는다.
 """
 from __future__ import annotations
 
+import re
 from typing import Any, Mapping, Sequence
 
 from kopl.c2_specificity.engine import risk_total
 from kopl.c2_specificity.k_engine import conditions_from_posts, estimate_k, k_by_post, specificity_document
+from kopl.c2_specificity.k_engine import _describe as describe_condition  # steps 의 단서 이름을 만드는 바로 그 함수
 from kopl.c3_contribution.loo import leave_one_out
 
 from .projection import project
@@ -104,3 +107,53 @@ def projected_k(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, 
         return estimate_k(out)["k"]
 
     return project(kposts, stage2_output, k_of)
+
+
+# steps 의 condition 문자열에 들어 있는 단서 이름 — k 엔진 _describe 의 모양 「axis:kind «값»」
+_CLUE_LABEL = re.compile(r"([a-z_]+):([a-z_]+) «([^»]*)»")
+MAX_DECISIVE = 8
+
+
+def decisive_clues(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, Mapping[str, Any]],
+                   spec_output: Mapping[str, Any] | None, *, limit: int = MAX_DECISIVE) -> list[dict]:
+    """화면용 — k 를 실제로 정한 단서(계산 추적 steps 에 이름이 나온 것)와 그 단서를 만든 스팬 · 위치 태그.
+
+    k 엔진은 축마다 후보가 가장 적은 해석 하나를 고르므로, 틀린 스팬 하나가 축 전체를 정할 수 있다. 작성자가
+    「내 얘기 아님」으로 확인할 수 있게 결정 단서만 추린다(스팬 수백 개 전체가 아니라).
+
+    근거 찾기 — 스팬 하나만으로 조건을 만들어(conditions_from_posts) 그 이름이 steps 의 단서 이름과 같으면 근거다.
+    같은 이름(같은 값)의 스팬은 여러 글에 있어도 모두 근거로 묶는다 — k 엔진이 글마다의 같은 단서를 하나로 합쳐 세기 때문이다.
+    조건 이름이 엔진 버전에 따라 바뀌면 근거를 못 찾은 단서는 빠진다(빈 목록이 되어도 화면은 확인 칸을 그리지 않을 뿐).
+    """
+    labels: list[tuple[str, str, str]] = []
+    seen: set[str] = set()
+    for st in (spec_output or {}).get("steps") or []:
+        for m in _CLUE_LABEL.finditer(str(st.get("condition") or "")):
+            if m.group(0) not in seen:
+                seen.add(m.group(0))
+                labels.append((m.group(0), m.group(1), m.group(3)))
+    if not labels:
+        return []
+    want = {lab for lab, _, _ in labels}
+    sources: dict[str, list[dict]] = {lab: [] for lab in want}
+    for p in _k_posts(posts, spans_by_post):
+        pid = p["post_id"]
+        for s in p["spans"]:
+            if s.get("subject") == "other" or not s.get("span_id"):
+                continue
+            try:
+                made = {describe_condition(c) for c in conditions_from_posts([{"post_id": pid, "spans": [s]}])}
+            except (KeyError, TypeError, ValueError):
+                continue   # 형식이 어긋난 스팬 — 근거로 쓰지 않는다(엔진 본 계산과 같은 입력이라 보통은 없다)
+            for lab in made & want:
+                sources[lab].append({"post_id": pid, "span_id": str(s["span_id"]), "text_id": s.get("text_id"),
+                                     "start": s.get("start"), "end": s.get("end"), "text": s.get("text"),
+                                     "type": s.get("type"), "subject": s.get("subject")})
+        if p.get("geo_tag"):
+            for c in conditions_from_posts([{"post_id": pid, "spans": [], "geo_tag": p["geo_tag"]}]):
+                lab = describe_condition(c)
+                if lab in want:
+                    sources[lab].append({"post_id": pid, "geo_tag": str(p["geo_tag"])})
+    out = [{"label": lab, "axis": axis, "value": value, "sources": sources[lab]}
+           for lab, axis, value in labels if sources[lab]]
+    return out[:limit]
