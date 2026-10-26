@@ -145,24 +145,18 @@ class RuleTests(unittest.TestCase):
                                                                 'type': 'REL_HOME', 'score': 0.9}], ExplicitRules(FakeRegions()))
         self.assertEqual(out[0]['text'], '서울 안에서')   # LOC_ADMIN 만
 
-    def test_rule_admin_without_any_model_candidate_is_dropped(self):
-        """exp41 C3 — 모델이 본 스팬(model_seen · 겹침 해소 전 · 점수 · 유형 무관)을 주면, 규칙만 낸 LOC_ADMIN 중
-        모델 후보 · 본 스팬 어느 것과도 한 글자도 안 겹치는 것을 뺀다. 안 주면(None · 기본) 전과 같다."""
+    def test_rule_admin_without_model_candidate_is_kept(self):
+        """규칙만 낸 지명은 모델 후보가 없어도 그대로 남는다 — 모델이 놓친 진짜 지명을 규칙이 보완하는 길.
+        exp41 C3(모델이 안 본 자리의 규칙 지명 버림)은 B 리뷰(#397)로 채택하지 않았다."""
         class FixedRules:
             def predict_channel(self, text):
-                return {(0, 2, 'LOC_ADMIN'), (7, 9, 'LOC_ADMIN'), (13, 15, 'LOC_ADMIN'), (19, 22, 'AGE')}
+                return {(0, 2, 'LOC_ADMIN'), (13, 15, 'LOC_ADMIN'), (19, 22, 'AGE')}
 
         body = '하남 갔다가 수지 쪽은 광주 들러 스물셋'
         model = [{'text_id': 'body', 'start': 7, 'end': 12, 'text': '수지 쪽은', 'type': 'LOC_ADMIN', 'score': 0.9}]
-        seen = [{'text_id': 'body', 'start': 13, 'end': 15, 'text': '광주', 'type': 'REL_HOME', 'score': 0.3}]
-        out, stats = merge_with_model('p1', {'body': body}, model, FixedRules(), seen)
-        self.assertEqual([s['text'] for s in out], ['수지 쪽은', '광주', '스물셋'])   # 「하남」만 빠진다 · AGE 는 안 건드린다
-        self.assertEqual(stats['rule_admin_unbacked_dropped'], 1)
         out, stats = merge_with_model('p1', {'body': body}, model, FixedRules())
         self.assertEqual([s['text'] for s in out], ['하남', '수지 쪽은', '광주', '스물셋'])
-        self.assertEqual(stats['rule_admin_unbacked_dropped'], 0)
-        out, _ = merge_with_model('p1', {'body': body}, model, FixedRules(), [])   # 모델이 본 스팬이 없는 글
-        self.assertEqual([s['text'] for s in out], ['수지 쪽은', '스물셋'])
+        self.assertNotIn('rule_admin_unbacked_dropped', stats)
 
     def test_ordinal_cha_commute_is_dropped_in_merge(self):
         """실제 글 시험(#385 3-1) — 1단이 「야간 3일차 퇴근길」의 「차」를 COMMUTE 로 내면 병합에서 뺀다.

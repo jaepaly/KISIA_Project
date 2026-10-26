@@ -58,57 +58,6 @@ class InferTest(unittest.TestCase):
         self.assertNotIn("level", raw["candidates"][0])
         self.assertNotIn("subject", raw["candidates"][0])
 
-    def test_raw_carries_model_seen_spans(self):
-        """exp41 C3 — 겹침 해소 전 모델 스팬은 계약 후보와 따로 담긴다(채널 표시 · span_id 없음). 계약 출력에는 안 들어간다."""
-        def fake(detector, text, *, seen=None):
-            if seen is not None:
-                seen.append({"start": 0, "end": 1, "text": "가", "type": "JOB", "score": 0.3})
-            return [{"start": 1, "end": 2, "text": "나", "type": "FAM", "score": 0.8}]
-        with patch.object(infer.SpanDetector, "predict_channel", fake):
-            raw = self.detector().predict_raw({"post_id": "p", "body": "가나"})
-        self.assertEqual([c["text"] for c in raw["candidates"]], ["나"])
-        self.assertEqual(raw["model_seen_spans"],
-                         [{"start": 0, "end": 1, "text": "가", "type": "JOB", "score": 0.3, "text_id": "body"}])
-        result = infer.format_contract(raw, lambda texts, candidate: {"level": "implicit", "subject": "self"})
-        self.assertEqual([s["text"] for s in result["spans"]], ["나"])
-
-    def test_model_seen_keeps_spans_removed_by_overlap(self):
-        """Codex 검토(exp41 C3) — 겹침 해소로 빠진 모델 스팬도 「모델이 본 자리」다.
-        모델이 [0,8) · [6,12) 를 내서 [6,12) 가 해소로 빠져도, 규칙 지명 [10,12) 는 버리지 않는다."""
-        try:
-            import torch
-        except ImportError:   # CI 에는 torch 가 없다 — 로컬(학습 · 추론 PC)에서만 돈다
-            self.skipTest("torch 없음")
-        from kopl.c1_span import bio, rules
-
-        class Tok:
-            model_input_names = ["input_ids"]
-            def __call__(self, text, **kw):
-                return {"input_ids": [[1, 2, 3]], "offset_mapping": [[(0, 4), (4, 8), (8, 12)]]}
-            def pad(self, features, **kw):
-                return {"input_ids": torch.tensor([f["input_ids"] for f in features])}
-
-        class Model:
-            def __call__(self, **batch):
-                return type("O", (), {"logits": torch.zeros(1, 3, 21)})()
-
-        detector = self.detector()
-        detector.tok, detector.model, detector.torch = Tok(), Model(), torch
-        detector.device, detector.max_length, detector.stride, detector.batch_size = torch.device("cpu"), 256, 64, 16
-        detector.id2label = dict(enumerate(bio.LABELS))
-        text = "가나다라마바사아자차카타"
-        with patch.object(bio, "decode_token_spans", return_value=[(0, 8, "JOB"), (6, 12, "LOC_ADMIN")]):
-            raw = detector.predict_raw({"post_id": "p", "body": text})
-        self.assertEqual(raw["candidates"], [])   # 확률 1/21 — 임계값 0.7 아래
-        self.assertEqual(sorted((c["start"], c["end"]) for c in raw["model_seen_spans"]), [(0, 8), (6, 12)])
-
-        class FixedRules:
-            def predict_channel(self, text):
-                return {(10, 12, "LOC_ADMIN")}
-        merged, stats = rules.merge_with_model("p", raw["texts"], raw["candidates"], FixedRules(), raw["model_seen_spans"])
-        self.assertEqual([(s["start"], s["end"]) for s in merged], [(10, 12)])
-        self.assertEqual(stats["rule_admin_unbacked_dropped"], 0)
-
     def test_post_contract(self):
         result = infer.format_contract(self.raw(), lambda texts, candidate: {"level": "implicit", "subject": "other"})
         self.assertEqual(result["spans"][0]["subject"], "other")

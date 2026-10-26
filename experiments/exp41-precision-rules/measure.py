@@ -1,4 +1,8 @@
-"""exp41 — 1단 정밀도 규칙 세 개(C1 조각 버림 · C2 「X 안에서」 다듬기 · C3 모델이 안 본 규칙 지명 버림)를 test 밖 골드로 잰다.
+"""exp41 — 1단 정밀도 규칙(C1 조각 버림 · C2 「X 안에서」 다듬기)과 미채택 C3(모델이 안 본 규칙 지명 버림)을 test 밖 골드로 잰다.
+
+C3 은 B 리뷰(#397)로 채택하지 않았다 — 앱 코드(rules.merge_with_model)에는 없고 이 스크립트 안에서만 재현한다.
+C3 에 필요한 「모델이 본 스팬 전부(겹침 해소 전)」는 앱 추론이 더 내지 않으므로 10/25 캐시(raw_format
+candidates+model_seen_spans)가 있을 때만 C3 구성을 잰다. 캐시 없이 새로 추론하면 C3 구성은 건너뛴다.
 
     PYTHONIOENCODING=utf-8 PYTHONPATH=src python experiments/exp41-precision-rules/measure.py \\
         --checkpoint <1단 v2 폴더> [--cache <raw 저장 경로 · 저장소 밖>]
@@ -85,7 +89,7 @@ def infer_raw(checkpoint, posts, cache):
             f.write(json.dumps({"fingerprint": fp}, ensure_ascii=False) + "\n")
         for n, pid in enumerate(todo, 1):
             r = det.predict_raw({"post_id": pid, "texts": posts[pid]["texts"]})
-            raw[pid] = {"post_id": pid, "candidates": r["candidates"], "model_seen_spans": r["model_seen_spans"]}
+            raw[pid] = {"post_id": pid, "candidates": r["candidates"], "model_seen_spans": r.get("model_seen_spans")}
             if f:
                 f.write(json.dumps(raw[pid], ensure_ascii=False) + "\n")
             if n % 200 == 0:
@@ -122,14 +126,36 @@ def match(g, p):
     return ug, up
 
 
+class UnbackedAdminFilter:
+    """미채택 C3 재현 — 규칙 LOC_ADMIN 중 모델이 본 스팬(겹침 해소 전 · 점수 · 유형 무관) 어느 것과도 안 겹치는 것을 뺀다."""
+
+    def __init__(self, detector, texts, candidates, seen):
+        self.detector, self.dropped = detector, 0
+        self.covered = {}
+        for tid, text in texts.items():
+            self.covered.setdefault(text, []).extend(
+                (c["start"], c["end"]) for c in [*candidates, *seen] if c["text_id"] == tid)
+
+    def predict_channel(self, text):
+        kept = set()
+        for start, end, kind in self.detector.predict_channel(text):
+            if kind == "LOC_ADMIN" and not any(s < end and start < e for s, e in self.covered.get(text, [])):
+                self.dropped += 1
+                continue
+            kept.add((start, end, kind))
+        return kept
+
+
 def merged_all(posts, raw, c1, c2, c3):
     det = rules.ExplicitRules()
     out, stats = {}, Counter()
     with configured(c1, c2, c3):
         for pid, d in posts.items():
             r = raw[pid]
-            out[pid], st = rules.merge_with_model(pid, d["texts"], r["candidates"], det,
-                                                  r["model_seen_spans"] if c3 else None)
+            use = UnbackedAdminFilter(det, d["texts"], r["candidates"], r["model_seen_spans"]) if c3 else det
+            out[pid], st = rules.merge_with_model(pid, d["texts"], r["candidates"], use)
+            if c3:
+                st["rule_admin_unbacked_dropped"] = use.dropped
             stats.update(st)
     return out, stats
 
@@ -193,15 +219,21 @@ def main():
     a = ap.parse_args()
     posts = gold_posts()
     raw, fp = infer_raw(a.checkpoint, posts, a.cache)
+    has_seen = all(r.get("model_seen_spans") is not None for r in raw.values())
     base, _ = merged_all(posts, raw, *CONFIGS["main"])
     base_score, tp_base, gold_base = score(posts, base)
     summary = {"checkpoint": a.checkpoint, "threshold": THRESHOLD, "fingerprint": fp, "posts": len(posts),
                "gold_spans": sum(len(d["spans"]) for d in posts.values()),
                "model_candidates": sum(len(r["candidates"]) for r in raw.values()),
-               "model_seen_spans": sum(len(r["model_seen_spans"]) for r in raw.values()),
+               "model_seen_spans": (sum(len(r["model_seen_spans"]) for r in raw.values())
+                                    if has_seen else None),
+               "adopted": "C1+C2", "not_adopted": {"C3": "B review #397 — blocks rules from recovering place names "
+                                                         "the model missed; train-data loss 0 is not out-of-corpus evidence"},
                "configs": {}}
     changes = {}
     for name, cfg in CONFIGS.items():
+        if cfg[2] and not has_seen:
+            continue   # 미채택 C3 은 10/25 캐시가 있을 때만
         merged, stats = merged_all(posts, raw, *cfg)
         sc, _, gold_hit = score(posts, merged)
         d = diff(posts, base, merged, tp_base, gold_base, gold_hit)
@@ -213,7 +245,7 @@ def main():
             changes[name] = d
     (HERE / "results").mkdir(exist_ok=True)
     (HERE / "results/dev_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    (HERE / "results/dev_changes.json").write_text(json.dumps(changes["C1+C2+C3"], ensure_ascii=False, indent=1) + "\n",
+    (HERE / "results/dev_changes.json").write_text(json.dumps(changes["C1+C2"], ensure_ascii=False, indent=1) + "\n",
                                                   encoding="utf-8")
     for name, c in summary["configs"].items():
         print(f"{name:9s} tp {c['tp']} fp {c['fp']} fn {c['fn']} P {c['precision']} R {c['recall']} F1 {c['f1']} "

@@ -17,14 +17,18 @@
  "gold_spans": 2194,
  "model_candidates": 3071,
  "model_seen_spans": 3869,
+ "adopted": "C1+C2",
+ "not_adopted": {
+  "C3": "B review #397 — blocks rules from recovering place names the model missed; train-data loss 0 is not out-of-corpus evidence"
+ },
  "configs": {
   "main": {
    "tp": 1852,
-   "fp": 1249,
+   "fp": 1248,
    "fn": 342,
-   "precision": 0.5972,
+   "precision": 0.5974,
    "recall": 0.8441,
-   "f1": 0.6995,
+   "f1": 0.6997,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -32,7 +36,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 179,
+     "fp": 178,
      "fn": 35,
      "tp": 139
     },
@@ -82,22 +86,22 @@
    "gold_lost": 0,
    "gold_gained": 0,
    "merge_stats": {
-    "model_input": 3071,
+    "model_input": 3070,
     "rule_proposed": 343,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 0,
-    "model_admin_inside_trimmed": 0,
-    "rule_admin_unbacked_dropped": 0
+    "model_admin_inside_trimmed": 0
    }
   },
   "C1": {
    "tp": 1852,
-   "fp": 1199,
+   "fp": 1198,
    "fn": 342,
-   "precision": 0.607,
+   "precision": 0.6072,
    "recall": 0.8441,
-   "f1": 0.7062,
+   "f1": 0.7063,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -105,7 +109,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 164,
+     "fp": 163,
      "fn": 35,
      "tp": 139
     },
@@ -155,22 +159,22 @@
    "gold_lost": 0,
    "gold_gained": 0,
    "merge_stats": {
-    "model_input": 3021,
+    "model_input": 3020,
     "rule_proposed": 343,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 50,
-    "model_admin_inside_trimmed": 0,
-    "rule_admin_unbacked_dropped": 0
+    "model_admin_inside_trimmed": 0
    }
   },
   "C2": {
    "tp": 1864,
-   "fp": 1237,
+   "fp": 1236,
    "fn": 330,
-   "precision": 0.6011,
+   "precision": 0.6013,
    "recall": 0.8496,
-   "f1": 0.7041,
+   "f1": 0.7042,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -178,7 +182,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 179,
+     "fp": 178,
      "fn": 35,
      "tp": 139
     },
@@ -228,22 +232,22 @@
    "gold_lost": 0,
    "gold_gained": 12,
    "merge_stats": {
-    "model_input": 3071,
+    "model_input": 3070,
     "rule_proposed": 343,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 0,
-    "model_admin_inside_trimmed": 14,
-    "rule_admin_unbacked_dropped": 0
+    "model_admin_inside_trimmed": 14
    }
   },
   "C3": {
    "tp": 1852,
-   "fp": 1229,
+   "fp": 1228,
    "fn": 342,
-   "precision": 0.6011,
+   "precision": 0.6013,
    "recall": 0.8441,
-   "f1": 0.7022,
+   "f1": 0.7023,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -251,7 +255,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 179,
+     "fp": 178,
      "fn": 35,
      "tp": 139
     },
@@ -301,10 +305,11 @@
    "gold_lost": 0,
    "gold_gained": 0,
    "merge_stats": {
-    "model_input": 3071,
+    "model_input": 3070,
     "rule_proposed": 323,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 0,
     "model_admin_inside_trimmed": 0,
     "rule_admin_unbacked_dropped": 20
@@ -312,11 +317,11 @@
   },
   "C1+C2": {
    "tp": 1864,
-   "fp": 1187,
+   "fp": 1186,
    "fn": 330,
-   "precision": 0.6109,
+   "precision": 0.6111,
    "recall": 0.8496,
-   "f1": 0.7108,
+   "f1": 0.7109,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -324,7 +329,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 164,
+     "fp": 163,
      "fn": 35,
      "tp": 139
     },
@@ -374,22 +379,22 @@
    "gold_lost": 0,
    "gold_gained": 12,
    "merge_stats": {
-    "model_input": 3021,
+    "model_input": 3020,
     "rule_proposed": 343,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 50,
-    "model_admin_inside_trimmed": 14,
-    "rule_admin_unbacked_dropped": 0
+    "model_admin_inside_trimmed": 14
    }
   },
   "C1+C2+C3": {
    "tp": 1864,
-   "fp": 1167,
+   "fp": 1166,
    "fn": 330,
-   "precision": 0.615,
+   "precision": 0.6152,
    "recall": 0.8496,
-   "f1": 0.7135,
+   "f1": 0.7136,
    "by_type": {
     "AGE": {
      "fp": 34,
@@ -397,7 +402,7 @@
      "fn": 24
     },
     "COMMUTE": {
-     "fp": 164,
+     "fp": 163,
      "fn": 35,
      "tp": 139
     },
@@ -447,10 +452,11 @@
    "gold_lost": 0,
    "gold_gained": 12,
    "merge_stats": {
-    "model_input": 3021,
+    "model_input": 3020,
     "rule_proposed": 323,
     "model_age_quantity_dropped": 0,
     "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
     "model_fragment_dropped": 50,
     "model_admin_inside_trimmed": 14,
     "rule_admin_unbacked_dropped": 20

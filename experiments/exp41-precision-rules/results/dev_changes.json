@@ -10,24 +10,6 @@
    "ctx": " 쪽으로 걸었다. ⟦서울 안에서도⟧ 큰길에서 몇 걸음"
   },
   {
-   "post_id": "A01_b13",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "강하면",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
-  },
-  {
-   "post_id": "A02_b09",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "장수를",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
-  },
-  {
    "post_id": "A03_b03",
    "text_id": "body",
    "type": "LOC_ADMIN",
@@ -64,15 +46,6 @@
    "ctx": "다. 떼어 내 아이⟦에게⟧ 보여 주니 자기 "
   },
   {
-   "post_id": "A04_b02",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "장수가",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
-  },
-  {
    "post_id": "A04_b08",
    "text_id": "body",
    "type": "COMMUTE",
@@ -80,15 +53,6 @@
    "source": "model",
    "was_tp": false,
    "ctx": "⏎암튼 주말 자전거⟦로⟧ 저수지 한 바퀴를"
-  },
-  {
-   "post_id": "A04_b14",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "예산도",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
   },
   {
    "post_id": "A06_b09",
@@ -163,42 +127,6 @@
    "ctx": "⏎반팔 셔츠는⏎둘째⟦한⟧테 갔다.⏎⏎둘째가"
   },
   {
-   "post_id": "A11_b01",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "진해",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "히 들었다. 색이 ⟦진해⟧ 보였다. 심장이 "
-  },
-  {
-   "post_id": "A11_b12",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "장수까지",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
-  },
-  {
-   "post_id": "A11_b20",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "이천",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
-  },
-  {
-   "post_id": "A11_b23",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "음성은",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
-  },
-  {
    "post_id": "A12_b11",
    "text_id": "body",
    "type": "FAM",
@@ -217,33 +145,6 @@
    "ctx": "니다.⏎⏎샵 마감하⟦고⟧ 퇴근하는 길에 탄"
   },
   {
-   "post_id": "A14_b01",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "진해",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "자마자 색이 엄청 ⟦진해⟧ 보여서 살짝 당황"
-  },
-  {
-   "post_id": "A14_b11",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "울진",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 법 아시는듯.⏎⏎⟦울진⟧ 않았고.⏎눈만 찌"
-  },
-  {
-   "post_id": "A17_b08",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "이천",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
-  },
-  {
    "post_id": "A18_b05",
    "text_id": "body",
    "type": "COMMUTE",
@@ -251,24 +152,6 @@
    "source": "model",
    "was_tp": false,
    "ctx": "지 올렸다. 아침마⟦다⟧ 통근 셔틀 잡겠다"
-  },
-  {
-   "post_id": "A19_b10",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "강하면",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
-  },
-  {
-   "post_id": "A20_b12",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "부산",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "하겠다고 아침부터 ⟦부산⟧ 떨었음 🥲⏎⏎팔기"
   },
   {
    "post_id": "A21_b13",
@@ -343,24 +226,6 @@
    "ctx": "공정 제어 루틴⟦은⟧ 경보 이력과 주요"
   },
   {
-   "post_id": "B02_b20",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "변동",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
-  },
-  {
-   "post_id": "B03_b18",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "이천",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
-  },
-  {
    "post_id": "B05_b11",
    "text_id": "body",
    "type": "LOC_FACILITY",
@@ -386,15 +251,6 @@
    "source": "model",
    "was_tp": false,
    "ctx": "⟦[⟧가공일지] 공구 수"
-  },
-  {
-   "post_id": "B08_b09",
-   "text_id": "title",
-   "type": "LOC_ADMIN",
-   "text": "대이동",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": "꾸로그] 좁은 방 ⟦대이동⟧"
   },
   {
    "post_id": "B11_b05",
@@ -478,15 +334,6 @@
    "ctx": " ⏎⏎들고 바로 집⟦에⟧ 갈랬는데 발이 안"
   },
   {
-   "post_id": "D08_b22",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "영양가",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
-  },
-  {
    "post_id": "D09_b05",
    "text_id": "body",
    "type": "LOC_FACILITY",
@@ -503,15 +350,6 @@
    "source": "model",
    "was_tp": false,
    "ctx": "웠네.⏎5일장 초입⟦에서⟧ 마른멸치와 대파 "
-  },
-  {
-   "post_id": "D10_b03",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "양동이",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
   },
   {
    "post_id": "D11_b15",
@@ -712,15 +550,6 @@
    "ctx": "왔더니 버스가 눈앞⟦에서⟧ 출발해버림. 정류"
   },
   {
-   "post_id": "E18_b21",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "음성",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
-  },
-  {
    "post_id": "E19_b06",
    "text_id": "body",
    "type": "JOB",
@@ -746,15 +575,6 @@
    "source": "model",
    "was_tp": false,
    "ctx": "밥집에 들어갔다. ⟦충주 안에서도⟧ 이 시간에는 자리"
-  },
-  {
-   "post_id": "E19_b18",
-   "text_id": "body",
-   "type": "LOC_ADMIN",
-   "text": "장수를",
-   "source": "rule",
-   "was_tp": false,
-   "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
   }
  ],
  "added": [

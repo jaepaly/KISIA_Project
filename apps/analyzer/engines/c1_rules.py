@@ -51,7 +51,6 @@ def detect(detector, record: dict, resolver) -> dict:
     raw = detector.predict_raw(record)
     if raw.get("record_type") != "post":
         return infer.format_contract(raw, resolver)
-    merged, _stats = rules.merge_with_model(raw["post_id"], raw["texts"], raw["candidates"], _rules(),
-                                            raw.get("model_seen_spans"))  # 없으면 exp41 C3 거름은 꺼진다
+    merged, _stats = rules.merge_with_model(raw["post_id"], raw["texts"], raw["candidates"], _rules())
     raw = {**raw, "candidates": merged, "model_version": f"{raw['model_version']}+rules"}
     return infer.format_contract(raw, resolver)

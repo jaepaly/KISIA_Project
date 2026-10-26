@@ -280,16 +280,11 @@ def merge_with_model(
     texts: dict[str, str],
     model_candidates: list[dict],
     detector: ExplicitRules,
-    model_seen: list[dict] | None = None,
 ) -> tuple[list[dict], dict[str, int]]:
     """모델·규칙 후보를 같은 최장 우선 무겹침 정책으로 채널별 병합한다.
 
     후보의 출처는 계약 스팬에 넣지 않고 별도 통계로만 반환한다. 규칙 후보에는
     모델 확률이 없으므로 score를 만들어 붙이지 않는다. 원본 모델 후보도 바꾸지 않는다.
-
-    model_seen 은 모델이 디코딩한 스팬 전부다 — 겹침 해소 전 · 점수 · 유형 무관(``predict_raw`` 의 ``model_seen_spans``).
-    주면 규칙만 낸 LOC_ADMIN 중 이 스팬들 · model_candidates 어느 것과도 한 글자도 안 겹치는 것을 버린다(exp41 C3).
-    안 주면(None) 이 거름은 꺼진다 — 전과 같다.
     """
     if not isinstance(post_id, str) or not post_id:
         raise ValueError("post_id가 필요합니다.")
@@ -333,22 +328,11 @@ def merge_with_model(
             span["score"] = candidate["score"]
         by_channel[tid][(start, end, kind)] = span
 
-    # exp41 C3 — 모델이 본 구간(겹침 해소 전 · 임계값 위 · 아래 · 위에서 버린 것까지 · 유형 무관)
-    covered: dict[str, list[tuple[int, int]]] | None = None
-    if model_seen is not None:
-        covered = {tid: [] for tid in texts}
-        for candidate in [*model_candidates, *model_seen]:
-            covered.setdefault(candidate["text_id"], []).append((candidate["start"], candidate["end"]))
-    unbacked_admin_dropped = 0
     rule_keys: set[tuple[str, int, int, str]] = set()
     for tid, text in texts.items():
         for start, end, kind in detector.predict_channel(text):
             if not 0 <= start < end <= len(text):
                 raise ValueError(f"규칙 후보의 문자 경계가 잘못됐습니다: {post_id}/{tid}")
-            if (covered is not None and kind == "LOC_ADMIN"
-                    and not any(s < end and start < e for s, e in covered[tid])):
-                unbacked_admin_dropped += 1   # 모델이 아무것도 안 본 자리의 지명 사전 일치 (exp41 C3)
-                continue
             rule_keys.add((tid, start, end, kind))
             by_channel[tid].setdefault((start, end, kind),
                                        {"start": start, "end": end, "text": text[start:end], "type": kind})
@@ -375,6 +359,5 @@ def merge_with_model(
         "model_ordinal_cha_dropped": ordinal_dropped,
         "model_fragment_dropped": fragment_dropped,
         "model_admin_inside_trimmed": admin_trimmed,
-        "rule_admin_unbacked_dropped": unbacked_admin_dropped,
     }
     return output, stats
