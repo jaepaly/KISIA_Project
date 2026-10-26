@@ -276,6 +276,8 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
         # 조치별 「바꾸면 같은 조건의 사람 몇 명」 — 비공개(k_by_post)와 같은 k 계산을 위치 태그 지우기 · 바꿔 쓰기에도.
         # stage2-io Action 에 사람 수 칸이 없어 계약 밖 · 화면 전용으로 둔다 (k_by_post 와 같은 방식)
         "k_by_action": engine.projected_k(k_posts, k_spans, stage2.get("output")),
+        # k 를 실제로 정한 단서와 근거 스팬 — 작성자가 「내 얘기 아님」으로 확인한다(/api/recompute · 화면 전용 · 계약 밖)
+        "decisive_clues": engine.decisive_clues(k_posts, k_spans, spec.get("output")),
         # 해외 거주 판별 — 해외로 보이면 사는 곳을 국내 인구 기준으로 추정하지 않았다는 안내 · 근거(화면 전용 · 계약 밖).
         # stage2-io 에 해외 값 · 이유 칸이 없어 location 은 abstain 으로만 두고, 여부와 근거는 여기로 넘긴다
         "residence": _residence_view(residence),
@@ -287,6 +289,149 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
         # 스팬 계약 밖 · 화면 전용 — direct_identifiers 와 같은 방식
         "timeline": infer_starts({p["post_id"]: find_marks(_channels(p), p.get("post_date")) for p in posts}),
     }
+
+
+# ── 결정 단서 확인 — 「내 얘기 아님」으로 뺀 단서를 빼고 k · 위험도를 다시 센다 ─────────────────────────
+#    서버는 점검 결과를 보관하지 않는다(화면이 sessionStorage 에 둔다). 그래서 화면이 처음 결과의 글 · 스팬 · 2단 출력과
+#    뺄 단서 목록을 그대로 다시 보내고, 서버는 계산만 하고 버린다 — 원문을 새로 저장하지 않는다.
+#    다시 세는 것: 조건 · k(specificity) · 기여도(contribution · 위험도) · 글별 k · 조치별 k · 결정 단서.
+#    다시 돌리지 않는 것: 1단 탐지 · 2단 판정과 추천(사용자당 수십 초) — 화면에 「처음 점검 기준」이라고 밝힌다
+MAX_RECOMPUTE_BYTES = 4_000_000   # 글(업로드 상한 약 1MB) + 스팬 + 2단 출력
+MAX_RECOMPUTE_SPANS = 20_000
+_USER_REF = re.compile(r"^u_[0-9a-f]{8,}$")
+_SPAN_STR = ("span_id", "text_id", "text", "type", "level", "subject")
+_SPAN_ENUM = {"level": {"explicit", "implicit", "inferential"}, "subject": {"self", "other", "unknown"}}   # span.schema.json
+
+
+class _BadResult(ValueError):
+    """화면이 보낸 점검 결과의 모양이 어긋났다 — 400 고정 문구로 답한다."""
+
+
+def _clean_spans(raw, post_ids: set[str]) -> dict[str, dict]:
+    """화면이 돌려보낸 스팬 — 계약 8필드 중 계산에 쓰는 칸만 남긴다. 모르는 글의 스팬은 버린다."""
+    if not isinstance(raw, dict):
+        raise _BadResult("spans")
+    out: dict[str, dict] = {pid: {"spans": []} for pid in post_ids}
+    n = 0
+    for pid, entry in raw.items():
+        if pid not in post_ids:
+            continue
+        spans = entry.get("spans") if isinstance(entry, dict) else None
+        if not isinstance(spans, list):
+            raise _BadResult("spans")
+        for s in spans:
+            if not isinstance(s, dict) or not all(isinstance(s.get(k), str) for k in _SPAN_STR) \
+                    or not all(isinstance(s.get(k), int) and not isinstance(s.get(k), bool) for k in ("start", "end")) \
+                    or any(s[k] not in allowed for k, allowed in _SPAN_ENUM.items()) or not 0 <= s["start"] <= s["end"]:
+                raise _BadResult("span")
+            n += 1
+            if n > MAX_RECOMPUTE_SPANS:
+                raise _BadResult("too many spans")
+            out[pid]["spans"].append({k: s[k] for k in (*_SPAN_STR, "start", "end")})
+    return out
+
+
+def _list(v, what: str) -> list:
+    if v is None:
+        return []
+    if not isinstance(v, list):
+        raise _BadResult(what)
+    return v
+
+
+def _clean_stage2_output(raw) -> dict:
+    """조치별 k(projected_k)에 쓰는 칸만 — 추천 조치의 대상 글 · 바꿔 쓰기 후보 스팬. 모양이 어긋나면 400."""
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        raise _BadResult("stage2_output")
+    rec = raw.get("recommendation")
+    if rec is not None and not isinstance(rec, dict):
+        raise _BadResult("recommendation")
+    actions = []
+    for a in _list((rec or {}).get("actions"), "actions"):
+        if not isinstance(a, dict) or not isinstance(a.get("action_type"), str):
+            raise _BadResult("action")
+        targets = [{"kind": t.get("kind"), "ref": t["ref"]} for t in _list(a.get("targets"), "targets")
+                   if isinstance(t, dict) and isinstance(t.get("ref"), str)]
+        actions.append({"action_type": a["action_type"], "targets": targets})
+    rewrites = [{"post_id": r["post_id"], "span_id": r["span_id"]} for r in _list(raw.get("rewrites"), "rewrites")
+                if isinstance(r, dict) and isinstance(r.get("post_id"), str) and isinstance(r.get("span_id"), str)]
+    return {"recommendation": {"actions": actions}, "rewrites": rewrites}
+
+
+def _parse_exclude(exclude) -> tuple[set[tuple[str, str]], set[str]]:
+    """「내 얘기 아님」 목록 — 스팬은 (post_id, span_id), 위치 태그는 (post_id, geo_tag: true)."""
+    if not isinstance(exclude, list) or len(exclude) > MAX_RECOMPUTE_SPANS:
+        raise _BadResult("exclude")
+    drop_spans: set[tuple[str, str]] = set()
+    drop_tags: set[str] = set()
+    for e in exclude:
+        if not isinstance(e, dict) or not isinstance(e.get("post_id"), str):
+            raise _BadResult("exclude item")
+        if e.get("geo_tag") is True:
+            drop_tags.add(e["post_id"])
+        elif isinstance(e.get("span_id"), str):
+            drop_spans.add((e["post_id"], e["span_id"]))
+        else:
+            raise _BadResult("exclude item")
+    return drop_spans, drop_tags
+
+
+def _apply_exclusions(posts: list[dict], spans_by_post: dict[str, dict],
+                      exclude: tuple[set[tuple[str, str]], set[str]]) -> tuple[list[dict], dict[str, dict], dict]:
+    """뺄 스팬 · 위치 태그를 뺀 사본. 원본은 바꾸지 않는다."""
+    drop_spans, drop_tags = exclude
+    spans = {pid: {"spans": [s for s in res["spans"] if (pid, s["span_id"]) not in drop_spans]}
+             for pid, res in spans_by_post.items()}
+    kept = [{**p, "activity_meta": {**(p.get("activity_meta") or {}), "geo_tag": None}}
+            if p["post_id"] in drop_tags else p for p in posts]
+    n_spans = sum(len(spans_by_post[pid]["spans"]) - len(spans[pid]["spans"]) for pid in spans_by_post)
+    n_tags = sum(1 for p in posts if p["post_id"] in drop_tags and (p.get("activity_meta") or {}).get("geo_tag"))
+    return kept, spans, {"n_spans": n_spans, "n_geo_tags": n_tags}
+
+
+def _recompute(user_ref: str, posts: list[dict], spans_by_post: dict[str, dict], stage2_output: dict,
+               exclude: tuple[set[tuple[str, str]], set[str]]) -> dict:
+    """처음 점검(_pipeline)과 같은 순서로 k · 위험도만 다시 센다 — 해외 거주 판별은 처음 스팬(뺀 것 포함)으로 다시 한다.
+    처음 점검과 같은 입력이면 같은 판별이 나와야 하고, 화면이 보낸 판별 결과를 믿지 않아도 된다."""
+    residence = find_residence({p["post_id"]: _channels(p) for p in posts},
+                               {pid: res["spans"] for pid, res in spans_by_post.items()})
+    kept_posts, kept_spans, n = _apply_exclusions(posts, spans_by_post, exclude)
+    k_posts, k_spans = _without_location(kept_posts, kept_spans) if residence["overseas"] else (kept_posts, kept_spans)
+    conditions = engine.conditions(k_posts, k_spans)
+    spec = engine.specificity({"user_ref": user_ref, "conditions": conditions})
+    return {
+        "specificity": spec,
+        "contribution": engine.contribution(user_ref, k_posts, spans_by_post=k_spans),
+        "k_by_post": engine.per_post_k(k_posts, k_spans),
+        "k_by_action": engine.projected_k(k_posts, k_spans, stage2_output),
+        "decisive_clues": engine.decisive_clues(k_posts, k_spans, spec.get("output")),
+        "residence": _residence_view(residence),
+        # 실제로 빠진 수 — 화면이 보낸 목록 중 지금 결과에 있는 것만 센다
+        "clue_exclusions": n,
+    }
+
+
+def _parse_recompute(body: bytes) -> tuple[str, list[dict], dict[str, dict], dict, tuple]:
+    """입력 검사는 모두 여기서 — 점검 자리(_admission)를 잡기 전에 끝낸다."""
+    try:
+        doc = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError, RecursionError) as exc:
+        raise _BadResult("json") from exc
+    if not isinstance(doc, dict):
+        raise _BadResult("json")
+    user_ref = doc.get("user_ref")
+    if not isinstance(user_ref, str) or not _USER_REF.fullmatch(user_ref):
+        raise _BadResult("user_ref")
+    try:
+        posts = file_adapter.clean_posts(doc.get("posts"))
+    except file_adapter.UploadError as exc:
+        raise _BadResult("posts") from exc
+    spans = _clean_spans(doc.get("spans"), {p["post_id"] for p in posts})
+    exclude = doc.get("exclude")
+    return (user_ref, posts, spans, _clean_stage2_output(doc.get("stage2_output")),
+            _parse_exclude([] if exclude is None else exclude))
 
 
 # ── 점검 입장 제한 (A1) — 점검 하나가 2 vCPU 를 15~60초 다 쓴다. 동시에 여러 개를 돌리면 모두 느려지고 메모리가 모자란다.
@@ -469,12 +614,13 @@ async def scan(user_ref: str, request: Request):
 MAX_UPLOAD_BYTES = 1_040_000
 
 
-async def _read_capped(request: Request) -> bytes:
+async def _read_capped(request: Request, limit: int = MAX_UPLOAD_BYTES,
+                       detail: str = "파일이 너무 큽니다 (약 1MB 이하)") -> bytes:
     body = bytearray()
     async for chunk in request.stream():
         body += chunk
-        if len(body) > MAX_UPLOAD_BYTES:
-            raise HTTPException(status_code=413, detail="파일이 너무 큽니다 (약 1MB 이하)")
+        if len(body) > limit:
+            raise HTTPException(status_code=413, detail=detail)
     return bytes(body)
 
 
@@ -502,6 +648,21 @@ async def upload_and_scan(request: Request):
     posts = export["posts"]
     _check_posts(posts)
     return await _admission.run(request, _run_pipeline, export["user_ref"], posts)
+
+
+@app.post("/api/recompute")
+async def recompute(request: Request):
+    """결정 단서 확인 — 화면이 처음 점검 결과(글 · 스팬 · 2단 출력)와 「내 얘기 아님」 목록을 보내면 k · 위험도만 다시 센다.
+    받은 본문은 메모리에서 계산하고 버린다. 계산은 점검과 같은 자리(_admission)에서 돈다 — 글이 많으면 몇 초 CPU 를 쓴다."""
+    _check_origin(request)
+    body = await _read_capped(request, MAX_RECOMPUTE_BYTES, "점검 결과가 너무 큽니다")
+    try:
+        user_ref, posts, spans, stage2_output, exclude = _parse_recompute(body)
+    except _BadResult as exc:
+        log.info("다시 계산 입력 거부: %s", exc)
+        raise HTTPException(status_code=400, detail="점검 결과 형식이 올바르지 않습니다. 다시 점검해 주세요") from exc
+    _check_posts(posts)
+    return await _admission.run(request, _recompute, user_ref, posts, spans, stage2_output, exclude)
 
 
 if __name__ == "__main__":

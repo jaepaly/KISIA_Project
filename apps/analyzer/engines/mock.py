@@ -106,6 +106,11 @@ def per_post_k(posts: list[dict], spans_by_post: dict[str, dict]) -> None:
     return None
 
 
+def decisive_clues(posts: list[dict], spans_by_post: dict[str, dict], spec_output: dict | None) -> list[dict]:
+    """목에는 k 계산 추적이 없다 — 결정 단서 확인 칸을 그리지 않는다."""
+    return []
+
+
 def projected_k(posts: list[dict], spans_by_post: dict[str, dict], stage2_output: dict | None) -> dict | None:
     """조치별 「바꾸면 k」 — 실제 엔진과 같은 바꾸기(projection.py)에 목 conditions·specificity 를 붙인다. 값은 의미 없다."""
     from .projection import project

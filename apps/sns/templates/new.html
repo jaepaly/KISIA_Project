@@ -378,6 +378,12 @@ const AP = (function () {
     who.innerHTML = html;
   }
 
+  // 해외 거주로 보이면(분석기 residence) 사람 수 · 노출 위험도 숫자를 내지 않는다 — 국내 주민등록 인구로 센 숫자라
+  // 현지에서 실제로 좁혀지는 정도보다 훨씬 커 보인다 (분석기 common.js hideNumbers 와 같은 규칙)
+  const overseas = (d) => !!(d && d.residence && d.residence.overseas);
+  const OVERSEAS_BOX = `<div class="kbox"><b>숫자 없음</b><span class="u">해외에 사시는 것으로 보여 국내 인구 기준 숫자를 보여 드리지 않습니다</span></div>
+    <p class="muted" style="margin:6px 0 0;">해외에서는 같은 지역에 사는 한국인이 훨씬 적어서, 같은 단서로도 몇 사람으로 좁혀질 수 있습니다.</p>`;
+
   function renderK() {
     const d = scan, spec = d.specificity.output, k = spec.k, risk = d.contribution.output.baseline_risk;
     const findings = (d.stage2 && d.stage2.output && d.stage2.output.findings) || {};
@@ -395,13 +401,14 @@ const AP = (function () {
     } else {
       tryHtml = `<p class="try">7가지 개인정보 항목 모두에서 단서를 찾았습니다. 동 이름이나 정확한 나이 대신 넓은 표현을 써서 결과를 비교해 보세요.</p>`;
     }
-    kOut.innerHTML = `
+    kOut.innerHTML = (overseas(d) ? OVERSEAS_BOX : `
       <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 노출 위험도 ${Number(risk).toFixed(1)}</span></div>
-      <div class="sub">글 속 단서에 따른 사람 수 변화</div>${stepsHtml(spec.steps, 6, d)}
+      <div class="sub">글 속 단서에 따른 사람 수 변화</div>${stepsHtml(spec.steps, 6, d)}`) + `
       <div class="sub">단서를 찾은 항목 / 단서를 찾지 못한 항목</div>
       <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 단서 없음</span>`).join("")}</div>
       ${tryHtml}
       <p class="muted" style="margin:8px 0 0;"><a href="${PADO}/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
+    if (lastDraft && overseas(d)) onLive(lastDraft);   // 계정 점검이 실시간 점검보다 늦게 끝났으면 「이 글만으로」 숫자도 거둔다
   }
 
   // 파도풀이 다른 출처(로컬 분리 포트)면 /scan 에 방문자 쿠키가 따라가지 않아 공용 DB 를 센다 (B2).
@@ -509,7 +516,9 @@ const AP = (function () {
     live.dataset.k = k === null || k === undefined ? "" : String(k);
     const dir = prev !== null && k !== null && k !== undefined ? (k < prev ? " up" : "") : "";
     liveState.textContent = res.spans.length ? `단서 ${res.spans.length}곳` : "단서 없음";
-    liveOut.innerHTML = res.spans.length
+    liveOut.innerHTML = res.spans.length && (overseas(scan) || overseas(res.raw))
+      ? OVERSEAS_BOX   // 이 글만으로 센 숫자도 국내 인구 기준이다 — 계정이 해외 거주로 보이면 내지 않는다
+      : res.spans.length
       ? `<div class="kbox"><b class="${dir}">${k === null || k === undefined ? "—" : "약 " + fmtN(k) + "명"}</b><span class="u">이 글만으로 · 중 한 명</span></div>${stepsHtml(res.steps, 6, res.raw)}`
       : `<p class="muted" style="margin:0;">이 글에서는 글쓴이를 좁힐 단서를 찾지 못했습니다.</p>`;
     const words = document.getElementById("apWords");
@@ -537,6 +546,7 @@ const AP = (function () {
       }]);
       const r = await window.padoCheckExport(ex, sig);
       if (!current(g)) return;
+      if (overseas(r.raw) || overseas(scan)) { combineOut.innerHTML = `<div style="margin-top:10px;">${OVERSEAS_BOX}</div>`; return; }
       const before = scan ? scan.specificity.output.k : null;
       const kk = r.k === null || r.k === undefined ? null : r.k;
       const delta = before !== null && kk !== null ? (kk < before ? `<span class="u" style="color:var(--ut-red);">↓ 더 좁혀짐</span>` : kk > before ? `<span class="u" style="color:var(--ut-leaf);">↑ 넓어짐</span>` : `<span class="u">변화 없음</span>`) : "";
