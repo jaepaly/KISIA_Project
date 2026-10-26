@@ -62,8 +62,8 @@ def test_korean_residence_stronger_wins():
         "p4": [{"type": "LOC_ADMIN", "subject": "self", "text_id": "body", "start": 0, "end": 2, "text": "서울"}],
     }
     out = _run([
-        "미국생활 브이로그를 자주 본다.",
-        "미국에서 지내다 보니 이런 것도 알게 됐다는 유튜버 얘기.",
+        "미국생활 2년 차 기록을 다시 읽었다.",
+        "미국에서 지내다 보니 이런 것도 알게 됐다.",
         "망원동에 산 지 벌써 5년이다.",
         "마포에 살고 있어서 한강이 가깝다.",
         "서울에 살면서 처음으로 눈썰매를 탔다.",
@@ -98,3 +98,42 @@ def test_offsets_point_at_text():
     for e in out["evidence"]:
         src = texts if e["post_id"] == "a" else {"body": "캐나다에 살고 있다"}
         assert src[e["text_id"]][e["start"]:e["end"]] == e["value"]
+
+
+# ── Codex 리뷰(148abb8) 재현 사례 ─────────────────────────────────────────
+
+@pytest.mark.parametrize("bodies", [
+    # 1. 가정문 「살면」은 현재 거주가 아니다
+    ["미국에 살면 세금이 달라진다.", "미국 주식이 오른다.", "뉴욕 증시가 상승한다."],
+    # 2. 생활 콘텐츠 · 직무 명사 · 끝난 해외 생활
+    ["미국생활 브이로그를 자주 본다.", "미국일상 유튜브를 구독 중이다."],
+    ["주재원 채용 공고를 정리했다.", "주재원 연봉 비교표를 만들었다."],
+    ["미국생활 4년을 마치고 한국에 돌아왔다.", "캐나다 생활을 마치고 한국에 정착했다."],
+    # 3. 배우자가 주어
+    ["남편은 미국에 살고 있다.", "남편은 미국에서 지내고 있다."],
+    # 4. 여행 글의 「생활 체험」 · 「n주차」
+    ["일본 여행 기록.\n도쿄 생활을 체험하는 한 달이다.", "일본 여행 기록 2.\n도쿄 4주차, 오늘은 쇼핑했다."],
+], ids=["conditional", "content", "job_noun", "ended", "spouse", "travel_post"])
+def test_codex_review_cases_are_not_overseas(bodies):
+    out = _run(bodies)
+    assert not out["overseas"], out
+
+
+def test_ended_life_counts_as_korean_return():
+    out = _run(["미국생활 4년을 마치고 한국에 돌아왔다.", "캐나다 생활을 마치고 한국에 정착했다."])
+    assert out["posts"]["residence"] == [] and out["posts"]["korea"] == ["p0", "p1"]
+
+
+def test_other_subject_span_from_stage1_is_not_self_residence():
+    # 문장에 주어 표지가 없어도 1단이 위치 스팬을 남의 것으로 봤으면 세지 않는다
+    bodies = ["요즘 미국에 살고 있다는 소식.", "미국에서 지내고 있다는 연락."]
+    spans = {f"p{i}": [{"type": "LOC_ADMIN", "subject": "other", "text_id": "body", "start": b.index("미국"),
+                        "end": b.index("미국") + 2, "text": "미국"}] for i, b in enumerate(bodies)}
+    assert _run(bodies)["overseas"]          # 스팬이 없으면 본인 거주로 본다
+    assert not _run(bodies, spans)["overseas"]
+
+
+def test_travel_post_still_counts_verb_residence():
+    # 여행 글이라도 「살고 있다」처럼 사는 것을 동사로 말하면 센다 (같은 문장에 여행 표현은 없다)
+    out = _run(["캐나다에 살고 있다. 이번 휴가는 집에서.", "토론토 생활 3년째, 겨울이 길다."])
+    assert out["overseas"] and out["country"] == "캐나다"
