@@ -12,11 +12,12 @@
                    지명 + 「n주차 · n개월차」 : 「시드니 4주차」 (여행은 「n일차」로 세서 넣지 않았다)
         같은 문장에 여행 · 출장 표현(「여행」 「다녀왔다」 「출장」 「2박」 …)이 있으면 세지 않는다
         과거 · 바람 · 가정(「살았을 때」 「유학 시절」 「살아 보고 싶다」 「미국에 살면 세금이」 「이민 가고 싶다」)은 세지 않는다
-        끝난 해외 생활(「미국생활 4년을 마치고 돌아왔다」)은 세지 않는다
+        끝난 해외 생활(「미국생활 4년을 마치고」 · 같은 문장에서 「한국으로 돌아왔다」)은 세지 않는다
         남이 주어(「동생이 미국에 산다」 「남편은 미국에 살고 있다」 · 1단이 subject=other 로 본 위치 스팬)면 세지 않는다
-        명사형(「미국생활」 「미국일상」 「주재원」) 뒤에 콘텐츠 · 직무 · 체험(「브이로그」 「구독」 「채용 공고」 「연봉」 「체험」)이 오면 세지 않는다
-        글(제목 · 본문 어디든)에 여행 · 출장 표현이 있으면 동사로 사는 것을 말한 표현(「살고 있다」 「거주」 「온 지 3년」)만 센다 —
-        「미국 와서」 「도쿄 생활」 「도쿄 4주차」 「워홀」은 여행기에도 쓴다
+        명사형(「미국생활」 「미국일상」 「주재원」)이 콘텐츠 · 직무 · 체험의 주제로 바로 붙으면(「미국생활 브이로그」 「주재원 채용 공고」 「도쿄 생활을 체험」) 세지 않는다
+        여행 기록 글(제목이 여행)이면 동사로 사는 것을 말한 표현(「살고 있다」 「거주」 「온 지 3년」)과 「워홀 중」 「주재원」만 센다 —
+        「미국 와서」 「도쿄 생활」 「도쿄 4주차」는 여행기에도 쓴다
+        남 주어 · 과거 · 가정은 그 거주 술어가 든 절(쉼표 · 「-고 · -지만 · -는데 · -서」로 나눈 단위)에서만 본다
     반복(F)     — 거주 표현과 같은 나라의 지명이 여행 표현 없는 문장으로 다른 글에도 나온다
     국내 거주(K) — 국내 지명(1단 본인 위치 스팬 · 「한국」) + 현재 거주 술어 : 「망원동에 산 지 5년」 「한국에 살고 있다」
                    · 「귀국했다」 「한국에 돌아왔다」 「한국에 정착했다」
@@ -115,15 +116,20 @@ _ARRIVE_PRED = re.compile(   # 「미국에서 와서」(거기서 왔다)는 �
     r"(?P<pred>(?:와서|온\s*뒤|온\s*후|오고\s*나서|건너와|건너온|이사\s*와|이사\s*온|이사왔|넘어와|넘어온|왔을\s*때"
     r"|온\s*지|온지))"
 )
-# 여행 글(제목 · 본문 어디든 여행 표현)에서도 세는 술어 — 사는 것을 동사로 말한 것만. 「도쿄 생활 체험」 「도쿄 4주차」는 여행기에도 쓴다
+# 여행 기록 글(제목이 여행)에서도 세는 술어 — 사는 것을 동사로 말한 것만. 「도쿄 생활 체험」 「도쿄 4주차」는 여행기에도 쓴다
 _VERB_PRED = re.compile(r"^(?:살|삽니다|산다|산\s*지|산지|사는|거주|정착|지낸\s*지)")
-# 명사형 술어(「미국생활」 「미국일상」 「주재원」) 뒤 같은 문장 — 남의 생활을 보는 콘텐츠 · 직무 이야기 · 체험이면 세지 않는다
+# 명사형 술어(「미국생활」 「미국일상」 「주재원」)가 콘텐츠 · 직무 · 체험의 **주제**일 때 — 바로 뒤에 그 명사가 붙는 꼴만 거른다
+# (「미국생활 브이로그를 본다」 「주재원 채용 공고」 「도쿄 생활을 체험」). 「미국생활 3년째, 요즘은 책을 읽는다」는 센다
 _NOUN_CONTENT = re.compile(
-    r"브이로그|유튜브|유튜버|영상|채널|구독|시청|드라마|다큐|예능|방송|책|웹툰|콘텐츠|후기\s*모음"
-    r"|채용|공고|연봉|모집|지원서|면접|자리|되고\s*싶|희망|체험|살기"
+    r"^\s*(?:을|를|의)?\s*(?:브이로그|유튜브|유튜버|영상|채널|드라마|다큐|예능|방송|책|웹툰|콘텐츠|팟캐스트|후기"
+    r"|채용|공고|연봉|모집|지원|면접|자리|체험|살기)"
 )
-# 끝난 해외 생활 — 「미국생활 4년을 마치고 한국에 돌아왔다」
-_ENDED = re.compile(r"마치고|마쳤|마무리|끝내고|끝냈|끝나고|접고|정리하고|돌아왔|돌아온|돌아와|귀국|복귀")
+# 끝난 해외 생활 — 생활 · 기간을 「마치고」 (「미국생활 4년을 마치고」 「캐나다 생활을 마치고」) 또는 같은 문장에서 한국으로 돌아옴.
+# 「퇴근하면 집에 돌아와」 「일을 마치고」 같은 일상 귀가 · 업무 종료는 해외 생활과 이어지지 않으므로 거르지 않는다
+_ENDED = re.compile(
+    r"^\s*(?:\d+\s*(?:년|개월|달)\s*(?:간|동안)?\s*)?(?:을|를|이|가)?\s*(?:마치고|마쳤|마무리|끝내고|끝냈|끝나고|접고|정리하고)"
+)
+_BACK_HOME = re.compile(r"(?:한국|국내|고국|우리나라)(?:으로|에|로)\s*(?:다시\s*)?(?:돌아|들어|귀국)|귀국")
 _SINCE_DURATION = re.compile(r"\s*(?:\d+|한|두|세|네|다섯|여섯|일곱|여덟|아홉|열|몇|반)\s*(?:년|해|달|개월|주)")
 # 지명 없이도 해외 거주를 말하는 낱말
 _STANDALONE = re.compile(
@@ -138,6 +144,8 @@ _TRAVEL = re.compile(
     r"|호텔|숙소|비행기|공항|입국|출국|며칠|당일치기|경유|면세"
 )
 _TRAVEL_POST = re.compile(r"여행|관광|출장|휴가|놀러|다녀\s*(?:왔|온)|\d+\s*박|박\s*\d+\s*일|호텔|숙소|당일치기")
+# 절 경계 — 쉼표 · 연결어미(-고 · -지만 · -는데 · -서). 「-에서」의 「서」는 조사라 경계가 아니다
+_CLAUSE_END = re.compile(r"[,，;]|(?:고|지만|는데|은데|인데|(?<!에)서)(?=\s)")
 # 술어 바로 뒤 — 과거 · 바람 · 가정 · 계획
 _AFTER_BAD = re.compile(
     r"^\s*(?:때|당시|갔|가기|가려|가서|준비|비자)|^.{0,10}?(?:았|었|던|했던|했을|할\s*때|하던|시절|싶|보고\s*싶|면\s*좋|려고|려면|예정|계획|준비|까\s*고민|게\s*되면|된다면|본다면"
@@ -180,21 +188,43 @@ def _sentence(text: str, start: int, end: int) -> tuple[str, str]:
     return before, after
 
 
+def _clause(before: str, after: str) -> tuple[str, str]:
+    """문장 조각 → 거주 술어가 든 절 조각. 앞은 마지막 절 경계 뒤, 뒤는 첫 절 경계 앞."""
+    cut = [m.end() for m in _CLAUSE_END.finditer(before)]
+    if cut:
+        before = before[cut[-1]:]
+    m = _CLAUSE_END.search(after)
+    return before, after[:m.start()] if m else after
+
+
 def _ok_context(text: str, start: int, end: int, *, noun: bool = False, abroad: bool = False) -> bool:
-    """같은 문장 안에 여행 · 남 주어 · 과거 · 가정이 없는가. ``noun`` — 명사형 술어면 콘텐츠 · 직무 · 체험도 거른다.
-    ``abroad`` — 해외 거주 표현이면 끝난 해외 생활(「마치고 돌아왔다」)도 거른다."""
+    """여행은 같은 문장, 남 주어 · 과거 · 가정은 **그 거주 술어의 절** 안에서 본다 —
+    「남편이 먼저 와서 나는 미국에 살고 있다」는 「나는」 절이라 센다.
+    ``noun`` — 명사형 술어가 콘텐츠 · 직무 · 체험의 주제면 거른다. ``abroad`` — 해외 생활을 마쳤거나 같은 문장에서 한국으로 돌아왔으면 거른다."""
     before, after = _sentence(text, start, end)
     if _TRAVEL.search(before) or _TRAVEL.search(after) or _TRAVEL.search(text[start:end]):
         return False
-    if _OTHER_SUBJ.search(before) or _BEFORE_BAD.search(before):
+    if abroad and _BACK_HOME.search(after):
         return False
-    if _AFTER_BAD.search(after):
+    c_before, c_after = _clause(before, after)
+    if _OTHER_SUBJ.search(c_before) or _BEFORE_BAD.search(c_before):
+        return False
+    if _AFTER_BAD.search(c_after):
         return False
     if noun and _NOUN_CONTENT.search(after):
         return False
     if abroad and _ENDED.search(after):
         return False
     return True
+
+
+def _travel_titled(texts: Mapping[str, str]) -> bool:
+    """여행 기록 글인가 — 제목(없으면 본문 첫 줄 · 줄바꿈이 있을 때만)에 여행 표현."""
+    head = texts.get("title")
+    if not head:
+        body = texts.get("body") or ""
+        head = body.split("\n", 1)[0] if "\n" in body else ""
+    return bool(head and _TRAVEL_POST.search(head))
 
 
 def _other_span(spans: Sequence[Mapping[str, Any]], tid: str, start: int, end: int) -> bool:
@@ -212,8 +242,13 @@ def _abroad_hits(post_id: str, texts: Mapping[str, str],
                  spans: Sequence[Mapping[str, Any]] = ()) -> tuple[list[dict], list[dict]]:
     """→ (거주 표현, 지명 언급). 지명 언급은 여행 표현 없는 문장만.
 
-    글에 여행 표현이 있으면 동사로 사는 것을 말한 표현(「살고 있다」 「거주」 「온 지 3년」)만 센다."""
-    travel_post = any(_TRAVEL_POST.search(t) for t in texts.values())
+    여행은 표현의 세기에 따라 다르게 거른다 —
+      동사 거주(「살고 있다」 「거주」 「온 지 3년」) · 「워홀 중」 「주재원」 : 같은 문장의 여행만
+      명사 · 기간(「도쿄 생활」 「도쿄 4주차」) : 같은 문장 + 여행 기록 글(제목이 여행)
+      도착(「일본 와서」) : 글 어디든 여행 표현이 있으면 (여행 첫날에도 쓰는 말)
+    그래서 「시드니에서 워홀 중이다. 주말 여행 계획을 세웠다」는 센다."""
+    travel_titled = _travel_titled(texts)
+    travel_any = any(_TRAVEL_POST.search(t) for t in texts.values())
     residence, mentions = [], []
     for tid, text in texts.items():
         for m in _PLACE_RE.finditer(text):
@@ -233,7 +268,7 @@ def _abroad_hits(post_id: str, texts: Mapping[str, str],
                 verb = bool(strong and _VERB_PRED.match(pred))
                 noun = bool(strong and not verb)
                 if (_ok_context(text, s, pe, noun=noun, abroad=True) and not _other_span(spans, tid, s, e)
-                        and (not travel_post or verb or since)):
+                        and (verb or since or (noun and not travel_titled) or (arrive and not travel_any))):
                     residence.append(_hit(post_id, tid, text, s, pe, "residence", country))
                     continue
             if country != "해외":
@@ -241,7 +276,8 @@ def _abroad_hits(post_id: str, texts: Mapping[str, str],
                 if not (_TRAVEL.search(before) or _TRAVEL.search(after)):
                     mentions.append(_hit(post_id, tid, text, s, e, "mention", country))
         for m in _STANDALONE.finditer(text):
-            if not travel_post and _ok_context(text, m.start(), m.end(), noun=True, abroad=True):
+            # 「워홀 중이다」 「주재원 발령」은 명시적 현재 상태라 여행 기록 글에서도 센다 (같은 문장 여행은 _ok_context 가 거른다)
+            if _ok_context(text, m.start(), m.end(), noun=True, abroad=True):
                 residence.append(_hit(post_id, tid, text, m.start(), m.end(), "residence", "해외"))
     return residence, mentions
 

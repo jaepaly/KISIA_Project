@@ -137,3 +137,28 @@ def test_travel_post_still_counts_verb_residence():
     # 여행 글이라도 「살고 있다」처럼 사는 것을 동사로 말하면 센다 (같은 문장에 여행 표현은 없다)
     out = _run(["캐나다에 살고 있다. 이번 휴가는 집에서.", "토론토 생활 3년째, 겨울이 길다."])
     assert out["overseas"] and out["country"] == "캐나다"
+
+
+# ── Codex 2차 리뷰(b2a4464) — 거르는 판단은 그 거주 술어의 절 · 주어로 ───────────────
+
+@pytest.mark.parametrize("bodies", [
+    # 1. 문장 중간에 주어가 바뀌면 「나는」 절의 거주를 센다
+    ["남편이 먼저 와서 나는 미국에 살고 있다.", "아내는 재택근무하고 나는 미국에 산 지 3년째다."],
+    # 2. 일상 귀가 · 업무 종료는 해외 생활 종료가 아니다
+    ["미국에 살고 있다, 퇴근하면 집에 돌아와 쉰다.", "미국에 산 지 3년째, 일을 마치고 집에서 쉰다."],
+    # 3. 생활 중 독서 — 생활 표현이 콘텐츠의 주제가 아니다
+    ["미국생활 3년째, 요즘은 책을 읽으며 쉰다.", "미국일상 기록, 퇴근 후 책을 읽었다."],
+    # 4. 다른 문장의 여행 계획은 현재 워홀 근거를 지우지 않는다
+    ["시드니에서 워홀 중이다. 주말 여행 계획을 세웠다.", "시드니에서 워홀 중이다. 다음 여행은 멜버른이다."],
+], ids=["subject_switch", "daily_return", "reading", "travel_other_sentence"])
+def test_clause_scoped_filters_keep_self_residence(bodies):
+    out = _run(bodies)
+    assert out["overseas"], out
+
+
+def test_spouse_abroad_but_self_in_korea_keeps_korean_evidence():
+    # 배우자 필터는 그 절 주어로만 — 「나는 한국에 살고 있다」 국내 근거가 지워지면 해외 오탐이 된다
+    out = _run(["미국생활 사진을 정리한다.", "미국일상 사진을 꺼내 본다.",
+                "남편은 미국에서 일하지만 나는 한국에 살고 있다.", "남편이 해외에서 일하고 나는 한국에 살고 있다."])
+    assert out["posts"]["korea"] == ["p2", "p3"]
+    assert not out["overseas"]
