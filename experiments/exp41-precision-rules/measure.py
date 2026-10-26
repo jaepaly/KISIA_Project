@@ -131,15 +131,18 @@ class UnbackedAdminFilter:
 
     def __init__(self, detector, texts, candidates, seen):
         self.detector, self.dropped = detector, 0
-        self.covered = {}
-        for tid, text in texts.items():
-            self.covered.setdefault(text, []).extend(
-                (c["start"], c["end"]) for c in [*candidates, *seen] if c["text_id"] == tid)
+        # merge_with_model 은 texts 순서대로 채널마다 한 번 부른다 — 글자가 같은 채널끼리 섞이지 않게 채널 ID 로 짝짓는다
+        self.channels = iter(list(texts.items()))
+        self.covered = {tid: [(c["start"], c["end"]) for c in [*candidates, *seen] if c["text_id"] == tid]
+                        for tid in texts}
 
     def predict_channel(self, text):
+        tid, expected = next(self.channels)
+        if text != expected:
+            raise RuntimeError("merge_with_model 의 채널 순서가 바뀌었다 — C3 재현을 고쳐야 한다")
         kept = set()
         for start, end, kind in self.detector.predict_channel(text):
-            if kind == "LOC_ADMIN" and not any(s < end and start < e for s, e in self.covered.get(text, [])):
+            if kind == "LOC_ADMIN" and not any(s < end and start < e for s, e in self.covered[tid]):
                 self.dropped += 1
                 continue
             kept.add((start, end, kind))
