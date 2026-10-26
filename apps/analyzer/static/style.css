@@ -140,7 +140,7 @@ code{
 .span-hit[data-type="JOB"]{background:#D6ECD9}
 .span-hit[data-type="COMMUTE"]{background:#E1EEEC}
 .span-hit[data-type="INCOME"]{background:#FDE8C9}
-/* 내 정보인지 불분명(subject unknown · 여행지 등) — 엔진이 절반으로 센다. 옅은 형광 + 얇은 점선 네모 + 아래 진한 점선 밑줄
+/* 내 정보인지 불분명(subject unknown · 여행지 등) — 엔진은 사람 수 조건에서 뺀다(exp43). 옅은 형광 + 얇은 점선 네모 + 아래 진한 점선 밑줄
    (옅은 형광 + 얇은 점선만으로는 잘 안 보였다 · E 리뷰 #381) — Veilo(veilo.css mark[data-maybe])와 같은 모양 */
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .span-hit.span-maybe{background-image:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)); outline:1px dashed rgba(62,58,54,.45); outline-offset:-1px; border-bottom:2px dashed #7A4E0E; border-radius:4px 4px 0 0; box-shadow:none}

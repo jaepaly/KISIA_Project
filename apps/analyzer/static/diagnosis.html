@@ -143,10 +143,10 @@ function highlight(text, spans, overseas = false, excluded = new Set()) {
     out += esc(cpSlice(text, last, s.start));
     const mineNot = excluded.has(`${s.post_id}|${s.span_id}`);   // 「내 얘기 아님」으로 뺀 단서
     const other = s.subject === "other" || mineNot;
-    // 해외 거주로 보이면 위치 스팬은 사람 수 계산에서 아예 뺐다 — 「낮게 반영」 문구 · 점선 표시를 붙이지 않는다
+    // 해외 거주로 보이면 위치 스팬은 사람 수 계산에서 아예 뺐다 — 「불분명해 뺐다」 문구 · 점선 표시를 붙이지 않는다
     const dropped = overseas && !other && isLocSpan(s);
-    const maybe = s.subject === "unknown" && !dropped;   // 엔진은 신뢰도 절반으로 센다(clues.py) — 지우지 않고 옅은 형광 + 점선 밑줄로 구분
-    const tip = `${TYPE_LABEL[s.type] || "기타 단서"}: ${LEVEL_KO[s.level] || "단서"}${mineNot ? ". 「내 얘기 아님」으로 빼서 사람 수 계산에서 제외했습니다." : s.subject === "other" ? ". 다른 사람의 정보로, 내 사람 수 계산에서는 제외됩니다." : ""}${dropped ? ". 해외에 사시는 것으로 보여 사람 수 계산에서는 뺐습니다." : ""}${maybe ? (String(s.type).startsWith("LOC") ? ". 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어, 같은 조건의 사람 수 계산에 낮게 반영합니다." : s.type === "AGE" ? ". 지난 시절의 나이처럼 지금 나이가 아닐 수 있어, 같은 조건의 사람 수 계산에 낮게 반영합니다." : ". 내 정보인지 불분명해, 같은 조건의 사람 수 계산에 낮게 반영합니다.") : ""}`;
+    const maybe = s.subject === "unknown" && !dropped;   // 엔진은 사람 수 조건에서 뺀다(clues.py · exp43) — 지우지 않고 옅은 형광 + 점선 밑줄로 구분
+    const tip = `${TYPE_LABEL[s.type] || "기타 단서"}: ${LEVEL_KO[s.level] || "단서"}${mineNot ? ". 「내 얘기 아님」으로 빼서 사람 수 계산에서 제외했습니다." : s.subject === "other" ? ". 다른 사람의 정보로, 내 사람 수 계산에서는 제외됩니다." : ""}${dropped ? ". 해외에 사시는 것으로 보여 사람 수 계산에서는 뺐습니다." : ""}${maybe ? (String(s.type).startsWith("LOC") ? ". 여행지나 영상 속 장소처럼 내 장소가 아닐 수 있어, 같은 조건의 사람 수 계산에서는 뺐습니다." : s.type === "AGE" ? ". 지난 시절의 나이처럼 지금 나이가 아닐 수 있어, 같은 조건의 사람 수 계산에서는 뺐습니다." : ". 내 정보인지 불분명해, 같은 조건의 사람 수 계산에서는 뺐습니다.") : ""}`;
     out += `<span class="${mineNot ? "span-other span-excl" : other ? "span-other" : maybe ? "span-hit span-maybe" : "span-hit"}" data-type="${esc(s.type)}" title="${esc(tip)}">${esc(cpSlice(text, s.start, s.end))}${maybe ? `<span class="sr-only">(내 정보인지 불분명)</span>` : ""}</span>`;
     last = s.end;
   }
@@ -168,7 +168,7 @@ function renderPosts(data) {
       return `<p class="post-body">${label ? `<span class="channel">${label}</span>` : ""}${highlight(text, spans.filter(s => s.text_id === tid).map(s => ({ ...s, post_id: p.post_id })), isOverseas(data), excl)}</p>`;
     }).join("");
     const maybeN = spans.filter(s => s.subject === "unknown" && !(isOverseas(data) && isLocSpan(s))).length;   // 해외면 위치 스팬은 계산에서 뺐다
-    const otherNote = (maybeN ? `<p class="note">점선 밑줄 ${maybeN}개는 여행지나 지난 나이처럼 지금 내 정보인지 불분명해 같은 조건의 사람 수 계산에 낮게 반영합니다(노출 위험도 점수는 별도 기준).</p>` : "") + (others ? `<p class="note">초록 표시 ${others}개는 가족이나 지인의 정보로 보여 내 사람 수 계산에서 제외했습니다. 다른 사람의 개인정보도 드러날 수 있습니다.</p>` : "");
+    const otherNote = (maybeN ? `<p class="note">점선 밑줄 ${maybeN}개는 여행지나 지난 나이처럼 지금 내 정보인지 불분명해 같은 조건의 사람 수와 노출 위험도 계산에서 뺐습니다.</p>` : "") + (others ? `<p class="note">초록 표시 ${others}개는 가족이나 지인의 정보로 보여 내 사람 수 계산에서 제외했습니다. 다른 사람의 개인정보도 드러날 수 있습니다.</p>` : "");
     const types = [...new Set(spans.filter(s => s.subject !== "other").map(s => TYPE_LABEL[s.type] || "기타 단서"))];
     const count = mine
       ? `<span class="badge found">단서 ${mine}</span>`
