@@ -295,6 +295,123 @@ _TRAVEL_IN = re.compile(_TRAVEL_WORD + r"(?:지|길)?(?:에서|에|으로|로|�
 _TRAVEL_AFTER = re.compile(r"[ \t]*(?:에|로|으로)?[ \t]*(?:[가-힣]{1,4}(?<![며고서면는다던])[ \t]+)?" + _TRAVEL_WORD)
 
 
+# 「70세의 한 청취자가」 「마흔둘의 어느 여성이」 — 「나이 + 의 + 다른 사람」은 그 사람의 나이다 (실제 블로그 확인 10/26 · exp42 R2).
+# 사연 · 방송 · 기사 속 사람(청취자 · 독자 …)은 꾸밈말 없이도, 그 밖의 사람 명사는 「한 · 어느 · 어떤 · 모」가 붙을 때만 남이다 —
+# 「마흔의 엄마로 산다」 「예순넷의 봄」(골드 B15_b04 · self)은 그대로. 같은 문장 앞에 1인칭이 있으면(「나는 마흔의 한 여자일 뿐」) 건드리지 않는다
+_RULE_AGE_OTHER = True
+_STRANGER = r"(?:청취자|시청자|독자|구독자|사연자|의뢰인|환자|고객|회원|참가자|출연자|응답자|주인공)"
+_SOMEONE = (r"(?:여성|남성|여자|남자|사람|분|어르신|노인|청년|주부|직장인|가장|엄마|아빠|할머니|할아버지|소년|소녀|학생|"
+            + _STRANGER + "|" + _OTHERS + ")")
+_AGE_OF_OTHER = re.compile(r"\s*(?:(?:한|어느|어떤|모)\s+" + _SOMEONE + "|" + _STRANGER + r")(?:들|님)?"
+                           r"(?:이|가|은|는|도|과|와|의|을|를|한테|에게|께|께서)?(?![가-힣])")
+
+
+# 아이 나이 — 「세 살 아기인데 벌써」 「네 살 저희 아기와」 「아이가 벌써 네 살이」 (실제 블로그 홀드아웃 10/26 · exp42 R2).
+# label-schema 관례(「[아홉 살] 아들」 = other)대로 같은 문장에서 아이 명사가 나이의 주인이면 other. 「아이템 · 아기자기 · 딸기 · 아가씨」는 아니다
+_CHILD = (r"(?:아이(?!템|디|돌|콘|폰|패드|스)|아가(?!씨)|아기(?!자기)|애기|아들|딸(?!기)|조카|손주|손자|손녀|"
+          r"첫째|둘째|셋째|막내|아드님|따님)")
+_CHILD_AFTER = re.compile(r"\s*(?:(?:우리|내|제|저희)\s*)?" + _CHILD)
+_CHILD_IN_SPAN = re.compile(r"(?:살|세|개월)\s*(?:(?:우리|내|제|저희)\s*)?" + _CHILD)
+# 「아이가 벌써 네 살이 됐다」 — 아이가 주어이고 사이에는 때 · 정도 부사만
+_CHILD_SUBJECT_BEFORE = re.compile(_CHILD + r"(?:들)?(?:는|은|가|이|도)\s+"
+                                   r"(?:(?:아직|이제|벌써|올해|겨우|곧|막|딱|갓|만|지금|이번에|이제야|어느덧|어느새)\s+)*$")
+# 「쉰두 살 수강생이」 — 「의」 없이도 남을 가리키는 사람 명사. 「여자 · 남자 · 직장인 · 엄마」처럼 자기를 부르는 데도 흔한 말은 넣지 않는다
+_AGE_PERSON_BARE = re.compile(r"\s*(?:" + _STRANGER[3:-1] + r"|수강생|수강자|수험생|남성|여성|어르신|노인|아동|유아|영아|신생아)"
+                              r"(?:들|님)?(?:이|가|은|는|도|과|와|의|을|를|한테|에게|께|께서)?(?![가-힣])")
+
+
+# 주인이 문장에 없는 아기 나이 — 「세 살 키에 맞춘 의자」. 여섯 살 이하 · 「N개월」은 글쓴이 나이일 수 없어 self 로 두지 않고
+# unknown 으로 둔다(주인을 문장이 밝히지 않았으므로 other 도 아니다 · 골드 B06_b21 「세 살 아이는」도 unknown). 「다섯 살 때 이사했다」처럼
+# 때 · 적 · 무렵 · 시절이 붙으면 글쓴이의 옛 나이라 그대로 self
+_BABY_AGE = re.compile(r"^(?:[1-6]\s*(?:살|세)|[0-9]{1,2}\s*개월|(?:한|두|세|네|다섯|여섯)\s*(?:살|개월))")
+_PAST_AGE_AFTER = re.compile(r"\s*(?:때|적|무렵|시절|즈음|쯤|이었|였)")
+
+
+def _baby_age_unowned(text: str, after: str, before: str) -> bool:
+    t = text.strip()
+    # 스팬 안의 과거 어미도 옛 나이다 — 「세 살이던」 「6세였다」 (Codex 검토 10/26)
+    return bool(_BABY_AGE.match(t)) and not re.search(r"때|적|무렵|시절|던|였|이었|었을", t) \
+        and not _PAST_AGE_AFTER.match(after) and not _FIRST_PERSON.search(before)
+
+
+# 부모 자기소개 — 「저는 서른 살 아이 둘 엄마입니다」 「서른 살 아들 둘 엄마」. 어른 나이 뒤에 「아이 (수) + 부모 호칭」이 오면
+# 나이는 부모(글쓴이)의 것이다 (Codex 검토 10/26). 「세 살 아이 엄마」처럼 아이 나이면 그대로 아이 나이
+_ADULT_AGE = re.compile(r"스물|스무|서른|마흔|쉰|예순|일흔|여든|아흔|(?<![0-9])(?:1[89]|[2-9][0-9])\s*(?:살|세)")
+_PARENT_INTRO_AFTER = re.compile(r"\s*(?:(?:우리|저희)\s*)?" + _CHILD + r"(?:들)?\s*"
+                                 r"(?:(?:하나|둘|셋|넷|다섯|한\s*명|두\s*명|세\s*명|네\s*명|[0-9]+\s*명)\s*)?(?:을|를)?\s*"
+                                 r"(?:(?:둔|키우는|가진|키우고\s*있는)\s*)?(?:엄마|아빠|맘|부모|아버지|어머니|워킹맘|육아맘|대디)")
+
+
+def _parent_intro(text: str, after: str) -> bool:
+    t = text.strip()
+    return bool(_ADULT_AGE.search(t)) and _core(t) == t and bool(_PARENT_INTRO_AFTER.match(after))
+
+
+def _age_of_other(text: str, after: str, before: str) -> bool:
+    """AGE 스팬이 다른 사람의 나이인가 — ① 「N세의 (한) 청취자」 ② 「N세 수강생」 ③ 아이 나이(「세 살 아기」 「아이가 벌써 네 살」)."""
+    t = text.strip()
+    if _CHILD_IN_SPAN.search(t) or _CHILD_SUBJECT_BEFORE.search(before):
+        return True   # 1단이 「세 살 아기인데」처럼 아이 명사까지 스팬에 넣은 것 · 아이가 주어인 것
+    if t.endswith("의"):
+        return bool(_AGE_OF_OTHER.match(after) or _CHILD_AFTER.match(after)) and not _FIRST_PERSON.search(before)
+    if after.startswith("의"):
+        return bool(_AGE_OF_OTHER.match(after[1:]) or _CHILD_AFTER.match(after[1:])) and not _FIRST_PERSON.search(before)
+    if _core(t) != t:
+        return False   # 「서른에 아이를 낳았다」 — 조사가 붙은 나이는 뒤 사람을 꾸미지 않는다
+    if _CHILD_AFTER.match(after):
+        return True    # 「네 살 저희 아기와」
+    m = _AGE_PERSON_BARE.match(after)
+    return bool(m) and not _FIRST_PERSON.search(before) and not _COPULA_AFTER.match(after[m.end():])
+
+
+# 지명 나열 — 「지원 지역: 강릉, 경주, 목포」 「대전 · 통영 · 속초 등」. 셋 이상 늘어놓은 지명 하나하나는 사는 곳이라고
+# 문장이 말하지 않는다 (실제 블로그 확인 10/26 · exp42 R4). 버리지 않고 unknown 으로만 둔다 — 스팬 탐지 점수는 그대로다.
+# 구분자는 쉼표 · 가운뎃점 · 빗금 · 📍 만 (띄어쓰기만으로 이어진 낱말은 나열로 보지 않는다)
+_RULE_ADMIN_LIST = True
+_LIST_ITEM = r"[가-힣]{2,6}"
+_LIST_SEP = r"(?:[ \t]*[,、·/][ \t]*(?:📍[ \t]*)?|[ \t]*📍[ \t]*)"
+_PLACE_LIST = re.compile(r"(?:📍[ \t]*)?" + _LIST_ITEM + r"(?:" + _LIST_SEP + _LIST_ITEM + r"){2,}")
+
+
+_PLACE_RULES = None
+
+
+def _is_place_word(word: str) -> bool:
+    """나열 항목이 국내 행정구역 이름(+조사)인가 — 명시 규칙의 지명 사전을 그대로 쓴다(처음 한 번만 읽는다)."""
+    global _PLACE_RULES
+    if _PLACE_RULES is None:
+        from kopl.c1_span.rules import ExplicitRules
+        _PLACE_RULES = ExplicitRules()
+    return any(s == 0 and e == len(word) for s, e, _ in _PLACE_RULES.location_spans(word))
+
+
+# 「나는 서울, 인천, 수원에서 차례로 살았다」 — 1인칭 + 거주 · 이동 술어가 같은 문장에 있으면 나열이라도 내 거주 이력이다 (Codex 검토 10/26)
+_RESIDE_MOVE = re.compile(r"살았|살고|살아|산다|사는|살던|삽니다|이사|옮겨|지냈|지내|거쳐|자랐|태어났|근무했|다녔")
+_FIRST_PERSON_ANY = re.compile(r"(?<![가-힣])(?:나는|난|내가|나도|저는|제가|저도|우리는|우리가|우리\s*가족|저희)")
+
+
+def _own_residence_history(channel_text: str, start: int, end: int) -> bool:
+    before, after = _sentence_window(channel_text, start, end)
+    sentence = before + channel_text[start:end] + after
+    return bool(_FIRST_PERSON_ANY.search(sentence)) and bool(_RESIDE_MOVE.search(sentence))
+
+
+def _in_place_list(channel_text: str, start: int) -> bool:
+    """스팬이 나열 항목 중 하나로 시작하고, 그 나열에 지명 항목이 셋 이상인가 (같은 줄).
+
+    「와인, 샴페인, 부산 지역 맥주」처럼 지명이 아닌 것을 늘어놓은 줄은 건드리지 않는다 (실제 블로그 확인 10/26).
+    """
+    a = channel_text.rfind("\n", 0, start) + 1
+    b = channel_text.find("\n", start)
+    b = len(channel_text) if b < 0 else b
+    for m in _PLACE_LIST.finditer(channel_text, a, b):
+        if m.start() <= start < m.end():
+            items = list(re.finditer(_LIST_ITEM, m.group()))
+            return any(m.start() + i.start() == start for i in items) \
+                and sum(_is_place_word(i.group()) for i in items) >= 3
+    return False
+
+
 def _paragraph(text: str, start: int, end: int) -> str:
     """스팬이 속한 문단(빈 줄로 나뉜 덩어리) — 부모 호칭 판정은 다른 문단 문맥을 쓰지 않는다 (Codex)."""
     a = text.rfind("\n\n", 0, start)
@@ -317,6 +434,10 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
     if who == "self" and stype in ("LOC_ADMIN", "LOC_FACILITY") \
             and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(channel_text[end:])):
         return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
+    if _RULE_ADMIN_LIST and who == "self" and stype == "LOC_ADMIN" \
+            and _in_place_list(channel_text, start + len(text) - len(text.lstrip())) \
+            and not _own_residence_history(channel_text, start, end):
+        return "unknown"  # 「강릉, 경주, 목포」 — 나열한 지명 하나하나는 사는 곳이 아니다 (exp42 R4)
     return who
 
 
@@ -325,6 +446,12 @@ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, e
     core = _core(text)
     if re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before):
         return "self"  # 1인칭 소유 — 「[우리 집에]」 「내 나이 [서른넷을]」
+    if _RULE_AGE_OTHER and stype == "AGE" and _parent_intro(text, after):
+        return "self"   # 「저는 [서른 살] 아이 둘 엄마입니다」 — 부모(글쓴이)의 나이 (exp42 R2)
+    if _RULE_AGE_OTHER and stype == "AGE" and _age_of_other(text, after, before):
+        return "other"  # 「[70세의] 한 청취자가」 — 그 사람의 나이 (exp42 R2)
+    if _RULE_AGE_OTHER and stype == "AGE" and _baby_age_unowned(text, after, before):
+        return "unknown"  # 「[세 살] 키에 맞춘」 — 글쓴이 나이일 수 없고 주인은 문장에 없다 (exp42 R2)
     # ① 스팬 바로 뒤가 타인 → 그 사람의 속성 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
     #    관계·시설 단서(「[옆집] 아주머니」 「[이웃] 엄마들」)는 내 관계라 제외. 「[거래처] 사장님」은 내 일의 상대
     #    조사가 붙은 스팬은 사람을 꾸미지 않는다 — 「[역삼동에서] 친구를 만났다」(만난 곳) · 단 「[동탄에] 사는 친구」

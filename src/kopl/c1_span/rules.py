@@ -76,12 +76,65 @@ _PLACE_MOVE = (r"(?:에|에서|로|으로)\s*(?:놀러|여행|이사|출장|발�
                r"|살(?:아|고|면|았|던|지|게|기)?|사는|산다|삽니다|있(?:는|다|어|었|고|던)"
                r"|갔|간다|갈|가(?:서|고|는|요|면|자|려|야|봤|본|기|더니)|가(?=[\s.,!?~…]|$)"
                r"|왔|올|와(?:서|요|도)?(?=[\s.,!?~…]|$)|와서|오(?:는|고|면|게|기|니|더니))")
+# 동형이의어용 좁은 이동·거주 술어 — 위 _PLACE_MOVE 에서 일반어 뒤에도 잘 오는 꼴을 뺐다 (실제 블로그 확인 10/26 · exp42).
+# 「(AI) 음성으로 들어 보니」 「음성으로 내려받기」 「음성으로 살짝」은 지명이 아니다 — 「들어 · 내려」는 「가 · 오」가 붙을 때만,
+# 「살」은 어미가 붙을 때만. 「공주로 향했다」는 지명 (골드 B09_b27)
+_PLACE_MOVE_STRICT = (r"(?:에서는|에서도|에서|에는|에도|에|으로는|으로도|으로|로는|로도|로)\s*(?:놀러|여행|이사|출장|발령|근무|도착|들러|들렀"
+                      r"|(?:내려|들어)(?:가|와|갔|왔|간|온|갈|올)|향(?:했|해|하|한|할|합)"
+                      r"|살(?:아|고|면|았|던|지|게|기)|사는|산다|삽니다|있(?:는|다|어|었|고|던)"
+                      r"|갔|간다|갈(?![가-힣])|가(?:서|고|는|요|면|자|려|야|봤|본|기|더니)|가(?=[\s.,!?~…]|$)"
+                      r"|왔|올(?![가-힣])|와(?:서|요|도)?(?=[\s.,!?~…]|$)|와서|오(?:는|고|면|게|기|니|더니))")
+# 바로 뒤에 오면 지명으로 보는 말 — 「음성 쪽 시장에」(골드 S01b_b02) 「예산 농사소식지」(골드 D09_b14) 「공주 터미널」
+# 특산 · 축제 · 시설 말도 — 「이천 도자기 축제」 「이천 쌀」 「공주 알밤」 (Codex 검토 10/26). 「역」은 낱말이 끝날 때만(「음성 역할」 ✗)
+_PLACE_NOUN_AFTER = (r"\s*(?:쪽|읍내|읍|시내|터미널|시장|장날|오일장|군청|시청|농협|농사|농가|휴게소|나들목|IC|톨게이트"
+                     r"|여행|나들이|토박이|출신|도자기|쌀|축제|공항|온천|해수욕장|아울렛|특산|명물|알밤|사과|한우|인삼|고추"
+                     r"|역(?![가-힣])|역(?:에서|에|으로|앞|까지|은|는|이|을))")
+_HOMONYM_CONTEXT = _PLACE_NOUN_AFTER + "|" + _PLACE_MOVE_STRICT
 _CONTEXT_ONLY_PLACES = {
     "진도": re.compile(r"(?:군|항)|\s*(?:대교|여행|아리랑|개(?![가-힣]))|" + _PLACE_MOVE),  # 「진도 항상」은 「항」 앞 띄어쓰기를 안 받아 거른다
     "달성": re.compile(r"군|\s*(?:공원|습지)|" + _PLACE_MOVE),
 }
+# 일반 낱말과 글자가 같은 시군구 이름 · 약칭 · 두 글자 지명 · 「동사 + -면」 꼴 면 이름 — 지명 문맥(_HOMONYM_CONTEXT · 도 이름 뒤 ·
+# 면 이름 앞 시군)이 있을 때만 지명으로 본다 (실제 블로그 확인 10/26 · exp42 R1). 「AI 음성으로 읽어 준다」 「동화 속 공주가」
+# 「규제 강화가 필요하다」 「상당 시간이」 「영양 성분」. 「음성군 · 공주시」(접미사가 붙은 낱말) · 「충북 음성」 · 「공주로 이사」 ·
+# 「음성 쪽 시장」은 그대로 지명이다.
+# 뽑는 법: 사전의 시군구 약칭 256개 · 두 글자 지명 49개 · 「동사 + -면」 꼴 면 이름을 다 훑어 일반 낱말로도 읽히는 것을 후보로 두고,
+# test 밖 골드에서 하나씩 켜 봐 ① **잃는 골드가 0** 이고 ② 일반어 쪽이 더 흔하다는 근거(코퍼스 오탐 · 실제 블로그 오탐 ·
+# 또는 군 · 면 · 동 이름인데 일반어가 일상어)가 있는 것만 넣었다. 대구 · 대전 · 부산 · 청주처럼 골드를 잃는 것과,
+# 잃지 않아도 도시 이름으로 더 자주 쓰는 것(용인 · 경주 · 수원 …)은 뺐다. 후보 · 채택 표: experiments/exp42-real-blog-homonyms/README.md §1
+_COMMON_WORD_PLACES = frozenset({
+    "음성", "공주", "예산", "장수", "상당", "강화", "영양", "이천", "변동", "양동",            # 코퍼스 · 실제 블로그에서 오탐을 봤다
+    "고령", "영광", "부여", "강진", "봉화", "보은", "일동", "중동", "만세",                    # 일반어가 일상어인 군 · 동 이름
+    "해보면", "강하면", "마리면", "부리면", "보안면",                                         # 「해 보면 · 강하면 · 두 마리면 · 고집 부리면 · 보안 면에서」
+})
+_HOMONYM_CONTEXT_RE = re.compile(_HOMONYM_CONTEXT)
 _PACE_BEFORE = re.compile(r"(?:^|[^가-힣])(?:이|그|저|지금|이런|그런|요즘)\s*$")  # 「이 진도로 가면」 — 속도 이야기
+_PACE_WORDS = frozenset({"진도", "달성"})   # 「요즘 공주에 놀러」는 지명이라 새 동형이의어에는 걸지 않는다
 _CITY_BEFORE = re.compile(r"(?:대구|대구시|대구광역시)\s*$")
+_SIGUNGU_BEFORE = re.compile(r"[가-힣]{1,4}(?:시|군)\s*$")   # 「함평군 해보면」 「양평군 강하면」 — 면 이름에만 쓴다
+# 「X도」가 섬 이름인 것 — 「강화도」의 「도」는 조사가 아니라 이름의 일부다 (Codex 검토 10/26). 「예산도 정해 두었다」의 「도」는 조사
+_ISLAND_PLACES = frozenset({"강화"})
+
+
+def is_contextless_homonym(text: str, start: int, name: str) -> bool:
+    """text[start:] 가 지명 문맥 없이 쓰인 동형이의어 name 인가 — True 면 일반어로 보고 지명 후보에서 뺀다.
+
+    명시 규칙(ExplicitRules)과 모델 후보(merge_with_model)에 같은 판단을 쓴다. 목록(_CONTEXT_ONLY_PLACES) 밖 이름은 늘 False 다 —
+    모델이 놓친 진짜 지명을 규칙이 메우는 길(#397 B 리뷰)은 목록 밖에서 그대로 열려 있다.
+    """
+    ctx = _CONTEXT_ONLY_PLACES.get(name)
+    if ctx is None:
+        if name not in _COMMON_WORD_PLACES:
+            return False
+        ctx = _HOMONYM_CONTEXT_RE
+    if name in _ISLAND_PLACES and text.startswith("도", start + len(name)):
+        return False   # 「강화도」 「강화도에」 — 섬 이름
+    window = text[max(0, start - 10):start]
+    if name in _PACE_WORDS and _PACE_BEFORE.search(window):
+        return True
+    if ctx.match(text, start + len(name)) or _PROVINCE_BEFORE.search(window) or _CITY_BEFORE.search(window):
+        return False
+    return not (name.endswith("면") and _SIGUNGU_BEFORE.search(window))
 _HOMONYM_IDIOM = {
     "구미": re.compile(r"(?:가|를|도|는)?\s*(?:당기|당겨|당긴|당길|당김|당겼|돋|안\s*당)|에\s*맞(?:는|게|다|아|지|춰|추)"),
     "화성": re.compile(r"\s*(?:탐사|착륙|궤도|이주|로버|탐험)|의\s*(?:대기|위성|궤도)"  # 우주 탐사 말만 — 「화성 토양」은 화성시일 수 있다
@@ -192,12 +245,8 @@ class ExplicitRules:
                 if particle and not word.endswith(particle):
                     continue
                 name = word[:-len(particle)] if particle else word
-                place_ctx = _CONTEXT_ONLY_PLACES.get(name)
-                if place_ctx is not None:
-                    window = text[max(0, match.start() - 10):match.start()]
-                    if _PACE_BEFORE.search(window) or not (place_ctx.match(text, match.start() + len(name))
-                                                           or _PROVINCE_BEFORE.search(window) or _CITY_BEFORE.search(window)):
-                        break  # 「업무 진도는」 「목표 달성을」 — 지명 문맥이 없으면 일반어
+                if is_contextless_homonym(text, match.start(), name):
+                    break  # 「업무 진도는」 「목표 달성을」 「AI 음성으로」 — 지명 문맥이 없으면 일반어
                 idiom = _HOMONYM_IDIOM.get(name)
                 if idiom and idiom.match(text, match.start() + len(name)) \
                         and not _PROVINCE_BEFORE.search(text[max(0, match.start() - 10):match.start()]):
@@ -275,6 +324,55 @@ def trim_admin_inside(span_text: str) -> str | None:
     return m.group(1) if m else None
 
 
+def is_model_homonym_place(text: str, start: int, end: int) -> bool:
+    """모델 LOC_ADMIN 스팬이 「동형이의어 이름(+조사)」 하나뿐이고 지명 문맥이 없는가 — 규칙(location_spans)과 같은 판단 (exp42 R1).
+
+    「음성 쪽」처럼 다른 말이 붙은 스팬 · 목록 밖 이름은 건드리지 않는다.
+    """
+    lead = len(text[start:end]) - len(text[start:end].lstrip())
+    word = text[start:end].strip()
+    for particle in ("", *_PARTICLES):
+        if particle and not word.endswith(particle):
+            continue
+        name = word[:-len(particle)] if particle else word
+        if name in _CONTEXT_ONLY_PLACES or name in _COMMON_WORD_PLACES:
+            return is_contextless_homonym(text, start + lead, name)
+    return False
+
+
+# 반사실 가정 — 「만약 내가 가수였거나 무대에서 일했다면」의 직업은 본인 직업이 아니다 (실제 블로그 확인 10/26 · exp42 R3).
+# 같은 문장에서 스팬 앞에 「만약 · 만일」, 스팬 뒤에 「-었다면 · -었더라면」이 있을 때만. 사이에 부정(「아니 · 않 · 못」)이 끼면
+# 「만약 내가 교사가 아니었다면」 — 거꾸로 실제 직업을 말하므로 그대로 둔다
+_IF_BEFORE = re.compile(r"(?<![가-힣])(?:만약|만일)(?:에)?(?![가-힣])")
+_COUNTERFACTUAL_AFTER = re.compile(r"(?:였|었|았|했|됐|웠)(?:다면|더라면)")
+_NEGATION = re.compile(r"아니|않|못|(?<![가-힣])안(?![가-힣])")
+
+
+# 가정 어미가 **그 직업 말을 서술할 때만** — 「모델이었다면」 「가수였거나 …했다면」 「의사가 됐다면」 「업계에서 일했다면」.
+# 「만약 교사인 내가 복권에 당첨됐다면」의 「교사」는 가정 밖의 실제 직업이다 (Codex 검토 10/26)
+_JOB_PREDICATE = re.compile(r"\s*(?:이|가)?\s*(?:이었|였었|였|었|됐|되었|했)(?P<tail>다면|더라면|거나|고|는데)")
+
+
+def is_counterfactual(text: str, start: int, end: int) -> bool:
+    """스팬이 「만약 … -었다면」 반사실 가정의 서술어인가 (같은 문장 · 부정 없음)."""
+    cut = max(text.rfind(ch, 0, start) for ch in ".!?\n") + 1
+    if not _IF_BEFORE.search(text, cut, start):
+        return False
+    m = re.search(r"[.!?\n]", text[end:])
+    after = text[end:end + m.start()] if m else text[end:]
+    p = _JOB_PREDICATE.match(after)
+    if not p:
+        return False
+    if p.group("tail") in ("다면", "더라면"):
+        c_end = p.end()
+    else:   # 「가수였거나 무대에서 일했다면」 — 이어진 절 끝이 가정 어미
+        c = _COUNTERFACTUAL_AFTER.search(after, p.end())
+        if not c:
+            return False
+        c_end = c.end()
+    return not _NEGATION.search(text[start:end] + after[:c_end])
+
+
 def merge_with_model(
     post_id: str,
     texts: dict[str, str],
@@ -295,6 +393,8 @@ def merge_with_model(
     fragment_dropped = 0
     admin_trimmed = 0
     ordinal_dropped = 0
+    homonym_dropped = 0
+    counterfactual_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -315,6 +415,12 @@ def merge_with_model(
             continue
         if is_fragment_span(candidate["text"]):
             fragment_dropped += 1  # 「에」 「에서」 「하는」 — 조사 · 어미 조각 (exp41 C1)
+            continue
+        if kind == "LOC_ADMIN" and is_model_homonym_place(texts[tid], start, end):
+            homonym_dropped += 1   # 「AI 음성으로」 「동화 속 공주가」 — 규칙과 같은 동형이의어 판단 (exp42 R1)
+            continue
+        if kind == "JOB" and is_counterfactual(texts[tid], start, end):
+            counterfactual_dropped += 1   # 「만약 내가 가수였다면」 — 반사실 가정 (exp42 R3)
             continue
         text_out = candidate["text"]
         head = trim_admin_inside(text_out) if kind == "LOC_ADMIN" else None
@@ -359,5 +465,7 @@ def merge_with_model(
         "model_ordinal_cha_dropped": ordinal_dropped,
         "model_fragment_dropped": fragment_dropped,
         "model_admin_inside_trimmed": admin_trimmed,
+        "model_homonym_place_dropped": homonym_dropped,
+        "model_counterfactual_job_dropped": counterfactual_dropped,
     }
     return output, stats

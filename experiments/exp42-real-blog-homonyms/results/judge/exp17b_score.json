@@ -1,0 +1,140 @@
+{
+ "exp17b_main": {
+  "posts": 80,
+  "predicted_spans": 216,
+  "recall_self": 0.699,
+  "recall_all": 0.716,
+  "recall_by_type": {
+   "AGE/other": "5/9",
+   "AGE/self": "26/28",
+   "COMMUTE/self": "6/9",
+   "FAM/self": "1/6",
+   "INCOME/self": "7/15",
+   "JOB/other": "4/6",
+   "JOB/self": "10/12",
+   "LOC_ADMIN/other": "13/13",
+   "LOC_ADMIN/self": "17/24",
+   "LOC_FACILITY/self": "9/14",
+   "SEX/self": "3/5"
+  },
+  "recall_by_variant": {
+   "가족": "1/3",
+   "광역버스": "3/4",
+   "구어금액": "0/2",
+   "금액": "6/9",
+   "노선": "2/2",
+   "동": "4/4",
+   "랜드마크": "2/2",
+   "반말어미": "4/4",
+   "배우자별칭": "3/5",
+   "버스": "0/2",
+   "상가": "1/4",
+   "생애사건": "2/3",
+   "생활권별칭": "3/8",
+   "숫자나이": "5/5",
+   "시가처가": "0/3",
+   "시구": "8/8",
+   "시도정식": "2/4",
+   "실수령": "1/4",
+   "역": "4/5",
+   "연령대": "3/3",
+   "자차": "1/1",
+   "지점명": "2/3",
+   "직업명": "3/3",
+   "직업묘사": "7/9",
+   "출생연도": "8/8",
+   "타인거주": "13/13",
+   "타인나이": "5/9",
+   "타인직업": "4/6",
+   "한글수사": "4/5"
+  },
+  "recall_by_group": {
+   "targeted": "41/51",
+   "trap": "22/28",
+   "untargeted": "38/62"
+  },
+  "self_attributed_by_group": {
+   "targeted": "41/51",
+   "trap": "0/28",
+   "untargeted": "38/62"
+  },
+  "trap_other": {
+   "planted": 28,
+   "caught": 22,
+   "judged_other": 22,
+   "judged_self": 0,
+   "judged_unknown": 0
+  },
+  "distractor_age_fp": "7/22",
+  "unplanned_spans_per_post": 1.3
+ },
+ "exp17b_exp42": {
+  "posts": 80,
+  "predicted_spans": 216,
+  "recall_self": 0.699,
+  "recall_all": 0.716,
+  "recall_by_type": {
+   "AGE/other": "5/9",
+   "AGE/self": "26/28",
+   "COMMUTE/self": "6/9",
+   "FAM/self": "1/6",
+   "INCOME/self": "7/15",
+   "JOB/other": "4/6",
+   "JOB/self": "10/12",
+   "LOC_ADMIN/other": "13/13",
+   "LOC_ADMIN/self": "17/24",
+   "LOC_FACILITY/self": "9/14",
+   "SEX/self": "3/5"
+  },
+  "recall_by_variant": {
+   "가족": "1/3",
+   "광역버스": "3/4",
+   "구어금액": "0/2",
+   "금액": "6/9",
+   "노선": "2/2",
+   "동": "4/4",
+   "랜드마크": "2/2",
+   "반말어미": "4/4",
+   "배우자별칭": "3/5",
+   "버스": "0/2",
+   "상가": "1/4",
+   "생애사건": "2/3",
+   "생활권별칭": "3/8",
+   "숫자나이": "5/5",
+   "시가처가": "0/3",
+   "시구": "8/8",
+   "시도정식": "2/4",
+   "실수령": "1/4",
+   "역": "4/5",
+   "연령대": "3/3",
+   "자차": "1/1",
+   "지점명": "2/3",
+   "직업명": "3/3",
+   "직업묘사": "7/9",
+   "출생연도": "8/8",
+   "타인거주": "13/13",
+   "타인나이": "5/9",
+   "타인직업": "4/6",
+   "한글수사": "4/5"
+  },
+  "recall_by_group": {
+   "targeted": "41/51",
+   "trap": "22/28",
+   "untargeted": "38/62"
+  },
+  "self_attributed_by_group": {
+   "targeted": "41/51",
+   "trap": "0/28",
+   "untargeted": "38/62"
+  },
+  "trap_other": {
+   "planted": 28,
+   "caught": 22,
+   "judged_other": 22,
+   "judged_self": 0,
+   "judged_unknown": 0
+  },
+  "distractor_age_fp": "7/22",
+  "unplanned_spans_per_post": 1.3
+ }
+}

@@ -389,3 +389,42 @@ def test_codex_third(sentence, span, stype, expected):
 ])
 def test_b_review_intro_suffix(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # exp42 R2 — 「나이 + 의 + 다른 사람」은 그 사람의 나이 (합성 문장)
+    ("라디오에 70세의 한 청취자가 엽서를 보냈다.", "70세의", "AGE", "other"),
+    ("마흔둘의 어느 여성이 편지를 보냈다.", "마흔둘의", "AGE", "other"),
+    ("일흔의 시청자가 전화를 걸어왔다.", "일흔의", "AGE", "other"),
+    ("예순넷의 봄 텃밭 준비", "예순넷의", "AGE", "self"),                 # 사람이 아니다
+    ("마흔의 엄마로 산다는 것", "마흔의", "AGE", "self"),                 # 꾸밈말 없는 일반 사람 명사는 그대로
+    ("나는 마흔의 한 여자일 뿐이다.", "마흔의", "AGE", "self"),           # 1인칭 자기소개
+    ("강의에서 쉰두 살 수강생이 합격 후기를 말했다.", "쉰두 살", "AGE", "other"),   # 「의」 없이 남을 가리키는 사람 명사
+    ("저는 49세 여성입니다.", "49세", "AGE", "self"),                     # 자기소개
+    ("서른에 아이를 낳았다.", "서른에", "AGE", "self"),                     # 조사 붙은 나이는 뒤 사람을 꾸미지 않는다
+    # 아이 나이 — label-schema 「[아홉 살] 아들」 = other
+    ("세 살 아기인데 벌써 말을 잘한다.", "세 살 아기인데", "AGE", "other"),  # 1단이 아이 명사까지 스팬에 넣은 것
+    ("네 살 저희 아기와 함께 갔다.", "네 살", "AGE", "other"),
+    ("아이가 벌써 네 살이 됐다.", "네 살이", "AGE", "other"),
+    ("세 살 때 이사했다고 들었다.", "세 살", "AGE", "self"),                # 「때」 — 글쓴이의 옛 나이
+    ("세 살 키에 맞춘 의자를 샀다.", "세 살", "AGE", "unknown"),            # 주인이 문장에 없는 아기 나이
+    ("18개월 무렵 걷기 시작했다.", "18개월", "AGE", "self"),
+    ("마흔 살 키에 맞춘 의자", "마흔 살", "AGE", "self"),
+    # Codex 검토 반례 (10/26)
+    ("저는 서른 살 아이 둘 엄마입니다.", "서른 살", "AGE", "self"),        # 부모 자기소개
+    ("서른 살 아들 둘 엄마의 일상", "서른 살", "AGE", "self"),
+    ("세 살 아이 엄마들이 모였다.", "세 살", "AGE", "other"),              # 아이 나이
+    ("세 살이던 시절이 그립다.", "세 살이던", "AGE", "self"),               # 스팬 안 과거 어미
+    ("그해 6세였다.", "6세였다", "AGE", "self"),
+    ("나는 서울, 인천, 수원에서 차례로 살았다.", "인천", "LOC_ADMIN", "self"),   # 본인 거주 이력
+    ("우리 가족은 강릉, 경주, 목포를 거쳐 이사했다.", "경주", "LOC_ADMIN", "self"),
+    ("딸기 세 살 때부터 좋아했다.", "세 살", "AGE", "self"),                # 「딸기」는 아이가 아니다
+    # exp42 R4 — 지명을 셋 이상 늘어놓은 줄의 항목은 unknown
+    ("행사 지역은 📍강릉,📍경주,📍목포,📍순천 네 곳이다.", "경주", "LOC_ADMIN", "unknown"),
+    ("대전, 통영, 속초 등에서 열린다.", "대전", "LOC_ADMIN", "unknown"),
+    ("와인, 샴페인, 부산 지역 맥주를 마셨다.", "부산 지역", "LOC_ADMIN", "self"),   # 지명 나열이 아니다
+    ("서울, 부산 두 곳을 오간다.", "서울", "LOC_ADMIN", "self"),                    # 둘은 나열로 보지 않는다
+    ("나는 부산에 산다.", "부산에", "LOC_ADMIN", "self"),
+])
+def test_subject_exp42(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected

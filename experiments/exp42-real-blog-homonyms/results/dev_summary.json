@@ -1,0 +1,1163 @@
+{
+ "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+ "threshold": 0.7,
+ "fingerprint": {
+  "checkpoint": "C:\\Users\\dor12\\kisia-ckpt\\v2",
+  "files_sha256": {
+   "config.json": "4858ea3b6f85fde4111c14126010d74180aec34c11d28e21ed2ced2cf1daf957",
+   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+   "tokenizer.json": "d5c7a9a8996aca4fee55a3664381b012bd7dbb3e190061b2591c02502b7171b6",
+   "tokenizer_config.json": "55f686f3c1111e477bcd12bd9736d6b554fa2e3f94f1c3fbd2c16c467cdbf0eb"
+  },
+  "threshold": 0.7,
+  "inputs_sha256": "58bbaac8cc630e9ddf414db8a933980f6ef0869138a2eee75df229d88ff98337",
+  "raw_format": "candidates+model_seen_spans(pre-overlap)"
+ },
+ "posts": 2281,
+ "gold_spans": 2194,
+ "model_candidates": 3071,
+ "configs": {
+  "main": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1": {
+   "tp": 1864,
+   "fp": 1171,
+   "fn": 330,
+   "precision": 0.6142,
+   "recall": 0.8496,
+   "f1": 0.7129,
+   "removed_or_changed": 15,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 293,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R2": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 1,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 114
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R3": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R4": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1+R2+R3": {
+   "tp": 1864,
+   "fp": 1171,
+   "fn": 330,
+   "precision": 0.6142,
+   "recall": 0.8496,
+   "f1": 0.7129,
+   "removed_or_changed": 15,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 1,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 293,
+    "JOB": 499,
+    "AGE": 114
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1+R2+R3+R4": {
+   "tp": 1864,
+   "fp": 1171,
+   "fn": 330,
+   "precision": 0.6142,
+   "recall": 0.8496,
+   "f1": 0.7129,
+   "removed_or_changed": 15,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 1,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 293,
+    "JOB": 499,
+    "AGE": 114
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "ALL": {
+   "tp": 1864,
+   "fp": 1171,
+   "fn": 330,
+   "precision": 0.6142,
+   "recall": 0.8496,
+   "f1": 0.7129,
+   "removed_or_changed": 15,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 1,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 293,
+    "JOB": 499,
+    "AGE": 114
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  }
+ },
+ "r1_candidates": {
+  "adopted_rule": "test 밖 골드에서 잃은 골드 0 · 골드 LOC_ADMIN 스팬에 직접 걸어도 0",
+  "adopted": [
+   "강진",
+   "강하면",
+   "강화",
+   "거창",
+   "경주",
+   "고령",
+   "고성",
+   "공주",
+   "관악",
+   "광명",
+   "광산",
+   "구리",
+   "구미",
+   "금동",
+   "남동",
+   "남해",
+   "능동",
+   "단원",
+   "대덕",
+   "대동",
+   "동남",
+   "동해",
+   "마리면",
+   "만세",
+   "목동",
+   "무안",
+   "변동",
+   "보안면",
+   "보은",
+   "봉화",
+   "부리면",
+   "부여",
+   "북구",
+   "사동",
+   "사상",
+   "상당",
+   "상동",
+   "상록",
+   "상주",
+   "서구",
+   "서북",
+   "서원",
+   "서해",
+   "성주",
+   "수성",
+   "수영",
+   "수지",
+   "신동",
+   "신안",
+   "양동",
+   "양산",
+   "양주",
+   "여주",
+   "연동",
+   "연수",
+   "영광",
+   "영양",
+   "예산",
+   "오산",
+   "완주",
+   "용인",
+   "음성",
+   "이천",
+   "인제",
+   "일동",
+   "장성",
+   "장수",
+   "장안",
+   "제천",
+   "중동",
+   "중원",
+   "청원",
+   "파동",
+   "팔달",
+   "학동",
+   "함양",
+   "해보면",
+   "효행"
+  ],
+  "in_code": [
+   "강진",
+   "강하면",
+   "강화",
+   "고령",
+   "공주",
+   "마리면",
+   "만세",
+   "변동",
+   "보안면",
+   "보은",
+   "봉화",
+   "부리면",
+   "부여",
+   "상당",
+   "양동",
+   "영광",
+   "영양",
+   "예산",
+   "음성",
+   "이천",
+   "일동",
+   "장수",
+   "중동",
+   "해보면"
+  ],
+  "rows": [
+   {
+    "word": "강진",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "강화",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "거창",
+    "group": "시군구 약칭",
+    "posts": 21,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "경주",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "고령",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "고성",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "곡성",
+    "group": "시군구 약칭",
+    "posts": 2,
+    "fp_removed": 0,
+    "removed": 2,
+    "gold_lost": 2,
+    "gold_direct": 2
+   },
+   {
+    "word": "공주",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "관악",
+    "group": "시군구 약칭",
+    "posts": 6,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "광명",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "광산",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "구리",
+    "group": "시군구 약칭",
+    "posts": 13,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "구미",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "기장",
+    "group": "시군구 약칭",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 2,
+    "gold_lost": 2,
+    "gold_direct": 2
+   },
+   {
+    "word": "남동",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "남해",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "단원",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "대구",
+    "group": "시군구 약칭",
+    "posts": 2,
+    "fp_removed": 0,
+    "removed": 2,
+    "gold_lost": 2,
+    "gold_direct": 2
+   },
+   {
+    "word": "대덕",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "대전",
+    "group": "시군구 약칭",
+    "posts": 79,
+    "fp_removed": 0,
+    "removed": 6,
+    "gold_lost": 6,
+    "gold_direct": 6
+   },
+   {
+    "word": "동남",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "동해",
+    "group": "시군구 약칭",
+    "posts": 10,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "만세",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "무안",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "보은",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "봉화",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "부산",
+    "group": "시군구 약칭",
+    "posts": 16,
+    "fp_removed": 1,
+    "removed": 3,
+    "gold_lost": 2,
+    "gold_direct": 3
+   },
+   {
+    "word": "부여",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "분당",
+    "group": "시군구 약칭",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 2
+   },
+   {
+    "word": "사상",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "사천",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 1
+   },
+   {
+    "word": "상당",
+    "group": "시군구 약칭",
+    "posts": 7,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "상록",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "상주",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "서북",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "서원",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "서해",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "성산",
+    "group": "시군구 약칭",
+    "posts": 2,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 1
+   },
+   {
+    "word": "성주",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "세종",
+    "group": "시군구 약칭",
+    "posts": 6,
+    "fp_removed": 0,
+    "removed": 2,
+    "gold_lost": 2,
+    "gold_direct": 2
+   },
+   {
+    "word": "수성",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "수영",
+    "group": "시군구 약칭",
+    "posts": 4,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "수원",
+    "group": "시군구 약칭",
+    "posts": 4,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 1
+   },
+   {
+    "word": "수지",
+    "group": "시군구 약칭",
+    "posts": 23,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "신안",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "양산",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "양주",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "여수",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 1
+   },
+   {
+    "word": "여주",
+    "group": "시군구 약칭",
+    "posts": 14,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "연수",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "영광",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "영양",
+    "group": "시군구 약칭",
+    "posts": 9,
+    "fp_removed": 1,
+    "removed": 1,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "영주",
+    "group": "시군구 약칭",
+    "posts": 8,
+    "fp_removed": 0,
+    "removed": 2,
+    "gold_lost": 2,
+    "gold_direct": 2
+   },
+   {
+    "word": "예산",
+    "group": "시군구 약칭",
+    "posts": 3,
+    "fp_removed": 1,
+    "removed": 1,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "오산",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "완주",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "용인",
+    "group": "시군구 약칭",
+    "posts": 7,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "원주",
+    "group": "시군구 약칭",
+    "posts": 6,
+    "fp_removed": 0,
+    "removed": 4,
+    "gold_lost": 4,
+    "gold_direct": 4
+   },
+   {
+    "word": "유성",
+    "group": "시군구 약칭",
+    "posts": 8,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 1
+   },
+   {
+    "word": "음성",
+    "group": "시군구 약칭",
+    "posts": 3,
+    "fp_removed": 2,
+    "removed": 2,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "이천",
+    "group": "시군구 약칭",
+    "posts": 4,
+    "fp_removed": 3,
+    "removed": 3,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "인제",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "장성",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "장수",
+    "group": "시군구 약칭",
+    "posts": 4,
+    "fp_removed": 4,
+    "removed": 4,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "장안",
+    "group": "시군구 약칭",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "정선",
+    "group": "시군구 약칭",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 2
+   },
+   {
+    "word": "제천",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "중원",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "진주",
+    "group": "시군구 약칭",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 1,
+    "gold_lost": 1,
+    "gold_direct": 1
+   },
+   {
+    "word": "청원",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "청주",
+    "group": "시군구 약칭",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 4,
+    "gold_lost": 4,
+    "gold_direct": 5
+   },
+   {
+    "word": "팔달",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "함양",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "효행",
+    "group": "시군구 약칭",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "변동",
+    "group": "두 글자 지명",
+    "posts": 1,
+    "fp_removed": 1,
+    "removed": 1,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "연동",
+    "group": "두 글자 지명",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "상동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "중동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "학동",
+    "group": "두 글자 지명",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "신동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "대동",
+    "group": "두 글자 지명",
+    "posts": 1,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "일동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "서구",
+    "group": "두 글자 지명",
+    "posts": 5,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "북구",
+    "group": "두 글자 지명",
+    "posts": 2,
+    "fp_removed": 0,
+    "removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "파동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "능동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "양동",
+    "group": "두 글자 지명",
+    "posts": 2,
+    "fp_removed": 1,
+    "removed": 1,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "사동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "금동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "목동",
+    "group": "두 글자 지명",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "강하면",
+    "group": "「동사+면」 면 이름",
+    "posts": 2,
+    "fp_removed": 2,
+    "removed": 2,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "해보면",
+    "group": "「동사+면」 면 이름",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "마리면",
+    "group": "「동사+면」 면 이름",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "부리면",
+    "group": "「동사+면」 면 이름",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   },
+   {
+    "word": "보안면",
+    "group": "「동사+면」 면 이름",
+    "posts": 0,
+    "fp_removed": 0,
+    "gold_lost": 0,
+    "gold_direct": 0
+   }
+  ]
+ },
+ "gold_direct": {
+  "R1_gold_admin_homonym_dropped": 0,
+  "R3_gold_job_counterfactual": 0,
+  "R2_R4_subject_changed": 1
+ }
+}

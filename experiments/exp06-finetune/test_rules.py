@@ -308,6 +308,102 @@ class RuleTests(unittest.TestCase):
             found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}
             self.assertEqual(found, expected, text)
 
+    def test_location_common_word_homonyms_exp42(self):
+        """exp42 R1 — 일반어로 더 자주 쓰는 군 · 시 · 면 이름은 지명 문맥이 있을 때만 지명 (합성 문장)."""
+        rules = ExplicitRules()
+        cases = {
+            'AI 음성으로 읽어 준다': set(),
+            '녹음된 음성을 글자로 바꿨다': set(),
+            '음성 메시지를 보냈다': set(),
+            'AI 음성으로 들어 보니 자연스럽다': set(),
+            '음성으로 내려받기 버튼': set(),
+            '동화 속 공주가 왕자를 만났다': set(),
+            '여행 예산을 미리 짰다': set(),
+            '예산이 부족하다': set(),
+            '장수 비결은 산책이다': set(),
+            '한번 해보면 안다': set(),
+            '냄새가 강하면 뺀다': set(),
+            '음성군에 산다': {'음성군에'},
+            '충북 음성에 산다': {'충북', '음성에'},
+            '음성에 산다': {'음성에'},
+            '퇴근하고 음성 쪽 시장에 들렀다': {'음성'},
+            '공주에 놀러 갔다': {'공주에'},
+            '요즘 공주에 놀러 간다': {'공주에'},
+            '공주로 향했다': {'공주로'},
+            '공주시 터미널': {'공주시'},
+            '충남 예산으로 이사했다': {'충남', '예산으로'},
+            '예산군 방역 날짜': {'예산군'},
+            '예산 농사소식지를 받았다': {'예산'},
+            '전북 장수에 간다': {'전북', '장수에'},
+            '함평군 해보면에 산다': {'함평군', '해보면에'},
+            # 일반화한 목록 (README §1)
+            '상당 시간이 걸렸다': set(),
+            '규제 강화가 필요하다': set(),
+            '영양 성분표를 봤다': set(),
+            '종이 이천 장을 샀다': set(),
+            '물고기 두 마리면 충분하다': set(),
+            '고집 부리면 곤란하다': set(),
+            '보안면에서 약하다': set(),
+            '고령 인구가 늘었다': set(),
+            '영광의 순간': set(),
+            '직원 일동': set(),
+            '청주 상당구에 산다': {'청주', '상당구에'},
+            '강화도 말고 강화에 놀러 갔다': {'강화도', '강화에'},
+            '경북 영양에 산다': {'경북', '영양에'},
+            '이천으로 이사했다': {'이천으로'},
+            '충북 보은 장날': {'충북', '보은'},
+            # Codex 검토 반례 (10/26) — 섬 이름 · 복합 조사 · 특산 · 축제
+            '강화도 여행을 갔다': {'강화도'},
+            '이천 도자기 축제에 갔다': {'이천'},
+            '이천에는 산다': {'이천에는'},
+            '이천 쌀이 맛있다': {'이천'},
+            '공주 알밤을 샀다': {'공주'},
+            '이천 역에서 내렸다': {'이천'},
+            '음성 역할을 한다': set(),
+        }
+        for text, expected in cases.items():
+            found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}
+            self.assertEqual(found, expected, text)
+
+    def test_model_homonym_place_and_counterfactual_job_are_dropped_in_merge(self):
+        """exp42 R1 · R3 — 모델 후보에도 같은 동형이의어 판단 · 반사실 가정 직업은 버린다."""
+        from rules import is_counterfactual, is_model_homonym_place
+
+        self.assertTrue(is_model_homonym_place('AI 음성으로 읽어 준다', 3, 7))
+        self.assertFalse(is_model_homonym_place('음성으로 이사 왔다', 0, 4))
+        self.assertFalse(is_model_homonym_place('음성 쪽 시장', 0, 4))      # 「음성 쪽」은 다른 말이 붙은 스팬
+        self.assertFalse(is_model_homonym_place('서울에 산다', 0, 3))       # 목록 밖 이름은 건드리지 않는다
+        s = '만약 내가 가수였거나 무대에서 일했다면 달랐겠지.'
+        self.assertTrue(is_counterfactual(s, s.index('가수'), s.index('가수') + 2))
+        s2 = '만약 내가 교사가 아니었다면 몰랐을 거다.'
+        self.assertFalse(is_counterfactual(s2, s2.index('교사가'), s2.index('교사가') + 3))   # 부정 — 실제 직업
+        s3 = '나는 교사였다. 만약 비가 왔다면 쉬었겠지.'
+        self.assertFalse(is_counterfactual(s3, 3, 5))   # 「만약」이 다른 문장
+        # Codex 검토 반례 — 가정 어미가 그 직업 말을 서술할 때만
+        for text, span, expected in [
+                ('만약 교사인 내가 복권에 당첨됐다면 일을 그만뒀을 것이다.', '교사', False),
+                ('만약 내가 의사가 됐다면 바빴겠지.', '의사가', True),
+                ('만약 내가 가수였다면 무대에 섰겠지.', '가수', True),
+                ('만약 내가 간호사로 일하지 않았다면 몰랐다.', '간호사로', False)]:
+            i = text.index(span)
+            self.assertEqual(is_counterfactual(text, i, i + len(span)), expected, text)
+        self.assertFalse(is_model_homonym_place('강화도에 놀러 갔다', 0, 3))   # 섬 이름 — 「도」는 조사가 아니다
+        self.assertFalse(is_model_homonym_place('이천에는 산다', 0, 4))
+
+        class NoRules:
+            def predict_channel(self, text):
+                return set()
+
+        text = 'AI 음성으로 읽어 준다. 만약 내가 가수였다면 좋았겠다. 나는 교사다.'
+        model = [{'text_id': 'body', 'start': 3, 'end': 7, 'text': '음성으로', 'type': 'LOC_ADMIN', 'score': 0.9},
+                 {'text_id': 'body', 'start': text.index('가수'), 'end': text.index('가수') + 2, 'text': '가수',
+                  'type': 'JOB', 'score': 0.9},
+                 {'text_id': 'body', 'start': text.index('교사'), 'end': text.index('교사') + 2, 'text': '교사',
+                  'type': 'JOB', 'score': 0.9}]
+        merged, stats = merge_with_model('p_b01', {'body': text}, model, NoRules())
+        self.assertEqual([s['text'] for s in merged], ['교사'])
+        self.assertEqual((stats['model_homonym_place_dropped'], stats['model_counterfactual_job_dropped']), (1, 1))
+
     def test_location_particle_and_long_suffix_alias(self):
         rules = ExplicitRules(FakeRegions())
         text = '서울에서 부천으로 해운대구는 판교동에 갔다'
