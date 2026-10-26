@@ -241,6 +241,18 @@ def is_quantity_age(text: str, start: int, end: int) -> bool:
     return bool(_NUMERAL_WITH_UNIT.fullmatch(span))  # 「스무 해」 「스무 해에」 — 그 밖(「서른 살이고」)은 나이
 
 
+# 「3일차 · 2주차 · 5년차 · 2회차」의 「차」 — 차례(次)이지 차(車)가 아니다 (#385 3-1 · 실제 글 「야간 3일차 퇴근길」).
+# 스팬이 「차」 한 글자이고, 바로 앞이 「일 · 주 · 회 · 년」, 그 앞이 아라비아 숫자 · 한자 수사(일 · 이 · 삼 … 십 · 백) · 「몇」일 때만.
+# 한자 수사 · 「몇」은 앞이 한글이 아니어야 한다 — 「세계일주 차」 「회사일차」처럼 다른 말의 끝 글자를 수로 읽지 않게.
+# 「2차 회식」(단위 없음) · 「3년 차」(띄어 씀) · 「자차」 · 「차로 출근」은 그대로 둔다
+_ORDINAL_CHA_BEFORE = re.compile(r"(?:[0-9]|(?<![가-힣])(?:[일이삼사오육칠팔구십백]+|몇))[일주회년]\Z")   # \Z — $ 는 줄바꿈 앞에서도 맞아 「3일⏎차 타고」의 차까지 버린다 (Codex 검토)
+
+
+def is_ordinal_cha(text: str, start: int, end: int) -> bool:
+    """모델이 COMMUTE 로 낸 「차」가 「N일차 · N주차 · N회차 · N년차」의 차례 「차」인가."""
+    return text[start:end] == "차" and bool(_ORDINAL_CHA_BEFORE.search(text, 0, start))
+
+
 # 모델이 낸 조사 · 어미 조각 — 「에」 「에서」 「로」 「하는」 「한테」 (exp41 C1 · test 밖 골드에 이런 스팬 0).
 # 「면」은 넣지 않는다 — 골드 LOC_ADMIN 「면 우체국」(읍면의 면). 한글 · 숫자 · 영문이 하나도 없는 스팬(「…」 「🥲」)도 버린다
 _FRAGMENT_WORDS = frozenset("에 에서 에서도 에서는 에는 에도 로 으로 으로는 로는 고 서 라 한 에게 한테 의 도 를 을 이 가 은 는 "
@@ -287,6 +299,7 @@ def merge_with_model(
     generic_dropped = 0
     fragment_dropped = 0
     admin_trimmed = 0
+    ordinal_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
         if (tid not in texts or not isinstance(start, int) or not isinstance(end, int)
@@ -301,6 +314,9 @@ def merge_with_model(
             continue
         if kind == "LOC_FACILITY" and is_generic_place_word(candidate["text"]):
             generic_dropped += 1   # 「노을맛집」 「디자인 여행」 「지면병원행」 — 장소 이름이 아니라 평가 · 행선 표현
+            continue
+        if kind == "COMMUTE" and is_ordinal_cha(texts[tid], start, end):
+            ordinal_dropped += 1   # 「3일차」 「5년차」의 「차」 — 차례이지 교통이 아니다
             continue
         if is_fragment_span(candidate["text"]):
             fragment_dropped += 1  # 「에」 「에서」 「하는」 — 조사 · 어미 조각 (exp41 C1)
@@ -356,6 +372,7 @@ def merge_with_model(
         "suppressed_by_overlap": len(model_keys | rule_keys) - len(selected_keys),
         "model_age_quantity_dropped": quantity_dropped,
         "model_generic_place_dropped": generic_dropped,
+        "model_ordinal_cha_dropped": ordinal_dropped,
         "model_fragment_dropped": fragment_dropped,
         "model_admin_inside_trimmed": admin_trimmed,
         "rule_admin_unbacked_dropped": unbacked_admin_dropped,

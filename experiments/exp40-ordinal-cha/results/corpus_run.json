@@ -1,0 +1,50 @@
+{
+ "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+ "posts": 2837,
+ "model_commute_candidates": 389,
+ "model_commute_cha": 5,
+ "dropped": 1,
+ "dropped_gold_match": 0,
+ "commute_cha_rows": [
+  {
+   "post_id": "B21_b11",
+   "text_id": "body",
+   "ctx": "다 얇게 튄다.⏎⏎⟦차⟧ 한 대가 지나가자",
+   "dropped": false,
+   "in_gold_set": true,
+   "gold_match": false
+  },
+  {
+   "post_id": "C04_b10",
+   "text_id": "body",
+   "ctx": "이면 괜찮아용.⏎⏎⟦차⟧ 트렁크에 공구 가",
+   "dropped": false,
+   "in_gold_set": false,
+   "gold_match": false
+  },
+  {
+   "post_id": "D12_b01",
+   "text_id": "title",
+   "ctx": "야간 3일⟦차⟧ 퇴근길",
+   "dropped": true,
+   "in_gold_set": true,
+   "gold_match": false
+  },
+  {
+   "post_id": "D21_b30",
+   "text_id": "body",
+   "ctx": "단함 🥲⏎⏎새벽에 ⟦차⟧ 시동 잘 안 걸린",
+   "dropped": false,
+   "in_gold_set": true,
+   "gold_match": false
+  },
+  {
+   "post_id": "E04_b06",
+   "text_id": "body",
+   "ctx": "⏎⏎오늘 재택이라 ⟦차⟧ 못 태워 준다고.",
+   "dropped": false,
+   "in_gold_set": true,
+   "gold_match": false
+  }
+ ]
+}
