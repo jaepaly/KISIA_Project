@@ -166,6 +166,19 @@ class UncertaintyTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual((first['resamples'], first['seed']), (2000, 20261102))
 
+    def test_bootstrap_no_explicit_gold_is_null(self):
+        posts, gold, predictions = multi_fixture()
+        for row in gold.values():
+            for span in row['spans']:
+                span['level'] = 'implicit'
+        result = bench.score_predictions(posts, gold, predictions)
+        ci = result['bootstrap_ci']['metrics']
+        self.assertIsNone(result['proxy']['partial_by_level']['explicit']['proxy_f1'])
+        for key in ('explicit_proxy_f1', 'explicit_recall', 'resolved_explicit_f1'):
+            self.assertEqual((ci[key]['point'], ci[key]['ci95_low'], ci[key]['ci95_high']), (None, None, None))
+            self.assertEqual(ci[key]['undefined_resamples'], 2000)
+        self.assertEqual(ci['f1']['undefined_resamples'], 0)
+
     def test_bootstrap_refuses_mismatched_totals(self):
         posts, gold, predictions = multi_fixture()
         result = bench.score_predictions(posts, gold, predictions)

@@ -63,9 +63,14 @@ def headline(c):
     r_r = ratio(c['resolved_explicit_tp'], c['resolved_explicit_tp'] + c['resolved_explicit_fn'])
     rr_p = ratio(c['resolved_tp'], c['resolved_tp'] + c['resolved_fp'])
     rr_r = ratio(c['resolved_tp'], c['resolved_tp'] + c['resolved_fn'])
-    return {'explicit_proxy_f1': _f1(precision, explicit_recall) if precision and explicit_recall else 0.0,
-            'explicit_recall': explicit_recall, 'precision': precision, 'recall': recall,
-            'f1': _f1(precision, recall), 'resolved_explicit_f1': _f1(r_p, r_r),
+    # 명시 골드가 없으면 공식 채점처럼 None 이다(0 으로 단정하지 않는다).
+    has_explicit = c['explicit_tp'] + c['explicit_fn'] > 0
+    has_resolved_explicit = c['resolved_explicit_tp'] + c['resolved_explicit_fn'] > 0
+    return {'explicit_proxy_f1': (_f1(precision, explicit_recall) if precision and explicit_recall else 0.0)
+            if has_explicit else None,
+            'explicit_recall': explicit_recall if has_explicit else None,
+            'precision': precision, 'recall': recall, 'f1': _f1(precision, recall),
+            'resolved_explicit_f1': _f1(r_p, r_r) if has_resolved_explicit else None,
             'resolved_f1': _f1(rr_p, rr_r)}
 
 
@@ -109,9 +114,14 @@ def bootstrap(posts, gold, predictions, partial, resolved, *, resamples=RESAMPLE
             draws[key].append(value)
     metrics = {}
     for key, value in point.items():
-        values = sorted(draws[key])
+        # 뽑은 표본에 명시 골드가 없으면 그 회차는 값이 없다 — 0 으로 넣지 않고 빼고 수를 적는다.
+        values = sorted(v for v in draws[key] if v is not None)
+        missing = resamples - len(values)
+        if value is None or not values:
+            metrics[key] = {'point': value, 'ci95_low': None, 'ci95_high': None, 'undefined_resamples': missing}
+            continue
         metrics[key] = {'point': value, 'ci95_low': _percentile(values, .025),
-                        'ci95_high': _percentile(values, .975)}
+                        'ci95_high': _percentile(values, .975), 'undefined_resamples': missing}
     return {'metrics': metrics, 'unit': 'post', 'posts': len(ids), 'resamples': resamples, 'seed': seed,
             'method': 'percentile bootstrap, posts resampled with replacement; point = full-sample value',
             'limitations': ['Posts by the same persona are not independent; persona-level resampling would '
