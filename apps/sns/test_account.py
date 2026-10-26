@@ -164,9 +164,11 @@ def _log_ids(app, sid, all_ids=False):
 
 # ── 위험 배지 · /api/me · 고쳐 쓰기 짝 (3차) ──
 
-def _rewrite(a, src, title="고친 글"):
-    r = a.post("/posts", data={"author_id": "S01", "title": title, "body": "출근길",
-                               "created_at": "2026-01-03T09:00", "from_post": src})
+def _rewrite(a, src, title="고친 글", hide=False, author="S01"):
+    data = {"author_id": author, "title": title, "body": "출근길", "created_at": "2026-01-03T09:00", "from_post": src}
+    if hide:
+        data["hide_original"] = "1"                      # 글쓰기 화면 「올리면서 원래 글은 비공개로」 체크 (#385 C1)
+    r = a.post("/posts", data=data)
     return r.headers["Location"].split("?")[0].rsplit("/", 1)[1]
 
 
@@ -194,6 +196,68 @@ def test_rewrite_undo_also_reopens_original(env):
     assert page.count("고쳐 쓰기와 한 묶음") == 2
     a.post(f"/changes/{rid}/undo", data={"back": f"/u/{REF}"})
     assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_rewrite_hide_original_on(env):
+    """#385 C1 — 체크를 켜고 올리면 원래 글이 같은 처리 안에서 비공개 · 고쳐 쓰기와 한 묶음 · 되돌리면 둘 다 원래대로."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    before = _export(app, sid)
+    new_id = _rewrite(a, "S01_b01", hide=True)
+    assert _visibility(app, sid, "S01_b01") == "private"
+    ids = _log_ids(app, sid)
+    con = sqlite3.connect(_session_db(sid))
+    grp = con.execute("SELECT group_id FROM action_log WHERE id = ?", (ids["private"],)).fetchone()[0]
+    con.close()
+    assert grp == ids["rewrite"]                          # 띠의 pair 버튼과 같은 묶음
+    page = a.get(f"/posts/{new_id}?done=posted").get_data(as_text=True)
+    assert "원래 글도 비공개로 바꿨습니다" in page and "아직 공개입니다" not in page
+    assert a.get(f"/u/{REF}").get_data(as_text=True).count("고쳐 쓰기와 한 묶음") == 2
+    a.post(f"/changes/{ids['rewrite']}/undo", data={"back": f"/u/{REF}"})
+    assert a.get(f"/posts/{new_id}").status_code == 404
+    assert _visibility(app, sid, "S01_b01") == "public"
+    assert _export(app, sid) == before and _log_ids(app, sid) == {}
+
+
+def test_rewrite_hide_original_off(env):
+    """#385 C1 — 체크를 끄면(필드 없음) 지금과 같다 — 원래 글은 공개 그대로 · 띠가 뜬다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    new_id = _rewrite(a, "S01_b01")
+    assert _visibility(app, sid, "S01_b01") == "public"
+    assert set(_log_ids(app, sid)) == {"rewrite"}
+    page = a.get(f"/posts/{new_id}?done=posted").get_data(as_text=True)
+    assert "아직 공개입니다" in page and "원래 글도 비공개로" not in page
+
+
+def test_rewrite_hide_original_already_private(env):
+    """#385 C1 — 원래 글이 이미 비공개면 건드리지 않고 이력도 더 남기지 않는다 (토글이 아니다)."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    a.post("/posts/S01_b01/visibility", data={"back": "/"})          # 따로 한 비공개
+    sep = _log_ids(app, sid)["private"]
+    new_id = _rewrite(a, "S01_b01", hide=True)
+    assert _visibility(app, sid, "S01_b01") == "private"
+    ids = _log_ids(app, sid, all_ids=True)
+    assert len(ids) == 2 and _log_ids(app, sid)["private"] == sep      # 따로 한 비공개 + 고쳐 쓰기뿐
+    page = a.get(f"/posts/{new_id}?done=posted").get_data(as_text=True)
+    assert "아직 공개입니다" not in page and "원래 글도 비공개로" not in page
+    a.post(f"/changes/{_log_ids(app, sid)['rewrite']}/undo", data={"back": "/"})
+    assert _visibility(app, sid, "S01_b01") == "private"               # 앞서 한 비공개는 그대로
+
+
+def test_rewrite_hide_original_other_author(env):
+    """#385 C1 — 남의 글을 from_post 로 보내도 원래 글은 안 건드리고 고쳐 쓰기 이력도 없다."""
+    app, _ = env
+    a = app.test_client()
+    sid = _sid(a)
+    new_id = _rewrite(a, "S01_b01", hide=True, author="S02")
+    assert _visibility(app, sid, new_id) == "public"
+    assert _visibility(app, sid, "S01_b01") == "public"
+    assert _log_ids(app, sid) == {}
 
 
 def test_rewrite_undo_keeps_separate_private(env):

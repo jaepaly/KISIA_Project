@@ -541,6 +541,21 @@ html.no-motion{scroll-behavior:auto}   /* 정지 상태는 앵커 이동도 바�
 
 /* 어두운 장(章) — 소개 장면이 밤 구간에 들어가면 html.dark-chapter. 상단바 · 하단 탭만 뒤집는다 (본문은 장면이 직접 칠한다) */
 .ut-top,.ut-tabs{transition:background-color .35s var(--ease-out),border-color .35s var(--ease-out),color .35s var(--ease-out)}
+/* 모바일 — 아래로 내리면 상단바를 접고 올리면 편다 (veilo.js initMobileChrome · #385 B4). 넓은 화면엔 hide-up 이 붙지 않는다 */
+@media (max-width:767px){
+  .ut-top{transition:background-color .35s var(--ease-out),border-color .35s var(--ease-out),color .35s var(--ease-out),transform .25s var(--ease-out)}
+  .ut-top.hide-up{transform:translateY(-100%);box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){.ut-top{transition:none}}
+/* 「맨 위로」 — 화면 높이 1.5배 아래에서 뜬다. 모바일은 하단 메뉴(.ut-tabs) 위로 띄워 겹치지 않게 (#385 B5) */
+.ut-totop{position:fixed;right:24px;bottom:24px;z-index:31;display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line-strong);background:var(--glass);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(31,28,25,.12)}
+.ut-totop[hidden]{display:none}
+.ut-totop:hover{background:var(--surface)}
+.ut-totop:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:767px){
+  .ut-totop{right:16px;bottom:calc(76px + env(safe-area-inset-bottom));height:38px;padding:0 12px}
+}
+html.dark-chapter .ut-totop{background:var(--glass-night);border-color:var(--night-line);color:var(--night-ink)}
 html.dark-chapter .ut-top{background:var(--glass-night);border-bottom-color:var(--night-line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 html.dark-chapter .ut-top .ut-logo,html.dark-chapter .ut-top .ut-nav a,html.dark-chapter .ut-top .intro-btn,html.dark-chapter .ut-top .ut-menu{color:var(--night-ink)}
 html.dark-chapter .ut-top .ut-logo .wm{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--night-ink)}
@@ -595,6 +610,11 @@ body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;op
 .ut-bg .map .park{fill:currentColor;fill-opacity:.03;stroke:currentColor;stroke-opacity:.09;stroke-width:1.5;stroke-dasharray:6 6}
 .ps-page body::after{display:none}
 .ps-page .ut-bg{display:none}   /* 소개 화면은 자체 배경(들판 · 밤 막 · 물결) */
+/* 모바일 — 좁은 화면에선 지도 선이 글 카드 사이로 더 많이 보인다. 배경 무늬만 옅게(글 · 카드 · 버튼은 그대로 · #385 B6) */
+@media (max-width:767px){
+  .ut-bg .map{opacity:.5}
+  body::after{opacity:.03}
+}
 /* ── 글 보기 (post.html) — 클래스는 vp-* (분석기 화면이 post-head · post-title · post-body 를 따로 쓴다 — 같은 veilo.css 를 읽어 겹쳤다) · 머리 구역(옅은 바탕 · 작성자 줄 · 큰 제목)과 본문 구역을 가른다 (10/14) ── */
 .ut-card.vp-card{padding:0;overflow:hidden}
 .vp-card>*:not(.vp-head){margin-left:24px;margin-right:24px}

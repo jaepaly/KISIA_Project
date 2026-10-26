@@ -1,6 +1,17 @@
 // 세 화면이 공유하는 최소 유틸. sessionStorage 로 스캔 결과를 넘긴다.
 
+// 같은 Veilo 계정을 다시 점검하면 바로 앞 결과의 요약 하나(scanPrev)를 남긴다 — 위험 줄이기 화면의 「직전 점검 → 이번 점검」 (#385 C3).
+// 다른 계정 · 파일 업로드 · 처음 점검이면 버린다. 결과 전체가 아니라 비교할 숫자만 둔다(탭 저장소 용량)
 function saveScan(result) {
+  let old = null;
+  try { old = loadScan(); } catch { /* 깨진 옛 결과 — 비교 없이 */ }
+  try {
+    if (old && result && !isUpload(old) && !isUpload(result) && old.user_ref && old.user_ref === result.user_ref) {
+      sessionStorage.setItem("scanPrev", JSON.stringify(scanSummary(old)));
+    } else sessionStorage.removeItem("scanPrev");
+  } catch { /* 저장소가 막혀도 점검 결과는 넘긴다 */ }
+  // 점검한 시각 — 다음 점검 때 「직전 점검 ○시」로 쓴다(요약을 만드는 시각이 아니라)
+  if (result && !result.scanned_at) result.scanned_at = Date.now();
   sessionStorage.setItem("scanResult", JSON.stringify(result));
 }
 
@@ -9,10 +20,38 @@ function loadScan() {
   return raw ? JSON.parse(raw) : null;
 }
 
+// 직전 점검 요약 — 지금 결과와 같은 Veilo 계정일 때만 돌려준다(없으면 null)
+function loadPrevScan(data) {
+  try {
+    const p = JSON.parse(sessionStorage.getItem("scanPrev") || "null");
+    return p && data && !isUpload(data) && p.user_ref === data.user_ref ? p : null;
+  } catch { return null; }
+}
+
+// 비교할 숫자만 — 노출 위험도(위험 줄이기 화면의 「지금」 값) · 같은 조건의 사람 수 · 공개 글 ID · 내 단서 유형별 개수(남의 정보는 뺀다)
+function scanSummary(d) {
+  const rec = ((d.stage2 || {}).output || {}).recommendation || {};
+  const risk = (rec.projected || {}).current_risk ?? ((d.contribution || {}).output || {}).baseline_risk ?? null;
+  const types = {};
+  for (const e of Object.values(d.spans || {})) {
+    for (const s of (e.spans || [])) if (s.subject !== "other") types[s.type] = (types[s.type] || 0) + 1;
+  }
+  return { user_ref: d.user_ref, at: d.scanned_at || null, risk, k: ((d.specificity || {}).output || {}).k ?? null,
+    post_ids: (d.posts || []).map(p => p.post_id), types };
+}
+
 // 파일 업로드 결과인가 — 업로드 글은 Veilo 에 없어 글 링크 · 다시 점검 · 「Veilo 에서 고치기」가 깨진다 (B3).
 // source 가 없는 옛 결과는 업로드 글 ID(upload_000)로 가린다
 function isUpload(data) {
   return !!data && (data.source === "upload" || (data.posts || []).some(p => String(p.post_id).startsWith("upload_")));
+}
+
+// .txt 업로드는 비어 있지 않은 줄 하나를 글 한 편으로 읽는다(file_adapter) — 파일 하나가 여러 편으로 보이는 이유를 적는다 (#385 B1).
+// upload_kind 는 scan.html 이 파일 이름으로 남긴다. .json 은 posts 배열을 그대로 읽어 해당 없음
+function uploadSplitNote(data) {
+  if (!isUpload(data) || data.upload_kind !== "txt") return "";
+  const n = (data.posts || []).length;
+  return `파일의 줄 ${n}개를 글 ${n}편으로 나눠 읽었습니다. 빈 줄은 빼고 한 줄을 글 한 편으로 봅니다. 글 한 편을 한 덩어리로 보려면 문단을 한 줄로 이어 쓰세요.`;
 }
 
 // 실제 엔진이면 배지를 숨기고, 예시 계산(mock)일 때만 알린다 — 엔진 이름 · 규칙 병합 같은 내부 정보는 화면에 내지 않는다
@@ -52,8 +91,11 @@ function fmtOneOf(k) {
 
 // ── 진행 표시 — 점검은 한 번의 요청이라 서버가 진행률을 주지 않는다. 단계와 흐른 시간을 아래 띠로 보여 준다 ──
 // 내 글 점검(scan.html)과 위험 줄이기의 「다시 점검」(action.html)이 같이 쓴다. 띠가 없는 화면이면 만든다.
-// est(초)를 주면 막대가 그 시간에 맞춰 90%까지 차오르고 「3초 / 약 20초」로 보인다(서버 /sns/estimate — 글자 수 × 이 서버의 실측 속도).
-// 예상을 넘기면 막대는 멈춘 채 「예상보다 오래 걸리고 있습니다」. est 가 없으면 예전처럼 오가는 막대
+// est(초)를 주면 예상을 범위로 보인다 — 「3초 / 약 20초~50초」(서버 /sns/estimate · /api/scan-estimate — 글자 수 × 이 서버의 실측 속도).
+// 범위 위쪽은 est 의 2배(짧으면 +10초) — 같은 서버 · 같은 날에도 2배쯤 달라졌다(integration-W08 v2 재검증 · t3 버스트 크레딧).
+// 업로드는 글자 수를 파일 크기로 어림해 더 틀린다 · 예상보다 오래 걸린다는 지적 (#385 B7). 막대는 위쪽 끝에 맞춰 90%까지 차오른다.
+// 위쪽을 넘기면 막대는 멈춘 채 「예상보다 오래 걸리고 있습니다」를 눈에 띄게. est 가 없으면 예전처럼 오가는 막대.
+// 단계 이름은 서버가 알려 주는 실제 단계가 아니라 흐른 시간으로 바꾸는 표시다 — 실제 진행처럼 「○단계」로 보이지 않게 둔다
 let _pt = null;
 function fmtSec(s) { s = Math.max(1, Math.round(s)); return s < 60 ? `${s}초` : `${Math.floor(s / 60)}분 ${s % 60 ? (s % 60) + "초" : ""}`.trim(); }
 // 점검 대기표 — 점검 POST 에 X-Scan-Ticket 으로 싣고, 기다리는 동안 /api/scan-queue 로 1초마다 차례를 묻는다(서버는 점검을 하나씩만 돌린다).
@@ -97,14 +139,19 @@ function progressStart(title, note, est) {
   const el = (id) => document.getElementById(id);
   const bar = box.querySelector(".pbar");
   const hasEst = typeof est === "number" && est > 0;
+  const hi = hasEst ? Math.max(est * 2, est + 10) : 0;
+  const range = hasEst ? `약 ${fmtSec(est)}~${fmtSec(hi)}` : "";
+  const over = (on) => { for (const id of ["pTime", "pNote"]) { el(id).style.color = on ? "var(--red)" : ""; el(id).style.fontWeight = on ? "600" : ""; } };
+  let isOver = false;
   bar.classList.toggle("det", hasEst); bar.classList.remove("wait"); bar.style.setProperty("--p", "0");
-  el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = hasEst ? `0초 / 약 ${fmtSec(est)}` : "0초";
-  if (note) el("pNote").textContent = note;
-  else if (hasEst) el("pNote").textContent = `글 길이로 어림한 예상 시간은 약 ${fmtSec(est)}입니다. 창을 닫지 말고 기다려 주세요.`;
+  el("pTitle").textContent = title; el("pStage").textContent = ""; el("pTime").textContent = hasEst ? `0초 / ${range}` : "0초";
+  over(false);
+  const baseNote = note || (hasEst ? `글 길이로 어림한 예상 시간은 ${range}입니다. 서버 상황에 따라 더 걸릴 수 있습니다. 창을 닫지 말고 기다려 주세요.` : "");
+  if (baseNote) el("pNote").textContent = baseNote;
   box.hidden = false; document.body.classList.add("busy");
   let t0 = performance.now();
   // 단계 — 예상 시간이 있으면 그 비율로(0 · 10 · 35 · 60 · 85%), 없으면 예전 초 기준
-  const at = hasEst ? [0, 0.1, 0.35, 0.6, 0.85].map((f) => f * est) : [0, 2, 6, 10, 18];
+  const at = hasEst ? [0, 0.1, 0.35, 0.6, 0.85].map((f) => f * hi) : [0, 2, 6, 10, 18];
   const names = ["글 읽는 중", "개인정보 단서 찾는 중", "같은 조건의 사람 수 계산 중", "위험 줄일 방법 확인 중", "거의 다 됐습니다"];
   clearInterval(_pt);
   _pt = setInterval(() => {
@@ -119,8 +166,15 @@ function progressStart(title, note, est) {
     if (_queue.wasWaiting) { _queue.wasWaiting = false; t0 = performance.now(); bar.classList.remove("wait"); }
     const s = (performance.now() - t0) / 1000;
     if (hasEst) {
-      el("pTime").textContent = s <= est ? `${Math.round(s)}초 / 약 ${fmtSec(est)}` : `${Math.round(s)}초 · 예상보다 오래 걸리고 있습니다`;
-      bar.style.setProperty("--p", String(Math.min(0.9, (s / est) * 0.9)));
+      const late = s > hi;
+      el("pTime").textContent = late ? `${fmtSec(s)} · 예상보다 오래 걸리고 있습니다` : `${Math.round(s)}초 / ${range}`;
+      bar.style.setProperty("--p", String(Math.min(0.9, (s / hi) * 0.9)));
+      if (late !== isOver) {
+        isOver = late; over(late);
+        el("pNote").textContent = late
+          ? `예상(${range})보다 오래 걸리고 있습니다. 점검은 아직 진행 중입니다 — 서버가 붐비거나 글이 길면 더 걸립니다. 창을 닫지 말고 기다려 주세요. 끝나면 바로 결과로 넘어갑니다.`
+          : baseNote;
+      }
     } else el("pTime").textContent = `${Math.round(s)}초`;
     let i = 0; at.forEach((t, j) => { if (s >= t) i = j; });
     el("pStage").textContent = " · " + names[i];
@@ -255,8 +309,9 @@ const TYPE_LABEL = {
   JOB: "직업", FAM: "가족", COMMUTE: "통근", INCOME: "소득",
 };
 
+// 「특정됨」은 「나를 특정했다」로 읽힐 수 있어 「직접 드러남」으로 (#385 E11-1)
 const VERDICT_LABEL = {
-  specified: "특정됨",
+  specified: "직접 드러남",
   narrowed: "좁혀짐",
   weak_signal: "약한 신호",
   abstain: "판단 보류",
@@ -269,12 +324,13 @@ const GRAIN_LABEL = {
 
 // k 등급 — 코드 값은 영문 상수, 화면 문구는 여기서 (필드-대조표 §3 · 경계는 plan.md §13.1)
 // 배지는 「같은 조건의 사람 수」만 말한다 — 「위험 낮은 편」이라 쓰면 옆의 노출 위험도(95/100)와 부딪힌다 (UX N1 · M1).
-// 두 숫자는 따로 계산한다. 등급 이름 대신 구간(5명 이상 등)만 — 「5명 이상」도 안전하다는 뜻이 아니다(툴팁)
+// 두 숫자는 따로 계산한다. 배지에는 뜻만 쓰고 숫자 구간(5명 이상 등)은 툴팁으로 — 옆의 「약 N명 중 한 명」과 숫자 둘이 나란히 보여 헷갈렸다 (#385 E1)
+// 「5명 이상」도 안전하다는 뜻이 아니다(툴팁)
 const K_LEVEL_LABEL = {
-  VERY_HIGH: ["2명 이하", "같은 조건의 사람 2명 이하 — 한 사람으로 좁혀질 수 있음"],
-  HIGH: ["5명 미만", "같은 조건의 사람 2명 초과 5명 미만 — 몇 사람으로 좁혀짐"],
-  ACCEPTABLE: ["5명 이상", "같은 조건의 사람 5명 이상 — 다른 글과 합치면 줄어들 수 있음. 노출 위험도와는 따로 계산함"],
-  UNKNOWN: ["셀 수 없음", "단서가 부족해 같은 조건의 사람 수를 셀 수 없음"],
+  VERY_HIGH: ["한 사람으로 좁혀질 수 있음", "같은 조건의 사람 2명 이하"],
+  HIGH: ["몇 사람으로 좁혀짐", "같은 조건의 사람 2명 초과 5명 미만"],
+  ACCEPTABLE: ["한 사람으로 바로 좁혀지진 않음", "같은 조건의 사람 5명 이상 — 다른 글과 합치면 줄어들 수 있음. 노출 위험도와는 따로 계산함"],
+  UNKNOWN: ["사람 수를 셀 수 없음", "단서가 부족해 같은 조건의 사람 수를 셀 수 없음"],
 };
 
 const ATTR_LABEL = {

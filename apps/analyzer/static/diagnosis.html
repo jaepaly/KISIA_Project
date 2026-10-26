@@ -59,7 +59,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=374"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=385"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -69,9 +69,12 @@ function renderSpecificity(spec) {
     return `<p><span class="badge unknown">계산할 수 없음</span> 지금은 같은 조건의 사람 수를 계산할 수 없습니다.</p>`;
   }
   const [lv, lvWhy] = K_LEVEL_LABEL[o.k_level] || [o.k_level, ""];
-  return `<p><span class="badge ${o.k_level === "ACCEPTABLE" ? "abstain" : "found"}" title="${esc(lvWhy)} (개인정보위 가명정보 처리 가이드라인 기준)">같은 조건 사람 수: ${esc(lv)}</span> 공개 글을 모아 보면 같은 조건의 사람 <b>${fmtOneOf(o.k)}</b>
+  return `<p><span class="badge ${o.k_level === "ACCEPTABLE" ? "abstain" : "found"}" title="${esc(lvWhy)} (개인정보위 가명정보 처리 가이드라인 기준)">${esc(lv)}</span> 공개 글을 모아 보면 같은 조건의 사람 <b>${fmtOneOf(o.k)}</b>
     <span class="note">(${esc(o.basis.source)}, ${esc(o.basis.as_of)} 기준 · 실제 명단이 아니라 인구통계로 센 수입니다)</span></p>`;
 }
+
+// 노출 위험도는 소수 첫째 자리 — 조치 화면(action.html fmtR) · Veilo 와 같게 (#385 E5)
+const fmtR = (r) => (r === null || r === undefined) ? "—" : Number(r).toFixed(1);
 
 // 「이 글을 내리면 후보가 몇 명이 되나」 — 엔진이 글별 k 를 줄 때만 (목에는 없다)
 function postK(data, postId) {
@@ -82,14 +85,20 @@ function postK(data, postId) {
   return `<p class="post-k">이 글을 비공개로 바꾸면 같은 조건의 사람 수 ${fmtK(kp.k)} → ${fmtK(row.k_without)}</p>`;
 }
 
-// 판정은 규칙이다 — 명시 단서가 있으면 「특정됨」, 암묵이면 「좁혀짐」, 추론 단서가 글 2편 이상이면 「좁혀짐」, 1편이면 「약한 신호」.
-// 「신뢰도」는 그 단계에 붙은 고정값(0.9 · 0.7 · 0.6 · 0.4 · 0.1)이지 계산된 확률이 아니다 — 화면에 그렇게 적는다
+// 판정은 규칙이다 — 명시 단서가 있으면 「직접 드러남」, 암묵이면 「좁혀짐」, 추론 단서가 글 2편 이상이면 「좁혀짐」, 1편이면 「약한 신호」.
+// 「신뢰도」는 그 단계에 붙은 고정값(0.9 · 0.7 · 0.6 · 0.4 · 0.1)이지 계산된 확률이 아니다 — 본문은 말로, 숫자는 툴팁으로 (#385 E8)
+// 받침이 있으면 「이」, 없으면 「가」 — 「나이가 · 직업이」
+const iGa = (w) => { const c = String(w).charCodeAt(String(w).length - 1) - 0xAC00; return c >= 0 && c <= 11171 && c % 28 ? "이" : "가"; };
 const VERDICT_WHY = {
-  specified: "나이나 지역이 <b>글에 직접 적혀 있어</b> 해당 정보를 특정할 수 있습니다.",
+  // 항목 이름을 넣는다 — 모든 항목이 「나이나 지역이…」 한 문장을 같이 써서 나이 카드에 「지역」이 나왔다 (#385 E11-2)
+  specified: (name) => `${esc(name)}${iGa(name)} <b>글에 직접 적혀 있습니다</b>.`,
   narrowed: "<b>돌려 쓴 표현</b>이 있거나, <b>짐작할 단서</b>가 글 2편 이상에 있어 해당 정보의 범위를 좁힐 수 있습니다.",
   weak_signal: "짐작할 단서가 글 1편에만 있어 판단하기 어렵습니다.",
   abstain: "단서를 찾지 못해 판단을 보류했습니다.",
 };
+// 기준값(rules.py CONFIDENCE)을 말로 — 숫자는 툴팁에만. 목 엔진처럼 모르는 값이면 「기준값 보기」만 쓰고 숫자는 툴팁에
+const CONF_WHY = { 0.9: "직접 쓴 정보라 확실하게 봅니다", 0.7: "돌려 쓴 표현이라 조금 덜 확실하게 봅니다", 0.6: "정황으로 짐작한 단서라 그보다 낮게 봅니다", 0.4: "단서가 글 1편에만 있어 약하게 봅니다" };
+const CONF_TIP = "정답일 확률이 아니라 판정 단계별 고정값입니다";
 const LEVEL_KO = { explicit: "직접 쓴 정보", implicit: "돌려 쓴 정보", inferential: "정황으로 짐작한 정보" };
 function evidenceOf(data, f) {
   const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
@@ -102,7 +111,9 @@ function renderFindings(data, findings) {
   return Object.entries(findings).map(([attr, f]) => {
     const ev = evidenceOf(data, f);
     const nPosts = new Set(ev.map(e => e.post_id)).size;
-    const why = VERDICT_WHY[f.verdict] || "";
+    const w = VERDICT_WHY[f.verdict];
+    const why = typeof w === "function" ? w(ATTR_LABEL[attr] || attr) : (w || "");
+    const conf = CONF_WHY[f.confidence];
     const evHtml = ev.length ? `<ul class="ev">${ev.slice(0, 6).map(e => `<li><mark class="span-hit" data-type="${esc(attr === "location" ? "LOC_ADMIN" : attr.toUpperCase())}">${esc(e.text)}</mark> <span class="muted">${LEVEL_KO[e.level] || "단서"} · 「${esc(e.label)}」</span></li>`).join("")}${ev.length > 6 ? `<li class="muted">외 ${ev.length - 6}곳</li>` : ""}</ul>` : "";
     if (f.verdict === "abstain") {
       return `<div class="card finding"><div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge abstain">판단 보류</span></div><p class="why">${why}</p></div>`;
@@ -111,7 +122,7 @@ function renderFindings(data, findings) {
       <div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || "단서 있음")}</span>
         ${GRAIN_LABEL[f.granularity] ? `<span class="muted">${esc(GRAIN_LABEL[f.granularity])}</span>` : ""}
         <span class="muted">· 근거 ${ev.length}곳${nPosts > 1 ? ` · 글 ${nPosts}편에 걸침` : ""}</span></div>
-      <p class="why">${why} <span class="muted">기준값 ${esc(f.confidence)}</span></p>
+      <p class="why">${why}${f.confidence !== undefined && f.confidence !== null ? ` <span class="muted" title="기준값 ${esc(f.confidence)} — ${CONF_TIP}">${conf ? esc(conf) : "기준값 보기"}</span>` : ""}</p>
       ${evHtml}
     </div>`;
   }).join("");
@@ -195,20 +206,21 @@ if (!data) {
   const nFound = findings.filter(f => f.verdict !== "abstain").length;
   const nAbstain = findings.length - nFound;
   const nick = data.nickname || ((data.posts[0] || {}).activity_meta || {}).nickname || "";
-  el.innerHTML = `
+  const split = uploadSplitNote(data);   // .txt — 「파일의 줄 N개를 글 N편으로」 (#385 B1)
+  el.innerHTML = (split ? `<p class="hint">${esc(split)}</p>` : "") + `
     <div class="card">
       <div class="row between">
         <h2>${esc(nick || data.user_ref)}${nick ? ` <small class="muted">@${esc(data.user_ref)}</small>` : ""}</h2>
         <a class="btn" href="action.html">위험 줄이기 →</a>
       </div>
       ${renderSpecificity(data.specificity)}
-      <p class="score"><b>${esc(data.contribution.output.baseline_risk)}</b><span class="unit">/ 100 · 현재 노출 위험도 <small>(높을수록 글쓴이를 좁히기 쉽습니다)</small></span></p>
+      <p class="score"><b>${fmtR(data.contribution.output.baseline_risk)}</b><span class="unit">/ 100 · 현재 노출 위험도 <small>(높을수록 글쓴이를 좁히기 쉽습니다)</small></span></p>
     </div>
     ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
     ${renderTimeline(data)}
     <details class="card more sec">
       <summary>개인정보 ${findings.length}개 항목 <small>— ${nFound}개 항목에서 단서 발견, ${nAbstain}개 판단 보류</small></summary>
-      <p class="note">항목마다 붙은 기준값은 정답일 확률이 아니라 판정 단계별 고정값입니다. 직접 쓴 정보 0.9, 돌려 쓴 정보 0.7, 정황으로 짐작한 정보 0.6, 약한 신호 0.4입니다.</p>
+      <p class="note" title="기준값 — ${CONF_TIP}. 직접 쓴 정보 0.9, 돌려 쓴 정보 0.7, 정황으로 짐작한 정보 0.6, 약한 신호 0.4">직접 쓴 정보일수록 더 확실하게 봅니다. 돌려 쓴 표현, 정황으로 짐작한 단서, 글 1편에만 있는 단서 순으로 낮게 봅니다.</p>
       ${renderFindings(data, data.stage2.output.findings)}
     </details>
     <div class="row between sec">
