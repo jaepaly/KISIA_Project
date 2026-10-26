@@ -122,18 +122,35 @@ def test_job_family_commute_and_income_resolution() -> None:
     assert income is not None and income["resolution"] == 1
 
 
-def test_other_is_excluded_and_unknown_halves_confidence() -> None:
+def test_other_and_unknown_are_excluded() -> None:
+    """본인(self) 스팬만 조건이 된다. unknown 은 예전에 신뢰도 ×0.5 로 넣었으나 뺀다 (exp43) —
+    실제 블로그에서 아이 나이 · 관용구 · 광고 문구가 unknown 으로 들어와 글쓴이 나이 조건이 됐다."""
     assert span_to_condition(
         span("AGE", "서른", subject="other"),
         "p1",
     ) is None
+    for typ, text in (("SEX", "남성"), ("AGE", "세 살"), ("AGE", "5~7세"), ("COMMUTE", "지하철 2호선"),
+                      ("LOC_ADMIN", "강남구"), ("JOB", "간호사")):
+        assert span_to_condition(span(typ, text, subject="unknown"), "p1") is None, text
+    with pytest.raises(ValueError):
+        span_to_condition(span("SEX", "남성", subject="nobody"), "p1")
 
-    condition = span_to_condition(
-        span("SEX", "남성", level="implicit", subject="unknown"),
+
+def test_unknown_spans_add_no_derived_conditions() -> None:
+    """unknown 배우자 호칭 · 직장 관계(REL_WORK)도 파생 조건(기혼 · 통근)을 만들지 않는다 (exp43)."""
+    assert build_conditions([span("SEX", "남편", subject="unknown")], "p1") == []
+    assert build_conditions([span("REL_WORK", "회사 근처", subject="unknown")], "p1") == []
+    assert [c["value"] for c in build_conditions([span("REL_WORK", "회사 근처")], "p1")] == ["REL_WORK"]
+
+
+def test_home_marker_does_not_promote_unknown_location() -> None:
+    """같은 글에 본인 거주 표지가 있어도 관계 불명(여행지 등) 위치는 조건이 되지 않는다 — 본인 위치만 1.0 으로."""
+    conditions = build_conditions(
+        [span("REL_HOME", "집 근처"), span("LOC_ADMIN", "강남구", subject="unknown"), span("LOC_ADMIN", "마포구")],
         "p1",
     )
-    assert condition is not None
-    assert condition["confidence"] == 0.4
+    assert [c["axis"] for c in conditions] == ["location"]
+    assert conditions[0]["confidence"] == 1.0
 
 
 def test_spouse_term_adds_family_condition() -> None:
