@@ -31,6 +31,7 @@ from apps.analyzer import engines as engine
 from kopl.c4_stage2.links import find_direct_identifiers
 from apps.analyzer.engines import c1_rules  # os · threading 만 — 목 모드에서도 모델을 불러오지 않는다
 from kopl.c4_stage2.timeline import find_marks, infer_starts
+from kopl.c4_stage2.residence import find_residence
 from apps.analyzer.adapters import file_adapter, sns_adapter
 
 log = logging.getLogger("analyzer")
@@ -204,20 +205,65 @@ def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
     return out
 
 
+_LOC_SPAN_TYPES = ("LOC_ADMIN", "LOC_FACILITY")
+
+
+def _without_location(posts: list[dict], spans_by_post: dict[str, dict]) -> tuple[list[dict], dict[str, dict]]:
+    """해외 거주로 보일 때 k · 위험도 · 2단에 넘길 입력 — 위치 스팬(LOC_ADMIN · LOC_FACILITY)과 위치 태그를 뺀다.
+
+    국내 인구 사전으로 사는 곳을 세지 않는다 — 외국 지명은 어차피 사전에 없고, 남는 것은 「예산」 「음성」처럼 지명과 글자가
+    같은 일반 낱말이다. 나이 · 성별 · 직업 · 가족 · 통근 · 소득 스팬은 그대로 둔다. 원본(posts · spans)은 바꾸지 않는다 —
+    화면 하이라이트는 원래 스팬을 그대로 쓴다."""
+    k_posts = [{**p, "activity_meta": {**p["activity_meta"], "geo_tag": None}}
+               if (p.get("activity_meta") or {}).get("geo_tag") else p for p in posts]
+    k_spans = {pid: {**res, "spans": [s for s in res.get("spans") or [] if s.get("type") not in _LOC_SPAN_TYPES]}
+               for pid, res in spans_by_post.items()}
+    return k_posts, k_spans
+
+
+def _abstain_location(stage2: dict) -> None:
+    """2단 location 판정을 기권으로 — 위치 스팬을 뺀 입력이면 모델 · 규칙 모두 기권이 나오지만, 목 엔진 · 모델의 근거 없는
+    판정까지 확실히 막는다. 계약(stage2-io)의 abstain 모양 그대로(근거 없음 · 신뢰도 0.25 이하)."""
+    findings = (stage2.get("output") or {}).get("findings")
+    if isinstance(findings, dict) and "location" in findings:
+        findings["location"] = {"verdict": "abstain", "granularity": None, "evidence": [], "confidence": 0.1,
+                                "cross_post": False}
+
+
+def _residence_view(res: dict) -> dict:
+    """화면에 넘길 해외 거주 판별 — 여부 · 나라 · 글 수 · 근거 표현(글쓴이 본인 글의 짧은 조각, direct_identifiers 와 같은 방식)."""
+    return {
+        "overseas": res["overseas"],
+        "country": res["country"],
+        "location_excluded": res["overseas"],   # 위치 단서를 k · 위험도 · 2단 location 에서 뺐다
+        "rule": res["rule"],
+        "n_posts": {k: len(v) for k, v in res["posts"].items()},
+        "evidence": [{k: h[k] for k in ("post_id", "text_id", "start", "end", "value")} for h in res["evidence"]]
+        if res["overseas"] else [],
+    }
+
+
 def _pipeline(user_ref: str, posts: list[dict]) -> dict:
     inputs = {p["post_id"]: _detect_input(p) for p in posts}
     spans_by_post = {pid: engine.detect_spans(rec) for pid, rec in inputs.items()}
+    # 해외 거주 판별 — 본인 거주 표현(「미국에서 지내다 보니」 「미국생활」)이 여러 글에 있고 국내 거주 단서보다 많을 때만 (residence.py).
+    # 해외로 보이면 사는 곳은 국내 인구 기준으로 추정하지 않는다 — 아래 k · 위험도 · 2단에 위치 단서를 넘기지 않는다
+    residence = find_residence({p["post_id"]: _channels(p) for p in posts},
+                               {pid: res.get("spans") or [] for pid, res in spans_by_post.items()})
+    k_posts, k_spans = _without_location(posts, spans_by_post) if residence["overseas"] else (posts, spans_by_post)
     # 조건 · k · 기여도 — real: k 엔진(본인 단서 · 여러 글 교집합 · 위치태그) · LOO / mock: 형식만
-    conditions = engine.conditions(posts, spans_by_post)
+    conditions = engine.conditions(k_posts, k_spans)
     spec = engine.specificity({"user_ref": user_ref, "conditions": conditions})
-    contrib = engine.contribution(user_ref, posts, spans_by_post=spans_by_post)
+    contrib = engine.contribution(user_ref, k_posts, spans_by_post=k_spans)
 
     baseline = contrib["output"]["baseline_risk"]
     target = round(max(baseline - 40.0, 0.0), 1)
     # 이번 요청의 스팬을 그대로 넘긴다 — 엔진 전역에 원문을 두지 않는다 (A3 · 동시 점검이 섞이지 않게)
     # 1단에 넣은 입력(채널)도 그대로 — 2단 근거의 원문과 스팬 offset 이 같은 글에서 나온다
-    stage2 = engine.stage2(user_ref, posts, risk_current=baseline, risk_target=target, spans_by_post=spans_by_post,
+    stage2 = engine.stage2(user_ref, k_posts, risk_current=baseline, risk_target=target, spans_by_post=k_spans,
                            detect_inputs=inputs)
+    if residence["overseas"]:
+        _abstain_location(stage2)
 
     return {
         "user_ref": user_ref,
@@ -225,11 +271,14 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
         "spans": spans_by_post,
         "specificity": spec,
         "contribution": contrib,
-        "k_by_post": engine.per_post_k(posts, spans_by_post),
+        "k_by_post": engine.per_post_k(k_posts, k_spans),
         "stage2": stage2,
         # 조치별 「바꾸면 같은 조건의 사람 몇 명」 — 비공개(k_by_post)와 같은 k 계산을 위치 태그 지우기 · 바꿔 쓰기에도.
         # stage2-io Action 에 사람 수 칸이 없어 계약 밖 · 화면 전용으로 둔다 (k_by_post 와 같은 방식)
-        "k_by_action": engine.projected_k(posts, spans_by_post, stage2.get("output")),
+        "k_by_action": engine.projected_k(k_posts, k_spans, stage2.get("output")),
+        # 해외 거주 판별 — 해외로 보이면 사는 곳을 국내 인구 기준으로 추정하지 않았다는 안내 · 근거(화면 전용 · 계약 밖).
+        # stage2-io 에 해외 값 · 이유 칸이 없어 location 은 abstain 으로만 두고, 여부와 근거는 여기로 넘긴다
+        "residence": _residence_view(residence),
         # 계정 링크 · 이메일 · 전화 · @아이디 — 하나만으로 글쓴이에게 닿는다. k 로 잴 대상이 아니라 위험 점수와 별개로 먼저 안내한다
         # (스팬 계약 밖 · 화면 전용). 글마다 [{text_id, start, end, kind, label, value}]
         "direct_identifiers": {p["post_id"]: find_direct_identifiers(_channels(p)) for p in posts},

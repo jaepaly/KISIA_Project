@@ -304,6 +304,32 @@ function renderTimeline(data) {
     <ul>${cards}</ul></div>`;
 }
 
+// 해외 거주 — 서버 residence. 본인 거주 표현(「미국에서 지내다 보니」 「미국생활」)이 여러 글에 있으면 사는 곳은 국내 인구 기준으로
+// 추정하지 않고(위치 단서를 사람 수 · 노출 위험도 · 거주지 판정에서 뺀다) 나머지 단서만 센다. residence 가 없는 옛 결과 · 목은 국내로 본다
+function isOverseas(data) {
+  return !!(data && data.residence && data.residence.overseas);
+}
+
+// 사람 수 · 노출 위험도 옆 표기 — 국내 인구로 센 값이라 해외 거주자에게는 참고용
+function refTag(data) {
+  return isOverseas(data)
+    ? ` <span class="badge unknown" title="해외에 사시는 것으로 보여 국내 인구 기준 값은 참고로만 보세요">국내 인구 기준 · 참고용</span>`
+    : "";
+}
+
+function renderOverseasNote(data) {
+  if (!isOverseas(data)) return "";
+  const r = data.residence;
+  const posts = Object.fromEntries((data.posts || []).map(p => [p.post_id, p]));
+  const seen = new Set();
+  const ev = (r.evidence || []).filter(e => !seen.has(e.post_id) && seen.add(e.post_id)).slice(0, 2)
+    .map(e => `<mark>${esc(e.value)}</mark> — 「${esc(postLabel(posts[e.post_id]) || e.post_id)}」`);
+  const n = (r.n_posts || {}).residence || 0;
+  return `<div class="card tip"><b>해외에 사시는 것으로 보여 사는 곳은 국내 인구 기준으로 추정하지 않았습니다. 나머지 단서는 그대로 점검했습니다.</b>
+    <p>같은 조건의 사람 수와 노출 위험도는 국내 인구로 센 값이라 참고용으로만 보세요. 글에 적은 지명은 그대로 표시하지만 사람 수 계산에서는 뺐습니다.</p>
+    ${ev.length ? `<p class="muted">이렇게 판단한 근거${n > ev.length ? ` (글 ${n}편 중 일부)` : ""}</p><ul>${ev.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}</div>`;
+}
+
 const TYPE_LABEL = {
   LOC_ADMIN: "지역명", LOC_FACILITY: "장소명", REL_HOME: "집 근처", REL_WORK: "직장 근처", AGE: "나이", SEX: "성별",
   JOB: "직업", FAM: "가족", COMMUTE: "통근", INCOME: "소득",

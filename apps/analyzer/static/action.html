@@ -52,7 +52,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=385"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=400"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -173,6 +173,7 @@ function renderBeforeAfter(data) {
     line = risk ? `추천대로 하면 ${risk}` : "";
   }
   if (!line) return "";
+  line += refTag(data);   // 해외 거주로 보이면 「국내 인구 기준 · 참고용」
   const sub = m !== null && m !== undefined && Math.round(m) !== Math.round(k) && risk ? `<p class="hint">추천 방법을 모두 적용하면 ${risk} (예상)</p>` : "";
   return `<div class="card before-after"><p class="ba">${line}</p>${sub}
     <p class="hint">같은 조건의 사람이 많을수록 글쓴이를 좁히기 어렵습니다. 예상값이며 실제로 바꾼 뒤 다시 점검해 확인하세요.</p></div>`;
@@ -235,7 +236,7 @@ function renderScore(data) {
       </div>
       <p class="score"><b>${fmtR(pr.current_risk)}</b><span class="arrow">→</span>
         <b class="down">${fmtR(pr.projected_risk)}</b>
-        <span class="unit">추천 방법을 모두 적용한 예상 노출 위험도</span></p>
+        <span class="unit">추천 방법을 모두 적용한 예상 노출 위험도${refTag(data)}</span></p>
       <!-- 사람 수는 바로 위 카드(renderBeforeAfter)에 있어 여기서 다시 쓰지 않는다 · 「목표」 → 무엇을 위한 값인지 「권장 노출 위험도 40 이하」 (#385 E4-2) -->
       <p class="hint" style="margin-top:6px">감소 <b>${pr.reduction_pct === null || pr.reduction_pct === undefined ? "—" : fmtR(pr.reduction_pct) + "%"}</b>
         ${hasT ? `· 권장 노출 위험도 ${fmtT(target)} 이하 ${pr.target_met ? "— 추천 방법을 모두 적용하면 권장 이하" : "— 모두 적용해도 권장보다 높음"}` : ""}</p>
@@ -562,7 +563,7 @@ function render() {
   // 맨 위 소개 — 업로드 글은 Veilo 에 없다. 게시처에서 바꾸고, 효과는 파일을 고쳐 다시 올려 본다 (#385 B3)
   if (isUpload(data)) document.getElementById("lede").textContent = "위험을 줄일 방법과 예상 효과를 보여 줍니다. 실제 변경은 글을 올린 서비스에서 직접 하고, 효과는 파일을 고쳐 다시 올려 확인합니다.";
   const split = uploadSplitNote(data);   // .txt — 「파일의 줄 N개를 글 N편으로」 (#385 B1)
-  el.innerHTML = (split ? `<p class="hint">${esc(split)}</p>` : "") + renderPrevNow(data) + renderBeforeAfter(data) + renderScore(data)
+  el.innerHTML = (split ? `<p class="hint">${esc(split)}</p>` : "") + renderPrevNow(data) + renderOverseasNote(data) + renderBeforeAfter(data) + renderScore(data)
     + renderDirectIdentifiers(data, "먼저 지울 것 — 계정이나 연락처로 바로 이어지는 정보")   // #326 · 점수와 별개
     + renderTimeline(data)   // #331 · 점수와 별개
     + renderActions(data) + renderFunnel(data) + renderOrder(data) + renderRewrites(data) + renderManualTips(data);
