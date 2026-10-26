@@ -17,6 +17,7 @@ from typing import Any, Mapping, Sequence
 from kopl.c2_specificity.engine import risk_total
 from kopl.c2_specificity.k_engine import conditions_from_posts, estimate_k, k_by_post, specificity_document
 from kopl.c2_specificity.k_engine import _describe as describe_condition  # steps 의 단서 이름을 만드는 바로 그 함수
+from kopl.c2_specificity.k_engine import _default_index, _location_set  # 위치 단서가 가리키는 읍면동 집합 — 엔진이 같은 곳끼리 묶는 기준
 from kopl.c3_contribution.loo import leave_one_out
 
 from .projection import project
@@ -137,7 +138,8 @@ def decisive_clues(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[st
         return []
     want = {lab for lab, _, _ in labels}
     sources: dict[str, list[dict]] = {lab: [] for lab in want}
-    for p in _k_posts(posts, spans_by_post):
+    kposts = _k_posts(posts, spans_by_post)
+    for p in kposts:
         pid = p["post_id"]
         for s in p["spans"]:
             if s.get("subject") == "other" or not s.get("span_id"):
@@ -147,14 +149,78 @@ def decisive_clues(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[st
             except (KeyError, TypeError, ValueError):
                 continue   # 형식이 어긋난 스팬 — 근거로 쓰지 않는다(엔진 본 계산과 같은 입력이라 보통은 없다)
             for lab in made & want:
-                sources[lab].append({"post_id": pid, "span_id": str(s["span_id"]), "text_id": s.get("text_id"),
-                                     "start": s.get("start"), "end": s.get("end"), "text": s.get("text"),
-                                     "type": s.get("type"), "subject": s.get("subject")})
+                sources[lab].append(_source(pid, s))
         if p.get("geo_tag"):
             for c in conditions_from_posts([{"post_id": pid, "spans": [], "geo_tag": p["geo_tag"]}]):
                 lab = describe_condition(c)
                 if lab in want:
                     sources[lab].append({"post_id": pid, "geo_tag": str(p["geo_tag"])})
+    # 같은 곳을 다르게 쓴 위치 단서(「한남동」 · 「한남동은」 · 「한남동에서」)는 엔진이 한 단서로 묶어 센다. 하나만 빼면 같은 곳의
+    # 다른 표기가 다음 결정 단서로 올라와 작성자가 같은 곳을 여러 번 눌러야 한다 — 같은 읍면동 집합을 가리키는 스팬을 함께 근거로 둔다
+    loc_sets = {lab: _codes_of(srcs, kposts) for lab, srcs in sources.items() if lab.startswith("location:") and srcs}
+    loc_sets = {lab: sets for lab, sets in loc_sets.items() if sets}
+    if loc_sets:
+        have = {lab: {_ref(x) for x in sources[lab]} for lab in loc_sets}
+        for p in kposts:
+            pid = p["post_id"]
+            cands = [(_source(pid, s), _span_codes(pid, s)) for s in p["spans"]
+                     if s.get("subject") == "self" and s.get("span_id") and s.get("type") in _LOC_TYPES]
+            if p.get("geo_tag"):   # 위치 태그도 같은 곳이면 함께 — 남기면 태그가 다음 결정 단서로 다시 올라온다
+                cands.append(({"post_id": pid, "geo_tag": str(p["geo_tag"])}, _tag_codes(pid, p["geo_tag"])))
+            for src, codes in cands:
+                if not codes:
+                    continue
+                for lab, want_codes in loc_sets.items():
+                    if codes in want_codes and _ref(src) not in have[lab]:
+                        have[lab].add(_ref(src))
+                        sources[lab].append(src)
     out = [{"label": lab, "axis": axis, "value": value, "sources": sources[lab]}
            for lab, axis, value in labels if sources[lab]]
     return out[:limit]
+
+
+_LOC_TYPES = ("LOC_ADMIN", "LOC_FACILITY")
+
+
+def _source(pid: str, s: Mapping[str, Any]) -> dict:
+    return {"post_id": pid, "span_id": str(s["span_id"]), "text_id": s.get("text_id"), "start": s.get("start"),
+            "end": s.get("end"), "text": s.get("text"), "type": s.get("type"), "subject": s.get("subject")}
+
+
+def _span_codes(pid: str, s: Mapping[str, Any]) -> frozenset | None:
+    """스팬 하나가 만드는 위치 조건이 가리키는 읍면동 집합(엔진의 묶음 기준 _group 의 values 와 같다). 위치 조건이 아니면 None."""
+    try:
+        return _first_codes(conditions_from_posts([{"post_id": pid, "spans": [s]}]))
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _ref(src: Mapping[str, Any]) -> tuple:
+    return (src["post_id"], "tag") if "geo_tag" in src else (src["post_id"], str(src.get("span_id")))
+
+
+def _first_codes(conds: Sequence[Mapping[str, Any]]) -> frozenset | None:
+    sets = [frozenset(_location_set(c, _default_index())[0]) for c in conds if c.get("axis") == "location"]
+    return next((x for x in sets if x), None)
+
+
+def _tag_codes(pid: str, tag: Any) -> frozenset | None:
+    try:
+        return _first_codes(conditions_from_posts([{"post_id": pid, "spans": [], "geo_tag": tag}]))
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _codes_of(srcs: Sequence[Mapping[str, Any]], kposts: Sequence[Mapping[str, Any]]) -> set[frozenset]:
+    by_id = {(p["post_id"], str(s.get("span_id"))): s for p in kposts for s in p["spans"]}
+    tags = {p["post_id"]: p.get("geo_tag") for p in kposts}
+    out = set()
+    for x in srcs:
+        if "geo_tag" in x:
+            codes = _tag_codes(x["post_id"], tags.get(x["post_id"]))
+        else:
+            s = by_id.get((x["post_id"], x.get("span_id")))
+            codes = _span_codes(x["post_id"], s) if s is not None else None
+        if codes:
+            out.add(codes)
+    return out

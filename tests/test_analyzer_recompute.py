@@ -195,3 +195,33 @@ def test_not_json_is_400():
 def test_cross_origin_recompute_is_rejected():
     r = TestClient(server.app).post("/api/recompute", json={}, headers={"origin": "https://evil.example"})
     assert r.status_code == 403
+
+
+def test_same_place_spellings_are_one_decisive_clue():
+    """같은 곳을 다르게 쓴 위치 단서(「한남동」 · 「한남동에서」)는 한 결정 단서로 묶인다 — 하나만 빼면 다른 표기가 다음 단서로 올라와
+    작성자가 같은 곳을 여러 번 눌러야 했다(실제 글 점검에서 같은 동네 표기 3~5개가 따로 올라옴)."""
+    rows = [("p1", "한남동에서 브런치를 먹었다."), ("p2", "한남동 골목 카페가 좋았다."), ("p3", "서른여덟 살 엄마의 하루.")]
+    table = {"p1": [("한남동에서", "LOC_ADMIN", "explicit")], "p2": [("한남동", "LOC_ADMIN", "explicit")],
+             "p3": [("서른여덟 살", "AGE", "explicit")]}
+    posts = [_post(pid, body) for pid, body in rows]
+    spans = {pid: {"spans": s} for pid, s in _spans(rows, table).items()}
+    spec = c23.specificity({"user_ref": USER, "conditions": c23.conditions(posts, spans)})
+    loc = [c for c in c23.decisive_clues(posts, spans, spec["output"]) if c["axis"] == "location"]
+    assert len(loc) == 1
+    assert {s["text"] for s in loc[0]["sources"]} == {"한남동에서", "한남동"}
+
+
+def test_same_place_tag_and_spans_leave_together_other_place_stays(monkeypatch, real_k):
+    """같은 곳의 위치 태그 · 다른 표기 스팬은 한 번에 빠지고(다시 올라오지 않음), 다른 곳은 다음 결정 단서로 남는다."""
+    rows = [("p1", "망원동에서 커피 한 잔."), ("p2", "망원동 시장 구경."), ("p3", "연희동 집 앞 산책.")]
+    table = {"p1": [("망원동에서", "LOC_ADMIN", "explicit")], "p2": [("망원동", "LOC_ADMIN", "explicit")],
+             "p3": [("연희동", "LOC_ADMIN", "explicit")]}
+    out = _scan(monkeypatch, rows, table, geo_tag="서울특별시 마포구 망원동")
+    first = _clue(out, "location")
+    if not any("망원" in (s.get("text") or s.get("geo_tag") or "") for s in first["sources"]):
+        pytest.skip("엔진이 연희동을 먼저 골랐다 — 이 경우는 위 테스트들이 본다")
+    assert {s.get("text") or s.get("geo_tag") for s in first["sources"]} == {"망원동에서", "망원동", "서울특별시 마포구 망원동"}
+    new = TestClient(server.app).post("/api/recompute", json=_body(out, _refs(first))).json()
+    nxt = [c for c in new["decisive_clues"] if c["axis"] == "location"]
+    assert nxt and all("망원" not in (s.get("text") or s.get("geo_tag") or "") for c in nxt for s in c["sources"])
+    assert any(s.get("text") == "연희동" for c in nxt for s in c["sources"])
