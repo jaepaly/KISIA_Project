@@ -1,0 +1,199 @@
+{
+ "gold": {
+  "gold_spans": 2194,
+  "gold_commute": 174,
+  "gold_commute_dropped": 0,
+  "dropped": [],
+  "gold_spans_text_cha": [
+   {
+    "post_id": "D21_b04",
+    "type": "COMMUTE",
+    "ordinal": false,
+    "ctx": "야간 끝나고 ⟦차⟧ 빼는데 십 분이면"
+   }
+  ],
+  "ordinal_pattern_in_gold_texts": 57,
+  "ordinal_pattern_covered_by_gold_span": [
+   {
+    "post_id": "D12_b06",
+    "type": "JOB",
+    "text": "야간 3일차",
+    "ctx": "야간 ⟦3일차⟧"
+   },
+   {
+    "post_id": "D21_b20",
+    "type": "JOB",
+    "text": "야간 3년차",
+    "ctx": "른다섯 되고 야간 ⟦3년차⟧"
+   }
+  ]
+ },
+ "saved_preds": {
+  "files": {
+   "exp24-cpu-accel/results/preds_dev_fp32.jsonl": {
+    "commute": 318,
+    "dropped": 1
+   },
+   "exp24-cpu-accel/results/preds_exp17_fp32.jsonl": {
+    "commute": 26,
+    "dropped": 0
+   },
+   "exp27-adversarial/results/preds.jsonl": {
+    "commute": 5,
+    "dropped": 0
+   },
+   "exp28-context-review/results/a0_d1.jsonl": {
+    "commute": 46,
+    "dropped": 0
+   },
+   "exp28-context-review/results/a0_d2.jsonl": {
+    "commute": 60,
+    "dropped": 0
+   },
+   "exp28b-context-review-v2/results/a0_d1.jsonl": {
+    "commute": 38,
+    "dropped": 0
+   },
+   "exp28b-context-review-v2/results/a0_d2.jsonl": {
+    "commute": 60,
+    "dropped": 0
+   },
+   "exp28b-context-review-v2/results/a0_d3.jsonl": {
+    "commute": 76,
+    "dropped": 0
+   },
+   "exp30-review-distill/results/a0_aug.jsonl": {
+    "commute": 51,
+    "dropped": 0
+   },
+   "exp30-review-distill/results/a0_d1c.jsonl": {
+    "commute": 40,
+    "dropped": 0
+   },
+   "exp30-review-distill/results/a0_d4.jsonl": {
+    "commute": 84,
+    "dropped": 0
+   },
+   "exp30-review-distill/results/a0_pool.jsonl": {
+    "commute": 120,
+    "dropped": 0
+   },
+   "exp31-distill-v2/results/a0_aug2.jsonl": {
+    "commute": 99,
+    "dropped": 0
+   },
+   "exp31-distill-v2/results/a0_d1d.jsonl": {
+    "commute": 45,
+    "dropped": 0
+   },
+   "exp31-distill-v2/results/a0_d5.jsonl": {
+    "commute": 47,
+    "dropped": 0
+   },
+   "exp32-loc-gate/results/a0_d1e.jsonl": {
+    "commute": 29,
+    "dropped": 0
+   },
+   "exp32-loc-gate/results/a0_d2.jsonl": {
+    "commute": 59,
+    "dropped": 0
+   },
+   "exp39-commute-frag-shape/data/heldout/a0_h39.jsonl": {
+    "commute": 103,
+    "dropped": 0
+   }
+  },
+  "commute_cha_spans": [
+   {
+    "file": "exp24-cpu-accel/results/preds_dev_fp32.jsonl",
+    "post_id": "B21_b11",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "다 얇게 튄다.⏎⏎⟦차⟧ 한 대가 지나가자"
+   },
+   {
+    "file": "exp24-cpu-accel/results/preds_dev_fp32.jsonl",
+    "post_id": "D12_b01",
+    "text_id": "title",
+    "dropped": true,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "야간 3일⟦차⟧ 퇴근길"
+   },
+   {
+    "file": "exp24-cpu-accel/results/preds_dev_fp32.jsonl",
+    "post_id": "D21_b30",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "단함 🥲⏎⏎새벽에 ⟦차⟧ 시동 잘 안 걸린"
+   },
+   {
+    "file": "exp24-cpu-accel/results/preds_dev_fp32.jsonl",
+    "post_id": "E04_b06",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "⏎⏎오늘 재택이라 ⟦차⟧ 못 태워 준다고."
+   },
+   {
+    "file": "exp28b-context-review-v2/results/a0_d3.jsonl",
+    "post_id": "E04_b06",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "⏎⏎오늘 재택이라 ⟦차⟧ 못 태워 준다고."
+   },
+   {
+    "file": "exp30-review-distill/results/a0_aug.jsonl",
+    "post_id": "AUG30_063",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": false,
+    "gold_match": false,
+    "ctx": " 인천항 부근에서 ⟦차⟧ 끌고 집에 오면 "
+   },
+   {
+    "file": "exp30-review-distill/results/a0_d4.jsonl",
+    "post_id": "B21_b11",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "다 얇게 튄다.⏎⏎⟦차⟧ 한 대가 지나가자"
+   },
+   {
+    "file": "exp30-review-distill/results/a0_pool.jsonl",
+    "post_id": "C04_b10",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": false,
+    "gold_match": false,
+    "ctx": "이면 괜찮아용.⏎⏎⟦차⟧ 트렁크에 공구 가"
+   },
+   {
+    "file": "exp30-review-distill/results/a0_pool.jsonl",
+    "post_id": "D21_b30",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": true,
+    "gold_match": false,
+    "ctx": "단함 🥲⏎⏎새벽에 ⟦차⟧ 시동 잘 안 걸린"
+   },
+   {
+    "file": "exp31-distill-v2/results/a0_aug2.jsonl",
+    "post_id": "AUG31_036",
+    "text_id": "body",
+    "dropped": false,
+    "in_gold_set": false,
+    "gold_match": false,
+    "ctx": " 투덜대던데 어유 ⟦차⟧ 조심해서 가야 할"
+   }
+  ]
+ }
+}

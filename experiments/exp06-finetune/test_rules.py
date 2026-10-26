@@ -102,6 +102,36 @@ class RuleTests(unittest.TestCase):
         self.assertEqual([s['text'] for s in out if s['type'] == 'LOC_FACILITY'], ['국민은행'])
         self.assertEqual(stats['model_generic_place_dropped'], 1)
 
+    def test_ordinal_cha_commute_is_dropped_in_merge(self):
+        """실제 글 시험(#385 3-1) — 1단이 「야간 3일차 퇴근길」의 「차」를 COMMUTE 로 내면 병합에서 뺀다.
+        「일 · 주 · 회 · 년」 바로 뒤 한 글자 「차」이고 그 앞이 수일 때만. 탈것 「차」는 그대로 둔다."""
+        from rules import is_ordinal_cha
+        cases = {
+            # 버린다 — 차례의 「차」
+            '야간 3일차 퇴근길': True, '입사 5년차 직장인': True, '운동 2주차인데': True, '2회차 관람': True,
+            '12주차 검진': True, '삼일차 아침': True, '이십일차에': True, '몇년차인지': True,
+            # 둔다 — 탈것 · 범위 밖
+            '차를 타고 갔다': False, '차로 출근한다': False, '자차로 다닌다': False,
+            '2차 회식': False,            # 단위가 없다 — 범위 밖
+            '3년 차 직장인': False,        # 띄어 썼다 — 범위 밖
+            '세계일주 차 안에서': False,    # 띄어 씀 · 앞이 수가 아니다
+            '회사일차 빼고': False,        # 「사」 앞이 한글 — 수로 읽지 않는다
+            '매일차 막혀': False, '휴일차 많네': False, '주말 주차 공간': False,
+            '오늘 재택이라 차 못 태워 준다고': False,
+            '출장 3일\n차 타고 출근한다': False,   # 줄이 바뀌면 바로 앞 글자가 「일」이 아니다
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                i = text.index('차')
+                self.assertEqual(is_ordinal_cha(text, i, i + 1), expected)
+        self.assertFalse(is_ordinal_cha('3일차에', 2, 4))   # 스팬이 「차」 한 글자일 때만 — 「차에」는 안 건드린다
+        body = '야간 3일차 퇴근길. 차 막혀서 늦음'
+        model = [{'text_id': 'body', 'start': 5, 'end': 6, 'text': '차', 'type': 'COMMUTE', 'score': 0.9},
+                 {'text_id': 'body', 'start': 12, 'end': 13, 'text': '차', 'type': 'COMMUTE', 'score': 0.9}]
+        out, stats = merge_with_model('p1', {'body': body}, model, ExplicitRules(FakeRegions()))
+        self.assertEqual([(s['start'], s['text']) for s in out if s['type'] == 'COMMUTE'], [(12, '차')])
+        self.assertEqual(stats['model_ordinal_cha_dropped'], 1)
+
     def test_model_age_quantity_is_dropped_in_merge(self):
         """재학습 모델이 「서른 해 동안」 「스무 해」를 AGE 로 내면 병합에서 뺀다 (exp17 숫자 함정 7/15)."""
         from rules import is_quantity_age
