@@ -241,23 +241,27 @@ def span_to_condition(
     *,
     dictionary: RegionDictionary | None = None,
 ) -> dict[str, Any] | None:
-    """골드 스팬 한 개를 condition 한 개로 변환한다. 조건이 아니면 None."""
+    """골드 스팬 한 개를 condition 한 개로 변환한다. 조건이 아니면 None.
+
+    본인(subject=self) 스팬만 조건이 된다. 관계 불명(unknown)은 예전에 신뢰도 ×0.5 로 넣었으나 뺀다 (exp43 · 10/26) —
+    실제 블로그에서 아이 나이 · 떡국 관용구(「한 살 더 먹었다」 꼴) · 숙소 광고의 대상 연령(「5~7세 자녀 동반」 꼴 · 예는 지은 것)이
+    unknown 으로 들어와 글쓴이 나이 조건이 됐다. 2단 판정(rules.findings_from_spans)은 self 만 세서 같은 축을 기권하는데
+    k 만 세면 두 결과가 어긋난다. 그리고 ×0.5 는 k 의 비율 감쇠에만 듣고 해상도 기반 risk_total 에는 그대로 더해졌다.
+    """
     if not post_id:
         return None
     subject = str(span["subject"])
     span_type = str(span["type"])
-    if subject == "other" or span_type not in TYPE_TO_AXIS:
+    if subject not in {"self", "other", "unknown"}:
+        raise ValueError(f"허용되지 않은 subject: {subject!r}")
+    if subject != "self" or span_type not in TYPE_TO_AXIS:
         return None
 
     level = str(span["level"])
     if level not in LEVEL_CONFIDENCE:
         raise ValueError(f"허용되지 않은 level: {level!r}")
-    if subject not in {"self", "unknown"}:
-        raise ValueError(f"허용되지 않은 subject: {subject!r}")
 
     confidence = LEVEL_CONFIDENCE[level]
-    if subject == "unknown":
-        confidence *= 0.5
 
     resolved = _resolved_fields(span, dictionary or _dictionary())
     if resolved is None:
@@ -287,7 +291,8 @@ def build_conditions(
     if not post_id:
         return []
     conditions: list[dict[str, Any]] = []
-    unknown_loc: set[int] = set()   # 관계 불명(unknown — 여행지 등) 스팬의 위치 조건 — 거주 표지로 올리지 않는다 (Codex)
+    # 관계 불명(unknown — 여행지 등) 스팬은 span_to_condition 이 조건을 만들지 않는다 — 아래 거주 표지(REL_HOME)가
+    # 올리는 위치 조건은 모두 본인 스팬에서 나온 것이다 (예전 unknown_loc 제외 목록이 하던 일)
     usable_rel_work = False
     rel_home_self = False
 
@@ -296,15 +301,13 @@ def build_conditions(
         subject = str(span["subject"])
         if span_type == "REL_HOME" and subject == "self":
             rel_home_self = True
-        if span_type == "REL_WORK" and subject != "other":
+        if span_type == "REL_WORK" and subject == "self":   # 다른 축과 같이 본인 직장 관계만 (exp43)
             usable_rel_work = True
 
         condition = span_to_condition(span, post_id, dictionary=dictionary)
         if condition is None:
             continue
         conditions.append(condition)
-        if subject == "unknown":
-            unknown_loc.add(id(condition))
 
         text = str(span["text"])
         if span_type == "SEX" and _SPOUSE_TERM_RE.search(text):
@@ -319,7 +322,7 @@ def build_conditions(
 
     if rel_home_self:
         for condition in conditions:
-            if condition["axis"] == "location" and id(condition) not in unknown_loc:
+            if condition["axis"] == "location":
                 condition["confidence"] = 1.0
 
     if usable_rel_work:

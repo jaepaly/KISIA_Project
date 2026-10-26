@@ -492,6 +492,8 @@ def geo_tag_condition(tag: str, post_id: str) -> dict[str, Any] | None:
 def conditions_from_posts(posts: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
     """[{post_id, spans, geo_tag?}] → condition 목록. 기존 ``build_conditions`` 에 세 가지를 더한다.
 
+    스팬은 본인(subject=self) 것만 조건이 된다 — 타인(other) · 관계 불명(unknown)은 빠진다 (``span_to_condition`` · exp43).
+
     - 사전 정식 이름이 아닌 지명·장소를 위치 condition 으로 살린다 — 실제 사람들이 쓰는 말이다
     - 장소(역·시설) 단서는 **관계 불명**이면 신뢰도를 절반으로 — 「선릉역에서 친구를 만났다」는 사는 곳 단서가 아니다.
       같은 글에 본인의 거주 표지(REL_HOME · 「집 근처」)가 있으면 그대로 둔다. 여러 글에서 반복되면 합산으로 다시 강해진다
@@ -527,14 +529,14 @@ def conditions_from_posts(posts: Sequence[Mapping[str, Any]]) -> list[dict[str, 
             if made:
                 collision_ids.add(id(s))
         for s in spans:
-            if s.get("type") not in ("LOC_ADMIN", "LOC_FACILITY") or s.get("subject") == "other":
-                continue
+            if s.get("type") not in ("LOC_ADMIN", "LOC_FACILITY") or s.get("subject") != "self":
+                continue  # 본인 스팬만 — build_conditions 와 같다 (관계 불명 unknown 도 뺀다 · exp43)
             if id(s) in collision_ids or (not any(s is c for c in collision) and build_conditions([s], pid, dictionary=d)):
                 continue  # build_conditions 가 이미 조건으로 만든 위치 스팬
             level = str(s.get("level"))
             if level not in LEVEL_CONFIDENCE:
                 continue
-            conf = LEVEL_CONFIDENCE[level] * (0.5 if s.get("subject") == "unknown" else 1.0)
+            conf = LEVEL_CONFIDENCE[level]
             c = location_condition_from_text(str(s.get("text", "")), pid, conf,
                                              facility=s.get("type") == "LOC_FACILITY")
             if c:

@@ -351,7 +351,7 @@ def test_travel_place_is_not_promoted_by_home_marker():
                                                                              "end": i + len(text), "text": text, "type": stype})})
     assert spans[1]["subject"] == "unknown"
     loc = [c for c in build_conditions(spans, "p") if c["axis"] == "location"]
-    assert loc and all(c["confidence"] < 1.0 for c in loc)
+    assert loc == []   # unknown 은 조건을 만들지 않는다 (exp43 — 예전에는 신뢰도 ×0.5 로 남아 1.0 미만인지만 봤다)
 
 
 @pytest.mark.parametrize("sentence,span,stype,expected", [

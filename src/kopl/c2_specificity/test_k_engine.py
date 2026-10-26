@@ -80,6 +80,16 @@ def test_other_subject_does_not_count():
     assert other["k"] == base["k"]
 
 
+def test_unknown_subject_does_not_count():
+    """관계 불명(unknown) 스팬은 k 에 들어가지 않는다 — 사전 밖 지명 해석기(약칭 · 어간) 경로도 같다 (exp43)."""
+    base = k_of([S("강남구", "LOC_ADMIN")])
+    for extra in ([S("세 살", "AGE", "explicit", "unknown")], [S("남자", "SEX", "explicit", "unknown")],
+                  [S("해운대에서", "LOC_ADMIN", "explicit", "unknown")], [S("REL", "REL_WORK", "implicit", "unknown")]):
+        assert k_of([S("강남구", "LOC_ADMIN")], extra)["k"] == base["k"], extra
+    assert conditions_from_posts([{"post_id": "p", "spans": [S("해운대에서", "LOC_ADMIN", "explicit", "unknown")]}]) == []
+    assert conditions_from_posts([{"post_id": "p", "spans": [S("해운대에서", "LOC_ADMIN", "explicit", "self")]}])
+
+
 def test_ratio_axes_use_one_clue_per_axis():
     """같은 축 단서가 여러 개여도 한 번만 곱한다 (규칙 1) — 같은 직업을 열 번 써도 열 번 깎이지 않는다."""
     once = k_of([S("강남구", "LOC_ADMIN")], [S("간호사", "JOB")])
