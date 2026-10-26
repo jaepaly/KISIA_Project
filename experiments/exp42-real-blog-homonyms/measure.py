@@ -29,17 +29,28 @@ exp41 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(exp41)
 assert len(exp41.TEST) == 255
 
-_ORIGINAL_HOMONYM = rules.is_contextless_homonym
-_NEW_HOMONYMS = frozenset({"음성", "공주", "예산", "장수", "해보면", "강하면"})
+ADOPTED_WORDS = rules._COMMON_WORD_PLACES
+
+# R1 후보 — 사전의 시군구 약칭 256개 · 두 글자 지명 49개를 다 훑어 일반 낱말로도 읽히는 것 + 「동사 + -면」 꼴 면 이름 (README §1).
+# 하나씩 켜 test 밖 골드에서 잃는 골드가 0 인 것만 rules._COMMON_WORD_PLACES 에 넣는다
+CANDIDATES = {
+    "시군구 약칭": "강진 강화 거창 경주 고령 고성 곡성 공주 관악 광명 광산 구리 구미 기장 남동 남해 단원 대구 대덕 대전 동남 동해 "
+               "만세 무안 보은 봉화 부산 부여 분당 사상 사천 상당 상록 상주 서북 서원 서해 성산 성주 세종 수성 수영 수원 "
+               "수지 신안 양산 양주 여수 여주 연수 영광 영양 영주 예산 오산 완주 용인 원주 유성 음성 이천 인제 장성 장수 "
+               "장안 정선 제천 중원 진주 청원 청주 팔달 함양 효행".split(),
+    "두 글자 지명": "변동 연동 상동 중동 학동 신동 대동 일동 서구 북구 파동 능동 양동 사동 금동 목동".split(),
+    "「동사+면」 면 이름": "강하면 해보면 마리면 부리면 보안면".split(),
+}
 
 
 @contextmanager
-def configured(r1, r2, r3, r4):
-    saved = (rules.is_contextless_homonym, rules.is_model_homonym_place, rules.is_counterfactual,
+def configured(r1, r2, r3, r4, words=None):
+    saved = (rules._COMMON_WORD_PLACES, rules.is_model_homonym_place, rules.is_counterfactual,
              attributes._RULE_AGE_OTHER, attributes._RULE_ADMIN_LIST)
+    if words is not None:
+        rules._COMMON_WORD_PLACES = frozenset(words)
     if not r1:   # main 동작 — 진도 · 달성만 규칙에서 거르고, 모델 후보는 거르지 않는다
-        rules.is_contextless_homonym = lambda text, start, name: (
-            name not in _NEW_HOMONYMS and _ORIGINAL_HOMONYM(text, start, name))
+        rules._COMMON_WORD_PLACES = frozenset()
         rules.is_model_homonym_place = lambda text, start, end: False
     if not r3:
         rules.is_counterfactual = lambda text, start, end: False
@@ -48,14 +59,45 @@ def configured(r1, r2, r3, r4):
     try:
         yield
     finally:
-        (rules.is_contextless_homonym, rules.is_model_homonym_place, rules.is_counterfactual,
+        (rules._COMMON_WORD_PLACES, rules.is_model_homonym_place, rules.is_counterfactual,
          attributes._RULE_AGE_OTHER, attributes._RULE_ADMIN_LIST) = saved
 
 
-def merged_all(posts, raw, cfg):
-    det = rules.ExplicitRules()
+def candidate_scan(posts, raw):
+    """R1 후보를 하나씩만 켜고(다른 R 은 끔) 그 낱말이 든 글만 다시 병합 · 채점한다 — 후보별 줄어든 FP · 잃은 골드."""
+    rows = []
+    for group, words in CANDIDATES.items():
+        for w in words:
+            sub = {pid: d for pid, d in posts.items() if any(w in t for t in d["texts"].values())}
+            if not sub:
+                rows.append({"word": w, "group": group, "posts": 0, "fp_removed": 0, "gold_lost": 0, "gold_direct": 0})
+                continue
+            before, _, _ = merged_all(sub, raw, (False, False, False, False))
+            after, _, _ = merged_all(sub, raw, (True, False, False, False), words=[w])
+            sb, tp_b, gb = exp41.score(sub, before)
+            sa, _, ga = exp41.score(sub, after)
+            d = exp41.diff(sub, before, after, tp_b, gb, ga)
+            direct = 0
+            with configured(True, False, False, False, words=[w]):
+                for pid, dd in sub.items():
+                    for s in dd["spans"]:
+                        if s["type"] == "LOC_ADMIN" and rules.is_model_homonym_place(
+                                dd["texts"][s.get("text_id", "body")], s["start"], s["end"]):
+                            direct += 1
+            rows.append({"word": w, "group": group, "posts": len(sub), "fp_removed": sb["fp"] - sa["fp"],
+                         "removed": len(d["removed"]), "gold_lost": len(d["gold_lost"]), "gold_direct": direct,
+                         "removed_ctx": [r["ctx"] for r in d["removed"]][:5]})
+    return rows
+
+
+_DET = None
+
+
+def merged_all(posts, raw, cfg, words=None):
+    global _DET
+    det = _DET = _DET or rules.ExplicitRules()
     out, stats, subj = {}, Counter(), {}
-    with configured(*cfg):
+    with configured(*cfg, words=words):
         for pid, d in posts.items():
             out[pid], st = rules.merge_with_model(pid, d["texts"], raw[pid]["candidates"], det)
             stats.update(st)
@@ -134,6 +176,7 @@ def gold_direct(posts):
 CONFIGS = {"main": (False, False, False, False), "R1": (True, False, False, False), "R2": (False, True, False, False),
            "R3": (False, False, True, False), "R4": (False, False, False, True),
            "R1+R2+R3": (True, True, True, False), "R1+R2+R3+R4": (True, True, True, True)}
+CONFIGS["ALL"] = CONFIGS["R1+R2+R3+R4"]
 
 
 def main():
@@ -174,6 +217,16 @@ def main():
         if name != "main":
             changes[name] = {**d, "subject_changed": subj_changed_pred,
                              "subject_gold_lost": ss["subject_gold_lost"], "subject_gold_fixed": ss["subject_gold_fixed"]}
+    scan = candidate_scan(posts, raw)
+    adopted = sorted(r["word"] for r in scan if r["gold_lost"] == 0 and r["gold_direct"] == 0)
+    summary["r1_candidates"] = {"adopted_rule": "test 밖 골드에서 잃은 골드 0 · 골드 LOC_ADMIN 스팬에 직접 걸어도 0",
+                                "adopted": adopted, "in_code": sorted(ADOPTED_WORDS),
+                                "rows": [{k: v for k, v in r.items() if k != "removed_ctx"} for r in scan]}
+    changes["r1_candidates"] = scan
+    for r in scan:
+        print(f"  {r['group']:10s} {r['word']:4s} 글 {r['posts']:4d} FP- {r['fp_removed']:3d} 잃은 {r['gold_lost']} 직접 {r['gold_direct']}")
+    print("채택 가능:", " ".join(adopted))
+    print("코드에 든 것:", " ".join(sorted(ADOPTED_WORDS)))
     gd = gold_direct(posts)
     summary["gold_direct"] = {k: len(v) for k, v in gd.items()}
     changes["gold_direct"] = gd

@@ -91,16 +91,21 @@ _HOMONYM_CONTEXT = _PLACE_NOUN_AFTER + "|" + _PLACE_MOVE_STRICT
 _CONTEXT_ONLY_PLACES = {
     "진도": re.compile(r"(?:군|항)|\s*(?:대교|여행|아리랑|개(?![가-힣]))|" + _PLACE_MOVE),  # 「진도 항상」은 「항」 앞 띄어쓰기를 안 받아 거른다
     "달성": re.compile(r"군|\s*(?:공원|습지)|" + _PLACE_MOVE),
-    # 일반어로 훨씬 자주 쓰는 군 · 시 · 면 이름 (실제 블로그 확인 10/26 · exp42) — 「AI 음성으로 읽어 준다」 「동화 속 공주가」
-    # 「여행 예산을 짠다」 「장수 비결」 「한번 해보면」 「냄새가 강하면」. 「음성군 · 공주시 · 예산군」(접미사가 붙은 낱말) ·
-    # 「충북 음성」(도 이름 뒤) · 「공주로 이사」(이동 · 거주) · 「음성 쪽 시장」(장소 말)은 그대로 지명
-    "음성": re.compile(_HOMONYM_CONTEXT),
-    "공주": re.compile(_HOMONYM_CONTEXT),
-    "예산": re.compile(_HOMONYM_CONTEXT),
-    "장수": re.compile(_HOMONYM_CONTEXT),
-    "해보면": re.compile(_HOMONYM_CONTEXT),
-    "강하면": re.compile(_HOMONYM_CONTEXT),
 }
+# 일반 낱말과 글자가 같은 시군구 이름 · 약칭 · 두 글자 지명 · 「동사 + -면」 꼴 면 이름 — 지명 문맥(_HOMONYM_CONTEXT · 도 이름 뒤 ·
+# 면 이름 앞 시군)이 있을 때만 지명으로 본다 (실제 블로그 확인 10/26 · exp42 R1). 「AI 음성으로 읽어 준다」 「동화 속 공주가」
+# 「규제 강화가 필요하다」 「상당 시간이」 「영양 성분」. 「음성군 · 공주시」(접미사가 붙은 낱말) · 「충북 음성」 · 「공주로 이사」 ·
+# 「음성 쪽 시장」은 그대로 지명이다.
+# 뽑는 법: 사전의 시군구 약칭 256개 · 두 글자 지명 49개 · 「동사 + -면」 꼴 면 이름을 다 훑어 일반 낱말로도 읽히는 것을 후보로 두고,
+# test 밖 골드에서 하나씩 켜 봐 ① **잃는 골드가 0** 이고 ② 일반어 쪽이 더 흔하다는 근거(코퍼스 오탐 · 실제 블로그 오탐 ·
+# 또는 군 · 면 · 동 이름인데 일반어가 일상어)가 있는 것만 넣었다. 대구 · 대전 · 부산 · 청주처럼 골드를 잃는 것과,
+# 잃지 않아도 도시 이름으로 더 자주 쓰는 것(용인 · 경주 · 수원 …)은 뺐다. 후보 · 채택 표: experiments/exp42-real-blog-homonyms/README.md §1
+_COMMON_WORD_PLACES = frozenset({
+    "음성", "공주", "예산", "장수", "상당", "강화", "영양", "이천", "변동", "양동",            # 코퍼스 · 실제 블로그에서 오탐을 봤다
+    "고령", "영광", "부여", "강진", "봉화", "보은", "일동", "중동", "만세",                    # 일반어가 일상어인 군 · 동 이름
+    "해보면", "강하면", "마리면", "부리면", "보안면",                                         # 「해 보면 · 강하면 · 두 마리면 · 고집 부리면 · 보안 면에서」
+})
+_HOMONYM_CONTEXT_RE = re.compile(_HOMONYM_CONTEXT)
 _PACE_BEFORE = re.compile(r"(?:^|[^가-힣])(?:이|그|저|지금|이런|그런|요즘)\s*$")  # 「이 진도로 가면」 — 속도 이야기
 _PACE_WORDS = frozenset({"진도", "달성"})   # 「요즘 공주에 놀러」는 지명이라 새 동형이의어에는 걸지 않는다
 _CITY_BEFORE = re.compile(r"(?:대구|대구시|대구광역시)\s*$")
@@ -115,7 +120,9 @@ def is_contextless_homonym(text: str, start: int, name: str) -> bool:
     """
     ctx = _CONTEXT_ONLY_PLACES.get(name)
     if ctx is None:
-        return False
+        if name not in _COMMON_WORD_PLACES:
+            return False
+        ctx = _HOMONYM_CONTEXT_RE
     window = text[max(0, start - 10):start]
     if name in _PACE_WORDS and _PACE_BEFORE.search(window):
         return True
@@ -322,7 +329,7 @@ def is_model_homonym_place(text: str, start: int, end: int) -> bool:
         if particle and not word.endswith(particle):
             continue
         name = word[:-len(particle)] if particle else word
-        if name in _CONTEXT_ONLY_PLACES:
+        if name in _CONTEXT_ONLY_PLACES or name in _COMMON_WORD_PLACES:
             return is_contextless_homonym(text, start + lead, name)
     return False
 

@@ -47,6 +47,15 @@
     "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
    },
    {
+    "post_id": "A11_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
+   },
+   {
     "post_id": "A11_b23",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -56,6 +65,15 @@
     "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
    },
    {
+    "post_id": "A17_b08",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
+   },
+   {
     "post_id": "A19_b10",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -63,6 +81,42 @@
     "source": "rule",
     "was_tp": false,
     "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "B02_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "변동",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+   },
+   {
+    "post_id": "B03_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+   },
+   {
+    "post_id": "D08_b22",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "영양가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+   },
+   {
+    "post_id": "D10_b03",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "양동이",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
    },
    {
     "post_id": "E18_b21",
@@ -95,7 +149,15 @@
   "added": [],
   "gold_lost": [],
   "gold_gained": [],
-  "subject_changed": [],
+  "subject_changed": [
+   {
+    "post_id": "B06_b21",
+    "type": "AGE",
+    "before": "self",
+    "after": "other",
+    "ctx": " 밤 다시 고르는 ⟦세 살⟧ 아이는 이번 주 "
+   }
+  ],
   "subject_gold_lost": [],
   "subject_gold_fixed": []
  },
@@ -165,6 +227,15 @@
     "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
    },
    {
+    "post_id": "A11_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
+   },
+   {
     "post_id": "A11_b23",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -174,6 +245,15 @@
     "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
    },
    {
+    "post_id": "A17_b08",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
+   },
+   {
     "post_id": "A19_b10",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -181,6 +261,42 @@
     "source": "rule",
     "was_tp": false,
     "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "B02_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "변동",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+   },
+   {
+    "post_id": "B03_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+   },
+   {
+    "post_id": "D08_b22",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "영양가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+   },
+   {
+    "post_id": "D10_b03",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "양동이",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
    },
    {
     "post_id": "E18_b21",
@@ -204,7 +320,15 @@
   "added": [],
   "gold_lost": [],
   "gold_gained": [],
-  "subject_changed": [],
+  "subject_changed": [
+   {
+    "post_id": "B06_b21",
+    "type": "AGE",
+    "before": "self",
+    "after": "other",
+    "ctx": " 밤 다시 고르는 ⟦세 살⟧ 아이는 이번 주 "
+   }
+  ],
   "subject_gold_lost": [],
   "subject_gold_fixed": []
  },
@@ -256,6 +380,15 @@
     "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
    },
    {
+    "post_id": "A11_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
+   },
+   {
     "post_id": "A11_b23",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -265,6 +398,15 @@
     "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
    },
    {
+    "post_id": "A17_b08",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
+   },
+   {
     "post_id": "A19_b10",
     "text_id": "body",
     "type": "LOC_ADMIN",
@@ -272,6 +414,42 @@
     "source": "rule",
     "was_tp": false,
     "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "B02_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "변동",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+   },
+   {
+    "post_id": "B03_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+   },
+   {
+    "post_id": "D08_b22",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "영양가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+   },
+   {
+    "post_id": "D10_b03",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "양동이",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
    },
    {
     "post_id": "E18_b21",
@@ -295,13 +473,1117 @@
   "added": [],
   "gold_lost": [],
   "gold_gained": [],
-  "subject_changed": [],
+  "subject_changed": [
+   {
+    "post_id": "B06_b21",
+    "type": "AGE",
+    "before": "self",
+    "after": "other",
+    "ctx": " 밤 다시 고르는 ⟦세 살⟧ 아이는 이번 주 "
+   }
+  ],
   "subject_gold_lost": [],
   "subject_gold_fixed": []
  },
+ "ALL": {
+  "removed": [
+   {
+    "post_id": "A01_b13",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
+   },
+   {
+    "post_id": "A02_b09",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
+   },
+   {
+    "post_id": "A04_b02",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
+   },
+   {
+    "post_id": "A04_b14",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "예산도",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+   },
+   {
+    "post_id": "A11_b12",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수까지",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
+   },
+   {
+    "post_id": "A11_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합"
+   },
+   {
+    "post_id": "A11_b23",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성은",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
+   },
+   {
+    "post_id": "A17_b08",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면"
+   },
+   {
+    "post_id": "A19_b10",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "B02_b20",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "변동",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+   },
+   {
+    "post_id": "B03_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "이천",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+   },
+   {
+    "post_id": "D08_b22",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "영양가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+   },
+   {
+    "post_id": "D10_b03",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "양동이",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
+   },
+   {
+    "post_id": "E18_b21",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+   },
+   {
+    "post_id": "E19_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+   }
+  ],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [
+   {
+    "post_id": "B06_b21",
+    "type": "AGE",
+    "before": "self",
+    "after": "other",
+    "ctx": " 밤 다시 고르는 ⟦세 살⟧ 아이는 이번 주 "
+   }
+  ],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "r1_candidates": [
+  {
+   "word": "강진",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "강화",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "거창",
+   "group": "시군구 약칭",
+   "posts": 21,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "경주",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "고령",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "고성",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "곡성",
+   "group": "시군구 약칭",
+   "posts": 2,
+   "fp_removed": 0,
+   "removed": 2,
+   "gold_lost": 2,
+   "gold_direct": 2,
+   "removed_ctx": [
+    "⟦곡성⟧ 면사무소에 갓다.",
+    " 나와 걷는 사이 ⟦곡성⟧ 마을버스를 또 놓"
+   ]
+  },
+  {
+   "word": "공주",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "관악",
+   "group": "시군구 약칭",
+   "posts": 6,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "광명",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "광산",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "구리",
+   "group": "시군구 약칭",
+   "posts": 13,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "구미",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "기장",
+   "group": "시군구 약칭",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 2,
+   "gold_lost": 2,
+   "gold_direct": 2,
+   "removed_ctx": [
+    "가 됐네!!ㅎ⏎⏎⏎⟦기장⟧ 방파제에 가서 채",
+    "차로 조금 내려가⏎⟦기장⟧ 방파제에 잠깐 섰"
+   ]
+  },
+  {
+   "word": "남동",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "남해",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "단원",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "대구",
+   "group": "시군구 약칭",
+   "posts": 2,
+   "fp_removed": 0,
+   "removed": 2,
+   "gold_lost": 2,
+   "gold_direct": 2,
+   "removed_ctx": [
+    " 예전에 한국에서 ⟦대구⟧ 살 때는 겨울이 ",
+    " 옆 가게 새댁이 ⟦대구⟧ 서문시장 쪽으로 "
+   ]
+  },
+  {
+   "word": "대덕",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "대전",
+   "group": "시군구 약칭",
+   "posts": 79,
+   "fp_removed": 0,
+   "removed": 6,
+   "gold_lost": 6,
+   "gold_direct": 6,
+   "removed_ctx": [
+    "데 그거 보자마자 ⟦대전⟧ 생각남. 본가인 ",
+    " 생각남. 본가인 ⟦대전은⟧ 진심 그 유명한 ",
+    "⟦대전⟧ 1호선 노은역 3",
+    "책을 덮었어요.⏎⏎⟦대전⟧ 소식지가 놓인 선",
+    "바로 주문했어요. ⟦대전⟧ 지역화폐 안내가 "
+   ]
+  },
+  {
+   "word": "동남",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "동해",
+   "group": "시군구 약칭",
+   "posts": 10,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "만세",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "무안",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "보은",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "봉화",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "부산",
+   "group": "시군구 약칭",
+   "posts": 16,
+   "fp_removed": 1,
+   "removed": 3,
+   "gold_lost": 2,
+   "gold_direct": 3,
+   "removed_ctx": [
+    " 쌓인다. 옆에는 ⟦부산⟧ 생활 안내라고 적",
+    "하겠다고 아침부터 ⟦부산⟧ 떨었음 🥲⏎⏎팔기",
+    "목까지 잠갔다  ⏎⟦부산⟧ 날씨가 따뜻한척 "
+   ]
+  },
+  {
+   "word": "부여",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "분당",
+   "group": "시군구 약칭",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 2,
+   "removed_ctx": [
+    " 있었음.⏎⏎2. ⟦분당에서⟧ 오래 했다는 말만"
+   ]
+  },
+  {
+   "word": "사상",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "사천",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 1,
+   "removed_ctx": [
+    "났는데 젊었을 땐 ⟦사천에서⟧ 오래 일했었지  "
+   ]
+  },
+  {
+   "word": "상당",
+   "group": "시군구 약칭",
+   "posts": 7,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "상록",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "상주",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "서북",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "서원",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "서해",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "성산",
+   "group": "시군구 약칭",
+   "posts": 2,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 1,
+   "removed_ctx": [
+    "아 그리고 동기가 ⟦성산에⟧ 게스트하우스를 냈"
+   ]
+  },
+  {
+   "word": "성주",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "세종",
+   "group": "시군구 약칭",
+   "posts": 6,
+   "fp_removed": 0,
+   "removed": 2,
+   "gold_lost": 2,
+   "gold_direct": 2,
+   "removed_ctx": [
+    "같았다.⏎⏎오늘은 ⟦세종에서⟧ 하는 학회에 다녀",
+    "같이 배우던 분은 ⟦세종으로⟧ 작업실을 옮긴 뒤"
+   ]
+  },
+  {
+   "word": "수성",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "수영",
+   "group": "시군구 약칭",
+   "posts": 4,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "수원",
+   "group": "시군구 약칭",
+   "posts": 4,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 1,
+   "removed_ctx": []
+  },
+  {
+   "word": "수지",
+   "group": "시군구 약칭",
+   "posts": 23,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "신안",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "양산",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "양주",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "여수",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 1,
+   "removed_ctx": [
+    "양반이 딸네 있는 ⟦여수로⟧ 살림을 옮겨 갔는"
+   ]
+  },
+  {
+   "word": "여주",
+   "group": "시군구 약칭",
+   "posts": 14,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "연수",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "영광",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "영양",
+   "group": "시군구 약칭",
+   "posts": 9,
+   "fp_removed": 1,
+   "removed": 1,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    " 😭  ⏎내 말의 ⟦영양가⟧ 어디 갔냐구용 ^"
+   ]
+  },
+  {
+   "word": "영주",
+   "group": "시군구 약칭",
+   "posts": 8,
+   "fp_removed": 0,
+   "removed": 2,
+   "gold_lost": 2,
+   "gold_direct": 2,
+   "removed_ctx": [
+    "⟦영주⟧ 목욕탕에 다녀왔는",
+    "천천히 나섰다.⏎⏎⟦영주⟧ 보건소 안은 바깥"
+   ]
+  },
+  {
+   "word": "예산",
+   "group": "시군구 약칭",
+   "posts": 3,
+   "fp_removed": 1,
+   "removed": 1,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+   ]
+  },
+  {
+   "word": "오산",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "완주",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "용인",
+   "group": "시군구 약칭",
+   "posts": 7,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "원주",
+   "group": "시군구 약칭",
+   "posts": 6,
+   "fp_removed": 0,
+   "removed": 4,
+   "gold_lost": 4,
+   "gold_direct": 4,
+   "removed_ctx": [
+    "서 해결했어요.⏎⏎⟦원주⟧ 종합체육관 근처를",
+    " 먹자골목을 지나 ⟦원주⟧ 복합환승센터 주변",
+    "일요일 오전, ⟦원주⟧ 종합체육관에서 가",
+    "방.⏎⏎차를 빼고 ⟦원주⟧ 재래시장 칼 가는"
+   ]
+  },
+  {
+   "word": "유성",
+   "group": "시군구 약칭",
+   "posts": 8,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 1,
+   "removed_ctx": [
+    " 조금 걸었어요. ⟦유성에서⟧ 오래 지나다닌 길"
+   ]
+  },
+  {
+   "word": "음성",
+   "group": "시군구 약칭",
+   "posts": 3,
+   "fp_removed": 2,
+   "removed": 2,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지",
+    " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+   ]
+  },
+  {
+   "word": "이천",
+   "group": "시군구 약칭",
+   "posts": 4,
+   "fp_removed": 3,
+   "removed": 3,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    "원, 천이백 원, ⟦이천⟧ 원. 나보다 단합",
+    "있음,,, 천 원 ⟦이천⟧ 원이 떼로 덤비면",
+    "이 애매함⏎만두는 ⟦이천⟧ 원부터임⏎⏎한참 "
+   ]
+  },
+  {
+   "word": "인제",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "장성",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "장수",
+   "group": "시군구 약칭",
+   "posts": 4,
+   "fp_removed": 4,
+   "removed": 4,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수",
+    "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금",
+    "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이",
+    " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+   ]
+  },
+  {
+   "word": "장안",
+   "group": "시군구 약칭",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "정선",
+   "group": "시군구 약칭",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 2,
+   "removed_ctx": [
+    "끝까지 채웠지.⏎⏎⟦정선에는⟧ 이런 작은 시설도"
+   ]
+  },
+  {
+   "word": "제천",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "중원",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "진주",
+   "group": "시군구 약칭",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 1,
+   "gold_lost": 1,
+   "gold_direct": 1,
+   "removed_ctx": [
+    "⏎⏎거래처 사장이 ⟦진주⟧ 도매시장 쪽으로 "
+   ]
+  },
+  {
+   "word": "청원",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "청주",
+   "group": "시군구 약칭",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 4,
+   "gold_lost": 4,
+   "gold_direct": 5,
+   "removed_ctx": [
+    ".⏎⏎부서 선배가 ⟦청주⟧ 공장으로 파견 나",
+    "⏎돌아갔다네여.⏎⏎⟦청주⟧ 바람이⏎은근 차서",
+    "⏎⏎안내판에 적힌⏎⟦청주⟧ 행사 구경하다가⏎",
+    "다, 아는 언니가 ⟦청주⟧ 살아서 거기서 만"
+   ]
+  },
+  {
+   "word": "팔달",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "함양",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "효행",
+   "group": "시군구 약칭",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "변동",
+   "group": "두 글자 지명",
+   "posts": 1,
+   "fp_removed": 1,
+   "removed": 1,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    "은 그대로 두고, ⟦변동⟧ 폭이 큰 항목만 "
+   ]
+  },
+  {
+   "word": "연동",
+   "group": "두 글자 지명",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "상동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "중동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "학동",
+   "group": "두 글자 지명",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "신동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "대동",
+   "group": "두 글자 지명",
+   "posts": 1,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "일동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "서구",
+   "group": "두 글자 지명",
+   "posts": 5,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "북구",
+   "group": "두 글자 지명",
+   "posts": 2,
+   "fp_removed": 0,
+   "removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": []
+  },
+  {
+   "word": "파동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "능동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "양동",
+   "group": "두 글자 지명",
+   "posts": 2,
+   "fp_removed": 1,
+   "removed": 1,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    " 떨어지는 빗물이 ⟦양동이⟧ 가장자리를 때릴 "
+   ]
+  },
+  {
+   "word": "사동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "금동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "목동",
+   "group": "두 글자 지명",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "강하면",
+   "group": "「동사+면」 면 이름",
+   "posts": 2,
+   "fp_removed": 2,
+   "removed": 2,
+   "gold_lost": 0,
+   "gold_direct": 0,
+   "removed_ctx": [
+    " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도",
+    "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   ]
+  },
+  {
+   "word": "해보면",
+   "group": "「동사+면」 면 이름",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "마리면",
+   "group": "「동사+면」 면 이름",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "부리면",
+   "group": "「동사+면」 면 이름",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  },
+  {
+   "word": "보안면",
+   "group": "「동사+면」 면 이름",
+   "posts": 0,
+   "fp_removed": 0,
+   "gold_lost": 0,
+   "gold_direct": 0
+  }
+ ],
  "gold_direct": {
   "R1_gold_admin_homonym_dropped": [],
   "R3_gold_job_counterfactual": [],
-  "R2_R4_subject_changed": []
+  "R2_R4_subject_changed": [
+   {
+    "post_id": "B06_b21",
+    "type": "AGE",
+    "text": "세 살",
+    "gold_subject": "unknown",
+    "before": "self",
+    "after": "other"
+   }
+  ]
  }
 }

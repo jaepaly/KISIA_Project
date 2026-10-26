@@ -306,15 +306,48 @@ _AGE_OF_OTHER = re.compile(r"\s*(?:(?:한|어느|어떤|모)\s+" + _SOMEONE + "|
                            r"(?:이|가|은|는|도|과|와|의|을|를|한테|에게|께|께서)?(?![가-힣])")
 
 
+# 아이 나이 — 「세 살 아기인데 벌써」 「네 살 저희 아기와」 「아이가 벌써 네 살이」 (실제 블로그 홀드아웃 10/26 · exp42 R2).
+# label-schema 관례(「[아홉 살] 아들」 = other)대로 같은 문장에서 아이 명사가 나이의 주인이면 other. 「아이템 · 아기자기 · 딸기 · 아가씨」는 아니다
+_CHILD = (r"(?:아이(?!템|디|돌|콘|폰|패드|스)|아가(?!씨)|아기(?!자기)|애기|아들|딸(?!기)|조카|손주|손자|손녀|"
+          r"첫째|둘째|셋째|막내|아드님|따님)")
+_CHILD_AFTER = re.compile(r"\s*(?:(?:우리|내|제|저희)\s*)?" + _CHILD)
+_CHILD_IN_SPAN = re.compile(r"(?:살|세|개월)\s*(?:(?:우리|내|제|저희)\s*)?" + _CHILD)
+# 「아이가 벌써 네 살이 됐다」 — 아이가 주어이고 사이에는 때 · 정도 부사만
+_CHILD_SUBJECT_BEFORE = re.compile(_CHILD + r"(?:들)?(?:는|은|가|이|도)\s+"
+                                   r"(?:(?:아직|이제|벌써|올해|겨우|곧|막|딱|갓|만|지금|이번에|이제야|어느덧|어느새)\s+)*$")
+# 「쉰두 살 수강생이」 — 「의」 없이도 남을 가리키는 사람 명사. 「여자 · 남자 · 직장인 · 엄마」처럼 자기를 부르는 데도 흔한 말은 넣지 않는다
+_AGE_PERSON_BARE = re.compile(r"\s*(?:" + _STRANGER[3:-1] + r"|수강생|수강자|수험생|남성|여성|어르신|노인|아동|유아|영아|신생아)"
+                              r"(?:들|님)?(?:이|가|은|는|도|과|와|의|을|를|한테|에게|께|께서)?(?![가-힣])")
+
+
+# 주인이 문장에 없는 아기 나이 — 「세 살 키에 맞춘 의자」. 여섯 살 이하 · 「N개월」은 글쓴이 나이일 수 없어 self 로 두지 않고
+# unknown 으로 둔다(주인을 문장이 밝히지 않았으므로 other 도 아니다 · 골드 B06_b21 「세 살 아이는」도 unknown). 「다섯 살 때 이사했다」처럼
+# 때 · 적 · 무렵 · 시절이 붙으면 글쓴이의 옛 나이라 그대로 self
+_BABY_AGE = re.compile(r"^(?:[1-6]\s*(?:살|세)|[0-9]{1,2}\s*개월|(?:한|두|세|네|다섯|여섯)\s*(?:살|개월))")
+_PAST_AGE_AFTER = re.compile(r"\s*(?:때|적|무렵|시절|즈음|쯤|이었|였)")
+
+
+def _baby_age_unowned(text: str, after: str, before: str) -> bool:
+    t = text.strip()
+    return bool(_BABY_AGE.match(t)) and not re.search(r"때|적|무렵|시절", t) \
+        and not _PAST_AGE_AFTER.match(after) and not _FIRST_PERSON.search(before)
+
+
 def _age_of_other(text: str, after: str, before: str) -> bool:
-    """AGE 스팬이 「…의」로 끝나거나 바로 뒤가 「의」이고, 그다음이 남을 가리키는 사람 명사인가."""
-    if text.strip().endswith("의"):
-        rest = after
-    elif after.startswith("의"):
-        rest = after[1:]
-    else:
-        return False
-    return bool(_AGE_OF_OTHER.match(rest)) and not _FIRST_PERSON.search(before)
+    """AGE 스팬이 다른 사람의 나이인가 — ① 「N세의 (한) 청취자」 ② 「N세 수강생」 ③ 아이 나이(「세 살 아기」 「아이가 벌써 네 살」)."""
+    t = text.strip()
+    if _CHILD_IN_SPAN.search(t) or _CHILD_SUBJECT_BEFORE.search(before):
+        return True   # 1단이 「세 살 아기인데」처럼 아이 명사까지 스팬에 넣은 것 · 아이가 주어인 것
+    if t.endswith("의"):
+        return bool(_AGE_OF_OTHER.match(after) or _CHILD_AFTER.match(after)) and not _FIRST_PERSON.search(before)
+    if after.startswith("의"):
+        return bool(_AGE_OF_OTHER.match(after[1:]) or _CHILD_AFTER.match(after[1:])) and not _FIRST_PERSON.search(before)
+    if _core(t) != t:
+        return False   # 「서른에 아이를 낳았다」 — 조사가 붙은 나이는 뒤 사람을 꾸미지 않는다
+    if _CHILD_AFTER.match(after):
+        return True    # 「네 살 저희 아기와」
+    m = _AGE_PERSON_BARE.match(after)
+    return bool(m) and not _FIRST_PERSON.search(before) and not _COPULA_AFTER.match(after[m.end():])
 
 
 # 지명 나열 — 「지원 지역: 강릉, 경주, 목포」 「대전 · 통영 · 속초 등」. 셋 이상 늘어놓은 지명 하나하나는 사는 곳이라고
@@ -389,6 +422,8 @@ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, e
         return "self"  # 1인칭 소유 — 「[우리 집에]」 「내 나이 [서른넷을]」
     if _RULE_AGE_OTHER and stype == "AGE" and _age_of_other(text, after, before):
         return "other"  # 「[70세의] 한 청취자가」 — 그 사람의 나이 (exp42 R2)
+    if _RULE_AGE_OTHER and stype == "AGE" and _baby_age_unowned(text, after, before):
+        return "unknown"  # 「[세 살] 키에 맞춘」 — 글쓴이 나이일 수 없고 주인은 문장에 없다 (exp42 R2)
     # ① 스팬 바로 뒤가 타인 → 그 사람의 속성 — 「[아홉 살] 아들」 「[편의점 알바] 언니」 「[동탄] 사는 친구」
     #    관계·시설 단서(「[옆집] 아주머니」 「[이웃] 엄마들」)는 내 관계라 제외. 「[거래처] 사장님」은 내 일의 상대
     #    조사가 붙은 스팬은 사람을 꾸미지 않는다 — 「[역삼동에서] 친구를 만났다」(만난 곳) · 단 「[동탄에] 사는 친구」
