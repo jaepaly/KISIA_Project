@@ -1,0 +1,307 @@
+{
+ "R1": {
+  "removed": [
+   {
+    "post_id": "A01_b13",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
+   },
+   {
+    "post_id": "A02_b09",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
+   },
+   {
+    "post_id": "A04_b02",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
+   },
+   {
+    "post_id": "A04_b14",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "예산도",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+   },
+   {
+    "post_id": "A11_b12",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수까지",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
+   },
+   {
+    "post_id": "A11_b23",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성은",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
+   },
+   {
+    "post_id": "A19_b10",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "E18_b21",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+   },
+   {
+    "post_id": "E19_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+   }
+  ],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "R2": {
+  "removed": [],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "R3": {
+  "removed": [],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "R4": {
+  "removed": [],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "R1+R2+R3": {
+  "removed": [
+   {
+    "post_id": "A01_b13",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
+   },
+   {
+    "post_id": "A02_b09",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
+   },
+   {
+    "post_id": "A04_b02",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
+   },
+   {
+    "post_id": "A04_b14",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "예산도",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+   },
+   {
+    "post_id": "A11_b12",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수까지",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
+   },
+   {
+    "post_id": "A11_b23",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성은",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
+   },
+   {
+    "post_id": "A19_b10",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "E18_b21",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+   },
+   {
+    "post_id": "E19_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+   }
+  ],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "R1+R2+R3+R4": {
+  "removed": [
+   {
+    "post_id": "A01_b13",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 빨았다는 냄새가 ⟦강하면⟧ 처음에는 좋다가도"
+   },
+   {
+    "post_id": "A02_b09",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "찍었는데 날짜인지 ⟦장수를⟧ 센 것인지 알 수"
+   },
+   {
+    "post_id": "A04_b02",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수가",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "⏎휴지는 묶음마다 ⟦장수가⟧ 다르고 폭도 조금"
+   },
+   {
+    "post_id": "A04_b14",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "예산도",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 있었다.⏎⏎한달 ⟦예산도⟧ 정해 두었다.⏎⏎"
+   },
+   {
+    "post_id": "A11_b12",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수까지",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "다. 광고지 남은 ⟦장수까지⟧ 세고 있는 모습이"
+   },
+   {
+    "post_id": "A11_b23",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성은",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "가 없었다. 안내 ⟦음성은⟧ 내 사정을 봐주지"
+   },
+   {
+    "post_id": "A19_b10",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "강하면",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": "들었어용🩵⏎⏎향이 ⟦강하면⟧  ⏎고기 먹을 때"
+   },
+   {
+    "post_id": "E18_b21",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "음성",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 단톡방에 엉뚱한 ⟦음성⟧ 파일 올라와서 웃"
+   },
+   {
+    "post_id": "E19_b18",
+    "text_id": "body",
+    "type": "LOC_ADMIN",
+    "text": "장수를",
+    "source": "rule",
+    "was_tp": false,
+    "ctx": " 웃긴다. 출력된 ⟦장수를⟧ 세다가 한 장을 "
+   }
+  ],
+  "added": [],
+  "gold_lost": [],
+  "gold_gained": [],
+  "subject_changed": [],
+  "subject_gold_lost": [],
+  "subject_gold_fixed": []
+ },
+ "gold_direct": {
+  "R1_gold_admin_homonym_dropped": [],
+  "R3_gold_job_counterfactual": [],
+  "R2_R4_subject_changed": []
+ }
+}

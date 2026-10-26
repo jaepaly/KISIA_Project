@@ -1,0 +1,215 @@
+{
+ "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+ "threshold": 0.7,
+ "fingerprint": {
+  "checkpoint": "C:\\Users\\dor12\\kisia-ckpt\\v2",
+  "files_sha256": {
+   "config.json": "4858ea3b6f85fde4111c14126010d74180aec34c11d28e21ed2ced2cf1daf957",
+   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+   "tokenizer.json": "d5c7a9a8996aca4fee55a3664381b012bd7dbb3e190061b2591c02502b7171b6",
+   "tokenizer_config.json": "55f686f3c1111e477bcd12bd9736d6b554fa2e3f94f1c3fbd2c16c467cdbf0eb"
+  },
+  "threshold": 0.7,
+  "inputs_sha256": "58bbaac8cc630e9ddf414db8a933980f6ef0869138a2eee75df229d88ff98337",
+  "raw_format": "candidates+model_seen_spans(pre-overlap)"
+ },
+ "posts": 2281,
+ "gold_spans": 2194,
+ "model_candidates": 3071,
+ "configs": {
+  "main": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1": {
+   "tp": 1864,
+   "fp": 1177,
+   "fn": 330,
+   "precision": 0.613,
+   "recall": 0.8496,
+   "f1": 0.7121,
+   "removed_or_changed": 9,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 299,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R2": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R3": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R4": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 308,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1+R2+R3": {
+   "tp": 1864,
+   "fp": 1177,
+   "fn": 330,
+   "precision": 0.613,
+   "recall": 0.8496,
+   "f1": 0.7121,
+   "removed_or_changed": 9,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 299,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  },
+  "R1+R2+R3+R4": {
+   "tp": 1864,
+   "fp": 1177,
+   "fn": 330,
+   "precision": 0.613,
+   "recall": 0.8496,
+   "f1": 0.7121,
+   "removed_or_changed": 9,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "subject_acc": 0.9603,
+   "subject_agree": 1790,
+   "tp_pairs": 1864,
+   "pred_subject_changed": 0,
+   "subject_gold_lost": 0,
+   "subject_gold_fixed": 0,
+   "self_preds": {
+    "LOC_ADMIN": 299,
+    "JOB": 499,
+    "AGE": 115
+   },
+   "merge_stats": {
+    "model_homonym_place_dropped": 0,
+    "model_counterfactual_job_dropped": 0
+   }
+  }
+ },
+ "gold_direct": {
+  "R1_gold_admin_homonym_dropped": 0,
+  "R3_gold_job_counterfactual": 0,
+  "R2_R4_subject_changed": 0
+ }
+}

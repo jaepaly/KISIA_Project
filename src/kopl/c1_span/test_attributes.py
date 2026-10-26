@@ -389,3 +389,22 @@ def test_codex_third(sentence, span, stype, expected):
 ])
 def test_b_review_intro_suffix(sentence, span, stype, expected):
     assert _r(sentence, span, stype)["subject"] == expected
+
+
+@pytest.mark.parametrize("sentence,span,stype,expected", [
+    # exp42 R2 — 「나이 + 의 + 다른 사람」은 그 사람의 나이 (합성 문장)
+    ("라디오에 70세의 한 청취자가 엽서를 보냈다.", "70세의", "AGE", "other"),
+    ("마흔둘의 어느 여성이 편지를 보냈다.", "마흔둘의", "AGE", "other"),
+    ("일흔의 시청자가 전화를 걸어왔다.", "일흔의", "AGE", "other"),
+    ("예순넷의 봄 텃밭 준비", "예순넷의", "AGE", "self"),                 # 사람이 아니다
+    ("마흔의 엄마로 산다는 것", "마흔의", "AGE", "self"),                 # 꾸밈말 없는 일반 사람 명사는 그대로
+    ("나는 마흔의 한 여자일 뿐이다.", "마흔의", "AGE", "self"),           # 1인칭 자기소개
+    # exp42 R4 — 지명을 셋 이상 늘어놓은 줄의 항목은 unknown
+    ("행사 지역은 📍강릉,📍경주,📍목포,📍순천 네 곳이다.", "경주", "LOC_ADMIN", "unknown"),
+    ("대전, 통영, 속초 등에서 열린다.", "대전", "LOC_ADMIN", "unknown"),
+    ("와인, 샴페인, 부산 지역 맥주를 마셨다.", "부산 지역", "LOC_ADMIN", "self"),   # 지명 나열이 아니다
+    ("서울, 부산 두 곳을 오간다.", "서울", "LOC_ADMIN", "self"),                    # 둘은 나열로 보지 않는다
+    ("나는 부산에 산다.", "부산에", "LOC_ADMIN", "self"),
+])
+def test_subject_exp42(sentence, span, stype, expected):
+    assert _r(sentence, span, stype)["subject"] == expected
