@@ -348,10 +348,18 @@ class RuleTests(unittest.TestCase):
             '영광의 순간': set(),
             '직원 일동': set(),
             '청주 상당구에 산다': {'청주', '상당구에'},
-            '강화도 말고 강화에 놀러 갔다': {'강화에'},
+            '강화도 말고 강화에 놀러 갔다': {'강화도', '강화에'},
             '경북 영양에 산다': {'경북', '영양에'},
             '이천으로 이사했다': {'이천으로'},
             '충북 보은 장날': {'충북', '보은'},
+            # Codex 검토 반례 (10/26) — 섬 이름 · 복합 조사 · 특산 · 축제
+            '강화도 여행을 갔다': {'강화도'},
+            '이천 도자기 축제에 갔다': {'이천'},
+            '이천에는 산다': {'이천에는'},
+            '이천 쌀이 맛있다': {'이천'},
+            '공주 알밤을 샀다': {'공주'},
+            '이천 역에서 내렸다': {'이천'},
+            '음성 역할을 한다': set(),
         }
         for text, expected in cases.items():
             found = {text[s:e] for s, e, k in rules.location_spans(text) if k == 'LOC_ADMIN'}
@@ -371,6 +379,16 @@ class RuleTests(unittest.TestCase):
         self.assertFalse(is_counterfactual(s2, s2.index('교사가'), s2.index('교사가') + 3))   # 부정 — 실제 직업
         s3 = '나는 교사였다. 만약 비가 왔다면 쉬었겠지.'
         self.assertFalse(is_counterfactual(s3, 3, 5))   # 「만약」이 다른 문장
+        # Codex 검토 반례 — 가정 어미가 그 직업 말을 서술할 때만
+        for text, span, expected in [
+                ('만약 교사인 내가 복권에 당첨됐다면 일을 그만뒀을 것이다.', '교사', False),
+                ('만약 내가 의사가 됐다면 바빴겠지.', '의사가', True),
+                ('만약 내가 가수였다면 무대에 섰겠지.', '가수', True),
+                ('만약 내가 간호사로 일하지 않았다면 몰랐다.', '간호사로', False)]:
+            i = text.index(span)
+            self.assertEqual(is_counterfactual(text, i, i + len(span)), expected, text)
+        self.assertFalse(is_model_homonym_place('강화도에 놀러 갔다', 0, 3))   # 섬 이름 — 「도」는 조사가 아니다
+        self.assertFalse(is_model_homonym_place('이천에는 산다', 0, 4))
 
         class NoRules:
             def predict_channel(self, text):

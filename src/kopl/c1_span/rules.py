@@ -79,14 +79,16 @@ _PLACE_MOVE = (r"(?:에|에서|로|으로)\s*(?:놀러|여행|이사|출장|발�
 # 동형이의어용 좁은 이동·거주 술어 — 위 _PLACE_MOVE 에서 일반어 뒤에도 잘 오는 꼴을 뺐다 (실제 블로그 확인 10/26 · exp42).
 # 「(AI) 음성으로 들어 보니」 「음성으로 내려받기」 「음성으로 살짝」은 지명이 아니다 — 「들어 · 내려」는 「가 · 오」가 붙을 때만,
 # 「살」은 어미가 붙을 때만. 「공주로 향했다」는 지명 (골드 B09_b27)
-_PLACE_MOVE_STRICT = (r"(?:에|에서|로|으로)\s*(?:놀러|여행|이사|출장|발령|근무|도착|들러|들렀"
+_PLACE_MOVE_STRICT = (r"(?:에서는|에서도|에서|에는|에도|에|으로는|으로도|으로|로는|로도|로)\s*(?:놀러|여행|이사|출장|발령|근무|도착|들러|들렀"
                       r"|(?:내려|들어)(?:가|와|갔|왔|간|온|갈|올)|향(?:했|해|하|한|할|합)"
                       r"|살(?:아|고|면|았|던|지|게|기)|사는|산다|삽니다|있(?:는|다|어|었|고|던)"
                       r"|갔|간다|갈(?![가-힣])|가(?:서|고|는|요|면|자|려|야|봤|본|기|더니)|가(?=[\s.,!?~…]|$)"
                       r"|왔|올(?![가-힣])|와(?:서|요|도)?(?=[\s.,!?~…]|$)|와서|오(?:는|고|면|게|기|니|더니))")
 # 바로 뒤에 오면 지명으로 보는 말 — 「음성 쪽 시장에」(골드 S01b_b02) 「예산 농사소식지」(골드 D09_b14) 「공주 터미널」
+# 특산 · 축제 · 시설 말도 — 「이천 도자기 축제」 「이천 쌀」 「공주 알밤」 (Codex 검토 10/26). 「역」은 낱말이 끝날 때만(「음성 역할」 ✗)
 _PLACE_NOUN_AFTER = (r"\s*(?:쪽|읍내|읍|시내|터미널|시장|장날|오일장|군청|시청|농협|농사|농가|휴게소|나들목|IC|톨게이트"
-                     r"|여행|나들이|토박이|출신)")
+                     r"|여행|나들이|토박이|출신|도자기|쌀|축제|공항|온천|해수욕장|아울렛|특산|명물|알밤|사과|한우|인삼|고추"
+                     r"|역(?![가-힣])|역(?:에서|에|으로|앞|까지|은|는|이|을))")
 _HOMONYM_CONTEXT = _PLACE_NOUN_AFTER + "|" + _PLACE_MOVE_STRICT
 _CONTEXT_ONLY_PLACES = {
     "진도": re.compile(r"(?:군|항)|\s*(?:대교|여행|아리랑|개(?![가-힣]))|" + _PLACE_MOVE),  # 「진도 항상」은 「항」 앞 띄어쓰기를 안 받아 거른다
@@ -110,6 +112,8 @@ _PACE_BEFORE = re.compile(r"(?:^|[^가-힣])(?:이|그|저|지금|이런|그런|
 _PACE_WORDS = frozenset({"진도", "달성"})   # 「요즘 공주에 놀러」는 지명이라 새 동형이의어에는 걸지 않는다
 _CITY_BEFORE = re.compile(r"(?:대구|대구시|대구광역시)\s*$")
 _SIGUNGU_BEFORE = re.compile(r"[가-힣]{1,4}(?:시|군)\s*$")   # 「함평군 해보면」 「양평군 강하면」 — 면 이름에만 쓴다
+# 「X도」가 섬 이름인 것 — 「강화도」의 「도」는 조사가 아니라 이름의 일부다 (Codex 검토 10/26). 「예산도 정해 두었다」의 「도」는 조사
+_ISLAND_PLACES = frozenset({"강화"})
 
 
 def is_contextless_homonym(text: str, start: int, name: str) -> bool:
@@ -123,6 +127,8 @@ def is_contextless_homonym(text: str, start: int, name: str) -> bool:
         if name not in _COMMON_WORD_PLACES:
             return False
         ctx = _HOMONYM_CONTEXT_RE
+    if name in _ISLAND_PLACES and text.startswith("도", start + len(name)):
+        return False   # 「강화도」 「강화도에」 — 섬 이름
     window = text[max(0, start - 10):start]
     if name in _PACE_WORDS and _PACE_BEFORE.search(window):
         return True
@@ -342,15 +348,29 @@ _COUNTERFACTUAL_AFTER = re.compile(r"(?:였|었|았|했|됐|웠)(?:다면|더라
 _NEGATION = re.compile(r"아니|않|못|(?<![가-힣])안(?![가-힣])")
 
 
+# 가정 어미가 **그 직업 말을 서술할 때만** — 「모델이었다면」 「가수였거나 …했다면」 「의사가 됐다면」 「업계에서 일했다면」.
+# 「만약 교사인 내가 복권에 당첨됐다면」의 「교사」는 가정 밖의 실제 직업이다 (Codex 검토 10/26)
+_JOB_PREDICATE = re.compile(r"\s*(?:이|가)?\s*(?:이었|였었|였|었|됐|되었|했)(?P<tail>다면|더라면|거나|고|는데)")
+
+
 def is_counterfactual(text: str, start: int, end: int) -> bool:
-    """스팬이 「만약 … -었다면」 반사실 가정 안에 있는가 (같은 문장 · 부정 없음)."""
+    """스팬이 「만약 … -었다면」 반사실 가정의 서술어인가 (같은 문장 · 부정 없음)."""
     cut = max(text.rfind(ch, 0, start) for ch in ".!?\n") + 1
     if not _IF_BEFORE.search(text, cut, start):
         return False
     m = re.search(r"[.!?\n]", text[end:])
     after = text[end:end + m.start()] if m else text[end:]
-    c = _COUNTERFACTUAL_AFTER.search(after)
-    return bool(c) and not _NEGATION.search(text[start:end] + after[:c.end()])
+    p = _JOB_PREDICATE.match(after)
+    if not p:
+        return False
+    if p.group("tail") in ("다면", "더라면"):
+        c_end = p.end()
+    else:   # 「가수였거나 무대에서 일했다면」 — 이어진 절 끝이 가정 어미
+        c = _COUNTERFACTUAL_AFTER.search(after, p.end())
+        if not c:
+            return False
+        c_end = c.end()
+    return not _NEGATION.search(text[start:end] + after[:c_end])
 
 
 def merge_with_model(

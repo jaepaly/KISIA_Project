@@ -329,8 +329,22 @@ _PAST_AGE_AFTER = re.compile(r"\s*(?:때|적|무렵|시절|즈음|쯤|이었|였
 
 def _baby_age_unowned(text: str, after: str, before: str) -> bool:
     t = text.strip()
-    return bool(_BABY_AGE.match(t)) and not re.search(r"때|적|무렵|시절", t) \
+    # 스팬 안의 과거 어미도 옛 나이다 — 「세 살이던」 「6세였다」 (Codex 검토 10/26)
+    return bool(_BABY_AGE.match(t)) and not re.search(r"때|적|무렵|시절|던|였|이었|었을", t) \
         and not _PAST_AGE_AFTER.match(after) and not _FIRST_PERSON.search(before)
+
+
+# 부모 자기소개 — 「저는 서른 살 아이 둘 엄마입니다」 「서른 살 아들 둘 엄마」. 어른 나이 뒤에 「아이 (수) + 부모 호칭」이 오면
+# 나이는 부모(글쓴이)의 것이다 (Codex 검토 10/26). 「세 살 아이 엄마」처럼 아이 나이면 그대로 아이 나이
+_ADULT_AGE = re.compile(r"스물|스무|서른|마흔|쉰|예순|일흔|여든|아흔|(?<![0-9])(?:1[89]|[2-9][0-9])\s*(?:살|세)")
+_PARENT_INTRO_AFTER = re.compile(r"\s*(?:(?:우리|저희)\s*)?" + _CHILD + r"(?:들)?\s*"
+                                 r"(?:(?:하나|둘|셋|넷|다섯|한\s*명|두\s*명|세\s*명|네\s*명|[0-9]+\s*명)\s*)?(?:을|를)?\s*"
+                                 r"(?:(?:둔|키우는|가진|키우고\s*있는)\s*)?(?:엄마|아빠|맘|부모|아버지|어머니|워킹맘|육아맘|대디)")
+
+
+def _parent_intro(text: str, after: str) -> bool:
+    t = text.strip()
+    return bool(_ADULT_AGE.search(t)) and _core(t) == t and bool(_PARENT_INTRO_AFTER.match(after))
 
 
 def _age_of_other(text: str, after: str, before: str) -> bool:
@@ -369,6 +383,17 @@ def _is_place_word(word: str) -> bool:
         from kopl.c1_span.rules import ExplicitRules
         _PLACE_RULES = ExplicitRules()
     return any(s == 0 and e == len(word) for s, e, _ in _PLACE_RULES.location_spans(word))
+
+
+# 「나는 서울, 인천, 수원에서 차례로 살았다」 — 1인칭 + 거주 · 이동 술어가 같은 문장에 있으면 나열이라도 내 거주 이력이다 (Codex 검토 10/26)
+_RESIDE_MOVE = re.compile(r"살았|살고|살아|산다|사는|살던|삽니다|이사|옮겨|지냈|지내|거쳐|자랐|태어났|근무했|다녔")
+_FIRST_PERSON_ANY = re.compile(r"(?<![가-힣])(?:나는|난|내가|나도|저는|제가|저도|우리는|우리가|우리\s*가족|저희)")
+
+
+def _own_residence_history(channel_text: str, start: int, end: int) -> bool:
+    before, after = _sentence_window(channel_text, start, end)
+    sentence = before + channel_text[start:end] + after
+    return bool(_FIRST_PERSON_ANY.search(sentence)) and bool(_RESIDE_MOVE.search(sentence))
 
 
 def _in_place_list(channel_text: str, start: int) -> bool:
@@ -410,7 +435,8 @@ def subject_of(stype: str, text: str, channel_text: str | None, start: int | Non
             and (_TRAVEL_IN.search(text.strip()) or _TRAVEL_AFTER.match(channel_text[end:])):
         return "unknown"  # 여행지는 사는 곳이 아니다 — 「일본에 디자인 여행」. 동네 볼일(「농협에 들러」)은 그대로 본인 · 남의 것은 남의 것
     if _RULE_ADMIN_LIST and who == "self" and stype == "LOC_ADMIN" \
-            and _in_place_list(channel_text, start + len(text) - len(text.lstrip())):
+            and _in_place_list(channel_text, start + len(text) - len(text.lstrip())) \
+            and not _own_residence_history(channel_text, start, end):
         return "unknown"  # 「강릉, 경주, 목포」 — 나열한 지명 하나하나는 사는 곳이 아니다 (exp42 R4)
     return who
 
@@ -420,6 +446,8 @@ def _subject_in_sentence(stype: str, text: str, channel_text: str, start: int, e
     core = _core(text)
     if re.match(r"(?:내|제|나의|저의|우리)(?![가-힣])", text.strip()) or _owned_by_me(before):
         return "self"  # 1인칭 소유 — 「[우리 집에]」 「내 나이 [서른넷을]」
+    if _RULE_AGE_OTHER and stype == "AGE" and _parent_intro(text, after):
+        return "self"   # 「저는 [서른 살] 아이 둘 엄마입니다」 — 부모(글쓴이)의 나이 (exp42 R2)
     if _RULE_AGE_OTHER and stype == "AGE" and _age_of_other(text, after, before):
         return "other"  # 「[70세의] 한 청취자가」 — 그 사람의 나이 (exp42 R2)
     if _RULE_AGE_OTHER and stype == "AGE" and _baby_age_unowned(text, after, before):
