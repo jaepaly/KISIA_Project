@@ -253,6 +253,28 @@ def is_ordinal_cha(text: str, start: int, end: int) -> bool:
     return text[start:end] == "차" and bool(_ORDINAL_CHA_BEFORE.search(text, 0, start))
 
 
+# 모델이 낸 조사 · 어미 조각 — 「에」 「에서」 「로」 「하는」 「한테」 (exp41 C1 · test 밖 골드에 이런 스팬 0).
+# 「면」은 넣지 않는다 — 골드 LOC_ADMIN 「면 우체국」(읍면의 면). 한글 · 숫자 · 영문이 하나도 없는 스팬(「…」 「🥲」)도 버린다
+_FRAGMENT_WORDS = frozenset("에 에서 에서도 에서는 에는 에도 로 으로 으로는 로는 고 서 라 한 에게 한테 의 도 를 을 이 가 은 는 "
+                            "와 과 랑 이랑 하고 하는 하던 한테서 께 께서 부터 까지 만 이나 나 요 다 지 게 며 니 쯤".split())
+_WORD_CHAR = re.compile(r"[가-힣0-9A-Za-z]")
+
+
+def is_fragment_span(span_text: str) -> bool:
+    """모델 스팬이 조사 · 어미 조각이거나 글자가 없는 것인가 (exp41 C1)."""
+    return span_text.strip() in _FRAGMENT_WORDS or not _WORD_CHAR.search(span_text)
+
+
+# LOC_ADMIN 「서울 안에서도」 「마포구 안쪽」 → 「서울」 「마포구」 (exp41 C2) — 「안에서」는 지명이 아니라 범위 표현
+_ADMIN_INSIDE_TAIL = re.compile(r"(\S+)\s+(?:안에서도|안에서는|안에서|안에선|안쪽|안쪽에서|안쪽으로)")
+
+
+def trim_admin_inside(span_text: str) -> str | None:
+    """「X 안에서(도)」 꼴이면 앞 낱말 「X」, 아니면 None."""
+    m = _ADMIN_INSIDE_TAIL.fullmatch(span_text)
+    return m.group(1) if m else None
+
+
 def merge_with_model(
     post_id: str,
     texts: dict[str, str],
@@ -270,6 +292,8 @@ def merge_with_model(
     model_keys: set[tuple[str, int, int, str]] = set()
     quantity_dropped = 0
     generic_dropped = 0
+    fragment_dropped = 0
+    admin_trimmed = 0
     ordinal_dropped = 0
     for candidate in model_candidates:
         tid, start, end, kind = (candidate[key] for key in ("text_id", "start", "end", "type"))
@@ -289,8 +313,17 @@ def merge_with_model(
         if kind == "COMMUTE" and is_ordinal_cha(texts[tid], start, end):
             ordinal_dropped += 1   # 「3일차」 「5년차」의 「차」 — 차례이지 교통이 아니다
             continue
+        if is_fragment_span(candidate["text"]):
+            fragment_dropped += 1  # 「에」 「에서」 「하는」 — 조사 · 어미 조각 (exp41 C1)
+            continue
+        text_out = candidate["text"]
+        head = trim_admin_inside(text_out) if kind == "LOC_ADMIN" else None
+        if head is not None:
+            admin_trimmed += 1     # 「서울 안에서도」 → 「서울」 (exp41 C2)
+            end, text_out = start + len(head), head
+            key = (tid, start, end, kind)
         model_keys.add(key)
-        span = {"start": start, "end": end, "text": candidate["text"], "type": kind}
+        span = {"start": start, "end": end, "text": text_out, "type": kind}
         if "score" in candidate:
             span["score"] = candidate["score"]
         by_channel[tid][(start, end, kind)] = span
@@ -324,5 +357,7 @@ def merge_with_model(
         "model_age_quantity_dropped": quantity_dropped,
         "model_generic_place_dropped": generic_dropped,
         "model_ordinal_cha_dropped": ordinal_dropped,
+        "model_fragment_dropped": fragment_dropped,
+        "model_admin_inside_trimmed": admin_trimmed,
     }
     return output, stats

@@ -1,0 +1,466 @@
+{
+ "checkpoint": "C:/Users/dor12/kisia-ckpt/v2",
+ "threshold": 0.7,
+ "fingerprint": {
+  "checkpoint": "C:\\Users\\dor12\\kisia-ckpt\\v2",
+  "files_sha256": {
+   "config.json": "4858ea3b6f85fde4111c14126010d74180aec34c11d28e21ed2ced2cf1daf957",
+   "model.safetensors": "d7dc7b06d9557c13152c8ad5e91f51f56e154f1e8adc8d2b3ab49f525dfa06be",
+   "tokenizer.json": "d5c7a9a8996aca4fee55a3664381b012bd7dbb3e190061b2591c02502b7171b6",
+   "tokenizer_config.json": "55f686f3c1111e477bcd12bd9736d6b554fa2e3f94f1c3fbd2c16c467cdbf0eb"
+  },
+  "threshold": 0.7,
+  "inputs_sha256": "58bbaac8cc630e9ddf414db8a933980f6ef0869138a2eee75df229d88ff98337",
+  "raw_format": "candidates+model_seen_spans(pre-overlap)"
+ },
+ "posts": 2281,
+ "gold_spans": 2194,
+ "model_candidates": 3071,
+ "model_seen_spans": 3869,
+ "adopted": "C1+C2",
+ "not_adopted": {
+  "C3": "B review #397 — blocks rules from recovering place names the model missed; train-data loss 0 is not out-of-corpus evidence"
+ },
+ "configs": {
+  "main": {
+   "tp": 1852,
+   "fp": 1248,
+   "fn": 342,
+   "precision": 0.5974,
+   "recall": 0.8441,
+   "f1": 0.6997,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 178,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 75,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 0,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3070,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 0
+   }
+  },
+  "C1": {
+   "tp": 1852,
+   "fp": 1198,
+   "fn": 342,
+   "precision": 0.6072,
+   "recall": 0.8441,
+   "f1": 0.7063,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 163,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 75,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 50,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3020,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 0
+   }
+  },
+  "C2": {
+   "tp": 1864,
+   "fp": 1236,
+   "fn": 330,
+   "precision": 0.6013,
+   "recall": 0.8496,
+   "f1": 0.7042,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 178,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fp": 63,
+     "fn": 32
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 14,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3070,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 14
+   }
+  },
+  "C3": {
+   "tp": 1852,
+   "fp": 1228,
+   "fn": 342,
+   "precision": 0.6013,
+   "recall": 0.8441,
+   "f1": 0.7023,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 178,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 164,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 260,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "fn": 44,
+     "fp": 55,
+     "tp": 295
+    },
+    "LOC_FACILITY": {
+     "fp": 240,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 131
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 55,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 79,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 20,
+   "removed_was_tp": 0,
+   "gold_lost": 0,
+   "gold_gained": 0,
+   "merge_stats": {
+    "model_input": 3070,
+    "rule_proposed": 323,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 0,
+    "model_admin_inside_trimmed": 0,
+    "rule_admin_unbacked_dropped": 20
+   }
+  },
+  "C1+C2": {
+   "tp": 1864,
+   "fp": 1186,
+   "fn": 330,
+   "precision": 0.6111,
+   "recall": 0.8496,
+   "f1": 0.7109,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 163,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fp": 63,
+     "fn": 32
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 64,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3020,
+    "rule_proposed": 343,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 14
+   }
+  },
+  "C1+C2+C3": {
+   "tp": 1864,
+   "fp": 1166,
+   "fn": 330,
+   "precision": 0.6152,
+   "recall": 0.8496,
+   "f1": 0.7136,
+   "by_type": {
+    "AGE": {
+     "fp": 34,
+     "tp": 85,
+     "fn": 24
+    },
+    "COMMUTE": {
+     "fp": 163,
+     "fn": 35,
+     "tp": 139
+    },
+    "FAM": {
+     "fp": 159,
+     "fn": 37,
+     "tp": 278
+    },
+    "INCOME": {
+     "fn": 23,
+     "fp": 32,
+     "tp": 32
+    },
+    "JOB": {
+     "fp": 253,
+     "fn": 60,
+     "tp": 286
+    },
+    "LOC_ADMIN": {
+     "tp": 307,
+     "fn": 32,
+     "fp": 43
+    },
+    "LOC_FACILITY": {
+     "fp": 231,
+     "tp": 300,
+     "fn": 59
+    },
+    "REL_HOME": {
+     "tp": 143,
+     "fn": 26,
+     "fp": 122
+    },
+    "REL_WORK": {
+     "fn": 15,
+     "fp": 51,
+     "tp": 93
+    },
+    "SEX": {
+     "fn": 19,
+     "fp": 78,
+     "tp": 201
+    }
+   },
+   "removed_or_changed": 84,
+   "removed_was_tp": 2,
+   "gold_lost": 0,
+   "gold_gained": 12,
+   "merge_stats": {
+    "model_input": 3020,
+    "rule_proposed": 323,
+    "model_age_quantity_dropped": 0,
+    "model_generic_place_dropped": 0,
+    "model_ordinal_cha_dropped": 1,
+    "model_fragment_dropped": 50,
+    "model_admin_inside_trimmed": 14,
+    "rule_admin_unbacked_dropped": 20
+   }
+  }
+ }
+}
