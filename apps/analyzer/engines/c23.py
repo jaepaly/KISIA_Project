@@ -38,7 +38,7 @@ def _k_posts(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, Map
 
 
 def conditions(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[str, Mapping[str, Any]]) -> list[dict]:
-    """서버가 specificity 에 넘길 조건 목록. 타인 단서(subject=other)는 빠진다."""
+    """서버가 specificity 에 넘길 조건 목록. 본인(subject=self) 단서만 조건이 된다(exp43)."""
     conds = conditions_from_posts(_k_posts(posts, spans_by_post))
     if conds:
         return conds
@@ -74,7 +74,8 @@ def contribution(user_ref: str, posts: Sequence[Mapping[str, Any]], removed_post
             cache[key] = float(risk_total(conditions_from_posts([kposts[i] for i in key])))
         return cache[key]
 
-    mine = {pid: [s for s in kposts[pid]["spans"] if s.get("subject") != "other"] for pid in ids}
+    # k 조건이 본인(self) 스팬으로만 만들어지므로(exp43) 근거 목록도 본인 스팬만 — 관계 불명(unknown)을 근거로 보이지 않는다
+    mine = {pid: [s for s in kposts[pid]["spans"] if s.get("subject") == "self"] for pid in ids}
     # clue_ids 와 top_spans 는 같은 본인 스팬을 가리킨다 (#303 리뷰 — W8 완료 조건)
     clue_index = {pid: list(dict.fromkeys(s["span_id"] for s in mine[pid])) for pid in ids}
     span_index = {pid: [{"span_id": sid, "text_id": tid}
