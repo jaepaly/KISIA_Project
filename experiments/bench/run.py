@@ -20,7 +20,7 @@ import warnings
 
 ROOT = Path(__file__).resolve().parents[2]
 EXP06 = ROOT / 'experiments/exp06-finetune'
-for path in (ROOT / 'src', EXP06, ROOT / 'apps/analyzer/engines'):
+for path in (ROOT / 'src', EXP06, ROOT / 'apps/analyzer/engines', Path(__file__).resolve().parent):
     sys.path.insert(0, str(path))
 
 import evaluate_test as evaluation
@@ -30,6 +30,7 @@ from prepare_bio import DataError, validate_channel
 from kopl.c1_span import infer, rules
 from kopl.c1_span.attributes import resolve
 import train
+import c1_uncertainty as uncertainty
 
 TEST_SHA256 = latency.TEST_SHA256
 LEVELS = evaluation.LEVELS
@@ -184,9 +185,15 @@ def score_predictions(posts, gold, predictions):
                               'precision_shared': precision, 'proxy_f1': f1}
     implicit = partial['by_level']['implicit']['proxy_f1']
     classified = resolved_scores(train.score_span_sets)
+    # 신뢰구간 · 오탐 원인은 11/2 보고 항목(PM 결정 10/25). 글별 합이 위 점수와 다르면 중단한다.
+    uncertainty_result = uncertainty.bootstrap(posts, gold, predictions, partial, classified)
+    causes = uncertainty.fp_causes(posts, gold, predictions)
+    if causes['total'] != partial['overall']['fp']:
+        raise DataError('오탐 원인 합이 전체 FP 와 다릅니다.')
     return {
         'boundary_type': {'partial': partial, 'exact': partial['exact']},
-        'by_kind': by_kind, 'fp_breakdown': evaluation.fp_breakdown(partial, by_kind),
+        'by_kind': by_kind, 'fp_breakdown': {**evaluation.fp_breakdown(partial, by_kind), 'by_cause': causes},
+        'bootstrap_ci': uncertainty_result,
         'proxy': {'partial_by_level': partial['by_level'], 'exact_by_level': exact_proxy,
                   'policy': partial['level_policy']},
         'resolved_level': {'partial': classified, 'exact': resolved_scores(evaluation.exact_span_sets),
