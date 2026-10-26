@@ -104,7 +104,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 
 ### 개발 확인 결과 (10/19 · D PC · test 아님)
 
-PC 사양: D 데스크톱 `DESKTOP-828COMG` · AMD Zen3 CPU 4스레드 · RTX 3060. 이 PC에는 **1단 v2 체크포인트(`d7dc7b06…`)와 2단 v2 어댑터 가중치가 없다.**
+PC 사양: D 데스크톱 `DESKTOP-828COMG` · AMD Zen3 CPU 4스레드 · RTX 3060. 10/19에는 이 PC에 **1단 v2 체크포인트(`d7dc7b06…`)와 2단 v2 어댑터 가중치가 없었다**(10/26에 받아 ③④를 돌렸다 · 아래).
 그래서 두 가지로 나눠 확인했다. 1단이 포함된 한 줄 경로는 등록 v1 체크포인트(`3c2d9867…`)로 돌렸고,
 v2 규모 확인은 exp24에 저장된 v2 dev 예측(2,281편, [#350](../../../../pull/350))을 하류에만 넣어 돌렸다. 2단은 둘 다 규칙 모드다.
 
@@ -121,9 +121,29 @@ $env:PYTHONIOENCODING="utf-8"; python experiments/bench/run_all.py --output-dir 
 ```
 
 ①의 점수와 지연은 train 일부이고 v1이라서 **성능 숫자로 쓰지 않는다**. 이 실행은 연결이 끝까지 도는지만 확인한 것이다.
+### 개발 확인 결과 (10/26 · D PC · v2 · 2단 모델 모드 · test 아님)
+
+10/26에 1단 v2 체크포인트와 2단 v2 어댑터를 이 PC로 받았다. SHA-256은 아래 체크리스트 표와 같다
+(`model.safetensors` `d7dc7b06…` · `adapter_model.safetensors` `c045d353…` · `adapter_config.json` `e534cc2f…`). 그래서 10/19에 못 한 두 가지를 확인했다.
+
+| 실행 | 1단 | 2단 모델 | 2단 규칙 | 위험도·조치 | ablation ② | ablation ③ | 전체 |
+|---|---|---|---|---|---|---|---|
+| ③ 한 줄 전체 · train 검수 20편(10명) · **v2** · 규칙 켬 · `both` · 지연 표본 4편×3회 | OK 75.4 s (로딩·기준 도구·지연 포함) | OK 278.1 s (사용자당 중앙값 23.2 s) | OK 1.8 s | OK 1.3 s | OK 0.2 s | OK 0.2 s | **357.3 s** |
+| ④ 하류만 · v2 dev 예측 2,837편(115명 · test 제외) · `both` | — | OK 6,282.8 s (사용자당 중앙값 55.3 s · 최대 60.8 s) | OK 25.1 s | OK 54.9 s | OK 1.8 s | OK 1.3 s | **6,365.9 s** |
+
+④의 2단은 파싱 실패 0 · 규칙 대체(fallback) 0이고, 모델↔규칙 verdict 일치율(`stage2_compare`)은 794/805 = **0.986**이다
+(속성별 최저: 직업·가족 0.974). 2단 모델은 GPU(RTX 3060)에서 돈다. 사용자당 시간은 글 수와 스팬 수에 따라 늘어나므로
+test에서는 사용자 수 × 1분 안팎을 잡는다. 이 숫자들도 dev·train이라 **성능 숫자로 쓰지 않는다**.
+
+```powershell
+# ③ 1단 v2 포함 한 줄 (train smoke)
+$env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune"; python experiments/bench/run_all.py --output-dir experiments/bench/runs/dev_smoke_v2_both_20261026 --stage2-mode both --adapter <2단 v2 어댑터 폴더> -- --checkpoint-dir <1단 v2 체크포인트 폴더> --limit 20 --rules on --threshold 0.7 --threads 4 --latency-samples 4 --warmup 1 --repeats 3
+# ④ 하류만 (v2 dev 예측 · spans 형식)
+$env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune"; python experiments/bench/run_all.py --output-dir experiments/bench/runs/dev_v2_both_20261026 --stage2-mode both --adapter <2단 v2 어댑터 폴더> --preds <v2 dev 예측 spans 파일>
+```
+
 아직 확인하지 못한 것:
-- **2단 모델 모드**(`model`·`both`)와 `--final` 회귀(exp09는 GPU 로컬 생성)는 이 PC에 어댑터가 없어 돌리지 못했다. 단위 테스트(`test_run_all.py`)로 연결만 확인했으니 **어댑터가 있는 PC에서 dev로 한 번 더 확인해야 한다**
-- 1단 v2 체크포인트로 도는 한 줄 경로도 v2가 있는 PC에서 확인해야 한다
+- `--final` 회귀의 exp09는 10/15 어댑터로 다시 잰 뒤에 확인한다(아래 체크리스트 ⚠️)
 
 모델 없는 단위 테스트(run_all 포함):
 
@@ -137,7 +157,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 
 **누가 · 어느 PC**
 - 담당은 **B(1단)와 D(하류)** 다. 같은 자리에서 같이 확인한다
-- PC는 **한 대에서 한 줄로** 돌린다. 추천은 **B 데스크톱**이다. 1단 v2 체크포인트가 그 PC에 있고, CPU(Ryzen 5 9600X)가 #301 지연을 잰 CPU와 같으며, GPU(RTX 5070)가 있다. 2단 v2 어댑터는 D가 보관본을 비공개로 전달하고 SHA를 맞춘다. → **PM 확정 필요** (다른 PC로 하면 지연 숫자를 #301과 바로 비교할 수 없다)
+- PC는 **한 대에서 한 줄로** 돌린다. 추천은 **B 데스크톱**이다. 1단 v2 체크포인트가 그 PC에 있고, CPU(Ryzen 5 9600X)가 #301 지연을 잰 CPU와 같으며, GPU(RTX 5070)가 있다. 2단 v2 어댑터는 D가 보관본을 비공개로 전달하고 SHA를 맞춘다. → **B 데스크톱으로 확정**(10/26 PM 결정 · 다른 PC로 하면 지연 숫자를 #301과 바로 비교할 수 없다)
 
 **동결 커밋**
 - 일 11/1 최종 동결 커밋. 해시는 동결 때 이 칸에 적는다: `⟦11/1 동결 커밋⟧`
@@ -154,7 +174,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 | test 글 | `data/corpus/v0/splits/test.jsonl` | `9662a167f530f47318da2bd37a8401988ee74555393d6cd377fa84dfe8a886ad` | run.py가 검사한다 · split_meta.json |
 
 ⚠️ exp09 회귀는 저장된 결과가 있으면 그 meta의 어댑터 SHA와 비교한다. 기록된 exp09 결과는 10/12 학습본(`94ada34d…`)으로 잰 것이라
-10/15 재학습본(`c045d353…`)으로 돌리면 **`failed`(덮어쓰지 않음)가 나온다** (`data/qwen_cfg_v2_meta.json`의 `adapter_sha256`이 `94ada34d…`, 10/19 확인). 11/1 전에 D가 (가) 10/15 본으로 exp09를 다시 잴지 (나) 회귀에서 exp09는 저장 결과(10/12 본)로 두고 한계로 적을지 정해 이 칸에 적는다 ([ABLATION.md](ABLATION.md) 「최종 측정 회귀」).
+10/15 재학습본(`c045d353…`)으로 돌리면 **`failed`(덮어쓰지 않음)가 나온다** (`data/qwen_cfg_v2_meta.json`의 `adapter_sha256`이 `94ada34d…`, 10/19 확인). → **11/1 전에 D가 10/15 본으로 exp09를 다시 잰다**(10/26 PM 결정). 다시 잰 결과의 어댑터 SHA를 이 칸에 적는다: `⟦exp09 재측정⟧` ([ABLATION.md](ABLATION.md) 「최종 측정 회귀」).
 
 **실행 명령 (저장소 루트 PowerShell · 그대로 친다)**
 
