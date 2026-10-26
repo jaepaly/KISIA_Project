@@ -106,6 +106,76 @@ class MetricsTests(unittest.TestCase):
                                ['implicit_iaa']['proxy_percent'], 100 / .444)
 
 
+def gold_span(sid, start, end, kind, level='explicit', tid='body'):
+    return {'span_id': sid, 'text_id': tid, 'start': start, 'end': end, 'text': None,
+            'type': kind, 'level': level, 'subject': 'self'}
+
+
+def multi_fixture():
+    """오탐 다섯 갈래가 하나씩 나오는 두 글."""
+    texts = {'a': '서울 강남구 직장인 서울', 'b': '마흔 살 퇴근길 버스'}
+    gold = {'a': [gold_span('a_s01', 0, 2, 'LOC_ADMIN'), gold_span('a_s02', 3, 6, 'LOC_ADMIN'),
+                  gold_span('a_s03', 7, 10, 'JOB', 'implicit')],
+            'b': [gold_span('b_s01', 0, 4, 'AGE'), gold_span('b_s02', 5, 8, 'COMMUTE', 'implicit')]}
+    preds = {'a': [(0, 2, 'LOC_ADMIN', 'explicit'),  # 맞음
+                   (3, 4, 'LOC_ADMIN', 'explicit'),  # 경계 — IoU 1/3
+                   (7, 10, 'LOC_FACILITY', 'explicit'),  # 유형 혼동
+                   (11, 13, 'LOC_ADMIN', 'explicit')],  # 같은 글자 반복을 골드가 안 칠함
+             'b': [(0, 2, 'AGE', 'explicit'), (2, 4, 'AGE', 'explicit'),  # 둘 다 IoU 0.5 — 하나만 짝
+                   (5, 8, 'COMMUTE', 'inferential'),  # 맞음(등급은 다름)
+                   (9, 11, 'COMMUTE', 'explicit')]}  # 겹치는 골드 없음
+    posts, golds, predictions = {}, {}, {}
+    for pid, text in texts.items():
+        posts[pid] = {'post_id': pid, 'texts': {'body': text}}
+        spans = [{**s, 'text': text[s['start']:s['end']]} for s in gold[pid]]
+        golds[pid] = {**posts[pid], 'reviewed': True, 'spans': spans}
+        predictions[pid] = [{'span_id': f'{pid}_p{n:02d}', 'text_id': 'body', 'start': a, 'end': b,
+                             'text': text[a:b], 'type': k, 'level': lv, 'subject': 'self', 'score': .9}
+                            for n, (a, b, k, lv) in enumerate(preds[pid], 1)]
+    return posts, golds, predictions
+
+
+class UncertaintyTests(unittest.TestCase):
+    def test_fp_causes_sum_to_fp(self):
+        posts, gold, predictions = multi_fixture()
+        result = bench.score_predictions(posts, gold, predictions)
+        causes = result['fp_breakdown']['by_cause']
+        self.assertEqual(causes['total'], result['boundary_type']['partial']['overall']['fp'])
+        self.assertEqual(causes['by_cause'], {'boundary_low_iou': 1, 'duplicate_of_matched': 1,
+                                              'type_confusion': 1, 'unannotated_repeat': 1, 'no_overlap': 1})
+        self.assertEqual(causes['type_confusion_pairs'], {'JOB->LOC_FACILITY': 1})
+
+    def test_bootstrap_point_matches_official_scores(self):
+        posts, gold, predictions = multi_fixture()
+        result = bench.score_predictions(posts, gold, predictions)
+        ci = result['bootstrap_ci']['metrics']
+        partial = result['boundary_type']['partial']
+        self.assertAlmostEqual(ci['f1']['point'], partial['overall']['f1'])
+        self.assertAlmostEqual(ci['explicit_proxy_f1']['point'],
+                               result['proxy']['partial_by_level']['explicit']['proxy_f1'])
+        self.assertAlmostEqual(ci['resolved_explicit_f1']['point'],
+                               result['resolved_level']['partial']['by_level']['explicit']['f1'])
+        self.assertAlmostEqual(ci['resolved_f1']['point'], result['resolved_level']['partial']['overall']['f1'])
+        for item in ci.values():
+            self.assertLessEqual(item['ci95_low'], item['ci95_high'])
+
+    def test_bootstrap_is_deterministic(self):
+        posts, gold, predictions = multi_fixture()
+        first = bench.score_predictions(posts, gold, predictions)['bootstrap_ci']
+        second = bench.score_predictions(posts, gold, predictions)['bootstrap_ci']
+        self.assertEqual(first, second)
+        self.assertEqual((first['resamples'], first['seed']), (2000, 20261102))
+
+    def test_bootstrap_refuses_mismatched_totals(self):
+        posts, gold, predictions = multi_fixture()
+        result = bench.score_predictions(posts, gold, predictions)
+        partial = copy.deepcopy(result['boundary_type']['partial'])
+        partial['overall']['fp'] += 1
+        with self.assertRaises(bench.DataError):
+            bench.uncertainty.bootstrap(posts, gold, predictions, partial,
+                                        result['resolved_level']['partial'], resamples=10)
+
+
 class SafetyTests(unittest.TestCase):
     def args(self, *extra):
         return ['--checkpoint-dir', 'unused-model', '--output-dir',

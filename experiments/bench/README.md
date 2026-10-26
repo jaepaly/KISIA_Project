@@ -28,6 +28,8 @@
 | `c1.proxy.partial_by_level` / `exact_by_level` | 명시·암묵·추론의 **골드 등급**별 TP·FN·R, 전체 정밀도 공유 P와 proxy F1. partial에는 #276 보수적 참고 F1도 포함 |
 | `c1.resolved_level.partial` / `exact` | 경계·유형에 더해 **resolve()가 판정한 level도 일치**해야 TP인 end-to-end P/R/F1, 전체와 등급별. 독립 level 분류 정확도가 아니며 subject는 매칭 조건이 아님 |
 | `c1.implicit_iaa` | 2차 IAA의 공개 반올림값 44.4% 대비 proxy·등급 판정 포함 F1의 참고 비율/백분율. 다른 표본·정의라 사람 대비 성능 확증이 아님 |
+| `c1.bootstrap_ci` | 명시 proxy F1 · 명시 재현율 · 정밀도 · 재현율 · F1 · 등급 판정 포함 명시 F1 · 등급 판정 포함 F1 의 **95% 신뢰구간**. 글 단위 복원추출 2,000회 · 시드 20261102(측정 전 고정 · PM 결정 10/25) · 백분위 방식. 점추정은 전체 표본 값이고, 글별 합이 위 공식 채점과 다르면 중단한다. 같은 인물의 글끼리는 독립이 아니라 인물 단위로 뽑으면 구간이 더 넓어진다 — 이 test 표본의 표집 오차로만 읽는다 |
+| `c1.fp_breakdown.by_cause` | 부분 일치에서 짝 없는 예측(FP)을 기계적으로 다섯 갈래로 나눈 것. 합 = 전체 FP. `boundary_low_iou` 같은 유형 골드와 겹치나 IoU < 0.5 · `duplicate_of_matched` 그 골드를 다른 예측이 이미 가져감 · `type_confusion` 다른 유형 골드와만 겹침(`type_confusion_pairs` 에 골드→예측 유형) · `unannotated_repeat` 겹치는 골드는 없으나 같은 글에 같은 유형 · 같은 글자의 골드가 있음 · `no_overlap` 나머지. 「골드 관례 차이인가」는 사람 판단이라 가르지 않는다 |
 | `additional_detection` | exp01 세 도구 합집합의 미탐 중 현재 모델+선택 규칙이 회수한 수/비율. 기존 도구는 type 불문·1:1 제한 없음, 모델은 공식 type 일치·탐욕 1:1 |
 | `cpu_latency.model_only` / `app_full` | #301 모델 detect(계약 검증·임시 속성 포함)와 앱 detect(선택 규칙 병합·resolve 포함)를 **같은 표본**으로 별도 측정 |
 
