@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "preds_sha256": "f9914ae53d70d933415edb970dbe9354431a209fef04e8ffa193679b6f463644",
+    "n_users": 115,
+    "n_posts": 2837,
+    "before_commit": "03a14826657ddae02dcead71cac9bdd5edb3c345",
+    "after_commit": "a2ee2fd571c37466dfcb6941d3070bdae705130e"
+  },
+  "before": {
+    "risk_vs_gold": {
+      "n_users": 94,
+      "pred_vs_gold_risk_spearman": 0.8476,
+      "mae": 4.8,
+      "pred_gt_gold": 0.5213,
+      "pred_lt_gold": 0.2234,
+      "pred_mean": 45.46,
+      "gold_mean": 43.08
+    },
+    "k_level_pred": {
+      "ACCEPTABLE": 114,
+      "HIGH": 1
+    },
+    "k_level_gold": {
+      "ACCEPTABLE": 93,
+      "HIGH": 1
+    },
+    "conditions_by_axis_pred": {
+      "age": 135,
+      "commute": 500,
+      "family": 644,
+      "income": 75,
+      "location": 661,
+      "occupation": 640,
+      "sex": 310
+    },
+    "conditions_by_axis_gold": {
+      "age": 105,
+      "commute": 262,
+      "family": 382,
+      "income": 53,
+      "location": 502,
+      "occupation": 301,
+      "sex": 215
+    },
+    "k_level_agree_pred_vs_gold": 0.9787
+  },
+  "after": {
+    "risk_vs_gold": {
+      "n_users": 94,
+      "pred_vs_gold_risk_spearman": 0.8395,
+      "mae": 4.85,
+      "pred_gt_gold": 0.5319,
+      "pred_lt_gold": 0.2128,
+      "pred_mean": 45.46,
+      "gold_mean": 42.83
+    },
+    "k_level_pred": {
+      "ACCEPTABLE": 114,
+      "HIGH": 1
+    },
+    "k_level_gold": {
+      "ACCEPTABLE": 93,
+      "HIGH": 1
+    },
+    "conditions_by_axis_pred": {
+      "age": 135,
+      "commute": 463,
+      "family": 644,
+      "income": 75,
+      "location": 661,
+      "occupation": 640,
+      "sex": 310
+    },
+    "conditions_by_axis_gold": {
+      "age": 103,
+      "commute": 262,
+      "family": 376,
+      "income": 52,
+      "location": 497,
+      "occupation": 298,
+      "sex": 215
+    },
+    "k_level_agree_pred_vs_gold": 0.9787
+  },
+  "changed_users": {
+    "pred_conditions": 24,
+    "gold_conditions": 13,
+    "pred_k_level": 0,
+    "pred_k_value": 0,
+    "pred_risk": 0,
+    "gold_risk": 3,
+    "gold_k_level": 0,
+    "pred_k_level_transitions": {}
+  },
+  "commute_check": {
+    "gold_commute_self": 172,
+    "gold_commute_unknown": 0,
+    "pred_self": 281,
+    "pred_self_match_gold": 137,
+    "pred_self_match_gold_self": 136,
+    "pred_unknown": 31,
+    "pred_unknown_match_gold": 0,
+    "pred_unknown_match_gold_self": 0,
+    "pred_rel_work_posts": 110,
+    "pred_rel_work_posts_gold_rel_work": 81,
+    "pred_rel_work_posts_gold_rel_work_self": 81,
+    "pred_self_precision": 0.488,
+    "pred_unknown_precision": 0.0,
+    "rel_work_condition_precision": 0.736,
+    "users_with_pred_commute_condition": 81,
+    "of_which_gold_has_commute_condition": 72,
+    "users_with_gold": 94,
+    "self_precision_by_type": {
+      "AGE": {
+        "n": 115,
+        "match_gold": 84,
+        "precision": 0.73
+      },
+      "COMMUTE": {
+        "n": 281,
+        "match_gold": 137,
+        "precision": 0.488
+      },
+      "FAM": {
+        "n": 441,
+        "match_gold": 278,
+        "precision": 0.63
+      },
+      "INCOME": {
+        "n": 63,
+        "match_gold": 32,
+        "precision": 0.508
+      },
+      "JOB": {
+        "n": 506,
+        "match_gold": 264,
+        "precision": 0.522
+      },
+      "LOC_ADMIN": {
+        "n": 308,
+        "match_gold": 241,
+        "precision": 0.782
+      },
+      "LOC_FACILITY": {
+        "n": 530,
+        "match_gold": 292,
+        "precision": 0.551
+      },
+      "REL_HOME": {
+        "n": 273,
+        "match_gold": 142,
+        "precision": 0.52
+      },
+      "REL_WORK": {
+        "n": 142,
+        "match_gold": 90,
+        "precision": 0.634
+      },
+      "SEX": {
+        "n": 270,
+        "match_gold": 197,
+        "precision": 0.73
+      }
+    },
+    "note": "정밀도 = 같은 글 · 같은 채널 골드 같은 유형(IoU ≥ 0.5 · 1:1)과 맞은 비율. 골드는 반복 언급을 다 라벨하지 않아 모든 유형이 낮게 나온다 — 유형끼리 견주는 용도"
+  }
+}
