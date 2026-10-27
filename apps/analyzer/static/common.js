@@ -183,7 +183,7 @@ function progressStart(title, note, est) {
     const s = (performance.now() - t0) / 1000;
     if (hasEst) {
       const late = s > hi;
-      el("pTime").textContent = late ? `${fmtSec(s)} · 예상보다 오래 걸리고 있습니다` : `${Math.round(s)}초 / ${range}`;
+      el("pTime").textContent = late ? `${fmtSec(s)} · 예상보다 오래 걸리고 있습니다` : `${fmtSec(s)} / ${range}`;
       bar.style.setProperty("--p", String(Math.min(0.9, (s / hi) * 0.9)));
       if (late !== isOver) {
         isOver = late; over(late);
@@ -191,7 +191,7 @@ function progressStart(title, note, est) {
           ? `예상(${range})보다 오래 걸리고 있습니다. 점검은 아직 진행 중입니다 — 서버가 붐비거나 글이 길면 더 걸립니다. 창을 닫지 말고 기다려 주세요. 끝나면 바로 결과로 넘어갑니다.`
           : baseNote;
       }
-    } else el("pTime").textContent = `${Math.round(s)}초`;
+    } else el("pTime").textContent = fmtSec(s);
     let i = 0; at.forEach((t, j) => { if (s >= t) i = j; });
     el("pStage").textContent = " · " + names[i];
   }, 250);
