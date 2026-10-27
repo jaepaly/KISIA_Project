@@ -155,7 +155,7 @@ def decisive_clues(posts: Sequence[Mapping[str, Any]], spans_by_post: Mapping[st
                 lab = describe_condition(c)
                 if lab in want:
                     sources[lab].append({"post_id": pid, "geo_tag": str(p["geo_tag"])})
-    # 같은 곳을 다르게 쓴 위치 단서(「한남동」 · 「한남동은」 · 「한남동에서」)는 엔진이 한 단서로 묶어 센다. 하나만 빼면 같은 곳의
+    # 같은 곳을 다르게 쓴 위치 단서(「성수동」 · 「성수동은」 · 「성수동에서」)는 엔진이 한 단서로 묶어 센다. 하나만 빼면 같은 곳의
     # 다른 표기가 다음 결정 단서로 올라와 작성자가 같은 곳을 여러 번 눌러야 한다 — 같은 읍면동 집합을 가리키는 스팬을 함께 근거로 둔다
     loc_sets = {lab: _codes_of(srcs, kposts) for lab, srcs in sources.items() if lab.startswith("location:") and srcs}
     loc_sets = {lab: sets for lab, sets in loc_sets.items() if sets}

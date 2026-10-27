@@ -26,9 +26,9 @@ def test_us_residence_across_posts_is_overseas():
 
 def test_one_residence_post_plus_repeated_country_is_overseas():
     out = _run([
-        "시카고에 살고 있는 평범한 엄마의 기록.",
-        "시카고 겨울은 바람이 매섭다.",
-        "시카고 호숫가 산책로를 걸었다.",
+        "시애틀에 살고 있는 평범한 직장인의 기록.",
+        "시애틀 겨울은 비가 잦다.",
+        "시애틀 해안가 산책로를 걸었다.",
     ])
     assert out["overseas"] and out["country"] == "미국"
     assert out["rule"] == "거주 표현 1편 + 같은 나라 반복"
@@ -73,9 +73,9 @@ def test_korean_residence_stronger_wins():
 
 
 def test_foreign_span_is_not_korean_residence():
-    # 1단이 「시카고」를 LOC_ADMIN 으로 잡아도 국내 거주 단서로 세지 않는다
-    spans = {"p0": [{"type": "LOC_ADMIN", "subject": "self", "text_id": "body", "start": 0, "end": 3, "text": "시카고"}]}
-    out = _run(["시카고에 살고 있다. 바람이 세다.", "미국 와서 처음 맞는 겨울."], spans)
+    # 1단이 「시애틀」를 LOC_ADMIN 으로 잡아도 국내 거주 단서로 세지 않는다
+    spans = {"p0": [{"type": "LOC_ADMIN", "subject": "self", "text_id": "body", "start": 0, "end": 3, "text": "시애틀"}]}
+    out = _run(["시애틀에 살고 있다. 바람이 세다.", "미국 와서 처음 맞는 겨울."], spans)
     assert out["posts"]["korea"] == [] and out["overseas"]
 
 

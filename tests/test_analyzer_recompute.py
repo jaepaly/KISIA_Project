@@ -41,21 +41,21 @@ def _span(pid: str, n: int, body: str, text: str, stype: str, level: str = "expl
 # 「교수님 주관」은 남의 직업인데 1단이 본인 직업으로 잡았다고 친다 — k 엔진은 직업 축에서 후보가 더 적은 「교수님」을 고른다
 ROWS = [
     ("p1", "망원동에 산 지 4년. 교수님 주관 파티에 다녀왔다."),
-    ("p2", "서른여덟 살 엄마의 가계부."),
+    ("p2", "마흔두 살 아빠의 가계부."),
     ("p3", "병원에서 일한다. 오늘도 교수님 회진이 길었다."),
 ]
 SPANS = {
     "p1": [("망원동", "LOC_ADMIN", "explicit"), ("교수님", "JOB", "explicit")],
-    "p2": [("서른여덟 살", "AGE", "explicit"), ("엄마", "SEX", "implicit")],
+    "p2": [("마흔두 살", "AGE", "explicit"), ("아빠", "SEX", "implicit")],
     "p3": [("병원에서 일한다", "JOB", "implicit"), ("교수님", "JOB", "explicit")],
 }
 US = [
-    ("p1", "미국에서 지내다 보니 예산 짜는 게 제일 어렵다. 서른여덟 살 엄마의 가계부."),
+    ("p1", "미국에서 지내다 보니 예산 짜는 게 제일 어렵다. 마흔두 살 아빠의 가계부."),
     ("p2", "미국생활 4년 차, 간호사 면허 공부를 다시 시작했다."),
-    ("p3", "주말에는 시카고 호숫가를 걸었다."),
+    ("p3", "주말에는 시애틀 해안가를 걸었다."),
 ]
-US_SPANS = {"p1": [("예산", "LOC_ADMIN", "explicit"), ("서른여덟 살", "AGE", "explicit")],
-            "p2": [("간호사", "JOB", "explicit")], "p3": [("시카고", "LOC_ADMIN", "explicit")]}
+US_SPANS = {"p1": [("예산", "LOC_ADMIN", "explicit"), ("마흔두 살", "AGE", "explicit")],
+            "p2": [("간호사", "JOB", "explicit")], "p3": [("시애틀", "LOC_ADMIN", "explicit")]}
 
 
 def _spans(rows, table) -> dict:
@@ -148,8 +148,8 @@ def test_recompute_output_matches_contracts(monkeypatch, real_k):
 
 
 def test_geo_tag_can_be_excluded(monkeypatch, real_k):
-    rows = [("p1", "서른여덟 살 엄마의 가계부.")]
-    out = _scan(monkeypatch, rows, {"p1": [("서른여덟 살", "AGE", "explicit")]}, geo_tag="서울특별시 마포구 망원동")
+    rows = [("p1", "마흔두 살 아빠의 가계부.")]
+    out = _scan(monkeypatch, rows, {"p1": [("마흔두 살", "AGE", "explicit")]}, geo_tag="서울특별시 마포구 망원동")
     loc = _clue(out, "location")
     assert loc["sources"] == [{"post_id": "p1", "geo_tag": "서울특별시 마포구 망원동"}]
     new = TestClient(server.app).post("/api/recompute", json=_body(out, _refs(loc))).json()
@@ -198,30 +198,30 @@ def test_cross_origin_recompute_is_rejected():
 
 
 def test_same_place_spellings_are_one_decisive_clue():
-    """같은 곳을 다르게 쓴 위치 단서(「한남동」 · 「한남동에서」)는 한 결정 단서로 묶인다 — 하나만 빼면 다른 표기가 다음 단서로 올라와
+    """같은 곳을 다르게 쓴 위치 단서(「성수동」 · 「성수동에서」)는 한 결정 단서로 묶인다 — 하나만 빼면 다른 표기가 다음 단서로 올라와
     작성자가 같은 곳을 여러 번 눌러야 했다(실제 글 점검에서 같은 동네 표기 3~5개가 따로 올라옴)."""
-    rows = [("p1", "한남동에서 브런치를 먹었다."), ("p2", "한남동 골목 카페가 좋았다."), ("p3", "서른여덟 살 엄마의 하루.")]
-    table = {"p1": [("한남동에서", "LOC_ADMIN", "explicit")], "p2": [("한남동", "LOC_ADMIN", "explicit")],
-             "p3": [("서른여덟 살", "AGE", "explicit")]}
+    rows = [("p1", "성수동에서 브런치를 먹었다."), ("p2", "성수동 골목 카페가 좋았다."), ("p3", "마흔두 살 아빠의 하루.")]
+    table = {"p1": [("성수동에서", "LOC_ADMIN", "explicit")], "p2": [("성수동", "LOC_ADMIN", "explicit")],
+             "p3": [("마흔두 살", "AGE", "explicit")]}
     posts = [_post(pid, body) for pid, body in rows]
     spans = {pid: {"spans": s} for pid, s in _spans(rows, table).items()}
     spec = c23.specificity({"user_ref": USER, "conditions": c23.conditions(posts, spans)})
     loc = [c for c in c23.decisive_clues(posts, spans, spec["output"]) if c["axis"] == "location"]
     assert len(loc) == 1
-    assert {s["text"] for s in loc[0]["sources"]} == {"한남동에서", "한남동"}
+    assert {s["text"] for s in loc[0]["sources"]} == {"성수동에서", "성수동"}
 
 
 def test_same_place_tag_and_spans_leave_together_other_place_stays(monkeypatch, real_k):
     """같은 곳의 위치 태그 · 다른 표기 스팬은 한 번에 빠지고(다시 올라오지 않음), 다른 곳은 다음 결정 단서로 남는다."""
-    rows = [("p1", "망원동에서 커피 한 잔."), ("p2", "망원동 시장 구경."), ("p3", "연희동 집 앞 산책.")]
+    rows = [("p1", "망원동에서 커피 한 잔."), ("p2", "망원동 시장 구경."), ("p3", "문래동 집 앞 산책.")]
     table = {"p1": [("망원동에서", "LOC_ADMIN", "explicit")], "p2": [("망원동", "LOC_ADMIN", "explicit")],
-             "p3": [("연희동", "LOC_ADMIN", "explicit")]}
+             "p3": [("문래동", "LOC_ADMIN", "explicit")]}
     out = _scan(monkeypatch, rows, table, geo_tag="서울특별시 마포구 망원동")
     first = _clue(out, "location")
     if not any("망원" in (s.get("text") or s.get("geo_tag") or "") for s in first["sources"]):
-        pytest.skip("엔진이 연희동을 먼저 골랐다 — 이 경우는 위 테스트들이 본다")
+        pytest.skip("엔진이 문래동을 먼저 골랐다 — 이 경우는 위 테스트들이 본다")
     assert {s.get("text") or s.get("geo_tag") for s in first["sources"]} == {"망원동에서", "망원동", "서울특별시 마포구 망원동"}
     new = TestClient(server.app).post("/api/recompute", json=_body(out, _refs(first))).json()
     nxt = [c for c in new["decisive_clues"] if c["axis"] == "location"]
     assert nxt and all("망원" not in (s.get("text") or s.get("geo_tag") or "") for c in nxt for s in c["sources"])
-    assert any(s.get("text") == "연희동" for c in nxt for s in c["sources"])
+    assert any(s.get("text") == "문래동" for c in nxt for s in c["sources"])

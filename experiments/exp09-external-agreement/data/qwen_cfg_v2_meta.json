@@ -1,8 +1,8 @@
 {
  "config": "v2",
- "adapter": "C:\\Users\\dor12\\wt\\s2v2\\experiments\\exp08-stage2-sft\\results\\adapter_v2",
- "adapter_sha256": "94ada34de0f1e49c859f2102e311bf42c0683768ec779ca8aab243f63a950190",
+ "adapter": "/srv/kisia/ckpts/stage2_v2",
+ "adapter_sha256": "c045d35324f0ed6c90a2b4e84106a02eb6750e38c0f5c1b73be107ba4d882c7e",
  "inputs_sha256": "9ac6607fe22c91dbe1ccc642ecca127bff4b17c69b34add2771082ff9a076d84",
  "external_sha256": "6b4ce91bfb8e34833b1c9079955db0a49469c52795778d3ca32cac31e2a81592",
- "measured": "2026-10-12 20:28"
+ "measured": "2026-10-27 02:38"
 }
