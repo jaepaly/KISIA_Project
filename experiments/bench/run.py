@@ -31,6 +31,7 @@ from kopl.c1_span import infer, rules
 from kopl.c1_span.attributes import resolve
 import train
 import c1_uncertainty as uncertainty
+import c1_post_attr as post_attr
 
 TEST_SHA256 = latency.TEST_SHA256
 LEVELS = evaluation.LEVELS
@@ -194,6 +195,8 @@ def score_predictions(posts, gold, predictions):
         'boundary_type': {'partial': partial, 'exact': partial['exact']},
         'by_kind': by_kind, 'fp_breakdown': {**evaluation.fp_breakdown(partial, by_kind), 'by_cause': causes},
         'bootstrap_ci': uncertainty_result,
+        # 서비스 단위 보조 지표 — 판정 값 아님 · 정의는 11/2 전에 고정(DEC-016)
+        'post_attribute': post_attr.score(gold, predictions),
         'proxy': {'partial_by_level': partial['by_level'], 'exact_by_level': exact_proxy,
                   'policy': partial['level_policy']},
         'resolved_level': {'partial': classified, 'exact': resolved_scores(evaluation.exact_span_sets),
