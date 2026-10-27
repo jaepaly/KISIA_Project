@@ -36,12 +36,12 @@ def _span(pid: str, n: int, body: str, text: str, stype: str, level: str = "expl
 
 # 미국 거주자 — 「예산」은 지명과 글자가 같은 일반 낱말인데 1단이 LOC_ADMIN 으로 잡았다고 친다
 US = [
-    ("p1", "미국에서 지내다 보니 예산 짜는 게 제일 어렵다. 서른여덟 살 엄마의 가계부."),
+    ("p1", "미국에서 지내다 보니 예산 짜는 게 제일 어렵다. 마흔두 살 아빠의 가계부."),
     ("p2", "미국생활 4년 차, 간호사 면허 공부를 다시 시작했다."),
-    ("p3", "주말에는 시카고 호숫가를 걸었다."),
+    ("p3", "주말에는 시애틀 해안가를 걸었다."),
 ]
 KR = [
-    ("p1", "뉴욕 여행 다녀왔다. 예산 짜는 게 제일 어렵다. 서른여덟 살 엄마의 가계부."),
+    ("p1", "뉴욕 여행 다녀왔다. 예산 짜는 게 제일 어렵다. 마흔두 살 아빠의 가계부."),
     ("p2", "망원동에 산 지 4년, 간호사 면허 공부를 다시 시작했다."),
     ("p3", "주말에는 한강을 걸었다."),
 ]
@@ -51,8 +51,8 @@ def _spans(rows) -> dict:
     out = {}
     for pid, body in rows:
         s = []
-        for text, stype in (("예산", "LOC_ADMIN"), ("서른여덟 살", "AGE"), ("간호사", "JOB"), ("망원동", "LOC_ADMIN"),
-                            ("시카고", "LOC_ADMIN")):
+        for text, stype in (("예산", "LOC_ADMIN"), ("마흔두 살", "AGE"), ("간호사", "JOB"), ("망원동", "LOC_ADMIN"),
+                            ("시애틀", "LOC_ADMIN")):
             if text in body:
                 s.append(_span(pid, len(s) + 1, body, text, stype))
         out[pid] = s
