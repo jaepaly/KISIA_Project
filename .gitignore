@@ -155,6 +155,9 @@ data/corpus/v0/splits/*.jsonl
 # SFT 학습 데이터 — make_sft*.py 로 재생성. stats.json(지표)만 추적
 experiments/exp08-stage2-sft/data/*.jsonl
 experiments/exp09-external-agreement/data/*.jsonl
+# 11/2 최종 측정 회귀(exp09 existing_verified)가 해시를 대조하는 두 파일 — 외부 호출이라 같은 값으로 다시 만들 수 없어 추적한다
+!experiments/exp09-external-agreement/data/inputs.jsonl
+!experiments/exp09-external-agreement/data/external.jsonl
 experiments/exp10-action-repro/data/*.jsonl
 
 # 기타 생성 로그

@@ -175,7 +175,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 
 ⚠️ exp09 회귀는 저장된 결과가 있으면 그 meta의 어댑터 SHA와 비교한다. 기록된 exp09 결과는 10/12 학습본(`94ada34d…`)으로 잰 것이라
 10/15 재학습본(`c045d353…`)으로 돌리면 **`failed`(덮어쓰지 않음)가 나온다** (`data/qwen_cfg_v2_meta.json`의 `adapter_sha256`이 `94ada34d…`, 10/19 확인). → **11/1 전에 D가 10/15 본으로 exp09를 다시 잰다**(10/26 PM 결정). 다시 잰 결과의 어댑터 SHA를 이 칸에 적는다: **✅ 10/27 재측정 — `c045d353…`** (GPU 서버 L4 · 105명 생성 실패 0 · 일치율 **0.8531** · 비기권 0.4706 · κ 0.6719 — 10/12 본 0.8517 · 0.4657 · 0.669 는 `results/metrics_cfg_v2_1012.json` · `data/qwen_cfg_v2_1012_meta.json` 로 보관) ([ABLATION.md](ABLATION.md) 「최종 측정 회귀」).
-11/2 측정 PC 에는 `experiments/exp09-external-agreement/data/inputs.jsonl` (`9ac6607f…`) · `external.jsonl` (`6b4ce91b…`) 을 D 가 옮겨 둔다 — .gitignore 라 저장소에 없고, 없으면 회귀가 「입력 · 외부 판정 파일이 없어」 `failed` 다. 있으면 실행 없이 `existing_verified`.
+`experiments/exp09-external-agreement/data/inputs.jsonl` (`9ac6607f…`) · `external.jsonl` (`6b4ce91b…`) 은 **11/1 부터 저장소에 있다**(`-text` · 바이트 그대로) — 측정 PC 는 **main 을 pull** 한 상태로 잰다(`w11` 태그에는 이 두 파일이 없다 · 엔진 코드는 같다). 없으면 회귀가 「입력 · 외부 판정 파일이 없어」 `failed`, 있으면 실행 없이 `existing_verified`.
 
 **실행 명령 (저장소 루트 PowerShell · 그대로 친다)**
 

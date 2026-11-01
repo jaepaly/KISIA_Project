@@ -50,7 +50,7 @@ python experiments/exp09-external-agreement/score.py                # results/me
 python -m pytest -q experiments/exp09-external-agreement/test_score.py
 ```
 
-`data/*.jsonl` 은 커밋하지 않는다 (재생성 가능 · `.gitignore`). `manifest.json` 과 `results/` 만 추적한다.
+`data/*.jsonl` 은 커밋하지 않는다 (`.gitignore`). 예외로 **`inputs.jsonl` · `external.jsonl` 두 파일은 추적한다**(11/1) — 러너 `--final` 의 exp09 회귀가 이 두 파일의 SHA 를 `qwen_cfg_v2_meta.json` 과 대조하고(`existing_verified`), `external.jsonl` 은 외부 LLM 호출 결과라 다시 돌리면 같은 값이 나오지 않는다(자기 일치 0.962 · 아래). 둘 다 코퍼스 v0 가상 인물 스팬과 그 판정이며 키는 없다(게이트웨이 주소는 해시 12자리만). `manifest.json` 과 `results/` 도 추적한다.
 
 ## 결과 (2026-09-28 · 105명 · 735칸 · 게이트웨이 · user_ref 8자리)
 
