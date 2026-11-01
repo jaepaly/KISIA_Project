@@ -32,3 +32,7 @@
 # 다이어그램은 텍스트지만 리뷰에서 접는다
 *.svg       text eol=lf linguist-generated=true
 
+
+# exp09 회귀가 SHA-256 으로 대조하는 입력 — 줄바꿈을 바꾸면 해시가 달라진다(원본은 CRLF)
+experiments/exp09-external-agreement/data/inputs.jsonl   -text
+experiments/exp09-external-agreement/data/external.jsonl -text
