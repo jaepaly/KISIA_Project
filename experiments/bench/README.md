@@ -244,7 +244,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 | `experiments/bench/run.py` | `cde964b8b6812aafa12fbc320f104b693155b3f112fcd574ddc50e5dca01ed4a` |
 | `experiments/exp06-finetune/measure_additional_rate.py` | `8f669f2a661521e140a0a95f2d034feacaa9e272a1d974c0df908cb0e87e3693` |
 
-모델·BIO・test・2단 어댑터 해시는 위 체크리스트 표와 같다. 전체 골드·입력 지문은 각
+모델·BIO·test·2단 어댑터 해시는 위 체크리스트 표와 같다. 전체 골드·입력 지문은 각
 `metrics.json`의 `audit.input_sha256`, 실행 코드 지문은 `source`에 보존돼 있다.
 
 ### 1단 주 지표 · 규칙 끔 비교
