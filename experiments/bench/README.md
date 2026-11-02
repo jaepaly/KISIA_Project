@@ -160,7 +160,7 @@ $env:PYTHONIOENCODING="utf-8"; $env:PYTHONPATH="src;experiments/exp06-finetune";
 - PC는 **한 대에서 한 줄로** 돌린다. 추천은 **B 데스크톱**이다. 1단 v2 체크포인트가 그 PC에 있고, CPU(Ryzen 5 9600X)가 #301 지연을 잰 CPU와 같으며, GPU(RTX 5070)가 있다. 2단 v2 어댑터는 D가 보관본을 비공개로 전달하고 SHA를 맞춘다. → **B 데스크톱으로 확정**(10/26 PM 결정 · 다른 PC로 하면 지연 숫자를 #301과 바로 비교할 수 없다)
 
 **동결 커밋**
-- 일 11/1 최종 동결 커밋. 해시는 동결 때 이 칸에 적는다: `⟦11/1 동결 커밋⟧`
+- 일 11/1 최종 동결 커밋: **`2048952`** (`w11` 태그 · 재검증 [freeze-W11](../../docs/evidence/freeze-W11.md)). 측정은 그 위에 exp09 입력 두 파일만 더한 **main `9e70d95` 이후**에서 한다(#403 · 엔진 코드 같음) — `git log -1 --format=%h` 로 확인하고 결과 기록에 적는다
 - 측정 PC에서 `git status`가 깨끗해야 한다(`git status --porcelain` 출력 없음). d_stage2 지문은 고친 파일이 있으면 `+dirty`를 붙인다
 
 **모델 파일과 SHA-256** (측정 전에 `certutil -hashfile <파일> SHA256` 또는 `sha256sum`으로 확인)
