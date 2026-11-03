@@ -1,0 +1,426 @@
+{
+  "scope": "Raw BIO experimental KoELECTRA baselines, not the frozen app plus rules. No real-blog source or predictions included.",
+  "metric": "type equality + character IoU >= .5; greedy one-to-one; threshold .7; rules off",
+  "models": {
+    "base": {
+      "model_id": "monologg/koelectra-base-v3-discriminator",
+      "train_epochs": 10,
+      "selected_epoch": 10
+    },
+    "clean": {
+      "model_id": "monologg/koelectra-base-v3-discriminator",
+      "train_epochs": 20,
+      "selected_epoch": 18
+    },
+    "repaired": {
+      "model_id": "monologg/koelectra-base-v3-discriminator",
+      "train_epochs": 20,
+      "selected_epoch": 20
+    }
+  },
+  "references": {
+    "official239": {
+      "base": {
+        "partial": {
+          "tp": 204,
+          "fp": 313,
+          "fn": 154,
+          "precision": 0.3945841392649903,
+          "recall": 0.5698324022346368,
+          "f1": 0.4662857142857143
+        },
+        "exact": {
+          "tp": 99,
+          "fp": 418,
+          "fn": 259,
+          "precision": 0.19148936170212766,
+          "recall": 0.276536312849162,
+          "f1": 0.22628571428571428
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 162,
+          "fp": 358,
+          "fn": 196,
+          "precision": 0.31153846153846154,
+          "recall": 0.45251396648044695,
+          "f1": 0.3690205011389522
+        },
+        "exact": {
+          "tp": 85,
+          "fp": 435,
+          "fn": 273,
+          "precision": 0.16346153846153846,
+          "recall": 0.23743016759776536,
+          "f1": 0.19362186788154898
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 182,
+          "fp": 367,
+          "fn": 176,
+          "precision": 0.331511839708561,
+          "recall": 0.5083798882681564,
+          "f1": 0.4013230429988975
+        },
+        "exact": {
+          "tp": 93,
+          "fp": 456,
+          "fn": 265,
+          "precision": 0.16939890710382513,
+          "recall": 0.25977653631284914,
+          "f1": 0.20507166482910694
+        }
+      }
+    },
+    "previous_ai239": {
+      "base": {
+        "partial": {
+          "tp": 240,
+          "fp": 277,
+          "fn": 188,
+          "precision": 0.46421663442940037,
+          "recall": 0.5607476635514018,
+          "f1": 0.5079365079365079
+        },
+        "exact": {
+          "tp": 198,
+          "fp": 319,
+          "fn": 230,
+          "precision": 0.3829787234042553,
+          "recall": 0.46261682242990654,
+          "f1": 0.41904761904761906
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 377,
+          "fp": 143,
+          "fn": 51,
+          "precision": 0.725,
+          "recall": 0.8808411214953271,
+          "f1": 0.7953586497890295
+        },
+        "exact": {
+          "tp": 365,
+          "fp": 155,
+          "fn": 63,
+          "precision": 0.7019230769230769,
+          "recall": 0.852803738317757,
+          "f1": 0.770042194092827
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 368,
+          "fp": 181,
+          "fn": 60,
+          "precision": 0.6703096539162113,
+          "recall": 0.8598130841121495,
+          "f1": 0.7533265097236438
+        },
+        "exact": {
+          "tp": 344,
+          "fp": 205,
+          "fn": 84,
+          "precision": 0.6265938069216758,
+          "recall": 0.8037383177570093,
+          "f1": 0.7041965199590583
+        }
+      }
+    },
+    "conservative239": {
+      "base": {
+        "partial": {
+          "tp": 261,
+          "fp": 256,
+          "fn": 193,
+          "precision": 0.504835589941973,
+          "recall": 0.5748898678414097,
+          "f1": 0.537590113285273
+        },
+        "exact": {
+          "tp": 190,
+          "fp": 327,
+          "fn": 264,
+          "precision": 0.36750483558994196,
+          "recall": 0.4185022026431718,
+          "f1": 0.3913491246138002
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 287,
+          "fp": 233,
+          "fn": 167,
+          "precision": 0.551923076923077,
+          "recall": 0.6321585903083701,
+          "f1": 0.5893223819301848
+        },
+        "exact": {
+          "tp": 256,
+          "fp": 264,
+          "fn": 198,
+          "precision": 0.49230769230769234,
+          "recall": 0.5638766519823789,
+          "f1": 0.5256673511293635
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 304,
+          "fp": 245,
+          "fn": 150,
+          "precision": 0.5537340619307832,
+          "recall": 0.6696035242290749,
+          "f1": 0.6061814556331007
+        },
+        "exact": {
+          "tp": 261,
+          "fp": 288,
+          "fn": 193,
+          "precision": 0.47540983606557374,
+          "recall": 0.5748898678414097,
+          "f1": 0.5204386839481555
+        }
+      }
+    },
+    "adjudicated63": {
+      "base": {
+        "partial": {
+          "tp": 36,
+          "fp": 31,
+          "fn": 34,
+          "precision": 0.5373134328358209,
+          "recall": 0.5142857142857142,
+          "f1": 0.5255474452554745
+        },
+        "exact": {
+          "tp": 27,
+          "fp": 40,
+          "fn": 43,
+          "precision": 0.40298507462686567,
+          "recall": 0.38571428571428573,
+          "f1": 0.39416058394160586
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 49,
+          "fp": 18,
+          "fn": 21,
+          "precision": 0.7313432835820896,
+          "recall": 0.7,
+          "f1": 0.7153284671532847
+        },
+        "exact": {
+          "tp": 42,
+          "fp": 25,
+          "fn": 28,
+          "precision": 0.6268656716417911,
+          "recall": 0.6,
+          "f1": 0.6131386861313869
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 53,
+          "fp": 21,
+          "fn": 17,
+          "precision": 0.7162162162162162,
+          "recall": 0.7571428571428571,
+          "f1": 0.7361111111111112
+        },
+        "exact": {
+          "tp": 42,
+          "fp": 32,
+          "fn": 28,
+          "precision": 0.5675675675675675,
+          "recall": 0.6,
+          "f1": 0.5833333333333334
+        }
+      }
+    },
+    "annotator_a63": {
+      "base": {
+        "partial": {
+          "tp": 36,
+          "fp": 31,
+          "fn": 25,
+          "precision": 0.5373134328358209,
+          "recall": 0.5901639344262295,
+          "f1": 0.5625
+        },
+        "exact": {
+          "tp": 27,
+          "fp": 40,
+          "fn": 34,
+          "precision": 0.40298507462686567,
+          "recall": 0.4426229508196721,
+          "f1": 0.421875
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 43,
+          "fp": 24,
+          "fn": 18,
+          "precision": 0.6417910447761194,
+          "recall": 0.7049180327868853,
+          "f1": 0.671875
+        },
+        "exact": {
+          "tp": 35,
+          "fp": 32,
+          "fn": 26,
+          "precision": 0.5223880597014925,
+          "recall": 0.5737704918032787,
+          "f1": 0.546875
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 47,
+          "fp": 27,
+          "fn": 14,
+          "precision": 0.6351351351351351,
+          "recall": 0.7704918032786885,
+          "f1": 0.6962962962962963
+        },
+        "exact": {
+          "tp": 37,
+          "fp": 37,
+          "fn": 24,
+          "precision": 0.5,
+          "recall": 0.6065573770491803,
+          "f1": 0.5481481481481482
+        }
+      }
+    },
+    "annotator_b63": {
+      "base": {
+        "partial": {
+          "tp": 37,
+          "fp": 30,
+          "fn": 42,
+          "precision": 0.5522388059701493,
+          "recall": 0.46835443037974683,
+          "f1": 0.5068493150684932
+        },
+        "exact": {
+          "tp": 28,
+          "fp": 39,
+          "fn": 51,
+          "precision": 0.417910447761194,
+          "recall": 0.35443037974683544,
+          "f1": 0.3835616438356164
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 48,
+          "fp": 19,
+          "fn": 31,
+          "precision": 0.7164179104477612,
+          "recall": 0.6075949367088608,
+          "f1": 0.6575342465753424
+        },
+        "exact": {
+          "tp": 41,
+          "fp": 26,
+          "fn": 38,
+          "precision": 0.6119402985074627,
+          "recall": 0.5189873417721519,
+          "f1": 0.5616438356164384
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 53,
+          "fp": 21,
+          "fn": 26,
+          "precision": 0.7162162162162162,
+          "recall": 0.6708860759493671,
+          "f1": 0.6928104575163399
+        },
+        "exact": {
+          "tp": 42,
+          "fp": 32,
+          "fn": 37,
+          "precision": 0.5675675675675675,
+          "recall": 0.5316455696202531,
+          "f1": 0.5490196078431373
+        }
+      }
+    },
+    "annotator_c63": {
+      "base": {
+        "partial": {
+          "tp": 36,
+          "fp": 31,
+          "fn": 29,
+          "precision": 0.5373134328358209,
+          "recall": 0.5538461538461539,
+          "f1": 0.5454545454545454
+        },
+        "exact": {
+          "tp": 27,
+          "fp": 40,
+          "fn": 38,
+          "precision": 0.40298507462686567,
+          "recall": 0.4153846153846154,
+          "f1": 0.4090909090909091
+        }
+      },
+      "clean": {
+        "partial": {
+          "tp": 47,
+          "fp": 20,
+          "fn": 18,
+          "precision": 0.7014925373134329,
+          "recall": 0.7230769230769231,
+          "f1": 0.7121212121212122
+        },
+        "exact": {
+          "tp": 40,
+          "fp": 27,
+          "fn": 25,
+          "precision": 0.5970149253731343,
+          "recall": 0.6153846153846154,
+          "f1": 0.6060606060606061
+        }
+      },
+      "repaired": {
+        "partial": {
+          "tp": 51,
+          "fp": 23,
+          "fn": 14,
+          "precision": 0.6891891891891891,
+          "recall": 0.7846153846153846,
+          "f1": 0.7338129496402878
+        },
+        "exact": {
+          "tp": 40,
+          "fp": 34,
+          "fn": 25,
+          "precision": 0.5405405405405406,
+          "recall": 0.6153846153846154,
+          "f1": 0.5755395683453237
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Test error categories were known before this repair design; this is not a new independent test.",
+    "Synthetic references are unchanged official, old AI relabel, and conservative AI-adjudicated reference with unresolved labels retained.",
+    "Real-blog reference is AI-authored for one previously inspected account, not author-confirmed gold.",
+    "All label repairs were restricted to the original 2281 training-pool posts; internal persona dev labels were repaired without test posts.",
+    "Base used 10 epochs, clean and repaired used 20; clean-vs-repaired comparison keeps training hyperparameters fixed.",
+    "Synthetic239 baseline predictions use CPU for base/clean and CUDA for repaired; additional63 uses CUDA for all three.",
+    "All alternative reference sets are frozen diagnostics; never select the best model or threshold using these results.",
+    "Additional63 has zero INCOME gold spans; most per-type supports are below30.",
+    "Only one training seed per condition."
+  ]
+}

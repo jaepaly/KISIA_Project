@@ -1,0 +1,58 @@
+{
+  "verified_date_kst": "2026-11-04",
+  "data_doctor": {
+    "sources": 2583,
+    "train_posts": 2281,
+    "train_spans": 2706,
+    "eval_posts": 302,
+    "id_and_full_body_leakage": 0,
+    "all_sources_synthetic": true
+  },
+  "unit_tests": {
+    "command": "python -X utf8 -m unittest discover -s experiments/exp44-xlmr-handoff/tests -v",
+    "passed": 16
+  },
+  "actual_pinned_tokenizer_preparation": {
+    "model": "FacebookAI/xlm-roberta-large",
+    "revision": "c23d21b0620b635a76227c604d44e43a9f0ee389",
+    "examples": 6737,
+    "spans": 2706,
+    "roundtrip": {
+      "exact": 2706,
+      "near": 0,
+      "bad": 0,
+      "bad_rate": 0.0,
+      "mean_near_boundary_delta": 0.0
+    },
+    "lost_spans": 0
+  },
+  "offline_cpu_integration": {
+    "purpose": "Offline wiring/offset/selection/checkpoint/evaluation smoke test; NOT XLM-R-large training or performance",
+    "random_model": {
+      "vocab_size": 250002,
+      "hidden_size": 16,
+      "layers": 1,
+      "labels": 21
+    },
+    "training": "Two microbatches and one optimizer update on prepared inputs; complete actual internal dev evaluation; one smoke epoch",
+    "evaluation_posts": 302,
+    "reference_sets": 7,
+    "repeat_evaluation_blocked": true,
+    "downloaded_pretrained_weights": false,
+    "tokenizer_revision": "c23d21b0620b635a76227c604d44e43a9f0ee389",
+    "python": "3.11.15",
+    "torch": "2.12.1+cu130",
+    "transformers": "5.12.1",
+    "device": "cpu"
+  },
+  "independent_ai_code_review": {
+    "open_blockers": 0,
+    "review_scope": "New experiment/CI only; source, official gold and app configuration unchanged"
+  },
+  "not_verified": [
+    "Full XLM-R-large pretrained-weight training",
+    "GPU memory fit or throughput on B PC",
+    "Large model accuracy or CPU latency"
+  ],
+  "environment_note": "Local smoke used Python3.11.15/Torch2.12.1+cu130/Transformers5.12.1; repository requirement versions may differ. B must record actual versions and rerun doctor/preparation."
+}

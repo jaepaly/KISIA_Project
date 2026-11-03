@@ -1,0 +1,4 @@
+# Frozen byte hashes must survive Windows/Linux checkout unchanged.
+data/*.jsonl -text
+manifest.json -text
+baselines.json -text
