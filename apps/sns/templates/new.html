@@ -92,6 +92,16 @@
   .ap .axes span.open{background:var(--ut-leaf-soft);color:var(--ut-leaf);border-color:transparent}
   .ap .try{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-earth-soft);border-radius:10px;padding:8px 10px;line-height:1.55}
   .ap .try b{color:var(--ut-ink)}
+  /* 빠른 결과 · 정밀 판정 안내 (renderS2) — 진행 중은 옅은 패널, 바뀐 항목이 있으면 흙색 테두리 */
+  .ap .s2{margin:10px 0 0;font-size:12.5px;color:var(--ut-ink2);background:var(--ut-panel2);border:1px solid var(--ut-line);border-radius:10px;padding:8px 10px;line-height:1.55}
+  .ap .s2 b{color:var(--ut-ink)}
+  .ap .s2 ul{margin:4px 0 0;padding-left:18px}
+  .ap .s2.chg{background:var(--ut-earth-soft);border-color:var(--ut-earth-ink)}
+  .ap .s2 .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;margin-right:6px;background:var(--ut-panel);border:1px solid var(--ut-line);color:var(--ut-ink3)}
+  .ap .s2.chg .tag{background:var(--ut-earth);border-color:transparent;color:#fff}
+  .ap .s2.wait .tag::after{content:"…";animation:pado-dots 1.2s steps(3,end) infinite}
+  .ap .axes span.chg{box-shadow:0 0 0 2px var(--ut-earth-ink);font-weight:700}
+  @media (prefers-reduced-motion:reduce){.ap .s2.wait .tag::after{animation:none}}
   .ap .scan-btn{width:100%;margin-top:10px;font-size:13px;padding:9px}
   .ap .scan-btn[hidden]{display:none}
   /* 「함께 점검」 — 이 화면의 핵심 동작이라 주 버튼(먹색)으로. 기존 글 점검 버튼(ghost)과 구별된다 */
@@ -254,7 +264,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/pado.js?v=381"></script>
+<script src="/static/pado.js?v=405"></script>
 <script>
 // 글 화면에서 옮겨 온 초안 채우기 (post.html 「이 글을 옮겨 고쳐 쓰기」) — 오른쪽 패널이 작성자를 읽기 전에 채워야 한다
 (function () {
@@ -393,6 +403,11 @@ const AP = (function () {
     const read = AXIS_ORDER.filter((a) => findings[a] && findings[a].verdict !== "abstain");
     const open = AXIS_ORDER.filter((a) => !findings[a] || findings[a].verdict === "abstain");
     kState.className = "cnt"; kState.textContent = `공개 글 ${me.n_posts}편`;
+    const fol = d.stage2_followup || null;
+    const changed = Object.fromEntries(((fol && fol.status === "done" && fol.diff) || []).map((x) => [x.attr, x]));
+    const chip = (a, cls, label) => changed[a]
+      ? `<span class="${cls} chg" title="정밀 판정으로 바뀜 · 빠른 결과에서는 ${esc(V_LABEL[changed[a].from] || "단서 없음")}">${esc(label)} · 바뀜</span>`
+      : `<span class="${cls}">${esc(label)}</span>`;
     const p = me.persona;
     let tryHtml;
     if (open.length) {
@@ -408,7 +423,8 @@ const AP = (function () {
       <div class="kbox"><b>${k === null ? "산출 불가" : "약 " + fmtN(k) + "명"}</b><span class="u">중 한 명 · 노출 위험도 ${Number(risk).toFixed(1)}</span></div>
       <div class="sub">글 속 단서에 따른 사람 수 변화</div>${stepsHtml(spec.steps, 6, d)}`) + `
       <div class="sub">단서를 찾은 항목 / 단서를 찾지 못한 항목</div>
-      <div class="axes">${read.map((a) => `<span class="read">${AXIS[a]}</span>`).join("")}${open.map((a) => `<span class="open">${AXIS[a]} 단서 없음</span>`).join("")}</div>
+      <div class="axes">${read.map((a) => chip(a, "read", AXIS[a])).join("")}${open.map((a) => chip(a, "open", AXIS[a] + " 단서 없음")).join("")}</div>
+      ${renderS2(d)}
       ${tryHtml}
       <p class="muted" style="margin:8px 0 0;"><a href="${PADO}/static/scan.html?u=${encodeURIComponent(me.user_ref)}" target="veilo" style="color:var(--ut-earth-ink);">파도풀에서 자세히 →</a></p>`;
     if (lastDraft && overseas(d)) onLive(lastDraft);   // 계정 점검이 실시간 점검보다 늦게 끝났으면 「이 글만으로」 숫자도 거둔다
@@ -424,6 +440,51 @@ const AP = (function () {
   let gen = 0, ctrl = null;
   const current = (g) => g === gen;
 
+  // ── 빠른 결과 먼저 · 정밀 판정 뒤따라 — 분석 서버가 모델을 쓸 수 있으면 항목별 판정이 규칙으로 먼저 오고(stage2_followup),
+  //    문맥까지 읽는 모델 판정이 끝나면 바뀐 항목을 칩과 안내로 보인다(조용히 바뀌지 않게). 사람 수 · 노출 위험도는 그대로다.
+  //    모델을 못 쓰는 서버면 stage2_followup 이 없어 지금과 같다
+  const V_LABEL = { specified: "직접 드러남", narrowed: "좁혀짐", weak_signal: "약한 신호", abstain: "단서 없음" };
+  let stopFollow = null;
+  function renderS2(d) {
+    const f = d.stage2_followup;
+    if (!f) return "";
+    if (f.status === "pending" || f.status === "running") {
+      return `<p class="s2 wait" role="status"><span class="tag">빠른 결과</span>지금 항목은 빠른 결과(규칙)예요. 글의 앞뒤 문맥까지 읽는 정밀 판정을 이어서 하고 있어요`
+        + ` — 약 ${esc(window.padoFmtSec(Number(f.est_seconds) || 60))}${f.ahead > 0 ? ` · 앞에 ${esc(String(f.ahead))}건` : ""}. 끝나면 바뀐 항목을 표시할게요.</p>`;
+    }
+    if (f.status === "done") {
+      const diff = f.diff || [];
+      if (!diff.length) return `<p class="s2" role="status"><span class="tag">정밀 판정</span>정밀 판정이 끝났어요. 빠른 결과와 항목이 같아요.</p>`;
+      return `<div class="s2 chg" role="status"><span class="tag">정밀 판정</span>정밀 판정이 끝났어요. 판정이 바뀐 항목 <b>${diff.length}개</b>를 표시했어요.`
+        + `<ul>${diff.map((x) => `<li><b>${esc(AXIS[x.attr] || x.attr)}</b> ${esc(V_LABEL[x.from] || x.from)} → <b>${esc(V_LABEL[x.to] || x.to)}</b></li>`).join("")}</ul>`
+        + `<span class="muted">글에 드러난 단서의 정도일 뿐, 실제 정보가 맞다는 뜻은 아니에요. 사람 수와 노출 위험도는 그대로예요.</span></div>`;
+    }
+    if (f.status === "skipped") return `<p class="s2" role="status"><span class="tag">빠른 결과</span>정밀 판정을 기다리는 점검이 많아 이번엔 빠른 결과(규칙)만 보여 드려요.</p>`;
+    return `<p class="s2" role="status"><span class="tag">빠른 결과</span>정밀 판정을 받지 못해 빠른 결과(규칙)를 그대로 보여 드려요.</p>`;
+  }
+  // 이어 받기 — 받은 판정은 이 창의 점검 결과(sessionStorage)에도 고쳐 둔다. 그 사이 작성자를 바꿨으면 화면은 건드리지 않는다
+  function followModel(g, m, key) {
+    const f = scan && scan.stage2_followup;
+    if (!f || !f.job || !(f.status === "pending" || f.status === "running")) return;
+    if (stopFollow) stopFollow();
+    stopFollow = window.padoFollow(f, (q) => {
+      let d = null;
+      try { d = JSON.parse(sessionStorage.getItem(key) || "null"); } catch {}
+      if (!d) d = scan;
+      if (!d || !d.stage2_followup || d.stage2_followup.job !== f.job) return;
+      if (q.status === "done") {
+        const diff = window.padoDiffFindings(d.stage2.output.findings, q.findings);
+        d.stage2.output.findings = q.findings;
+        d.stage2.output.provenance = { ...(d.stage2.output.provenance || {}), model_version: q.model_version };
+        d.stage2_followup = { ...d.stage2_followup, status: "done", diff, ahead: 0 };
+      } else {
+        d.stage2_followup = { ...d.stage2_followup, status: q.status, ahead: q.ahead || 0 };
+      }
+      try { sessionStorage.setItem(key, JSON.stringify(d)); } catch {}
+      if (current(g) && me === m) { scan = d; renderK(); }
+    });
+  }
+
   const scanKey = (m) => "veilo.scan." + m.user_ref + "." + m.n_posts + "." + (m.last || "");   // 공개 글 수가 바뀌면 다시 센다 · 조치 뒤엔 veilo.js 가 통째로 지운다
   let est = null;   // 기존 공개 글 점검 예상 시간(초) — 파도풀 /sns/estimate (글자 수 × 이 서버의 실측 속도)
 
@@ -432,7 +493,7 @@ const AP = (function () {
     if (!m || !current(g)) return;
     const key = scanKey(m);
     const cached = sessionStorage.getItem(key);
-    if (cached) { scan = JSON.parse(cached); renderK(); return; }
+    if (cached) { scan = JSON.parse(cached); renderK(); followModel(g, m, key); return; }   // 정밀 판정을 기다리던 결과면 이어 받는다
     kState.className = "cnt busy"; kState.textContent = "점검 중…";
     // 단계 이름 + 흐른 시간 · 앞에 다른 점검이 있으면 차례 — 이 글 점검(pado.js)과 같은 표시 (#385 E9 · E10)
     const prog = window.padoProgress(({ ahead, stage, time }) => {
@@ -443,15 +504,16 @@ const AP = (function () {
       let d;
       if (PADO_CROSS) {
         const ex = await (await fetch(`/api/export/${encodeURIComponent(m.user_ref)}`, { signal: ctrl.signal })).json();
-        d = (await window.padoCheckExport(ex, ctrl.signal, prog.setAhead)).raw;
+        d = (await window.padoCheckExport(ex, ctrl.signal, prog.setAhead, window.PADO_PROGRESSIVE)).raw;
       } else {
-        d = await window.padoPost(`/scan/${encodeURIComponent(m.user_ref)}`, null, ctrl.signal, prog.setAhead);
+        d = await window.padoPost(`/scan/${encodeURIComponent(m.user_ref)}${window.PADO_PROGRESSIVE}`, null, ctrl.signal, prog.setAhead);
       }
       prog.stop();
       if (!current(g) || me !== m) return;
       scan = d;
       try { sessionStorage.setItem(key, JSON.stringify(d)); } catch {}
       renderK();
+      followModel(g, m, key);
     } catch (e) {
       prog.stop();
       if (!current(g)) return;   // 작성자를 바꿔 취소된 요청 — 조용히
@@ -465,6 +527,7 @@ const AP = (function () {
     if (!sel || !sel.value) return;
     const g = ++gen, aid = sel.value;
     if (ctrl) ctrl.abort();
+    if (stopFollow) { stopFollow(); stopFollow = null; }
     ctrl = new AbortController();
     me = null; scan = null; combineOut.innerHTML = "";
     who.innerHTML = `<div class="rail-h">선택한 가상 인물</div><p class="muted">불러오는 중…</p>`;
@@ -492,7 +555,7 @@ const AP = (function () {
     const kBtn = document.getElementById("apKBtn");
     kBtn.addEventListener("click", () => autoScan(g));
     try {   // 예상 시간 — 못 받으면 편수만
-      const r = await fetch(`${PADO}/sns/estimate/${encodeURIComponent(me.user_ref)}`, { signal: ctrl.signal });
+      const r = await fetch(`${PADO}/sns/estimate/${encodeURIComponent(me.user_ref)}${window.PADO_PROGRESSIVE}`, { signal: ctrl.signal });
       if (r.ok && current(g)) {
         const e = await r.json();
         if (current(g) && typeof e.seconds === "number" && e.seconds > 0) {

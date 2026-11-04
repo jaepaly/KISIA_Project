@@ -161,11 +161,56 @@
     return "사는 동네";
   };
   window.padoCheck = check;
+
+  // ── 정밀 판정(2단 모델) 이어 받기 — 점검을 ?progressive=1 로 부르면 모델을 쓸 수 있는 분석 서버만 항목별 판정을
+  //    규칙으로 먼저 내고(stage2_followup), 모델 판정은 뒤에서 돈다. 2초마다 BASE/api/stage2-followup 에 묻는다
+  //    (파도풀 화면 common.js followStage2 와 같은 규칙). 모델을 못 쓰는 서버는 stage2_followup 이 없어 부를 일이 없다.
+  //    onState({ status, ahead, findings, model_version }) — 진행 중이면 차례가 바뀔 때마다, 끝나면 한 번
+  //    (done · fallback · failed · lost). 돌려준 함수를 부르면 멈춘다(작성자를 바꿀 때)
+  window.PADO_PROGRESSIVE = "?progressive=1";
+  window.padoFollow = function (follow, onState) {
+    let stopped = false, timer = null, ac = null, fails = 0, last = "";
+    const t0 = Date.now(), limit = Math.max((Number(follow.est_seconds) || 60) * 4, 300) * 1000;
+    const end = (s) => { stopped = true; onState(s); };
+    const ask = async () => {
+      if (stopped) return;
+      if (Date.now() - t0 > limit) { end({ status: "lost" }); return; }
+      ac = new AbortController();
+      try {
+        const r = await fetch(`${BASE}/api/stage2-followup?job=${encodeURIComponent(follow.job)}`, { signal: ac.signal, cache: "no-store" });
+        if (!r.ok) throw new Error(String(r.status));
+        const q = await r.json();
+        if (stopped) return;
+        fails = 0;
+        if (q.status === "pending" || q.status === "running") {
+          const sig = q.status + ":" + (q.ahead || 0);
+          if (sig !== last) { last = sig; onState({ status: q.status, ahead: q.ahead || 0 }); }
+        } else if (q.status === "done" && q.findings) { end(q); return; }
+        else { end({ status: q.status === "fallback" || q.status === "failed" ? q.status : "lost" }); return; }
+      } catch {
+        if (stopped) return;
+        if (++fails >= 15) { end({ status: "lost" }); return; }
+      }
+      timer = setTimeout(ask, 2000);
+    };
+    timer = setTimeout(ask, 800);
+    return () => { stopped = true; clearTimeout(timer); if (ac) ac.abort(); };
+  };
+  // 규칙 판정 → 모델 판정에서 판정(verdict)이 바뀐 항목
+  window.padoDiffFindings = function (before, after) {
+    const out = [];
+    for (const a of Object.keys(after || {})) {
+      const x = ((before || {})[a] || {}).verdict || "abstain", y = (after[a] || {}).verdict || "abstain";
+      if (x !== y) out.push({ attr: a, from: x, to: y });
+    }
+    return out;
+  };
   // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
-  window.padoCheckExport = async function (exportObj, signal, onAhead) {
+  // query — 「?progressive=1」을 주면 빠른 결과 먼저(계정 점검 · padoFollow 로 정밀 판정을 이어 받는다). 기본은 지금처럼 한 번에
+  window.padoCheckExport = async function (exportObj, signal, onAhead, query = "") {
     const fd = new FormData();
     fd.append("file", new File([JSON.stringify(exportObj)], "draft.json", { type: "application/json" }));
-    const d = await send("/upload", fd, signal, onAhead);
+    const d = await send("/upload" + query, fd, signal, onAhead);
     const spec = ((d.specificity || {}).output || {});
     return { k: spec.k, steps: spec.steps || [], risk: spec.risk, raw: d };
   };
