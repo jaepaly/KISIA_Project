@@ -6,7 +6,7 @@
 <title>위험 줄이기 — 파도풀</title>
 <script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
 <script src="head.js?v=381"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
-<link rel="stylesheet" href="style.css?v=382">
+<link rel="stylesheet" href="style.css?v=405">
 </head>
 <body>
 <!-- Veilo 상단바 — Veilo 의 base 템플릿과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
@@ -52,7 +52,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=402"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=405"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -543,11 +543,11 @@ async function rescan(prev) {
   if (b) { b.disabled = true; b.textContent = "다시 점검하는 중…"; }
   // 내 글 점검 화면과 같은 진행 띠 (UX #31) · 예상 시간은 서버 어림(못 받으면 없이)
   let est;
-  try { const r = await fetch(`../sns/estimate/${encodeURIComponent(prev.user_ref)}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
+  try { const r = await fetch(`../sns/estimate/${encodeURIComponent(prev.user_ref)}${PROGRESSIVE_Q}`); if (r.ok) est = (await r.json()).seconds; } catch { /* 예상 없이 */ }
   progressStart(`${prev.nickname || prev.user_ref} 다시 점검 중`, null, est);
   try {
     const ticket = scanTicket(); watchQueue(ticket);
-    const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}`, { method: "POST", headers: { "X-Scan-Ticket": ticket } });
+    const r = await fetch(`../scan/${encodeURIComponent(prev.user_ref)}${PROGRESSIVE_Q}`, { method: "POST", headers: { "X-Scan-Ticket": ticket } });
     if (!r.ok) {
       // 서버의 한국어 사유(429 「지금 다른 점검이 진행 중입니다…」 등)를 버튼에 그대로 — 상태 코드는 내지 않는다
       const detail = (await r.json().catch(() => ({}))).detail;
@@ -557,6 +557,7 @@ async function rescan(prev) {
     data.nickname = prev.nickname; data.source = "veilo";
     saveScan(data);   // 같은 계정이라 바로 앞 결과는 요약으로 남는다 → 맨 위 「직전 점검 → 이번 점검」 (#385 C3)
     render();
+    followStage2(null);   // 정밀 판정 — 이 화면은 항목별 판정을 그리지 않는다. 받아 저장만 하고 점검 결과 화면이 보여 준다
     const pn = document.getElementById("prevNow"); if (pn) pn.scrollIntoView({ block: "start", behavior: "smooth" });
   } catch (e) {
     if (b) { b.disabled = false; b.textContent = e && e.detail ? `${e.detail} (다시 누르기)` : "다시 점검하지 못했습니다. 다시 누르기"; }
@@ -584,6 +585,7 @@ function render() {
 }
 
 render();
+followStage2(null);   // 점검 결과 화면에서 넘어왔고 정밀 판정이 아직이면 — 여기서도 이어 받아 저장해 둔다
 </script>
 </body>
 </html>

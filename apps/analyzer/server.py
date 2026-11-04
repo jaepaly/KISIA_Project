@@ -13,10 +13,12 @@ import json
 import logging
 import os
 import re
+import secrets
 import threading
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
 from urllib.parse import urlsplit
 
 import requests
@@ -145,6 +147,9 @@ SCAN_BASE_S = 1.0
 _rate_lock = threading.Lock()   # 동시 점검이 속도를 같이 고칠 때 — 읽고 고치고 세는 것을 한 번에
 _scan_rate = {"ms_per_char": float(os.getenv("SCAN_MS_PER_CHAR", "1.45" if os.getenv("ENGINE_MODE", "mock") == "real" else "0.02")),
               "samples": 0}
+#    빠른 결과(2단 규칙 · 모델 판정은 뒤따라 받음 · _Followups) 점검의 속도는 따로 배운다 — 한 번에(모델까지) 점검과 섞으면
+#    모델 PC 에서 두 예상이 서로를 망친다(규칙 약 11초 · 모델 약 69초). 처음 값은 같고 끝날 때마다 각자 고쳐 간다
+_fast_rate = dict(_scan_rate)
 
 
 def _chars(posts: list[dict]) -> int:
@@ -157,36 +162,44 @@ def _chars(posts: list[dict]) -> int:
     return n
 
 
-def _estimate(chars: int) -> dict:
+def _estimate(chars: int, fast: bool = False) -> dict:
+    table = _fast_rate if fast else _scan_rate
     with _rate_lock:
-        rate, n = _scan_rate["ms_per_char"], _scan_rate["samples"]
+        rate, n = table["ms_per_char"], table["samples"]
     return {"n_chars": chars, "seconds": round(SCAN_BASE_S + chars * rate / 1000, 1), "calibrated": n > 0}
 
 
-def _learn_rate(chars: int, seconds: float) -> None:
+def _learn_rate(chars: int, seconds: float, fast: bool = False) -> None:
     if chars < 2000:
         return
     r = max(0.0, seconds - SCAN_BASE_S) * 1000 / chars
+    table = _fast_rate if fast else _scan_rate
     with _rate_lock:
-        _scan_rate["ms_per_char"] = r if _scan_rate["samples"] == 0 else 0.5 * _scan_rate["ms_per_char"] + 0.5 * r
-        _scan_rate["samples"] += 1
+        table["ms_per_char"] = r if table["samples"] == 0 else 0.5 * table["ms_per_char"] + 0.5 * r
+        table["samples"] += 1
+
+
+def _progressive(asked: bool) -> bool:
+    """이 점검을 「빠른 결과 먼저 + 모델 판정 뒤따라」로 돌리나 — 화면이 ?progressive=1 로 물었고, 이 서버가 모델을 쓸 수 있을 때만.
+    STAGE2_MODE=rules · model · GPU 없음 · 어댑터 없음 · 목(MOCK_STAGE2_DELAY 없음)이면 False — 지금과 똑같이 한 번 응답"""
+    return bool(asked) and engine.stage2_followup_available()
 
 
 @app.get("/sns/estimate/{user_ref}")
-def sns_estimate(user_ref: str, request: Request):
+def sns_estimate(user_ref: str, request: Request, progressive: bool = False):
     """계정 점검 예상 시간 — 내보내기(계약 그대로)로 글자 수를 세고 이 프로세스의 속도로 곱한다. 화면이 「예상 약 N초」를 띄운다."""
     try:
         export = sns_adapter.load(user_ref, base=SNS_BASE, session_id=request.cookies.get("veilo_sid"))
     except Exception as exc:
         raise _upstream_error("내보내기 조회", exc, missing_account=True) from exc
     posts = export.get("posts", [])
-    return {"n_posts": len(posts), **_estimate(_chars(posts))}
+    return {"n_posts": len(posts), **_estimate(_chars(posts), _progressive(progressive))}
 
 
 @app.get("/api/scan-estimate")
-def scan_estimate(chars: int = Query(ge=0, le=5_000_000)):
+def scan_estimate(chars: int = Query(ge=0, le=5_000_000), progressive: bool = False):
     """파일 업로드 예상 시간 — 화면이 파일 크기로 어림한 글자 수를 준다."""
-    return _estimate(chars)
+    return _estimate(chars, _progressive(progressive))
 
 
 @app.get("/api/scan-queue")
@@ -197,11 +210,27 @@ def scan_queue(ticket: str = Query(min_length=8, max_length=40, pattern=r"^[A-Za
     return {"waiting": n is not None, "ahead": n or 0}
 
 
-def _run_pipeline(user_ref: str, posts: list[dict]) -> dict:
+def _run_pipeline(user_ref: str, posts: list[dict], progressive: bool = False) -> dict:
     _check_posts(posts)
     t0 = time.perf_counter()
+    if _progressive(progressive):
+        # 빠른 결과 — 2단은 규칙으로 바로 내고, 같은 입력의 모델 판정은 뒤따라 받는다(_Followups). 응답의 stage2_followup 으로 폴링
+        ctx: dict = {}
+        out = _pipeline(user_ref, posts, stage2_mode="rules", followup=ctx)
+        _learn_rate(_chars(posts), time.perf_counter() - t0, fast=True)
+        out["stage2_followup"] = _followups.submit(lambda: _followup_findings(user_ref, ctx))
+        return out
     out = _pipeline(user_ref, posts)   # 실패한 점검(예외)은 속도를 배우지 않는다 — 빨리 끝난 실패가 예상을 망치지 않게 (Codex 10/14)
     _learn_rate(_chars(posts), time.perf_counter() - t0)
+    return out
+
+
+def _followup_findings(user_ref: str, ctx: dict) -> dict:
+    """뒤따르는 모델 판정 — 빠른 결과와 같은 입력(해외면 위치를 뺀 글 · 스팬 · 1단 입력)으로 돌린다. 해외면 거주지는 기권 그대로"""
+    out = engine.stage2_followup(user_ref, ctx["k_posts"], ctx["baseline"], ctx["target"],
+                                 spans_by_post=ctx["k_spans"], detect_inputs=ctx["inputs"])
+    if ctx["overseas"] and out.get("findings"):
+        _abstain_location({"output": out})
     return out
 
 
@@ -243,7 +272,8 @@ def _residence_view(res: dict) -> dict:
     }
 
 
-def _pipeline(user_ref: str, posts: list[dict]) -> dict:
+def _pipeline(user_ref: str, posts: list[dict], stage2_mode: str | None = None, followup: dict | None = None) -> dict:
+    """stage2_mode — 이번 점검만 2단 실행 방식을 정한다(빠른 결과는 rules). followup 을 주면 뒤따르는 모델 판정에 넘길 입력을 담는다"""
     inputs = {p["post_id"]: _detect_input(p) for p in posts}
     spans_by_post = {pid: engine.detect_spans(rec) for pid, rec in inputs.items()}
     # 해외 거주 판별 — 본인 거주 표현(「미국에서 지내다 보니」 「미국생활」)이 여러 글에 있고 국내 거주 단서보다 많을 때만 (residence.py).
@@ -260,10 +290,16 @@ def _pipeline(user_ref: str, posts: list[dict]) -> dict:
     target = round(max(baseline - 40.0, 0.0), 1)
     # 이번 요청의 스팬을 그대로 넘긴다 — 엔진 전역에 원문을 두지 않는다 (A3 · 동시 점검이 섞이지 않게)
     # 1단에 넣은 입력(채널)도 그대로 — 2단 근거의 원문과 스팬 offset 이 같은 글에서 나온다
-    stage2 = engine.stage2(user_ref, k_posts, risk_current=baseline, risk_target=target, spans_by_post=k_spans,
-                           detect_inputs=inputs)
+    # 모델을 쓸 수 있는 2단은 GPU 자리(_followups.gpu)를 잡고 돈다 — 뒤따르는 모델 판정과 한 GPU 에서 겹치지 않게
+    kw = {"mode": stage2_mode} if stage2_mode else {}
+    with (nullcontext() if stage2_mode == "rules" else _followups.gpu):
+        stage2 = engine.stage2(user_ref, k_posts, risk_current=baseline, risk_target=target, spans_by_post=k_spans,
+                               detect_inputs=inputs, **kw)
     if residence["overseas"]:
         _abstain_location(stage2)
+    if followup is not None:
+        followup.update(k_posts=k_posts, k_spans=k_spans, inputs=inputs, baseline=baseline, target=target,
+                        overseas=residence["overseas"])
 
     return {
         "user_ref": user_ref,
@@ -559,6 +595,108 @@ class _Admission:
 _admission = _Admission(SCAN_CONCURRENCY, SCAN_QUEUE_MAX, SCAN_QUEUE_WAIT)
 
 
+# ── 2단 모델 판정 뒤따라 받기 — 계정 점검의 체감 대기 시간을 줄인다. 빠른 결과(2단 규칙 · 약 11초)를 먼저 돌려주고,
+#    같은 점검의 모델 판정(약 69초 · RTX 3060)은 여기서 하나씩 돌린다. 화면은 응답의 stage2_followup.job 으로
+#    /api/stage2-followup 을 2초마다 묻는다(대기표 /api/scan-queue 와 같은 방식 — 작업 번호 말고는 아무것도 받지 않는다).
+#    - 점검 자리(_admission)는 잡지 않는다 — 모델 판정이 도는 동안에도 다음 사람의 1단(CPU)이 돈다. 대신 GPU 자리(gpu)는
+#      한 번에 하나만: 뒤따르는 판정끼리, 그리고 한 번에 응답하는 점검(Veilo · curl · progressive 없음)의 2단과도 겹치지 않는다
+#    - 도는 + 기다리는 작업이 STAGE2_FOLLOWUP_MAX(기본 4)면 새 작업을 받지 않는다(status skipped — 화면은 빠른 결과만)
+#    - 결과(findings · model_version)는 끝나고 STAGE2_FOLLOWUP_TTL 초(기본 600) 뒤 버린다. 원문은 작업이 끝나면 놓는다
+#    - 작업 번호는 서버가 만든 추측 불가능한 값 — 번호를 아는 사람(점검한 화면)만 결과를 받는다
+STAGE2_FOLLOWUP_MAX = max(0, int(os.getenv("STAGE2_FOLLOWUP_MAX", "4")))
+STAGE2_FOLLOWUP_TTL = max(1.0, float(os.getenv("STAGE2_FOLLOWUP_TTL", "600")))
+_ACTIVE = ("pending", "running")
+
+
+def _followup_est_default() -> float:
+    """모델 판정 한 건의 처음 예상(초) — 실측 69초(RTX 3060 · 계정 하나)에서 규칙 몫을 뺀 값. 목은 가짜 지연 그대로"""
+    if os.getenv("ENGINE_MODE", "mock") != "real":
+        try:
+            return max(1.0, float(os.getenv("MOCK_STAGE2_DELAY", "0") or 0))
+        except ValueError:
+            return 1.0
+    return float(os.getenv("STAGE2_FOLLOWUP_EST", "60"))
+
+
+class _Followups:
+    def __init__(self, max_jobs: int, ttl_s: float, est_s: float):
+        self.pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="stage2")
+        self.gpu = threading.Lock()
+        self.max_jobs, self.ttl_s = max_jobs, ttl_s
+        self._lock = threading.Lock()
+        self._jobs: dict[str, dict] = {}
+        self._order = 0
+        self._est = {"s": est_s, "n": 0}
+
+    def _sweep(self, now: float) -> None:   # self._lock 안에서
+        for k in [k for k, j in self._jobs.items() if j["finished"] is not None and now - j["finished"] > self.ttl_s]:
+            del self._jobs[k]
+
+    def _ahead(self, order: int) -> int:     # self._lock 안에서
+        return sum(1 for j in self._jobs.values() if j["status"] in _ACTIVE and j["order"] < order)
+
+    def submit(self, fn) -> dict:
+        """fn() → {used_model, reason, findings, model_version}. 화면에 돌려줄 작업 표(job · status · ahead · est_seconds)"""
+        now = time.monotonic()
+        with self._lock:
+            self._sweep(now)
+            active = sum(1 for j in self._jobs.values() if j["status"] in _ACTIVE)
+            if active >= self.max_jobs:
+                return {"status": "skipped"}
+            job_id = secrets.token_urlsafe(18)
+            self._order += 1
+            self._jobs[job_id] = {"status": "pending", "order": self._order, "finished": None, "result": {}}
+            est = round(self._est["s"] * (active + 1), 1)
+        self.pool.submit(self._work, job_id, fn)
+        return {"job": job_id, "status": "pending", "ahead": active, "est_seconds": est}
+
+    def _work(self, job_id: str, fn) -> None:
+        with self._lock:
+            job = self._jobs.get(job_id)
+            if job is None:
+                return
+            job["status"] = "running"
+        status, result, took = "failed", {}, None
+        try:
+            with self.gpu:
+                t0 = time.perf_counter()
+                out = fn()
+                took = time.perf_counter() - t0
+            if out.get("used_model"):
+                status, result = "done", {"findings": out["findings"], "model_version": out["model_version"]}
+            else:   # 모델이 출력을 못 냈다(잘림 · 파싱 실패 · GPU 오류) — 이유는 고정 문구(infer._public_reason)만
+                status, result = "fallback", {"reason": out.get("reason")}
+        except Exception as exc:  # noqa: BLE001 — 화면에는 「받지 못했다」만. 원문은 로그에
+            log.warning("2단 모델 판정(뒤따름) 실패: %r", exc)
+        with self._lock:
+            if status == "done" and took is not None:
+                self._est["s"] = took if self._est["n"] == 0 else 0.5 * self._est["s"] + 0.5 * took
+                self._est["n"] += 1
+            job.update(status=status, result=result, finished=time.monotonic())
+
+    def poll(self, job_id: str) -> dict:
+        with self._lock:
+            self._sweep(time.monotonic())
+            job = self._jobs.get(job_id)
+            if job is None:
+                return {"status": "unknown"}
+            if job["status"] in _ACTIVE:
+                return {"status": job["status"], "ahead": self._ahead(job["order"])}
+            return {"status": job["status"], **job["result"]}
+
+
+_followups = _Followups(STAGE2_FOLLOWUP_MAX, STAGE2_FOLLOWUP_TTL, _followup_est_default())
+
+
+@app.get("/api/stage2-followup")
+def stage2_followup_status(response: Response,
+                           job: str = Query(min_length=16, max_length=40, pattern=r"^[A-Za-z0-9_-]+$")):
+    """뒤따르는 모델 판정 — pending|running(+ahead) · done(+findings · model_version) · fallback(+reason) · failed ·
+    unknown(모르는 번호 · 시간이 지나 버림). 판정은 stage2-io Finding 모양 그대로(응답 칸 stage2_followup 은 계약 밖 · 화면 전용)"""
+    response.headers["Cache-Control"] = "no-store"
+    return _followups.poll(job)
+
+
 # ── 같은 출처 확인 (A6) — 점검 POST 는 이 화면(같은 출처)과 Veilo(SNS_PUBLIC_URL · 로컬 분리 실행)에서만 부른다.
 #    브라우저는 다른 사이트에서 보내는 POST 에 Origin 을 반드시 싣는다 — Origin(없으면 Referer)이 있는데 허용 목록 밖이면 403.
 #    둘 다 없으면(curl · 내부 호출) 통과 — 쿠키를 실어 보내는 브라우저 공격이 아니다.
@@ -591,7 +729,7 @@ def _check_origin(request: Request) -> None:
 
 
 @app.post("/scan/{user_ref}")
-async def scan(user_ref: str, request: Request):
+async def scan(user_ref: str, request: Request, progressive: bool = False):
     _check_origin(request)
     try:
         # 같은 도메인이라 Veilo 의 방문자 쿠키가 여기까지 온다 — 그 사람의 사본을 읽도록 넘긴다
@@ -606,7 +744,7 @@ async def scan(user_ref: str, request: Request):
     except file_adapter.UploadError as exc:
         raise HTTPException(status_code=exc.status, detail=str(exc)) from exc
     _check_posts(posts)   # 줄에 서기 전에 — 틀린 입력이 자리를 차지하지 않게
-    return await _admission.run(request, _run_pipeline, user_ref, posts)
+    return await _admission.run(request, _run_pipeline, user_ref, posts, progressive)
 
 
 # 업로드 상한 — 멀티파트 해석기는 1MiB(1,048,576B)를 넘는 파일을 임시 파일(디스크)로 넘긴다. 받은 본문 전체를
@@ -625,7 +763,7 @@ async def _read_capped(request: Request, limit: int = MAX_UPLOAD_BYTES,
 
 
 @app.post("/upload")
-async def upload_and_scan(request: Request):
+async def upload_and_scan(request: Request, progressive: bool = False):
     """수동 업로드 경로. 파일은 메모리에서 읽고 버린다 — 디스크에 쓰지 않는다.
 
     점검은 스레드에서 돈다(A2) — 이벤트 루프를 15~60초 막아 다른 요청까지 멈추던 것."""
@@ -647,7 +785,7 @@ async def upload_and_scan(request: Request):
         raise HTTPException(status_code=exc.status, detail=str(exc)) from exc
     posts = export["posts"]
     _check_posts(posts)
-    return await _admission.run(request, _run_pipeline, export["user_ref"], posts)
+    return await _admission.run(request, _run_pipeline, export["user_ref"], posts, progressive)
 
 
 @app.post("/api/recompute")

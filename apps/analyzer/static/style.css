@@ -377,3 +377,18 @@ footer{
 .engine:empty{display:none}
 /* 점검 중 — 계정 고르기 · 검색 · 다른 계정을 잠근다(요청이 겹치지 않게) */
 #scanCard.is-scanning .finder input,#scanCard.is-scanning .finder-list,#scanCard.is-scanning .finder-more,#scanCard.is-scanning #repick{pointer-events:none;opacity:.55}
+
+/* 빠른 결과 · 정밀 판정 안내 (common.js renderStage2Note) — 진행 중이면 바다색 왼쪽 줄 · 바뀌었으면 강조 */
+.card.s2note p{margin:4px 0 0}
+.card.s2note ul{margin:6px 0 0; padding-left:20px; font-size:14px}
+.card.s2note .ghost{margin-top:8px}
+.card.s2note.pending{border-left:3px solid var(--sea); background:var(--sea-soft)}
+.card.s2note.changed{border-left:3px solid var(--amber); background:var(--amber-soft)}
+.card.s2note .spin{display:inline-block; vertical-align:-2px; margin-right:6px; width:12px; height:12px; border-radius:50%; border:2px solid color-mix(in srgb,currentColor 30%,transparent); border-top-color:currentColor; animation:busy-spin .9s linear infinite}
+@media (prefers-reduced-motion:reduce){.card.s2note .spin{animation:none}}
+/* 정밀 판정으로 바뀐 항목 카드 */
+.finding.changed{border-left:3px solid var(--amber); background:var(--amber-soft)}
+.finding .s2was{display:block; margin-top:4px; font-size:12.5px; color:var(--amber); font-weight:600}
+.finding.changed.flash{animation:s2flash 1.6s ease-out 1}
+@keyframes s2flash{0%{box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 45%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.finding.changed.flash{animation:none}}

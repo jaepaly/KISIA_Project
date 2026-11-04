@@ -139,7 +139,8 @@ def _texts(record: dict) -> dict[str, str]:
 
 
 def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_target: float = 40.0, *,
-           spans_by_post: dict[str, dict] | None = None, detect_inputs: dict[str, dict] | None = None) -> dict:
+           spans_by_post: dict[str, dict] | None = None, detect_inputs: dict[str, dict] | None = None,
+           mode: str | None = None) -> dict:
     """D(c4) 자리. output 은 stage2-io Stage2Output 그대로 (findings · recommendation · provenance).
 
     - findings 는 2단 모델(GPU·어댑터가 없거나 출력이 깨지면 규칙 폴백 — provenance.model_version 에 이유)
@@ -150,6 +151,7 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_tar
       없는 글만 여기서 다시 탐지한다 (채널은 서버 _detect_input 과 같다 — 제목 · 본문 · 캡션)
     - detect_inputs: 서버가 1단에 넣은 입력 그대로 — 2단 원문(texts)도 이것으로 만든다. 글에 photos 와 photo_captions 가
       둘 다 있어도 1단과 2단이 다른 캡션을 보지 않게 (Codex 검토)
+    - mode: 이번 호출만 STAGE2_MODE 대신 — 서버가 「빠른 결과」를 먼저 낼 때 rules 로 부른다 (stage2_followup)
     """
     spans_by_post = spans_by_post or {}
     detect_inputs = detect_inputs or {}
@@ -165,7 +167,7 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_tar
             "spans": result["spans"],
             "geo_tag": (post.get("activity_meta") or {}).get("geo_tag"),
         })
-    output = _stage2_analyze(user_ref, entries, target_risk=_STAGE2_TARGET, mode=_STAGE2_MODE)
+    output = _stage2_analyze(user_ref, entries, target_risk=_STAGE2_TARGET, mode=mode or _STAGE2_MODE)
     # 화면은 output 만 읽는다. 계약 Stage2Input 전체(가명 텍스트 · pseudonym_map)는 W9 — 여기는 요약만
     summary = {
         "user_ref": user_ref,
@@ -174,3 +176,29 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_tar
         "note": "요약 — 계약 Stage2Input 이 아니다 (전체 입력은 아직 만들지 않는다)",
     }
     return {"input": summary, "output": output}
+
+
+# ── 2단 모델 판정 뒤따라 받기 — 서버가 규칙 결과(약 11초)를 먼저 돌려주고, 모델 판정(약 69초 · RTX 3060)은
+#    백그라운드에서 이어 돌려 화면이 폴링으로 받는다 (server _Followups). 모델을 못 쓰는 PC 에서는 켜지지 않는다 —
+#    STAGE2_MODE=rules · model(모델만 · 지금처럼 한 번에) · 모델 로드 실패(GPU · 어댑터 없음)는 지금과 똑같이 한 번 응답
+def stage2_followup_available() -> bool:
+    return _STAGE2_MODE == "auto" and _load_stage2() is not None   # 로드는 켤 때 한 번 — 여기서는 캐시만 읽는다
+
+
+def stage2_followup(user_ref: str, posts: list[dict], risk_current: float = 0.0, risk_target: float = 40.0, *,
+                    spans_by_post: dict[str, dict] | None = None, detect_inputs: dict[str, dict] | None = None) -> dict:
+    """같은 입력으로 지금의 auto 경로를 그대로 돌려 findings · model_version 만 돌려준다.
+
+    추천 · 바꿔 쓰기는 findings 와 상관없이 같은 값이 나와(analyze — 스팬으로 계산) 화면은 findings 만 바꾼다.
+    추천을 한 번 더 계산하는 CPU 는 쓰지만 판정 경로가 지금(analyze auto)과 한 줄도 갈라지지 않는다.
+    used_model False 면 모델이 출력을 못 냈다(잘림 · 파싱 실패 · GPU 오류) — 화면은 규칙 결과를 그대로 둔다"""
+    from kopl.c4_stage2.infer import MODEL_VERSION
+
+    out = stage2(user_ref, posts, risk_current, risk_target, spans_by_post=spans_by_post, detect_inputs=detect_inputs,
+                 mode="auto")["output"]
+    version = out["provenance"]["model_version"]
+    used = version == MODEL_VERSION
+    reason = None
+    if not used and "(fallback: " in version:
+        reason = version.split("(fallback: ", 1)[1].rstrip(")")
+    return {"used_model": used, "reason": reason, "findings": out["findings"], "model_version": version}
