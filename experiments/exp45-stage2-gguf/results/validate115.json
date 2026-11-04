@@ -1,0 +1,308 @@
+{
+ "accounts": {
+  "nf4": 115,
+  "gguf": 115,
+  "both": 115
+ },
+ "counts": {
+  "risk_same": 115,
+  "rec_same": 115,
+  "fast_same": 115,
+  "accounts_both_done": 115,
+  "cells": 805,
+  "verdict_same": 797,
+  "evidence_same": 796,
+  "granularity_same": 805,
+  "confidence_same": 774,
+  "cell_identical": 767
+ },
+ "model_vs_rules_verdict_diff": {
+  "nf4": 15,
+  "gguf": 21
+ },
+ "timing": {
+  "nf4": {
+   "fast_median_s": 9.42,
+   "precise_median_s": 67.22,
+   "model_only_median_s": 57.06,
+   "precise_max_s": 129.7,
+   "status": {
+    "done": 115
+   },
+   "fallback_reasons": {},
+   "model_version": [
+    "qwen3-4b-qlora-v2"
+   ]
+  },
+  "gguf": {
+   "fast_median_s": 8.77,
+   "precise_median_s": 21.1,
+   "model_only_median_s": 12.14,
+   "precise_max_s": 82.83,
+   "status": {
+    "done": 115
+   },
+   "fallback_reasons": {},
+   "model_version": [
+    "qwen3-4b-qlora-v2-gguf-q5km"
+   ]
+  }
+ },
+ "verdict_diffs": [
+  {
+   "persona": "A04",
+   "user_ref": "u_e394e5e82c5b",
+   "attr": "sex",
+   "rules": "weak_signal",
+   "nf4": {
+    "verdict": "weak_signal",
+    "granularity": null,
+    "confidence": 0.4,
+    "evidence": [
+     "A04_b10_s01"
+    ]
+   },
+   "gguf": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.7,
+    "evidence": [
+     "A04_b10_s01"
+    ]
+   }
+  },
+  {
+   "persona": "A11",
+   "user_ref": "u_37b5be61fefd",
+   "attr": "age",
+   "rules": "specified",
+   "nf4": {
+    "verdict": "abstain",
+    "granularity": null,
+    "confidence": 0.25,
+    "evidence": []
+   },
+   "gguf": {
+    "verdict": "specified",
+    "granularity": null,
+    "confidence": 0.9,
+    "evidence": [
+     "A11_b03_s01"
+    ]
+   }
+  },
+  {
+   "persona": "A13",
+   "user_ref": "u_899af38b9adb",
+   "attr": "occupation",
+   "rules": "specified",
+   "nf4": {
+    "verdict": "specified",
+    "granularity": null,
+    "confidence": 0.9,
+    "evidence": [
+     "A13_b03_s01",
+     "A13_b08_s02",
+     "A13_b24_s04"
+    ]
+   },
+   "gguf": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.7,
+    "evidence": [
+     "A13_b03_s01",
+     "A13_b08_s02",
+     "A13_b24_s04"
+    ]
+   }
+  },
+  {
+   "persona": "B04",
+   "user_ref": "u_2d12e99ea105",
+   "attr": "income",
+   "rules": "narrowed",
+   "nf4": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.7,
+    "evidence": [
+     "B04_b20_s02",
+     "B04_b20_s03"
+    ]
+   },
+   "gguf": {
+    "verdict": "weak_signal",
+    "granularity": null,
+    "confidence": 0.4,
+    "evidence": [
+     "B04_b20_s02",
+     "B04_b20_s03"
+    ]
+   }
+  },
+  {
+   "persona": "C02",
+   "user_ref": "u_371e0b6ba48a",
+   "attr": "family",
+   "rules": "weak_signal",
+   "nf4": {
+    "verdict": "weak_signal",
+    "granularity": null,
+    "confidence": 0.4,
+    "evidence": [
+     "C02_b15_s02"
+    ]
+   },
+   "gguf": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.6,
+    "evidence": [
+     "C02_b15_s02"
+    ]
+   }
+  },
+  {
+   "persona": "C20",
+   "user_ref": "u_c9c1dd0d52c9",
+   "attr": "commute",
+   "rules": "weak_signal",
+   "nf4": {
+    "verdict": "weak_signal",
+    "granularity": null,
+    "confidence": 0.4,
+    "evidence": [
+     "C20_b03_s03",
+     "C20_b03_s04",
+     "C20_b03_s07"
+    ]
+   },
+   "gguf": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.6,
+    "evidence": [
+     "C20_b03_s03",
+     "C20_b03_s04",
+     "C20_b03_s07"
+    ]
+   }
+  },
+  {
+   "persona": "D11",
+   "user_ref": "u_a7dc9aa658db",
+   "attr": "income",
+   "rules": "narrowed",
+   "nf4": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.7,
+    "evidence": [
+     "D11_b15_s03"
+    ]
+   },
+   "gguf": {
+    "verdict": "weak_signal",
+    "granularity": null,
+    "confidence": 0.4,
+    "evidence": [
+     "D11_b15_s03"
+    ]
+   }
+  },
+  {
+   "persona": "D21",
+   "user_ref": "u_fa267bb037d7",
+   "attr": "sex",
+   "rules": "narrowed",
+   "nf4": {
+    "verdict": "narrowed",
+    "granularity": null,
+    "confidence": 0.7,
+    "evidence": [
+     "D21_b10_s01",
+     "D21_b24_s01"
+    ]
+   },
+   "gguf": {
+    "verdict": "abstain",
+    "granularity": null,
+    "confidence": 0.25,
+    "evidence": []
+   }
+  }
+ ],
+ "evidence_diffs_same_verdict": [
+  {
+   "persona": "A23",
+   "user_ref": "u_f717e70eea85",
+   "attr": "age",
+   "verdict": "specified",
+   "nf4_only": [
+    "A23_b03_s01"
+   ],
+   "gguf_only": []
+  },
+  {
+   "persona": "A23",
+   "user_ref": "u_f717e70eea85",
+   "attr": "location",
+   "verdict": "specified",
+   "nf4_only": [
+    "A23_b11_s03"
+   ],
+   "gguf_only": []
+  },
+  {
+   "persona": "B03",
+   "user_ref": "u_3f572aafe183",
+   "attr": "location",
+   "verdict": "specified",
+   "nf4_only": [
+    "B03_b12_s01"
+   ],
+   "gguf_only": []
+  },
+  {
+   "persona": "D10",
+   "user_ref": "u_d322de085a24",
+   "attr": "occupation",
+   "verdict": "narrowed",
+   "nf4_only": [],
+   "gguf_only": [
+    "D10_b09_s01"
+   ]
+  },
+  {
+   "persona": "D11",
+   "user_ref": "u_a7dc9aa658db",
+   "attr": "family",
+   "verdict": "narrowed",
+   "nf4_only": [
+    "D11_b20_s01"
+   ],
+   "gguf_only": []
+  },
+  {
+   "persona": "D14",
+   "user_ref": "u_0683c2bb5f8f",
+   "attr": "location",
+   "verdict": "specified",
+   "nf4_only": [
+    "D14_b09_s08"
+   ],
+   "gguf_only": []
+  },
+  {
+   "persona": "S01b",
+   "user_ref": "u_92447797bbd4",
+   "attr": "occupation",
+   "verdict": "narrowed",
+   "nf4_only": [
+    "S01b_b08_s01"
+   ],
+   "gguf_only": []
+  }
+ ]
+}

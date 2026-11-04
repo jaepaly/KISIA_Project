@@ -101,11 +101,57 @@ python experiments/exp45-stage2-gguf/run_e2e.py --base http://127.0.0.1:8100 --l
 - 외부 연결: 실행 중 llama-server 프로세스의 TCP 를 20초간 0.2초마다 모았다 — `127.0.0.1:8092` 대기와 분석기(127.0.0.1)와의 연결뿐. 분석기 프로세스를 강제 종료(`Stop-Process -Force`)하자 llama-server 도 3초 안에 꺼졌다(Job)
 - freeze-W11 의 「모델 68.7초」는 한 번에 응답하는 점검(2회차)이라 이 표의 「정밀 판정 도착」과 재는 구간이 조금 다르다 — 비교는 같은 하네스로 잰 NF4 열과 한다
 
+## 결과 3 — 115계정 전수 (Veilo 3100 전체 · 805칸)
+
+결과 2 와 같은 하네스(progressive 점검 → 정밀 판정 폴링 · 계정마다 1회 · 첫 계정 워밍업 1회)로 Veilo DB 의 계정 전체를 돌렸다.
+엔진별로 분석기를 따로 띄워 GGUF(15:48~16:36) → NF4(16:36~18:52) 순서 · 같은 Veilo DB(`seed_sns.py --reset` · 115명 3,092편).
+
+```bash
+python experiments/exp45-stage2-gguf/run_validate115.py --base http://127.0.0.1:8100 --sns-db <Veilo DB> --label gguf --out <저장소 밖>/validate115_gguf.jsonl
+python experiments/exp45-stage2-gguf/run_validate115.py --base http://127.0.0.1:8100 --sns-db <Veilo DB> --label nf4  --out <저장소 밖>/validate115_nf4.jsonl
+python experiments/exp45-stage2-gguf/compare115.py --nf4 <...nf4.jsonl> --gguf <...gguf.jsonl> --sns-db <Veilo DB> --out experiments/exp45-stage2-gguf/results/validate115.json
+```
+
+| | NF4 | GGUF Q5_K_M |
+|---|---|---|
+| 정밀 판정 받음(done) · 폴백 · 실패 | 115 · 0 · 0 | 115 · 0 · 0 |
+| 빠른 결과 중앙값 | 9.42 s | 8.77 s |
+| **정밀 판정 도착 중앙값** · 최대 | **67.22 s** · 129.7 s | **21.10 s** · 82.8 s |
+| 정밀 판정 몫(도착 − 빠른 결과) 중앙값 | 57.06 s | 12.14 s |
+| 모델 판정 ≠ 규칙 판정(805칸 중) | 15 | 21 |
+
+| 비교 (115계정 · 805칸) | 일치 |
+|---|---|
+| **판정 칸(verdict)** | **797/805** (99.0%) |
+| 근거 span 집합 | 796/805 |
+| 신뢰도 · 범위(granularity) | 774/805 · 805/805 |
+| 칸 전체(판정 · 근거 · 신뢰도 · 범위 · cross_post) | 767/805 |
+| 위험도 · 추천(해시) · 빠른 결과 판정 | 115/115 · 115/115 · 115/115 |
+
+판정이 다른 8칸 — 「규칙」은 같은 v2 판정 기준(본인 스팬 · explicit → specified · implicit → narrowed · inferential 글 2편 이상 → narrowed · 1편 → weak_signal)을 그대로 구현한 rules-v1 의 판정이다.
+
+| 인물 · 속성 | 규칙 | NF4 | GGUF | 근거 | 기준상 맞는 쪽 |
+|---|---|---|---|---|---|
+| A04 · sex | weak_signal | weak_signal 0.4 | narrowed 0.7 | 같음(1개) | NF4 |
+| A11 · age | specified | **abstain** (근거 없음) | specified 0.9 | GGUF 만 `A11_b03_s01` | **GGUF** |
+| A13 · occupation | specified | specified 0.9 | narrowed 0.7 | 같음(3개) | NF4 |
+| B04 · income | narrowed | narrowed 0.7 | weak_signal 0.4 | 같음(2개 · 글 1편) | NF4 |
+| C02 · family | weak_signal | weak_signal 0.4 | narrowed 0.6 | 같음(1개) | NF4 |
+| C20 · commute | weak_signal | weak_signal 0.4 | narrowed 0.6 | 같음(글 1편 3개) | NF4 (결과 2 와 같은 칸) |
+| D11 · income | narrowed | narrowed 0.7 | weak_signal 0.4 | 같음(1개) | NF4 |
+| D21 · sex | narrowed | narrowed 0.7 | **abstain** (근거 없음) | NF4 만 2개 | NF4 |
+
+- 8칸 중 7칸은 GGUF 가 기준에서 벗어났다(NF4 = 규칙). 1칸(A11 age)은 NF4 가 근거를 놓쳐 기권했다
+- 판정은 같고 근거만 다른 칸 7개 — 6개는 NF4 쪽 근거가 1개 더 많고(A23 age · A23 location · B03 location · D11 family · D14 location · S01b occupation), 1개는 GGUF 쪽(D10 occupation)
+- 위험도 · 추천은 `infer.analyze` 가 판정과 무관하게 스팬으로 계산한다 — 두 실행의 1단 · 규칙 경로가 같았다는 확인이다(엔진 비교 아님)
+- 「기준상 맞는 쪽」은 규칙 판정과 같은 쪽으로 정했다. 스팬 등급(level)을 칸마다 따로 열어 보지는 않았다 — 근거가 같고 판정만 다른 6칸은 같은 근거에서 기준이 한 답만 내므로 규칙과 같은 쪽이 맞다. 다만 모델 입력은 글 수 상한(cap)으로 줄인 것이고 규칙은 전체로 판정한다
+
 ## 해석
 
 - 판정 회귀는 없다 — 735칸 · exp09 지표가 NF4 와 같다. 다른 것은 신뢰도 0.1 차이 3칸과 검증에서 지워지는 근거 1개다
 - 앱 11계정에서는 u_c9c1dd0d52c9 의 commute 1칸이 다르다(사전 실측과 같은 칸). 규칙 · NF4 와 다른 쪽은 GGUF 이고, 판정 기준상 GGUF 가 틀렸다
 - 사용자가 정밀 판정을 기다리는 시간은 계정당 약 1분 → 약 20초(중앙 63.3 → 20.4초)로 준다. 빠른 결과(약 8초)는 1단 CPU 몫이라 엔진과 무관하다
+- **115계정 전수(결과 3)에서는 판정 칸 797/805 — 같지 않다.** 다른 8칸 중 7칸에서 GGUF 가 v2 기준(= 규칙)을 벗어났고, 모델 ≠ 규칙 칸이 NF4 15 → GGUF 21 로 는다. 「NF4 와 같은 판정」을 근거로 GGUF 를 기본값으로 올릴 수는 없다. 올린다면 정밀 판정 대기 67 → 21초(중앙)와 이 7칸의 기준 이탈을 맞바꾸는 결정이다(위험도 · 추천 · 빠른 결과는 영향 없음)
 
 ## 한계
 
