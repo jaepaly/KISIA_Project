@@ -22,7 +22,7 @@
 | koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · E 비공개 전달·SHA-256 확인 완료) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | **11/2 최종 test 239편:** 규칙 결합 명시 proxy F1 **0.5211** · 명시 R 0.7308 · 전체 partial P/R/F1 0.4049/0.5950/**0.4819** · 앱 CPU 중앙 160.50ms / p95 1,053.92ms(15/20편 <300ms). 모델 단독 내부 eval F1 0.4444 · exp17b/c 본인 재현율 0.699/0.752는 아래 이력 참조 |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 | qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
-| qwen3-4b-qlora-v2-gguf-q5km (**제출 이후 후보** · DEC-017 Proposed · 앱 기본 아님) | 2단 | v2 와 같은 가중치 — NF4 dequant + v2 merge | llama.cpp b12090 · Q5_K_M | `stage2v2-dq-Q5_K_M.gguf` (D 로컬 · 저장소 밖) | 2026-11-04 (변환 · 재학습 없음) | v2 와 같다 | exp44 — exp09 735칸 NF4 와 **735/735** · 지표 같음 · exp22b 210/210 · 앱 11계정 76/77 · RTX 3060 계정당 정밀 판정 약 12 s |
+| qwen3-4b-qlora-v2-gguf-q5km (**제출 이후 후보** · DEC-017 Proposed · 앱 기본 아님) | 2단 | v2 와 같은 가중치 — NF4 dequant + v2 merge | llama.cpp b12090 · Q5_K_M | `stage2v2-dq-Q5_K_M.gguf` (D 로컬 · 저장소 밖) | 2026-11-04 (변환 · 재학습 없음) | v2 와 같다 | exp45 — exp09 735칸 NF4 와 **735/735** · 지표 같음 · exp22b 210/210 · 앱 11계정 76/77 · RTX 3060 계정당 정밀 판정 약 12 s |
 | **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달 · 보관본 저장소 밖) | 2026-10-12 (10/15 같은 명령으로 재학습) | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) · 10/15 재학습본 dev loss 0.0006 · exp22b 재채점 M1 1.0 · M5 0.995 · 폴백 0/30 |
 
 **모든 행에 학습일 · 데이터 버전 · 지표를 함께 적는다.** 없으면 10주 뒤에
@@ -54,18 +54,18 @@
 (E 리뷰), v2 체크포인트의 E 통합 검증·리허설 PC 전달은 별도 작업이다.
 이 등록만으로 각 PC의 모델이 교체되거나 가중치가 다운로드되는 것은 아니다.
 
-### 2단 qwen3-4b-qlora-v2-gguf-q5km — 제출 이후 후보 (2026-11-04 · DEC-017 Proposed · [exp44](../experiments/exp44-stage2-gguf/README.md))
+### 2단 qwen3-4b-qlora-v2-gguf-q5km — 제출 이후 후보 (2026-11-04 · DEC-017 Proposed · [exp45](../experiments/exp45-stage2-gguf/README.md))
 
 > 제출 · 동결 기록(11/1 `w11` · 11/2 측정)은 NF4 경로 그대로다. 아래는 앱 기본을 바꾸지 않는다 — `STAGE2_ENGINE=gguf` 를 준 PC 에서만 쓰인다.
 
 - 파일: `stage2v2-dq-Q5_K_M.gguf` · 2,889,513,408 B · SHA-256 `7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7` — `infer.py` `GGUF_SHA256` 에 고정, 다르면 기동 거부(규칙 폴백 · 사유 「GGUF 해시 불일치」)
-- 변환 절차(재현 스크립트 `experiments/exp44-stage2-gguf/`):
+- 변환 절차(재현 스크립트 `experiments/exp45-stage2-gguf/`):
   1. `merge_dq.py` — Qwen3-4B 를 `Stage2Model` 과 같은 NF4(double quant)로 올려 bf16 으로 dequant → v2 어댑터(`c045d353…`) merge → HF 폴더. **원본 bf16 베이스에 merge 한 판은 판정이 달라져 기각**(exp22b 204~206/210)
   2. `build_gguf.cmd` — llama.cpp **b12090** `convert_hf_to_gguf.py --outtype bf16` (중간 `30cc2f84e2e44b5f…` · 8.05 GB) → `llama-quantize … Q5_K_M`
 - llama.cpp 고정: **b12090** Windows CUDA 13.4 빌드 `llama-b12090-bin-win-cuda-13.4-x64.zip` SHA-256 `27d678fa55396cd90c7a4e74b24342593c73a3aadd33576435db092ca6fdcd7b` · 런타임 `cudart-llama-bin-win-cuda-13.4-x64.zip` `738f8c251ac22b70c3ae6f83a10cf222725df0395246a2cf58f32bdb85fbe668` · `llama-server.exe` `7026e5e3e5cf3d923cf289c3536fb82c0c1f17af7fab77de1e0c66841a6f3cd7`. 다른 빌드는 판정을 다시 재기 전에는 쓰지 않는다
 - 앱 구성: `STAGE2_ENGINE=gguf` · `STAGE2_GGUF=<gguf>` · `LLAMA_SERVER=<llama-server.exe>` · (선택) `STAGE2_GGUF_PORT`(기본 8092). 분석기가 켜질 때 llama-server 를 `127.0.0.1` 에만 띄우고(`-c 4096 -np 1 -ngl 99 --no-webui`), 분석기가 끝나면(강제 종료 포함 · Windows Job) 같이 꺼진다. 프롬프트 · 상한 · 출력 상한은 NF4 경로와 같다 · `model_version` `qwen3-4b-qlora-v2-gguf-q5km`
-- 판정 회귀(exp44): exp09 105명 735칸 NF4 저장 결과(10/27)와 판정 **735/735** · 근거 735/735 · 파싱 실패 · 폴백 0 · exp09 지표(일치율 0.8531 · 비기권 0.4706 · κ 0.6719) 같음. exp22b 30계정 210/210 · M1 1.000 · M3 .998 · M5 .995(사전 실측). 앱 11계정 77칸 중 1칸(u_c9c1dd0d52c9 commute)은 GGUF 쪽이 규칙 · NF4 와 다르다
-- 속도(RTX 3060): 생성 약 59 tok/s(NF4 약 12) · exp09 1명 평균 5.2 s · 종단(빠른 결과 먼저 · 11계정) 정밀 판정 도착 중앙 **63.3 → 20.4 s** · 빠른 결과 8.4 s 는 같다 (exp44)
+- 판정 회귀(exp45): exp09 105명 735칸 NF4 저장 결과(10/27)와 판정 **735/735** · 근거 735/735 · 파싱 실패 · 폴백 0 · exp09 지표(일치율 0.8531 · 비기권 0.4706 · κ 0.6719) 같음. exp22b 30계정 210/210 · M1 1.000 · M3 .998 · M5 .995(사전 실측). 앱 11계정 77칸 중 1칸(u_c9c1dd0d52c9 commute)은 GGUF 쪽이 규칙 · NF4 와 다르다
+- 속도(RTX 3060): 생성 약 59 tok/s(NF4 약 12) · exp09 1명 평균 5.2 s · 종단(빠른 결과 먼저 · 11계정) 정밀 판정 도착 중앙 **63.3 → 20.4 s** · 빠른 결과 8.4 s 는 같다 (exp45)
 - **되돌리기**: `STAGE2_ENGINE` 을 지우면 NF4 경로다(코드 되돌림 불필요)
 
 ### 1단 koelectra-v2 — 기준선 등록 (2026-10-09)

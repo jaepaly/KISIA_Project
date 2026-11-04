@@ -1,6 +1,6 @@
 """종단 실측 — 떠 있는 분석기(빠른 결과 먼저 · progressive)에 freeze-W11 의 11계정을 점검하고 두 시각을 잰다.
 
-    python experiments/exp44-stage2-gguf/run_e2e.py --base http://127.0.0.1:8100 --out <결과.json> --label gguf
+    python experiments/exp45-stage2-gguf/run_e2e.py --base http://127.0.0.1:8100 --out <결과.json> --label gguf
 
 - 빠른 결과 도착: POST /scan/{user_ref}?progressive=true 응답까지(1단 + 규칙 2단 · 위험도 · 추천)
 - 정밀 판정 도착: 같은 POST 시작부터 /api/stage2-followup 이 done|fallback|failed 를 돌려줄 때까지(0.25초 간격 폴링)

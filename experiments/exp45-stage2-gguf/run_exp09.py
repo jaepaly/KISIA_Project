@@ -1,7 +1,7 @@
 """exp09 2단 v2 구성(105명 · 239편)을 GGUF 엔진(Stage2GGUF)으로 다시 — NF4 저장 결과와 비교용.
 
     PYTHONIOENCODING=utf-8 PYTHONPATH="src;." STAGE2_GGUF=<stage2v2-dq-Q5_K_M.gguf> LLAMA_SERVER=<llama-server.exe> \\
-        python experiments/exp44-stage2-gguf/run_exp09.py [--out <파일>]
+        python experiments/exp45-stage2-gguf/run_exp09.py [--out <파일>]
 
 입력 · 상한 · 출력 상한은 exp09 run_config.py --config v2 와 한 줄도 다르지 않다(config_input 을 그대로 부른다).
 생성만 Stage2GGUF.generate(앱 경로와 같은 함수)로 바꾼다. 출력 형식도 run_config 와 같다 → exp09 score.py 로 채점된다.

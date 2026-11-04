@@ -1,6 +1,6 @@
 """exp09 v2 — NF4 저장 결과(qwen_cfg_v2.jsonl · 어댑터 c045d353 · 10/27) ↔ GGUF 재실행(qwen_cfg_v2_gguf.jsonl) 칸 비교.
 
-    PYTHONIOENCODING=utf-8 PYTHONPATH="src;." python experiments/exp44-stage2-gguf/compare.py
+    PYTHONIOENCODING=utf-8 PYTHONPATH="src;." python experiments/exp45-stage2-gguf/compare.py
 
 - 원시 판정(score.py 와 같은 파싱 · 앱 검증 없이)과 앱 판정(validate_findings · None 이면 앱은 규칙 폴백) 두 층에서 735칸 일치
 - 파싱 실패 · 잘림 · 앱 폴백 · 근거 일치(같은 판정 칸에서 근거 span_id 집합이 같은가)

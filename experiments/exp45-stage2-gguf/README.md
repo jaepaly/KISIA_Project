@@ -38,17 +38,17 @@ QLoRA 어댑터는 NF4 를 푼 가중치 위에서 학습됐다. 원본 bf16 에
 
 ```bash
 # 0) 가중치 만들기 (한 번 · GPU) — 산출물은 저장소에 넣지 않는다 (.gitignore *.safetensors · *.gguf)
-python experiments/exp44-stage2-gguf/merge_dq.py --adapter <v2 어댑터> --out <merged 폴더>
-experiments\exp44-stage2-gguf\build_gguf.cmd <merged 폴더> <출력 폴더>      # LLAMA_SRC · LLAMA_BIN · CONVERT_PY 지정 · 끝에 SHA-256
+python experiments/exp45-stage2-gguf/merge_dq.py --adapter <v2 어댑터> --out <merged 폴더>
+experiments\exp45-stage2-gguf\build_gguf.cmd <merged 폴더> <출력 폴더>      # LLAMA_SRC · LLAMA_BIN · CONVERT_PY 지정 · 끝에 SHA-256
 
 # 1) exp09 회귀 — 엔진만 GGUF, 입력 · 상한은 run_config.py --config v2 그대로
 export PYTHONIOENCODING=utf-8 PYTHONPATH="src;." STAGE2_GGUF=<...Q5_K_M.gguf> LLAMA_SERVER=<...llama-server.exe>
-python experiments/exp44-stage2-gguf/run_exp09.py                 # → exp09 data/qwen_cfg_v2_gguf.jsonl (커밋 안 함)
-python experiments/exp44-stage2-gguf/compare.py                   # → results/compare_exp09.json
+python experiments/exp45-stage2-gguf/run_exp09.py                 # → exp09 data/qwen_cfg_v2_gguf.jsonl (커밋 안 함)
+python experiments/exp45-stage2-gguf/compare.py                   # → results/compare_exp09.json
 python experiments/exp09-external-agreement/score.py --qwen-file qwen_cfg_v2_gguf.jsonl --out metrics_cfg_v2_gguf.json   # → results/metrics_exp09_gguf.json 로 옮김
 
 # 2) 종단 — Veilo(3100 · 별도 DB 를 seed_sns.py --reset 으로) + 분석기(8100) 를 띄운 뒤
-python experiments/exp44-stage2-gguf/run_e2e.py --base http://127.0.0.1:8100 --label gguf --out results/e2e_gguf.json
+python experiments/exp45-stage2-gguf/run_e2e.py --base http://127.0.0.1:8100 --label gguf --out results/e2e_gguf.json
 ```
 
 분석기 환경: `ENGINE_MODE=real STAGE2_MODE=auto C1_CHECKPOINT_DIR=<1단 v2> SNS_BASE_URL=http://localhost:3100` + GGUF 면 `STAGE2_ENGINE=gguf STAGE2_GGUF LLAMA_SERVER` · NF4 면 `STAGE2_ADAPTER_DIR`.

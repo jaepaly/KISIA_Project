@@ -1,6 +1,6 @@
 """1/3 — 앱이 실제로 계산하는 가중치(NF4 dequant + v2 LoRA)를 bf16 HF 폴더로 만든다. GPU(bitsandbytes) 필요.
 
-    PYTHONIOENCODING=utf-8 HF_HUB_OFFLINE=1 python experiments/exp44-stage2-gguf/merge_dq.py \\
+    PYTHONIOENCODING=utf-8 HF_HUB_OFFLINE=1 python experiments/exp45-stage2-gguf/merge_dq.py \\
         --adapter <v2 어댑터 폴더 (c045d353…)> --out <빈 폴더 · 약 8GB>
 
 원본 bf16 베이스에 바로 merge 한 판은 정확도가 떨어져 기각했다(README) — QLoRA 학습 때 어댑터가 본 베이스는
