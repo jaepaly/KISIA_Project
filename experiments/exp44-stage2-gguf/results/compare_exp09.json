@@ -1,0 +1,40 @@
+{
+ "nf4_file_sha256": "92efe374b4e7c201daa6f331a74d3c355c8f44bd3941079a9f680174b628ed33",
+ "gguf_file_sha256": "004872ed02f0651f046f2890c943fac039fe6f0be7a96dd8799790a672d0ecfe",
+ "verdict_agreement": {
+  "raw": {
+   "same": 735,
+   "cells": 735,
+   "rate": 1.0
+  },
+  "app": {
+   "same": 735,
+   "cells": 735,
+   "rate": 1.0
+  }
+ },
+ "evidence_same_given_same_verdict": {
+  "cells": 735,
+  "same": 735,
+  "rate": 1.0
+ },
+ "stats": {
+  "nf4": {
+   "persons": 105,
+   "parse_fail": 0,
+   "truncated": 0,
+   "app_fallback": 0,
+   "sec_total": 2457.1,
+   "sec_mean": 23.4
+  },
+  "gguf": {
+   "persons": 105,
+   "parse_fail": 0,
+   "truncated": 0,
+   "app_fallback": 0,
+   "sec_total": 543.1,
+   "sec_mean": 5.17
+  }
+ },
+ "diffs": []
+}
