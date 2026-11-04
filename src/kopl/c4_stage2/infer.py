@@ -63,6 +63,9 @@ V1_ADAPTER_SHA256 = "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99
 GGUF_SHA256 = "7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7"
 GGUF_PORT = 8092          # 127.0.0.1 에만 연다. 바꾸려면 STAGE2_GGUF_PORT
 GGUF_CTX = 4096           # 입력(상한 16/4 · 약 1천 토큰) + 출력 상한(최대 2048)이 들어가는 크기
+# llama-server 요청 하나의 기한(초) — 출력 상한 2048 토큰도 RTX 3060(약 59 tok/s)에서 약 35초. 넘기면 서버를 내리고
+# 다음 호출에 다시 띄운다(멈춘 생성이 GPU 자리를 붙잡지 않게 · Codex P1). 바꾸려면 STAGE2_GGUF_TIMEOUT
+GGUF_TIMEOUT = 120.0
 _VERDICTS = {"specified", "narrowed", "weak_signal", "abstain"}
 # 모델 입력 상한 — v1 어댑터 학습 데이터는 입력당 스팬 중앙 4 · 최대 23, 한 유형 p90 5 였다 (exp08 train 342건).
 # 실제 계정은 수십~수백 개라 출력(근거 목록)이 700토큰을 넘겨 JSON 이 잘리고 규칙 폴백으로 떨어졌다 (실제 글 내부 시험 10/8 ·
@@ -317,7 +320,10 @@ class Stage2GGUF:
       llama-server 는 ``--host 127.0.0.1`` · 웹 화면 끔이고, 호출은 프록시 설정을 무시하는 opener 로 한다
     - 포트에 이미 무언가 떠 있으면 기동하지 않는다 — 모르는 서버에 판정을 맡기지 않는다
     - GGUF 는 기동 때 SHA-256 을 확인한다(``GGUF_SHA256``) · 다르면 거부
-    - 정리: ``close()`` · 인터프리터 종료(atexit) · Windows 는 Job 개체(KILL_ON_JOB_CLOSE)라 분석기가 강제 종료돼도 같이 꺼진다
+    - 정리: ``close()`` · 인터프리터 종료(atexit) · Windows 는 Job 개체(KILL_ON_JOB_CLOSE)라 분석기가 강제 종료돼도 같이 꺼진다.
+      ``close()`` 는 여러 번 불러도 되고, atexit 등록 · Job 핸들까지 놓는다
+    - 요청 하나가 ``timeout``(기본 ``GGUF_TIMEOUT`` · ``STAGE2_GGUF_TIMEOUT``)을 넘기면 서버를 내리고 예외 — auto 는 규칙 결과를
+      그대로 둔다. 서버가 (닫지 않았는데) 꺼져 있으면 다음 호출이 다시 띄운다
     - 디코딩은 HF 경로와 같다 — greedy(temperature 0 · top_k 1) · thinking 끔 · 출력 상한 ``max_new_tokens``
     """
 
@@ -326,9 +332,11 @@ class Stage2GGUF:
     def __init__(self, gguf: str | Path | None = None, server: str | Path | None = None, *, port: int | None = None,
                  max_new_tokens: int = 700, system: str | None = None, sha256: str = GGUF_SHA256,
                  ctx: int = GGUF_CTX, gpu_layers: int = 99, start_timeout: float = 300.0,
-                 command: Sequence[str] | None = None) -> None:
+                 command: Sequence[str] | None = None, timeout: float | None = None) -> None:
         """command — 테스트용 실행 명령 앞부분(가짜 서버). 주면 ``server`` 대신 그것을 띄운다."""
         self._proc: subprocess.Popen | None = None
+        self._job: Any = None
+        self._closed = False
         gguf_name = str(gguf or os.getenv("STAGE2_GGUF") or "")
         if not gguf_name or not Path(gguf_name).is_file():
             raise FileNotFoundError(f"2단 GGUF 가 없다: {gguf_name} (STAGE2_GGUF 로 지정)")
@@ -346,19 +354,28 @@ class Stage2GGUF:
         self._base = f"http://127.0.0.1:{self.port}"
         self._http = urllib.request.build_opener(urllib.request.ProxyHandler({}))   # 프록시 설정을 타지 않는다
         self._lock = threading.Lock()   # 슬롯 하나(-np 1) — 동시에 부르면 하나씩
-        args = [*exe, "-m", str(gguf_path), "-c", str(ctx), "-np", "1", "-ngl", str(gpu_layers),
-                "--host", "127.0.0.1", "--port", str(self.port), "--no-webui"]
-        self._proc = subprocess.Popen(args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+        self.timeout = float(timeout or os.getenv("STAGE2_GGUF_TIMEOUT") or GGUF_TIMEOUT)
+        self._start_timeout = start_timeout
+        self._args = [*exe, "-m", str(gguf_path), "-c", str(ctx), "-np", "1", "-ngl", str(gpu_layers),
+                      "--host", "127.0.0.1", "--port", str(self.port), "--no-webui"]
+        import atexit
+        atexit.register(self.close)
+        try:
+            self._start()
+        except BaseException:
+            self.close()
+            raise
+
+    def _start(self) -> None:
+        self._proc = subprocess.Popen(self._args, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
                                       stderr=subprocess.DEVNULL,
                                       creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
         self._job = _kill_with_parent(self._proc)
-        import atexit
-        atexit.register(self.close)
-        deadline = time.monotonic() + start_timeout
+        deadline = time.monotonic() + self._start_timeout
         while not self._healthy():
             if self._proc.poll() is not None or time.monotonic() > deadline:
                 code = self._proc.poll()
-                self.close()
+                self._stop_server()
                 raise RuntimeError(f"llama-server 기동 실패 (종료 코드 {code})")
             time.sleep(0.5)
 
@@ -370,18 +387,42 @@ class Stage2GGUF:
             return False
 
     def generate(self, user_prompt: str, max_new_tokens: int | None = None) -> str:
-        if self._proc is None or self._proc.poll() is not None:
-            raise RuntimeError(f"llama-server 가 꺼져 있다 (종료 코드 {self._proc and self._proc.returncode})")
         body = {"prompt": chat_prompt(self.system, user_prompt), "n_predict": int(max_new_tokens or self.max_new_tokens),
                 "temperature": 0, "top_k": 1, "seed": 0, "cache_prompt": False}
         req = urllib.request.Request(f"{self._base}/completion", data=json.dumps(body).encode("utf-8"),
                                      headers={"Content-Type": "application/json"})
-        with self._lock, self._http.open(req, timeout=600) as r:
-            res = json.loads(r.read())
+        with self._lock:
+            if self._closed:
+                code = self._proc.returncode if self._proc is not None else None
+                raise RuntimeError(f"llama-server 가 꺼져 있다 (종료 코드 {code})")
+            if self._proc is None or self._proc.poll() is not None:
+                # 닫지 않았는데 꺼져 있다 — 앞 요청이 기한을 넘겨 내렸거나 서버가 죽었다. 다시 띄운다(포트를 남이 잡았으면 거부)
+                self._stop_server()
+                for _ in range(20):   # 방금 내린 서버의 포트가 풀리기를 잠깐 기다린다
+                    if not _port_open(self.port):
+                        break
+                    time.sleep(0.25)
+                if _port_open(self.port):
+                    raise RuntimeError(f"llama-server 포트가 이미 쓰이고 있다: 127.0.0.1:{self.port} (STAGE2_GGUF_PORT 로 바꾼다)")
+                _LOG.warning("llama-server 를 다시 띄운다 (127.0.0.1:%s)", self.port)
+                self._start()
+            try:
+                with self._http.open(req, timeout=self.timeout) as r:
+                    res = json.loads(r.read())
+            except (TimeoutError, socket.timeout) as e:
+                self._stop_server()   # 멈춘 생성을 끊는다 — 다음 호출이 다시 띄운다
+                raise TimeoutError(f"llama-server 응답 기한 초과 ({self.timeout:.0f}초)") from e
+            except urllib.error.URLError as e:
+                if isinstance(e.reason, (TimeoutError, socket.timeout)):
+                    self._stop_server()
+                    raise TimeoutError(f"llama-server 응답 기한 초과 ({self.timeout:.0f}초)") from e
+                raise
         return str(res.get("content", "")).strip()
 
-    def close(self) -> None:
-        proc = self._proc
+    def _stop_server(self) -> None:
+        """llama-server 를 끄고 Job 핸들을 닫는다. 여러 번 불러도 된다"""
+        proc, job = self._proc, self._job
+        self._job = None
         if proc is not None and proc.poll() is None:
             proc.terminate()
             try:
@@ -389,6 +430,17 @@ class Stage2GGUF:
             except subprocess.TimeoutExpired:
                 proc.kill()
                 proc.wait(10)
+        _close_handle(job)
+
+    def close(self) -> None:
+        """서버를 끄고 정리한다 — atexit 등록 · Job 핸들까지. 여러 번 불러도 된다. 닫은 뒤 generate 는 다시 띄우지 않는다"""
+        self._closed = True
+        self._stop_server()
+        try:
+            import atexit
+            atexit.unregister(self.close)
+        except Exception:  # noqa: BLE001 — 인터프리터 종료 중
+            pass
 
 
 def _port_open(port: int) -> bool:
@@ -439,6 +491,18 @@ def _kill_with_parent(proc: subprocess.Popen) -> Any:
         return None
 
 
+def _close_handle(handle: Any) -> None:
+    """_kill_with_parent 가 돌려준 Job 핸들을 닫는다(Windows). 자식은 이미 꺼진 뒤에 부른다 — 닫히면 자식도 꺼진다"""
+    if not handle or os.name != "nt":
+        return
+    try:
+        import ctypes
+
+        ctypes.WinDLL("kernel32", use_last_error=True).CloseHandle(ctypes.c_void_p(handle))
+    except Exception as e:  # noqa: BLE001
+        _LOG.warning("Job 핸들 닫기 실패: %s", e)
+
+
 def _sha256(path: Path) -> str | None:
     if not path.is_file():
         return None
@@ -476,6 +540,8 @@ def _public_reason(e: BaseException) -> str:
         return "llama-server 기동 실패"
     if msg.startswith("llama-server 가 꺼져"):
         return "llama-server 꺼짐"
+    if msg.startswith("llama-server 응답 기한 초과"):
+        return "llama-server 응답 기한 초과"
     if isinstance(e, (urllib.error.URLError, ConnectionError, TimeoutError)):
         return "llama-server 응답 없음"
     if msg.startswith("2단 엔진을 모른다"):

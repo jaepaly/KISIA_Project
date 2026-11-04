@@ -42,6 +42,10 @@ class H(BaseHTTPRequestHandler):
         self._send({"status": "ok"})
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        import os, time
+        sleep = args[args.index("-m") + 1] + ".sleep"   # 있으면 그만큼 멈춘다(생성이 멈춘 서버)
+        if os.path.exists(sleep):
+            time.sleep(float(open(sleep).read()))
         with open(log, "a", encoding="utf-8") as f:
             f.write(json.dumps({"path": self.path, "body": body}, ensure_ascii=False) + "\n")
         self._send({"content": "  " + answer + "\n", "stop_type": "eos"})
@@ -216,3 +220,38 @@ def test_chat_prompt_matches_tokenizer_template() -> None:
     want = tok.apply_chat_template([{"role": "system", "content": infer.SYSTEM_V2}, {"role": "user", "content": user}],
                                    tokenize=False, add_generation_prompt=True, enable_thinking=False)
     assert chat_prompt(infer.SYSTEM_V2, user) == want
+
+
+def test_stalled_request_kills_server_and_next_call_restarts(fake, tmp_path) -> None:
+    """요청이 기한을 넘기면 서버를 내리고 예외(auto 는 규칙 결과 유지) · 다음 호출은 다시 띄운다 (Codex P1)"""
+    make, log, gguf = fake
+    m = make(timeout=1.0)
+    first = m._proc
+    sleep = Path(str(gguf) + ".sleep")
+    sleep.write_text("30", encoding="utf-8")
+    t0 = time.monotonic()
+    with pytest.raises(TimeoutError) as e:
+        m.generate("{}")
+    assert time.monotonic() - t0 < 15
+    assert infer._public_reason(e.value) == "llama-server 응답 기한 초과"
+    assert first.poll() is not None and m._job is None             # 멈춘 서버를 내리고 Job 핸들도 놓았다
+    out = analyze(USER, _posts(), model=m, mode="auto")           # 다시 띄운 서버도 멈춰 있으면 규칙 결과 그대로
+    assert out["provenance"]["model_version"] == f"{RULES_VERSION} (fallback: llama-server 응답 기한 초과)"
+    sleep.unlink()
+    assert m.generate("{}") == _answer()                          # 멈춤이 풀리면 다시 띄워 답한다
+    assert m._proc is not first and m._proc.poll() is None
+    assert sum(1 for r in log() if "argv" in r) == 3
+
+
+def test_close_is_idempotent_and_unregisters_atexit(fake, monkeypatch) -> None:
+    import atexit
+    seen = []
+    monkeypatch.setattr(atexit, "unregister", lambda f: seen.append(f))
+    make, _, _ = fake
+    m = make()
+    m.close()
+    m.close()
+    assert m._job is None and m._proc.poll() is not None
+    assert seen and all(f == m.close for f in seen)
+    with pytest.raises(RuntimeError, match="꺼져"):              # 닫은 뒤에는 다시 띄우지 않는다
+        m.generate("{}")
