@@ -296,3 +296,51 @@ def test_screens_opt_in_and_follow():
         assert words in common, words
     # 외부 요청 0건 — 새 주소는 같은 서버의 상대 경로뿐
     assert "http://" not in common.split("PROGRESSIVE_Q")[1].split("// 서버가 만든 설명 문장")[0]
+
+
+# ── 기한 — 모델 호출이 멈춰도 작업 · 입력 · 점검이 매달리지 않는다 (Codex P1)
+def test_stalled_model_expires_jobs_and_releases_input(monkeypatch):
+    fol = server._Followups(4, 600.0, 1.0, deadline_s=0.5)
+    gate = threading.Event()
+    stuck = fol.submit(lambda: gate.wait(10) and {"used_model": True, "findings": {}, "model_version": "m"})
+    waiting = fol.submit(lambda: {"used_model": True, "findings": {}, "model_version": "m"})
+    time.sleep(0.8)
+    assert fol.poll(stuck["job"]) == {"status": "expired"}       # 도는 중 기한이 지났다 — 화면은 빠른 결과 유지
+    assert fol.poll(waiting["job"]) == {"status": "expired"}
+    assert all("fn" not in j for j in fol._jobs.values())         # 기다리던 작업의 입력(원문)은 놓았다
+    # 한 번에 응답하는 점검 — GPU 자리를 못 잡으면 규칙 판정으로 (끝없이 기다리지 않는다)
+    monkeypatch.setattr(server, "_followups", fol)
+    monkeypatch.setattr(server, "STAGE2_GPU_WAIT", 0.2)
+    with server._gpu_or_rules(None) as mode:
+        assert mode == "rules"
+    with server._gpu_or_rules("rules") as mode:
+        assert mode == "rules"
+    gate.set()
+    time.sleep(0.3)
+    assert fol.poll(stuck["job"]) == {"status": "expired"}       # 늦게 온 결과는 버린다
+    with server._gpu_or_rules(None) as mode:                      # 자리가 풀리면 다시 모델 경로
+        assert mode is None
+    assert not fol.gpu.locked()
+
+
+def test_shutdown_drops_pending_jobs(monkeypatch):
+    fol = server._Followups(4, 600.0, 1.0, deadline_s=30)
+    gate = threading.Event()
+    fol.submit(lambda: gate.wait(10) and {"used_model": False, "reason": "x"})
+    pending = fol.submit(lambda: {"used_model": True, "findings": {}, "model_version": "m"})
+    time.sleep(0.2)
+    worker = fol._worker
+    assert worker.daemon                                          # 멈춘 모델 호출이 프로세스 종료를 막지 않는다
+    fol.shutdown()
+    assert fol.poll(pending["job"]) == {"status": "expired"}
+    gate.set()
+    worker.join(5)
+    assert not worker.is_alive()
+    # 종료 뒤 다시 받으면 작업 스레드를 새로 띄운다(테스트 클라이언트가 lifespan 을 여러 번 돈다)
+    again = fol.submit(lambda: {"used_model": True, "findings": {}, "model_version": "m"})
+    for _ in range(100):
+        if fol.poll(again["job"])["status"] == "done":
+            break
+        time.sleep(0.02)
+    assert fol.poll(again["job"])["status"] == "done"
+
