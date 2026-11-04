@@ -169,17 +169,24 @@
   //    (done · fallback · failed · lost). 돌려준 함수를 부르면 멈춘다(작성자를 바꿀 때)
   window.PADO_PROGRESSIVE = "?progressive=1";
   window.padoFollow = function (follow, onState) {
+    // 묻기 하나가 멈춰도 기다림이 끝나게 — 요청마다 REQ_MS 뒤 취소 · 전체 마감은 묻기와 따로 타이머로 (Codex P2)
+    const REQ_MS = 10000;
     let stopped = false, timer = null, ac = null, fails = 0, last = "";
     const t0 = Date.now(), limit = Math.max((Number(follow.est_seconds) || 60) * 4, 300) * 1000;
-    const end = (s) => { stopped = true; onState(s); };
+    const stop = () => { stopped = true; clearTimeout(timer); clearTimeout(deadline); if (ac) { ac.abort(); ac = null; } };
+    const end = (s) => { if (stopped) return; stop(); onState(s); };
+    const deadline = setTimeout(() => end({ status: "lost" }), limit);
     const ask = async () => {
       if (stopped) return;
       if (Date.now() - t0 > limit) { end({ status: "lost" }); return; }
-      ac = new AbortController();
+      const my = new AbortController();
+      ac = my;
+      const cut = setTimeout(() => my.abort(), REQ_MS);
       try {
-        const r = await fetch(`${BASE}/api/stage2-followup?job=${encodeURIComponent(follow.job)}`, { signal: ac.signal, cache: "no-store" });
+        const r = await fetch(`${BASE}/api/stage2-followup?job=${encodeURIComponent(follow.job)}`, { signal: my.signal, cache: "no-store" });
         if (!r.ok) throw new Error(String(r.status));
         const q = await r.json();
+        clearTimeout(cut);
         if (stopped) return;
         fails = 0;
         if (q.status === "pending" || q.status === "running") {
@@ -188,23 +195,32 @@
         } else if (q.status === "done" && q.findings) { end(q); return; }
         else { end({ status: q.status === "fallback" || q.status === "failed" ? q.status : "lost" }); return; }
       } catch {
+        clearTimeout(cut);
         if (stopped) return;
         if (++fails >= 15) { end({ status: "lost" }); return; }
       }
+      if (ac === my) ac = null;
+      if (stopped) return;
       timer = setTimeout(ask, 2000);
     };
     timer = setTimeout(ask, 800);
-    return () => { stopped = true; clearTimeout(timer); if (ac) ac.abort(); };
+    return stop;
   };
-  // 규칙 판정 → 모델 판정에서 판정(verdict)이 바뀐 항목
+  // 규칙 판정 → 모델 판정에서 판정(verdict)이나 범위(granularity)가 바뀐 항목 — 분석기 common.js diffFindings 와 같은 기준.
+  // from · to 는 판정, from_granularity · to_granularity 는 범위(sido · sigungu … · 없으면 null)
   window.padoDiffFindings = function (before, after) {
     const out = [];
     for (const a of Object.keys(after || {})) {
-      const x = ((before || {})[a] || {}).verdict || "abstain", y = (after[a] || {}).verdict || "abstain";
-      if (x !== y) out.push({ attr: a, from: x, to: y });
+      const b0 = (before || {})[a] || {}, b1 = after[a] || {};
+      const x = b0.verdict || "abstain", y = b1.verdict || "abstain";
+      const gx = b0.granularity || null, gy = b1.granularity || null;
+      if (x !== y || gx !== gy) out.push({ attr: a, from: x, to: y, from_granularity: gx, to_granularity: gy });
     }
     return out;
   };
+  // 판정 + 범위 한 줄 — 「좁혀짐(시군구)」 (분석기 stage2FmtVerdict 와 같은 낱말)
+  const GRAIN_KO = { sido: "시도", sigungu: "시군구", eupmyeondong: "읍면동", exact: "정확한 값", range: "범위", decade: "연령대" };
+  window.padoGrainLabel = function (g) { return GRAIN_KO[g] || ""; };
   // export 형식 그대로(.json) — 위치태그·프로필·사진 캡션까지 /scan 과 같은 파이프라인을 탄다. 계정 글 + 초안 합산용
   // query — 「?progressive=1」을 주면 빠른 결과 먼저(계정 점검 · padoFollow 로 정밀 판정을 이어 받는다). 기본은 지금처럼 한 번에
   window.padoCheckExport = async function (exportObj, signal, onAhead, query = "") {

@@ -264,7 +264,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/pado.js?v=405"></script>
+<script src="/static/pado.js?v=406"></script>
 <script>
 // 글 화면에서 옮겨 온 초안 채우기 (post.html 「이 글을 옮겨 고쳐 쓰기」) — 오른쪽 패널이 작성자를 읽기 전에 채워야 한다
 (function () {
@@ -406,7 +406,7 @@ const AP = (function () {
     const fol = d.stage2_followup || null;
     const changed = Object.fromEntries(((fol && fol.status === "done" && fol.diff) || []).map((x) => [x.attr, x]));
     const chip = (a, cls, label) => changed[a]
-      ? `<span class="${cls} chg" title="정밀 판정으로 바뀜 · 빠른 결과에서는 ${esc(V_LABEL[changed[a].from] || "단서 없음")}">${esc(label)} · 바뀜</span>`
+      ? `<span class="${cls} chg" title="정밀 판정으로 바뀜 · 빠른 결과에서는 ${esc(vFmt(changed[a].from, changed[a].from_granularity))}">${esc(label)} · 바뀜</span>`
       : `<span class="${cls}">${esc(label)}</span>`;
     const p = me.persona;
     let tryHtml;
@@ -444,6 +444,8 @@ const AP = (function () {
   //    문맥까지 읽는 모델 판정이 끝나면 바뀐 항목을 칩과 안내로 보인다(조용히 바뀌지 않게). 사람 수 · 노출 위험도는 그대로다.
   //    모델을 못 쓰는 서버면 stage2_followup 이 없어 지금과 같다
   const V_LABEL = { specified: "직접 드러남", narrowed: "좁혀짐", weak_signal: "약한 신호", abstain: "단서 없음" };
+  // 판정 + 범위 — 범위만 바뀐 항목(좁혀짐(시도) → 좁혀짐(시군구))도 무엇이 바뀌었는지 보이게
+  const vFmt = (v, g) => (V_LABEL[v] || v) + (window.padoGrainLabel(g) ? `(${window.padoGrainLabel(g)})` : "");
   let stopFollow = null;
   function renderS2(d) {
     const f = d.stage2_followup;
@@ -456,7 +458,7 @@ const AP = (function () {
       const diff = f.diff || [];
       if (!diff.length) return `<p class="s2" role="status"><span class="tag">정밀 판정</span>정밀 판정이 끝났어요. 빠른 결과와 항목이 같아요.</p>`;
       return `<div class="s2 chg" role="status"><span class="tag">정밀 판정</span>정밀 판정이 끝났어요. 판정이 바뀐 항목 <b>${diff.length}개</b>를 표시했어요.`
-        + `<ul>${diff.map((x) => `<li><b>${esc(AXIS[x.attr] || x.attr)}</b> ${esc(V_LABEL[x.from] || x.from)} → <b>${esc(V_LABEL[x.to] || x.to)}</b></li>`).join("")}</ul>`
+        + `<ul>${diff.map((x) => `<li><b>${esc(AXIS[x.attr] || x.attr)}</b> ${esc(vFmt(x.from, x.from_granularity))} → <b>${esc(vFmt(x.to, x.to_granularity))}</b></li>`).join("")}</ul>`
         + `<span class="muted">글에 드러난 단서의 정도일 뿐, 실제 정보가 맞다는 뜻은 아니에요. 사람 수와 노출 위험도는 그대로예요.</span></div>`;
     }
     if (f.status === "skipped") return `<p class="s2" role="status"><span class="tag">빠른 결과</span>정밀 판정을 기다리는 점검이 많아 이번엔 빠른 결과(규칙)만 보여 드려요.</p>`;

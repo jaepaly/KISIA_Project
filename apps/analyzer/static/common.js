@@ -227,9 +227,16 @@ function diffFindings(before, after) {
 // 저장된 점검 결과의 정밀 판정을 받아 온다. onChange(data) — 상태가 바뀔 때마다(차례 · 도착 · 실패).
 // 점검 결과는 sessionStorage 에 있어 화면을 옮겨도(점검 결과 ↔ 위험 줄이기) 같은 작업 번호로 이어 묻는다.
 // 그 사이 다시 점검해 결과가 바뀌었으면(scanned_at 이 다름) 옛 작업의 답은 버린다
-let _s2t = null, _s2gen = 0;
+// 묻기 하나가 멈춰도(연결만 붙잡힌 서버 · 프록시) 화면이 「정밀 판정 중」에 머물지 않게 — 요청마다 S2_REQ_MS 뒤 취소하고,
+// 전체 마감(limit)은 묻기와 상관없이 타이머로 따로 건다. 끝나거나 새로 시작하면 둘 다 정리한다 (Codex P2)
+const S2_REQ_MS = 10000;
+let _s2t = null, _s2gen = 0, _s2deadline = null, _s2ac = null;
+function _s2stop() {
+  clearTimeout(_s2t); clearTimeout(_s2deadline); _s2t = _s2deadline = null;
+  if (_s2ac) { _s2ac.abort(); _s2ac = null; }
+}
 function followStage2(onChange) {
-  clearTimeout(_s2t);
+  _s2stop();
   const gen = ++_s2gen;
   const first = loadScan();
   if (!stage2Pending(first)) return;
@@ -238,19 +245,32 @@ function followStage2(onChange) {
   const limit = Math.max(est * 4, 300) * 1000;   // 이보다 오래면 서버가 다시 켜졌거나 멈춘 것 — 기다리지 않는다
   let fails = 0;
   const finish = (cur, patch) => {
+    if (gen === _s2gen) _s2stop();
     cur.stage2_followup = { ...cur.stage2_followup, ...patch, at: Date.now() };
     updateScan(cur);
     if (onChange) onChange(cur);
   };
+  const lose = () => {   // 전체 마감 · 실패 한도 — 같은 점검을 아직 기다리고 있을 때만 「받지 못함」으로 끝낸다
+    if (gen !== _s2gen) return;
+    const now = loadScan();
+    if (now && now.scanned_at === key && stage2Pending(now)) finish(now, { status: "lost" });
+    else _s2stop();
+  };
+  _s2deadline = setTimeout(lose, Math.max(0, limit - (Date.now() - t0)));
   const ask = async () => {
     if (gen !== _s2gen) return;
     const cur = loadScan();
     if (!cur || cur.scanned_at !== key || !stage2Pending(cur)) return;
     if (Date.now() - t0 > limit) { finish(cur, { status: "lost" }); return; }
+    const ac = new AbortController();
+    _s2ac = ac;
+    const cut = setTimeout(() => ac.abort(), S2_REQ_MS);
     try {
-      const r = await fetch(`../api/stage2-followup?job=${encodeURIComponent(job)}`, { cache: "no-store" });
+      const r = await fetch(`../api/stage2-followup?job=${encodeURIComponent(job)}`, { cache: "no-store", signal: ac.signal });
       if (!r.ok) throw new Error(String(r.status));
       const q = await r.json();
+      clearTimeout(cut);
+      if (_s2ac === ac) _s2ac = null;
       fails = 0;
       const now = loadScan();
       if (gen !== _s2gen || !now || now.scanned_at !== key) return;
@@ -265,13 +285,17 @@ function followStage2(onChange) {
         now.stage2.output.provenance = { ...(now.stage2.output.provenance || {}), model_version: q.model_version };
         finish(now, { status: "done", diff, ahead: 0 });
         return;
-      } else {   // fallback · failed · unknown(시간이 지나 버렸거나 서버가 다시 켜짐)
+      } else {   // fallback · failed · expired(서버 기한) · unknown(시간이 지나 버렸거나 서버가 다시 켜짐)
         finish(now, { status: ["fallback", "failed"].includes(q.status) ? q.status : "lost", ahead: 0 });
         return;
       }
     } catch {
-      if (++fails >= 15) { const now = loadScan(); if (now && now.scanned_at === key) finish(now, { status: "lost" }); return; }
+      clearTimeout(cut);
+      if (_s2ac === ac) _s2ac = null;
+      if (gen !== _s2gen) return;
+      if (++fails >= 15) { lose(); return; }
     }
+    if (gen !== _s2gen) return;
     _s2t = setTimeout(ask, 2000);
   };
   _s2t = setTimeout(ask, 800);

@@ -344,3 +344,53 @@ def test_shutdown_drops_pending_jobs(monkeypatch):
         time.sleep(0.02)
     assert fol.poll(again["job"])["status"] == "done"
 
+
+NODE = __import__("shutil").which("node")
+
+_COMMON_HARNESS = r"""
+const fs = require("fs");
+const store = {};
+globalThis.sessionStorage = { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } };
+globalThis.window = globalThis;
+globalThis.document = { querySelectorAll: () => [], getElementById: () => null };
+globalThis.location = { search: "", href: "http://127.0.0.1/" };
+const mode = process.argv[2];
+const asked = [];
+let aborted = 0;
+globalThis.fetch = (url, opts) => {
+  asked.push(url);
+  if (mode === "hang") return new Promise((_, rej) => opts.signal.addEventListener("abort", () => { aborted++; rej(new Error("abort")); }));
+  return new Promise(() => {});   // hang_forever — 취소 신호도 무시
+};
+(0, eval)(fs.readFileSync(process.argv[1], "utf8"));
+const realSet = setTimeout;
+globalThis.setTimeout = (fn, ms) => realSet(fn, Math.max(1, Math.round(ms / 1000)));   // 1000배 빠르게
+store.scanResult = JSON.stringify({ scanned_at: "t", stage2: { output: { findings: {} } },
+  stage2_followup: { job: "abcdefghijklmnopqrstuvwx", status: "pending", est_seconds: 5 } });
+followStage2((cur) => {
+  const f = cur.stage2_followup;
+  if (!["pending", "running"].includes(f.status)) {
+    console.log(JSON.stringify({ status: f.status, n_asked: asked.length, aborted }));
+    process.exit(0);
+  }
+});
+realSet(() => { console.log(JSON.stringify({ stuck: true, n_asked: asked.length })); process.exit(0); }, 5000);
+"""
+
+
+@pytest.mark.parametrize("mode", ["hang", "hang_forever"])
+def test_common_follow_ends_when_requests_stall(mode):
+    """분석기 화면 followStage2 — 묻기가 멈춰도 요청별 취소 · 전체 마감으로 「받지 못함」에서 끝난다 (Codex P2)"""
+    if not NODE:
+        pytest.skip("node 없음")
+    import subprocess
+    out = subprocess.run([NODE, "-e", _COMMON_HARNESS, str(ROOT / "apps" / "analyzer" / "static" / "common.js"), mode],
+                         capture_output=True, text=True, encoding="utf-8", timeout=30)
+    assert out.returncode == 0, out.stderr
+    r = json.loads(out.stdout.strip().splitlines()[-1])
+    assert not r.get("stuck"), r
+    assert r["status"] == "lost"
+    if mode == "hang":
+        assert r["aborted"] >= 1 and r["n_asked"] >= 2
+    else:
+        assert r["n_asked"] == 1
