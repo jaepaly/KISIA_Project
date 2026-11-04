@@ -173,12 +173,24 @@ def test_engine_selection_by_env(monkeypatch) -> None:
     made = []
     monkeypatch.setattr(infer, "Stage2Model", lambda: made.append("bnb") or "bnb")
     monkeypatch.setattr(infer, "Stage2GGUF", lambda: made.append("gguf") or "gguf")
+    monkeypatch.delenv("STAGE2_GGUF", raising=False)
     for value, want in ((None, "bnb"), ("", "bnb"), ("bnb", "bnb"), ("GGUF", "gguf")):
         if value is None:
             monkeypatch.delenv("STAGE2_ENGINE", raising=False)
         else:
             monkeypatch.setenv("STAGE2_ENGINE", value)
         assert infer._new_model() == want
+    # DEC-017 (가): STAGE2_ENGINE 이 비어 있으면 STAGE2_GGUF 를 준 PC 만 gguf · 명시한 bnb 가 이긴다(되돌리기)
+    monkeypatch.setenv("STAGE2_GGUF", "stage2.gguf")
+    for value, want in ((None, "gguf"), ("", "gguf"), ("  ", "gguf"), ("bnb", "bnb"), ("gguf", "gguf")):
+        if value is None:
+            monkeypatch.delenv("STAGE2_ENGINE", raising=False)
+        else:
+            monkeypatch.setenv("STAGE2_ENGINE", value)
+        assert infer._new_model() == want
+    monkeypatch.setenv("STAGE2_GGUF", " ")
+    monkeypatch.delenv("STAGE2_ENGINE", raising=False)
+    assert infer._new_model() == "bnb"
     monkeypatch.setenv("STAGE2_ENGINE", "vllm")
     with pytest.raises(ValueError) as e:
         infer._new_model()

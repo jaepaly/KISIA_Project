@@ -14,9 +14,10 @@
   provenance.model_version 에 그렇다고 적는다
 - 어댑터는 저장소에 없다 (models/registry.md 포인터). 기본 위치는 exp08 results/adapter_v2,
   다른 곳이면 ``STAGE2_ADAPTER_DIR``. 베이스 모델은 허브에 나가지 않고 로컬 캐시에서만 읽는다
-- 엔진은 ``STAGE2_ENGINE`` 으로 고른다 — 기본(비우거나 ``bnb``)은 위 NF4 + 어댑터(``Stage2Model``).
+- 엔진은 ``STAGE2_ENGINE`` 으로 고른다 — ``bnb`` 는 위 NF4 + 어댑터(``Stage2Model``).
   ``gguf`` 면 같은 가중치(dequant NF4 + v2 merge)를 Q5_K_M GGUF 로 바꾼 것을 로컬 llama-server 로 돌린다
-  (``Stage2GGUF`` · ``STAGE2_GGUF`` · ``LLAMA_SERVER`` · 제출 이후 후보 — models/registry.md)
+  (``Stage2GGUF`` · ``STAGE2_GGUF`` · ``LLAMA_SERVER`` · models/registry.md). 비워 두면 ``STAGE2_GGUF`` 를 준 PC 는
+  gguf, 아니면 bnb (DEC-017 (가) · ``_engine_name``)
 """
 
 from __future__ import annotations
@@ -495,9 +496,23 @@ _MODEL_ERROR: str | None = None
 _MODEL_LOCK = threading.Lock()  # 동시 첫 요청이 모델을 두 번 올려 GPU 메모리가 터지지 않게
 
 
+def _engine_name() -> str:
+    """STAGE2_ENGINE 이 있으면 그것(bnb · gguf). 비어 있으면 STAGE2_GGUF 를 준 PC 만 gguf, 아니면 bnb (DEC-017 (가)).
+
+    GGUF 는 저장소에 없다 — 코드 기본을 gguf 로 두면 GGUF 를 받지 않은 PC 가 모두 규칙 폴백이 된다. 그래서
+    「GGUF 를 둔 PC 에서는 GGUF 가 기본」으로만 올린다. 해시 · llama-server 가 안 맞으면 NF4 로 조용히 바꾸지 않고
+    규칙 폴백 + 사유(「GGUF 해시 불일치」 등)로 드러낸다 — GGUF 를 쓰려던 PC 가 1분 걸리는 NF4 로 도는 것을 놓치지 않게.
+    되돌리기: STAGE2_ENGINE=bnb (또는 STAGE2_GGUF 를 지운다)
+    """
+    engine = (os.getenv("STAGE2_ENGINE") or "").strip().lower()
+    if engine:
+        return engine
+    return "gguf" if (os.getenv("STAGE2_GGUF") or "").strip() else "bnb"
+
+
 def _new_model() -> Stage2Model | Stage2GGUF:
-    """STAGE2_ENGINE — 비우거나 bnb: NF4 + 어댑터(지금까지와 같다) · gguf: llama-server (STAGE2_GGUF · LLAMA_SERVER)."""
-    engine = (os.getenv("STAGE2_ENGINE") or "bnb").strip().lower()
+    """STAGE2_ENGINE — bnb: NF4 + 어댑터 · gguf: llama-server (STAGE2_GGUF · LLAMA_SERVER) · 비우면 ``_engine_name``."""
+    engine = _engine_name()
     if engine == "bnb":
         return Stage2Model()
     if engine == "gguf":
