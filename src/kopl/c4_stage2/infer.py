@@ -58,7 +58,7 @@ _DEFAULT_ADAPTER = _ROOT / "experiments" / "exp08-stage2-sft" / "results" / "ada
 # 예전 STAGE2_ADAPTER_DIR 이 v1 을 가리킨 채 남은 PC 에서 조용히 섞이지 않게 (되돌리기는 models/registry.md)
 V1_ADAPTER_SHA256 = "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
 # GGUF — NF4 베이스를 bf16 으로 dequant 한 뒤 v2 어댑터(c045d353…)를 merge → llama.cpp b12090 convert(bf16) → Q5_K_M.
-# 재현은 experiments/exp44-stage2-gguf · 기록은 models/registry.md. 다른 파일이면 기동하지 않는다 (판정하지 않은 가중치)
+# 재현은 experiments/exp45-stage2-gguf · 기록은 models/registry.md. 다른 파일이면 기동하지 않는다 (판정하지 않은 가중치)
 GGUF_SHA256 = "7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7"
 GGUF_PORT = 8092          # 127.0.0.1 에만 연다. 바꾸려면 STAGE2_GGUF_PORT
 GGUF_CTX = 4096           # 입력(상한 16/4 · 약 1천 토큰) + 출력 상한(최대 2048)이 들어가는 크기
@@ -303,7 +303,7 @@ def chat_prompt(system: str, user_prompt: str) -> str:
     """Qwen3 chat 템플릿을 ``apply_chat_template(add_generation_prompt=True, enable_thinking=False)`` 와 같은 글자로.
 
     GGUF 경로는 토크나이저(transformers)를 올리지 않고 이 문자열을 llama-server 에 그대로 넣는다 — HF 경로와
-    입력 토큰 수가 같은 것을 확인했다(exp44). test_infer 가 토크나이저가 있는 PC 에서 글자까지 같은지 본다.
+    입력 토큰 수가 같은 것을 확인했다(exp45). test_infer 가 토크나이저가 있는 PC 에서 글자까지 같은지 본다.
     """
     return (f"<|im_start|>system\n{system}<|im_end|>\n<|im_start|>user\n{user_prompt}<|im_end|>\n"
             "<|im_start|>assistant\n<think>\n\n</think>\n\n")
