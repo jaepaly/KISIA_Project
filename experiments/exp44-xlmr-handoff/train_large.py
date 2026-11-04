@@ -138,6 +138,8 @@ def lr_factor(step: int, total_steps: int, warmup_steps: int, schedule: str) -> 
     constant: 1.0 throughout (the original handoff run).
     linear: linear warmup to 1.0 over `warmup_steps`, then linear decay to 0
     at `total_steps` (the usual fine-tuning schedule for large encoders).
+    Warmup starts at base_lr / warmup_steps (not 0), so the peak is used for
+    two consecutive updates; the factor reaches 0 only after the last update.
     """
     if schedule == "constant":
         return 1.0
@@ -145,8 +147,13 @@ def lr_factor(step: int, total_steps: int, warmup_steps: int, schedule: str) -> 
         return (step + 1) / warmup_steps
     remaining = total_steps - warmup_steps
     if remaining <= 0:
-        return 1.0
+        return 0.0
     return max(0.0, (total_steps - step) / remaining)
+
+
+def warmup_step_count(total_steps: int, warmup_ratio: float) -> int:
+    """Rounded warmup length, always leaving at least one decay step."""
+    return max(0, min(int(round(total_steps * warmup_ratio)), total_steps - 1))
 
 
 def train_epoch(model, loader, optimizer, scaler, device, class_weights,
@@ -157,7 +164,7 @@ def train_epoch(model, loader, optimizer, scaler, device, class_weights,
     model.train()
     numerator_total = denominator_total = 0.0
     updates = 0
-    clipped = 0
+    clipped = skipped = 0
     for group in accumulation_groups(loader, accumulation):
         # Hold only small CPU input tensors for one effective batch. Each graph
         # is backpropagated immediately; sixteen XLM-R graphs never coexist.
@@ -183,12 +190,20 @@ def train_epoch(model, loader, optimizer, scaler, device, class_weights,
             scaler.unscale_(optimizer)
             norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             clipped += int(bool(torch.isfinite(norm)) and float(norm) > max_grad_norm)
+        scale_before = scaler.get_scale() if scaler.is_enabled() else None
         scaler.step(optimizer)
         scaler.update()
-        if scheduler is not None:
+        # GradScaler skips the optimizer step on inf/NaN and lowers the scale;
+        # the lr schedule advances only on updates that actually happened.
+        step_skipped = scale_before is not None and scaler.get_scale() < scale_before
+        skipped += int(step_skipped)
+        if scheduler is not None and not step_skipped:
             scheduler.step()
         updates += 1
+    # optimizer_steps keeps its original meaning: accumulation groups attempted.
     stats = {"loss": numerator_total / denominator_total, "optimizer_steps": updates}
+    if scaler.is_enabled():
+        stats["skipped_steps"] = skipped
     if max_grad_norm > 0:
         stats["clipped_steps"] = clipped
     if scheduler is not None:
@@ -297,7 +312,7 @@ def main(argv=None) -> int:
         steps_per_epoch = optimizer_steps_per_epoch(
             len(train_rows), args.batch_size, args.accumulation)
         total_steps = steps_per_epoch * args.epochs
-        warmup_steps = int(round(total_steps * args.warmup_ratio))
+        warmup_steps = warmup_step_count(total_steps, args.warmup_ratio)
         scheduler = None
         if args.schedule != "constant":
             scheduler = torch.optim.lr_scheduler.LambdaLR(
@@ -331,6 +346,7 @@ def main(argv=None) -> int:
             "attention_backend": "eager", "min_span_score": THRESHOLD,
             "loss_normalization": "group_sum_weighted_ce/group_sum_target_class_weights",
         }
+        run_state["training_config"] = config  # kept even when a run fails
         best_f1 = -1.0
         selection = None
         started = time.monotonic()
