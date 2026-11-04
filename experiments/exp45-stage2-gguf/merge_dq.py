@@ -19,6 +19,15 @@ os.environ.setdefault("HF_HUB_OFFLINE", "1")
 V2_ADAPTER_PREFIX = "c045d353"   # models/registry.md 2단 v2 어댑터
 
 
+def base_dir(base: str) -> str:
+    """from_pretrained(base, local_files_only=True) 가 읽는 것과 같은 폴더 — 로컬 폴더면 그대로, 허브 이름이면
+    지금 HF_HOME · 캐시 설정에서 그 이름의 main 이 가리키는 스냅샷 (snapshot_download 도 같은 규칙으로 찾는다)"""
+    if os.path.isdir(base):
+        return base
+    from huggingface_hub import snapshot_download
+    return snapshot_download(base, local_files_only=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--adapter", required=True)
@@ -55,10 +64,15 @@ def main() -> None:
     torch.cuda.empty_cache()
     m = PeftModel.from_pretrained(cpu, a.adapter).merge_and_unload()
     m.save_pretrained(a.out, safe_serialization=True, max_shard_size="2GB")
-    # 토크나이저 · 설정은 베이스 스냅샷 그대로 (chat 템플릿은 GGUF 메타데이터로 들어가지만 앱은 쓰지 않는다 — infer.chat_prompt)
-    snap = glob.glob(os.path.expanduser("~/.cache/huggingface/hub/models--Qwen--Qwen3-4B/snapshots/*/"))[0]
+    # 토크나이저 · 설정은 실제로 올린 베이스(--base)의 파일 그대로 (chat 템플릿은 GGUF 메타데이터로 들어가지만 앱은 쓰지 않는다 —
+    # infer.chat_prompt). 예전에는 기본 캐시의 첫 스냅샷을 찾아 복사해, --base 가 다른 폴더 · 리비전이면 어긋날 수 있었다 (Codex P2)
+    snap = base_dir(a.base)
+    print("base files from", snap)
     for f in ["config.json", "generation_config.json", "tokenizer.json", "tokenizer_config.json", "vocab.json", "merges.txt"]:
-        shutil.copyfile(os.path.join(snap, f), os.path.join(a.out, f))
+        src = os.path.join(snap, f)
+        if not os.path.isfile(src):
+            raise SystemExit(f"베이스에 {f} 가 없다: {snap}")
+        shutil.copyfile(src, os.path.join(a.out, f))
     for f in glob.glob(os.path.join(a.out, "chat_template.jinja")):
         os.remove(f)
     print("done", round(time.time() - t0, 1), "s")
