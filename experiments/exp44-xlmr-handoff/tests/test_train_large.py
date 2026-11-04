@@ -177,6 +177,74 @@ class LargeTrainingTests(unittest.TestCase):
             self.assertFalse((failed / "selection.json").exists())
             self.assertFalse(train.read_object(failed / "run_metrics.json")["completed"])
 
+    def test_defaults_reproduce_original_handoff_run(self):
+        args = train.parse_args(["--bio-dir", "b", "--output-dir", "o"])
+        self.assertEqual((args.schedule, args.warmup_ratio, args.max_grad_norm, args.train_seed),
+                         ("constant", 0.0, 0.0, train.SEED))
+        for bad in (["--warmup-ratio", "0.1"],  # warmup needs the linear schedule
+                    ["--schedule", "linear", "--warmup-ratio", "1"],
+                    ["--max-grad-norm", "-1"]):
+            with self.subTest(bad=bad), self.assertRaises(SystemExit):
+                train.parse_args(["--bio-dir", "b", "--output-dir", "o", *bad])
+
+    def test_linear_schedule_warms_up_then_decays_to_zero(self):
+        # 2,281 windows would be larger; any size works with the same formula.
+        self.assertEqual(train.optimizer_steps_per_epoch(33, 1, 16), 3)
+        self.assertEqual(train.optimizer_steps_per_epoch(32, 1, 16), 2)
+        total, warm = 100, 10
+        factors = [train.lr_factor(i, total, warm, "linear") for i in range(total)]
+        self.assertAlmostEqual(factors[0], .1)
+        self.assertAlmostEqual(factors[warm - 1], 1.0)
+        self.assertAlmostEqual(factors[warm], 1.0)
+        self.assertTrue(all(a >= b for a, b in zip(factors[warm:], factors[warm + 1:])))
+        self.assertAlmostEqual(train.lr_factor(total, total, warm, "linear"), 0.0)
+        self.assertEqual({train.lr_factor(i, total, warm, "constant") for i in range(total)}, {1.0})
+
+    def test_clipping_bounds_the_unscaled_gradient_norm(self):
+        torch.manual_seed(3)
+        model = tiny_model()
+        ids = torch.tensor([[0, 4, 5, 6, 7, 2]])
+        batch = [{"input_ids": ids, "attention_mask": torch.ones_like(ids),
+                  "labels": torch.tensor([[-100, 1, 2, 0, 1, -100]]), "example_index": [0]}]
+        seen = {}
+
+        class Probe(torch.optim.SGD):
+            def step(self, closure=None):
+                seen["norm"] = torch.norm(torch.stack(
+                    [p.grad.norm() for g in self.param_groups for p in g["params"] if p.grad is not None]))
+                return super().step(closure)
+
+        scaler = torch.amp.GradScaler("cuda", enabled=False)
+        stats = train.train_epoch(model, batch, Probe(model.parameters(), lr=0), scaler,
+                                  torch.device("cpu"), torch.tensor([.02, 1., 1.]), 16, False,
+                                  max_grad_norm=1e-3)
+        self.assertLessEqual(float(seen["norm"]), 1e-3 * 1.0001)
+        self.assertEqual(stats["clipped_steps"], 1)
+
+    def test_cpu_tiny_run_records_schedule_and_keeps_frozen_split(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            bio, manifest, tokenizer = fixture(folder)
+            output = folder / "run-linear"
+            # CPU-only: keep CUDA uninitialized so the strict-determinism test
+            # in this process still runs before any CUDA initialization.
+            with patch("transformers.AutoTokenizer.from_pretrained", return_value=tokenizer),                  patch("transformers.AutoModelForTokenClassification.from_pretrained", return_value=tiny_model()),                  patch.object(train.shared, "configure_determinism"),                  patch("torch.cuda.is_available", return_value=False):
+                train.main(["--bio-dir", str(bio), "--manifest", str(manifest),
+                            "--output-dir", str(output), "--device", "cpu", "--epochs", "2",
+                            "--schedule", "linear", "--warmup-ratio", "0.1",
+                            "--max-grad-norm", "1.0", "--train-seed", "7"])
+            selection = train.read_object(output / "selection.json")
+            run = train.read_object(output / "run_metrics.json")
+            config = selection["training_config"]
+            self.assertEqual((config["schedule"], config["warmup_ratio"], config["max_grad_norm"]),
+                             ("linear", .1, 1.0))
+            self.assertEqual((selection["seed"], selection["train_seed"]), (train.SEED, 7))
+            self.assertEqual(selection["dev_personas"],
+                             train.read_object(manifest)["dev_personas"])
+            self.assertEqual(sum(e["train"]["optimizer_steps"] for e in run["history"]),
+                             config["total_optimizer_steps"])
+            self.assertAlmostEqual(run["history"][-1]["train"]["lr_end"], 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()
