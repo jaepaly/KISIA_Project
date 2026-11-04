@@ -15,9 +15,10 @@
 - 어댑터는 저장소에 없다 (models/registry.md 포인터). 기본 위치는 exp08 results/adapter_v2,
   다른 곳이면 ``STAGE2_ADAPTER_DIR``. 베이스 모델은 허브에 나가지 않고 로컬 캐시에서만 읽는다
 - 엔진은 ``STAGE2_ENGINE`` 으로 고른다 — ``bnb`` 는 위 NF4 + 어댑터(``Stage2Model``).
-  ``gguf`` 면 같은 가중치(dequant NF4 + v2 merge)를 Q5_K_M GGUF 로 바꾼 것을 로컬 llama-server 로 돌린다
-  (``Stage2GGUF`` · ``STAGE2_GGUF`` · ``LLAMA_SERVER`` · models/registry.md). 비워 두면 ``STAGE2_GGUF`` 를 준 PC 는
-  gguf, 아니면 bnb (DEC-017 (가) · ``_engine_name``)
+  ``gguf`` 면 같은 함수(NF4 를 푼 베이스 + v2 LoRA)를 베이스 Q8_0 GGUF + LoRA f32 GGUF 두 파일(merge 안 함)로 바꿔
+  로컬 llama-server ``-m 베이스 --lora 어댑터`` 로 돌린다 (``Stage2GGUF`` · ``STAGE2_GGUF`` · ``STAGE2_GGUF_LORA`` ·
+  ``LLAMA_SERVER`` · models/registry.md). 비워 두면 ``STAGE2_GGUF`` 와 ``STAGE2_GGUF_LORA`` 를 둘 다 준 PC 만 gguf,
+  아니면 bnb (DEC-017 · ``_engine_name``)
 """
 
 from __future__ import annotations
@@ -49,8 +50,9 @@ SCHEMA_VERSION = "0.1.0"
 # 오프라인 GPU 서버(HF_HUB_OFFLINE=1)는 허브 이름 대신 받아 둔 스냅샷 폴더를 가리킨다 — 비우면 허브 이름 (서버 전용 커밋 258f904 를 main 으로)
 BASE_MODEL = os.getenv("STAGE2_BASE_MODEL_DIR") or "Qwen/Qwen3-4B"
 MODEL_VERSION = "qwen3-4b-qlora-v2"
-# GGUF 경로(STAGE2_ENGINE=gguf) — 같은 v2 판정을 llama.cpp 로 낸 것. 화면 · 러너가 어느 엔진이었는지 구분하게 버전을 따로 적는다
-MODEL_VERSION_GGUF = "qwen3-4b-qlora-v2-gguf-q5km"
+# GGUF 경로(STAGE2_ENGINE=gguf) — 같은 v2 판정을 llama.cpp 로 낸 것. 화면 · 러너가 어느 엔진이었는지 구분하게 버전을 따로 적는다.
+# 11/4 Q5_K_M merge 판(qwen3-4b-qlora-v2-gguf-q5km)은 115계정 797/805 로 기각 → 베이스 Q8_0 + LoRA 분리 판 (DEC-017 · exp45 결과 4)
+MODEL_VERSION_GGUF = "qwen3-4b-qlora-v2-gguf-q8-lora"
 MODEL_VERSIONS = (MODEL_VERSION, MODEL_VERSION_GGUF)   # 「모델이 판정했다」로 볼 버전 (규칙 폴백이 아닌 것)
 RULES_VERSION = "rules-v1"
 _ROOT = Path(__file__).resolve().parents[3]
@@ -58,9 +60,12 @@ _DEFAULT_ADAPTER = _ROOT / "experiments" / "exp08-stage2-sft" / "results" / "ada
 # v1 어댑터 가중치 해시 (DEC-009 · 되돌리기용 보존). v2 프롬프트 · 상한으로 v1 가중치를 돌리면 판정하지 않은 구성이라 막는다 —
 # 예전 STAGE2_ADAPTER_DIR 이 v1 을 가리킨 채 남은 PC 에서 조용히 섞이지 않게 (되돌리기는 models/registry.md)
 V1_ADAPTER_SHA256 = "1053e7adcc77d1863e0789978b468d29d92930dc9c26a84a0a29e7fbc99a6a4b"
-# GGUF — NF4 베이스를 bf16 으로 dequant 한 뒤 v2 어댑터(c045d353…)를 merge → llama.cpp b12090 convert(bf16) → Q5_K_M.
-# 재현은 experiments/exp45-stage2-gguf · 기록은 models/registry.md. 다른 파일이면 기동하지 않는다 (판정하지 않은 가중치)
-GGUF_SHA256 = "7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7"
+# GGUF — 두 파일이다. merge 하지 않는다: merge 뒤 재양자화하면 어댑터 몫(‖W‖의 약 0.8%)이 깎인다(Q5_K_M 잔존 약 81% · exp45 결과 4).
+#   베이스: NF4(double quant) 를 bf16 으로 푼 Qwen3-4B(어댑터 없음) → llama.cpp b12090 convert(bf16) → Q8_0
+#   어댑터: v2 LoRA(c045d353…) → convert_lora_to_gguf.py --outtype f32 · llama-server --lora (배율 1)
+# 재현은 experiments/exp45-stage2-gguf · 기록은 models/registry.md. 둘 중 하나라도 다른 파일이면 기동하지 않는다 (판정하지 않은 가중치)
+GGUF_SHA256 = "f4982df0149f89e7300314d0f1a5d20dc34b6b5d7d0c6e03a754c30431a575b0"        # 베이스 Q8_0 (STAGE2_GGUF)
+GGUF_LORA_SHA256 = "ae0104d45f7359af3484ff0585840ffd1432951519ff2f0fc19de8b2d07eb74d"   # v2 LoRA f32 (STAGE2_GGUF_LORA)
 GGUF_PORT = 8092          # 127.0.0.1 에만 연다. 바꾸려면 STAGE2_GGUF_PORT
 GGUF_CTX = 4096           # 입력(상한 16/4 · 약 1천 토큰) + 출력 상한(최대 2048)이 들어가는 크기
 # llama-server 요청 하나의 기한(초) — 출력 상한 2048 토큰도 RTX 3060(약 59 tok/s)에서 약 35초. 넘기면 서버를 내리고
@@ -314,12 +319,12 @@ def chat_prompt(system: str, user_prompt: str) -> str:
 
 
 class Stage2GGUF:
-    """v2 GGUF(Q5_K_M)를 로컬 llama-server 로 돌린다 — ``Stage2Model`` 과 같은 ``generate(user_prompt, max_new_tokens)``.
+    """v2 GGUF(베이스 Q8_0 + LoRA f32)를 로컬 llama-server 로 돌린다 — ``Stage2Model`` 과 같은 ``generate(user_prompt, max_new_tokens)``.
 
     - 서버가 켜질 때 한 번 llama-server 를 띄우고(모델 적재 수 초) 127.0.0.1:포트 로만 부른다. 외부로 나가는 요청은 없다 —
       llama-server 는 ``--host 127.0.0.1`` · 웹 화면 끔이고, 호출은 프록시 설정을 무시하는 opener 로 한다
     - 포트에 이미 무언가 떠 있으면 기동하지 않는다 — 모르는 서버에 판정을 맡기지 않는다
-    - GGUF 는 기동 때 SHA-256 을 확인한다(``GGUF_SHA256``) · 다르면 거부
+    - 두 파일 모두 기동 때 SHA-256 을 확인한다(베이스 ``GGUF_SHA256`` · LoRA ``GGUF_LORA_SHA256``) · 하나라도 다르면 거부
     - 정리: ``close()`` · 인터프리터 종료(atexit) · Windows 는 Job 개체(KILL_ON_JOB_CLOSE)라 분석기가 강제 종료돼도 같이 꺼진다.
       ``close()`` 는 여러 번 불러도 되고, atexit 등록 · Job 핸들까지 놓는다
     - 요청 하나가 ``timeout``(기본 ``GGUF_TIMEOUT`` · ``STAGE2_GGUF_TIMEOUT``)을 넘기면 서버를 내리고 예외 — auto 는 규칙 결과를
@@ -329,8 +334,9 @@ class Stage2GGUF:
 
     model_version = MODEL_VERSION_GGUF
 
-    def __init__(self, gguf: str | Path | None = None, server: str | Path | None = None, *, port: int | None = None,
-                 max_new_tokens: int = 700, system: str | None = None, sha256: str = GGUF_SHA256,
+    def __init__(self, gguf: str | Path | None = None, server: str | Path | None = None, *, lora: str | Path | None = None,
+                 port: int | None = None, max_new_tokens: int = 700, system: str | None = None,
+                 sha256: str = GGUF_SHA256, lora_sha256: str = GGUF_LORA_SHA256,
                  ctx: int = GGUF_CTX, gpu_layers: int = 99, start_timeout: float = 300.0,
                  command: Sequence[str] | None = None, timeout: float | None = None) -> None:
         """command — 테스트용 실행 명령 앞부분(가짜 서버). 주면 ``server`` 대신 그것을 띄운다."""
@@ -341,11 +347,17 @@ class Stage2GGUF:
         if not gguf_name or not Path(gguf_name).is_file():
             raise FileNotFoundError(f"2단 GGUF 가 없다: {gguf_name} (STAGE2_GGUF 로 지정)")
         gguf_path = Path(gguf_name)
+        lora_name = str(lora or os.getenv("STAGE2_GGUF_LORA") or "")
+        if not lora_name or not Path(lora_name).is_file():
+            raise FileNotFoundError(f"2단 LoRA GGUF 가 없다: {lora_name} (STAGE2_GGUF_LORA 로 지정)")
+        lora_path = Path(lora_name)
         exe = [str(x) for x in command] if command else [str(server or os.getenv("LLAMA_SERVER") or "")]
         if not command and (not exe[0] or not Path(exe[0]).is_file()):
             raise FileNotFoundError(f"llama-server 가 없다: {exe[0]} (LLAMA_SERVER 로 지정)")
         if _sha256(gguf_path) != sha256:
             raise RuntimeError(f"GGUF 해시가 다르다: {gguf_path} — 판정한 파일(models/registry.md)만 쓴다")
+        if _sha256(lora_path) != lora_sha256:
+            raise RuntimeError(f"LoRA GGUF 해시가 다르다: {lora_path} — 판정한 파일(models/registry.md)만 쓴다")
         self.port = int(port or os.getenv("STAGE2_GGUF_PORT") or GGUF_PORT)
         if _port_open(self.port):
             raise RuntimeError(f"llama-server 포트가 이미 쓰이고 있다: 127.0.0.1:{self.port} (STAGE2_GGUF_PORT 로 바꾼다)")
@@ -356,7 +368,7 @@ class Stage2GGUF:
         self._lock = threading.Lock()   # 슬롯 하나(-np 1) — 동시에 부르면 하나씩
         self.timeout = float(timeout or os.getenv("STAGE2_GGUF_TIMEOUT") or GGUF_TIMEOUT)
         self._start_timeout = start_timeout
-        self._args = [*exe, "-m", str(gguf_path), "-c", str(ctx), "-np", "1", "-ngl", str(gpu_layers),
+        self._args = [*exe, "-m", str(gguf_path), "--lora", str(lora_path), "-c", str(ctx), "-np", "1", "-ngl", str(gpu_layers),
                       "--host", "127.0.0.1", "--port", str(self.port), "--no-webui"]
         import atexit
         atexit.register(self.close)
@@ -529,11 +541,15 @@ def _public_reason(e: BaseException) -> str:
     if isinstance(e, FileNotFoundError):
         if msg.startswith("2단 GGUF 가 없다"):
             return "2단 GGUF 없음"
+        if msg.startswith("2단 LoRA GGUF 가 없다"):
+            return "2단 LoRA GGUF 없음"
         if msg.startswith("llama-server 가 없다"):
             return "llama-server 없음"
         return "2단 어댑터 없음"
     if msg.startswith("GGUF 해시가 다르다"):
         return "GGUF 해시 불일치"
+    if msg.startswith("LoRA GGUF 해시가 다르다"):
+        return "LoRA GGUF 해시 불일치"
     if msg.startswith("llama-server 포트가 이미"):
         return "llama-server 포트 사용 중"
     if msg.startswith("llama-server 기동 실패"):
@@ -563,21 +579,27 @@ _MODEL_LOCK = threading.Lock()  # 동시 첫 요청이 모델을 두 번 올려 
 
 
 def _engine_name() -> str:
-    """STAGE2_ENGINE 이 있으면 그것(bnb · gguf). 비어 있으면 STAGE2_GGUF 를 준 PC 만 gguf, 아니면 bnb (DEC-017 (가)).
+    """STAGE2_ENGINE 이 있으면 그것(bnb · gguf). 비어 있으면 STAGE2_GGUF(베이스) 와 STAGE2_GGUF_LORA(어댑터)를 둘 다 준
+    PC 만 gguf, 아니면 bnb (DEC-017). 하나만 준 PC 는 bnb 로 두고 로그에 경고한다 — 예전 Q5 merge 판 설정(STAGE2_GGUF 하나)이
+    남은 PC 가 해시 불일치로 규칙 폴백하지 않게. 그 PC 에서 GGUF 를 쓰려면 두 변수를 다 준다(또는 STAGE2_ENGINE=gguf 로 사유 확인).
 
     GGUF 는 저장소에 없다 — 코드 기본을 gguf 로 두면 GGUF 를 받지 않은 PC 가 모두 규칙 폴백이 된다. 그래서
-    「GGUF 를 둔 PC 에서는 GGUF 가 기본」으로만 올린다. 해시 · llama-server 가 안 맞으면 NF4 로 조용히 바꾸지 않고
+    「GGUF 를 둔 PC 에서는 GGUF 가 기본」으로만 올린다. 두 변수를 다 줬는데 해시 · llama-server 가 안 맞으면 NF4 로 조용히 바꾸지 않고
     규칙 폴백 + 사유(「GGUF 해시 불일치」 등)로 드러낸다 — GGUF 를 쓰려던 PC 가 1분 걸리는 NF4 로 도는 것을 놓치지 않게.
     되돌리기: STAGE2_ENGINE=bnb (또는 STAGE2_GGUF 를 지운다)
     """
     engine = (os.getenv("STAGE2_ENGINE") or "").strip().lower()
     if engine:
         return engine
-    return "gguf" if (os.getenv("STAGE2_GGUF") or "").strip() else "bnb"
+    base = bool((os.getenv("STAGE2_GGUF") or "").strip())
+    lora = bool((os.getenv("STAGE2_GGUF_LORA") or "").strip())
+    if base != lora:
+        _LOG.warning("STAGE2_GGUF · STAGE2_GGUF_LORA 중 하나만 있다 — 2단은 NF4(bnb)로 돈다 (GGUF 는 두 파일이 다 있어야 한다)")
+    return "gguf" if base and lora else "bnb"
 
 
 def _new_model() -> Stage2Model | Stage2GGUF:
-    """STAGE2_ENGINE — bnb: NF4 + 어댑터 · gguf: llama-server (STAGE2_GGUF · LLAMA_SERVER) · 비우면 ``_engine_name``."""
+    """STAGE2_ENGINE — bnb: NF4 + 어댑터 · gguf: llama-server (STAGE2_GGUF · STAGE2_GGUF_LORA · LLAMA_SERVER) · 비우면 ``_engine_name``."""
     engine = _engine_name()
     if engine == "bnb":
         return Stage2Model()

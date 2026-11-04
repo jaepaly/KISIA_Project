@@ -21,7 +21,7 @@ USER = "u_0123abcd"
 BODY = "마흔여덟 살 간호사예요."
 
 # 가짜 llama-server — /health 는 바로 ok, /completion 은 받은 본문을 파일에 적고 정해진 답을 돌려준다.
-# 인자는 진짜와 같게 받는다(-m <gguf> ... --host 127.0.0.1 --port N) — 받은 인자도 적어 둔다
+# 인자는 진짜와 같게 받는다(-m <베이스> --lora <어댑터> ... --host 127.0.0.1 --port N) — 받은 인자도 적어 둔다
 FAKE_SERVER = r'''
 import json, sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -70,21 +70,24 @@ def _answer() -> str:
 def fake(tmp_path):
     gguf = tmp_path / "fake.gguf"
     gguf.write_bytes(b"GGUF fake weights")
+    lora = tmp_path / "fake-lora.gguf"
+    lora.write_bytes(b"GGUF fake lora")
     (tmp_path / "fake.gguf.answer").write_text(_answer(), encoding="utf-8")
     script = tmp_path / "fake_server.py"
     script.write_text(FAKE_SERVER, encoding="utf-8")
-    sha = infer._sha256(gguf)
+    sha, lora_sha = infer._sha256(gguf), infer._sha256(lora)
     made = []
 
     def make(**kw):
-        m = Stage2GGUF(gguf, command=[sys.executable, str(script)], sha256=sha, port=kw.pop("port", _free_port()),
-                       start_timeout=30, **kw)
+        m = Stage2GGUF(gguf, lora=lora, command=[sys.executable, str(script)], sha256=sha, lora_sha256=lora_sha,
+                       port=kw.pop("port", _free_port()), start_timeout=30, **kw)
         made.append(m)
         return m
 
     def log():
         return [json.loads(l) for l in (tmp_path / "fake.gguf.log.jsonl").read_text(encoding="utf-8").splitlines()]
 
+    make.lora = lora
     yield make, log, gguf
     for m in made:
         m.close()
@@ -105,6 +108,8 @@ def test_generate_sends_greedy_chat_prompt_to_localhost(fake) -> None:
     argv = rows[0]["argv"]
     assert argv[argv.index("--host") + 1] == "127.0.0.1" and "--no-webui" in argv
     assert argv[argv.index("-m") + 1] == str(gguf) and argv[argv.index("-np") + 1] == "1"
+    assert argv[argv.index("--lora") + 1] == str(make.lora)            # 어댑터는 merge 하지 않고 따로 올린다 (배율 1)
+    assert "--lora-scaled" not in argv and "--lora-init-without-apply" not in argv
     body = rows[1]["body"]
     assert rows[1]["path"] == "/completion"
     assert body["prompt"] == chat_prompt(infer.SYSTEM_V2, "{\"x\": 1}")
@@ -132,13 +137,23 @@ def test_analyze_uses_budget_and_gguf_version(fake) -> None:
     assert out["findings"]["age"]["verdict"] == "specified"
     assert log()[1]["body"]["n_predict"] == output_budget(entries)
     assert MODEL_VERSION_GGUF in infer.MODEL_VERSIONS and MODEL_VERSION in infer.MODEL_VERSIONS
+    assert MODEL_VERSION_GGUF == "qwen3-4b-qlora-v2-gguf-q8-lora"   # 기각한 Q5 merge 판(…-gguf-q5km)과 구분한다
 
 
 def test_hash_mismatch_refused_before_start(fake, tmp_path) -> None:
-    _, _, gguf = fake
-    with pytest.raises(RuntimeError, match="GGUF 해시가 다르다") as e:
-        Stage2GGUF(gguf, command=[sys.executable, "-c", "raise SystemExit(9)"], port=_free_port())
+    make, _, gguf = fake
+    with pytest.raises(RuntimeError, match="^GGUF 해시가 다르다") as e:
+        Stage2GGUF(gguf, lora=make.lora, command=[sys.executable, "-c", "raise SystemExit(9)"], port=_free_port())
     assert infer._public_reason(e.value) == "GGUF 해시 불일치"
+    # 베이스가 맞아도 LoRA 가 판정한 파일이 아니면 거부한다 (기본 GGUF_LORA_SHA256)
+    with pytest.raises(RuntimeError, match="LoRA GGUF 해시가 다르다") as e:
+        Stage2GGUF(gguf, lora=make.lora, command=[sys.executable, "-c", "raise SystemExit(9)"],
+                   sha256=infer._sha256(gguf), port=_free_port())
+    assert infer._public_reason(e.value) == "LoRA GGUF 해시 불일치"
+    # 베이스 자리에 LoRA 를 넣는 식으로 뒤바뀌어도 거부한다
+    with pytest.raises(RuntimeError, match="해시가 다르다"):
+        Stage2GGUF(make.lora, lora=gguf, command=[sys.executable, "-c", "raise SystemExit(9)"],
+                   sha256=infer._sha256(gguf), lora_sha256=infer._sha256(make.lora), port=_free_port())
     assert not (tmp_path / "fake.gguf.log.jsonl").exists()   # 서버를 띄우지 않았다
 
 
@@ -149,9 +164,18 @@ def test_missing_files_have_fixed_reasons(tmp_path, monkeypatch) -> None:
     assert infer._public_reason(e.value) == "2단 GGUF 없음"
     gguf = tmp_path / "x.gguf"
     gguf.write_bytes(b"x")
-    monkeypatch.delenv("LLAMA_SERVER", raising=False)
+    monkeypatch.delenv("STAGE2_GGUF_LORA", raising=False)
     with pytest.raises(FileNotFoundError) as e:
         Stage2GGUF(gguf)
+    assert infer._public_reason(e.value) == "2단 LoRA GGUF 없음"
+    with pytest.raises(FileNotFoundError) as e:
+        Stage2GGUF(gguf, lora=tmp_path / "없는-lora.gguf")
+    assert infer._public_reason(e.value) == "2단 LoRA GGUF 없음"
+    lora = tmp_path / "x-lora.gguf"
+    lora.write_bytes(b"y")
+    monkeypatch.delenv("LLAMA_SERVER", raising=False)
+    with pytest.raises(FileNotFoundError) as e:
+        Stage2GGUF(gguf, lora=lora)
     assert infer._public_reason(e.value) == "llama-server 없음"
     assert str(tmp_path) not in infer._public_reason(e.value)   # 응답에는 PC 경로가 실리지 않는다
 
@@ -167,10 +191,11 @@ def test_port_in_use_is_refused(fake) -> None:
 
 
 def test_server_that_dies_fails_start(fake, tmp_path) -> None:
-    _, _, gguf = fake
+    make, _, gguf = fake
     with pytest.raises(RuntimeError, match="기동 실패"):
-        Stage2GGUF(gguf, command=[sys.executable, "-c", "raise SystemExit(3)"], sha256=infer._sha256(gguf),
-                   port=_free_port(), start_timeout=20)
+        Stage2GGUF(gguf, lora=make.lora, command=[sys.executable, "-c", "raise SystemExit(3)"],
+                   sha256=infer._sha256(gguf), lora_sha256=infer._sha256(make.lora), port=_free_port(),
+                   start_timeout=20)
 
 
 def test_engine_selection_by_env(monkeypatch) -> None:
@@ -178,14 +203,26 @@ def test_engine_selection_by_env(monkeypatch) -> None:
     monkeypatch.setattr(infer, "Stage2Model", lambda: made.append("bnb") or "bnb")
     monkeypatch.setattr(infer, "Stage2GGUF", lambda: made.append("gguf") or "gguf")
     monkeypatch.delenv("STAGE2_GGUF", raising=False)
+    monkeypatch.delenv("STAGE2_GGUF_LORA", raising=False)
     for value, want in ((None, "bnb"), ("", "bnb"), ("bnb", "bnb"), ("GGUF", "gguf")):
         if value is None:
             monkeypatch.delenv("STAGE2_ENGINE", raising=False)
         else:
             monkeypatch.setenv("STAGE2_ENGINE", value)
         assert infer._new_model() == want
-    # DEC-017 (가): STAGE2_ENGINE 이 비어 있으면 STAGE2_GGUF 를 준 PC 만 gguf · 명시한 bnb 가 이긴다(되돌리기)
-    monkeypatch.setenv("STAGE2_GGUF", "stage2.gguf")
+    # DEC-017: STAGE2_ENGINE 이 비어 있으면 베이스 · LoRA 를 둘 다 준 PC 만 gguf · 명시한 bnb 가 이긴다(되돌리기)
+    monkeypatch.setenv("STAGE2_GGUF", "stage2.gguf")          # 베이스만(예전 Q5 merge 판 설정) — bnb
+    for value, want in ((None, "bnb"), ("", "bnb"), ("gguf", "gguf")):
+        if value is None:
+            monkeypatch.delenv("STAGE2_ENGINE", raising=False)
+        else:
+            monkeypatch.setenv("STAGE2_ENGINE", value)
+        assert infer._new_model() == want
+    monkeypatch.delenv("STAGE2_GGUF")
+    monkeypatch.setenv("STAGE2_GGUF_LORA", "lora.gguf")       # LoRA 만 — bnb
+    monkeypatch.delenv("STAGE2_ENGINE", raising=False)
+    assert infer._new_model() == "bnb"
+    monkeypatch.setenv("STAGE2_GGUF", "stage2.gguf")          # 둘 다 — gguf
     for value, want in ((None, "gguf"), ("", "gguf"), ("  ", "gguf"), ("bnb", "bnb"), ("gguf", "gguf")):
         if value is None:
             monkeypatch.delenv("STAGE2_ENGINE", raising=False)
