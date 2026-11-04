@@ -273,6 +273,13 @@ def test_real_stage2_mode_override_and_followup(monkeypatch, tmp_path):
         "provenance": {"model_version": f"{RULES_VERSION} (fallback: model output truncated)"}})
     out = real.stage2_followup("u_0000aaaa", [{"post_id": "p1", "body": "글"}], spans_by_post=spans)
     assert out["used_model"] is False and out["reason"] == "model output truncated"
+    # GGUF 엔진(STAGE2_ENGINE=gguf)의 판정도 모델 판정이다
+    from kopl.c4_stage2.infer import MODEL_VERSION_GGUF
+    monkeypatch.setattr(real, "_stage2_analyze", lambda *a, **k: {
+        "findings": {}, "recommendation": {"projected": {"current_risk": 0.0}},
+        "provenance": {"model_version": MODEL_VERSION_GGUF}})
+    out = real.stage2_followup("u_0000aaaa", [{"post_id": "p1", "body": "글"}], spans_by_post=spans)
+    assert out["used_model"] is True and out["model_version"] == MODEL_VERSION_GGUF and out["reason"] is None
 
 
 # ── 화면

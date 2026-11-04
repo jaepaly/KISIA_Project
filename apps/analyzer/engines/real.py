@@ -192,12 +192,12 @@ def stage2_followup(user_ref: str, posts: list[dict], risk_current: float = 0.0,
     추천 · 바꿔 쓰기는 findings 와 상관없이 같은 값이 나와(analyze — 스팬으로 계산) 화면은 findings 만 바꾼다.
     추천을 한 번 더 계산하는 CPU 는 쓰지만 판정 경로가 지금(analyze auto)과 한 줄도 갈라지지 않는다.
     used_model False 면 모델이 출력을 못 냈다(잘림 · 파싱 실패 · GPU 오류) — 화면은 규칙 결과를 그대로 둔다"""
-    from kopl.c4_stage2.infer import MODEL_VERSION
+    from kopl.c4_stage2.infer import MODEL_VERSIONS   # NF4(bnb) · GGUF 어느 엔진이든 모델 판정이면 used
 
     out = stage2(user_ref, posts, risk_current, risk_target, spans_by_post=spans_by_post, detect_inputs=detect_inputs,
                  mode="auto")["output"]
     version = out["provenance"]["model_version"]
-    used = version == MODEL_VERSION
+    used = version in MODEL_VERSIONS
     reason = None
     if not used and "(fallback: " in version:
         reason = version.split("(fallback: ", 1)[1].rstrip(")")
