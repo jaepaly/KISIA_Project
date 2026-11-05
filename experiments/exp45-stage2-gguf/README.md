@@ -51,7 +51,9 @@ python experiments/exp45-stage2-gguf/merge_dq.py --adapter <v2 어댑터> --out 
 experiments\exp45-stage2-gguf\build_gguf.cmd <merged 폴더> <출력 폴더>
 
 # 1) exp09 회귀 — 엔진만 GGUF, 입력 · 상한은 run_config.py --config v2 그대로
-export PYTHONIOENCODING=utf-8 PYTHONPATH="src;." STAGE2_GGUF=<...Q5_K_M.gguf> LLAMA_SERVER=<...llama-server.exe>
+#    결과 1~3(Q5 merge 한 파일)은 Q8 + LoRA 코드 전 커밋 e61c197 에서만 재현된다 — 지금 Stage2GGUF 는 두 파일 · Q8 해시를 요구한다
+#    지금 코드로 돌리면: STAGE2_GGUF=<...dqonly-Q8_0.gguf> STAGE2_GGUF_LORA=<...lora-f32.gguf> · 출력 파일 이름을 바꿔 Q5 결과를 덮지 않는다
+export PYTHONIOENCODING=utf-8 PYTHONPATH="src;." STAGE2_GGUF=<...Q5_K_M.gguf> LLAMA_SERVER=<...llama-server.exe>   # e61c197 기준
 python experiments/exp45-stage2-gguf/run_exp09.py                 # → exp09 data/qwen_cfg_v2_gguf.jsonl (커밋 안 함)
 python experiments/exp45-stage2-gguf/compare.py                   # → results/compare_exp09.json
 python experiments/exp09-external-agreement/score.py --qwen-file qwen_cfg_v2_gguf.jsonl --out metrics_cfg_v2_gguf.json   # → results/metrics_exp09_gguf.json 로 옮김
@@ -221,9 +223,11 @@ python experiments/exp45-stage2-gguf/compare115.py --nf4 <...nf4.jsonl> --gguf <
 
 ## 해석
 
-- 판정 회귀는 없다 — 735칸 · exp09 지표가 NF4 와 같다. 다른 것은 신뢰도 0.1 차이 3칸과 검증에서 지워지는 근거 1개다
-- 앱 11계정에서는 u_c9c1dd0d52c9 의 commute 1칸이 다르다(사전 실측과 같은 칸). 규칙 · NF4 와 다른 쪽은 GGUF 이고, 판정 기준상 GGUF 가 틀렸다
-- 사용자가 정밀 판정을 기다리는 시간은 계정당 약 1분 → 약 20초(중앙 63.3 → 20.4초)로 준다. 빠른 결과(약 8초)는 1단 CPU 몫이라 엔진과 무관하다
+> 지금 앱의 결론은 아래 **마지막 항목(결과 4)** 이다. 앞의 네 항목은 기각한 Q5 merge 판(결과 1~3)의 해석으로 남겨 둔다.
+
+- (결과 1~3 · Q5 merge · 기각) 판정 회귀는 없다 — 735칸 · exp09 지표가 NF4 와 같다. 다른 것은 신뢰도 0.1 차이 3칸과 검증에서 지워지는 근거 1개다
+- (결과 2 · Q5 merge · 기각) 앱 11계정에서는 u_c9c1dd0d52c9 의 commute 1칸이 다르다(사전 실측과 같은 칸). 규칙 · NF4 와 다른 쪽은 GGUF 이고, 판정 기준상 GGUF 가 틀렸다
+- (결과 2 · Q5 merge · 기각) 사용자가 정밀 판정을 기다리는 시간은 계정당 약 1분 → 약 20초(중앙 63.3 → 20.4초)로 준다. Q8 + LoRA 는 115계정 중앙 67.2 → 27.1초(결과 4). 빠른 결과(약 8초)는 1단 CPU 몫이라 엔진과 무관하다
 - (11/4 결과 3 시점) **115계정 전수(결과 3)에서는 판정 칸 797/805 — 같지 않다.** 다른 8칸 중 7칸에서 GGUF 가 v2 기준(= 규칙)을 벗어났고, 모델 ≠ 규칙 칸이 NF4 15 → GGUF 21 로 는다. 「NF4 와 같은 판정」을 근거로 GGUF 를 기본값으로 올릴 수는 없다. 올린다면 정밀 판정 대기 67 → 21초(중앙)와 이 7칸의 기준 이탈을 맞바꾸는 결정이다(위험도 · 추천 · 빠른 결과는 영향 없음)
 - **결과 4 이후: 원인은 merge 뒤 재양자화였고, 베이스 Q8_0 + LoRA f32 분리로 115계정 판정 804/805 · 근거 804/805 가 됐다.** 남은 1칸(B08 commute)은 NF4 자신이 동전 던지기인 자리이고, 기준상 GGUF 쪽이 맞다. 모델 ≠ 규칙 칸도 NF4 15 → 14 로 늘지 않는다. 대가는 Q5 merge 보다 정밀 판정 몫이 약 5초 늘어난 것이다(중앙 12.1 → 17.1 s · NF4 57.1 s)
 
