@@ -70,7 +70,7 @@ python -u -X utf8 "$exp/handoff.py" evaluate --run-dir "$exp/runs/xlmr-large" --
 
 위 기본 명령은 KoELECTRA 실험과 같은 설정(lr `1e-5` 고정 · 웜업/감쇠 없음 · 클리핑 없음 · seed 1개)이다. XLM-R-large 같은 큰 인코더는 이 설정에서 학습이 흔들리기 쉬워, 기본 실행 결과만으로 「큰 모델이 안 좋다」고 결론 내리지 않는다. 비교를 공정하게 하려면 아래를 **추가로** 돌린다.
 
-- `--schedule linear --warmup-ratio 0.1` — 전체 optimizer step 의 10% 동안 lr 을 `1e-5 / 웜업step` 에서 `1e-5` 까지 올리고, 이후 선형으로 줄여 마지막 업데이트 뒤 0 이 된다. 웜업 step 은 전체보다 항상 1 이상 적게 잡힌다. fp16 overflow 로 건너뛴 업데이트에서는 스케줄이 진행하지 않는다
+- `--schedule linear --warmup-ratio 0.1` — 전체 optimizer step 의 10% 동안 lr 을 `1e-5 / 웜업step` 에서 `1e-5` 까지 올리고, 이후 선형으로 줄여 **건너뛴 업데이트가 없으면** 마지막 업데이트 뒤 0 이 된다. 웜업 step 은 전체보다 항상 1 이상 적게 잡힌다. fp16 overflow 로 건너뛴 업데이트에서는 스케줄이 진행하지 않으므로, 건너뜀이 있으면 정해진 에폭이 끝날 때 lr 이 0 보다 조금 크게 남는다(에폭별 `skipped_steps` · `lr_end` 로 확인)
 - `--max-grad-norm 1.0` — fp16 scaler 를 푼(unscale) 실제 그래디언트의 노름을 1.0 으로 자른다
 - `--train-seed N` — 학습 쪽 난수(분류 헤드 초기화 · 학습 순서 · dropout)를 바꾼다. **dev 인물 9명 분할은 seed `20260911` 로 고정**이라 seed 를 바꿔도 dev 는 같다
 
