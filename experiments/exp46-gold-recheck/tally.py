@@ -38,7 +38,7 @@ def normalize(choice):
     if c.upper() in ("X", "Y", "Z"):
         return c.upper()
     c2 = c.replace(" ", "")
-    if c2 in ("모두틀림", "전부틀림"):
+    if c2 in ("모두틀림", "전부틀림", "둘다틀림"):  # A 검수가 「둘 다 틀림」으로 적음 — 후보가 둘뿐이라 같은 뜻
         return "모두 틀림"
     if c2 == "애매":
         return "애매"

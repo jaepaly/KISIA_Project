@@ -1,0 +1,558 @@
+{
+ "key_sha256": "4d5c1febd7d53816fdca979ac0a666a4e6be1ef9305517cd8315457acb742ee8",
+ "items": 60,
+ "reviewers": [
+  "A",
+  "B",
+  "E"
+ ],
+ "pooled_roles": [
+  "A",
+  "B",
+  "E"
+ ],
+ "per_reviewer": {
+  "A": {
+   "answered": 60,
+   "official239": {
+    "k": 26,
+    "rate": 0.4333,
+    "ci95": [
+     0.3157,
+     0.559
+    ]
+   },
+   "previous_ai239": {
+    "k": 30,
+    "rate": 0.5,
+    "ci95": [
+     0.3773,
+     0.6227
+    ]
+   },
+   "conservative239": {
+    "k": 27,
+    "rate": 0.45,
+    "ci95": [
+     0.3309,
+     0.5751
+    ]
+   },
+   "모두 틀림": {
+    "k": 2,
+    "rate": 0.0333
+   },
+   "애매": {
+    "k": 2,
+    "rate": 0.0333
+   },
+   "과반 없음": {
+    "k": 0,
+    "rate": 0.0
+   },
+   "by_stratum": {
+    "O_alone|boundary": {
+     "official239": 5,
+     "conservative239+previous_ai239": 3
+    },
+    "O_alone|lone_extra": {
+     "official239": 6,
+     "애매": 1
+    },
+    "O_alone|lone_missing": {
+     "conservative239+previous_ai239": 7
+    },
+    "O_alone|type": {
+     "conservative239+previous_ai239": 5,
+     "official239": 3
+    },
+    "P_alone|boundary": {
+     "previous_ai239": 3,
+     "conservative239+official239": 3,
+     "애매": 1,
+     "모두 틀림": 1
+    },
+    "P_alone|lone_extra": {
+     "previous_ai239": 6,
+     "모두 틀림": 1
+    },
+    "P_alone|lone_missing": {
+     "conservative239+official239": 5,
+     "previous_ai239": 2
+    },
+    "P_alone|type": {
+     "conservative239+official239": 4,
+     "previous_ai239": 4
+    }
+   },
+   "stratum_weighted": {
+    "status": "ok",
+    "official239": {
+     "rate": 0.3508,
+     "ci95": [
+      0.2206,
+      0.4811
+     ]
+    },
+    "previous_ai239": {
+     "rate": 0.5955,
+     "ci95": [
+      0.4636,
+      0.7273
+     ]
+    },
+    "conservative239": {
+     "rate": 0.6027,
+     "ci95": [
+      0.473,
+      0.7324
+     ]
+    },
+    "모두 틀림": {
+     "rate": 0.0307,
+     "ci95": [
+      0.0,
+      0.1393
+     ]
+    },
+    "애매": {
+     "rate": 0.023,
+     "ci95": [
+      0.0,
+      0.1298
+     ]
+    },
+    "과반 없음": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.1044
+     ]
+    },
+    "diff_previous_minus_official": {
+     "estimate": 0.2447,
+     "ci95": [
+      -0.0141,
+      0.5035
+     ]
+    }
+   }
+  },
+  "B": {
+   "answered": 60,
+   "official239": {
+    "k": 27,
+    "rate": 0.45,
+    "ci95": [
+     0.3309,
+     0.5751
+    ]
+   },
+   "previous_ai239": {
+    "k": 26,
+    "rate": 0.4333,
+    "ci95": [
+     0.3157,
+     0.559
+    ]
+   },
+   "conservative239": {
+    "k": 34,
+    "rate": 0.5667,
+    "ci95": [
+     0.441,
+     0.6843
+    ]
+   },
+   "모두 틀림": {
+    "k": 3,
+    "rate": 0.05
+   },
+   "애매": {
+    "k": 4,
+    "rate": 0.0667
+   },
+   "과반 없음": {
+    "k": 0,
+    "rate": 0.0
+   },
+   "by_stratum": {
+    "O_alone|boundary": {
+     "official239": 3,
+     "conservative239+previous_ai239": 5
+    },
+    "O_alone|lone_extra": {
+     "애매": 2,
+     "official239": 3,
+     "conservative239+previous_ai239": 2
+    },
+    "O_alone|lone_missing": {
+     "conservative239+previous_ai239": 6,
+     "official239": 1
+    },
+    "O_alone|type": {
+     "conservative239+previous_ai239": 4,
+     "official239": 3,
+     "모두 틀림": 1
+    },
+    "P_alone|boundary": {
+     "previous_ai239": 4,
+     "conservative239+official239": 3,
+     "모두 틀림": 1
+    },
+    "P_alone|lone_extra": {
+     "previous_ai239": 3,
+     "conservative239+official239": 3,
+     "모두 틀림": 1
+    },
+    "P_alone|lone_missing": {
+     "conservative239+official239": 3,
+     "애매": 2,
+     "previous_ai239": 2
+    },
+    "P_alone|type": {
+     "conservative239+official239": 8
+    }
+   },
+   "stratum_weighted": {
+    "status": "ok",
+    "official239": {
+     "rate": 0.3799,
+     "ci95": [
+      0.2287,
+      0.531
+     ]
+    },
+    "previous_ai239": {
+     "rate": 0.4929,
+     "ci95": [
+      0.3449,
+      0.6409
+     ]
+    },
+    "conservative239": {
+     "rate": 0.6011,
+     "ci95": [
+      0.4501,
+      0.752
+     ]
+    },
+    "모두 틀림": {
+     "rate": 0.0339,
+     "ci95": [
+      0.0,
+      0.1425
+     ]
+    },
+    "애매": {
+     "rate": 0.0934,
+     "ci95": [
+      0.0,
+      0.2194
+     ]
+    },
+    "과반 없음": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.1044
+     ]
+    },
+    "diff_previous_minus_official": {
+     "estimate": 0.113,
+     "ci95": [
+      -0.1722,
+      0.3982
+     ]
+    }
+   }
+  },
+  "E": {
+   "answered": 60,
+   "official239": {
+    "k": 14,
+    "rate": 0.2333,
+    "ci95": [
+     0.1444,
+     0.3544
+    ]
+   },
+   "previous_ai239": {
+    "k": 31,
+    "rate": 0.5167,
+    "ci95": [
+     0.3931,
+     0.6383
+    ]
+   },
+   "conservative239": {
+    "k": 28,
+    "rate": 0.4667,
+    "ci95": [
+     0.3463,
+     0.5911
+    ]
+   },
+   "모두 틀림": {
+    "k": 7,
+    "rate": 0.1167
+   },
+   "애매": {
+    "k": 8,
+    "rate": 0.1333
+   },
+   "과반 없음": {
+    "k": 0,
+    "rate": 0.0
+   },
+   "by_stratum": {
+    "O_alone|boundary": {
+     "conservative239+previous_ai239": 6,
+     "모두 틀림": 2
+    },
+    "O_alone|lone_extra": {
+     "conservative239+previous_ai239": 5,
+     "official239": 1,
+     "애매": 1
+    },
+    "O_alone|lone_missing": {
+     "official239": 2,
+     "conservative239+previous_ai239": 4,
+     "애매": 1
+    },
+    "O_alone|type": {
+     "conservative239+previous_ai239": 3,
+     "모두 틀림": 4,
+     "official239": 1
+    },
+    "P_alone|boundary": {
+     "conservative239+official239": 3,
+     "previous_ai239": 4,
+     "애매": 1
+    },
+    "P_alone|lone_extra": {
+     "previous_ai239": 5,
+     "conservative239+official239": 2
+    },
+    "P_alone|lone_missing": {
+     "애매": 2,
+     "previous_ai239": 3,
+     "conservative239+official239": 1,
+     "모두 틀림": 1
+    },
+    "P_alone|type": {
+     "conservative239+official239": 4,
+     "previous_ai239": 1,
+     "애매": 3
+    }
+   },
+   "stratum_weighted": {
+    "status": "ok",
+    "official239": {
+     "rate": 0.2554,
+     "ci95": [
+      0.1042,
+      0.4066
+     ]
+    },
+    "previous_ai239": {
+     "rate": 0.5155,
+     "ci95": [
+      0.3513,
+      0.6798
+     ]
+    },
+    "conservative239": {
+     "rate": 0.4079,
+     "ci95": [
+      0.2519,
+      0.5639
+     ]
+    },
+    "모두 틀림": {
+     "rate": 0.056,
+     "ci95": [
+      0.0,
+      0.1733
+     ]
+    },
+    "애매": {
+     "rate": 0.173,
+     "ci95": [
+      0.0293,
+      0.3167
+     ]
+    },
+    "과반 없음": {
+     "rate": 0.0,
+     "ci95": [
+      0.0,
+      0.1044
+     ]
+    },
+    "diff_previous_minus_official": {
+     "estimate": 0.2602,
+     "ci95": [
+      -0.0304,
+      0.5507
+     ]
+    }
+   }
+  }
+ },
+ "majority_pooled": {
+  "answered": 60,
+  "official239": {
+   "k": 21,
+   "rate": 0.35,
+   "ci95": [
+    0.2417,
+    0.4764
+   ]
+  },
+  "previous_ai239": {
+   "k": 27,
+   "rate": 0.45,
+   "ci95": [
+    0.3309,
+    0.5751
+   ]
+  },
+  "conservative239": {
+   "k": 27,
+   "rate": 0.45,
+   "ci95": [
+    0.3309,
+    0.5751
+   ]
+  },
+  "모두 틀림": {
+   "k": 1,
+   "rate": 0.0167
+  },
+  "애매": {
+   "k": 2,
+   "rate": 0.0333
+  },
+  "과반 없음": {
+   "k": 9,
+   "rate": 0.15
+  },
+  "by_stratum": {
+   "O_alone|boundary": {
+    "official239": 3,
+    "conservative239+previous_ai239": 5
+   },
+   "O_alone|lone_extra": {
+    "과반 없음": 2,
+    "애매": 1,
+    "official239": 3,
+    "conservative239+previous_ai239": 1
+   },
+   "O_alone|lone_missing": {
+    "conservative239+previous_ai239": 6,
+    "과반 없음": 1
+   },
+   "O_alone|type": {
+    "conservative239+previous_ai239": 3,
+    "official239": 3,
+    "모두 틀림": 1,
+    "과반 없음": 1
+   },
+   "P_alone|boundary": {
+    "previous_ai239": 4,
+    "conservative239+official239": 3,
+    "애매": 1
+   },
+   "P_alone|lone_extra": {
+    "previous_ai239": 5,
+    "conservative239+official239": 2
+   },
+   "P_alone|lone_missing": {
+    "conservative239+official239": 3,
+    "previous_ai239": 2,
+    "과반 없음": 2
+   },
+   "P_alone|type": {
+    "conservative239+official239": 4,
+    "previous_ai239": 1,
+    "과반 없음": 3
+   }
+  },
+  "stratum_weighted": {
+   "status": "ok",
+   "official239": {
+    "rate": 0.2761,
+    "ci95": [
+     0.1382,
+     0.4139
+    ]
+   },
+   "previous_ai239": {
+    "rate": 0.5253,
+    "ci95": [
+     0.3776,
+     0.6729
+    ]
+   },
+   "conservative239": {
+    "rate": 0.5287,
+    "ci95": [
+     0.3772,
+     0.6802
+    ]
+   },
+   "모두 틀림": {
+    "rate": 0.0032,
+    "ci95": [
+     0.0,
+     0.1076
+    ]
+   },
+   "애매": {
+    "rate": 0.023,
+    "ci95": [
+     0.0,
+     0.1298
+    ]
+   },
+   "과반 없음": {
+    "rate": 0.1725,
+    "ci95": [
+     0.0296,
+     0.3154
+    ]
+   },
+   "diff_previous_minus_official": {
+    "estimate": 0.2492,
+    "ci95": [
+     -0.0116,
+     0.51
+    ]
+   }
+  }
+ },
+ "abstain_rate_pooled": 0.1444,
+ "fleiss_pooled": {
+  "raters": 3,
+  "items": 60,
+  "kappa": 0.1889
+ },
+ "cohen_pairs": {
+  "A~B": {
+   "n": 60,
+   "agree": 0.6167,
+   "kappa": 0.3407
+  },
+  "A~E": {
+   "n": 60,
+   "agree": 0.4167,
+   "kappa": 0.0937
+  },
+  "B~E": {
+   "n": 60,
+   "agree": 0.45,
+   "kappa": 0.1702
+  }
+ }
+}
