@@ -86,7 +86,7 @@
 - 파일: `repaired_3060/checkpoint-epoch-20` — `model.safetensors` SHA-256 `039de28698090579c9c4bf7e02130077df9ad82427a2f82d5b0bbcc103d4ef7c` · D 로컬 · 저장소 밖. 다른 PC 에는 비공개로 전달하고 해시를 맞춘다
 - 학습: v2 와 같은 베이스 · 같은 학습 글 2,281편. 정리(clean) 라벨 위에서 238편을 수리했다(2,483 → 2,706스팬). 처음부터 20 epoch · lr 1e-5 · batch 16 · O 가중치 0.02 · seed 20260911 · RTX 3060. 내부 인물 dev partial F1 최고 epoch 20(0.7345 · P 0.677 · R 0.802 · test 안 씀). 학습 BIO SHA-256 `58dd7672…` · test 글 ID 겹침 0(`verified: true`)
 - **탐색 실험이다** — 수리 라벨은 test 오류 유형을 본 뒤 설계했다. test 239 값은 확인용이다(DEC-018 한계)
-- 앱 구성: `C1_CHECKPOINT_DIR=<repaired_3060/checkpoint-epoch-20>` · `C1_RULES` 켬. **코드 기본 경로는 v2 그대로다.** 되돌리기: `C1_CHECKPOINT_DIR` 를 v2 폴더로 바꾸거나 비운다
+- 앱 구성: `C1_CHECKPOINT_DIR=<repaired_3060/checkpoint-epoch-20>` · `C1_RULES` 켬. **코드 기본 경로는 v2 그대로다.** 되돌리기: `C1_CHECKPOINT_DIR` 를 v2 폴더로 바꾸거나 비운다. 둘 다 분석기를 다시 띄워야 적용된다(경로는 기동 때 한 번 읽는다) — `/api/engine-mode` 의 1단 체크포인트 표시로 확인한다
 
 #### 교체 측정 (W-A · 2026-11-05)
 
