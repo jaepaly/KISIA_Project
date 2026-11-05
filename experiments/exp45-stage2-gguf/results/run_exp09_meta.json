@@ -1,0 +1,10 @@
+{
+ "engine": "qwen3-4b-qlora-v2-gguf-q5km",
+ "gguf_sha256": "7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7",
+ "gguf_name": "stage2v2-dq-Q5_K_M.gguf",
+ "inputs_sha256": "9ac6607fe22c91dbe1ccc642ecca127bff4b17c69b34add2771082ff9a076d84",
+ "external_sha256": "6b4ce91bfb8e34833b1c9079955db0a49469c52795778d3ca32cac31e2a81592",
+ "out_sha256": "004872ed02f0651f046f2890c943fac039fe6f0be7a96dd8799790a672d0ecfe",
+ "server_load_s": 5.2,
+ "measured": "2026-11-04 14:12"
+}

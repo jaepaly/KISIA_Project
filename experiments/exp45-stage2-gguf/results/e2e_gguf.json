@@ -1,0 +1,1279 @@
+{
+ "label": "gguf",
+ "engine_mode": {
+  "mode": "real",
+  "c1_rules": true,
+  "c1_checkpoint": "kisia-ckpt/v2"
+ },
+ "measured": "2026-11-04 14:17",
+ "fast_median_s": 8.35,
+ "precise_median_s": 20.42,
+ "model_only_median_s": 12.37,
+ "done": 11,
+ "accounts": 11,
+ "warmup": {
+  "user_ref": "u_8c53e7b89615",
+  "fast_s": 10.35,
+  "followup_submit": "pending",
+  "n_posts": 30,
+  "fast_verdicts": {
+   "age": "specified",
+   "sex": "narrowed",
+   "location": "specified",
+   "occupation": "narrowed",
+   "family": "narrowed",
+   "commute": "narrowed",
+   "income": "weak_signal"
+  },
+  "fast_version": "rules-v1",
+  "risk": 61.43,
+  "precise_s": 22.98,
+  "status": "done",
+  "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+  "reason": null,
+  "model_verdicts": {
+   "age": "specified",
+   "sex": "narrowed",
+   "location": "specified",
+   "occupation": "narrowed",
+   "family": "narrowed",
+   "commute": "narrowed",
+   "income": "weak_signal"
+  },
+  "model_evidence": {
+   "age": [
+    {
+     "post_id": "D12_b05",
+     "span_id": "D12_b05_s01"
+    },
+    {
+     "post_id": "D12_b04",
+     "span_id": "D12_b04_s02"
+    }
+   ],
+   "sex": [
+    {
+     "post_id": "D12_b09",
+     "span_id": "D12_b09_s01"
+    }
+   ],
+   "location": [
+    {
+     "post_id": "D12_b06",
+     "span_id": "D12_b06_s02"
+    },
+    {
+     "post_id": "D12_b06",
+     "span_id": "D12_b06_s04"
+    },
+    {
+     "post_id": "D12_b15",
+     "span_id": "D12_b15_s02"
+    },
+    {
+     "post_id": "D12_b26",
+     "span_id": "D12_b26_s02"
+    }
+   ],
+   "occupation": [
+    {
+     "post_id": "D12_b01",
+     "span_id": "D12_b01_s03"
+    },
+    {
+     "post_id": "D12_b06",
+     "span_id": "D12_b06_s01"
+    },
+    {
+     "post_id": "D12_b15",
+     "span_id": "D12_b15_s01"
+    }
+   ],
+   "family": [
+    {
+     "post_id": "D12_b15",
+     "span_id": "D12_b15_s03"
+    },
+    {
+     "post_id": "D12_b09",
+     "span_id": "D12_b09_s02"
+    },
+    {
+     "post_id": "D12_b23",
+     "span_id": "D12_b23_s01"
+    }
+   ],
+   "commute": [
+    {
+     "post_id": "D12_b01",
+     "span_id": "D12_b01_s01"
+    },
+    {
+     "post_id": "D12_b28",
+     "span_id": "D12_b28_s06"
+    }
+   ],
+   "income": [
+    {
+     "post_id": "D12_b13",
+     "span_id": "D12_b13_s02"
+    }
+   ]
+  }
+ },
+ "rows": [
+  {
+   "user_ref": "u_8c53e7b89615",
+   "fast_s": 8.05,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "narrowed",
+    "income": "weak_signal"
+   },
+   "fast_version": "rules-v1",
+   "risk": 61.43,
+   "precise_s": 20.42,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "narrowed",
+    "income": "weak_signal"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "D12_b05",
+      "span_id": "D12_b05_s01"
+     },
+     {
+      "post_id": "D12_b04",
+      "span_id": "D12_b04_s02"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "D12_b09",
+      "span_id": "D12_b09_s01"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "D12_b06",
+      "span_id": "D12_b06_s02"
+     },
+     {
+      "post_id": "D12_b06",
+      "span_id": "D12_b06_s04"
+     },
+     {
+      "post_id": "D12_b15",
+      "span_id": "D12_b15_s02"
+     },
+     {
+      "post_id": "D12_b26",
+      "span_id": "D12_b26_s02"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "D12_b01",
+      "span_id": "D12_b01_s03"
+     },
+     {
+      "post_id": "D12_b06",
+      "span_id": "D12_b06_s01"
+     },
+     {
+      "post_id": "D12_b15",
+      "span_id": "D12_b15_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "D12_b15",
+      "span_id": "D12_b15_s03"
+     },
+     {
+      "post_id": "D12_b09",
+      "span_id": "D12_b09_s02"
+     },
+     {
+      "post_id": "D12_b23",
+      "span_id": "D12_b23_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "D12_b01",
+      "span_id": "D12_b01_s01"
+     },
+     {
+      "post_id": "D12_b28",
+      "span_id": "D12_b28_s06"
+     }
+    ],
+    "income": [
+     {
+      "post_id": "D12_b13",
+      "span_id": "D12_b13_s02"
+     }
+    ]
+   }
+  },
+  {
+   "user_ref": "u_00ceeab4df70",
+   "fast_s": 8.89,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "specified",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 63.57,
+   "precise_s": 21.36,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "specified",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "B18_b03",
+      "span_id": "B18_b03_s01"
+     },
+     {
+      "post_id": "B18_b03",
+      "span_id": "B18_b03_s02"
+     },
+     {
+      "post_id": "B18_b12",
+      "span_id": "B18_b12_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "B18_b08",
+      "span_id": "B18_b08_s01"
+     },
+     {
+      "post_id": "B18_b22",
+      "span_id": "B18_b22_s01"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "B18_b06",
+      "span_id": "B18_b06_s01"
+     },
+     {
+      "post_id": "B18_b10",
+      "span_id": "B18_b10_s01"
+     },
+     {
+      "post_id": "B18_b10",
+      "span_id": "B18_b10_s02"
+     },
+     {
+      "post_id": "B18_b19",
+      "span_id": "B18_b19_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "B18_b02",
+      "span_id": "B18_b02_s01"
+     },
+     {
+      "post_id": "B18_b04",
+      "span_id": "B18_b04_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "B18_b12",
+      "span_id": "B18_b12_s02"
+     },
+     {
+      "post_id": "B18_b17",
+      "span_id": "B18_b17_s02"
+     },
+     {
+      "post_id": "B18_b14",
+      "span_id": "B18_b14_s01"
+     },
+     {
+      "post_id": "B18_b25",
+      "span_id": "B18_b25_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "B18_b09",
+      "span_id": "B18_b09_s03"
+     }
+    ],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_40ef42660c42",
+   "fast_s": 5.42,
+   "followup_submit": "pending",
+   "n_posts": 18,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "abstain",
+    "location": "specified",
+    "occupation": "abstain",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "weak_signal"
+   },
+   "fast_version": "rules-v1",
+   "risk": 35.0,
+   "precise_s": 16.55,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "abstain",
+    "location": "specified",
+    "occupation": "abstain",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "weak_signal"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "D05_b08",
+      "span_id": "D05_b08_s01"
+     },
+     {
+      "post_id": "D05_b14",
+      "span_id": "D05_b14_s01"
+     }
+    ],
+    "sex": [],
+    "location": [
+     {
+      "post_id": "D05_b02",
+      "span_id": "D05_b02_s01"
+     },
+     {
+      "post_id": "D05_b02",
+      "span_id": "D05_b02_s03"
+     },
+     {
+      "post_id": "D05_b03",
+      "span_id": "D05_b03_s01"
+     },
+     {
+      "post_id": "D05_b11",
+      "span_id": "D05_b11_s01"
+     },
+     {
+      "post_id": "D05_b11",
+      "span_id": "D05_b11_s02"
+     },
+     {
+      "post_id": "D05_b17",
+      "span_id": "D05_b17_s01"
+     }
+    ],
+    "occupation": [],
+    "family": [
+     {
+      "post_id": "D05_b08",
+      "span_id": "D05_b08_s04"
+     },
+     {
+      "post_id": "D05_b11",
+      "span_id": "D05_b11_s03"
+     },
+     {
+      "post_id": "D05_b09",
+      "span_id": "D05_b09_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "D05_b03",
+      "span_id": "D05_b03_s02"
+     },
+     {
+      "post_id": "D05_b03",
+      "span_id": "D05_b03_s03"
+     }
+    ],
+    "income": [
+     {
+      "post_id": "D05_b15",
+      "span_id": "D05_b15_s01"
+     }
+    ]
+   }
+  },
+  {
+   "user_ref": "u_5985f6f8353e",
+   "fast_s": 26.73,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 42.14,
+   "precise_s": 39.21,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "A18_b03",
+      "span_id": "A18_b03_s03"
+     },
+     {
+      "post_id": "A18_b03",
+      "span_id": "A18_b03_s04"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "A18_b07",
+      "span_id": "A18_b07_s02"
+     },
+     {
+      "post_id": "A18_b17",
+      "span_id": "A18_b17_s01"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "A18_b05",
+      "span_id": "A18_b05_s06"
+     },
+     {
+      "post_id": "A18_b05",
+      "span_id": "A18_b05_s07"
+     },
+     {
+      "post_id": "A18_b05",
+      "span_id": "A18_b05_s08"
+     },
+     {
+      "post_id": "A18_b11",
+      "span_id": "A18_b11_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "A18_b01",
+      "span_id": "A18_b01_s01"
+     },
+     {
+      "post_id": "A18_b07",
+      "span_id": "A18_b07_s01"
+     },
+     {
+      "post_id": "A18_b24",
+      "span_id": "A18_b24_s01"
+     },
+     {
+      "post_id": "A18_b18",
+      "span_id": "A18_b18_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "A18_b03",
+      "span_id": "A18_b03_s01"
+     },
+     {
+      "post_id": "A18_b05",
+      "span_id": "A18_b05_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "A18_b05",
+      "span_id": "A18_b05_s03"
+     },
+     {
+      "post_id": "A18_b19",
+      "span_id": "A18_b19_s01"
+     }
+    ],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_231b2f8e3757",
+   "fast_s": 8.48,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "abstain",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 44.29,
+   "precise_s": 21.0,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "abstain",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "E21_b06",
+      "span_id": "E21_b06_s01"
+     },
+     {
+      "post_id": "E21_b09",
+      "span_id": "E21_b09_s01"
+     },
+     {
+      "post_id": "E21_b17",
+      "span_id": "E21_b17_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "E21_b03",
+      "span_id": "E21_b03_s03"
+     },
+     {
+      "post_id": "E21_b11",
+      "span_id": "E21_b11_s01"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "E21_b02",
+      "span_id": "E21_b02_s02"
+     },
+     {
+      "post_id": "E21_b15",
+      "span_id": "E21_b15_s01"
+     },
+     {
+      "post_id": "E21_b09",
+      "span_id": "E21_b09_s03"
+     },
+     {
+      "post_id": "E21_b20",
+      "span_id": "E21_b20_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "E21_b05",
+      "span_id": "E21_b05_s03"
+     },
+     {
+      "post_id": "E21_b22",
+      "span_id": "E21_b22_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "E21_b02",
+      "span_id": "E21_b02_s01"
+     },
+     {
+      "post_id": "E21_b03",
+      "span_id": "E21_b03_s01"
+     },
+     {
+      "post_id": "E21_b05",
+      "span_id": "E21_b05_s01"
+     },
+     {
+      "post_id": "E21_b21",
+      "span_id": "E21_b21_s01"
+     }
+    ],
+    "commute": [],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_72ce87717c0c",
+   "fast_s": 8.35,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "weak_signal",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "narrowed"
+   },
+   "fast_version": "rules-v1",
+   "risk": 53.57,
+   "precise_s": 19.95,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "weak_signal",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "narrowed"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "D13_b07",
+      "span_id": "D13_b07_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "D13_b24",
+      "span_id": "D13_b24_s02"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "D13_b03",
+      "span_id": "D13_b03_s01"
+     },
+     {
+      "post_id": "D13_b18",
+      "span_id": "D13_b18_s01"
+     },
+     {
+      "post_id": "D13_b16",
+      "span_id": "D13_b16_s01"
+     },
+     {
+      "post_id": "D13_b19",
+      "span_id": "D13_b19_s01"
+     },
+     {
+      "post_id": "D13_b19",
+      "span_id": "D13_b19_s02"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "D13_b24",
+      "span_id": "D13_b24_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "D13_b03",
+      "span_id": "D13_b03_s04"
+     },
+     {
+      "post_id": "D13_b12",
+      "span_id": "D13_b12_s01"
+     },
+     {
+      "post_id": "D13_b08",
+      "span_id": "D13_b08_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "D13_b27",
+      "span_id": "D13_b27_s04"
+     }
+    ],
+    "income": [
+     {
+      "post_id": "D13_b16",
+      "span_id": "D13_b16_s02"
+     },
+     {
+      "post_id": "D13_b16",
+      "span_id": "D13_b16_s03"
+     }
+    ]
+   }
+  },
+  {
+   "user_ref": "u_bf3d2191e215",
+   "fast_s": 5.84,
+   "followup_submit": "pending",
+   "n_posts": 20,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "abstain",
+    "occupation": "narrowed",
+    "family": "weak_signal",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 34.29,
+   "precise_s": 16.44,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "abstain",
+    "occupation": "narrowed",
+    "family": "weak_signal",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "E04_b18",
+      "span_id": "E04_b18_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "E04_b10",
+      "span_id": "E04_b10_s01"
+     }
+    ],
+    "location": [],
+    "occupation": [
+     {
+      "post_id": "E04_b01",
+      "span_id": "E04_b01_s02"
+     },
+     {
+      "post_id": "E04_b03",
+      "span_id": "E04_b03_s03"
+     },
+     {
+      "post_id": "E04_b07",
+      "span_id": "E04_b07_s01"
+     },
+     {
+      "post_id": "E04_b07",
+      "span_id": "E04_b07_s02"
+     },
+     {
+      "post_id": "E04_b06",
+      "span_id": "E04_b06_s05"
+     },
+     {
+      "post_id": "E04_b12",
+      "span_id": "E04_b12_s02"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "E04_b13",
+      "span_id": "E04_b13_s02"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "E04_b01",
+      "span_id": "E04_b01_s01"
+     },
+     {
+      "post_id": "E04_b03",
+      "span_id": "E04_b03_s01"
+     },
+     {
+      "post_id": "E04_b06",
+      "span_id": "E04_b06_s01"
+     },
+     {
+      "post_id": "E04_b12",
+      "span_id": "E04_b12_s03"
+     }
+    ],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_084835c6a489",
+   "fast_s": 21.45,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "narrowed",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "weak_signal",
+    "family": "narrowed",
+    "commute": "abstain",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 32.14,
+   "precise_s": 33.8,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "narrowed",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "weak_signal",
+    "family": "narrowed",
+    "commute": "abstain",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "A20_b01",
+      "span_id": "A20_b01_s01"
+     },
+     {
+      "post_id": "A20_b05",
+      "span_id": "A20_b05_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "A20_b09",
+      "span_id": "A20_b09_s02"
+     },
+     {
+      "post_id": "A20_b16",
+      "span_id": "A20_b16_s02"
+     },
+     {
+      "post_id": "A20_b12",
+      "span_id": "A20_b12_s03"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "A20_b03",
+      "span_id": "A20_b03_s01"
+     },
+     {
+      "post_id": "A20_b09",
+      "span_id": "A20_b09_s01"
+     },
+     {
+      "post_id": "A20_b16",
+      "span_id": "A20_b16_s01"
+     },
+     {
+      "post_id": "A20_b12",
+      "span_id": "A20_b12_s01"
+     },
+     {
+      "post_id": "A20_b29",
+      "span_id": "A20_b29_s01"
+     },
+     {
+      "post_id": "A20_b22",
+      "span_id": "A20_b22_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "A20_b11",
+      "span_id": "A20_b11_s01"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "A20_b04",
+      "span_id": "A20_b04_s01"
+     },
+     {
+      "post_id": "A20_b08",
+      "span_id": "A20_b08_s01"
+     },
+     {
+      "post_id": "A20_b14",
+      "span_id": "A20_b14_s01"
+     },
+     {
+      "post_id": "A20_b26",
+      "span_id": "A20_b26_s02"
+     }
+    ],
+    "commute": [],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_0dfab5acbae0",
+   "fast_s": 5.31,
+   "followup_submit": "pending",
+   "n_posts": 20,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "abstain",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "fast_version": "rules-v1",
+   "risk": 46.43,
+   "precise_s": 15.92,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "abstain",
+    "commute": "narrowed",
+    "income": "abstain"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "C03_b12",
+      "span_id": "C03_b12_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "C03_b09",
+      "span_id": "C03_b09_s01"
+     },
+     {
+      "post_id": "C03_b14",
+      "span_id": "C03_b14_s02"
+     },
+     {
+      "post_id": "C03_b12",
+      "span_id": "C03_b12_s02"
+     },
+     {
+      "post_id": "C03_b19",
+      "span_id": "C03_b19_s02"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "C03_b02",
+      "span_id": "C03_b02_s01"
+     },
+     {
+      "post_id": "C03_b03",
+      "span_id": "C03_b03_s02"
+     },
+     {
+      "post_id": "C03_b08",
+      "span_id": "C03_b08_s01"
+     },
+     {
+      "post_id": "C03_b14",
+      "span_id": "C03_b14_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "C03_b04",
+      "span_id": "C03_b04_s01"
+     },
+     {
+      "post_id": "C03_b06",
+      "span_id": "C03_b06_s01"
+     }
+    ],
+    "family": [],
+    "commute": [
+     {
+      "post_id": "C03_b02",
+      "span_id": "C03_b02_s02"
+     },
+     {
+      "post_id": "C03_b03",
+      "span_id": "C03_b03_s01"
+     }
+    ],
+    "income": []
+   }
+  },
+  {
+   "user_ref": "u_99e3940e063f",
+   "fast_s": 9.05,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "narrowed"
+   },
+   "fast_version": "rules-v1",
+   "risk": 61.43,
+   "precise_s": 21.69,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "narrowed",
+    "location": "specified",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "narrowed"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "E07_b05",
+      "span_id": "E07_b05_s02"
+     },
+     {
+      "post_id": "E07_b14",
+      "span_id": "E07_b14_s01"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "E07_b02",
+      "span_id": "E07_b02_s01"
+     },
+     {
+      "post_id": "E07_b08",
+      "span_id": "E07_b08_s01"
+     }
+    ],
+    "location": [
+     {
+      "post_id": "E07_b02",
+      "span_id": "E07_b02_s02"
+     },
+     {
+      "post_id": "E07_b03",
+      "span_id": "E07_b03_s01"
+     },
+     {
+      "post_id": "E07_b09",
+      "span_id": "E07_b09_s05"
+     },
+     {
+      "post_id": "E07_b20",
+      "span_id": "E07_b20_s01"
+     }
+    ],
+    "occupation": [
+     {
+      "post_id": "E07_b01",
+      "span_id": "E07_b01_s01"
+     },
+     {
+      "post_id": "E07_b04",
+      "span_id": "E07_b04_s02"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "E07_b08",
+      "span_id": "E07_b08_s03"
+     },
+     {
+      "post_id": "E07_b04",
+      "span_id": "E07_b04_s01"
+     },
+     {
+      "post_id": "E07_b10",
+      "span_id": "E07_b10_s01"
+     },
+     {
+      "post_id": "E07_b17",
+      "span_id": "E07_b17_s02"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "E07_b11",
+      "span_id": "E07_b11_s01"
+     }
+    ],
+    "income": [
+     {
+      "post_id": "E07_b17",
+      "span_id": "E07_b17_s01"
+     }
+    ]
+   }
+  },
+  {
+   "user_ref": "u_c9c1dd0d52c9",
+   "fast_s": 7.22,
+   "followup_submit": "pending",
+   "n_posts": 30,
+   "fast_verdicts": {
+    "age": "specified",
+    "sex": "weak_signal",
+    "location": "abstain",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "weak_signal",
+    "income": "weak_signal"
+   },
+   "fast_version": "rules-v1",
+   "risk": 49.29,
+   "precise_s": 19.63,
+   "status": "done",
+   "model_version": "qwen3-4b-qlora-v2-gguf-q5km",
+   "reason": null,
+   "model_verdicts": {
+    "age": "specified",
+    "sex": "weak_signal",
+    "location": "abstain",
+    "occupation": "narrowed",
+    "family": "narrowed",
+    "commute": "narrowed",
+    "income": "weak_signal"
+   },
+   "model_evidence": {
+    "age": [
+     {
+      "post_id": "C20_b12",
+      "span_id": "C20_b12_s02"
+     }
+    ],
+    "sex": [
+     {
+      "post_id": "C20_b09",
+      "span_id": "C20_b09_s03"
+     }
+    ],
+    "location": [],
+    "occupation": [
+     {
+      "post_id": "C20_b02",
+      "span_id": "C20_b02_s05"
+     },
+     {
+      "post_id": "C20_b06",
+      "span_id": "C20_b06_s02"
+     },
+     {
+      "post_id": "C20_b21",
+      "span_id": "C20_b21_s01"
+     },
+     {
+      "post_id": "C20_b18",
+      "span_id": "C20_b18_s03"
+     }
+    ],
+    "family": [
+     {
+      "post_id": "C20_b02",
+      "span_id": "C20_b02_s03"
+     },
+     {
+      "post_id": "C20_b02",
+      "span_id": "C20_b02_s04"
+     },
+     {
+      "post_id": "C20_b03",
+      "span_id": "C20_b03_s06"
+     },
+     {
+      "post_id": "C20_b08",
+      "span_id": "C20_b08_s02"
+     },
+     {
+      "post_id": "C20_b09",
+      "span_id": "C20_b09_s01"
+     },
+     {
+      "post_id": "C20_b12",
+      "span_id": "C20_b12_s01"
+     }
+    ],
+    "commute": [
+     {
+      "post_id": "C20_b03",
+      "span_id": "C20_b03_s03"
+     },
+     {
+      "post_id": "C20_b03",
+      "span_id": "C20_b03_s04"
+     },
+     {
+      "post_id": "C20_b03",
+      "span_id": "C20_b03_s07"
+     }
+    ],
+    "income": [
+     {
+      "post_id": "C20_b15",
+      "span_id": "C20_b15_s01"
+     }
+    ]
+   }
+  }
+ ]
+}

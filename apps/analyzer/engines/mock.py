@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+import os
+import time
 from datetime import datetime, timezone
 
 MODEL_VERSION = "mock-0.1.0"
@@ -246,8 +248,10 @@ def _default_input_post(post_id: str = "mock_post") -> dict:
 
 
 def stage2(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_target: float = 40.0, *,
-           spans_by_post: dict | None = None, detect_inputs: dict | None = None) -> dict:
+           spans_by_post: dict | None = None, detect_inputs: dict | None = None, mode: str | None = None) -> dict:
     """D(c4) 자리. stage2-io.schema.json 준수 (input+output 둘 다 담아 반환).
+
+    mode 는 real 과 같은 자리(auto · model · rules) — 목은 늘 같은 「규칙」 결과를 낸다. 모델 판정 흉내는 stage2_followup.
 
     findings 7속성 중 location 만 narrowed, 나머지 6개는 abstain으로 심어
     화면이 "판단 보류"를 표시할 수 있는지 확인한다 (howto §2 표).
@@ -318,3 +322,40 @@ def stage2(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_ta
 def c1_checkpoint() -> None:
     """목 엔진은 체크포인트를 쓰지 않는다."""
     return None
+
+
+# ── 2단 모델 판정 뒤따라 받기(서버 _Followups) 흉내 — 화면 흐름을 GPU 없이 보려고.
+#    MOCK_STAGE2_DELAY=8 처럼 초를 주면 켜진다(기본 0 = 꺼짐 · 지금과 같은 한 번 응답).
+#    MOCK_STAGE2_RESULT=fallback|error 로 「모델을 못 썼다」 · 「작업 실패」 화면도 볼 수 있다
+def stage2_followup_available() -> bool:
+    try:
+        return float(os.getenv("MOCK_STAGE2_DELAY", "0")) > 0
+    except ValueError:
+        return False
+
+
+def stage2_followup(user_ref: str, posts: list[dict], risk_current: float = 79.7, risk_target: float = 40.0, *,
+                    spans_by_post: dict | None = None, detect_inputs: dict | None = None) -> dict:
+    """가짜 지연 모델 — 몇 초 기다린 뒤 규칙(stage2)과 일부 항목이 다른 판정을 낸다.
+
+    거주지는 「좁혀짐 · 시군구」 → 「직접 드러남 · 읍면동」, 가족 · 통근 스팬이 있으면 그 항목을 「좁혀짐」으로.
+    숫자와 판정은 의미 없다 — 바뀐 항목이 화면에 보이는지 확인용"""
+    time.sleep(max(0.0, float(os.getenv("MOCK_STAGE2_DELAY", "0") or 0)))
+    result = os.getenv("MOCK_STAGE2_RESULT", "model")
+    if result == "error":
+        raise RuntimeError("mock stage2 failure")
+    base = stage2(user_ref, posts, risk_current, risk_target)["output"]
+    if result == "fallback":
+        return {"used_model": False, "reason": "CUDA GPU 없음", "findings": base["findings"],
+                "model_version": "rules-v1 (fallback: CUDA GPU 없음)"}
+    findings = base["findings"]
+    loc = findings["location"]
+    findings["location"] = {**loc, "verdict": "specified", "granularity": "eupmyeondong", "confidence": 0.9}
+    spans = {pid: (res or {}).get("spans") or [] for pid, res in (spans_by_post or {}).items()}
+    for attr, typ in (("family", "FAM"), ("commute", "COMMUTE")):
+        hits = [(pid, s) for pid, ss in spans.items() for s in ss if s.get("type") == typ and s.get("subject") != "other"]
+        if hits:
+            findings[attr] = {"verdict": "narrowed", "granularity": None,
+                              "evidence": [{"post_id": pid, "span_id": s["span_id"]} for pid, s in hits[:3]],
+                              "confidence": 0.7, "cross_post": len({pid for pid, _ in hits}) > 1}
+    return {"used_model": True, "reason": None, "findings": findings, "model_version": "mock-model-0.1.0"}

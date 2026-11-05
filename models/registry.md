@@ -22,6 +22,8 @@
 | koelectra-v2 (운용 구성 확정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · E 비공개 전달·SHA-256 확인 완료) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | **11/2 최종 test 239편:** 규칙 결합 명시 proxy F1 **0.5211** · 명시 R 0.7308 · 전체 partial P/R/F1 0.4049/0.5950/**0.4819** · 앱 CPU 중앙 160.50ms / p95 1,053.92ms(15/20편 <300ms). 모델 단독 내부 eval F1 0.4444 · exp17b/c 본인 재현율 0.699/0.752는 아래 이력 참조 |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 | qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
+| qwen3-4b-qlora-v2-gguf-q8-lora (**GGUF 를 둔 PC 의 앱 기본** · DEC-017 · Accepted 대기) | 2단 | v2 와 같은 함수 — NF4 dequant 베이스 + v2 LoRA (merge 안 함) | llama.cpp b12090 · 베이스 Q8_0 + LoRA f32 (`--lora`) | `stage2v2-dqonly-Q8_0.gguf` + `stage2v2-lora-f32.gguf` (D 로컬 · 저장소 밖) | 2026-11-04 (변환 · 재학습 없음) | v2 와 같다 | exp45 결과 4 — 앱 종단 115계정 NF4 대비 판정 **804/805** · 근거 804/805 · 폴백 0 · 모델≠규칙 14(NF4 15) · RTX 3060 정밀 판정 몫 중앙 17.1 s(NF4 57.1) |
+| qwen3-4b-qlora-v2-gguf-q5km (**기각** 11/4 · 이력) | 2단 | NF4 dequant + v2 merge | llama.cpp b12090 · Q5_K_M | `stage2v2-dq-Q5_K_M.gguf` (D 로컬 · 저장소 밖) | 2026-11-04 | v2 와 같다 | exp45 결과 3 — 115계정 NF4 대비 **797/805** (7칸 기준 이탈) · 원인 merge 뒤 재양자화(결과 4) |
 | **qwen3-4b-qlora-v2 (앱 기본 · DEC-012)** | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 2048 · 답변 구간 logits | `experiments/exp08-stage2-sft/results/adapter_v2` (D 로컬 · 비공개 전달 · 보관본 저장소 밖) | 2026-10-12 (10/15 같은 명령으로 재학습) | corpus-v0 · train 606 · dev 92 (버림 0) · 실제 크기 계정 · 상한 16/4 · 빈 글 제외 | dev loss 0.3499→0.0008 · exp22b M1 0.995 · M5 0.990 · 폴백 0/30 · 평균 50.9 s (RTX 3060) · 10/15 재학습본 dev loss 0.0006 · exp22b 재채점 M1 1.0 · M5 0.995 · 폴백 0/30 |
 
 **모든 행에 학습일 · 데이터 버전 · 지표를 함께 적는다.** 없으면 10주 뒤에
@@ -52,6 +54,29 @@
 확정했다. v1 행은 과거 등록·인계 이력으로 보존한다. 앱 기본값 변경은 D의 별도 PR
 (E 리뷰), v2 체크포인트의 E 통합 검증·리허설 PC 전달은 별도 작업이다.
 이 등록만으로 각 PC의 모델이 교체되거나 가중치가 다운로드되는 것은 아니다.
+
+### 2단 qwen3-4b-qlora-v2-gguf-q8-lora — GGUF 를 둔 PC 의 앱 기본 (2026-11-04 · DEC-017 · Accepted 대기 · [exp45](../experiments/exp45-stage2-gguf/README.md))
+
+> 제출 · 동결 기록(11/1 `w11` · 11/2 측정)은 NF4 경로 그대로다. 앱은 `STAGE2_GGUF`(베이스) 와 `STAGE2_GGUF_LORA`(어댑터)를 **둘 다** 둔 PC 에서 GGUF 를 기본으로 쓴다(`STAGE2_ENGINE` 을 비웠을 때 · `bnb` 를 주면 NF4). 하나만 둔 PC · GGUF 를 받지 않은 PC 는 지금처럼 NF4 다 — 가중치가 저장소에 없어 코드 기본값은 바꾸지 않았다. 기동 · 외부 연결 확인은 [evidence/freeze-W12-gguf](../docs/evidence/freeze-W12-gguf.md).
+
+- 파일 두 개 — 둘 다 `infer.py` 에 해시를 고정, 하나라도 다르면 기동 거부(규칙 폴백 · 사유 「GGUF 해시 불일치」 · 「LoRA GGUF 해시 불일치」 · 없으면 「2단 LoRA GGUF 없음」)
+  - 베이스 `stage2v2-dqonly-Q8_0.gguf` · 4,280,404,928 B · SHA-256 `f4982df0149f89e7300314d0f1a5d20dc34b6b5d7d0c6e03a754c30431a575b0` (`GGUF_SHA256`)
+  - LoRA `stage2v2-lora-f32.gguf` · 47,205,760 B · SHA-256 `ae0104d45f7359af3484ff0585840ffd1432951519ff2f0fc19de8b2d07eb74d` (`GGUF_LORA_SHA256` · 원본 어댑터 `c045d353…`)
+- 변환 절차(재현 스크립트 `experiments/exp45-stage2-gguf/`):
+  1. `dq_base.py` — Qwen3-4B 를 `Stage2Model` 과 같은 NF4(double quant)로 올려 bf16 으로 dequant → HF 폴더. **어댑터는 merge 하지 않는다**
+  2. `build_gguf_lora.cmd` — llama.cpp **b12090** `convert_hf_to_gguf.py --outtype bf16` → `llama-quantize … Q8_0` · v2 어댑터는 `convert_lora_to_gguf.py --outtype f32 --base <설정만 둔 폴더>`. LoRA 변환은 11/4 같은 명령으로 다시 돌려 해시까지 같은 것을 확인했다(베이스 Q8_0 은 한 번만 만들었다)
+- 왜 merge 하지 않나: 어댑터 몫 ‖BA·α/r‖ 은 ‖W‖ 의 약 0.8% 라 merge 뒤 재양자화하면 깎인다 — 어댑터 방향 잔존 Q5_K_M 약 81% · Q8_0 약 99%(잡음은 어댑터 몫과 같은 크기). LoRA 를 f32 로 실행 때 더하면 손실이 없다(exp45 결과 4)
+- llama.cpp 고정: **b12090** Windows CUDA 13.4 빌드 `llama-b12090-bin-win-cuda-13.4-x64.zip` SHA-256 `27d678fa55396cd90c7a4e74b24342593c73a3aadd33576435db092ca6fdcd7b` · 런타임 `cudart-llama-bin-win-cuda-13.4-x64.zip` `738f8c251ac22b70c3ae6f83a10cf222725df0395246a2cf58f32bdb85fbe668` · `llama-server.exe` `7026e5e3e5cf3d923cf289c3536fb82c0c1f17af7fab77de1e0c66841a6f3cd7`. 다른 빌드는 판정을 다시 재기 전에는 쓰지 않는다
+- 앱 구성: `STAGE2_GGUF=<베이스 Q8_0>` · `STAGE2_GGUF_LORA=<LoRA f32>` · `LLAMA_SERVER=<llama-server.exe>` (`STAGE2_ENGINE` 은 비우거나 `gguf`) · (선택) `STAGE2_GGUF_PORT`(기본 8092) · `STAGE2_GGUF_TIMEOUT`(요청 기한 · 기본 120초). 분석기가 켜질 때 llama-server 를 `127.0.0.1` 에만 띄우고(`-m <베이스> --lora <LoRA> -c 4096 -np 1 -ngl 99 --no-webui` · LoRA 배율 1), 분석기가 끝나면(강제 종료 포함 · Windows Job) 같이 꺼진다. 프롬프트 · 상한 · 출력 상한은 NF4 경로와 같다 · `model_version` `qwen3-4b-qlora-v2-gguf-q8-lora`
+- 판정(exp45 결과 4): 앱 종단 115계정(805칸 · 결과 3 과 같은 하네스 · NF4 는 결과 3 실행)에서 NF4 대비 판정 **804/805** · 근거 804/805 · 신뢰도 803/805 · 정밀 판정 115/115 · 폴백 0 · 위험도 · 추천 115/115 같음. 다른 1칸 B08 commute 는 v2 기준(= 규칙)상 GGUF 쪽이 맞다(NF4 의 그 자리 로짓 차 0.0). 모델 ≠ 규칙 14칸(NF4 15 · Q5 merge 21). 고정 입력 하네스도 같은 804/805 · 같은 칸. 속도(RTX 3060): 생성 중앙 17.5 s(약 36 tok/s · NF4 약 61 s) · 종단 정밀 판정 도착 중앙 **67.2 → 27.1 s** · 빠른 결과 약 9.4~9.8 s 는 엔진과 무관하다
+- **되돌리기**: `STAGE2_ENGINE=bnb` 를 주거나 `STAGE2_GGUF` · `STAGE2_GGUF_LORA` 를 지우면 NF4 경로다(코드 되돌림 불필요). Q5 merge 판으로 되돌리는 것은 권하지 않는다(아래) — 필요하면 Q8 + LoRA 코드 커밋을 revert 한다
+
+### 2단 qwen3-4b-qlora-v2-gguf-q5km — 기각 (2026-11-04 · 이력)
+
+- NF4 dequant + v2 어댑터 merge → Q5_K_M (`stage2v2-dq-Q5_K_M.gguf` · 2,889,513,408 B · SHA-256 `7eb87c50b988d0d735e9d74b8af4c1c23e100a7a2c3f68120e991c489c3eb5b7`). 절차는 `merge_dq.py` → `build_gguf.cmd`(옛 절차로 표시)
+- exp09 735칸 735/735 · exp22b 210/210 · 앱 11계정 76/77 이었으나 **115계정 종단에서 NF4 대비 판정 797/805** — 다른 8칸 중 7칸이 v2 판정 기준(= 규칙)을 벗어났다(exp45 결과 3)
+- 원인: merge 뒤 재양자화로 어댑터 몫이 깎였다(결과 4). 입력 · 템플릿 · 디코딩 · 비결정성은 고정 입력 하네스로 배제했다
+- 기각 시점에 코드에서 이 판의 해시를 뺐다 — 예전 설정(`STAGE2_GGUF` 에 이 파일 하나)이 남은 PC 는 `STAGE2_ENGINE` 이 비어 있으면 NF4 로 돌고(로그 경고), `STAGE2_ENGINE=gguf` 면 사유 「2단 LoRA GGUF 없음」 또는 「GGUF 해시 불일치」로 규칙 폴백한다
 
 ### 1단 koelectra-v2 — 기준선 등록 (2026-10-09)
 

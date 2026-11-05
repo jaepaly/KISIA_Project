@@ -6,7 +6,7 @@
 <title>점검 결과 — 파도풀</title>
 <script src="../config.js"></script>  <!-- SNS_PUBLIC (server.py) -->
 <script src="head.js?v=381"></script>      <!-- Veilo 주소 · veilo.css · 파비콘 — style.css 보다 먼저 -->
-<link rel="stylesheet" href="style.css?v=382">
+<link rel="stylesheet" href="style.css?v=405">
 </head>
 <body>
 <!-- Veilo 상단바 — Veilo 의 base 템플릿과 같은 모양 (veilo.css). Veilo 주소는 head.js 의 VEILO_BASE 를 common.js 가 채운다 -->
@@ -59,7 +59,7 @@
   <a data-veilo-href="/new"><span class="ic">✏️</span>글쓰기</a>
 </nav>
 
-<script src="common.js?v=402"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
+<script src="common.js?v=406"></script>   <!-- 버전 표시 — common.js · style.css 를 바꾸면 숫자를 올린다(예전 파일이 브라우저에 남아 점검이 안 되던 것 · E 리뷰 #374) -->
 <script>
 showEngineBadge("badge");
 
@@ -109,7 +109,13 @@ function evidenceOf(data, f) {
   }).filter(Boolean);
 }
 function renderFindings(data, findings) {
+  // 정밀 판정으로 바뀐 항목 — 「빠른 결과: ○○」를 카드에 남긴다(조용히 바뀌지 않게)
+  const fol = stage2Follow(data);
+  const changed = Object.fromEntries(((fol && fol.status === "done" && fol.diff) || []).map(d => [d.attr, d]));
   return Object.entries(findings).map(([attr, f]) => {
+    const ch = changed[attr];
+    const was = ch ? `<span class="s2was">정밀 판정으로 바뀜 · 빠른 결과에서는 ${esc(stage2FmtVerdict(ch.from))}</span>` : "";
+    const cls = ch ? "card finding changed" : "card finding";
     const ev = evidenceOf(data, f);
     const nPosts = new Set(ev.map(e => e.post_id)).size;
     const w = VERDICT_WHY[f.verdict];
@@ -119,16 +125,53 @@ function renderFindings(data, findings) {
     if (f.verdict === "abstain") {
       // 해외 거주로 보이면 거주지는 단서가 없어서가 아니라 일부러 추정하지 않은 것 — 이유를 바꿔 적는다
       const whyA = attr === "location" && isOverseas(data) ? "해외에 사시는 것으로 보여 국내 인구 기준으로는 추정하지 않았습니다." : why;
-      return `<div class="card finding"><div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge abstain">판단 보류</span></div><p class="why">${whyA}</p></div>`;
+      return `<div class="${cls}" data-attr="${esc(attr)}"><div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge abstain">판단 보류</span></div><p class="why">${whyA}</p>${was}</div>`;
     }
-    return `<div class="card finding">
+    return `<div class="${cls}" data-attr="${esc(attr)}">
       <div class="fh"><b>${esc(ATTR_LABEL[attr] || attr)}</b> <span class="badge found">${esc(VERDICT_LABEL[f.verdict] || "단서 있음")}</span>
         ${GRAIN_LABEL[f.granularity] ? `<span class="muted">${esc(GRAIN_LABEL[f.granularity])}</span>` : ""}
         <span class="muted">· 근거 ${ev.length}곳${nPosts > 1 ? ` · 글 ${nPosts}편에 걸침` : ""}</span></div>
       <p class="why">${why}${f.confidence !== undefined && f.confidence !== null ? ` <span class="muted" title="기준값 ${esc(f.confidence)} — ${CONF_TIP}">${conf ? esc(conf) : "기준값 보기"}</span>` : ""}</p>
-      ${evHtml}
+      ${evHtml}${was}
     </div>`;
   }).join("");
+}
+
+// 항목별 판정 묶음 — 정밀 판정이 오면 이 부분과 안내(#s2Note)만 다시 그린다(펼쳐 본 글 · 스크롤은 그대로)
+function renderFindingsSection(data, open) {
+  const findings = Object.values(data.stage2.output.findings || {});
+  const nFound = findings.filter(f => f.verdict !== "abstain").length;
+  const nAbstain = findings.length - nFound;
+  const nEx = clueExclusions(data).length;
+  const fol = stage2Follow(data);
+  const tag = !fol ? "" : fol.status === "done" ? ` <span class="badge found">정밀 판정 반영</span>` : ` <span class="badge abstain">빠른 결과</span>`;
+  return `<details class="card more sec" id="findingsDetails"${open ? " open" : ""}>
+      <summary>개인정보 ${findings.length}개 항목${tag} <small>— ${nFound}개 항목에서 단서 발견, ${nAbstain}개 판단 보류</small></summary>
+      <p class="note" title="기준값 — ${CONF_TIP}. 직접 쓴 정보 0.9, 돌려 쓴 정보 0.7, 정황으로 짐작한 정보 0.6, 약한 신호 0.4">직접 쓴 정보일수록 더 확실하게 봅니다. 돌려 쓴 표현, 정황으로 짐작한 단서, 글 1편에만 있는 단서 순으로 낮게 봅니다.</p>
+      ${nEx ? `<p class="note">항목별 판정은 처음 점검 그대로라 「내 얘기 아님」으로 뺀 단서도 들어 있습니다.</p>` : ""}
+      ${renderFindings(data, data.stage2.output.findings)}
+    </details>`;
+}
+function wireStage2Note() {
+  const b = document.getElementById("s2Show");
+  if (!b) return;
+  b.addEventListener("click", () => {
+    const d = document.getElementById("findingsDetails");
+    if (d) d.open = true;
+    const first = document.querySelector(".finding.changed");
+    if (first) first.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+}
+// 정밀 판정 상태가 바뀌었을 때 — 도착했으면 바뀐 카드를 한 번 반짝인다
+function refreshStage2(data) {
+  const note = document.getElementById("s2Note"), box = document.getElementById("findingsBox");
+  if (!note || !box) { render(); return; }
+  const d = document.getElementById("findingsDetails");
+  note.innerHTML = renderStage2Note(data);
+  box.innerHTML = renderFindingsSection(data, d ? d.open : false);
+  wireStage2Note();
+  const fol = stage2Follow(data);
+  if (fol && fol.status === "done") document.querySelectorAll(".finding.changed").forEach(el => el.classList.add("flash"));
 }
 
 // 스팬 위치는 채널(text_id) 기준이다 — 제목·캡션 스팬을 본문 위치에 칠하지 않는다
@@ -270,9 +313,11 @@ async function setExclusions(data, next) {
       throw new Error(typeof detail === "string" ? detail : "");
     }
     const d = await r.json();
-    for (const key of ["specificity", "contribution", "k_by_post", "k_by_action", "decisive_clues", "residence"]) data[key] = d[key];
-    data.clue_exclusions = next;
-    updateScan(data);
+    const fresh = loadScan();
+    const cur = fresh && fresh.scanned_at === data.scanned_at ? fresh : data;   // 그 사이 정밀 판정이 왔으면 그것까지
+    for (const key of ["specificity", "contribution", "k_by_post", "k_by_action", "decisive_clues", "residence"]) cur[key] = d[key];
+    cur.clue_exclusions = next;
+    updateScan(cur);
     _clueBusy = false;
     render();
     const nb = document.getElementById("clueCheck");
@@ -306,9 +351,6 @@ function render() {
   const nPosts = data.posts.length;
   const nHit = data.posts.filter(p => ((data.spans[p.post_id] || { spans: [] }).spans).some(s => s.subject !== "other")).length;
   // 요약 숫자는 실제 집계 그대로 — 「단서 발견」에는 약한 신호도 들어간다 (특정·좁혀짐만 세는 것이 아니다)
-  const findings = Object.values(data.stage2.output.findings || {});
-  const nFound = findings.filter(f => f.verdict !== "abstain").length;
-  const nAbstain = findings.length - nFound;
   const nick = data.nickname || ((data.posts[0] || {}).activity_meta || {}).nickname || "";
   const split = uploadSplitNote(data);   // .txt — 「파일의 줄 N개를 글 N편으로」 (#385 B1)
   const nEx = clueExclusions(data).length;
@@ -324,16 +366,12 @@ function render() {
       </div>
       ${numbers}
     </div>
+    <div id="s2Note" role="status" aria-live="polite">${renderStage2Note(data)}</div>
     ${renderClueCheck(data)}
     ${renderOverseasNote(data)}
     ${renderDirectIdentifiers(data, "⚠ 바로 연결되는 정보")}
     ${renderTimeline(data)}
-    <details class="card more sec">
-      <summary>개인정보 ${findings.length}개 항목 <small>— ${nFound}개 항목에서 단서 발견, ${nAbstain}개 판단 보류</small></summary>
-      <p class="note" title="기준값 — ${CONF_TIP}. 직접 쓴 정보 0.9, 돌려 쓴 정보 0.7, 정황으로 짐작한 정보 0.6, 약한 신호 0.4">직접 쓴 정보일수록 더 확실하게 봅니다. 돌려 쓴 표현, 정황으로 짐작한 단서, 글 1편에만 있는 단서 순으로 낮게 봅니다.</p>
-      ${nEx ? `<p class="note">항목별 판정은 처음 점검 그대로라 「내 얘기 아님」으로 뺀 단서도 들어 있습니다.</p>` : ""}
-      ${renderFindings(data, data.stage2.output.findings)}
-    </details>
+    <div id="findingsBox">${renderFindingsSection(data, !!document.querySelector("#findingsDetails[open]"))}</div>
     <div class="row between sec">
       <h3>개인정보 단서가 있는 글 <small>— ${nPosts}편 중 ${nHit}편. 제목을 누르면 단서를 볼 수 있습니다.</small></h3>
       <button type="button" id="toggleAll" class="ghost">모두 펼치기</button>
@@ -349,10 +387,12 @@ function render() {
   `;
   wirePosts();
   wireClueCheck(data);
+  wireStage2Note();
   document.getElementById("ctaBar").hidden = false;
 }
 
 render();
+followStage2(refreshStage2);   // 빠른 결과면 정밀 판정을 이어 받는다 — 없으면(모델을 못 쓰는 서버 · 끝난 결과) 아무것도 안 한다
 </script>
 </body>
 </html>

@@ -204,6 +204,137 @@ function progressStop() {
   document.body.classList.remove("busy");
 }
 
+// ── 빠른 결과 먼저 · 정밀 판정(2단 모델) 뒤따라 — 점검 POST 에 ?progressive=1 을 붙이면, 모델을 쓸 수 있는 서버는
+//    항목별 판정을 규칙으로 먼저 내고(응답 stage2_followup) 모델 판정은 뒤에서 이어 돌린다. 모델을 못 쓰는 서버는 이 칸 없이
+//    지금과 같은 한 번 응답이라 화면도 지금과 같다. 바뀌는 것은 항목별 판정(findings)뿐 — 사람 수 · 노출 위험도 · 추천 조치는 그대로다
+const PROGRESSIVE_Q = "?progressive=1";
+const S2_ACTIVE = ["pending", "running"];
+function stage2Follow(data) { return (data && data.stage2_followup) || null; }
+function stage2Pending(data) { const f = stage2Follow(data); return !!(f && f.job && S2_ACTIVE.includes(f.status)); }
+
+// 규칙 판정 → 모델 판정에서 바뀐 항목 — 판정(verdict)이나 범위(granularity)가 다르면 바뀐 것으로 본다
+function diffFindings(before, after) {
+  const out = [];
+  for (const attr of Object.keys(after || {})) {
+    const a = (before || {})[attr] || {}, b = after[attr] || {};
+    if (a.verdict !== b.verdict || (a.granularity || null) !== (b.granularity || null)) {
+      out.push({ attr, from: { verdict: a.verdict || "abstain", granularity: a.granularity || null }, to: { verdict: b.verdict, granularity: b.granularity || null } });
+    }
+  }
+  return out;
+}
+
+// 저장된 점검 결과의 정밀 판정을 받아 온다. onChange(data) — 상태가 바뀔 때마다(차례 · 도착 · 실패).
+// 점검 결과는 sessionStorage 에 있어 화면을 옮겨도(점검 결과 ↔ 위험 줄이기) 같은 작업 번호로 이어 묻는다.
+// 그 사이 다시 점검해 결과가 바뀌었으면(scanned_at 이 다름) 옛 작업의 답은 버린다
+// 묻기 하나가 멈춰도(연결만 붙잡힌 서버 · 프록시) 화면이 「정밀 판정 중」에 머물지 않게 — 요청마다 S2_REQ_MS 뒤 취소하고,
+// 전체 마감(limit)은 묻기와 상관없이 타이머로 따로 건다. 끝나거나 새로 시작하면 둘 다 정리한다 (Codex P2)
+const S2_REQ_MS = 10000;
+let _s2t = null, _s2gen = 0, _s2deadline = null, _s2ac = null;
+function _s2stop() {
+  clearTimeout(_s2t); clearTimeout(_s2deadline); _s2t = _s2deadline = null;
+  if (_s2ac) { _s2ac.abort(); _s2ac = null; }
+}
+function followStage2(onChange) {
+  _s2stop();
+  const gen = ++_s2gen;
+  const first = loadScan();
+  if (!stage2Pending(first)) return;
+  const key = first.scanned_at, job = first.stage2_followup.job;
+  const t0 = Date.now(), est = Number(first.stage2_followup.est_seconds) || 60;
+  const limit = Math.max(est * 4, 300) * 1000;   // 이보다 오래면 서버가 다시 켜졌거나 멈춘 것 — 기다리지 않는다
+  let fails = 0;
+  const finish = (cur, patch) => {
+    if (gen === _s2gen) _s2stop();
+    cur.stage2_followup = { ...cur.stage2_followup, ...patch, at: Date.now() };
+    updateScan(cur);
+    if (onChange) onChange(cur);
+  };
+  const lose = () => {   // 전체 마감 · 실패 한도 — 같은 점검을 아직 기다리고 있을 때만 「받지 못함」으로 끝낸다
+    if (gen !== _s2gen) return;
+    const now = loadScan();
+    if (now && now.scanned_at === key && stage2Pending(now)) finish(now, { status: "lost" });
+    else _s2stop();
+  };
+  _s2deadline = setTimeout(lose, Math.max(0, limit - (Date.now() - t0)));
+  const ask = async () => {
+    if (gen !== _s2gen) return;
+    const cur = loadScan();
+    if (!cur || cur.scanned_at !== key || !stage2Pending(cur)) return;
+    if (Date.now() - t0 > limit) { finish(cur, { status: "lost" }); return; }
+    const ac = new AbortController();
+    _s2ac = ac;
+    const cut = setTimeout(() => ac.abort(), S2_REQ_MS);
+    try {
+      const r = await fetch(`../api/stage2-followup?job=${encodeURIComponent(job)}`, { cache: "no-store", signal: ac.signal });
+      if (!r.ok) throw new Error(String(r.status));
+      const q = await r.json();
+      clearTimeout(cut);
+      if (_s2ac === ac) _s2ac = null;
+      fails = 0;
+      const now = loadScan();
+      // 기다리는 사이 전체 마감(lose)이 「받지 못함」으로 끝냈으면 늦게 온 답은 버린다 — lost → done 으로 덮지 않게 (Codex P2)
+      if (gen !== _s2gen || !now || now.scanned_at !== key || !stage2Pending(now)) return;
+      if (S2_ACTIVE.includes(q.status)) {
+        const changed = now.stage2_followup.status !== q.status || now.stage2_followup.ahead !== q.ahead;
+        now.stage2_followup = { ...now.stage2_followup, status: q.status, ahead: q.ahead || 0 };
+        if (changed) { updateScan(now); if (onChange) onChange(now); }
+      } else if (q.status === "done" && q.findings) {
+        const before = now.stage2.output.findings || {};
+        const diff = diffFindings(before, q.findings);
+        now.stage2.output.findings = q.findings;
+        now.stage2.output.provenance = { ...(now.stage2.output.provenance || {}), model_version: q.model_version };
+        finish(now, { status: "done", diff, ahead: 0 });
+        return;
+      } else {   // fallback · failed · expired(서버 기한) · unknown(시간이 지나 버렸거나 서버가 다시 켜짐)
+        finish(now, { status: ["fallback", "failed"].includes(q.status) ? q.status : "lost", ahead: 0 });
+        return;
+      }
+    } catch {
+      clearTimeout(cut);
+      if (_s2ac === ac) _s2ac = null;
+      if (gen !== _s2gen) return;
+      if (++fails >= 15) { lose(); return; }
+    }
+    if (gen !== _s2gen) return;
+    _s2t = setTimeout(ask, 2000);
+  };
+  _s2t = setTimeout(ask, 800);
+}
+
+// 상태 안내 — 점검 결과 화면 맨 위 카드 아래. 빠른 결과임을 먼저 밝히고, 정밀 판정이 오면 바뀐 항목을 적는다
+function stage2FmtVerdict(v) {
+  return `${VERDICT_LABEL[v.verdict] || "판단 보류"}${GRAIN_LABEL[v.granularity] ? `(${GRAIN_LABEL[v.granularity]})` : ""}`;
+}
+function renderStage2Note(data) {
+  const f = stage2Follow(data);
+  if (!f) return "";
+  const head = (badge, cls, text) => `<p><span class="badge ${cls}">${badge}</span> ${text}</p>`;
+  if (f.status === "skipped") {
+    return `<div class="card s2note">${head("빠른 결과", "abstain", "지금은 정밀 판정을 기다리는 점검이 많아, 이번에는 항목별 판정을 빠른 결과(규칙)로만 보여 드립니다.")}
+      <p class="note">잠시 뒤 다시 점검하면 정밀 판정까지 받을 수 있습니다. 같은 조건의 사람 수, 노출 위험도, 위험 줄이기 방법은 그대로입니다.</p></div>`;
+  }
+  if (S2_ACTIVE.includes(f.status)) {
+    const wait = f.ahead > 0 ? ` 앞에 ${esc(String(f.ahead))}건이 있어 차례를 기다리는 중입니다.` : "";
+    return `<div class="card s2note pending">${head("빠른 결과", "abstain", `항목별 판정은 지금 <b>빠른 결과(규칙)</b>입니다. 글의 앞뒤 문맥까지 읽는 정밀 판정을 이어서 하고 있습니다.`)}
+      <p class="note"><span class="spin" aria-hidden="true"></span>정밀 판정은 보통 약 ${esc(fmtSec(Number(f.est_seconds) || 60))} 걸립니다.${wait} 끝나면 판정이 바뀐 항목을 이 자리에 표시합니다. 다른 화면으로 옮겨도 계속됩니다.</p></div>`;
+  }
+  if (f.status === "done") {
+    const diff = f.diff || [];
+    if (!diff.length) {
+      return `<div class="card s2note">${head("정밀 판정 반영", "found", "정밀 판정이 끝났습니다. 빠른 결과와 항목별 판정이 같습니다.")}</div>`;
+    }
+    const rows = diff.map(d => `<li><b>${esc(ATTR_LABEL[d.attr] || d.attr)}</b> ${esc(stage2FmtVerdict(d.from))} → <b>${esc(stage2FmtVerdict(d.to))}</b></li>`).join("");
+    return `<div class="card s2note changed">${head("정밀 판정 반영", "found", `정밀 판정이 끝났습니다. 빠른 결과와 판정이 달라진 항목 <b>${diff.length}개</b>를 바꿔 표시했습니다.`)}
+      <ul>${rows}</ul>
+      <p class="note">판정은 글에 드러난 단서의 정도이지 실제 정보가 맞다는 뜻은 아닙니다. 같은 조건의 사람 수, 노출 위험도, 위험 줄이기 방법은 그대로입니다.</p>
+      <button type="button" class="ghost" id="s2Show">바뀐 항목 보기</button></div>`;
+  }
+  // fallback · failed · lost
+  return `<div class="card s2note">${head("빠른 결과", "abstain", "정밀 판정을 받지 못해 항목별 판정은 빠른 결과(규칙)를 그대로 보여 드립니다.")}
+    <p class="note">빠른 결과는 글에 적힌 단서를 정해진 규칙으로 세어 정합니다. 다시 점검하면 정밀 판정을 다시 받습니다.</p></div>`;
+}
+
 // 서버가 만든 설명 문장(추천 근거 rationale)을 화면 용어로 — 「명시 단서」 → 「직접 쓴 정보」 (문구 통일 §8 · M1)
 function uiText(s) {
   return String(s || "").replace(/명시 단서/g, "직접 쓴 정보").replace(/명시적 단서/g, "직접 쓴 정보");

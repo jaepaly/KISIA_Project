@@ -1,0 +1,252 @@
+{
+ "what": "exp45 결과 4 — Q5_K_M merge 판 판정 차이의 원인 진단 요약 (고정 입력 하네스 · 원문 없음)",
+ "fixed_inputs": "115계정의 2단 모델 입력(user_prompt · 출력 상한)을 앱 경로로 한 번 재구성해 고정 — 엔진만 바꿔 같은 입력을 넣었다",
+ "h1_prompt_tokens": {
+  "accounts": 9,
+  "text_same": 9,
+  "token_ids_same_hf_vs_llama": 9
+ },
+ "weights": {
+  "adapter_norm_over_base_norm_mean": 0.0079,
+  "adapter_retained_after_merge_requant_mean": {
+   "bf16": 0.9967,
+   "Q8_0": 0.994,
+   "Q5_K_M": 0.8128
+  },
+  "residual_over_adapter_norm_mean": {
+   "bf16": 0.2157,
+   "Q8_0": 0.9779,
+   "Q5_K_M": 4.3536
+  },
+  "sample": "층 9개 × q·k·v·o = 36 텐서 (weight_retention.py)"
+ },
+ "ladder_11_accounts": {
+  "note": "Q5 merge 판이 NF4 와 판정이 달랐던 8계정 + 대조 3계정(A01~A03). 표본이 Q5 merge 판에 불리하게 골라졌다. merged_q5km · lora_q5km 은 기록된 계정만",
+  "engines": {
+   "merged_bf16": {
+    "accounts": 11,
+    "output_token_identical_to_nf4": 10,
+    "not_identical": [
+     "D11"
+    ]
+   },
+   "lora_bf16": {
+    "accounts": 11,
+    "output_token_identical_to_nf4": 11,
+    "not_identical": []
+   },
+   "merged_q8": {
+    "accounts": 11,
+    "output_token_identical_to_nf4": 9,
+    "not_identical": [
+     "C02",
+     "D11"
+    ]
+   },
+   "lora_q8": {
+    "accounts": 11,
+    "output_token_identical_to_nf4": 11,
+    "not_identical": []
+   },
+   "merged_q5km": {
+    "accounts": 7,
+    "output_token_identical_to_nf4": 0,
+    "not_identical": [
+     "A04",
+     "A11",
+     "A13",
+     "B04",
+     "C02",
+     "C20",
+     "D11"
+    ]
+   },
+   "lora_q5km": {
+    "accounts": 6,
+    "output_token_identical_to_nf4": 5,
+    "not_identical": [
+     "A13"
+    ]
+   }
+  }
+ },
+ "control_33_accounts_token_identical": {
+  "note": "위 11 + 대조 21 + B08 = 33계정 · NF4 출력과 토큰까지 같은 계정 수 · 갈린 지점의 NF4 로짓 차(작을수록 동전 던지기)",
+  "engines": {
+   "q5": {
+    "token_identical": 20,
+    "of": 33,
+    "divergence_nf4_margin": [
+     1.125,
+     0.0,
+     1.25,
+     4.875,
+     0.25,
+     4.75,
+     4.25,
+     4.5,
+     0.5,
+     1.0,
+     2.125,
+     2.25,
+     3.75
+    ]
+   },
+   "q8": {
+    "token_identical": 30,
+    "of": 33,
+    "divergence_nf4_margin": [
+     0.25,
+     0.25,
+     0.0
+    ]
+   },
+   "lq8": {
+    "token_identical": 32,
+    "of": 33,
+    "divergence_nf4_margin": [
+     0.0
+    ]
+   }
+  },
+  "nf4_verdict_token_margin": {
+   "n": 231,
+   "median": 9.625,
+   "p10": 4.125,
+   "lt_0.5": 3,
+   "lt_1.5": 7,
+   "lt_5": 33,
+   "targets": [
+    {
+     "persona": "A04",
+     "attr": "sex",
+     "is_target": true,
+     "margin": 1.125
+    },
+    {
+     "persona": "A11",
+     "attr": "age",
+     "is_target": true,
+     "margin": 12.5
+    },
+    {
+     "persona": "A13",
+     "attr": "occupation",
+     "is_target": true,
+     "margin": 1.25
+    },
+    {
+     "persona": "B04",
+     "attr": "income",
+     "is_target": true,
+     "margin": 4.875
+    },
+    {
+     "persona": "C02",
+     "attr": "family",
+     "is_target": true,
+     "margin": 0.25
+    },
+    {
+     "persona": "C20",
+     "attr": "commute",
+     "is_target": true,
+     "margin": 4.75
+    },
+    {
+     "persona": "D11",
+     "attr": "income",
+     "is_target": true,
+     "margin": 0.25
+    },
+    {
+     "persona": "D21",
+     "attr": "sex",
+     "is_target": true,
+     "margin": 6.25
+    }
+   ]
+  }
+ },
+ "fixed_input_115": {
+  "lora_q8": {
+   "accounts": 115,
+   "cells": 805,
+   "verdict_eq_nf4": 804,
+   "evidence_eq_nf4": 804,
+   "model_neq_rules": 14,
+   "nf4_neq_rules": 15,
+   "parse_fail": 0,
+   "gen_median_s": 17.47,
+   "gen_max_s": 20.8,
+   "tok_per_s": 36.5,
+   "verdict_diffs_vs_nf4": [
+    {
+     "persona": "B08",
+     "attr": "commute",
+     "this": "weak_signal",
+     "nf4": "narrowed",
+     "gguf_q5": "narrowed",
+     "rules": "weak_signal"
+    }
+   ]
+  },
+  "merged_q8": {
+   "accounts": 115,
+   "cells": 805,
+   "verdict_eq_nf4": 802,
+   "evidence_eq_nf4": 803,
+   "model_neq_rules": 16,
+   "nf4_neq_rules": 15,
+   "parse_fail": 0,
+   "gen_median_s": 15.82,
+   "gen_max_s": 19.4,
+   "tok_per_s": 40.6,
+   "verdict_diffs_vs_nf4": [
+    {
+     "persona": "C02",
+     "attr": "family",
+     "this": "narrowed",
+     "nf4": "weak_signal",
+     "gguf_q5": "narrowed",
+     "rules": "weak_signal"
+    },
+    {
+     "persona": "D11",
+     "attr": "income",
+     "this": "weak_signal",
+     "nf4": "narrowed",
+     "gguf_q5": "weak_signal",
+     "rules": "narrowed"
+    },
+    {
+     "persona": "B08",
+     "attr": "commute",
+     "this": "weak_signal",
+     "nf4": "narrowed",
+     "gguf_q5": "narrowed",
+     "rules": "weak_signal"
+    }
+   ]
+  },
+  "merged_q5km": {
+   "accounts": 115,
+   "cells": 805,
+   "verdict_eq_nf4": 797,
+   "evidence_eq_nf4": 796,
+   "model_neq_rules": 21,
+   "nf4_neq_rules": 15,
+   "parse_fail": 0,
+   "gen_median_s": 12.25,
+   "gen_max_s": 13.2,
+   "tok_per_s": 52.8,
+   "verdict_diffs_vs_nf4": "8칸 — results/validate115.json verdict_diffs 와 같은 칸"
+  }
+ },
+ "nf4_fixed_input_gen_median_s": {
+  "value": 61.4,
+  "runs": 33,
+  "note": "11계정 × 3회 · bitsandbytes NF4 · 같은 PC"
+ },
+ "hardware": "RTX 3060 8GB · llama.cpp b12090 CUDA · greedy(temperature 0 · top_k 1)"
+}
