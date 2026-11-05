@@ -1,0 +1,63 @@
+{"post_id":"C01_b11","spans":[]}
+{"post_id":"C01_b13","spans":[{"span_id":"C01_b13_s01","text_id":"title","start":0,"end":2,"text":"동네","type":"REL_HOME","level":"inferential","subject":"self"}]}
+{"post_id":"C01_b17","spans":[]}
+{"post_id":"C02_b04","spans":[{"span_id":"C02_b04_s01","text_id":"body","start":108,"end":111,"text":"화물차","type":"COMMUTE","level":"explicit","subject":"self"}]}
+{"post_id":"C02_b07","spans":[]}
+{"post_id":"C02_b11","spans":[{"span_id":"C02_b11_s01","text_id":"body","start":102,"end":106,"text":"사장님도","type":"JOB","level":"implicit","subject":"other"}]}
+{"post_id":"C03_b06","spans":[{"span_id":"C03_b06_s01","text_id":"body","start":4,"end":9,"text":"교환 문의","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C03_b07","spans":[]}
+{"post_id":"C03_b20","spans":[]}
+{"post_id":"C04_b04","spans":[{"span_id":"C04_b04_s01","text_id":"body","start":199,"end":203,"text":"옆집에서","type":"REL_HOME","level":"inferential","subject":"self"}]}
+{"post_id":"C04_b11","spans":[]}
+{"post_id":"C04_b12","spans":[{"span_id":"C04_b12_s01","text_id":"body","start":59,"end":63,"text":"서른여덟","type":"AGE","level":"explicit","subject":"self"},{"span_id":"C04_b12_s02","text_id":"body","start":72,"end":75,"text":"아내가","type":"SEX","level":"implicit","subject":"self"},{"span_id":"C04_b12_s03","text_id":"body","start":306,"end":307,"text":"차","type":"COMMUTE","level":"implicit","subject":"self"},{"span_id":"C04_b12_s04","text_id":"body","start":326,"end":329,"text":"아이들","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C04_b12_s05","text_id":"title","start":0,"end":4,"text":"가족외식","type":"FAM","level":"implicit","subject":"self"}]}
+{"post_id":"C05_b08","spans":[{"span_id":"C05_b08_s01","text_id":"body","start":0,"end":2,"text":"울산","type":"LOC_ADMIN","level":"explicit","subject":"self"},{"span_id":"C05_b08_s02","text_id":"body","start":208,"end":210,"text":"딸과","type":"FAM","level":"implicit","subject":"self"}]}
+{"post_id":"C05_b13","spans":[]}
+{"post_id":"C05_b18","spans":[{"span_id":"C05_b18_s01","text_id":"body","start":34,"end":36,"text":"딸이","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C05_b18_s02","text_id":"body","start":37,"end":40,"text":"중구에","type":"LOC_ADMIN","level":"explicit","subject":"other"},{"span_id":"C05_b18_s03","text_id":"body","start":159,"end":162,"text":"남편과","type":"SEX","level":"implicit","subject":"self"}]}
+{"post_id":"C06_b02","spans":[{"span_id":"C06_b02_s01","text_id":"body","start":153,"end":155,"text":"차에","type":"COMMUTE","level":"implicit","subject":"self"}]}
+{"post_id":"C06_b08","spans":[{"span_id":"C06_b08_s01","text_id":"body","start":57,"end":59,"text":"평창","type":"LOC_ADMIN","level":"explicit","subject":"self"},{"span_id":"C06_b08_s02","text_id":"body","start":83,"end":85,"text":"상인","type":"JOB","level":"explicit","subject":"other"},{"span_id":"C06_b08_s03","text_id":"body","start":157,"end":160,"text":"남편이","type":"SEX","level":"implicit","subject":"self"}]}
+{"post_id":"C06_b30","spans":[{"span_id":"C06_b30_s01","text_id":"body","start":166,"end":174,"text":"노점 아주머니가","type":"JOB","level":"implicit","subject":"other"}]}
+{"post_id":"C07_b12","spans":[{"span_id":"C07_b12_s01","text_id":"body","start":185,"end":190,"text":"일흔하나가","type":"AGE","level":"explicit","subject":"self"}]}
+{"post_id":"C07_b21","spans":[]}
+{"post_id":"C07_b22","spans":[]}
+{"post_id":"C08_b10","spans":[]}
+{"post_id":"C08_b11","spans":[]}
+{"post_id":"C08_b12","spans":[{"span_id":"C08_b12_s01","text_id":"body","start":193,"end":198,"text":"예순여섯이","type":"AGE","level":"explicit","subject":"self"},{"span_id":"C08_b12_s02","text_id":"body","start":229,"end":236,"text":"반찬가게에서는","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C09_b14","spans":[{"span_id":"C09_b14_s01","text_id":"body","start":68,"end":71,"text":"아내가","type":"SEX","level":"implicit","subject":"self"},{"span_id":"C09_b14_s02","text_id":"body","start":132,"end":134,"text":"차를","type":"COMMUTE","level":"implicit","subject":"self"}]}
+{"post_id":"C09_b22","spans":[]}
+{"post_id":"C09_b30","spans":[]}
+{"post_id":"C10_b05","spans":[{"span_id":"C10_b05_s01","text_id":"body","start":102,"end":109,"text":"소형 화물차에","type":"COMMUTE","level":"explicit","subject":"self"}]}
+{"post_id":"C10_b07","spans":[]}
+{"post_id":"C10_b24","spans":[]}
+{"post_id":"C11_b12","spans":[{"span_id":"C11_b12_s01","text_id":"body","start":128,"end":131,"text":"스물넷","type":"AGE","level":"explicit","subject":"self"}]}
+{"post_id":"C11_b29","spans":[]}
+{"post_id":"C11_b30","spans":[]}
+{"post_id":"C12_b02","spans":[{"span_id":"C12_b02_s01","text_id":"body","start":0,"end":3,"text":"세종에","type":"LOC_ADMIN","level":"explicit","subject":"self"}]}
+{"post_id":"C12_b16","spans":[]}
+{"post_id":"C12_b18","spans":[{"span_id":"C12_b18_s01","text_id":"body","start":93,"end":101,"text":"거래처 담당자는","type":"JOB","level":"implicit","subject":"other"},{"span_id":"C12_b18_s02","text_id":"body","start":102,"end":109,"text":"청주 산업단지","type":"LOC_FACILITY","level":"explicit","subject":"other"},{"span_id":"C12_b18_s03","text_id":"body","start":114,"end":118,"text":"사무실을","type":"REL_WORK","level":"inferential","subject":"other"},{"span_id":"C12_b18_s04","text_id":"body","start":126,"end":132,"text":"납품 경로를","type":"JOB","level":"implicit","subject":"other"},{"span_id":"C12_b18_s05","text_id":"body","start":235,"end":238,"text":"첫째는","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C12_b18_s06","text_id":"body","start":245,"end":248,"text":"둘째가","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C12_b18_s07","text_id":"body","start":257,"end":260,"text":"막내도","type":"FAM","level":"implicit","subject":"self"}]}
+{"post_id":"C13_b04","spans":[]}
+{"post_id":"C13_b09","spans":[{"span_id":"C13_b09_s01","text_id":"body","start":159,"end":162,"text":"아이를","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C13_b09_s02","text_id":"body","start":169,"end":172,"text":"엄마인","type":"SEX","level":"implicit","subject":"self"}]}
+{"post_id":"C13_b18","spans":[{"span_id":"C13_b18_s01","text_id":"body","start":0,"end":4,"text":"고객님이","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C13_b18_s02","text_id":"body","start":5,"end":9,"text":"송도에서","type":"LOC_ADMIN","level":"explicit","subject":"other"},{"span_id":"C13_b18_s03","text_id":"body","start":10,"end":13,"text":"예식을","type":"FAM","level":"implicit","subject":"other"},{"span_id":"C13_b18_s04","text_id":"body","start":22,"end":29,"text":"출장용 도구를","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C14_b05","spans":[]}
+{"post_id":"C14_b23","spans":[]}
+{"post_id":"C14_b27","spans":[{"span_id":"C14_b27_s01","text_id":"body","start":168,"end":172,"text":"진행자가","type":"JOB","level":"explicit","subject":"other"}]}
+{"post_id":"C15_b05","spans":[]}
+{"post_id":"C15_b14","spans":[{"span_id":"C15_b14_s01","text_id":"body","start":59,"end":61,"text":"차를","type":"COMMUTE","level":"implicit","subject":"self"},{"span_id":"C15_b14_s02","text_id":"body","start":107,"end":110,"text":"선주가","type":"JOB","level":"explicit","subject":"other"}]}
+{"post_id":"C15_b29","spans":[]}
+{"post_id":"C16_b05","spans":[]}
+{"post_id":"C16_b07","spans":[]}
+{"post_id":"C16_b22","spans":[{"span_id":"C16_b22_s01","text_id":"body","start":265,"end":268,"text":"입고와","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C16_b22_s02","text_id":"body","start":269,"end":271,"text":"촬영","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C16_b22_s03","text_id":"body","start":273,"end":276,"text":"출고가","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C16_b22_s04","text_id":"body","start":290,"end":299,"text":"택배 집하 마감에","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C17_b16","spans":[{"span_id":"C17_b16_s01","text_id":"body","start":205,"end":211,"text":"시험 성적서","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C17_b16_s02","text_id":"title","start":0,"end":2,"text":"이직","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C17_b23","spans":[{"span_id":"C17_b23_s01","text_id":"title","start":10,"end":12,"text":"이직","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C17_b26","spans":[{"span_id":"C17_b26_s01","text_id":"title","start":0,"end":2,"text":"이직","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C18_b06","spans":[{"span_id":"C18_b06_s01","text_id":"body","start":51,"end":53,"text":"부산","type":"LOC_ADMIN","level":"explicit","subject":"other"},{"span_id":"C18_b06_s02","text_id":"body","start":54,"end":56,"text":"서면","type":"LOC_ADMIN","level":"explicit","subject":"other"},{"span_id":"C18_b06_s03","text_id":"body","start":57,"end":64,"text":"옷가게 주인이","type":"JOB","level":"explicit","subject":"other"},{"span_id":"C18_b06_s04","text_id":"body","start":65,"end":67,"text":"수선","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C18_b24","spans":[]}
+{"post_id":"C18_b27","spans":[]}
+{"post_id":"C19_b02","spans":[{"span_id":"C19_b02_s01","text_id":"body","start":27,"end":36,"text":"하복대 사거리에는","type":"LOC_FACILITY","level":"explicit","subject":"self"},{"span_id":"C19_b02_s02","text_id":"body","start":229,"end":231,"text":"딸도","type":"FAM","level":"implicit","subject":"self"}]}
+{"post_id":"C19_b12","spans":[{"span_id":"C19_b12_s01","text_id":"body","start":207,"end":210,"text":"쉰셋이","type":"AGE","level":"explicit","subject":"self"}]}
+{"post_id":"C19_b28","spans":[]}
+{"post_id":"C20_b10","spans":[]}
+{"post_id":"C20_b26","spans":[]}
+{"post_id":"C20_b29","spans":[]}
+{"post_id":"C21_b02","spans":[{"span_id":"C21_b02_s01","text_id":"body","start":7,"end":9,"text":"딸과","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C21_b02_s02","text_id":"body","start":40,"end":42,"text":"딸은","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C21_b02_s03","text_id":"body","start":78,"end":84,"text":"수완호수공원","type":"LOC_FACILITY","level":"explicit","subject":"self"},{"span_id":"C21_b02_s04","text_id":"body","start":98,"end":101,"text":"아들이","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C21_b02_s05","text_id":"body","start":182,"end":184,"text":"딸의","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C21_b02_s06","text_id":"body","start":201,"end":204,"text":"광산구","type":"LOC_ADMIN","level":"explicit","subject":"self"},{"span_id":"C21_b02_s07","text_id":"body","start":230,"end":232,"text":"딸이","type":"FAM","level":"implicit","subject":"self"},{"span_id":"C21_b02_s08","text_id":"title","start":0,"end":3,"text":"아이와","type":"FAM","level":"implicit","subject":"self"}]}
+{"post_id":"C21_b06","spans":[{"span_id":"C21_b06_s01","text_id":"body","start":99,"end":104,"text":"예방 정비","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C21_b06_s02","text_id":"body","start":142,"end":148,"text":"야간 점검도","type":"JOB","level":"implicit","subject":"self"},{"span_id":"C21_b06_s03","text_id":"title","start":0,"end":8,"text":"컨베이어 센서를","type":"JOB","level":"implicit","subject":"self"}]}
+{"post_id":"C21_b16","spans":[]}

@@ -1,0 +1,32 @@
+name: xlmr-handoff
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/exp44-xlmr-handoff/**'
+      - 'data/corpus/v0/posts/**'
+      - 'src/kopl/c1_span/bio.py'
+      - 'experiments/exp06-finetune/prepare_bio.py'
+      - '.github/workflows/xlmr-handoff.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/exp44-xlmr-handoff/**'
+      - '.github/workflows/xlmr-handoff.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  frozen-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Frozen synthetic sources, labels, hashes and exclusions
+        run: python -X utf8 experiments/exp44-xlmr-handoff/handoff.py doctor
+      - name: Lightweight matching and data guard tests (no model download)
+        run: python -X utf8 -m unittest discover -s experiments/exp44-xlmr-handoff/tests -p test_handoff.py -v
