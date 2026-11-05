@@ -273,7 +273,8 @@ function followStage2(onChange) {
       if (_s2ac === ac) _s2ac = null;
       fails = 0;
       const now = loadScan();
-      if (gen !== _s2gen || !now || now.scanned_at !== key) return;
+      // 기다리는 사이 전체 마감(lose)이 「받지 못함」으로 끝냈으면 늦게 온 답은 버린다 — lost → done 으로 덮지 않게 (Codex P2)
+      if (gen !== _s2gen || !now || now.scanned_at !== key || !stage2Pending(now)) return;
       if (S2_ACTIVE.includes(q.status)) {
         const changed = now.stage2_followup.status !== q.status || now.stage2_followup.ahead !== q.ahead;
         now.stage2_followup = { ...now.stage2_followup, status: q.status, ahead: q.ahead || 0 };
