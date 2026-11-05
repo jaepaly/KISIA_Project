@@ -45,7 +45,7 @@
 | DEC-014 | 시연 영상 · 대본 담당을 E → C 로 옮긴다 — 진행률 가중치 · 분모는 그대로 | **Accepted** | W10 | README W10 「시연 영상」 |
 | DEC-015 | 최종 동결을 10/28 → 11/1 로 늦추고 10/25 동결 목표를 없앤다 — 새 기능 마감 10/28 · 측정 11/2 | **Accepted** | W10 | roadmap §7 변경 기록 10/18 |
 | DEC-016 | 1단 보조 지표 「글×속성 단위 F1」을 11/2 측정 전에 등록한다 — 판정 값은 명시 proxy 그대로 | **Accepted** | W11 | DEC-010 · README 「명시 F1 — 11/2 에 무엇을 판정 값으로 적나」 |
-| DEC-017 | 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가) | Accepted 대기 (115계정 결과 반영) | W12 | exp45 · DEC-012 |
+| DEC-017 | 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가) | Accepted (11/5 · #407 머지) | W12 | exp45 · DEC-012 |
 | DEC-018 | 1단 운용 모델을 수정 KoELECTRA 로 교체 | Accepted (11/5) | W12 | DEC-019 · registry · freeze-W12-swap |
 | DEC-019 | 실험 · 운용 평가의 주 정답 = 관례 맞춘 보수 수정 정답(계약 v1.5) · 공식 정답(C)은 사전 등록 값 보고 · 진단용 | Accepted (11/5) | W12 | #408 · #409 · #410 · #411 · DEC-018 |
 
@@ -159,7 +159,7 @@
 
 ## [DEC-017] 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가)
 
-**상태**: Accepted 대기 (115계정 결과 반영 · 11/5) · **주차**: W12 (2026-11-04) · **관련**: DEC-012 · [exp45](../experiments/exp45-stage2-gguf/README.md) · [models/registry.md](../models/registry.md) · [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md) · **결정**: D(@jaepaly, PM) — (가) 채택 예정
+**상태**: Accepted (11/5 · [#407](../../../pull/407) 머지) · **주차**: W12 (2026-11-04) · **관련**: DEC-012 · [exp45](../experiments/exp45-stage2-gguf/README.md) · [models/registry.md](../models/registry.md) · [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md) · **결정**: D(@jaepaly, PM) — (가) 채택
 
 > 제출 수치 · 동결 기록(11/1 `w11` · 11/2 측정 · freeze-W11)은 바꾸지 않는다. 이 결정은 그 뒤의 앱 · 촬영 구성이다.
 
