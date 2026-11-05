@@ -19,7 +19,7 @@
 | 이름 | 단계 | 베이스 | 방식 | 위치 | 학습일 | 데이터 버전 | 지표 |
 |---|---|---|---|---|---|---|---|
 | koelectra-v1 | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO | `experiments/exp06-finetune/runs/v1_lr5e-5/checkpoint-epoch-10` (B 데스크톱 로컬) | 2026-09-16 | corpus-v0 p2.3 · 검수 골드 · #244 split | 내부 eval partial/exact F1 0.4839/0.4194 · test 0.2940/0.1616 · 합성 CPU p95 최대 276.31ms (9/17) |
-| koelectra-repaired (**운용 후보** · [DEC-018](../docs/decisions.md) · Accepted 대기 · ③ 측정 중) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙(v2 와 같은 규칙 · 임계값 0.7) | `repaired_3060/checkpoint-epoch-20` (D 로컬 · 저장소 밖 · `model.safetensors` SHA-256 `039de286…`) | 2026-11-03 | v2 와 같은 학습 글 2,281편 · 정리(clean) 라벨 위 238편 수리(2,483 → 2,706스팬) · BIO `58dd7672…` | **11/5 교체 측정 test 239편(규칙 켬):** 보수 수정 정답(DEC-019) partial F1 **0.6535**(v2 0.5623) · 공식 정답(C) 명시 proxy **0.4492**(v2 0.5211) · 전체 0.4080 · 앱 CPU 중앙 193.56ms(같은 PC v2 194.33ms) — 아래 절 |
+| koelectra-repaired (**운용** · [DEC-018](../docs/decisions.md) · Accepted 11/5) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙(v2 와 같은 규칙 · 임계값 0.7) | `repaired_3060/checkpoint-epoch-20` (D 로컬 · 저장소 밖 · `model.safetensors` SHA-256 `039de286…`) | 2026-11-03 | v2 와 같은 학습 글 2,281편 · 정리(clean) 라벨 위 238편 수리(2,483 → 2,706스팬) · BIO `58dd7672…` | **11/5 교체 측정 test 239편(규칙 켬):** 보수 수정 정답(DEC-019) partial F1 **0.6535**(v2 0.5623) · 공식 정답(C) 명시 proxy **0.4492**(v2 0.5211) · 전체 0.4080 · 앱 CPU 중앙 193.56ms(같은 PC v2 194.33ms) — 아래 절 |
 | koelectra-v2 (**이전 운용** · 11/2 사전 등록 측정) | 1단 | `monologg/koelectra-base-v3-discriminator` | full FT · 21-label BIO + 명시 규칙 | `experiments/exp06-finetune/runs/variant_base_20261008/checkpoint-epoch-10` (B 데스크톱 로컬 · E 비공개 전달·SHA-256 확인 완료) | 2026-10-08 | corpus-v0 p2.3 · 검수 331편 + 미검수 교사 1,950편 · 고정 split | **11/2 최종 test 239편:** 규칙 결합 명시 proxy F1 **0.5211** · 명시 R 0.7308 · 전체 partial P/R/F1 0.4049/0.5950/**0.4819** · 앱 CPU 중앙 160.50ms / p95 1,053.92ms(15/20편 <300ms). 모델 단독 내부 eval F1 0.4444 · exp17b/c 본인 재현율 0.699/0.752는 아래 이력 참조 |
 | | 2단 | **Qwen3-4B** ✅ 확정 2026-08-31 | QLoRA 4bit | | | | exp05 |
 | qwen3-4b-qlora-v1 (되돌리기용 보존) | 2단 | `Qwen/Qwen3-4B` NF4 | QLoRA r16 · 3 epoch · max_len 1024 | `experiments/exp08-stage2-sft/results/adapter` (D 로컬 · 보관본 저장소 밖) | 2026-09-17 | corpus-v0 · train 252 (버림 90) · dev 28 (버림 2) · 1024 넘는 예시 버림 | DEC-009 · exp22b M1 0.748 · M5 0.781 · 폴백 1/30 |
@@ -79,9 +79,9 @@
 - 원인: merge 뒤 재양자화로 어댑터 몫이 깎였다(결과 4). 입력 · 템플릿 · 디코딩 · 비결정성은 고정 입력 하네스로 배제했다
 - 기각 시점에 코드에서 이 판의 해시를 뺐다 — 예전 설정(`STAGE2_GGUF` 에 이 파일 하나)이 남은 PC 는 `STAGE2_ENGINE` 이 비어 있으면 NF4 로 돌고(로그 경고), `STAGE2_ENGINE=gguf` 면 사유 「2단 LoRA GGUF 없음」 또는 「GGUF 해시 불일치」로 규칙 폴백한다
 
-### 1단 koelectra-repaired — 운용 후보 (2026-11-05 · [DEC-018](../docs/decisions.md) · Accepted 대기)
+### 1단 koelectra-repaired — 운용 (2026-11-05 · [DEC-018](../docs/decisions.md) · Accepted 11/5)
 
-> ③(115계정 앱 전체 경로) 결과가 나오기 전까지 **운용 후보**다. 조건이 하나라도 실패하면 v2 를 유지하고 이 항목은 「기각 · 이력」으로 바꾼다. v2 의 11/2 측정값(아래 절)은 사전 등록 값으로 그대로 둔다
+> 채택 조건 ①~④ 를 모두 충족해 11/5 **운용**으로 바꿨다 — ③ 115계정 앱 전체 경로(EC2 L4 · 2단 GGUF)에서 오류 0 · 2단 폴백 0 · 스키마 오류 0([freeze-W12-swap](../docs/evidence/freeze-W12-swap.md)). 되돌리기는 아래 「앱 구성」 줄. v2 의 11/2 측정값(아래 절)은 사전 등록 값으로 그대로 둔다
 
 - 파일: `repaired_3060/checkpoint-epoch-20` — `model.safetensors` SHA-256 `039de28698090579c9c4bf7e02130077df9ad82427a2f82d5b0bbcc103d4ef7c` · D 로컬 · 저장소 밖. 다른 PC 에는 비공개로 전달하고 해시를 맞춘다
 - 학습: v2 와 같은 베이스 · 같은 학습 글 2,281편. 정리(clean) 라벨 위에서 238편을 수리했다(2,483 → 2,706스팬). 처음부터 20 epoch · lr 1e-5 · batch 16 · O 가중치 0.02 · seed 20260911 · RTX 3060. 내부 인물 dev partial F1 최고 epoch 20(0.7345 · P 0.677 · R 0.802 · test 안 씀). 학습 BIO SHA-256 `58dd7672…` · test 글 ID 겹침 0(`verified: true`)
@@ -117,7 +117,7 @@ Ryzen 5 5600X · 1단 CPU 4스레드 · GPU 안 씀 · torch 2.12.1 · transform
 | 조치 3단계 감소율 평균 / 중앙 (n) | 59.36 / 58.62% (97) | 59.70 / 58.25% (94) |
 | 공통 94명 짝지은 감소율 평균 | 61.26% | 59.70% (−1.56%p) |
 | 예측 vs 공식 골드 위험 Spearman / MAE (87명) | 0.9242 / 3.11 | 0.8429 / 4.14 |
-| 115계정 앱 전체 경로 (③) | — | 〔③ 대기〕 |
+| 115계정 앱 전체 경로 (③ · EC2 L4 · 2단 GGUF) — 오류 · 폴백 · 스키마 오류 | 0 · 0 · 0 | **0 · 0 · 0** ✅ |
 
 - CI 는 글 단위 짝지은 부트스트랩 2,000회 · seed 20261102 다. 같은 인물의 글은 독립이 아니다
 - 지연 차이(±1ms)는 실행 사이 흔들림(8 ~ 10ms)보다 작아서 우열을 판정할 수 없다. 이 PC 의 v2 값(194.33ms)은 11/2 B 데스크톱 판정 값(160.50ms)과 PC 가 달라 직접 비교하지 않는다
@@ -126,7 +126,7 @@ Ryzen 5 5600X · 1단 CPU 4스레드 · GPU 안 씀 · torch 2.12.1 · transform
 
 ### 1단 koelectra-v2 — 기준선 등록 (2026-10-09)
 
-> **상태 (11/5)**: 이전 운용 · 11/2 사전 등록 측정. 아래 값은 그대로 둔다. 운용 후보는 위 koelectra-repaired(DEC-018)다
+> **상태 (11/5)**: 이전 운용 · 11/2 사전 등록 측정. 아래 값은 그대로 둔다. 운용은 위 koelectra-repaired(DEC-018 · 11/5)다
 
 **v2는 기존 검수+교사 재학습 모델과 명시 규칙을 합친 운용 구성명**이다.
 C그룹·변이 글 보강 모델 또는 o_weight 0.05 모델을 뜻하지 않는다.
