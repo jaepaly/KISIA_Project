@@ -45,53 +45,57 @@
 | DEC-014 | 시연 영상 · 대본 담당을 E → C 로 옮긴다 — 진행률 가중치 · 분모는 그대로 | **Accepted** | W10 | README W10 「시연 영상」 |
 | DEC-015 | 최종 동결을 10/28 → 11/1 로 늦추고 10/25 동결 목표를 없앤다 — 새 기능 마감 10/28 · 측정 11/2 | **Accepted** | W10 | roadmap §7 변경 기록 10/18 |
 | DEC-016 | 1단 보조 지표 「글×속성 단위 F1」을 11/2 측정 전에 등록한다 — 판정 값은 명시 proxy 그대로 | **Accepted** | W11 | DEC-010 · README 「명시 F1 — 11/2 에 무엇을 판정 값으로 적나」 |
-| DEC-017 | 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가) | Accepted 대기 (115계정 결과 반영 전) | W12 | exp45 · DEC-012 |
+| DEC-017 | 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가) | Accepted 대기 (115계정 결과 반영) | W12 | exp45 · DEC-012 |
 
 ---
 
 ## [DEC-017] 2단 추론 엔진을 llama.cpp GGUF 로 — GGUF 를 둔 PC 에서는 앱 기본 (가)
 
-**상태**: Accepted 대기 (115계정 결과 반영 전) · **주차**: W12 (2026-11-04) · **관련**: DEC-012 · [exp45](../experiments/exp45-stage2-gguf/README.md) · [models/registry.md](../models/registry.md) · [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md) · **결정**: D(@jaepaly, PM) — (가) 채택 예정
+**상태**: Accepted 대기 (115계정 결과 반영 · 11/5) · **주차**: W12 (2026-11-04) · **관련**: DEC-012 · [exp45](../experiments/exp45-stage2-gguf/README.md) · [models/registry.md](../models/registry.md) · [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md) · **결정**: D(@jaepaly, PM) — (가) 채택 예정
 
 > 제출 수치 · 동결 기록(11/1 `w11` · 11/2 측정 · freeze-W11)은 바꾸지 않는다. 이 결정은 그 뒤의 앱 · 촬영 구성이다.
 
 ### 무엇을 정하나
-- 2단 v2 판정을 **같은 가중치**(NF4 dequant + v2 어댑터 merge)의 GGUF Q5_K_M 으로 llama.cpp(b12090 고정)에서 낸다. 분석기가 켜질 때 로컬 llama-server 를 127.0.0.1 에만 띄운다
+- 2단 v2 판정을 **같은 함수**(NF4 dequant 베이스 + v2 어댑터)를 **베이스 Q8_0 GGUF + v2 LoRA GGUF(f32) 분리**로 llama.cpp(b12090 고정)에서 낸다 — merge 하지 않고 llama-server `--lora` 로 실행 때 더한다. 분석기가 켜질 때 로컬 llama-server 를 127.0.0.1 에만 띄운다 · `model_version` `qwen3-4b-qlora-v2-gguf-q8-lora`
+- 기각 이력: 처음 판(dequant + 어댑터 merge → Q5_K_M · `…-gguf-q5km`)은 115계정에서 NF4 대비 797/805 라 11/4 기각했다 — 원인은 merge 뒤 재양자화가 어댑터 몫을 깎은 것(exp45 결과 3 · 4)
 - **(가) 채택** — GGUF 를 둔 PC 에서는 GGUF 가 앱 기본이다. (나) 「`STAGE2_ENGINE=gguf` 를 준 PC 에서만」은 택하지 않는다
 - 엔진 고르기(`infer._engine_name`):
 
-| `STAGE2_ENGINE` | `STAGE2_GGUF` | 엔진 |
+| `STAGE2_ENGINE` | `STAGE2_GGUF` · `STAGE2_GGUF_LORA` | 엔진 |
 |---|---|---|
 | `bnb` | 상관없음 | NF4 + 어댑터 (되돌리기) |
-| `gguf` | 필요 | GGUF |
-| 비움 | 있음 | **GGUF** (이번 변경) |
+| `gguf` | 둘 다 필요 | GGUF |
+| 비움 | 둘 다 있음 | **GGUF** (이번 변경) |
+| 비움 | 하나만 있음 | NF4 + 어댑터 · 로그 경고 (예전 Q5 설정 하나만 남은 PC) |
 | 비움 | 없음 | NF4 + 어댑터 (지금까지와 같다) |
 
-- **코드 기본값을 `gguf` 로 두지 않는다** — GGUF(2.9 GB)와 llama.cpp 바이너리는 저장소에 없다. 코드 기본을 바꾸면 GGUF 를 받지 않은 팀원 PC 가 모두 규칙 폴백이 된다. 그래서 「GGUF 를 둔 PC」만 바뀐다
-- GGUF 해시 · llama-server 가 안 맞으면 **NF4 로 조용히 바꾸지 않는다** — 규칙 폴백 + 사유(「GGUF 해시 불일치」 · 「llama-server 없음」)가 응답 `model_version` 에 남는다. GGUF 를 쓰려던 PC 가 1분 걸리는 NF4 로 도는 것을 놓치지 않기 위해서다
-- 되돌리기: `STAGE2_ENGINE=bnb` (또는 `STAGE2_GGUF` 를 지운다). 코드 되돌림은 필요 없다
+- **코드 기본값을 `gguf` 로 두지 않는다** — GGUF(베이스 4.3 GB · LoRA 47 MB)와 llama.cpp 바이너리는 저장소에 없다. 코드 기본을 바꾸면 GGUF 를 받지 않은 팀원 PC 가 모두 규칙 폴백이 된다. 그래서 「GGUF 를 둔 PC」만 바뀐다
+- GGUF 해시 · llama-server 가 안 맞으면 **NF4 로 조용히 바꾸지 않는다** — 규칙 폴백 + 사유(「GGUF 해시 불일치」 · 「LoRA GGUF 해시 불일치」 · 「2단 LoRA GGUF 없음」 · 「llama-server 없음」)가 응답 `model_version` 에 남는다. GGUF 를 쓰려던 PC 가 1분 걸리는 NF4 로 도는 것을 놓치지 않기 위해서다
+- 되돌리기: `STAGE2_ENGINE=bnb` (또는 `STAGE2_GGUF` · `STAGE2_GGUF_LORA` 를 지운다). 코드 되돌림은 필요 없다
 
 ### 왜
-- RTX 3060 에서 NF4(bitsandbytes) 생성은 약 12 tok/s 라 정밀 판정이 계정당 약 1분 걸린다(freeze-W11 점검 중앙 68.7초). llama.cpp CUDA 는 같은 판정을 약 59 tok/s 로 낸다
-- 판정이 같다 — exp09 735칸 NF4 와 735/735 · exp09 지표 같음 · exp22b 210/210 · 파싱 실패 · 폴백 0 (exp45)
-- 종단(빠른 결과 먼저 · freeze-W11 11계정 · 같은 하네스): 정밀 판정 도착 중앙 63.3초 → 20.4초 · 빠른 결과 8.4초는 같다
+- RTX 3060 에서 NF4(bitsandbytes) 생성은 약 12 tok/s 라 정밀 판정이 계정당 약 1분 걸린다(freeze-W11 점검 중앙 68.7초). llama.cpp CUDA(베이스 Q8_0 + LoRA)는 같은 판정을 약 36 tok/s 로 낸다
+- 판정이 같다 — 앱 종단 115계정 NF4 대비 판정 804/805 · 근거 804/805 · 폴백 0(아래 표 · exp45 결과 4)
+- 종단(빠른 결과 먼저 · 115계정 · 같은 하네스): 정밀 판정 도착 중앙 67.2초 → 27.1초 · 빠른 결과(약 9.4~9.8초)는 엔진과 무관하다
+- (참고 · 기각한 Q5 merge 판) exp09 735칸 735/735 · exp22b 210/210 · 11계정 정밀 판정 중앙 63.3 → 20.4초였으나 115계정 797/805 — 표본이 작으면 merge 손실이 안 보였다
 
-### 115계정 전체 일치 (러너 dev · NF4 대비) — 채울 자리
+### 115계정 전체 일치 (앱 종단 · NF4 대비) — exp45 결과 4
 
-> 다른 작업이 채운다. 이 칸이 채워지고 기준을 넘으면 상태를 Accepted 로 바꾼다.
+> 11/5 채움 · [results/validate115_q8lora.json](../experiments/exp45-stage2-gguf/results/validate115_q8lora.json). NF4 는 결과 3 의 실행(11/4)과 비교했다. 상태를 Accepted 로 바꾸는 것은 D 결정으로 남긴다.
 
 | 항목 | 값 |
 |---|---|
-| 계정 수 · 칸 수 | (미기입) |
-| 판정 칸 일치 (GGUF = NF4) | (미기입) |
-| 근거 집합 일치 | (미기입) |
-| 파싱 실패 · 폴백 | (미기입) |
-| 다른 칸 목록 · 어느 쪽이 판정 기준에 맞나 | (미기입) |
+| 계정 수 · 칸 수 | 115 · 805 |
+| 판정 칸 일치 (GGUF = NF4) | **804/805** (Q5 merge 판 797) |
+| 근거 집합 일치 | 804/805 · 세분도 805/805 · 위험도 · 추천 · 빠른 결과 115/115 |
+| 파싱 실패 · 폴백 | 0 · 0 (정밀 판정 115/115 done) |
+| 다른 칸 목록 · 어느 쪽이 판정 기준에 맞나 | B08 commute 1칸 — 규칙 weak_signal · NF4 narrowed · GGUF weak_signal. v2 기준(= 규칙)상 **GGUF 가 맞다**(그 자리 NF4 로짓 차 0.0). 모델 ≠ 규칙 칸 NF4 15 · GGUF 14 |
 
 ### 대가 · 남은 확인
-- 앱 11계정 77칸 중 1칸(u_c9c1dd0d52c9 commute)은 GGUF 가 규칙 · NF4 와 다르다 — 커널 수치 차이로 greedy 결과가 갈리는 입력이 있다. 판정 기준상 GGUF 쪽이 틀렸다(exp45). 115계정 결과(위)로 그런 칸이 얼마나 되는지 본다
+- 정밀 판정 몫이 Q5 merge 판보다 약 5초 느리다(중앙 12.1 → 17.1초 · NF4 57.1초) — merge 손실을 없앤 대가다
+- 베이스 Q8_0 양자화 오차는 남는다 — 판정 로짓 차가 0 에 가까운 칸(위 B08)은 엔진에 따라 갈릴 수 있다. NF4 자신에게도 동전 던지기인 자리다
 - 저장소 밖 바이너리(llama.cpp b12090 · CUDA 13.4 런타임)가 늘어난다 — 다른 PC 는 zip 해시를 맞춰야 한다(registry)
-- 외부 요청 0 · 기동 확인은 GGUF 경로로 다시 한다 → [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md). freeze-W11 · network-zero-W08 은 NF4 · 규칙 경로 기록으로 그대로 둔다
+- 외부 요청 0 · 기동 확인은 GGUF(Q8_0 + LoRA) 경로로 다시 했다(11/5 · 11계정 · 외부 연결 0 · 기동 32초 · 분석기 kill 뒤 llama-server 0.44초에 종료) → [evidence/freeze-W12-gguf](evidence/freeze-W12-gguf.md). freeze-W11 · network-zero-W08 은 NF4 · 규칙 경로 기록으로 그대로 둔다
 - 멈춤 대비(Codex 2차 리뷰 P1): GGUF 요청은 기한(`STAGE2_GGUF_TIMEOUT` 기본 120초)을 넘기면 llama-server 를 내리고 다음 호출에 다시 띄운다. 뒤따르는 판정 작업은 기한(`STAGE2_FOLLOWUP_DEADLINE` 기본 180초)을 넘기면 expired 로 끝나고 화면은 빠른 결과를 유지한다. **NF4 경로는 생성이 멈추면 GPU 자리가 풀리지 않는다**(스레드는 끊을 수 없다 · 분석기 재시작 필요) — GGUF 를 기본으로 올리는 이유가 하나 더 생긴 셈이다
 
 ---
