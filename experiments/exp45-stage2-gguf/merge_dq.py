@@ -1,4 +1,7 @@
-"""1/3 — 앱이 실제로 계산하는 가중치(NF4 dequant + v2 LoRA)를 bf16 HF 폴더로 만든다. GPU(bitsandbytes) 필요.
+"""[옛 절차 · 기각] Q5_K_M merge 판 1/3 — 115계정 797/805(결과 3) · 원인은 merge 뒤 재양자화(결과 4).
+지금 앱의 가중치는 dq_base.py + build_gguf_lora.cmd(베이스 Q8_0 + LoRA f32 분리)로 만든다. 이 파일은 결과 1~3 재현용으로만 둔다.
+
+앱이 실제로 계산하는 가중치(NF4 dequant + v2 LoRA)를 bf16 HF 폴더로 만든다. GPU(bitsandbytes) 필요.
 
     PYTHONIOENCODING=utf-8 HF_HUB_OFFLINE=1 python experiments/exp45-stage2-gguf/merge_dq.py \\
         --adapter <v2 어댑터 폴더 (c045d353…)> --out <빈 폴더 · 약 8GB>

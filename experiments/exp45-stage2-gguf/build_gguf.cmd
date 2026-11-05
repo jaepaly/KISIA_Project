@@ -1,4 +1,6 @@
 @echo off
+rem [OLD - rejected Q5_K_M merged procedure, kept for history] 115 accounts 797/805 vs NF4 (exp45 result 3/4).
+rem The app now uses dq_base.py + build_gguf_lora.cmd (Q8_0 base + LoRA f32, no merge).
 rem 2/3 · 3/3 — merge_dq.py 결과(bf16 HF 폴더) -> GGUF bf16 -> Q5_K_M. llama.cpp 는 b12090 으로 고정한다.
 rem   build_gguf.cmd <merged 폴더> <출력 폴더>
 rem 필요한 것 (저장소 밖):
