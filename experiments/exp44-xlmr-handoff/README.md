@@ -66,6 +66,30 @@ python -u -X utf8 "$exp/handoff.py" evaluate --run-dir "$exp/runs/xlmr-large" --
 - `best/` 하나만 저장하고 optimizer를 20벌 남기지 않는다. 전체 요청 에폭이 완료돼야 `selection.json`을 발행한다. OOM이면 `completed:false`이고 선택 파일을 발행하지 않는다.
 - 선택 모델의 config·tokenizer·weights 및 준비 데이터 해시를 재검사한다. raw BIO의 경계·유형만 평가하며 `level`·`subject` 정확도를 주장하지 않는다.
 
+## 후속 — 큰 모델용 학습 설정 (선택 · 위 실행이 끝난 뒤)
+
+위 기본 명령은 KoELECTRA 실험과 같은 설정(lr `1e-5` 고정 · 웜업/감쇠 없음 · 클리핑 없음 · seed 1개)이다. XLM-R-large 같은 큰 인코더는 이 설정에서 학습이 흔들리기 쉬워, 기본 실행 결과만으로 「큰 모델이 안 좋다」고 결론 내리지 않는다. 비교를 공정하게 하려면 아래를 **추가로** 돌린다.
+
+- `--schedule linear --warmup-ratio 0.1` — 전체 optimizer step 의 10% 동안 lr 을 `1e-5 / 웜업step` 에서 `1e-5` 까지 올리고, 이후 선형으로 줄여 **건너뛴 업데이트가 없으면** 마지막 업데이트 뒤 0 이 된다. 웜업 step 은 전체보다 항상 1 이상 적게 잡힌다. fp16 overflow 로 건너뛴 업데이트에서는 스케줄이 진행하지 않으므로, 건너뜀이 있으면 정해진 에폭이 끝날 때 lr 이 0 보다 조금 크게 남는다(에폭별 `skipped_steps` · `lr_end` 로 확인)
+- `--max-grad-norm 1.0` — fp16 scaler 를 푼(unscale) 실제 그래디언트의 노름을 1.0 으로 자른다
+- `--train-seed N` — 학습 쪽 난수(분류 헤드 초기화 · 학습 순서 · dropout)를 바꾼다. **dev 인물 9명 분할은 seed `20260911` 로 고정**이라 seed 를 바꿔도 dev 는 같다
+
+옵션을 주지 않으면 기존 러너(커밋 `1cb782d`)와 학습 경로가 같다 — 테스트가 tiny 모델로 두 러너의 최종 가중치 해시와 에폭별 loss 가 같은지 대조한다. 기록 JSON 에 필드가 몇 개 늘어난 것만 다르다. 이미 돌고 있는 실행은 영향 없다. 기본 실행이 끝난 뒤, 출력 폴더를 seed 마다 새로 만들어 3번 돌린다.
+
+```powershell
+foreach ($s in 1, 2, 3) {
+  python -u -X utf8 "$exp/train_large.py" --bio-dir "$exp/runs/bio-xlmr" --output-dir "$exp/runs/xlmr-large-sched-s$s" --epochs 20 --batch-size 1 --accumulation 16 --device cuda --schedule linear --warmup-ratio 0.1 --max-grad-norm 1.0 --train-seed $s
+  if ($LASTEXITCODE -ne 0) { break }
+  python -u -X utf8 "$exp/handoff.py" evaluate --run-dir "$exp/runs/xlmr-large-sched-s$s" --bio-dir "$exp/runs/bio-xlmr" --device cuda
+  if ($LASTEXITCODE -ne 0) { break }
+}
+```
+
+- 걸리는 시간: 기본 실행의 「에폭당 시간 × 20」 × 3 정도. 급하지 않다 — 11/8 제출과 무관한 실험이다
+- 반환: 각 폴더의 `selection.json`(선택 에폭 · dev F1)과 `evaluation/metrics.json`. 비교는 **seed 3개의 평균과 최소~최대**로 하고, 가장 좋은 seed 하나만 골라 보고하지 않는다
+- 기록: `run_metrics.json` 의 `training_config`(실패한 실행에도 남는다)와 `selection.json` 의 `training_config` 에 `schedule` · `warmup_steps` · `total_optimizer_steps` · `max_grad_norm` · `train_seed` 가 남는다. `run_metrics.json` 의 에폭별 `history[].train` 에는 `skipped_steps`(fp16 일 때 · overflow 로 건너뛴 업데이트) · `clipped_steps`(클리핑을 켰을 때) · `lr_end`(스케줄을 켰을 때 · 에폭 끝 lr) 가 남는다
+- 해석: 참고값으로 KoELECTRA 수정 모델의 내부 dev F1 은 **0.7345**(같은 수정 라벨 · 같은 dev 인물 9명(200편 · 정답 243스팬 = 그 실행의 tp+fn 과 일치) · typed partial F1 · threshold 0.7 · 규칙 off · 20epoch 중 20epoch 선택 · tp 195 / fp 93 / fn 48)다. 단 이 값은 **단일 seed 실행이고 dev 를 선택에도 쓴 최고값**이며 실행 기록은 저장소 밖 PM 로컬에 있다. 그래서 XLM-R 세 seed 와의 차이는 「이 설정 · 이 dev 에서 관찰한 차이」로만 적는다. 모델 계열의 우열을 말하려면 KoELECTRA 도 같은 seed 반복이 필요하다
+
 ## 평가 기준 — 유리한 정답만 골라 보고하지 않는다
 
 | 이름 | 글 수 | 스팬 | 용도 |
@@ -122,4 +146,4 @@ python -X utf8 -m unittest discover -s experiments/exp44-xlmr-handoff/tests -v
 
 로컬 확인 결과는 [`verification.json`](verification.json)에 있다. 실제 고정 XLM-R tokenizer로 **6,737창 / 2,706스팬 왕복 exact·bad 0**을 확인했고, tiny random XLM-R의 CPU 학습→선택→302편·7기준 평가→재평가 거부까지 연결했다. tiny 검증은 실제 대형 모델의 성능 측정이 아니다.
 
-전용 CI는 모델 다운로드 없이 doctor와 가벼운 데이터·채점 테스트를 실행한다. 전체 16개 테스트의 학습·gradient accumulation·OOM 경로는 로컬 CPU에서 검증했다. 로컬 라이브러리 버전과 저장소 설치 핀의 차이도 verification에 기록했다. **5.6억 모델 본 학습·성능·B GPU 메모리 적합성은 아직 검증하지 않았다.**
+전용 CI는 모델 다운로드 없이 doctor와 가벼운 데이터·채점 테스트를 실행한다. 전체 16개 테스트의 학습·gradient accumulation·OOM 경로는 로컬 CPU에서 검증했다(후속 학습 설정 옵션 테스트 6개를 더해 지금은 22개). 로컬 라이브러리 버전과 저장소 설치 핀의 차이도 verification에 기록했다. **5.6억 모델 본 학습·성능·B GPU 메모리 적합성은 아직 검증하지 않았다.**

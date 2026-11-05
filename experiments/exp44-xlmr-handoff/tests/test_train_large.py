@@ -4,7 +4,9 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import subprocess
 import tempfile
+import types
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -16,6 +18,7 @@ from tokenizers.models import WordLevel
 
 
 ROOT = Path(__file__).resolve().parents[3]
+PARENT_COMMIT = "1cb782d9ae03741520f4565daea46fbfd3cbf0e1"  # original handoff runner
 SPEC = importlib.util.spec_from_file_location(
     "train_large", ROOT / "experiments/exp44-xlmr-handoff/train_large.py"
 )
@@ -176,6 +179,168 @@ class LargeTrainingTests(unittest.TestCase):
             self.assertEqual(evaluation.call_count, 2)
             self.assertFalse((failed / "selection.json").exists())
             self.assertFalse(train.read_object(failed / "run_metrics.json")["completed"])
+
+    # ---- follow-up options: schedule / clipping / train seed --------------
+
+    def _run(self, module, folder, name, extra=()):
+        """Tiny CPU run; the model is built inside main() after its seeding."""
+        if not (folder / "bio").exists():
+            self._fixture = fixture(folder)
+        bio, manifest, tokenizer = self._fixture
+        output = folder / name
+        # CPU-only: keep CUDA uninitialized so the strict-determinism test in
+        # this process still runs before any CUDA initialization.
+        with patch("transformers.AutoTokenizer.from_pretrained", return_value=tokenizer), \
+             patch("transformers.AutoModelForTokenClassification.from_pretrained",
+                   side_effect=lambda *a, **k: tiny_model()), \
+             patch.object(module.shared, "configure_determinism"), \
+             patch("torch.cuda.is_available", return_value=False):
+            module.main(["--bio-dir", str(bio), "--manifest", str(manifest),
+                         "--output-dir", str(output), "--device", "cpu", "--epochs", "2", *extra])
+        return (train.read_object(output / "selection.json"),
+                train.read_object(output / "run_metrics.json"))
+
+    def test_defaults_match_parent_commit_training_exactly(self):
+        args = train.parse_args(["--bio-dir", "b", "--output-dir", "o"])
+        self.assertEqual((args.schedule, args.warmup_ratio, args.max_grad_norm, args.train_seed),
+                         ("constant", 0.0, 0.0, train.SEED))
+        for bad in (["--warmup-ratio", "0.1"],  # warmup needs the linear schedule
+                    ["--schedule", "linear", "--warmup-ratio", "1"],
+                    ["--max-grad-norm", "-1"]):
+            with self.subTest(bad=bad), self.assertRaises(SystemExit):
+                train.parse_args(["--bio-dir", "b", "--output-dir", "o", *bad])
+        try:
+            source = subprocess.run(
+                ["git", "show", f"{PARENT_COMMIT}:experiments/exp44-xlmr-handoff/train_large.py"],
+                cwd=ROOT, capture_output=True, check=True).stdout.decode("utf-8")
+        except (OSError, subprocess.CalledProcessError):
+            self.skipTest("parent commit not available (shallow clone)")
+        source = source.replace("ROOT = Path(__file__).resolve().parents[2]",
+                                f"ROOT = Path({str(ROOT)!r})")
+        parent = types.ModuleType("train_large_parent")
+        parent.__file__ = str(ROOT / "experiments/exp44-xlmr-handoff/train_large.py")
+        exec(compile(source, "train_large_parent", "exec"), parent.__dict__)
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            old, old_run = self._run(parent, folder, "parent")
+            new, new_run = self._run(train, folder, "current")
+        # Same initial weights, shuffle order and updates -> identical best weights.
+        self.assertEqual(old["weights_sha256"], new["weights_sha256"])
+        self.assertEqual(old["epoch"], new["epoch"])
+        self.assertEqual([e["train"]["loss"] for e in old_run["history"]],
+                         [e["train"]["loss"] for e in new_run["history"]])
+
+    def test_train_seed_changes_init_but_not_the_frozen_split(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            a, _ = self._run(train, folder, "seed-a", ["--train-seed", "1"])
+            b, _ = self._run(train, folder, "seed-b", ["--train-seed", "2"])
+            manifest = train.read_object(folder / "manifest.json")
+        self.assertNotEqual(a["weights_sha256"], b["weights_sha256"])
+        self.assertEqual(a["dev_personas"], b["dev_personas"])
+        self.assertEqual(a["dev_personas"], manifest["dev_personas"])
+        self.assertEqual((a["seed"], a["train_seed"], b["train_seed"]), (train.SEED, 1, 2))
+
+    def test_linear_schedule_shape_and_warmup_boundaries(self):
+        self.assertEqual(train.optimizer_steps_per_epoch(33, 1, 16), 3)
+        self.assertEqual(train.optimizer_steps_per_epoch(32, 1, 16), 2)
+        total, warm = 100, 10
+        factors = [train.lr_factor(i, total, warm, "linear") for i in range(total)]
+        self.assertAlmostEqual(factors[0], .1)  # warmup starts at base_lr / warmup_steps
+        self.assertAlmostEqual(factors[warm - 1], 1.0)
+        self.assertAlmostEqual(factors[warm], 1.0)
+        self.assertTrue(all(a >= b for a, b in zip(factors[warm:], factors[warm + 1:])))
+        self.assertGreater(factors[-1], 0.0)  # the last update still uses a positive lr
+        self.assertAlmostEqual(train.lr_factor(total, total, warm, "linear"), 0.0)
+        self.assertEqual({train.lr_factor(i, total, warm, "constant") for i in range(total)}, {1.0})
+        # A high ratio on a tiny run still leaves a decay step and ends at 0.
+        for steps, ratio in ((1, .5), (2, .9), (3, .99)):
+            with self.subTest(steps=steps, ratio=ratio):
+                warmup = train.warmup_step_count(steps, ratio)
+                self.assertLess(warmup, steps)
+                self.assertEqual(train.lr_factor(steps, steps, warmup, "linear"), 0.0)
+
+    def test_clipping_uses_unscaled_gradient_with_active_scaler(self):
+        torch.manual_seed(3)
+        model = tiny_model()
+        ids = torch.tensor([[0, 4, 5, 6, 7, 2]])
+        batch = [{"input_ids": ids, "attention_mask": torch.ones_like(ids),
+                  "labels": torch.tensor([[-100, 1, 2, 0, 1, -100]]), "example_index": [0]}]
+        seen = {}
+
+        class Probe(torch.optim.SGD):
+            def step(self, closure=None):
+                seen["norm"] = torch.norm(torch.stack(
+                    [p.grad.norm() for g in self.param_groups for p in g["params"] if p.grad is not None]))
+                return super().step(closure)
+
+        scaler = torch.amp.GradScaler("cpu", enabled=True, init_scale=1024.0)
+        stats = train.train_epoch(model, batch, Probe(model.parameters(), lr=0), scaler,
+                                  torch.device("cpu"), torch.tensor([.02, 1., 1.]), 16, False,
+                                  max_grad_norm=1e-3)
+        # Without unscale_ the clipped gradient would be 1024x too large here.
+        self.assertLessEqual(float(seen["norm"]), 1e-3 * 1.0001)
+        self.assertEqual((stats["clipped_steps"], stats["skipped_steps"]), (1, 0))
+
+    def test_skipped_amp_steps_do_not_advance_the_schedule(self):
+        torch.manual_seed(5)
+        model = tiny_model()
+        ids = torch.tensor([[0, 4, 5, 6, 7, 2]])
+        batches = [{"input_ids": ids, "attention_mask": torch.ones_like(ids),
+                    "labels": torch.tensor([[-100, 1, 2, 0, 1, -100]]), "example_index": [i]}
+                   for i in range(3)]
+
+        class SkippingScaler:
+            """Mimics GradScaler: a skip means no optimizer step and a lower scale."""
+            def __init__(self, skips):
+                self.skips, self.calls, self.scale_value, self.skip = skips, 0, 8.0, False
+
+            def is_enabled(self):
+                return True
+
+            def get_scale(self):
+                return self.scale_value
+
+            def scale(self, loss):
+                return loss
+
+            def unscale_(self, optimizer):
+                pass
+
+            def step(self, optimizer):
+                self.skip = self.calls in self.skips
+                if not self.skip:
+                    optimizer.step()
+
+            def update(self):
+                if self.skip:
+                    self.scale_value /= 2
+                self.calls += 1
+
+        optimizer = torch.optim.SGD(model.parameters(), lr=1.0)
+        scheduler = torch.optim.lr_scheduler.LambdaLR(
+            optimizer, lambda step: train.lr_factor(step, 2, 0, "linear"))
+        # Groups of one batch: the first and the third group overflow.
+        stats = train.train_epoch(model, batches, optimizer, SkippingScaler({0, 2}),
+                                  torch.device("cpu"), torch.tensor([.02, 1., 1.]), 1, False,
+                                  scheduler=scheduler)
+        self.assertEqual((stats["optimizer_steps"], stats["skipped_steps"]), (3, 2))
+        self.assertEqual(scheduler.last_epoch, 1)  # advanced only for the one real update
+        self.assertAlmostEqual(stats["lr_end"], .5)
+
+    def test_cpu_tiny_run_records_schedule(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            selection, run = self._run(train, Path(temporary), "run-linear",
+                                       ["--schedule", "linear", "--warmup-ratio", "0.1",
+                                        "--max-grad-norm", "1.0", "--train-seed", "7"])
+        config = selection["training_config"]
+        self.assertEqual(run["training_config"], config)
+        self.assertEqual((config["schedule"], config["warmup_ratio"], config["max_grad_norm"]),
+                         ("linear", .1, 1.0))
+        self.assertLess(config["warmup_steps"], config["total_optimizer_steps"])
+        self.assertEqual(sum(e["train"]["optimizer_steps"] for e in run["history"]),
+                         config["total_optimizer_steps"])
+        self.assertAlmostEqual(run["history"][-1]["train"]["lr_end"], 0.0)
 
 
 if __name__ == "__main__":

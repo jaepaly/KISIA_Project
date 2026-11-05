@@ -127,13 +127,44 @@ def weighted_loss_sum(logits, targets, class_weights):
     )
 
 
+def optimizer_steps_per_epoch(n_examples: int, batch_size: int, accumulation: int) -> int:
+    """One optimizer step per accumulation group, including a short final group."""
+    return math.ceil(math.ceil(n_examples / batch_size) / accumulation)
+
+
+def lr_factor(step: int, total_steps: int, warmup_steps: int, schedule: str) -> float:
+    """Multiplier of the base lr before optimizer step `step` (0-based).
+
+    constant: 1.0 throughout (the original handoff run).
+    linear: linear warmup to 1.0 over `warmup_steps`, then linear decay to 0
+    at `total_steps` (the usual fine-tuning schedule for large encoders).
+    Warmup starts at base_lr / warmup_steps (not 0), so the peak is used for
+    two consecutive updates; the factor reaches 0 only after the last update.
+    """
+    if schedule == "constant":
+        return 1.0
+    if warmup_steps > 0 and step < warmup_steps:
+        return (step + 1) / warmup_steps
+    remaining = total_steps - warmup_steps
+    if remaining <= 0:
+        return 0.0
+    return max(0.0, (total_steps - step) / remaining)
+
+
+def warmup_step_count(total_steps: int, warmup_ratio: float) -> int:
+    """Rounded warmup length, always leaving at least one decay step."""
+    return max(0, min(int(round(total_steps * warmup_ratio)), total_steps - 1))
+
+
 def train_epoch(model, loader, optimizer, scaler, device, class_weights,
-                accumulation: int, fp16: bool) -> dict:
+                accumulation: int, fp16: bool, scheduler=None,
+                max_grad_norm: float = 0.0) -> dict:
     import torch
 
     model.train()
     numerator_total = denominator_total = 0.0
     updates = 0
+    clipped = skipped = 0
     for group in accumulation_groups(loader, accumulation):
         # Hold only small CPU input tensors for one effective batch. Each graph
         # is backpropagated immediately; sixteen XLM-R graphs never coexist.
@@ -154,10 +185,30 @@ def train_epoch(model, loader, optimizer, scaler, device, class_weights,
             scaler.scale(loss).backward()
             numerator_total += float(numerator.detach().cpu())
         denominator_total += float(denominator.detach().cpu())
+        if max_grad_norm > 0:
+            # Clip the true (unscaled) gradient; GradScaler skips inf/NaN steps itself.
+            scaler.unscale_(optimizer)
+            norm = torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+            clipped += int(bool(torch.isfinite(norm)) and float(norm) > max_grad_norm)
+        scale_before = scaler.get_scale() if scaler.is_enabled() else None
         scaler.step(optimizer)
         scaler.update()
+        # GradScaler skips the optimizer step on inf/NaN and lowers the scale;
+        # the lr schedule advances only on updates that actually happened.
+        step_skipped = scale_before is not None and scaler.get_scale() < scale_before
+        skipped += int(step_skipped)
+        if scheduler is not None and not step_skipped:
+            scheduler.step()
         updates += 1
-    return {"loss": numerator_total / denominator_total, "optimizer_steps": updates}
+    # optimizer_steps keeps its original meaning: accumulation groups attempted.
+    stats = {"loss": numerator_total / denominator_total, "optimizer_steps": updates}
+    if scaler.is_enabled():
+        stats["skipped_steps"] = skipped
+    if max_grad_norm > 0:
+        stats["clipped_steps"] = clipped
+    if scheduler is not None:
+        stats["lr_end"] = float(scheduler.get_last_lr()[0])
+    return stats
 
 
 def environment(model, device) -> dict:
@@ -196,12 +247,27 @@ def parse_args(argv=None):
     parser.add_argument("--accumulation", type=int, default=16)
     parser.add_argument("--lr", type=float, default=1e-5)
     parser.add_argument("--o-weight", type=float, default=0.02)
+    # Defaults reproduce the original handoff run exactly (constant lr, no
+    # clipping, init/shuffle seed = split seed). The dev holdout split always
+    # uses the frozen SEED regardless of --train-seed.
+    parser.add_argument("--schedule", choices=("constant", "linear"), default="constant")
+    parser.add_argument("--warmup-ratio", type=float, default=0.0)
+    parser.add_argument("--max-grad-norm", type=float, default=0.0,
+                        help="0 disables gradient clipping")
+    parser.add_argument("--train-seed", type=int, default=SEED,
+                        help="seed for head init and shuffle order; the dev split stays fixed")
     parser.add_argument("--device", choices=("cuda", "cpu"), default="cuda")
     args = parser.parse_args(argv)
     if min(args.epochs, args.batch_size, args.accumulation) < 1:
         parser.error("epochs, batch-size and accumulation must be positive")
     if not math.isfinite(args.lr) or args.lr <= 0 or not 0 < args.o_weight <= 1:
         parser.error("lr must be positive and 0 < o-weight <= 1")
+    if not math.isfinite(args.warmup_ratio) or not 0 <= args.warmup_ratio < 1:
+        parser.error("warmup-ratio must be in [0, 1)")
+    if not math.isfinite(args.max_grad_norm) or args.max_grad_norm < 0:
+        parser.error("max-grad-norm must be >= 0")
+    if args.schedule == "constant" and args.warmup_ratio:
+        parser.error("warmup-ratio requires --schedule linear")
     return args
 
 
@@ -217,7 +283,7 @@ def main(argv=None) -> int:
     shared.configure_determinism(True)
     if args.device == "cuda" and not torch.cuda.is_available():
         raise TrainError("CUDA is required; CPU is only an explicit smoke-test option")
-    shared.set_seed(SEED)
+    shared.set_seed(args.train_seed)
     from torch.utils.data import DataLoader
     from transformers import AutoModelForTokenClassification, AutoTokenizer
 
@@ -243,6 +309,14 @@ def main(argv=None) -> int:
             parameter.requires_grad_(True)
         model.to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
+        steps_per_epoch = optimizer_steps_per_epoch(
+            len(train_rows), args.batch_size, args.accumulation)
+        total_steps = steps_per_epoch * args.epochs
+        warmup_steps = warmup_step_count(total_steps, args.warmup_ratio)
+        scheduler = None
+        if args.schedule != "constant":
+            scheduler = torch.optim.lr_scheduler.LambdaLR(
+                optimizer, lambda step: lr_factor(step, total_steps, warmup_steps, args.schedule))
         scaler = torch.amp.GradScaler("cuda", enabled=fp16)
         weights = torch.ones(len(labels), device=device)
         weights[label2id["O"]] = args.o_weight
@@ -250,7 +324,7 @@ def main(argv=None) -> int:
         loader = DataLoader(
             shared.BioDataset(train_rows), batch_size=args.batch_size, shuffle=True,
             collate_fn=collator, num_workers=0,
-            generator=torch.Generator().manual_seed(SEED),
+            generator=torch.Generator().manual_seed(args.train_seed),
         )
         dev_loader = DataLoader(
             shared.BioDataset(dev_rows), batch_size=args.batch_size, shuffle=False,
@@ -262,18 +336,24 @@ def main(argv=None) -> int:
             "accumulation": args.accumulation,
             "effective_batch_size": args.batch_size * args.accumulation,
             "lr": args.lr, "o_weight": args.o_weight, "weight_decay": 0.01,
-            "seed": SEED, "eval_ratio": EVAL_RATIO, "fp16": fp16,
+            "seed": SEED, "train_seed": args.train_seed,
+            "schedule": args.schedule, "warmup_ratio": args.warmup_ratio,
+            "warmup_steps": warmup_steps, "total_optimizer_steps": total_steps,
+            "max_grad_norm": args.max_grad_norm,
+            "eval_ratio": EVAL_RATIO, "fp16": fp16,
             "gradient_checkpointing": True, "use_reentrant": False,
             "all_parameters_trainable": True, "use_cache": False,
             "attention_backend": "eager", "min_span_score": THRESHOLD,
             "loss_normalization": "group_sum_weighted_ce/group_sum_target_class_weights",
         }
+        run_state["training_config"] = config  # kept even when a run fails
         best_f1 = -1.0
         selection = None
         started = time.monotonic()
         for epoch in range(1, args.epochs + 1):
             trained = train_epoch(
-                model, loader, optimizer, scaler, device, weights, args.accumulation, fp16
+                model, loader, optimizer, scaler, device, weights, args.accumulation, fp16,
+                scheduler=scheduler, max_grad_norm=args.max_grad_norm,
             )
             dev = shared.evaluate(
                 model, dev_loader, dev_rows, device,
@@ -295,6 +375,7 @@ def main(argv=None) -> int:
                     "model_revision": package["model_revision"],
                     "min_span_score": THRESHOLD, **hashes,
                     "dev_personas": prepared["dev_personas"], "seed": SEED,
+                    "train_seed": args.train_seed,
                     "training_config": config, "environment": environment(model, device),
                 }
             save_json(args.output_dir / "run_metrics.json", run_state)
