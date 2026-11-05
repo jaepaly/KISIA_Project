@@ -110,6 +110,11 @@ def components(spans_by_gold):
     for members in groups.values():
         per = {g: sorted((s for gg, s in members if gg == g), key=lambda s: (s["start"], s["end"])) for g in GOLDS}
         out.append(per)
+    for g in GOLDS:   # 계약 §6 — 한 정답 안에서는 겹침이 없어야 동치 판정이 성립한다
+        ss = sorted(spans_by_gold[g], key=lambda s: (s["text_id"], s["start"]))
+        for a, b in zip(ss, ss[1:]):
+            if overlaps(a, b):
+                sys.exit(f"{g}: 한 정답 안에서 스팬이 겹친다 {a['text']!r} / {b['text']!r}")
     return sorted(out, key=lambda per: min((s["text_id"], s["start"]) for g in GOLDS for s in per[g]))
 
 
@@ -233,12 +238,22 @@ def make_sheet(picked, texts, salt):
         item_id = f"G{idx:02d}"
         all_spans = [s for g in GOLDS for s in u["per"][g]]
         channel = all_spans[0]["text_id"]
-        classes = list(u["classes"])
-        rng.shuffle(classes)
+        if u["pattern"] == "intransitive":
+            sys.exit(f"{u['unit_id']}: 비이행 단위는 단일 선택으로 판정할 수 없다 — 정의를 다시 볼 것")
+        # 후보 = (채널·시작·끝·유형) 이 똑같은 표시본. 채점상 같은 묶음이라도 경계가 다르면 따로 보여 준다 —
+        # 사람이 보지 않은 경계에 지지를 주지 않기 위해서다. 등급만 다른 표시본은 하나로 합친다(F1 무관).
+        variants = collections.OrderedDict()
+        for g in GOLDS:
+            vkey = tuple((s["text_id"], s["start"], s["end"], s["type"]) for s in u["per"][g])
+            variants.setdefault(vkey, []).append(g)
+        groups = list(variants.values())
+        if len(groups) > len(LETTERS):
+            sys.exit(f"{u['unit_id']}: 후보가 {len(groups)}개 — 열이 모자란다")
+        rng.shuffle(groups)
         cands = {}
-        for letter, cls in zip(LETTERS, classes):
-            shown = u["per"][rng.choice(sorted(cls))]   # 같은 묶음 안 표시본도 무작위
-            cands[letter] = {"golds": sorted(cls), "label": label(shown)}
+        for letter, golds_exact in zip(LETTERS, groups):
+            shown = u["per"][rng.choice(golds_exact)]   # 등급만 다른 경우 표시 등급도 무작위
+            cands[letter] = {"golds_exact": sorted(golds_exact), "spans": shown, "label": label(shown)}
         rows.append({"item_id": item_id, "post_id": u["post_id"], "채널": channel,
                      "문맥": context(texts[u["post_id"]][channel], all_spans),
                      **{f"후보_{L}": cands[L]["label"] if L in cands else "" for L in LETTERS},

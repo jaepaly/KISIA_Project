@@ -45,24 +45,29 @@ class UnitTests(unittest.TestCase):
             self.assertNotIn(word, text)
 
 
-def fake_key():
+def fake_key(n_items=4):
+    """O_alone 2개 · P_alone 2개. X = official 쪽, Y = previous·conservative 쪽."""
     items = []
-    for n in range(1, 5):
-        cands = {"X": {"golds": ["official239"], "label": f"a{n}"},
-                 "Y": {"golds": ["conservative239", "previous_ai239"], "label": f"b{n}"}}
-        items.append({"item_id": f"G{n:02d}", "stratum": "O_alone|type" if n <= 2 else "P_alone|type",
-                      "candidates": cands})
+    for n in range(1, n_items + 1):
+        o, pc = [sp(0, 4)], [sp(10, 14, "JOB")]
+        items.append({"item_id": f"G{n:02d}", "stratum": "O_alone|type" if n <= n_items // 2 else "P_alone|type",
+                      "spans": {"official239": o, "previous_ai239": pc, "conservative239": pc},
+                      "candidates": {"X": {"golds_exact": ["official239"], "spans": o, "label": f"a{n}"},
+                                     "Y": {"golds_exact": ["conservative239", "previous_ai239"], "spans": pc,
+                                           "label": f"b{n}"}}})
     return {"items": items}
 
 
-def write_review(path, key, choices):
-    with open(path, "w", encoding="utf-8-sig", newline="") as f:
+def write_review(path, key, choices, encoding="utf-8-sig", rows=None):
+    with open(path, "w", encoding=encoding, newline="") as f:
         w = csv.DictWriter(f, fieldnames=B.SHEET_COLUMNS)
         w.writeheader()
         for it, ch in zip(key["items"], choices):
             c = it["candidates"]
             w.writerow({"item_id": it["item_id"], "후보_X": c["X"]["label"], "후보_Y": c["Y"]["label"],
                         "후보_Z": "", "선택": ch, "메모": ""})
+        for extra in rows or []:
+            w.writerow(extra)
 
 
 class TallyTests(unittest.TestCase):
@@ -73,29 +78,65 @@ class TallyTests(unittest.TestCase):
             write_review(Path(d) / "B.csv", key, ["X", "Y", "애매", "Y"])
             write_review(Path(d) / "C.csv", key, ["X", "X", "X", "X"])
             reviews = T.load_reviews(d, key)
-        res = T.tally(key, reviews, {"O_alone|type": 30, "P_alone|type": 10})
+        pop = {"O_alone|type": 30, "P_alone|type": 10}
+        res = T.tally(key, reviews, pop)
         self.assertEqual(res["pooled_roles"], ["A", "B"])
         a = res["per_reviewer"]["A"]
         self.assertEqual((a["official239"]["k"], a["previous_ai239"]["k"], a["모두 틀림"]["k"]), (1, 2, 1))
         m = res["majority_pooled"]
-        # G03 은 A·B 가 갈려 동률 → 애매
-        self.assertEqual((m["official239"]["k"], m["conservative239"]["k"], m["애매"]["k"]), (1, 2, 1))
-        # 층 가중: O 층(가중 .75) 지지율 .5, P 층 0 → .375
-        self.assertAlmostEqual(m["stratum_weighted"]["official239"]["rate"], .375)
+        # G03 은 A·B 가 갈려 과반 없음 — 애매로 세지 않는다
+        self.assertEqual((m["official239"]["k"], m["conservative239"]["k"], m["애매"]["k"], m[T.NO_MAJORITY]["k"]),
+                         (1, 2, 0, 1))
+        self.assertEqual(res["abstain_rate_pooled"], .25)
         self.assertEqual(res["fleiss_pooled"]["items"], 4)
         self.assertAlmostEqual(res["cohen_pairs"]["A~B"]["agree"], .75)
         lo, hi = m["official239"]["ci95"]
         self.assertTrue(0 <= lo < .25 < hi <= 1)
 
-    def test_rejects_edited_candidates_and_bad_choice(self):
+    def test_support_follows_chosen_spans(self):
+        # 고른 후보와 계약 채점으로 짝지어지는 정답만 지지받는다
+        key = fake_key(2)
+        it = key["items"][0]
+        it["spans"]["conservative239"] = [sp(0, 5)]       # official 과 IoU .8
+        self.assertEqual(T.supported(it, "X"), {"official239", "conservative239"})
+        self.assertEqual(T.supported(it, "Y"), {"previous_ai239"})
+        self.assertEqual(T.supported(it, "애매"), set())
+
+    def test_weighted_ci_does_not_collapse_and_requires_coverage(self):
+        key = fake_key(16)
+        items = {it["item_id"]: it for it in key["items"]}
+        pop = {"O_alone|type": 110, "P_alone|type": 9}
+        allx = {i: "X" for i in items}
+        w = T.weighted_support(items, allx, pop)
+        self.assertEqual(w["official239"]["rate"], 1.0)
+        self.assertLess(w["official239"]["ci95"][0], 1.0)          # 만장일치여도 구간이 [1,1] 이 아니다
+        self.assertLess(w["diff_previous_minus_official"]["ci95"][1], 0)
+        partial = {i: ("X" if items[i]["stratum"].startswith("O") else None) for i in items}
+        self.assertEqual(T.weighted_support(items, partial, pop)["status"], "insufficient")
+
+    def test_input_validation(self):
         key = fake_key()
-        with tempfile.TemporaryDirectory() as d:
-            write_review(Path(d) / "A.csv", key, ["W", "", "", ""])
-            with self.assertRaises(ValueError):
-                T.load_reviews(d, key)
-            write_review(Path(d) / "A.csv", key, ["Z", "", "", ""])
-            with self.assertRaises(ValueError):
-                T.load_reviews(d, key)
+        bad = [
+            ("A.csv", ["W", "", "", ""], {}),                       # 없는 선택 값
+            ("A.csv", ["Z", "", "", ""], {}),                       # 빈 후보 선택
+            ("A.csv", ["X", "X", "X"], {}),                         # 행 누락
+            ("a.csv", ["X", "X", "X", "X"], {}),                    # 역할 이름(C 제외 우회 방지)
+            ("A_backup.csv", ["X", "X", "X", "X"], {}),
+            ("A.csv", ["X", "X", "X", "X"], {"rows": [{"item_id": "G01", "후보_X": "a1", "후보_Y": "b1", "선택": "Y"}]}),
+            ("A.csv", ["X", "X", "X", "X"], {"encoding": "cp949"}),  # 일반 CSV 저장
+        ]
+        for name, choices, kw in bad:
+            with self.subTest(name=name, kw=kw), tempfile.TemporaryDirectory() as d:
+                if kw.get("encoding") == "cp949":
+                    key2 = fake_key()
+                    key2["items"][0]["candidates"]["X"]["label"] = "가나"
+                    write_review(Path(d) / name, key2, choices, encoding="cp949")
+                    with self.assertRaises(ValueError):
+                        T.load_reviews(d, key2)
+                    continue
+                write_review(Path(d) / name, key, choices, rows=kw.get("rows"))
+                with self.assertRaises(ValueError):
+                    T.load_reviews(d, key)
 
     def test_cohen_perfect(self):
         a = {"G1": "X", "G2": "Y", "G3": "애매"}
