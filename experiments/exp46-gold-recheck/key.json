@@ -1,0 +1,4722 @@
+{
+ "experiment": "exp46-gold-recheck",
+ "golds": [
+  "official239",
+  "previous_ai239",
+  "conservative239"
+ ],
+ "items": [
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「퇴근길」 COMMUTE/inferential + 「온산」 LOC_ADMIN/explicit + 「덕신교를」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 283,
+       "level": "inferential",
+       "span_id": "B12_b22_s01",
+       "start": 280,
+       "subject": "self",
+       "text": "퇴근길",
+       "text_id": "body",
+       "type": "COMMUTE"
+      },
+      {
+       "end": 286,
+       "level": "explicit",
+       "span_id": "B12_b22_s02",
+       "start": 284,
+       "subject": "self",
+       "text": "온산",
+       "text_id": "body",
+       "type": "LOC_ADMIN"
+      },
+      {
+       "end": 291,
+       "level": "inferential",
+       "span_id": "B12_b22_s03",
+       "start": 287,
+       "subject": "self",
+       "text": "덕신교를",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「퇴근길 온산 덕신교」 COMMUTE/explicit",
+     "spans": [
+      {
+       "end": 290,
+       "level": "explicit",
+       "span_id": "B12_b22_s01",
+       "start": 280,
+       "subject": "self",
+       "text": "퇴근길 온산 덕신교",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    }
+   },
+   "item_id": "G01",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "B12_b22",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 283,
+      "level": "inferential",
+      "span_id": "B12_b22_s01",
+      "start": 280,
+      "subject": "self",
+      "text": "퇴근길",
+      "text_id": "body",
+      "type": "COMMUTE"
+     },
+     {
+      "end": 286,
+      "level": "explicit",
+      "span_id": "B12_b22_s02",
+      "start": 284,
+      "subject": "self",
+      "text": "온산",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 291,
+      "level": "inferential",
+      "span_id": "B12_b22_s03",
+      "start": 287,
+      "subject": "self",
+      "text": "덕신교를",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 290,
+      "level": "explicit",
+      "span_id": "B12_b22_s01",
+      "start": 280,
+      "subject": "self",
+      "text": "퇴근길 온산 덕신교",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 283,
+      "level": "inferential",
+      "span_id": "B12_b22_s01",
+      "start": 280,
+      "subject": "self",
+      "text": "퇴근길",
+      "text_id": "body",
+      "type": "COMMUTE"
+     },
+     {
+      "end": 286,
+      "level": "explicit",
+      "span_id": "B12_b22_s02",
+      "start": 284,
+      "subject": "self",
+      "text": "온산",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 291,
+      "level": "inferential",
+      "span_id": "B12_b22_s03",
+      "start": 287,
+      "subject": "self",
+      "text": "덕신교를",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0172"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「학원」 JOB/implicit",
+     "spans": [
+      {
+       "end": 561,
+       "level": "implicit",
+       "span_id": "A11_b18_s01",
+       "start": 559,
+       "subject": "self",
+       "text": "학원",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G02",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "A11_b18",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 561,
+      "level": "implicit",
+      "span_id": "A11_b18_s01",
+      "start": 559,
+      "subject": "self",
+      "text": "학원",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0020"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「여든」 AGE/explicit",
+     "spans": [
+      {
+       "end": 430,
+       "level": "explicit",
+       "span_id": "D08_b13_s02",
+       "start": 428,
+       "subject": "other",
+       "text": "여든",
+       "text_id": "body",
+       "type": "AGE"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G03",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "D08_b13",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 430,
+      "level": "explicit",
+      "span_id": "D08_b13_s02",
+      "start": 428,
+      "subject": "other",
+      "text": "여든",
+      "text_id": "body",
+      "type": "AGE"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0336"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「효문」 LOC_ADMIN/explicit",
+     "spans": [
+      {
+       "end": 2,
+       "level": "explicit",
+       "span_id": "E15_b02_s05",
+       "start": 0,
+       "subject": "self",
+       "text": "효문",
+       "text_id": "photo_caption:0",
+       "type": "LOC_ADMIN"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「효문 사거리」 LOC_FACILITY/explicit",
+     "spans": [
+      {
+       "end": 6,
+       "level": "explicit",
+       "span_id": "E15_b02_s05",
+       "start": 0,
+       "subject": "self",
+       "text": "효문 사거리",
+       "text_id": "photo_caption:0",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    }
+   },
+   "item_id": "G04",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "E15_b02",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 6,
+      "level": "explicit",
+      "span_id": "E15_b02_s05",
+      "start": 0,
+      "subject": "self",
+      "text": "효문 사거리",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 6,
+      "level": "explicit",
+      "span_id": "E15_b02_s03",
+      "start": 0,
+      "subject": "self",
+      "text": "효문 사거리",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 2,
+      "level": "explicit",
+      "span_id": "E15_b02_s05",
+      "start": 0,
+      "subject": "self",
+      "text": "효문",
+      "text_id": "photo_caption:0",
+      "type": "LOC_ADMIN"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0461"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「강변 창고」 LOC_FACILITY/explicit",
+     "spans": [
+      {
+       "end": 27,
+       "level": "explicit",
+       "span_id": "C09_b03_s01",
+       "start": 22,
+       "subject": "self",
+       "text": "강변 창고",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    }
+   },
+   "item_id": "G05",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "C09_b03",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 27,
+      "level": "explicit",
+      "span_id": "C09_b03_s01",
+      "start": 22,
+      "subject": "self",
+      "text": "강변 창고",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 27,
+      "level": "explicit",
+      "span_id": "C09_b03_s01",
+      "start": 22,
+      "subject": "self",
+      "text": "강변 창고",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0271"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「성수기 끝나야 숨이 쉬어진다」 JOB/implicit",
+     "spans": [
+      {
+       "end": 16,
+       "level": "implicit",
+       "span_id": "A05_b06_s02",
+       "start": 1,
+       "subject": "self",
+       "text": "성수기 끝나야 숨이 쉬어진다",
+       "text_id": "title",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G06",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "A05_b06",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 16,
+      "level": "implicit",
+      "span_id": "A05_b06_s02",
+      "start": 1,
+      "subject": "self",
+      "text": "성수기 끝나야 숨이 쉬어진다",
+      "text_id": "title",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0012"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「야자」 AGE/implicit",
+     "spans": [
+      {
+       "end": 102,
+       "level": "implicit",
+       "span_id": "A26_b27_s01",
+       "start": 100,
+       "subject": "self",
+       "text": "야자",
+       "text_id": "body",
+       "type": "AGE"
+      }
+     ]
+    }
+   },
+   "item_id": "G07",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "A26_b27",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 102,
+      "level": "implicit",
+      "span_id": "A26_b27_s01",
+      "start": 100,
+      "subject": "self",
+      "text": "야자",
+      "text_id": "body",
+      "type": "AGE"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0079"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「누나」 FAM/implicit",
+     "spans": [
+      {
+       "end": 170,
+       "level": "implicit",
+       "span_id": "E16_b20_s02",
+       "start": 168,
+       "subject": "self",
+       "text": "누나",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「누나가」 SEX/implicit",
+     "spans": [
+      {
+       "end": 171,
+       "level": "implicit",
+       "span_id": "E16_b20_s02",
+       "start": 168,
+       "subject": "self",
+       "text": "누나가",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G08",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "E16_b20",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 170,
+      "level": "implicit",
+      "span_id": "E16_b20_s02",
+      "start": 168,
+      "subject": "self",
+      "text": "누나",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 170,
+      "level": "implicit",
+      "span_id": "E16_b20_s01",
+      "start": 168,
+      "subject": "self",
+      "text": "누나",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 171,
+      "level": "implicit",
+      "span_id": "E16_b20_s02",
+      "start": 168,
+      "subject": "self",
+      "text": "누나가",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0478"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「첫째 그림일기」 FAM/implicit",
+     "spans": [
+      {
+       "end": 503,
+       "level": "implicit",
+       "span_id": "E10_b27_s01",
+       "start": 496,
+       "subject": "other",
+       "text": "첫째 그림일기",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「첫째」 FAM/implicit",
+     "spans": [
+      {
+       "end": 498,
+       "level": "implicit",
+       "span_id": "E10_b27_s01",
+       "start": 496,
+       "subject": "other",
+       "text": "첫째",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G09",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "E10_b27",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 503,
+      "level": "implicit",
+      "span_id": "E10_b27_s01",
+      "start": 496,
+      "subject": "other",
+      "text": "첫째 그림일기",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 503,
+      "level": "implicit",
+      "span_id": "E10_b27_s01",
+      "start": 496,
+      "subject": "other",
+      "text": "첫째 그림일기",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 498,
+      "level": "implicit",
+      "span_id": "E10_b27_s01",
+      "start": 496,
+      "subject": "other",
+      "text": "첫째",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0418"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「읍내」 REL_HOME/inferential",
+     "spans": [
+      {
+       "end": 2,
+       "level": "inferential",
+       "span_id": "C12_b03_s03",
+       "start": 0,
+       "subject": "self",
+       "text": "읍내",
+       "text_id": "photo_caption:0",
+       "type": "REL_HOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「읍내 시장」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 5,
+       "level": "inferential",
+       "span_id": "C12_b03_s02",
+       "start": 0,
+       "subject": "self",
+       "text": "읍내 시장",
+       "text_id": "photo_caption:0",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    }
+   },
+   "item_id": "G10",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "C12_b03",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 5,
+      "level": "inferential",
+      "span_id": "C12_b03_s02",
+      "start": 0,
+      "subject": "self",
+      "text": "읍내 시장",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 5,
+      "level": "inferential",
+      "span_id": "C12_b03_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "읍내 시장",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 2,
+      "level": "inferential",
+      "span_id": "C12_b03_s03",
+      "start": 0,
+      "subject": "self",
+      "text": "읍내",
+      "text_id": "photo_caption:0",
+      "type": "REL_HOME"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0279"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「경력직」 JOB/explicit",
+     "spans": [
+      {
+       "end": 175,
+       "level": "explicit",
+       "span_id": "C17_b12_s02",
+       "start": 172,
+       "subject": "self",
+       "text": "경력직",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G11",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "C17_b12",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 175,
+      "level": "explicit",
+      "span_id": "C17_b12_s02",
+      "start": 172,
+      "subject": "self",
+      "text": "경력직",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 175,
+      "level": "explicit",
+      "span_id": "C17_b12_s02",
+      "start": 172,
+      "subject": "self",
+      "text": "경력직",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0288"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「처형이」 SEX/implicit",
+     "spans": [
+      {
+       "end": 3,
+       "level": "implicit",
+       "span_id": "E10_b14_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "처형이",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「처형」 FAM/implicit",
+     "spans": [
+      {
+       "end": 2,
+       "level": "implicit",
+       "span_id": "E10_b14_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "처형",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G12",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "E10_b14",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 2,
+      "level": "implicit",
+      "span_id": "E10_b14_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "처형",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 2,
+      "level": "implicit",
+      "span_id": "E10_b14_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "처형",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 3,
+      "level": "implicit",
+      "span_id": "E10_b14_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "처형이",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0408"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「물가」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 2,
+       "level": "inferential",
+       "span_id": "D04_b19_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "물가",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G13",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "D04_b19",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 2,
+      "level": "inferential",
+      "span_id": "D04_b19_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "물가",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 2,
+      "level": "inferential",
+      "span_id": "D04_b19_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "물가",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0320"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「첫째 딸내미」 FAM/implicit",
+     "spans": [
+      {
+       "end": 908,
+       "level": "implicit",
+       "span_id": "A23_b20_s01",
+       "start": 902,
+       "subject": "self",
+       "text": "첫째 딸내미",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「첫째」 FAM/implicit + 「딸내미」 FAM/implicit",
+     "spans": [
+      {
+       "end": 904,
+       "level": "implicit",
+       "span_id": "A23_b20_s01",
+       "start": 902,
+       "subject": "self",
+       "text": "첫째",
+       "text_id": "body",
+       "type": "FAM"
+      },
+      {
+       "end": 908,
+       "level": "implicit",
+       "span_id": "A23_b20_s02",
+       "start": 905,
+       "subject": "self",
+       "text": "딸내미",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G14",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "A23_b20",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 908,
+      "level": "implicit",
+      "span_id": "A23_b20_s01",
+      "start": 902,
+      "subject": "self",
+      "text": "첫째 딸내미",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 908,
+      "level": "implicit",
+      "span_id": "A23_b20_s01",
+      "start": 902,
+      "subject": "self",
+      "text": "첫째 딸내미",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 904,
+      "level": "implicit",
+      "span_id": "A23_b20_s01",
+      "start": 902,
+      "subject": "self",
+      "text": "첫째",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 908,
+      "level": "implicit",
+      "span_id": "A23_b20_s02",
+      "start": 905,
+      "subject": "self",
+      "text": "딸내미",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0062"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「작업실」 REL_WORK/inferential",
+     "spans": [
+      {
+       "end": 217,
+       "level": "inferential",
+       "span_id": "B04_b14_s04",
+       "start": 214,
+       "subject": "other",
+       "text": "작업실",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G15",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "B04_b14",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 217,
+      "level": "inferential",
+      "span_id": "B04_b14_s03",
+      "start": 214,
+      "subject": "other",
+      "text": "작업실",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 217,
+      "level": "inferential",
+      "span_id": "B04_b14_s04",
+      "start": 214,
+      "subject": "other",
+      "text": "작업실",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0111"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「1톤 화물차는」 JOB/inferential",
+     "spans": [
+      {
+       "end": 103,
+       "level": "inferential",
+       "span_id": "B12_b05_s01",
+       "start": 96,
+       "subject": "self",
+       "text": "1톤 화물차는",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G16",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "B12_b05",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 103,
+      "level": "inferential",
+      "span_id": "B12_b05_s01",
+      "start": 96,
+      "subject": "self",
+      "text": "1톤 화물차는",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0166"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「오피스텔」 REL_HOME/inferential",
+     "spans": [
+      {
+       "end": 16,
+       "level": "inferential",
+       "span_id": "B16_b21_s02",
+       "start": 12,
+       "subject": "self",
+       "text": "오피스텔",
+       "text_id": "body",
+       "type": "REL_HOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「오피스텔」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 16,
+       "level": "implicit",
+       "span_id": "B16_b21_s02",
+       "start": 12,
+       "subject": "self",
+       "text": "오피스텔",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G17",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "B16_b21",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 16,
+      "level": "inferential",
+      "span_id": "B16_b21_s02",
+      "start": 12,
+      "subject": "self",
+      "text": "오피스텔",
+      "text_id": "body",
+      "type": "REL_HOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 16,
+      "level": "inferential",
+      "span_id": "B16_b21_s02",
+      "start": 12,
+      "subject": "self",
+      "text": "오피스텔",
+      "text_id": "body",
+      "type": "REL_HOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 16,
+      "level": "implicit",
+      "span_id": "B16_b21_s02",
+      "start": 12,
+      "subject": "self",
+      "text": "오피스텔",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0207"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「아이들의」 FAM/implicit",
+     "spans": [
+      {
+       "end": 21,
+       "level": "implicit",
+       "span_id": "B06_b09_s01",
+       "start": 17,
+       "subject": "self",
+       "text": "아이들의",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G18",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "B06_b09",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 21,
+      "level": "implicit",
+      "span_id": "B06_b09_s01",
+      "start": 17,
+      "subject": "self",
+      "text": "아이들의",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0121"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「처형」 FAM/implicit",
+     "spans": [
+      {
+       "end": 97,
+       "level": "implicit",
+       "span_id": "E10_b14_s02",
+       "start": 95,
+       "subject": "self",
+       "text": "처형",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「처형은」 SEX/implicit",
+     "spans": [
+      {
+       "end": 98,
+       "level": "implicit",
+       "span_id": "E10_b14_s03",
+       "start": 95,
+       "subject": "self",
+       "text": "처형은",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G19",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "E10_b14",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 97,
+      "level": "implicit",
+      "span_id": "E10_b14_s03",
+      "start": 95,
+      "subject": "self",
+      "text": "처형",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 97,
+      "level": "implicit",
+      "span_id": "E10_b14_s02",
+      "start": 95,
+      "subject": "self",
+      "text": "처형",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 98,
+      "level": "implicit",
+      "span_id": "E10_b14_s03",
+      "start": 95,
+      "subject": "self",
+      "text": "처형은",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0410"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「남편」 SEX/implicit",
+     "spans": [
+      {
+       "end": 174,
+       "level": "implicit",
+       "span_id": "D18_b17_s01",
+       "start": 172,
+       "subject": "self",
+       "text": "남편",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「남편한테서는」 SEX/implicit",
+     "spans": [
+      {
+       "end": 178,
+       "level": "implicit",
+       "span_id": "D18_b17_s01",
+       "start": 172,
+       "subject": "self",
+       "text": "남편한테서는",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G20",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "D18_b17",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 178,
+      "level": "implicit",
+      "span_id": "D18_b17_s01",
+      "start": 172,
+      "subject": "self",
+      "text": "남편한테서는",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "official239": [
+     {
+      "end": 174,
+      "level": "implicit",
+      "span_id": "D18_b17_s01",
+      "start": 172,
+      "subject": "self",
+      "text": "남편",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 178,
+      "level": "implicit",
+      "span_id": "D18_b17_s01",
+      "start": 172,
+      "subject": "self",
+      "text": "남편한테서는",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0359"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「스무 해 동안 열쇠를 돌리던 문을 닫은 뒤에는」 JOB/implicit",
+     "spans": [
+      {
+       "end": 945,
+       "level": "implicit",
+       "span_id": "A02_b07_s01",
+       "start": 920,
+       "subject": "self",
+       "text": "스무 해 동안 열쇠를 돌리던 문을 닫은 뒤에는",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G21",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "A02_b07",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 945,
+      "level": "implicit",
+      "span_id": "A02_b07_s01",
+      "start": 920,
+      "subject": "self",
+      "text": "스무 해 동안 열쇠를 돌리던 문을 닫은 뒤에는",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0002"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「회사 사람들」 REL_WORK/explicit",
+     "spans": [
+      {
+       "end": 203,
+       "level": "explicit",
+       "span_id": "E18_b05_s02",
+       "start": 197,
+       "subject": "self",
+       "text": "회사 사람들",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「회사」 REL_WORK/inferential",
+     "spans": [
+      {
+       "end": 199,
+       "level": "inferential",
+       "span_id": "E18_b05_s02",
+       "start": 197,
+       "subject": "other",
+       "text": "회사",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    }
+   },
+   "item_id": "G22",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "E18_b05",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 199,
+      "level": "inferential",
+      "span_id": "E18_b05_s02",
+      "start": 197,
+      "subject": "other",
+      "text": "회사",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ],
+    "official239": [
+     {
+      "end": 203,
+      "level": "explicit",
+      "span_id": "E18_b05_s02",
+      "start": 197,
+      "subject": "self",
+      "text": "회사 사람들",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 199,
+      "level": "inferential",
+      "span_id": "E18_b05_s02",
+      "start": 197,
+      "subject": "other",
+      "text": "회사",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0490"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「수인분당선 매탄권선역 1번 출구 퇴근길」 COMMUTE/explicit",
+     "spans": [
+      {
+       "end": 21,
+       "level": "explicit",
+       "span_id": "B10_b20_s02",
+       "start": 0,
+       "subject": "self",
+       "text": "수인분당선 매탄권선역 1번 출구 퇴근길",
+       "text_id": "photo_caption:0",
+       "type": "COMMUTE"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「수인분당선」 COMMUTE/explicit + 「매탄권선역 1번 출구」 LOC_FACILITY/inferential + 「퇴근길」 COMMUTE/inferential",
+     "spans": [
+      {
+       "end": 5,
+       "level": "explicit",
+       "span_id": "B10_b20_s05",
+       "start": 0,
+       "subject": "self",
+       "text": "수인분당선",
+       "text_id": "photo_caption:0",
+       "type": "COMMUTE"
+      },
+      {
+       "end": 17,
+       "level": "inferential",
+       "span_id": "B10_b20_s06",
+       "start": 6,
+       "subject": "self",
+       "text": "매탄권선역 1번 출구",
+       "text_id": "photo_caption:0",
+       "type": "LOC_FACILITY"
+      },
+      {
+       "end": 21,
+       "level": "inferential",
+       "span_id": "B10_b20_s07",
+       "start": 18,
+       "subject": "self",
+       "text": "퇴근길",
+       "text_id": "photo_caption:0",
+       "type": "COMMUTE"
+      }
+     ]
+    }
+   },
+   "item_id": "G23",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "B10_b20",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 5,
+      "level": "explicit",
+      "span_id": "B10_b20_s05",
+      "start": 0,
+      "subject": "self",
+      "text": "수인분당선",
+      "text_id": "photo_caption:0",
+      "type": "COMMUTE"
+     },
+     {
+      "end": 17,
+      "level": "inferential",
+      "span_id": "B10_b20_s06",
+      "start": 6,
+      "subject": "self",
+      "text": "매탄권선역 1번 출구",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     },
+     {
+      "end": 21,
+      "level": "inferential",
+      "span_id": "B10_b20_s07",
+      "start": 18,
+      "subject": "self",
+      "text": "퇴근길",
+      "text_id": "photo_caption:0",
+      "type": "COMMUTE"
+     }
+    ],
+    "official239": [
+     {
+      "end": 21,
+      "level": "explicit",
+      "span_id": "B10_b20_s02",
+      "start": 0,
+      "subject": "self",
+      "text": "수인분당선 매탄권선역 1번 출구 퇴근길",
+      "text_id": "photo_caption:0",
+      "type": "COMMUTE"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 5,
+      "level": "explicit",
+      "span_id": "B10_b20_s05",
+      "start": 0,
+      "subject": "self",
+      "text": "수인분당선",
+      "text_id": "photo_caption:0",
+      "type": "COMMUTE"
+     },
+     {
+      "end": 17,
+      "level": "inferential",
+      "span_id": "B10_b20_s06",
+      "start": 6,
+      "subject": "self",
+      "text": "매탄권선역 1번 출구",
+      "text_id": "photo_caption:0",
+      "type": "LOC_FACILITY"
+     },
+     {
+      "end": 21,
+      "level": "inferential",
+      "span_id": "B10_b20_s07",
+      "start": 18,
+      "subject": "self",
+      "text": "퇴근길",
+      "text_id": "photo_caption:0",
+      "type": "COMMUTE"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0160"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「서울」 LOC_ADMIN/explicit",
+     "spans": [
+      {
+       "end": 20,
+       "level": "explicit",
+       "span_id": "B02_b06_s07",
+       "start": 18,
+       "subject": "self",
+       "text": "서울",
+       "text_id": "title",
+       "type": "LOC_ADMIN"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G24",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "B02_b06",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 20,
+      "level": "explicit",
+      "span_id": "B02_b06_s07",
+      "start": 18,
+      "subject": "self",
+      "text": "서울",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 20,
+      "level": "explicit",
+      "span_id": "B02_b06_s08",
+      "start": 18,
+      "subject": "self",
+      "text": "서울",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0092"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「모아 둔 용돈을 세어도 ⏎ 숫자가 한참 모자랐다」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 275,
+       "level": "implicit",
+       "span_id": "A07_b16_s01",
+       "start": 251,
+       "subject": "self",
+       "text": "모아 둔 용돈을 세어도\n숫자가 한참 모자랐다",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「용돈을」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 259,
+       "level": "implicit",
+       "span_id": "A07_b16_s01",
+       "start": 256,
+       "subject": "self",
+       "text": "용돈을",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G25",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "A07_b16",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 259,
+      "level": "implicit",
+      "span_id": "A07_b16_s01",
+      "start": 256,
+      "subject": "self",
+      "text": "용돈을",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 275,
+      "level": "implicit",
+      "span_id": "A07_b16_s01",
+      "start": 251,
+      "subject": "self",
+      "text": "모아 둔 용돈을 세어도\n숫자가 한참 모자랐다",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 259,
+      "level": "implicit",
+      "span_id": "A07_b16_s01",
+      "start": 256,
+      "subject": "self",
+      "text": "용돈을",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0013"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「퇴근길 2호선」 COMMUTE/explicit",
+     "spans": [
+      {
+       "end": 7,
+       "level": "explicit",
+       "span_id": "S01_b06_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "퇴근길 2호선",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「퇴근길」 COMMUTE/inferential + 「2호선이」 COMMUTE/explicit",
+     "spans": [
+      {
+       "end": 3,
+       "level": "inferential",
+       "span_id": "S01_b06_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "퇴근길",
+       "text_id": "body",
+       "type": "COMMUTE"
+      },
+      {
+       "end": 8,
+       "level": "explicit",
+       "span_id": "S01_b06_s02",
+       "start": 4,
+       "subject": "self",
+       "text": "2호선이",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    }
+   },
+   "item_id": "G26",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "S01_b06",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 7,
+      "level": "explicit",
+      "span_id": "S01_b06_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "퇴근길 2호선",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "official239": [
+     {
+      "end": 7,
+      "level": "explicit",
+      "span_id": "S01_b06_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "퇴근길 2호선",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 3,
+      "level": "inferential",
+      "span_id": "S01_b06_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "퇴근길",
+      "text_id": "body",
+      "type": "COMMUTE"
+     },
+     {
+      "end": 8,
+      "level": "explicit",
+      "span_id": "S01_b06_s02",
+      "start": 4,
+      "subject": "self",
+      "text": "2호선이",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0508"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「딸이 엄마」 FAM/implicit",
+     "spans": [
+      {
+       "end": 188,
+       "level": "implicit",
+       "span_id": "D11_b10_s01",
+       "start": 183,
+       "subject": "self",
+       "text": "딸이 엄마",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「딸이」 FAM/implicit",
+     "spans": [
+      {
+       "end": 185,
+       "level": "implicit",
+       "span_id": "D11_b10_s01",
+       "start": 183,
+       "subject": "self",
+       "text": "딸이",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G27",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "D11_b10",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 185,
+      "level": "implicit",
+      "span_id": "D11_b10_s01",
+      "start": 183,
+      "subject": "self",
+      "text": "딸이",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 188,
+      "level": "implicit",
+      "span_id": "D11_b10_s01",
+      "start": 183,
+      "subject": "self",
+      "text": "딸이 엄마",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 185,
+      "level": "implicit",
+      "span_id": "D11_b10_s01",
+      "start": 183,
+      "subject": "self",
+      "text": "딸이",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0347"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「퇴근하고」 COMMUTE/inferential",
+     "spans": [
+      {
+       "end": 387,
+       "level": "inferential",
+       "span_id": "B19_b15_s02",
+       "start": 383,
+       "subject": "other",
+       "text": "퇴근하고",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G28",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "B19_b15",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 387,
+      "level": "inferential",
+      "span_id": "B19_b15_s02",
+      "start": 383,
+      "subject": "other",
+      "text": "퇴근하고",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 387,
+      "level": "inferential",
+      "span_id": "B19_b15_s02",
+      "start": 383,
+      "subject": "other",
+      "text": "퇴근하고",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0240"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「거래처」 JOB/implicit",
+     "spans": [
+      {
+       "end": 8,
+       "level": "implicit",
+       "span_id": "E17_b08_s01",
+       "start": 5,
+       "subject": "other",
+       "text": "거래처",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G29",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "E17_b08",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 8,
+      "level": "implicit",
+      "span_id": "E17_b08_s01",
+      "start": 5,
+      "subject": "other",
+      "text": "거래처",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 8,
+      "level": "implicit",
+      "span_id": "E17_b08_s01",
+      "start": 5,
+      "subject": "other",
+      "text": "거래처",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0483"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「오송으로」 LOC_ADMIN/explicit",
+     "spans": [
+      {
+       "end": 1776,
+       "level": "explicit",
+       "span_id": "A03_b16_s01",
+       "start": 1772,
+       "subject": "other",
+       "text": "오송으로",
+       "text_id": "body",
+       "type": "LOC_ADMIN"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「같은 팀 선배는 오송으로 파견」 LOC_ADMIN/explicit",
+     "spans": [
+      {
+       "end": 1779,
+       "level": "explicit",
+       "span_id": "A03_b16_s01",
+       "start": 1763,
+       "subject": "other",
+       "text": "같은 팀 선배는 오송으로 파견",
+       "text_id": "body",
+       "type": "LOC_ADMIN"
+      }
+     ]
+    }
+   },
+   "item_id": "G30",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "A03_b16",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 1776,
+      "level": "explicit",
+      "span_id": "A03_b16_s01",
+      "start": 1772,
+      "subject": "other",
+      "text": "오송으로",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     }
+    ],
+    "official239": [
+     {
+      "end": 1779,
+      "level": "explicit",
+      "span_id": "A03_b16_s01",
+      "start": 1763,
+      "subject": "other",
+      "text": "같은 팀 선배는 오송으로 파견",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 1776,
+      "level": "explicit",
+      "span_id": "A03_b16_s01",
+      "start": 1772,
+      "subject": "other",
+      "text": "오송으로",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0006"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「KTX 좌석」 COMMUTE/explicit",
+     "spans": [
+      {
+       "end": 63,
+       "level": "explicit",
+       "span_id": "B02_b06_s02",
+       "start": 57,
+       "subject": "self",
+       "text": "KTX 좌석",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    }
+   },
+   "item_id": "G31",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "B02_b06",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 63,
+      "level": "explicit",
+      "span_id": "B02_b06_s02",
+      "start": 57,
+      "subject": "self",
+      "text": "KTX 좌석",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "official239": [
+     {
+      "end": 63,
+      "level": "explicit",
+      "span_id": "B02_b06_s01",
+      "start": 57,
+      "subject": "self",
+      "text": "KTX 좌석",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0085"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「신발까지 신겼더니」 FAM/implicit",
+     "spans": [
+      {
+       "end": 126,
+       "level": "implicit",
+       "span_id": "A12_b26_s02",
+       "start": 117,
+       "subject": "unknown",
+       "text": "신발까지 신겼더니",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G32",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "A12_b26",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 126,
+      "level": "implicit",
+      "span_id": "A12_b26_s02",
+      "start": 117,
+      "subject": "unknown",
+      "text": "신발까지 신겼더니",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 126,
+      "level": "implicit",
+      "span_id": "A12_b26_s02",
+      "start": 117,
+      "subject": "unknown",
+      "text": "신발까지 신겼더니",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0023"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「공정」 JOB/implicit",
+     "spans": [
+      {
+       "end": 2,
+       "level": "implicit",
+       "span_id": "B02_b05_s04",
+       "start": 0,
+       "subject": "self",
+       "text": "공정",
+       "text_id": "title",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G33",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "B02_b05",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 2,
+      "level": "implicit",
+      "span_id": "B02_b05_s04",
+      "start": 0,
+      "subject": "self",
+      "text": "공정",
+      "text_id": "title",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0083"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「여수 산단 정유사」 LOC_FACILITY/explicit",
+     "spans": [
+      {
+       "end": 293,
+       "level": "explicit",
+       "span_id": "B02_b16_s04",
+       "start": 284,
+       "subject": "other",
+       "text": "여수 산단 정유사",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「여수」 LOC_ADMIN/explicit + 「정유사에」 JOB/implicit",
+     "spans": [
+      {
+       "end": 286,
+       "level": "explicit",
+       "span_id": "B02_b16_s04",
+       "start": 284,
+       "subject": "other",
+       "text": "여수",
+       "text_id": "body",
+       "type": "LOC_ADMIN"
+      },
+      {
+       "end": 294,
+       "level": "implicit",
+       "span_id": "B02_b16_s05",
+       "start": 290,
+       "subject": "other",
+       "text": "정유사에",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G34",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "B02_b16",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 286,
+      "level": "explicit",
+      "span_id": "B02_b16_s04",
+      "start": 284,
+      "subject": "other",
+      "text": "여수",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 294,
+      "level": "implicit",
+      "span_id": "B02_b16_s05",
+      "start": 290,
+      "subject": "other",
+      "text": "정유사에",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "official239": [
+     {
+      "end": 293,
+      "level": "explicit",
+      "span_id": "B02_b16_s04",
+      "start": 284,
+      "subject": "other",
+      "text": "여수 산단 정유사",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 286,
+      "level": "explicit",
+      "span_id": "B02_b16_s04",
+      "start": 284,
+      "subject": "other",
+      "text": "여수",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 294,
+      "level": "implicit",
+      "span_id": "B02_b16_s05",
+      "start": 290,
+      "subject": "other",
+      "text": "정유사에",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0097"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「면접을」 JOB/implicit",
+     "spans": [
+      {
+       "end": 179,
+       "level": "implicit",
+       "span_id": "C17_b12_s03",
+       "start": 176,
+       "subject": "self",
+       "text": "면접을",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G35",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "C17_b12",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 179,
+      "level": "implicit",
+      "span_id": "C17_b12_s03",
+      "start": 176,
+      "subject": "self",
+      "text": "면접을",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 179,
+      "level": "implicit",
+      "span_id": "C17_b12_s03",
+      "start": 176,
+      "subject": "self",
+      "text": "면접을",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0289"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「통근버스」 COMMUTE/implicit",
+     "spans": [
+      {
+       "end": 197,
+       "level": "implicit",
+       "span_id": "E01_b09_s01",
+       "start": 193,
+       "subject": "self",
+       "text": "통근버스",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「기숙사 앞 통근버스」 COMMUTE/inferential",
+     "spans": [
+      {
+       "end": 197,
+       "level": "inferential",
+       "span_id": "E01_b09_s01",
+       "start": 187,
+       "subject": "self",
+       "text": "기숙사 앞 통근버스",
+       "text_id": "body",
+       "type": "COMMUTE"
+      }
+     ]
+    }
+   },
+   "item_id": "G36",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "E01_b09",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 197,
+      "level": "inferential",
+      "span_id": "E01_b09_s01",
+      "start": 187,
+      "subject": "self",
+      "text": "기숙사 앞 통근버스",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "official239": [
+     {
+      "end": 197,
+      "level": "inferential",
+      "span_id": "E01_b09_s01",
+      "start": 187,
+      "subject": "self",
+      "text": "기숙사 앞 통근버스",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 197,
+      "level": "implicit",
+      "span_id": "E01_b09_s01",
+      "start": 193,
+      "subject": "self",
+      "text": "통근버스",
+      "text_id": "body",
+      "type": "COMMUTE"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0380"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「재료비와 월세」 INCOME/inferential",
+     "spans": [
+      {
+       "end": 221,
+       "level": "inferential",
+       "span_id": "C13_b15_s01",
+       "start": 214,
+       "subject": "self",
+       "text": "재료비와 월세",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「재료비와」 INCOME/inferential + 「월세를」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 218,
+       "level": "inferential",
+       "span_id": "C13_b15_s01",
+       "start": 214,
+       "subject": "self",
+       "text": "재료비와",
+       "text_id": "body",
+       "type": "INCOME"
+      },
+      {
+       "end": 222,
+       "level": "implicit",
+       "span_id": "C13_b15_s02",
+       "start": 219,
+       "subject": "self",
+       "text": "월세를",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G37",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "C13_b15",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 221,
+      "level": "inferential",
+      "span_id": "C13_b15_s01",
+      "start": 214,
+      "subject": "self",
+      "text": "재료비와 월세",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 221,
+      "level": "inferential",
+      "span_id": "C13_b15_s01",
+      "start": 214,
+      "subject": "self",
+      "text": "재료비와 월세",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 218,
+      "level": "inferential",
+      "span_id": "C13_b15_s01",
+      "start": 214,
+      "subject": "self",
+      "text": "재료비와",
+      "text_id": "body",
+      "type": "INCOME"
+     },
+     {
+      "end": 222,
+      "level": "implicit",
+      "span_id": "C13_b15_s02",
+      "start": 219,
+      "subject": "self",
+      "text": "월세를",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0281"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「같은 부서 언니」 SEX/implicit",
+     "spans": [
+      {
+       "end": 228,
+       "level": "implicit",
+       "span_id": "E01_b09_s02",
+       "start": 220,
+       "subject": "self",
+       "text": "같은 부서 언니",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「언니도」 SEX/implicit",
+     "spans": [
+      {
+       "end": 229,
+       "level": "implicit",
+       "span_id": "E01_b09_s02",
+       "start": 226,
+       "subject": "self",
+       "text": "언니도",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G38",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "E01_b09",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 228,
+      "level": "implicit",
+      "span_id": "E01_b09_s02",
+      "start": 220,
+      "subject": "self",
+      "text": "같은 부서 언니",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "official239": [
+     {
+      "end": 228,
+      "level": "implicit",
+      "span_id": "E01_b09_s02",
+      "start": 220,
+      "subject": "self",
+      "text": "같은 부서 언니",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 229,
+      "level": "implicit",
+      "span_id": "E01_b09_s02",
+      "start": 226,
+      "subject": "self",
+      "text": "언니도",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0381"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「전주 객사 들깨칼국수」 LOC_FACILITY/explicit",
+     "spans": [
+      {
+       "end": 11,
+       "level": "explicit",
+       "span_id": "C01_b15_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "전주 객사 들깨칼국수",
+       "text_id": "title",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「전주」 LOC_ADMIN/explicit + 「객사」 LOC_ADMIN/explicit",
+     "spans": [
+      {
+       "end": 2,
+       "level": "explicit",
+       "span_id": "C01_b15_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "전주",
+       "text_id": "title",
+       "type": "LOC_ADMIN"
+      },
+      {
+       "end": 5,
+       "level": "explicit",
+       "span_id": "C01_b15_s02",
+       "start": 3,
+       "subject": "self",
+       "text": "객사",
+       "text_id": "title",
+       "type": "LOC_ADMIN"
+      }
+     ]
+    }
+   },
+   "item_id": "G39",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "C01_b15",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 2,
+      "level": "explicit",
+      "span_id": "C01_b15_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "전주",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 5,
+      "level": "explicit",
+      "span_id": "C01_b15_s02",
+      "start": 3,
+      "subject": "self",
+      "text": "객사",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     }
+    ],
+    "official239": [
+     {
+      "end": 11,
+      "level": "explicit",
+      "span_id": "C01_b15_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "전주 객사 들깨칼국수",
+      "text_id": "title",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 2,
+      "level": "explicit",
+      "span_id": "C01_b15_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "전주",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 5,
+      "level": "explicit",
+      "span_id": "C01_b15_s02",
+      "start": 3,
+      "subject": "self",
+      "text": "객사",
+      "text_id": "title",
+      "type": "LOC_ADMIN"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0244"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「출장은」 JOB/inferential",
+     "spans": [
+      {
+       "end": 6,
+       "level": "inferential",
+       "span_id": "E03_b08_s01",
+       "start": 3,
+       "subject": "self",
+       "text": "출장은",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「이번 출장은 트림별 차이」 JOB/inferential",
+     "spans": [
+      {
+       "end": 13,
+       "level": "inferential",
+       "span_id": "E03_b08_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "이번 출장은 트림별 차이",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G40",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "E03_b08",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 6,
+      "level": "inferential",
+      "span_id": "E03_b08_s01",
+      "start": 3,
+      "subject": "self",
+      "text": "출장은",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "official239": [
+     {
+      "end": 13,
+      "level": "inferential",
+      "span_id": "E03_b08_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "이번 출장은 트림별 차이",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 6,
+      "level": "inferential",
+      "span_id": "E03_b08_s01",
+      "start": 3,
+      "subject": "self",
+      "text": "출장은",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0385"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「옆자리 후배는」 REL_WORK/inferential",
+     "spans": [
+      {
+       "end": 171,
+       "level": "inferential",
+       "span_id": "B03_b06_s01",
+       "start": 164,
+       "subject": "self",
+       "text": "옆자리 후배는",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    }
+   },
+   "item_id": "G41",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "B03_b06",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 171,
+      "level": "inferential",
+      "span_id": "B03_b06_s01",
+      "start": 164,
+      "subject": "self",
+      "text": "옆자리 후배는",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0104"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「임대료 칸부터 지난번보다 숫자가 컸어요. 재료비 영수증도 차례로 적었더니 마지막 줄이 빨갛게 남았습니다」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 358,
+       "level": "implicit",
+       "span_id": "D03_b04_s01",
+       "start": 301,
+       "subject": "self",
+       "text": "임대료 칸부터 지난번보다 숫자가 컸어요. 재료비 영수증도 차례로 적었더니 마지막 줄이 빨갛게 남았습니다",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「임대료」 INCOME/inferential + 「재료비」 INCOME/inferential",
+     "spans": [
+      {
+       "end": 304,
+       "level": "inferential",
+       "span_id": "D03_b04_s01",
+       "start": 301,
+       "subject": "self",
+       "text": "임대료",
+       "text_id": "body",
+       "type": "INCOME"
+      },
+      {
+       "end": 327,
+       "level": "inferential",
+       "span_id": "D03_b04_s02",
+       "start": 324,
+       "subject": "self",
+       "text": "재료비",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G42",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "D03_b04",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 304,
+      "level": "inferential",
+      "span_id": "D03_b04_s01",
+      "start": 301,
+      "subject": "self",
+      "text": "임대료",
+      "text_id": "body",
+      "type": "INCOME"
+     },
+     {
+      "end": 327,
+      "level": "inferential",
+      "span_id": "D03_b04_s02",
+      "start": 324,
+      "subject": "self",
+      "text": "재료비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 358,
+      "level": "implicit",
+      "span_id": "D03_b04_s01",
+      "start": 301,
+      "subject": "self",
+      "text": "임대료 칸부터 지난번보다 숫자가 컸어요. 재료비 영수증도 차례로 적었더니 마지막 줄이 빨갛게 남았습니다",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 304,
+      "level": "inferential",
+      "span_id": "D03_b04_s01",
+      "start": 301,
+      "subject": "self",
+      "text": "임대료",
+      "text_id": "body",
+      "type": "INCOME"
+     },
+     {
+      "end": 327,
+      "level": "inferential",
+      "span_id": "D03_b04_s02",
+      "start": 324,
+      "subject": "self",
+      "text": "재료비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0312"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「아이」 FAM/implicit",
+     "spans": [
+      {
+       "end": 325,
+       "level": "implicit",
+       "span_id": "B13_b08_s03",
+       "start": 323,
+       "subject": "self",
+       "text": "아이",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G43",
+   "kind": "lone_missing",
+   "pattern": "O_alone",
+   "post_id": "B13_b08",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 325,
+      "level": "implicit",
+      "span_id": "B13_b08_s03",
+      "start": 323,
+      "subject": "self",
+      "text": "아이",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 325,
+      "level": "implicit",
+      "span_id": "B13_b08_s02",
+      "start": 323,
+      "subject": "self",
+      "text": "아이",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "O_alone|lone_missing",
+   "unit_id": "U0178"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「형을」 SEX/implicit",
+     "spans": [
+      {
+       "end": 192,
+       "level": "implicit",
+       "span_id": "B10_b16_s04",
+       "start": 190,
+       "subject": "self",
+       "text": "형을",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G44",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "B10_b16",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 192,
+      "level": "implicit",
+      "span_id": "B10_b16_s04",
+      "start": 190,
+      "subject": "self",
+      "text": "형을",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0152"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「시어머니께서」 SEX/implicit",
+     "spans": [
+      {
+       "end": 351,
+       "level": "implicit",
+       "span_id": "B13_b08_s03",
+       "start": 345,
+       "subject": "self",
+       "text": "시어머니께서",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「시어머니」 FAM/implicit",
+     "spans": [
+      {
+       "end": 349,
+       "level": "implicit",
+       "span_id": "B13_b08_s03",
+       "start": 345,
+       "subject": "self",
+       "text": "시어머니",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G45",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "B13_b08",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 349,
+      "level": "implicit",
+      "span_id": "B13_b08_s04",
+      "start": 345,
+      "subject": "self",
+      "text": "시어머니",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 349,
+      "level": "implicit",
+      "span_id": "B13_b08_s03",
+      "start": 345,
+      "subject": "self",
+      "text": "시어머니",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 351,
+      "level": "implicit",
+      "span_id": "B13_b08_s03",
+      "start": 345,
+      "subject": "self",
+      "text": "시어머니께서",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0179"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「연금」 INCOME/inferential",
+     "spans": [
+      {
+       "end": 156,
+       "level": "inferential",
+       "span_id": "D13_b16_s01",
+       "start": 154,
+       "subject": "self",
+       "text": "연금",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G46",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "D13_b16",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 156,
+      "level": "inferential",
+      "span_id": "D13_b16_s01",
+      "start": 154,
+      "subject": "self",
+      "text": "연금",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 156,
+      "level": "inferential",
+      "span_id": "D13_b16_s01",
+      "start": 154,
+      "subject": "self",
+      "text": "연금",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0350"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「방학이라고 며칠 있다 간다길래 이불도  꺼내 놨다」 FAM/implicit",
+     "spans": [
+      {
+       "end": 132,
+       "level": "implicit",
+       "span_id": "D05_b12_s01",
+       "start": 105,
+       "subject": "unknown",
+       "text": "방학이라고 며칠 있다 간다길래 이불도  꺼내 놨다",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G47",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "D05_b12",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 132,
+      "level": "implicit",
+      "span_id": "D05_b12_s01",
+      "start": 105,
+      "subject": "unknown",
+      "text": "방학이라고 며칠 있다 간다길래 이불도  꺼내 놨다",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 132,
+      "level": "implicit",
+      "span_id": "D05_b12_s01",
+      "start": 105,
+      "subject": "unknown",
+      "text": "방학이라고 며칠 있다 간다길래 이불도  꺼내 놨다",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0323"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「백사십만 원에서」 INCOME/explicit",
+     "spans": [
+      {
+       "end": 293,
+       "level": "explicit",
+       "span_id": "B15_b13_s02",
+       "start": 285,
+       "subject": "self",
+       "text": "백사십만 원에서",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「국민연금 백사십만 원」 INCOME/explicit",
+     "spans": [
+      {
+       "end": 291,
+       "level": "explicit",
+       "span_id": "B15_b13_s02",
+       "start": 280,
+       "subject": "self",
+       "text": "국민연금 백사십만 원",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G48",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "B15_b13",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 291,
+      "level": "explicit",
+      "span_id": "B15_b13_s02",
+      "start": 280,
+      "subject": "self",
+      "text": "국민연금 백사십만 원",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 291,
+      "level": "explicit",
+      "span_id": "B15_b13_s02",
+      "start": 280,
+      "subject": "self",
+      "text": "국민연금 백사십만 원",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 293,
+      "level": "explicit",
+      "span_id": "B15_b13_s02",
+      "start": 285,
+      "subject": "self",
+      "text": "백사십만 원에서",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0194"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「회사」 REL_WORK/inferential",
+     "spans": [
+      {
+       "end": 2734,
+       "level": "inferential",
+       "span_id": "E15_b05_s05",
+       "start": 2732,
+       "subject": "self",
+       "text": "회사",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    }
+   },
+   "item_id": "G49",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "E15_b05",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 2734,
+      "level": "inferential",
+      "span_id": "E15_b05_s05",
+      "start": 2732,
+      "subject": "self",
+      "text": "회사",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0466"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「엄마가 딸인 나」 SEX/implicit",
+     "spans": [
+      {
+       "end": 131,
+       "level": "implicit",
+       "span_id": "C11_b09_s01",
+       "start": 123,
+       "subject": "self",
+       "text": "엄마가 딸인 나",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「엄마가」 FAM/inferential + 「딸인」 SEX/implicit",
+     "spans": [
+      {
+       "end": 126,
+       "level": "inferential",
+       "span_id": "C11_b09_s01",
+       "start": 123,
+       "subject": "self",
+       "text": "엄마가",
+       "text_id": "body",
+       "type": "FAM"
+      },
+      {
+       "end": 129,
+       "level": "implicit",
+       "span_id": "C11_b09_s02",
+       "start": 127,
+       "subject": "self",
+       "text": "딸인",
+       "text_id": "body",
+       "type": "SEX"
+      }
+     ]
+    }
+   },
+   "item_id": "G50",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "C11_b09",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 126,
+      "level": "inferential",
+      "span_id": "C11_b09_s01",
+      "start": 123,
+      "subject": "self",
+      "text": "엄마가",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 129,
+      "level": "implicit",
+      "span_id": "C11_b09_s02",
+      "start": 127,
+      "subject": "self",
+      "text": "딸인",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "official239": [
+     {
+      "end": 131,
+      "level": "implicit",
+      "span_id": "C11_b09_s01",
+      "start": 123,
+      "subject": "self",
+      "text": "엄마가 딸인 나",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 126,
+      "level": "inferential",
+      "span_id": "C11_b09_s01",
+      "start": 123,
+      "subject": "self",
+      "text": "엄마가",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 129,
+      "level": "implicit",
+      "span_id": "C11_b09_s02",
+      "start": 127,
+      "subject": "self",
+      "text": "딸인",
+      "text_id": "body",
+      "type": "SEX"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0275"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「자취했을」 FAM/implicit",
+     "spans": [
+      {
+       "end": 2100,
+       "level": "implicit",
+       "span_id": "E15_b20_s02",
+       "start": 2096,
+       "subject": "self",
+       "text": "자취했을",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G51",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "E15_b20",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 2100,
+      "level": "implicit",
+      "span_id": "E15_b20_s02",
+      "start": 2096,
+      "subject": "self",
+      "text": "자취했을",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0470"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「중학생 아들」 FAM/implicit",
+     "spans": [
+      {
+       "end": 212,
+       "level": "implicit",
+       "span_id": "B04_b14_s01",
+       "start": 206,
+       "subject": "self",
+       "text": "중학생 아들",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「중학생」 FAM/implicit + 「아들은」 FAM/implicit",
+     "spans": [
+      {
+       "end": 209,
+       "level": "implicit",
+       "span_id": "B04_b14_s02",
+       "start": 206,
+       "subject": "other",
+       "text": "중학생",
+       "text_id": "body",
+       "type": "FAM"
+      },
+      {
+       "end": 213,
+       "level": "implicit",
+       "span_id": "B04_b14_s03",
+       "start": 210,
+       "subject": "self",
+       "text": "아들은",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G52",
+   "kind": "boundary",
+   "pattern": "P_alone",
+   "post_id": "B04_b14",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 212,
+      "level": "implicit",
+      "span_id": "B04_b14_s02",
+      "start": 206,
+      "subject": "self",
+      "text": "중학생 아들",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "official239": [
+     {
+      "end": 212,
+      "level": "implicit",
+      "span_id": "B04_b14_s01",
+      "start": 206,
+      "subject": "self",
+      "text": "중학생 아들",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 209,
+      "level": "implicit",
+      "span_id": "B04_b14_s02",
+      "start": 206,
+      "subject": "other",
+      "text": "중학생",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 213,
+      "level": "implicit",
+      "span_id": "B04_b14_s03",
+      "start": 210,
+      "subject": "self",
+      "text": "아들은",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|boundary",
+   "unit_id": "U0110"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「아이들」 FAM/implicit + 「학원비」 INCOME/inferential",
+     "spans": [
+      {
+       "end": 214,
+       "level": "implicit",
+       "span_id": "B17_b14_s02",
+       "start": 211,
+       "subject": "self",
+       "text": "아이들",
+       "text_id": "body",
+       "type": "FAM"
+      },
+      {
+       "end": 218,
+       "level": "inferential",
+       "span_id": "B17_b14_s03",
+       "start": 215,
+       "subject": "other",
+       "text": "학원비",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「아이들 학원비」 FAM/implicit",
+     "spans": [
+      {
+       "end": 218,
+       "level": "implicit",
+       "span_id": "B17_b14_s02",
+       "start": 211,
+       "subject": "self",
+       "text": "아이들 학원비",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G53",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "B17_b14",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 214,
+      "level": "implicit",
+      "span_id": "B17_b14_s02",
+      "start": 211,
+      "subject": "self",
+      "text": "아이들",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 218,
+      "level": "inferential",
+      "span_id": "B17_b14_s03",
+      "start": 215,
+      "subject": "other",
+      "text": "학원비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 218,
+      "level": "implicit",
+      "span_id": "B17_b14_s02",
+      "start": 211,
+      "subject": "self",
+      "text": "아이들 학원비",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 214,
+      "level": "implicit",
+      "span_id": "B17_b14_s02",
+      "start": 211,
+      "subject": "self",
+      "text": "아이들",
+      "text_id": "body",
+      "type": "FAM"
+     },
+     {
+      "end": 218,
+      "level": "inferential",
+      "span_id": "B17_b14_s03",
+      "start": 215,
+      "subject": "other",
+      "text": "학원비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0222"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「읍내」 REL_HOME/inferential",
+     "spans": [
+      {
+       "end": 937,
+       "level": "inferential",
+       "span_id": "D06_b11_s03",
+       "start": 935,
+       "subject": "self",
+       "text": "읍내",
+       "text_id": "body",
+       "type": "REL_HOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「읍내 도서관」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 941,
+       "level": "inferential",
+       "span_id": "D06_b11_s02",
+       "start": 935,
+       "subject": "self",
+       "text": "읍내 도서관",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    }
+   },
+   "item_id": "G54",
+   "kind": "type",
+   "pattern": "P_alone",
+   "post_id": "D06_b11",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 941,
+      "level": "inferential",
+      "span_id": "D06_b11_s02",
+      "start": 935,
+      "subject": "self",
+      "text": "읍내 도서관",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 941,
+      "level": "inferential",
+      "span_id": "D06_b11_s02",
+      "start": 935,
+      "subject": "self",
+      "text": "읍내 도서관",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 937,
+      "level": "inferential",
+      "span_id": "D06_b11_s03",
+      "start": 935,
+      "subject": "self",
+      "text": "읍내",
+      "text_id": "body",
+      "type": "REL_HOME"
+     }
+    ]
+   },
+   "stratum": "P_alone|type",
+   "unit_id": "U0328"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "「육아템으로는」 FAM/implicit",
+     "spans": [
+      {
+       "end": 1344,
+       "level": "implicit",
+       "span_id": "A24_b26_s02",
+       "start": 1338,
+       "subject": "self",
+       "text": "육아템으로는",
+       "text_id": "body",
+       "type": "FAM"
+      }
+     ]
+    }
+   },
+   "item_id": "G55",
+   "kind": "lone_extra",
+   "pattern": "P_alone",
+   "post_id": "A24_b26",
+   "spans": {
+    "conservative239": [],
+    "official239": [],
+    "previous_ai239": [
+     {
+      "end": 1344,
+      "level": "implicit",
+      "span_id": "A24_b26_s02",
+      "start": 1338,
+      "subject": "self",
+      "text": "육아템으로는",
+      "text_id": "body",
+      "type": "FAM"
+     }
+    ]
+   },
+   "stratum": "P_alone|lone_extra",
+   "unit_id": "U0070"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「회사 생활이」 JOB/inferential",
+     "spans": [
+      {
+       "end": 454,
+       "level": "inferential",
+       "span_id": "A18_b25_s01",
+       "start": 448,
+       "subject": "self",
+       "text": "회사 생활이",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「회사」 REL_WORK/inferential",
+     "spans": [
+      {
+       "end": 450,
+       "level": "inferential",
+       "span_id": "A18_b25_s01",
+       "start": 448,
+       "subject": "self",
+       "text": "회사",
+       "text_id": "body",
+       "type": "REL_WORK"
+      }
+     ]
+    }
+   },
+   "item_id": "G56",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "A18_b25",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 450,
+      "level": "inferential",
+      "span_id": "A18_b25_s01",
+      "start": 448,
+      "subject": "self",
+      "text": "회사",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ],
+    "official239": [
+     {
+      "end": 454,
+      "level": "inferential",
+      "span_id": "A18_b25_s01",
+      "start": 448,
+      "subject": "self",
+      "text": "회사 생활이",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 450,
+      "level": "inferential",
+      "span_id": "A18_b25_s01",
+      "start": 448,
+      "subject": "self",
+      "text": "회사",
+      "text_id": "body",
+      "type": "REL_WORK"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0044"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「복대동 지웰시티   ⏎ 앞에서」 LOC_FACILITY/explicit",
+     "spans": [
+      {
+       "end": 14,
+       "level": "explicit",
+       "span_id": "B14_b09_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "복대동 지웰시티  \n앞에서",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「복대동」 LOC_ADMIN/explicit + 「지웰시티」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 3,
+       "level": "explicit",
+       "span_id": "B14_b09_s01",
+       "start": 0,
+       "subject": "self",
+       "text": "복대동",
+       "text_id": "body",
+       "type": "LOC_ADMIN"
+      },
+      {
+       "end": 8,
+       "level": "inferential",
+       "span_id": "B14_b09_s02",
+       "start": 4,
+       "subject": "self",
+       "text": "지웰시티",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    }
+   },
+   "item_id": "G57",
+   "kind": "type",
+   "pattern": "O_alone",
+   "post_id": "B14_b09",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 3,
+      "level": "explicit",
+      "span_id": "B14_b09_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "복대동",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 8,
+      "level": "inferential",
+      "span_id": "B14_b09_s02",
+      "start": 4,
+      "subject": "self",
+      "text": "지웰시티",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 14,
+      "level": "explicit",
+      "span_id": "B14_b09_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "복대동 지웰시티  \n앞에서",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 3,
+      "level": "explicit",
+      "span_id": "B14_b09_s01",
+      "start": 0,
+      "subject": "self",
+      "text": "복대동",
+      "text_id": "body",
+      "type": "LOC_ADMIN"
+     },
+     {
+      "end": 8,
+      "level": "inferential",
+      "span_id": "B14_b09_s02",
+      "start": 4,
+      "subject": "self",
+      "text": "지웰시티",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ]
+   },
+   "stratum": "O_alone|type",
+   "unit_id": "U0184"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「활동비 안에서 움직이기 빠듯했다」 INCOME/implicit",
+     "spans": [
+      {
+       "end": 603,
+       "level": "implicit",
+       "span_id": "A01_b06_s01",
+       "start": 586,
+       "subject": "self",
+       "text": "활동비 안에서 움직이기 빠듯했다",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "「활동비」 INCOME/inferential",
+     "spans": [
+      {
+       "end": 589,
+       "level": "inferential",
+       "span_id": "A01_b06_s01",
+       "start": 586,
+       "subject": "self",
+       "text": "활동비",
+       "text_id": "body",
+       "type": "INCOME"
+      }
+     ]
+    }
+   },
+   "item_id": "G58",
+   "kind": "boundary",
+   "pattern": "O_alone",
+   "post_id": "A01_b06",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 589,
+      "level": "inferential",
+      "span_id": "A01_b06_s01",
+      "start": 586,
+      "subject": "self",
+      "text": "활동비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "official239": [
+     {
+      "end": 603,
+      "level": "implicit",
+      "span_id": "A01_b06_s01",
+      "start": 586,
+      "subject": "self",
+      "text": "활동비 안에서 움직이기 빠듯했다",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ],
+    "previous_ai239": [
+     {
+      "end": 589,
+      "level": "inferential",
+      "span_id": "A01_b06_s01",
+      "start": 586,
+      "subject": "self",
+      "text": "활동비",
+      "text_id": "body",
+      "type": "INCOME"
+     }
+    ]
+   },
+   "stratum": "O_alone|boundary",
+   "unit_id": "U0001"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    },
+    "Y": {
+     "golds_exact": [
+      "official239"
+     ],
+     "label": "「경운기는」 JOB/inferential",
+     "spans": [
+      {
+       "end": 143,
+       "level": "inferential",
+       "span_id": "D09_b15_s01",
+       "start": 139,
+       "subject": "self",
+       "text": "경운기는",
+       "text_id": "body",
+       "type": "JOB"
+      }
+     ]
+    }
+   },
+   "item_id": "G59",
+   "kind": "lone_extra",
+   "pattern": "O_alone",
+   "post_id": "D09_b15",
+   "spans": {
+    "conservative239": [],
+    "official239": [
+     {
+      "end": 143,
+      "level": "inferential",
+      "span_id": "D09_b15_s01",
+      "start": 139,
+      "subject": "self",
+      "text": "경운기는",
+      "text_id": "body",
+      "type": "JOB"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "O_alone|lone_extra",
+   "unit_id": "U0342"
+  },
+  {
+   "candidates": {
+    "X": {
+     "golds_exact": [
+      "conservative239",
+      "official239"
+     ],
+     "label": "「단골 드립커피집」 LOC_FACILITY/inferential",
+     "spans": [
+      {
+       "end": 308,
+       "level": "inferential",
+       "span_id": "B11_b13_s01",
+       "start": 300,
+       "subject": "self",
+       "text": "단골 드립커피집",
+       "text_id": "body",
+       "type": "LOC_FACILITY"
+      }
+     ]
+    },
+    "Y": {
+     "golds_exact": [
+      "previous_ai239"
+     ],
+     "label": "(스팬 없음)",
+     "spans": []
+    }
+   },
+   "item_id": "G60",
+   "kind": "lone_missing",
+   "pattern": "P_alone",
+   "post_id": "B11_b13",
+   "spans": {
+    "conservative239": [
+     {
+      "end": 308,
+      "level": "inferential",
+      "span_id": "B11_b13_s01",
+      "start": 300,
+      "subject": "self",
+      "text": "단골 드립커피집",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "official239": [
+     {
+      "end": 308,
+      "level": "inferential",
+      "span_id": "B11_b13_s01",
+      "start": 300,
+      "subject": "self",
+      "text": "단골 드립커피집",
+      "text_id": "body",
+      "type": "LOC_FACILITY"
+     }
+    ],
+    "previous_ai239": []
+   },
+   "stratum": "P_alone|lone_missing",
+   "unit_id": "U0162"
+  }
+ ],
+ "salt": "eeacdcef0aa13d1853643f9c7528aafb",
+ "sample_seed": 20261105
+}
