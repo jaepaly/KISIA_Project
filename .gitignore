@@ -179,3 +179,6 @@ experiments/exp12-action-llm/data/*.jsonl
 /experiments/exp21-local-rewrite/results/v2c/train_metrics.json
 /experiments/exp21-local-rewrite/results/v3/train_metrics.json
 /experiments/exp21-local-rewrite/results/v2c/
+
+# 로컬 자격증명 메모 — 공개 저장소에 올라가지 않게
+/aws.txt

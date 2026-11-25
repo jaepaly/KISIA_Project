@@ -1,11 +1,11 @@
 # AGENTS.md — AI 도구 작업 지침
 
 이 저장소에서 AI 도구(Codex·Claude·Cursor 등)로 작업할 때의 규범이다.
-**프로젝트가 무엇인지는 여기 없다** — [README.md](README.md)(이번 주 정본)와 [docs/](docs/)를 먼저 읽는다.
+**프로젝트가 무엇인지는 여기 없다** — [README.md](README.md)(프로젝트 소개 · 최종 결과)와 [docs/](docs/)를 먼저 읽는다.
 
 ## 문서 위계 — 어긋나면 누가 이기나
 
-1. **README.md** — 이번 주 할 일의 정본. 완료 기준이 roadmap 과 달라 보이면 **README 가 이긴다** (roadmap §3 에 명시된 규칙)
+1. **README.md** — 11/8 제출 뒤로는 프로젝트 소개 · 최종 결과 문서다. 12주 동안은 이번 주 할 일의 정본이었고(완료 기준이 roadmap 과 달라 보이면 README 가 이겼다 · roadmap §3), 그때 README 는 `w11` 태그에 있다
 2. **docs/contracts/** 6종 — W2 에 고정된 계약. 바꾸려면 반드시 PR (코드오너 리뷰)
 3. **docs/roles/** 매뉴얼 — 12주 관점. 주차 상세가 README 와 다르면 README
 4. 매뉴얼끼리 어긋나면 **계약 → README → 매뉴얼** 순으로 정본을 찾고, 어긋남 자체를 고쳐서 올린다
